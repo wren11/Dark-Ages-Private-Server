@@ -1,0 +1,11 @@
+{
+  "$type": "Darkages.Network.Object.ObjectService, Darkages.Server",
+  "_items": {
+    "$type": "System.Collections.Generic.HashSet`1[[Darkages.Types.Sprite, Darkages.Server]], System.Core",
+    "$values": []
+  },
+  "_money": {
+    "$type": "System.Collections.Generic.HashSet`1[[Darkages.Types.Sprite, Darkages.Server]], System.Core",
+    "$values": []
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$type": "Darkages.Types.SkillTemplate, Darkages.Server",
+  "ID": 9,
+  "Icon": 36,
+  "ScriptName": "Kelberoth Strike",
+  "LevelRate": 0.03,
+  "Cooldown": 10,
+  "MaxLevel": 100,
+  "MissAnimation": 0,
+  "TargetAnimation": 48,
+  "FailMessage": null,
+  "Type": 1,
+  "Pane": 1,
+  "PostQualifers": 3,
+  "Sound": 17,
+  "Debuff": null,
+  "Buff": null,
+  "Prerequisites": null,
+  "NpcKey": null,
+  "TierLevel": 0,
+  "Description": null,
+  "Name": "Kelberoth Strike"
+}

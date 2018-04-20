@@ -1,0 +1,22 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "Image": 16551,
+  "Level": 3,
+  "ScriptKey": "Benson",
+  "EnableWalking": false,
+  "EnableTurning": false,
+  "EnableAttacking": false,
+  "EnableSpeech": false,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": []
+  },
+  "X": 20,
+  "Y": 30,
+  "AreaID": 509,
+  "Direction": 1,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "QuestKey": "Benson_quest",
+  "Name": "Benson"
+}

@@ -1,0 +1,24 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "Image": 16918,
+  "Level": 99,
+  "ScriptKey": "TowerDefenseHandler",
+  "EnableWalking": false,
+  "EnableTurning": false,
+  "EnableAttacking": false,
+  "EnableSpeech": true,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Want to play Lorule Tower Defense?"
+    ]
+  },
+  "X": 11,
+  "Y": 5,
+  "AreaID": 508,
+  "Direction": 2,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "QuestKey": "TowerDefense",
+  "Name": "Tower Defense Master"
+}

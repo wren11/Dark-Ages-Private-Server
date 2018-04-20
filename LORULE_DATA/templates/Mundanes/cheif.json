@@ -1,0 +1,18 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "Image": 0x43DB,
+  "Level": 99,
+  "ScriptKey": "",
+  "EnableWalking": false,
+  "EnableTurning": false,
+  "EnableAttacking": false,
+  "EnableSpeech": false,
+  "X": 31,
+  "Y": 21,
+  "AreaID": 101,
+  "Direction": 1,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "QuestKey": "",
+  "Name": "cheif"
+}

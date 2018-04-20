@@ -1,0 +1,23 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "Image": 0x4163,
+  "Level": 99,
+  "ScriptKey": "warrior helper",
+  "EnableWalking": false,
+  "EnableSpeech": true,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Wizards are gay",
+      "Become a warrior. nuff said.",
+      "Warrior or pussy, your choice.",
+    ]
+  },
+  "X": 29,
+  "Y": 24,
+  "AreaID": 85,
+  "Direction": 1,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "Name": "Warrior"
+}

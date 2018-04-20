@@ -1,0 +1,33 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "EnableCasting": true,
+  "Spells": {
+    "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "mor fas nadur",
+      "pramh",
+      "beag sal",
+    ]
+  },
+  "Image": 16738,
+  "Level": 99,
+  "ScriptKey": "",
+  "EnableWalking": false,
+  "EnableTurning": true,
+  "EnableAttacking": true,
+  "EnableSpeech": true,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Hm.",
+    ]
+  },
+  "X": 16,
+  "Y": 25,
+  "AreaID": 81,
+  "Direction": 1,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "QuestKey": "",
+  "Name": "Angry Arch Wizard"
+}

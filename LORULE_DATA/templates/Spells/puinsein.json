@@ -1,0 +1,76 @@
+{
+  "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
+  "Icon": 35,
+  "MaxLevel": 100,
+  "ScriptKey": "puinsein",
+  "MinLines": 0,
+  "MaxLines": 9,
+  "ManaCost": 0,
+  "Text": "\u0000",
+  "Debuff": {
+    "$type": "Darkages.Storage.locales.debuffs.debuff_poison, Darkages.Server",
+    "Animation": 25,
+    "Modifier": 0.2,
+    "Name": "puinsein",
+    "Length": 65,
+    "Icon": 35,
+    "Cancelled": false,
+    "Timer": {
+      "$type": "Darkages.Network.Game.GameServerTimer, Darkages.Server",
+      "Timer": "00:00:00",
+      "Delay": "00:00:01",
+      "Elapsed": false,
+      "Disabled": false,
+      "Interval": 0,
+      "Tick": 0
+    }
+  },
+  "Buff": null,
+  "TargetType": 2,
+  "BaseLines": 2,
+  "LevelRate": 0.05,
+  "Sound": 1,
+  "Animation": 25,
+  "DamageExponent": 0.0,
+  "Pane": 1,
+  "ElementalProperty": 0,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Bat's Wing",
+          "AmountRequired": 5
+        }
+      ]
+    },
+    "Stage_Required": 0,
+    "Class_Required": 3,
+    "ExpLevel_Required": 15,
+    "Str_Required": 0,
+    "Int_Required": 25,
+    "Wis_Required": 15,
+    "Dex_Required": 0,
+    "Con_Required": 0,
+    "Gold_Required": 15000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": "beag puinsein",
+    "Spell_Level_Required": 70,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": null,
+  "TierLevel": 9,
+  "Name": "puinsein"
+}

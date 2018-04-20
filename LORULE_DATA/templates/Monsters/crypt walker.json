@@ -1,0 +1,47 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+	"random",
+	"Human Remains"
+    ]
+  },
+  "ID": 152,
+  "Image": 16536,
+  "ScriptName": "Common Monster",
+  "DefinedX": 33,
+  "DefinedY": 13,
+  "LootType": 36,
+  "MoodType": 0,
+  "SpawnType": 2,
+  "ElementType": 2,
+  "PathQualifer": 1,
+  "Level": 6,
+  "MaximumHP": 0,
+  "MaximumMP": 0,
+  "SpawnerID": 0,
+  "AreaID": 152,
+  "MovementSpeed": 2000,
+  "CastSpeed": 4000,
+  "IsBoss": false,
+  "SpawnMax": 100,
+  "SpawnRate": 5,
+  "SpawnSize": 10,
+  "AttackSpeed": 1500,
+  "IgnoreCollision": false,
+  "ImageVarience": 0,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "SpellScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "beag cradh",
+      "deo saighead"
+    ]
+  },
+  "DefenseElement": 1,
+  "OffenseElement": 0,
+  "UpdateMapWide": false,
+  "Name": "Crypt Walker"
+}

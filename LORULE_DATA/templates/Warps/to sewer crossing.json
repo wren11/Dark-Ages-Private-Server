@@ -1,0 +1,43 @@
+{
+  "$type": "Darkages.Types.WarpTemplate, Darkages.Server",
+  "LevelRequired": 6,
+  "WarpRadius": 1,
+  "Activations": {
+    "$type": "System.Collections.Generic.List`1[[Darkages.Types.Warp, Darkages.Server]], mscorlib",
+    "$values": [
+      {
+        "$type": "Darkages.Types.Warp, Darkages.Server",
+        "Location": {
+          "$type": "Darkages.Types.Position, Darkages.Server",
+          "X": 53,
+          "Y": 42
+        },
+        "AreaID": 99,
+        "PortalKey": 0
+      },
+      {
+        "$type": "Darkages.Types.Warp, Darkages.Server",
+        "Location": {
+          "$type": "Darkages.Types.Position, Darkages.Server",
+          "X": 53,
+          "Y": 41
+        },
+        "AreaID": 99,
+        "PortalKey": 0
+      }
+    ]
+  },
+  "To": {
+    "$type": "Darkages.Types.Warp, Darkages.Server",
+    "Location": {
+      "$type": "Darkages.Types.Position, Darkages.Server",
+      "X": 17,
+      "Y": 31
+    },
+    "AreaID": 80,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 99,
+  "Name": "To Sewer Crossing"
+}

@@ -1,0 +1,39 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+	"random"
+	]
+  },
+  "ID": 0,
+  "Image": 0x438E,
+  "ScriptName": "Common Monster",
+  "DefinedX": 5,
+  "DefinedY": 5,
+  "LootType": 0,
+  "MoodType": 0,
+  "SpawnType": 4,
+  "ElementType": 0,
+  "PathQualifer": 1,
+  "Level": 1,
+  "MaximumHP": 200,
+  "MaximumMP": 200,
+  "SpawnerID": 0,
+  "AreaID": 508,
+  "MovementSpeed": 1000,
+  "CastSpeed": 3000,
+  "IsBoss": false,
+  "SpawnMax": 6,
+  "SpawnRate": 1,
+  "SpawnSize": 2,
+  "AttackSpeed": 1600,
+  "IgnoreCollision": false,
+  "ImageVarience": 2,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "DefenseElement": 0,
+  "OffenseElement": 0,
+  "UpdateMapWide": false,
+  "Name": "noob"
+}

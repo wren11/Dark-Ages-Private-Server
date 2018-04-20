@@ -1,0 +1,76 @@
+{
+  "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
+  "Icon": 35,
+  "MaxLevel": 100,
+  "ScriptKey": "puinsein",
+  "MinLines": 1,
+  "MaxLines": 9,
+  "ManaCost": 0,
+  "Text": "\u0000",
+  "Debuff": {
+    "$type": "Darkages.Storage.locales.debuffs.debuff_poison, Darkages.Server",
+    "Animation": 25,
+    "Modifier": 0.3,
+    "Name": "mor puinsein",
+    "Length": 215,
+    "Icon": 35,
+    "Cancelled": false,
+    "Timer": {
+      "$type": "Darkages.Network.Game.GameServerTimer, Darkages.Server",
+      "Timer": "00:00:00",
+      "Delay": "00:00:01",
+      "Elapsed": false,
+      "Disabled": false,
+      "Interval": 0,
+      "Tick": 0
+    }
+  },
+  "Buff": null,
+  "TargetType": 2,
+  "BaseLines": 3,
+  "LevelRate": 0.05,
+  "Sound": 1,
+  "Animation": 25,
+  "DamageExponent": 0.0,
+  "Pane": 1,
+  "ElementalProperty": 0,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Bat's Wing",
+          "AmountRequired": 5
+        }
+      ]
+    },
+    "Stage_Required": 0,
+    "Class_Required": 3,
+    "ExpLevel_Required": 35,
+    "Str_Required": 0,
+    "Int_Required": 41,
+    "Wis_Required": 25,
+    "Dex_Required": 0,
+    "Con_Required": 0,
+    "Gold_Required": 25000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": "puinsein",
+    "Spell_Level_Required": 90,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": null,
+  "TierLevel": 9,
+  "Name": "mor puinsein"
+}

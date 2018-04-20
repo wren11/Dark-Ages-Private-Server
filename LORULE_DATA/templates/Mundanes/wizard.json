@@ -1,0 +1,23 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "Image": 16738,
+  "Level": 99,
+  "ScriptKey": "wizard helper",
+  "EnableWalking": false,
+  "EnableSpeech": true,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Wizards are strong",
+      "Wizards cast Magic",
+      "Wizards are Smart.",
+    ]
+  },
+  "X": 29,
+  "Y": 22,
+  "AreaID": 85,
+  "Direction": 1,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "Name": "Wizard"
+}

@@ -1,0 +1,23 @@
+{
+  "$type": "Darkages.Types.SkillTemplate, Darkages.Server",
+  "ID": 1,
+  "Icon": 17,
+  "ScriptName": "Two-Handed Attack",
+  "LevelRate": 0.0,
+  "Cooldown": 0,
+  "MaxLevel": 1,
+  "MissAnimation": 0,
+  "TargetAnimation": 0,
+  "FailMessage": null,
+  "Type": 0,
+  "Pane": 1,
+  "PostQualifers": 0,
+  "Sound": 95,
+  "Debuff": null,
+  "Buff": null,
+  "Prerequisites": null,
+  "NpcKey": null,
+  "TierLevel": 0,
+  "Description": null,
+  "Name": "Two-Handed Attack"
+}
