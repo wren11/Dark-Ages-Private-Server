@@ -9,7 +9,7 @@ The goal of this project was to provide a platform for anyone to use, build and 
 I'm happy to announce that this server is near the completion stages and content for this platform is being developed.
 All content, Server and Client source will always remain open source and free to use.
 
-![Alt text](https://github.com/wren11/Lorule-Dark-Ages-Server/blob/master/GitStuff/pictures/lorule2.png?raw=true "In Game")
+![Alt text](https://raw.githubusercontent.com/wren11/DarkAges-Lorule-Server/master/GitStuff/pictures/darkages.gif "In Game")
 
 
 ## About This Project
