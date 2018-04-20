@@ -40,8 +40,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
             {
                 var client = (sprite as Aisling).Client;
 
-                client.SendMessage(0x02,
-                    string.IsNullOrEmpty(Skill.Template.FailMessage) ? Skill.Template.FailMessage : "failed.");
+                client.SendMessage(0x02, "failed.");
             }
         }
 
@@ -55,8 +54,19 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     client.Aisling.Flags = client.Aisling.Flags == AislingFlags.Invisible
                         ? AislingFlags.Normal
                         : AislingFlags.Invisible;
-                    client.Send(new ServerFormat3F((byte)Skill.Template.Pane, Skill.Slot, Skill.Template.Cooldown));
-                    client.Refresh();
+
+                    if (client.Aisling.Invisible)
+                    {
+                        client.SendMessage(0x02, "You blend in to the shadows.");
+
+                        client.Aisling.Show(Scope.NearbyAislings,
+                            new ServerFormat29(Skill.Template.TargetAnimation,
+                                (ushort)client.Aisling.X,
+                                (ushort)client.Aisling.Y
+                            ));
+                    }
+
+                    client.Refresh(true);
                 }
             }
         }
@@ -68,7 +78,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 var client = (sprite as Aisling).Client;
                 client.TrainSkill(Skill);
 
-                var success = Skill.RollDice(rand);
+                var success = true;
                 if (success)
                     OnSuccess(sprite);
                 else

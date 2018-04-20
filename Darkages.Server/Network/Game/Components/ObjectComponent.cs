@@ -72,7 +72,11 @@ namespace Darkages.Network.Game.Components
 
                     if (nearbyAisling.RemoveFromView(obj))
                     {
-                        obj.RemoveFrom(nearbyAisling);
+                        lock (ServerContext.SyncObj)
+                        {
+                            for (int i = 0; i < 2; i++)
+                                obj.RemoveFrom(nearbyAisling);
+                        }
                     }
                 }
             }

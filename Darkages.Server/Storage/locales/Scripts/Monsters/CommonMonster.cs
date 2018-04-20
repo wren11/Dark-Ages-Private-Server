@@ -99,6 +99,14 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void OnApproach(GameClient client)
         {
+            RefreshTarget(client);
+
+            UpdateTarget();
+
+        }
+
+        private void RefreshTarget(GameClient client)
+        {
             if (client.Aisling.Dead)
             {
                 ClearTarget();
@@ -108,9 +116,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             {
                 ClearTarget();
             }
-
-            UpdateTarget();
-
         }
 
         public override void OnAttacked(GameClient client)
@@ -173,6 +178,8 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (Monster.IsConfused || Monster.IsFrozen || Monster.IsParalyzed || Monster.IsSleeping)
                 return;
 
+            UpdateTarget();
+
             Monster.BashTimer.Update(elapsedTime);
             Monster.CastTimer.Update(elapsedTime);
             Monster.WalkTimer.Update(elapsedTime);
@@ -206,20 +213,19 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         private void UpdateTarget()
         {
+            if (Monster.Target != null && Monster.Target is Aisling)
+            {
+                var aisling = Monster.Target as Aisling;
+
+                if (aisling.Invisible || aisling.Dead || aisling.CurrentHp == 0)
+                {
+                    ClearTarget();
+                    return;
+                }
+            }
+
             if (Monster.Target != null)
             {
-                if (Monster.Target is Aisling)
-                {
-                    if (((Aisling)Monster.Target).Invisible)
-                        ClearTarget();
-
-                    if (((Aisling)Monster.Target).Dead)
-                        ClearTarget();
-
-                    if (Monster.CurrentHp == 0)
-                        ClearTarget();
-                }
-
                 if (Monster.Target?.CurrentHp == 0)
                     ClearTarget();
             }
@@ -243,11 +249,11 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
                         }
                     }
-
                     Monster.WalkEnabled = true;
                 }
             }
         }
+
 
         private void CastSpell()
         {
