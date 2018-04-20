@@ -71,7 +71,6 @@ namespace Lorule
             }
         }
 
-        //repo
         private static void InitLogger()
         {
             LoggingConfiguration config = new LoggingConfiguration();
