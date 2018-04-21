@@ -286,6 +286,11 @@ namespace Darkages
                     LoadMetaDatabase();
                     CacheCommunityAssets();
                 }
+
+
+                GlobalItemTemplateCache["Hy-Brasyl Battle Axe"].Class = Class.Warrior;
+
+
                 return false;
             });
 

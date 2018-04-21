@@ -24,13 +24,13 @@ using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Spells
 {
-    [Script("mor cradh", "Dean")]
-    public class mor_cradh : SpellScript
+    [Script("ard puinsein", "Dean")]
+    public class ardpuinsein : SpellScript
     {
         private readonly Random rand = new Random();
-        private debuff_morcradh Debuff = new debuff_morcradh();
+        private debuff_poison Debuff => new debuff_poison("mor puinsein", 700, 35, 25, 0.02);
 
-        public mor_cradh(Spell spell) : base(spell)
+        public ardpuinsein(Spell spell) : base(spell)
         {
         }
 
@@ -55,8 +55,9 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 client.TrainSpell(Spell);
 
-                var debuff = Clone<debuff_morcradh>(Debuff);
-                var curses = target.Debuffs.Values.OfType<debuff_cursed>().ToList();
+
+                var debuff = Clone<debuff_poison>(Debuff);
+                var curses = target.Debuffs.Values.OfType<debuff_poison>().ToList();
 
                 if (curses.Count == 0)
                 {
@@ -71,7 +72,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                                         Spell.Template.Name));
 
                         client.SendMessage(0x02, string.Format("you cast {0}", Spell.Template.Name));
-                        client.SendAnimation(243, target, sprite);
+                        client.SendAnimation(Spell.Template.Animation, target, sprite);
 
                         var action = new ServerFormat1A
                         {
@@ -84,7 +85,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                         {
                             Serial = sprite.Serial,
                             Health = 255,
-                            Sound = 27
+                            Sound = Spell.Template.Sound
                         };
 
                         client.Aisling.Show(Scope.NearbyAislings, action);
@@ -95,13 +96,13 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 {
                     var c = curses.FirstOrDefault();
                     if (c != null)
-                        client.SendMessage(0x02, string.Format("Another curse is afflicted [{0}].", c.Name));
+                        client.SendMessage(0x02, string.Format("Another poison is already applied. [{0}].", c.Name));
                 }
             }
             else
             {
-                var debuff = Clone<debuff_morcradh>(Debuff);
-                var curses = target.Debuffs.Values.OfType<debuff_cursed>().ToList();
+                var debuff = Clone<debuff_poison>(Debuff);
+                var curses = target.Debuffs.Values.OfType<debuff_poison>().ToList();
 
                 if (curses.Count == 0)
                     if (!target.HasDebuff(debuff.Name))
@@ -119,12 +120,12 @@ namespace Darkages.Storage.locales.Scripts.Spells
                                         Spell.Template.Name));
                         }
 
-                        target.SendAnimation(243, target, sprite);
+                        target.SendAnimation(Spell.Template.Animation, target, sprite);
 
                         var action = new ServerFormat1A
                         {
                             Serial = sprite.Serial,
-                            Number = 0x80,
+                            Number = 1,
                             Speed = 30
                         };
 
@@ -132,7 +133,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                         {
                             Serial = target.Serial,
                             Health = 255,
-                            Sound = 27
+                            Sound = Spell.Template.Sound
                         };
 
                         sprite.Show(Scope.NearbyAislings, action);
@@ -143,19 +144,23 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
         public override void OnUse(Sprite sprite, Sprite target)
         {
-            if (sprite.CurrentMp - Spell.Template.ManaCost > 0)
-                sprite.CurrentMp -= Spell.Template.ManaCost;
-            else
+            if (sprite is Aisling)
             {
-                if (sprite is Aisling)
+                if (sprite.CurrentMp - Spell.Template.ManaCost > 0)
+                    sprite.CurrentMp -= Spell.Template.ManaCost;
+                else
                 {
-                    (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
-                }
-                return;
-            }
+                    if (sprite is Aisling)
+                    {
+                        (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
+                    }
+                    return;
 
-            if (sprite.CurrentMp < 0)
-                sprite.CurrentMp = 0;
+                }
+
+                if (sprite.CurrentMp < 0)
+                    sprite.CurrentMp = 0;
+            }
 
             if (rand.Next(0, 100) > target.Mr)
                 OnSuccess(sprite, target);

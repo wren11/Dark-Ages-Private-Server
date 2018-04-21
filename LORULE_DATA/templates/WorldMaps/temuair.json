@@ -1,74 +1,111 @@
 {
-  "Portals": [
-    {
-      "DisplayName": "Lorule Arena",
-      "PointX": 225,
-      "PointY": 330,
-      "Destination": {
-        "Location": {
-          "X": 7,
-          "Y": 13
-        },
-        "AreaID": 508,
-        "PortalKey": 0
+  "$type": "Darkages.Types.WorldMapTemplate, Darkages.Server",
+  "Portals": {
+    "$type": "System.Collections.Generic.List`1[[Darkages.Types.WorldPortal, Darkages.Server]], mscorlib",
+    "$values": [
+      {
+        "$type": "Darkages.Types.WorldPortal, Darkages.Server",
+        "DisplayName": "Lorule Arena",
+        "PointX": 225,
+        "PointY": 330,
+        "Destination": {
+          "$type": "Darkages.Types.Warp, Darkages.Server",
+          "Location": {
+            "$type": "Darkages.Types.Position, Darkages.Server",
+            "X": 7,
+            "Y": 13
+          },
+          "AreaID": 508,
+          "PortalKey": 0
+        }
+      },
+      {
+        "$type": "Darkages.Types.WorldPortal, Darkages.Server",
+        "DisplayName": "Descending Caverns",
+        "PointX": 167,
+        "PointY": 259,
+        "Destination": {
+          "$type": "Darkages.Types.Warp, Darkages.Server",
+          "Location": {
+            "$type": "Darkages.Types.Position, Darkages.Server",
+            "X": 43,
+            "Y": 18
+          },
+          "AreaID": 150,
+          "PortalKey": 0
+        }
+      },
+      {
+        "$type": "Darkages.Types.WorldPortal, Darkages.Server",
+        "DisplayName": "Rucesion",
+        "PointX": 190,
+        "PointY": 500,
+        "Destination": {
+          "$type": "Darkages.Types.Warp, Darkages.Server",
+          "Location": {
+            "$type": "Darkages.Types.Position, Darkages.Server",
+            "X": 27,
+            "Y": 39
+          },
+          "AreaID": 200,
+          "PortalKey": 0
+        }
+      },
+      {
+        "$type": "Darkages.Types.WorldPortal, Darkages.Server",
+        "DisplayName": "Lorule City",
+        "PointX": 329,
+        "PointY": 511,
+        "Destination": {
+          "$type": "Darkages.Types.Warp, Darkages.Server",
+          "Location": {
+            "$type": "Darkages.Types.Position, Darkages.Server",
+            "X": 103,
+            "Y": 17
+          },
+          "AreaID": 1,
+          "PortalKey": 1
+        }
+      },
+      {
+        "$type": "Darkages.Types.WorldPortal, Darkages.Server",
+        "DisplayName": "East Woodlands",
+        "PointX": 147,
+        "PointY": 363,
+        "Destination": {
+          "$type": "Darkages.Types.Warp, Darkages.Server",
+          "Location": {
+            "$type": "Darkages.Types.Position, Darkages.Server",
+            "X": 2,
+            "Y": 1
+          },
+          "AreaID": 300,
+          "PortalKey": 1
+        }
+      },
+      {
+        "$type": "Darkages.Types.WorldPortal, Darkages.Server",
+        "DisplayName": "Mileth Kingdom",
+        "PointX": 83,
+        "PointY": 261,
+        "Destination": {
+          "$type": "Darkages.Types.Warp, Darkages.Server",
+          "Location": {
+            "$type": "Darkages.Types.Position, Darkages.Server",
+            "X": 11,
+            "Y": 8
+          },
+          "AreaID": 1000,
+          "PortalKey": 1
+        }
       }
-    },
-    {
-      "DisplayName": "Descending Caverns",
-      "PointX": 167,
-      "PointY": 259,
-      "Destination": {
-        "Location": {
-          "X": 43,
-          "Y": 18
-        },
-        "AreaID": 150,
-        "PortalKey": 0
-      }
-    },
-    {
-      "DisplayName": "Rucesion",
-      "PointX": 190,
-      "PointY": 500,
-      "Destination": {
-        "Location": {
-          "X": 27,
-          "Y": 39
-        },
-        "AreaID": 200,
-        "PortalKey": 0
-      }
-    },
-    {
-      "DisplayName": "Lorule City",
-      "PointX": 329,
-      "PointY": 511,
-      "Destination": {
-        "Location": {
-          "X": 103,
-          "Y": 17
-        },
-        "AreaID": 1,
-        "PortalKey": 1
-      }
-    },
-    {
-      "DisplayName": "East Woodlands",
-      "PointX": 147,
-      "PointY": 363,
-      "Destination": {
-        "Location": {
-          "X": 2,
-          "Y": 1
-        },
-        "AreaID": 300,
-        "PortalKey": 1
-      }
-    }
-  ],
+    ]
+  },
   "FieldNumber": 1,
   "Transition": {
+    "$type": "Darkages.Types.Warp, Darkages.Server",
     "Location": {
+      "$type": "Darkages.Types.Position, Darkages.Server",
       "X": 3,
       "Y": 3
     },

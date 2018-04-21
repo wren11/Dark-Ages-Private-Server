@@ -1,17 +1,16 @@
 {
   "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
-  "Image": 0x407D,
+  "Image": 0x4206,
   "Level": 99,
-  "ScriptKey": "shop2",
+  "ScriptKey": "Riona's Greetings",
   "EnableWalking": false,
   "EnableTurning": false,
   "EnableAttacking": false,
-  "EnableSpeech": true,
-  "X": 36,
-  "Y": 17,
-  "AreaID": 150,
-  "Direction": 0,
+  "X": 3,
+  "Y": 3,
+  "AreaID": 1003,
+  "Direction": 2,
   "MaximumHp": 0,
   "MaximumMp": 0,
-  "Name": "Mr Kelly"
+  "Name": "Riona"
 }

@@ -28,6 +28,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
     public class ard_cradh : SpellScript
     {
         private readonly Random rand = new Random();
+        private debuff_ardcradh Debuff = new debuff_ardcradh();
 
         public ard_cradh(Spell spell) : base(spell)
         {
@@ -54,7 +55,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 client.TrainSpell(Spell);
 
-                var debuff = Clone<debuff_ardcradh>(Spell.Template.Debuff);
+                var debuff = Clone<debuff_ardcradh>(Debuff);
                 var curses = target.Debuffs.Values.OfType<debuff_cursed>().ToList();
 
                 if (curses.Count == 0)
@@ -100,7 +101,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             else
             {
 
-                var debuff = Clone<debuff_ardcradh>(Spell.Template.Debuff);
+                var debuff = Clone<debuff_ardcradh>(Debuff);
                 var curses = target.Debuffs.Values.OfType<debuff_cursed>().ToList();
 
                 if (curses.Count == 0)

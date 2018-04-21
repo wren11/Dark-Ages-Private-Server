@@ -39,7 +39,7 @@ namespace Darkages.Storage.locales.debuffs
             {
                 (Affected as Aisling)
                     .Client
-                    .SendAnimation(370,
+                    .SendAnimation(265,
                         (Affected as Aisling).Client.Aisling,
                         (Affected as Aisling).Client.Aisling.Target ??
                         (Affected as Aisling).Client.Aisling);
@@ -58,7 +58,7 @@ namespace Darkages.Storage.locales.debuffs
                 var nearby = Affected.GetObjects<Aisling>(i => i.WithinRangeOf(Affected));
 
                 foreach (var near in nearby)
-                    near.Client.SendAnimation(370, Affected, Affected);
+                    near.Client.SendAnimation(226, Affected, Affected);
             }
 
 
@@ -72,7 +72,7 @@ namespace Darkages.Storage.locales.debuffs
                     .Client.SendLocation();
 
                 (Affected as Aisling)
-                    .Client.SendAnimation(374,
+                    .Client.SendAnimation(269,
                         (Affected as Aisling).Client.Aisling,
                         (Affected as Aisling).Client.Aisling.Target ??
                         (Affected as Aisling).Client.Aisling);
@@ -94,7 +94,7 @@ namespace Darkages.Storage.locales.debuffs
                         continue;
 
                     var client = near.Client;
-                    client.SendAnimation(370, Affected, client.Aisling);
+                    client.SendAnimation(269, Affected, client.Aisling);
                 }
             }
 

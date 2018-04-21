@@ -385,6 +385,7 @@
     <Compile Include="Storage\locales\Scripts\Skills\Warrior\charge.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\wff.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\WindBlade.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\affilictions\ardpuinsein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\affilictions\morpuinsein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\affilictions\puinsein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\elemental\aoe_Spells.cs" />

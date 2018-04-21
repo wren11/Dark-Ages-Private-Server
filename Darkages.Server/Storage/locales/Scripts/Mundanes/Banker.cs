@@ -120,11 +120,16 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                                     });
 
                                     client.Aisling.BankManager.Deposit(item);
-                                    if (client.Aisling.EquipmentManager.RemoveFromInventory(item, true))
+
+                                    if (item.Template.Flags.HasFlag(ItemFlags.Stackable) && item.Stacks > 0)
                                     {
-                                        client.Aisling.GoldPoints -= cost;
-                                        client.SendStats(StatusFlags.StructC);
-                                        DepositMenu(client);
+                                        //remaining, just take one.
+                                        client.Aisling.Inventory.RemoveRange(client, item, 1);
+                                        CompleteTrade(client, cost);
+                                    }
+                                    else if (client.Aisling.EquipmentManager.RemoveFromInventory(item, true))
+                                    {
+                                        CompleteTrade(client, cost);
                                     }
                                     else
                                     {
@@ -235,6 +240,13 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
             {
                 logger.Error(error, "Mundane Error: {0} - Response {1}", Mundane.Template.Name, responseID);
             }
+        }
+
+        private void CompleteTrade(GameClient client, int cost)
+        {
+            client.Aisling.GoldPoints -= cost;
+            client.SendStats(StatusFlags.StructC);
+            DepositMenu(client);
         }
 
         private void DepositMenu(GameClient client)

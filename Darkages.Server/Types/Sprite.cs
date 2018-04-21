@@ -62,7 +62,8 @@ namespace Darkages.Types
 
         [JsonIgnore]
         public Area Map => ServerContext.GlobalMapCache.ContainsKey(CurrentMapId)
-                                        ? ServerContext.GlobalMapCache[CurrentMapId] ?? null : null;
+                          ? ServerContext.GlobalMapCache[CurrentMapId] ?? null : null;
+
 
         [JsonIgnore] public TileContent Content { get; set; }
 
