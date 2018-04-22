@@ -34,7 +34,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             var options = new List<OptionsDataItem>();
             options.Add(new OptionsDataItem(0x0001, "Return Home."));
-            if (client.Aisling.Path == Class.Peasant)
+            if (!client.Aisling.TutorialCompleted)
             {
                 options.Add(new OptionsDataItem(0x0002, "Skip Tutorial."));
             }
@@ -47,7 +47,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
                 case 0x0001:
                     {
-                        if (client.Aisling.Path != Class.Peasant)
+                        if (client.Aisling.TutorialCompleted)
                         {
                             client.Aisling.GoHome();
                         }
@@ -73,7 +73,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         client.SendStats(StatusFlags.All);
 
                         client.SendMessage(0x02, "You have lost all memory...");
-                        client.TransitionToMap(ServerContext.GlobalMapCache[85], new Position(35, 23));
+                        client.TransitionToMap(1006, new Position(2, 4));
+                        client.Aisling.TutorialCompleted = true;
                     }
                     break;
             }

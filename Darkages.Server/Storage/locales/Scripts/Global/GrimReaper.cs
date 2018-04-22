@@ -84,9 +84,23 @@ namespace Darkages.Storage.locales.Scripts.Global
                     }
                     else
                     {
-                        client.SendAnimation(78, client.Aisling, client.Aisling);
-                        client.SendMessage(0x02, "You can't die if you have no soul.");
-                        client.Aisling.Recover();
+                        if (client.Aisling.AreaID != 85)
+                        {
+                            client.SendAnimation(78, client.Aisling, client.Aisling);
+                            client.SendMessage(0x02, "You can't die if you have no soul.");
+                            client.Aisling.Recover();
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 2; i++)
+                                client.Aisling.RemoveBuffsAndDebuffs();
+
+                            client.TransitionToMap(1006, new Position(2, 4));
+                            client.Aisling.TutorialCompleted = true;
+                            client.SendMessage(0x02, "You awake from a bad dream... or was it??");
+                            client.SendAnimation(94, client.Aisling, client.Aisling);
+                            client.Aisling.Recover();
+                        }
                     }
 
                     client.Send(new ServerFormat08(client.Aisling,

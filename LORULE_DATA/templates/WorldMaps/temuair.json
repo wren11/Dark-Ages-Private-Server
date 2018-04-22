@@ -98,6 +98,38 @@
           "AreaID": 1000,
           "PortalKey": 1
         }
+      },
+      {
+        "$type": "Darkages.Types.WorldPortal, Darkages.Server",
+        "DisplayName": "Mehadi Swamp",
+        "PointX": 263,
+        "PointY": 436,
+        "Destination": {
+          "$type": "Darkages.Types.Warp, Darkages.Server",
+          "Location": {
+            "$type": "Darkages.Types.Position, Darkages.Server",
+            "X": 2,
+            "Y": 10
+          },
+          "AreaID": 1008,
+          "PortalKey": 1
+        }
+      },
+      {
+        "$type": "Darkages.Types.WorldPortal, Darkages.Server",
+        "DisplayName": "Grass Fields",
+        "PointX": 208,
+        "PointY": 402,
+        "Destination": {
+          "$type": "Darkages.Types.Warp, Darkages.Server",
+          "Location": {
+            "$type": "Darkages.Types.Position, Darkages.Server",
+            "X": 8,
+            "Y": 15
+          },
+          "AreaID": 1009,
+          "PortalKey": 1
+        }
       }
     ]
   },
