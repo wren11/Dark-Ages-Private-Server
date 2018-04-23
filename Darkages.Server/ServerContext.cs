@@ -291,6 +291,163 @@ namespace Darkages
                 GlobalItemTemplateCache["Hy-Brasyl Battle Axe"].Class = Class.Warrior;
 
 
+                GlobalItemTemplateCache["Earth Necklace"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    Color = ItemColor.defaultgreen,
+                    OffenseElement = ElementManager.Element.Earth,
+                    DisplayImage = 0x80C5,
+                    Image = 0xC5,
+                    LevelRequired = 6,
+                    DropRate = 0.50,
+                    Value = 10000,
+                    MaxDurability = 5000,
+                    Name = "Earth Necklace",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.Necklace,
+                    ScriptName = "Necklace"                     
+                };
+
+                GlobalItemTemplateCache["Fire Necklace"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    Color = ItemColor.defaultgreen,
+                    OffenseElement = ElementManager.Element.Fire,
+                    DisplayImage = 0x80CD,
+                    Image = 0xCD,
+                    LevelRequired = 6,
+                    DropRate = 0.50,
+                    Value = 10000,
+                    MaxDurability = 5000,
+                    Name = "Fire Necklace",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.Necklace,
+                    ScriptName = "Necklace"
+                };
+
+                GlobalItemTemplateCache["Wind Necklace"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    Color = ItemColor.defaultgreen,
+                    OffenseElement = ElementManager.Element.Wind,
+                    DisplayImage = 0x80C6,
+                    Image = 0xC6,
+                    LevelRequired = 6,
+                    DropRate = 0.50,
+                    Value = 10000,
+                    MaxDurability = 5000,
+                    Name = "Wind Necklace",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.Necklace,
+                    ScriptName = "Necklace"
+                };
+
+
+                GlobalItemTemplateCache["Sea Necklace"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    Color = ItemColor.defaultgreen,
+                    OffenseElement = ElementManager.Element.Water,
+                    DisplayImage = 0x80C7,
+                    Image = 0xC7,
+                    LevelRequired = 6,
+                    DropRate = 0.50,
+                    Value = 10000,
+                    MaxDurability = 5000,
+                    Name = "Sea Necklace",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.Necklace,
+                    ScriptName = "Necklace"
+                };
+
+
+                GlobalItemTemplateCache["Dark Necklace"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    Color = ItemColor.defaultgreen,
+                    OffenseElement = ElementManager.Element.Dark,
+                    DisplayImage = 0x80CA,
+                    Image = 0xCA,
+                    LevelRequired = 6,
+                    DropRate = 0.20,
+                    Value = 1000000,
+                    MaxDurability = 5000,
+                    Name = "Dark Necklace",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.Necklace,
+                    ScriptName = "Necklace"
+                };
+
+                GlobalItemTemplateCache["Elemental Band"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    Color = ItemColor.defaultgreen,
+                    OffenseElement = ElementManager.Element.Random,
+                    DisplayImage = 0x8820,
+                    Image = 0x0820,
+                    LevelRequired = 6,
+                    DropRate = 0.02,
+                    Value = 100000000,
+                    MaxDurability = 5000,
+                    Name = "Elemental Band",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.Necklace,
+                    ScriptName = "Necklace",
+                };
+
+                GlobalItemTemplateCache["Black Pearl Ring"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    AcModifer = new StatusOperator(StatusOperator.Operator.Remove, 5),
+                    StrModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                    ConModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                    DexModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                    IntModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                    WisModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                    HitModifer = new StatusOperator(StatusOperator.Operator.Add, 5),
+                    DmgModifer = new StatusOperator(StatusOperator.Operator.Add, 5),
+                    HealthModifer = new StatusOperator(StatusOperator.Operator.Add, 2000),
+                    ManaModifer   = new StatusOperator(StatusOperator.Operator.Add, 2000),
+                    DisplayImage = 0x829E,
+                    Image = 0x029E,
+                    LevelRequired = 99,
+                    DropRate = 0.05,
+                    Value = 20000000,
+                    MaxDurability = 5000,
+                    Name = "Black Pearl Ring",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.LHand,
+                    ScriptName = "Ring"
+                };
+
                 return false;
             });
 

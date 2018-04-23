@@ -19,6 +19,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading;
+using static Darkages.Types.ElementManager;
 
 namespace Darkages.Common
 {

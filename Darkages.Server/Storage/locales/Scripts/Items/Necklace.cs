@@ -31,9 +31,12 @@ namespace Darkages.Storage.locales.Scripts.Items
         public override void Equipped(Sprite sprite, byte displayslot)
         {
             if (Item.Template.Flags.HasFlag(ItemFlags.Elemental))
+            {
                 if (Item.OffenseElement != Element.None)
-                    sprite.OffenseElement = Item.Template.OffenseElement;
-
+                {
+                    sprite.OffenseElement = Sprite.CheckRandomElement(Item.Template.OffenseElement);
+                }
+            }
             Item.ApplyModifers((sprite as Aisling).Client);
             (sprite as Aisling).Client.SendStats(StatusFlags.StructD);
         }

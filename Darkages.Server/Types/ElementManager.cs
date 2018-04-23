@@ -27,7 +27,8 @@ namespace Darkages.Types
             Wind = 0x03,
             Earth = 0x04,
             Light = 0x05,
-            Dark = 0x06
+            Dark = 0x06,
+            Random = 0x07
         }
     }
 }

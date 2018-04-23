@@ -407,10 +407,26 @@ namespace Darkages.Types
             Element element,
             byte sound = 1)
         {
+            element = CheckRandomElement(element);
+
             var saved = source.OffenseElement;
             source.OffenseElement = element;
             ApplyDamage(source, dmg, false, sound, null);
             source.OffenseElement = saved;
+        }
+
+        public static Element CheckRandomElement(Element element)
+        {
+            if (element == Element.Random)
+            {
+                element = Generator.RandomEnumValue<Element>();
+                while (element == Element.Random)
+                {
+                    element = Generator.RandomEnumValue<Element>();
+                }
+            }
+
+            return element;
         }
 
         public void ApplyDamage(Sprite Source, int dmg,
@@ -548,28 +564,32 @@ namespace Darkages.Types
 
             if (Source.OffenseElement != Element.None)
             {
-                amplifier = CalcaluteElementalAmplifier(Source.OffenseElement, amplifier);
+                var element = CheckRandomElement(Source.OffenseElement);
+
+                amplifier = CalcaluteElementalAmplifier(element, amplifier);
                 amplifier *=
                       Amplified == 1 ? ServerContext.Config.FasNadurStrength :
                       Amplified == 2 ? ServerContext.Config.MorFasNadurStrength : 1.00;
+
+                if (element == Element.None && DefenseElement != Element.None)
+                {
+                    amplifier = 0.25;
+                }
+
+                if (DefenseElement == Element.None && element != Element.None)
+                {
+                    return 1.75;
+                }
+
+                if (DefenseElement == Element.None && element == Element.None)
+                {
+                    return 1.00;
+                }
+
+                return amplifier;
             }
 
-            if (Source.OffenseElement == Element.None && DefenseElement != Element.None)
-            {
-                amplifier = 0.25;
-            }
-
-            if (DefenseElement == Element.None && Source.OffenseElement != Element.None)
-            {
-                return 1.75;
-            }
-
-            if (DefenseElement == Element.None && Source.OffenseElement == Element.None)
-            {
-                return 1.00;
-            }
-
-            return amplifier;
+            return 0.20;
         }
 
         public bool CanAcceptTarget(Sprite source)
@@ -707,7 +727,7 @@ namespace Darkages.Types
                 if (DefenseElement == Element.Light)
                     amplifier = 1.75;
                 else
-                    amplifier = 0.25;
+                    amplifier = 0.20;
 
                 return amplifier;
             }

@@ -24,7 +24,7 @@
   "DeathFreeLevelCap": 11,
   "DeathHPPenalty": 50,
   "DeathMap": 88888,
-  "DebugMode": false,
+  "DebugMode": true,
   "DefaultItemColor": 13,
   "DefaultItemDurability": 1000,
   "DefaultItemValue": 500,
@@ -34,7 +34,6 @@
   "DontTurnDuringRefresh": false,
   "DropDecayInSeconds": 120.0,
   "ERRORCAP": 5,
-  "FRAMES": 30,
   "GlobalBaseSkillDelay": 650.0,
   "GlobalSpawnTimer": 1000.0,
   "GroupRequestDeclinedMsg": "noname does not wish to join your group.",
@@ -105,5 +104,8 @@
   "MorFasNadurStrength": 4.5,
   "CantAttack": "Can't Attack.",
   "TimeOutValue": 45,
-  "PortalTimeOut": 10.0
+  "PortalTimeOut": 10.0,
+  "CancelWalkingIfRefreshing": true,
+  "SkullLength": 10,
+  "GroupExpBonus": 5.0
 }
