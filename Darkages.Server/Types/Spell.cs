@@ -124,6 +124,14 @@ namespace Darkages.Types
             return true;
         }
 
+        public bool RollDice(Random rand)
+        {
+            if (Level < 50)
+                return rand.Next(1, 101) < 50;
+
+            return rand.Next(1, 101) < Level;
+        }
+
         public static bool GiveTo(Aisling Aisling, string spellname, int level = 100)
         {
             var spellTemplate = ServerContext.GlobalSpellTemplateCache[spellname];

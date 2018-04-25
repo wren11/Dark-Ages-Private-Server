@@ -2,7 +2,7 @@
   "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
   "Icon": 53,
   "MaxLevel": 100,
-  "ScriptKey": "dion",
+  "ScriptKey": "mor dion",
   "MinLines": 0,
   "MaxLines": 9,
   "ManaCost": 100,

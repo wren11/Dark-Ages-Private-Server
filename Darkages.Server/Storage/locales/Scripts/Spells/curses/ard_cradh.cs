@@ -162,7 +162,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     sprite.CurrentMp = 0;
             }
 
-            if (rand.Next(0, 100) > target.Mr)
+            if (rand.Next(30, 100) > target.Mr)
                 OnSuccess(sprite, target);
             else
                 OnFailed(sprite, target);

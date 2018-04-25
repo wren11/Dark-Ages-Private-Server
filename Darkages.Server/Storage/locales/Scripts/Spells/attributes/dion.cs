@@ -28,6 +28,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
     public class dion : SpellScript
     {
         private readonly Random rand = new Random();
+        private readonly buff_dion Buff = new buff_dion();
 
         public dion(Spell spell) : base(spell)
         {
@@ -47,7 +48,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                var buff = Clone<buff_dion>(Spell.Template.Buff);
+                var buff = Clone<buff_dion>(Buff);
 
                 client.TrainSpell(Spell);
 
@@ -105,7 +106,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                var buff = Clone<buff_dion>(Spell.Template.Buff);
+                var buff = Clone<buff_dion>(Buff);
 
                 if (!sprite.HasBuff(buff.Name))
                 {

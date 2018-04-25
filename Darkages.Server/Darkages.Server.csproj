@@ -388,6 +388,12 @@
     <Compile Include="Storage\locales\Scripts\Spells\affilictions\ardpuinsein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\affilictions\morpuinsein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\affilictions\puinsein.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\cures\aosuain.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\cures\aobeagcradh.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Storage\locales\Scripts\Spells\elemental\aoe_Spells.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\curses\ard_cradh.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\attributes\armachd.cs" />

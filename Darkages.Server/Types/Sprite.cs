@@ -116,23 +116,23 @@ namespace Darkages.Types
 
         public byte _Hit { get; set; }
 
-        [JsonIgnore] public byte Str => (byte)(_Str + BonusStr);
+        [JsonIgnore] public byte Str => (byte)(Extensions.Clamp(_Str + BonusStr, 1, byte.MaxValue));
 
-        [JsonIgnore] public byte Int => (byte)(_Int + BonusInt);
+        [JsonIgnore] public byte Int => (byte)(Extensions.Clamp(_Int + BonusInt, 1, byte.MaxValue));
 
-        [JsonIgnore] public byte Wis => (byte)(_Wis + BonusWis);
+        [JsonIgnore] public byte Wis => (byte)(Extensions.Clamp(_Wis + BonusWis, 1, byte.MaxValue));
 
-        [JsonIgnore] public byte Con => (byte)(_Con + BonusCon);
+        [JsonIgnore] public byte Con => (byte)(Extensions.Clamp(_Con + BonusCon, 1, byte.MaxValue));
 
-        [JsonIgnore] public byte Dex => (byte)(_Dex + BonusDex);
+        [JsonIgnore] public byte Dex => (byte)(Extensions.Clamp(_Dex + BonusDex, 1, byte.MaxValue));
 
         [JsonIgnore] public int Ac => ((int)(BonusAc)).Clamp(ServerContext.Config.MinAC, ServerContext.Config.MaxAC);
 
-        [JsonIgnore] public byte Mr => (byte)(_Mr + BonusMr);
+        [JsonIgnore] public byte Mr => (byte)(Extensions.Clamp(_Mr + BonusMr, 0, 70));
 
-        [JsonIgnore] public byte Dmg => (byte)(_Dmg + BonusDmg);
+        [JsonIgnore] public byte Dmg => (byte)(Extensions.Clamp(_Dmg + BonusDmg, 0, byte.MaxValue));
 
-        [JsonIgnore] public byte Hit => (byte)(_Hit + BonusHit);
+        [JsonIgnore] public byte Hit => (byte)(Extensions.Clamp(_Hit + BonusHit, 0, byte.MaxValue));
 
         [JsonIgnore] public byte BonusStr { get; set; }
 

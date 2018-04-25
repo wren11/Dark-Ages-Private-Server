@@ -20,7 +20,6 @@ using Darkages.Scripting;
 using Darkages.Storage.locales.Buffs;
 using Darkages.Types;
 using System;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Spells
 {
@@ -28,6 +27,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
     public class mordion : SpellScript
     {
         private readonly Random rand = new Random();
+        private readonly buff_mordion Buff = new buff_mordion();
+
 
         public mordion(Spell spell) : base(spell)
         {
@@ -47,7 +48,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                var buff = Clone<buff_mordion>(Spell.Template.Buff);
+                var buff   = Clone<buff_mordion>(Buff);
 
                 client.TrainSpell(Spell);
 
@@ -100,12 +101,11 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 }
 
-
                 client.SendStats(StatusFlags.StructB);
             }
             else
             {
-                var buff = Clone<buff_mordion>(Spell.Template.Buff);
+                var buff = Clone<buff_mordion>(Buff);
 
                 if (!sprite.HasBuff(buff.Name))
                 {

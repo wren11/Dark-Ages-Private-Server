@@ -22,6 +22,7 @@ using Darkages.Scripting;
 using Darkages.Scripting.Scripts.Skills;
 using Darkages.Security;
 using Darkages.Storage;
+using Darkages.Storage.locales.debuffs;
 using Darkages.Storage.locales.Scripts.Mundanes;
 using Darkages.Types;
 using System;
@@ -592,7 +593,14 @@ namespace Darkages.Network.Game
 
             try
             {
-                if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
+                var spellReq = client.Aisling.
+                     SpellBook.Get(i => i != null && i.Slot == format.Index).FirstOrDefault();
+
+                if (spellReq == null)
+                    return;
+
+                if (client.Aisling.IsSleeping || 
+                     (client.Aisling.IsFrozen && !(spellReq.Template.Name == "ao suain")))
                 {
                     CancelIfCasting(client);
                     return;

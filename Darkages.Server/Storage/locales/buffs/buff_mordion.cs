@@ -26,7 +26,7 @@ namespace Darkages.Storage.locales.Buffs
         /// </summary>
         public override string Name => "mor dion";
 
-        public override int Length => 15;
+        public override int Length => 18;
         public override byte Icon => 53;
 
         public override void OnApplied(Sprite Affected, Buff buff)

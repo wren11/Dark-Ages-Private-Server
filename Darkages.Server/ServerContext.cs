@@ -19,6 +19,7 @@ using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Storage;
+using Darkages.Storage.locales.Buffs;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
@@ -309,7 +310,7 @@ namespace Darkages
                     Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
                     Gender = Gender.Both,
                     EquipmentSlot = ItemSlots.Necklace,
-                    ScriptName = "Necklace"                     
+                    ScriptName = "Necklace"
                 };
 
                 GlobalItemTemplateCache["Fire Necklace"] = new ItemTemplate()
@@ -433,7 +434,7 @@ namespace Darkages
                     HitModifer = new StatusOperator(StatusOperator.Operator.Add, 5),
                     DmgModifer = new StatusOperator(StatusOperator.Operator.Add, 5),
                     HealthModifer = new StatusOperator(StatusOperator.Operator.Add, 2000),
-                    ManaModifer   = new StatusOperator(StatusOperator.Operator.Add, 2000),
+                    ManaModifer = new StatusOperator(StatusOperator.Operator.Add, 2000),
                     DisplayImage = 0x829E,
                     Image = 0x029E,
                     LevelRequired = 99,
@@ -447,6 +448,51 @@ namespace Darkages
                     EquipmentSlot = ItemSlots.LHand,
                     ScriptName = "Ring"
                 };
+
+
+                GlobalSpellTemplateCache["ao beag cradh"]
+                 = new SpellTemplate()
+                 {
+                     Animation = 39,
+                     BaseLines = 2,
+                     Icon = 23,
+                     LevelRate = 0.20,
+                     ManaCost = 40,
+                     MaxLevel = 100,
+                     Name = "ao beag cradh",
+                     NpcKey = "Etaen",
+                     MinLines = 0,
+                     Pane = Pane.Spells,
+                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                     MaxLines = 3,
+                     TierLevel = Tier.Tier1,
+                     Sound = 8,
+                     ScriptKey = "ao beag cradh"
+                 };
+
+                GlobalSpellTemplateCache["ao suain"]
+                 = new SpellTemplate()
+                 {
+                     Animation = 2,
+                     BaseLines = 2,
+                     Icon = 51,
+                     LevelRate = 0.20,
+                     ManaCost = 40,
+                     MaxLevel = 100,
+                     Name = "ao suain",
+                     NpcKey = "Etaen",
+                     MinLines = 0,
+                     Pane = Pane.Spells,
+                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                     MaxLines = 3,
+                     TierLevel = Tier.Tier1,
+                     Sound = 8,
+                     ScriptKey = "ao suain"
+                 };
+
+                GlobalSpellTemplateCache["dion"].Buff = new buff_dion();
+                GlobalSpellTemplateCache["mor dion"].Buff = new buff_mordion();
+
 
                 return false;
             });
