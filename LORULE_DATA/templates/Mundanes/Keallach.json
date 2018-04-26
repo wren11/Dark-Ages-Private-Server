@@ -1,0 +1,21 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "Image": 0x405D,
+  "Level": 3,
+  "ScriptKey": "Combat Trainer 1",
+  "EnableWalking": false,
+  "EnableTurning": false,
+  "EnableAttacking": false,
+  "EnableSpeech": false,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": []
+  },
+  "X": 5,
+  "Y": 5,
+  "AreaID": 1012,
+  "Direction": 3,
+  "MaximumHp": 5000,
+  "MaximumMp": 2000,
+  "Name": "Keallach"
+}

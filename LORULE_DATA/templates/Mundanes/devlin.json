@@ -1,0 +1,21 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "Image": 0x402A,
+  "Level": 99,
+  "ScriptKey": "The Grand Master",
+  "EnableWalking": false,
+  "EnableTurning": false,
+  "EnableAttacking": false,
+  "EnableSpeech": false,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": []
+  },
+  "X": 5,
+  "Y": 2,
+  "AreaID": 1011,
+  "Direction": 3,
+  "MaximumHp": 5000,
+  "MaximumMp": 2000,
+  "Name": "Devlin"
+}
