@@ -19,6 +19,7 @@ using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
+using Darkages.Storage;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
@@ -632,25 +633,31 @@ namespace Darkages.Types
             if (Owner == null)
                 return null;
 
+            var template =
+                (ItemTemplate)StorageManager.ItemBucket.LoadFromStorage(itemtemplate);
+
+            if (template == null)
+                return null;
+
             var obj = new Item
             {
                 AbandonedDate = DateTime.UtcNow,
                 CreationDate = DateTime.UtcNow,
-                Template = itemtemplate,
+                Template = template,
                 X = Owner.X,
                 Y = Owner.Y,
-                Image = itemtemplate.Image,
-                DisplayImage = itemtemplate.DisplayImage,
+                Image = template.Image,
+                DisplayImage = template.DisplayImage,
                 CurrentMapId = Owner.CurrentMapId,
                 Cursed = curse,
                 Owner = (uint)Owner.Serial,
-                Durability = itemtemplate.MaxDurability,
-                OffenseElement = itemtemplate.OffenseElement,
-                DefenseElement = itemtemplate.DefenseElement
+                Durability = template.MaxDurability,
+                OffenseElement = template.OffenseElement,
+                DefenseElement = template.DefenseElement
             };
 
             if (obj.Template == null)
-                obj.Template = itemtemplate;
+                obj.Template = template;
 
             obj.Warnings = new[] { false, false, false };
 
@@ -683,95 +690,153 @@ namespace Darkages.Types
                 obj.Serial = Generator.GenerateNumber();
             }
 
-            obj.Script = ScriptManager.Load<ItemScript>(itemtemplate.ScriptName, obj);
+            obj.Script = ScriptManager.Load<ItemScript>(template.ScriptName, obj);
 
             return obj;
         }
 
         public static void ApplyQuality(Item obj)
         {
-            if (obj.Upgrades > 0)
+            try
             {
-                if (obj.Template.AcModifer != null)
+                if (obj.Template == null)
+                    return;
+
+                lock (ServerContext.SyncObj)
                 {
-                    if (obj.Template.AcModifer.Option == StatusOperator.Operator.Remove)
+
+                    var template = (ItemTemplate)StorageManager.ItemBucket.LoadFromStorage(obj.Template);
+                    if (template == null)
+                        return;
+
+
+                    obj.Template = new ItemTemplate();
+                    obj.Template.AcModifer = template.AcModifer;
+                    obj.Template.CanStack = template.CanStack;
+                    obj.Template.CarryWeight = template.CarryWeight;
+                    obj.Template.Class = template.Class;
+                    obj.Template.Color = template.Color;
+                    obj.Template.ConModifer = template.ConModifer;
+                    obj.Template.DefenseElement = template.DefenseElement;
+                    obj.Template.DexModifer = template.DexModifer;
+                    obj.Template.DisplayImage = template.DisplayImage;
+                    obj.Template.DmgMax = template.DmgMax;
+                    obj.Template.DmgMin = template.DmgMin;
+                    obj.Template.DmgModifer = template.DmgModifer;
+                    obj.Template.DropRate = template.DropRate;
+                    obj.Template.EquipmentSlot = template.EquipmentSlot;
+                    obj.Template.Flags = template.Flags;
+                    obj.Template.Gender = template.Gender;
+                    obj.Template.HasPants = template.HasPants;
+                    obj.Template.HealthModifer = template.HealthModifer;
+                    obj.Template.HitModifer = template.HitModifer;
+                    obj.Template.ID = template.ID;
+                    obj.Template.Image = template.Image;
+                    obj.Template.IntModifer = template.IntModifer;
+                    obj.Template.LevelRequired = template.LevelRequired;
+                    obj.Template.ManaModifer = template.ManaModifer;
+                    obj.Template.MaxDurability = template.MaxDurability;
+                    obj.Template.MaxStack = template.MaxStack;
+                    obj.Template.MrModifer = template.MrModifer;
+                    obj.Template.Name = template.Name;
+                    obj.Template.NpcKey = template.NpcKey;
+                    obj.Template.OffenseElement = template.OffenseElement;
+                    obj.Template.ScriptName = template.ScriptName;
+                    obj.Template.SpellOperator = template.SpellOperator;
+                    obj.Template.StageRequired = template.StageRequired;
+                    obj.Template.StrModifer = template.StrModifer;
+                    obj.Template.Value = template.Value;
+                    obj.Template.Weight = template.Weight;
+                    obj.Template.WisModifer = template.WisModifer;
+                }
+
+                if (obj.Upgrades > 0)
+                {
+                    if (obj.Template.AcModifer != null)
                     {
-                        obj.Template.AcModifer.Value -= -(obj.Upgrades);
+                        if (obj.Template.AcModifer.Option == StatusOperator.Operator.Remove)
+                        {
+                            obj.Template.AcModifer.Value -= -(obj.Upgrades);
+                        }
                     }
+
+                    if (obj.Template.MrModifer != null)
+                    {
+                        if (obj.Template.MrModifer.Option == StatusOperator.Operator.Add)
+                            obj.Template.MrModifer.Value += (obj.Upgrades * 10);
+                    }
+
+                    if (obj.Template.HealthModifer != null)
+                    {
+                        if (obj.Template.HealthModifer.Option == StatusOperator.Operator.Add)
+                            obj.Template.HealthModifer.Value += (500 * obj.Upgrades);
+                    }
+
+                    if (obj.Template.ManaModifer != null)
+                    {
+                        if (obj.Template.ManaModifer.Option == StatusOperator.Operator.Add)
+                            obj.Template.ManaModifer.Value += (300 * obj.Upgrades);
+                    }
+
+                    if (obj.Template.StrModifer != null)
+                    {
+                        if (obj.Template.StrModifer.Option == StatusOperator.Operator.Add)
+                            obj.Template.StrModifer.Value += obj.Upgrades;
+                    }
+
+                    if (obj.Template.IntModifer != null)
+                    {
+                        if (obj.Template.IntModifer.Option == StatusOperator.Operator.Add)
+                            obj.Template.IntModifer.Value += obj.Upgrades;
+                    }
+
+                    if (obj.Template.WisModifer != null)
+                    {
+                        if (obj.Template.WisModifer.Option == StatusOperator.Operator.Add)
+                            obj.Template.WisModifer.Value += obj.Upgrades;
+                    }
+                    if (obj.Template.ConModifer != null)
+                    {
+                        if (obj.Template.ConModifer.Option == StatusOperator.Operator.Add)
+                            obj.Template.ConModifer.Value += obj.Upgrades;
+                    }
+
+                    if (obj.Template.DexModifer != null)
+                    {
+                        if (obj.Template.DexModifer.Option == StatusOperator.Operator.Add)
+                            obj.Template.DexModifer.Value += obj.Upgrades;
+                    }
+
+                    if (obj.Template.DmgModifer != null)
+                    {
+                        if (obj.Template.DmgModifer.Option == StatusOperator.Operator.Add)
+                            obj.Template.DmgModifer.Value += obj.Upgrades;
+                    }
+
+                    if (obj.Template.HitModifer != null)
+                    {
+                        if (obj.Template.HitModifer.Option == StatusOperator.Operator.Add)
+                            obj.Template.HitModifer.Value += obj.Upgrades;
+                    }
+
+                    obj.Template.LevelRequired -= (byte)obj.Upgrades;
+                    obj.Template.Value *= (byte)obj.Upgrades;
+                    obj.Template.MaxDurability += (byte)(1500 * obj.Upgrades);
+                    obj.Template.DmgMax += (100 * obj.Upgrades);
+                    obj.Template.DmgMin += (20 * obj.Upgrades);
+
+
+                    if (obj.Template.LevelRequired <= 0 || obj.Template.LevelRequired > 99)
+                    {
+                        obj.Template.LevelRequired = 1;
+                    }
+
                 }
-
-                if (obj.Template.MrModifer != null)
-                {
-                    if (obj.Template.MrModifer.Option == StatusOperator.Operator.Add)
-                        obj.Template.MrModifer.Value += (obj.Upgrades * 10);
-                }
-
-                if (obj.Template.HealthModifer != null)
-                {
-                    if (obj.Template.HealthModifer.Option == StatusOperator.Operator.Add)
-                        obj.Template.HealthModifer.Value += (500 * obj.Upgrades);
-                }
-
-                if (obj.Template.ManaModifer != null)
-                {
-                    if (obj.Template.ManaModifer.Option == StatusOperator.Operator.Add)
-                        obj.Template.ManaModifer.Value += (300 * obj.Upgrades);
-                }
-
-                if (obj.Template.StrModifer != null)
-                {
-                    if (obj.Template.StrModifer.Option == StatusOperator.Operator.Add)
-                        obj.Template.StrModifer.Value += obj.Upgrades;
-                }
-
-                if (obj.Template.IntModifer != null)
-                {
-                    if (obj.Template.IntModifer.Option == StatusOperator.Operator.Add)
-                        obj.Template.IntModifer.Value += obj.Upgrades;
-                }
-
-                if (obj.Template.WisModifer != null)
-                {
-                    if (obj.Template.WisModifer.Option == StatusOperator.Operator.Add)
-                        obj.Template.WisModifer.Value += obj.Upgrades;
-                }
-                if (obj.Template.ConModifer != null)
-                {
-                    if (obj.Template.ConModifer.Option == StatusOperator.Operator.Add)
-                        obj.Template.ConModifer.Value += obj.Upgrades;
-                }
-
-                if (obj.Template.DexModifer != null)
-                {
-                    if (obj.Template.DexModifer.Option == StatusOperator.Operator.Add)
-                        obj.Template.DexModifer.Value += obj.Upgrades;
-                }
-
-                if (obj.Template.DmgModifer != null)
-                {
-                    if (obj.Template.DmgModifer.Option == StatusOperator.Operator.Add)
-                        obj.Template.DmgModifer.Value += obj.Upgrades;
-                }
-
-                if (obj.Template.HitModifer != null)
-                {
-                    if (obj.Template.HitModifer.Option == StatusOperator.Operator.Add)
-                        obj.Template.HitModifer.Value += obj.Upgrades;
-                }
-
-                obj.Template.LevelRequired -= (byte)obj.Upgrades;
-                obj.Template.Value *= (byte)obj.Upgrades;
-                obj.Template.MaxDurability += (byte)(1500 * obj.Upgrades);
-                obj.Template.DmgMax += (100 * obj.Upgrades);
-                obj.Template.DmgMin += (20 * obj.Upgrades);
-
-
-                if (obj.Template.LevelRequired <= 0 || obj.Template.LevelRequired > 99)
-                {
-                    obj.Template.LevelRequired = 1;
-                }
-
             }
+            catch (Exception err)
+            {
+                logger.Error(err, "Error: ItemAddQuality. Fatal Exception Raised.");
+            }            
         }
 
         public void Release(Sprite owner, Position position)

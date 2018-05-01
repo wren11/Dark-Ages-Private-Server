@@ -32,6 +32,9 @@ namespace Darkages.Types
         public SkillBook()
         {
             for (var i = 0; i < SKILLLENGTH; i++) Skills[i + 1] = null;
+
+            //this makes sure no skills are placed in the void slot.
+            Skills[36] = new Skill();
         }
 
 

@@ -2,22 +2,10 @@
 {=uLorule is a free to play Dark Ages Server. Game content for this server is still being added. and some fixes are being made as they popup.
 {=uWhy play here?
 {=aPlaying and supporting lorule will mean you are supporting Dark Ages.and that's the reason you are here. We know you love the game. so do we!. That's why Years of work went into developing this server. Playing here means you will be supporting the game. not the company. Remember, KRU did not make Dark Ages. Nexon Korea did. Nexon took away all alternative servers from us. SGDA, MYDA, Legends, US Shadows. Lorule is here to fill the void we have long since forgotten.
-{=bShow support for this project,
-{=btell ya mates to come test with you.
-{=aI was away for a month on Holidays. updates will pour in again.
-----------------------------------------------------------------
-~ Last Updated 17/04/2018 ~
-- Some minor fixes and improvements around the place.
-- Revised damage formulas again.
-- Adjusted Elemental Damage.
-- Armor merchants
-- Rudimentary AI Changes.
-- PathFinding AI Changes.
-- Some new npcs around the place.
-- Wiped characters again (sorry)
-- new characters start with spells/skills for testing.
-- Changed some NPC Dialog.
+{=cShow support for this project, tell ya mates.
+{=a----------------------------------------------------------------
+~ Last Updated 1/05/2018 ~
+- Continue plugging away. ALot of fixes with the current gameplay.
+- Please test and report any bugs to discord and i will fix`em all
 -----------------------------------------------------------------
-
-Please help and continue to report any bugs on discord.
-Welcome to the {=bDarker{=a Side of Dark Ages, Enter Lorule....
+Welcome to the {=bDarker{=a Side of Dark Ages, Press 'Ok' to Play.

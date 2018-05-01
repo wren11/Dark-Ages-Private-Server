@@ -149,7 +149,12 @@ namespace Darkages.Types
 
         public static void DistributeExperience(Aisling player, double exp)
         {
-            //=1000 * E7 * 10 /100
+            if (player.ExpLevel >= ServerContext.Config.PlayerLevelCap)
+            {
+                player.ExpLevel = 1;
+            }
+
+            //Formula BoilerPlate: 1000 * E7 * 10 /100
             var bonus = exp * player.GroupParty.LengthExcludingSelf * ServerContext.Config.GroupExpBonus / 100;
 
             if (bonus > 0)
@@ -162,13 +167,13 @@ namespace Darkages.Types
 
             var seed = (player.ExpLevel * 0.1) + 0.5;
 
-            while (player.ExpNext <= 0)
+            while (player.ExpNext <= 0 && player.ExpLevel < 99)
             {
                 player.ExpNext = (int)(player.ExpLevel * seed * 5000);
 
                 if (player.ExpLevel == 99)
                 {
-                    player.ExpNext += player.ExpTotal / 4;
+                    break;
                 }
 
                 if (player.ExpTotal <= 0)
@@ -191,9 +196,6 @@ namespace Darkages.Types
                     player.ExpNext = int.MaxValue;
                 }
 
-
-
-
                 Levelup(player);
             }
         }
@@ -203,6 +205,7 @@ namespace Darkages.Types
             player._MaximumHp += (int)(ServerContext.Config.HpGainFactor * player.Con * 0.65);
             player._MaximumMp += (int)(ServerContext.Config.MpGainFactor * player.Wis * 0.45);
             player.StatPoints += ServerContext.Config.StatsPerLevel;
+
             player.ExpLevel++;
 
             if (player.ExpLevel > 99)

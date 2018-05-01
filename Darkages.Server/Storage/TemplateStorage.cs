@@ -63,6 +63,17 @@ namespace Darkages.Storage
                 Directory.CreateDirectory(StoragePath);
         }
 
+
+        public Template LoadFromStorage(Template existing)
+        {
+            var template = StorageManager.ItemBucket.Load<ItemTemplate>(existing.Name);
+            if (template == null)
+                return null;
+
+            ServerContext.GlobalItemTemplateCache[template.Name] = template;
+            return template;
+        }
+
         public void CacheFromStorage()
         {
             var results = new List<T>();

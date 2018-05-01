@@ -356,6 +356,8 @@ namespace Darkages
 
         [JsonProperty] public double GroupExpBonus = 5.0;
 
+        [JsonProperty] public int PlayerLevelCap = 99;
+
         public override string ToString()
         {
             return StorageManager.Save(this)

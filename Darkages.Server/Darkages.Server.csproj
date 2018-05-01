@@ -267,6 +267,9 @@
     <Compile Include="Storage\locales\buffs\buff_armachd.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Storage\locales\buffs\buff_aite.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Storage\locales\buffs\buff_dion.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
@@ -385,33 +388,90 @@
     <Compile Include="Storage\locales\Scripts\Skills\Warrior\charge.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\wff.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\WindBlade.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\affilictions\ardpuinsein.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\affilictions\morpuinsein.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\affilictions\puinsein.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\affilictions\ardpuinsein.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\affilictions\morpuinsein.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\affilictions\puinsein.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\aite.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\cures\aopuinsein.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\cures\aoardcradh.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\cures\aomorcradh.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\cures\aocradh.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Storage\locales\Scripts\Spells\cures\aosuain.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Storage\locales\Scripts\Spells\cures\aobeagcradh.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Storage\locales\Scripts\Spells\elemental\aoe_Spells.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\curses\ard_cradh.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\attributes\armachd.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\heals\beagioc.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\heals\beagiocfein.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\affilictions\beagpuinsein.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\curses\beag_cradh.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\curses\cradh.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\utility\Create.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\attributes\dion.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\attributes\fasnadur.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\elemental\MassElementalSpell.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\attributes\mordion.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\attributes\morfasnadur.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\curses\mor_cradh.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\affilictions\pramh.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\elemental\SingleElementalSpell.cs" />
-    <Compile Include="Storage\locales\Scripts\Spells\elemental\wizard_Spells.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\elemental\aoe_Spells.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\curses\ard_cradh.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\armachd.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\heals\beagioc.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\heals\beagiocfein.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\affilictions\beagpuinsein.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\curses\beag_cradh.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\curses\cradh.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\utility\Create.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\dion.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\fasnadur.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\elemental\MassElementalSpell.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\mordion.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\morfasnadur.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\curses\mor_cradh.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\affilictions\pramh.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\elemental\SingleElementalSpell.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Storage\locales\Scripts\Spells\elemental\wizard_Spells.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Storage\StorageManager.cs" />
     <Compile Include="Storage\TemplateStorage.cs" />
     <Compile Include="Storage\WarpStorage.cs" />

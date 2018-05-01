@@ -1,6 +1,6 @@
 {
   "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
-  "Image": 16386,
+  "Image": 0x42AE,
   "Level": 99,
   "ScriptKey": "User Helper Menu",
   "EnableWalking": false,

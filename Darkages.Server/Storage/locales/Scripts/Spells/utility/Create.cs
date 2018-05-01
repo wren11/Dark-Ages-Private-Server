@@ -18,6 +18,7 @@
 using Darkages.Scripting;
 using Darkages.Types;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Spells
@@ -41,52 +42,66 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
         public override void OnUse(Sprite sprite, Sprite target)
         {
-            var spellArgs = Arguments;
-            var Upgrades = 0;
-
-            if (spellArgs == "die")
+            lock (ServerContext.SyncObj)
             {
-                sprite.CurrentHp = 0;
-            }
+                ServerContext.GlobalItemTemplateCache
+                    = new Dictionary<string, ItemTemplate>();
 
-            if (spellArgs.ToLower().Contains("forsaken"))
-                Upgrades = 8;
-            if (spellArgs.ToLower().Contains("godly"))
-                Upgrades = 7;
-            if (spellArgs.ToLower().Contains("legendary"))
-                Upgrades = 6;
-            if (spellArgs.ToLower().Contains("epic"))
-                Upgrades = 5;
-            if (spellArgs.ToLower().Contains("rare"))
-                Upgrades = 4;
+                ServerContext.LoadItemTemplates();
 
-            if (Upgrades > 0)
-            {
-                spellArgs = spellArgs.ToLower().Replace("godly", string.Empty);
-                spellArgs = spellArgs.ToLower().Replace("legendary", string.Empty);
-                spellArgs = spellArgs.ToLower().Replace("epic", string.Empty);
-                spellArgs = spellArgs.ToLower().Replace("rare", string.Empty);
-                spellArgs = spellArgs.ToLower().Replace("forsaken", string.Empty);
-            }
 
-            spellArgs = spellArgs.Trim();
+                var spellArgs = Arguments;
+                var Upgrades = 0;
 
-            if (!string.IsNullOrEmpty(spellArgs))
-            {
-                var exists = ServerContext.GlobalItemTemplateCache.Keys.FirstOrDefault(i
-                    => i.Equals(spellArgs, StringComparison.OrdinalIgnoreCase));
-
-                if (exists != null)
+                if (spellArgs == "die")
                 {
-                    var template = ServerContext.GlobalItemTemplateCache[exists];
-                    var offset = template.DisplayImage - 0x8000;
-                    var item = Item.Create(sprite, template, false);
-                    {
-                        item.Upgrades = Upgrades;
-                    }
+                    sprite.CurrentHp = 0;
+                }
 
-                    Item.ApplyQuality(item);
-                    item.Release(sprite, sprite.Position);
+                if (spellArgs == "+hit")
+                {
+                    sprite._Hit += 10;                    
+                }
+
+                if (spellArgs.ToLower().Contains("forsaken"))
+                    Upgrades = 8;
+                if (spellArgs.ToLower().Contains("godly"))
+                    Upgrades = 7;
+                if (spellArgs.ToLower().Contains("legendary"))
+                    Upgrades = 6;
+                if (spellArgs.ToLower().Contains("epic"))
+                    Upgrades = 5;
+                if (spellArgs.ToLower().Contains("rare"))
+                    Upgrades = 4;
+
+                if (Upgrades > 0)
+                {
+                    spellArgs = spellArgs.ToLower().Replace("godly", string.Empty);
+                    spellArgs = spellArgs.ToLower().Replace("legendary", string.Empty);
+                    spellArgs = spellArgs.ToLower().Replace("epic", string.Empty);
+                    spellArgs = spellArgs.ToLower().Replace("rare", string.Empty);
+                    spellArgs = spellArgs.ToLower().Replace("forsaken", string.Empty);
+                }
+
+                spellArgs = spellArgs.Trim();
+
+                if (!string.IsNullOrEmpty(spellArgs))
+                {
+                    var exists = ServerContext.GlobalItemTemplateCache.Keys.FirstOrDefault(i
+                        => i.Equals(spellArgs, StringComparison.OrdinalIgnoreCase));
+
+                    if (exists != null)
+                    {
+                        var template = ServerContext.GlobalItemTemplateCache[exists];
+                        var offset = template.DisplayImage - 0x8000;
+                        var item = Item.Create(sprite, template, false);
+                        {
+                            item.Upgrades = Upgrades;
+                        }
+
+                        Item.ApplyQuality(item);
+                        item.Release(sprite, sprite.Position);
+                    }
                 }
             }
         }

@@ -15,59 +15,50 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Network.ServerFormats;
 using Darkages.Types;
 
 namespace Darkages.Storage.locales.Buffs
 {
-    public class buff_armachd : Buff
+    public class buff_aite : Buff
     {
-        public buff_armachd() : base()
-        {
-            Name = "armachd";
-            Length = 60;
-            Icon = 0;
-        }
+        /// <summary>
+        ///     This name MUST match and correspond the name in the type BUFF.
+        /// </summary>
+        public override string Name => "aite";
+        public override int  Length => 3000;
+        public override byte Icon  => 11;
 
-        public StatusOperator AcModifer => new StatusOperator(StatusOperator.Operator.Remove, 25);
+        public buff_aite()
+        {
+
+        }
 
         public override void OnApplied(Sprite Affected, Buff buff)
         {
-            if (AcModifer.Option == StatusOperator.Operator.Add)
-                Affected.BonusAc += (sbyte)AcModifer.Value;
-            else if (AcModifer.Option == StatusOperator.Operator.Remove)
-                Affected.BonusAc -= (sbyte)AcModifer.Value;
-
             if (Affected is Aisling)
-            {
                 (Affected as Aisling)
                     .Client
-                    .SendMessage(0x02, "Your armor has been increased.");
-                (Affected as Aisling)
-                        .Client.SendStats(StatusFlags.All);
-            }
+                    .SendMessage(0x02, "Aite! You are empowered. You glow like gold.");
+
             base.OnApplied(Affected, buff);
         }
 
         public override void OnDurationUpdate(Sprite Affected, Buff buff)
         {
+            Affected.Show(Scope.NearbyAislings, 
+                new ServerFormat29((uint)Affected.Serial,
+                (uint)Affected.Serial, 168, 168, 100));
+
             base.OnDurationUpdate(Affected, buff);
         }
 
         public override void OnEnded(Sprite Affected, Buff buff)
         {
-            if (AcModifer.Option == StatusOperator.Operator.Add)
-                Affected.BonusAc -= (sbyte)AcModifer.Value;
-            else if (AcModifer.Option == StatusOperator.Operator.Remove)
-                Affected.BonusAc += (sbyte)AcModifer.Value;
-
             if (Affected is Aisling)
-            {
                 (Affected as Aisling)
                     .Client
-                    .SendMessage(0x02, "Your armor returns to normal.");
-                (Affected as Aisling)
-                        .Client.SendStats(StatusFlags.All);
-            }
+                    .SendMessage(0x02, "Aite is gone. Your armor returns to normal.");
 
             base.OnEnded(Affected, buff);
         }

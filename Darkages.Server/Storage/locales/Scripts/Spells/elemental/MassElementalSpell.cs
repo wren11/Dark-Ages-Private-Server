@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Common;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
@@ -127,7 +128,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                     lock (rand)
                     {
-                        if (rand.Next(sprite.Hit * 5, 100) > t.Mr + (t.Position.DistanceFrom(sprite.Position) * 10))
+                        if (rand.Next(Extensions.Clamp(sprite.Hit * 5, 0, 100), 100) > t.Mr)
                         {
                             OnSuccess(sprite, t);
 

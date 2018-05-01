@@ -159,6 +159,7 @@ namespace Darkages.Types
         #endregion
 
         #region Status
+        [JsonIgnore] public bool IsAited => HasBuff("aite");
 
         [JsonIgnore] public bool IsSleeping => HasDebuff("sleep");
 
@@ -305,6 +306,15 @@ namespace Darkages.Types
                 return false;
 
             return Debuffs.Select(i => i.Value).FirstOrDefault(p) != null;
+        }
+
+        public string GetDebuffName(Func<Debuff, bool> p)
+        {
+            if (Debuffs == null || Debuffs.Count == 0)
+                return string.Empty;
+
+            return Debuffs.Select(i => i.Value)
+                .FirstOrDefault(p).Name;
         }
 
         public bool RemoveBuff(string buff)
@@ -537,6 +547,12 @@ namespace Darkages.Types
                         dmg <<= 1;
 
                     RemoveDebuff("sleep");
+
+                    //split damage by half, if aited.
+                    if (IsAited && dmg > 5)
+                    {
+                        dmg /= 3;
+                    }
 
                     double amplifier = GetElementalModifier(Source);
                     {

@@ -460,7 +460,7 @@ namespace Darkages
                      ManaCost = 40,
                      MaxLevel = 100,
                      Name = "ao beag cradh",
-                     NpcKey = "Etaen",
+                     NpcKey = "etaen",
                      MinLines = 0,
                      Pane = Pane.Spells,
                      TargetType = SpellTemplate.SpellUseType.ChooseTarget,
@@ -469,6 +469,68 @@ namespace Darkages
                      Sound = 8,
                      ScriptKey = "ao beag cradh"
                  };
+
+
+                GlobalSpellTemplateCache["ao cradh"]
+                 = new SpellTemplate()
+                 {
+                     Animation = 38,
+                     BaseLines = 2,
+                     Icon = 79,
+                     LevelRate = 0.20,
+                     ManaCost = 100,
+                     MaxLevel = 100,
+                     Name = "ao cradh",
+                     NpcKey = "etaen",
+                     MinLines = 0,
+                     Pane = Pane.Spells,
+                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                     MaxLines = 3,
+                     TierLevel = Tier.Tier1,
+                     Sound = 8,
+                     ScriptKey = "ao cradh"
+                 };
+
+                GlobalSpellTemplateCache["ao mor cradh"]
+                 = new SpellTemplate()
+                 {
+                     Animation = 8,
+                     BaseLines = 2,
+                     Icon = 80,
+                     LevelRate = 0.20,
+                     ManaCost = 150,
+                     MaxLevel = 100,
+                     Name = "ao mor cradh",
+                     NpcKey = "dar",
+                     MinLines = 0,
+                     Pane = Pane.Spells,
+                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                     MaxLines = 3,
+                     TierLevel = Tier.Tier1,
+                     Sound = 8,
+                     ScriptKey = "ao mor cradh"
+                 };
+
+                GlobalSpellTemplateCache["ao ard cradh"]
+                 = new SpellTemplate()
+                 {
+                     Animation = 37,
+                     BaseLines = 2,
+                     Icon = 81,
+                     LevelRate = 0.30,
+                     ManaCost = 240,
+                     MaxLevel = 100,
+                     Name = "ao ard cradh",
+                     NpcKey = "dar",
+                     MinLines = 0,
+                     Pane = Pane.Spells,
+                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                     MaxLines = 3,
+                     TierLevel = Tier.Tier1,
+                     Sound = 8,
+                     ScriptKey = "ao ard cradh"
+                 };
+
 
                 GlobalSpellTemplateCache["ao suain"]
                  = new SpellTemplate()
@@ -480,7 +542,7 @@ namespace Darkages
                      ManaCost = 40,
                      MaxLevel = 100,
                      Name = "ao suain",
-                     NpcKey = "Etaen",
+                     NpcKey = "etaen",
                      MinLines = 0,
                      Pane = Pane.Spells,
                      TargetType = SpellTemplate.SpellUseType.ChooseTarget,
@@ -488,6 +550,47 @@ namespace Darkages
                      TierLevel = Tier.Tier1,
                      Sound = 8,
                      ScriptKey = "ao suain"
+                 };
+
+                GlobalSpellTemplateCache["ao puinsein"]
+                    = new SpellTemplate()
+                    {
+                        Animation = 279,
+                        BaseLines = 1,
+                        Icon = 24,
+                        LevelRate = 0.20,
+                        ManaCost = 30,
+                        MaxLevel = 100,
+                        Name = "ao puinsein",
+                        NpcKey = "etaen",
+                        MinLines = 0,
+                        Pane = Pane.Spells,
+                        TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                        MaxLines = 2,
+                        TierLevel = Tier.Tier1,
+                        Sound = 8,
+                        ScriptKey = "ao puinsein"
+                    };
+
+                GlobalSpellTemplateCache["ia naomh aite"]
+                 = new SpellTemplate()
+                 {
+                     Animation = 383,
+                     BaseLines = 4,
+                     Icon = 11,
+                     LevelRate = 1.50,
+                     ManaCost = 500,
+                     MaxLevel = 100,
+                     Name = "ia naomh aite",
+                     NpcKey = "etaen",
+                     MinLines = 1,
+                     Pane = Pane.Spells,
+                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                     MaxLines = 4,
+                     TierLevel = Tier.Tier1,
+                     Sound = 8,
+                     ScriptKey = "aite",
+                     Buff = new buff_aite()
                  };
 
                 GlobalSpellTemplateCache["dion"].Buff = new buff_dion();

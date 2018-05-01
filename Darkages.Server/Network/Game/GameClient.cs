@@ -504,6 +504,9 @@ namespace Darkages.Network.Game
                         var template = ServerContext.GlobalItemTemplateCache[equipment.Item.Template.Name];
                         {
                             item.Value.Item.Template = template;
+
+                            if (item.Value.Item.Upgrades > 0)
+                                Item.ApplyQuality(item.Value.Item);
                         }
                     }
                 }
@@ -536,7 +539,7 @@ namespace Darkages.Network.Game
                     for (var i = 0; i < Aisling.SpellBook.Spells.Count; i++)
                     {
                         var spell = Aisling.SpellBook.FindInSlot(i);
-                        if (spell != null)
+                        if (spell != null && spell.Template != null)
                             equipment.Item.UpdateSpellSlot(this, spell.Slot);
                     }
             }
@@ -642,6 +645,9 @@ namespace Darkages.Network.Game
                     {
                         item.Template = template;
                     }
+
+                    if (item.Upgrades > 0)
+                        Item.ApplyQuality(item);
                 }
 
                 if (item.Template != null)

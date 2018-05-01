@@ -1406,8 +1406,22 @@ namespace Darkages.Network.Game
 
 
             var skill = client.Aisling.SkillBook.Get(i => i.Slot == format.Index).FirstOrDefault();
-            if (skill?.Template == null || skill.Script == null) return;
+            if (skill?.Template == null || skill.Script == null)
+                return;
 
+            if (skill.Template.Type == SkillScope.Assail)
+            {
+                foreach (var assail in client.Aisling.GetAssails(SkillScope.Assail))
+                {
+                    if (assail == null || assail.Template == null)
+                        continue;
+
+                    if (assail.Template.Name == skill.Template.Name)
+                        continue;
+
+                    assail.NextAvailableUse = DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
+                }
+            }
 
             if (!skill.CanUse())
                 return;

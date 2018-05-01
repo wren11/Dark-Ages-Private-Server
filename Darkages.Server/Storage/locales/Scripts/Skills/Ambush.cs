@@ -126,7 +126,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 {
                     client.TrainSkill(Skill);
 
-                    var success = Skill.RollDice(rand);
+                    var success = Skill.Level < 100 ? rand.Next(1, 3) == 1 : true;
 
                     if (success)
                         OnSuccess(sprite);

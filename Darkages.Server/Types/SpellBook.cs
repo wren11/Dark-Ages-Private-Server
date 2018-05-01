@@ -32,6 +32,9 @@ namespace Darkages.Types
         public SpellBook()
         {
             for (var i = 0; i < SPELLLENGTH; i++) Spells[i + 1] = null;
+
+            //this makes sure no spell is placed in the void slot.
+            Spells[36] = new Spell();
         }
 
 
