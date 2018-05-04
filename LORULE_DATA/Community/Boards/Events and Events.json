@@ -1,0 +1,28 @@
+{
+  "Posts": [
+    {
+      "Owner": "lol",
+      "TopicId": 2931,
+      "PostId": 1,
+      "BoardId": 2,
+      "Read": false,
+      "DatePosted": "2018-01-16T15:26:51.5340336Z",
+      "Sender": "lol",
+      "Message": "events.",
+      "Recipient": null,
+      "Subject": "some event.",
+      "Command": 49,
+      "Secured": true,
+      "Delay": 0,
+      "Throttle": false
+    }
+  ],
+  "Secured": true,
+  "Command": 49,
+  "Index": 2,
+  "IsMail": false,
+  "Subject": "Events and Events",
+  "LetterId": 2,
+  "Delay": 0,
+  "Throttle": false
+}
