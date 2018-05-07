@@ -36,6 +36,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
         {
         }
 
+
         public override void OnUse(Sprite sprite, Sprite target)
         {
             if (target is Aisling && sprite is Aisling)
@@ -47,13 +48,13 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                     var action = new ServerFormat1A
                     {
-                        Serial = target.Serial,
-                        Number = 0x80,
+                        Serial = sprite.Serial,
+                        Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                         Speed = 30
                     };
 
                     sprite.CurrentMp -= Spell.Template.ManaCost;
-                    target.CurrentHp += (200 * ((Spell.Level + sprite.Wis) + 26));
+                    target.CurrentHp += (200 + ((Spell.Level + sprite.Wis) * 26));
 
                     if (target.CurrentHp > target.MaximumHp)
                         target.CurrentHp = target.MaximumHp;

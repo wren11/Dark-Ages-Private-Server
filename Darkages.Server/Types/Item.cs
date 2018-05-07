@@ -431,7 +431,7 @@ namespace Darkages.Types
                 {
                     var spell = client.Aisling.SpellBook.FindInSlot(i);
 
-                    if (spell == null)
+                    if (spell == null || spell.Template == null)
                         continue;
 
                     if (op.Option == SpellOperator.SpellOperatorPolicy.Decrease)

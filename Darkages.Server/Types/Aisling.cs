@@ -324,7 +324,7 @@ namespace Darkages
                 if (ServerContext.GlobalSkillTemplateCache[skill].Pane == Pane.Tools)
                     continue;
 
-                Skill.GiveTo(result, skill, 1);
+                Skill.GiveTo(result, skill, 100);
             }
             foreach (var skill in ServerContext.GlobalSkillTemplateCache.Keys)
             {
@@ -339,7 +339,7 @@ namespace Darkages
                 if (ServerContext.GlobalSpellTemplateCache[spell].Pane == Pane.Tools)
                     continue;
 
-                Spell.GiveTo(result, spell, 1);
+                Spell.GiveTo(result, spell, 100);
             }
             idx = 1;
             foreach (var spell in ServerContext.GlobalSpellTemplateCache.Keys)
@@ -359,6 +359,37 @@ namespace Darkages
                     Color = (byte)LegendColor.DarkPurple,
                     Icon = (byte)LegendIcon.Victory,
                     Value = string.Format("Aisling Age of Aquarius")
+                });
+            }
+
+            if (result.Nation == 1)
+            {
+                result.LegendBook.AddLegend(new Legend.LegendItem
+                {
+                    Category = "Event",
+                    Color = (byte)LegendColor.Orange,
+                    Icon = (byte)LegendIcon.Community,
+                    Value = string.Format("Lorule Citizen")
+                });
+            }
+            else if (result.Nation == 2)
+            {
+                result.LegendBook.AddLegend(new Legend.LegendItem
+                {
+                    Category = "Event",
+                    Color = (byte)LegendColor.LightGreen,
+                    Icon = (byte)LegendIcon.Community,
+                    Value = string.Format("Lividia Citizen")
+                });
+            }
+            else if (result.Nation == 3)
+            {
+                result.LegendBook.AddLegend(new Legend.LegendItem
+                {
+                    Category = "Event",
+                    Color = (byte)LegendColor.Darkgreen,
+                    Icon = (byte)LegendIcon.Community,
+                    Value = string.Format("Amongst the Exile.")
                 });
             }
 

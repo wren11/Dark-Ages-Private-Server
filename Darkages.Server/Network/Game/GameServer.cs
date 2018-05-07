@@ -144,8 +144,15 @@ namespace Darkages.Network.Game
         {
             lock (ServerContext.SyncObj)
             {
-                UpdateClients(elapsedTime);
-                UpdateAreas(elapsedTime);
+                try
+                {
+                    UpdateClients(elapsedTime);
+                    UpdateAreas(elapsedTime);
+                }
+                catch (Exception err)
+                {
+                    logger.Error(err, "Fatal Error: ExecuteClientWork");
+                }
             }
         }
 
@@ -153,7 +160,14 @@ namespace Darkages.Network.Game
         {
             lock (Clients)
             {
-                UpdateComponents(elapsedTime);
+                try
+                {
+                    UpdateComponents(elapsedTime);
+                }
+                catch (Exception err)
+                {
+                    logger.Error(err, "Fatal Error: ExecuteServerWork");
+                }
             }
         }
 
@@ -219,13 +233,13 @@ namespace Darkages.Network.Game
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception err)
                 {
-                    //ignore
+                    logger.Error(err, "Fatal Error: UpdateConnectedClients");
                 }
                 finally
                 {
-                    Thread.Sleep(10);
+                    Thread.Sleep(100);
                 }
             }
         }

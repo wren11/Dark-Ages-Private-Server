@@ -76,11 +76,10 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                         var action = new ServerFormat1A
                         {
-                            Serial = client.Aisling.Serial,
-                            Number = 0x80,
+                            Serial = sprite.Serial,
+                            Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                             Speed = 30
                         };
-
                         var hpbar = new ServerFormat13
                         {
                             Serial = sprite.Serial,

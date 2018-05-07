@@ -122,12 +122,12 @@ namespace Darkages.Types
             return true;
         }
 
-        public static bool GiveTo(Aisling aisling, string args, byte slot)
+        public static bool GiveTo(Aisling aisling, string args, byte slot, int level = 1)
         {
             var skillTemplate = ServerContext.GlobalSkillTemplateCache[args];
             var skill = Create(slot, skillTemplate);
             {
-                skill.Level = 1;
+                skill.Level = level;
                 skill.Script = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
                 aisling.SkillBook.Assign(skill);
             }
@@ -145,7 +145,6 @@ namespace Darkages.Types
             var skill = Create(slot, skillTemplate);
             skill.Level = level;
             skill.Script = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
-            skill.Level = 1;
             aisling.SkillBook.Assign(skill);
             aisling.SkillBook.Set(skill, false);
             aisling.Show(Scope.Self, new ServerFormat2C(skill.Slot, skill.Icon, skill.Name));

@@ -1271,21 +1271,39 @@ namespace Darkages.Types
                 buff_Copy = new List<Buff>(Buffs.Values).ToArray();
             }
 
+            if (buff_Copy.Length == 0)
+                return;
+
             for (var i = 0; i < buff_Copy.Length; i++)
-                buff_Copy[i].Update(this, elapsedTime);
+            {
+                if (buff_Copy[i] != null)
+                    buff_Copy[i].Update(this, elapsedTime);
+            }
         }
 
         public void UpdateDebuffs(TimeSpan elapsedTime)
         {
             Debuff[] debuff_Copy;
 
+            if (Debuffs == null)
+                return;
+
+            if (Debuffs.Count == 0)
+                return;
+
             lock (Debuffs)
             {
                 debuff_Copy = new List<Debuff>(Debuffs.Values).ToArray();
             }
 
+            if (debuff_Copy.Length == 0)
+                return;
+
             for (var i = 0; i < debuff_Copy.Length; i++)
-                debuff_Copy[i].Update(this, elapsedTime);
+            {
+                if (debuff_Copy[i] != null)
+                    debuff_Copy[i].Update(this, elapsedTime);
+            }
         }
 
         /// <summary>

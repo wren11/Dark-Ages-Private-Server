@@ -237,11 +237,18 @@ namespace Darkages.Network.Game
 
             #endregion
 
-            StatusCheck();
-            Regeneration(elapsedTime);
-            UpdateStatusBar(elapsedTime);
-            UpdateGlobalScripts(elapsedTime);
-            HandleTimeOuts();
+            try
+            {
+                StatusCheck();
+                Regeneration(elapsedTime);
+                UpdateStatusBar(elapsedTime);
+                UpdateGlobalScripts(elapsedTime);
+                HandleTimeOuts();
+            }
+            catch (Exception err)
+            {
+                logger.Error(err, "Fatal Exception: Client Update.");
+            }
         }
 
         private void StatusCheck()
