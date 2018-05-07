@@ -255,6 +255,9 @@ namespace Darkages.Types
                     if (spell == null)
                         continue;
 
+                    if (spell.Template == null)
+                        continue;
+
                     spell.Lines = spell.Template.BaseLines;
 
                     if (spell.Lines > spell.Template.MaxLines)
@@ -836,7 +839,7 @@ namespace Darkages.Types
             catch (Exception err)
             {
                 logger.Error(err, "Error: ItemAddQuality. Fatal Exception Raised.");
-            }            
+            }
         }
 
         public void Release(Sprite owner, Position position)

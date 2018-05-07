@@ -42,11 +42,19 @@ namespace Darkages.Types
 
         public Spell FindInSlot(int Slot)
         {
+            Spell ret = null;
+
             if (Spells.ContainsKey(Slot))
-                return Spells[Slot];
+                ret = Spells[Slot];
+
+            if (ret != null && ret.Template != null)
+            {
+                return ret;
+            }
 
             return null;
         }
+
 
         public void Assign(Spell spell)
         {
