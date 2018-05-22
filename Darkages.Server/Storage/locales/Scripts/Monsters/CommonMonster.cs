@@ -95,7 +95,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         }
 
         public Sprite Target => Monster.Target;
-        public bool Engaged = false;
 
         public override void OnApproach(GameClient client)
         {
@@ -127,12 +126,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 return;
 
             Monster.Target = client.Aisling;
-
-            if (!Engaged)
-            {
-                Bash();
-                Engaged = true;
-            }
         }
 
         public override void OnCast(GameClient client)
@@ -159,7 +152,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
 
             Monster.Target = null;
-            Engaged = false;
 
             if (GetObject<Monster>(i => i.Serial == Monster.Serial) != null)
                 DelObject(Monster);
@@ -357,6 +349,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 {
                     Monster.Direction = (byte)direction;
                     Monster.Turn();
+                    return;
                 }
 
 

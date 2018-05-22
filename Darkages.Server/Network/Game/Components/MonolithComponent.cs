@@ -87,30 +87,34 @@ namespace Darkages.Network.Game.Components
                 if (templates.Count == 0)
                     return;
 
+
                 foreach (var map in ServerContext.GlobalMapCache.Values)
                 {
                     if (map == null || map.Rows == 0 || map.Cols == 0)
                         return;
 
-                    var temps = templates.Where(i => i.AreaID == map.ID);
-                    foreach (var template in temps)
+                    lock (templates)
                     {
-                        if (template.SpawnOnlyOnActiveMaps && !map.Has<Aisling>())
-                            continue;
-
-
-
-                        if (template.ReadyToSpawn())
+                        var temps = templates.Where(i => i.AreaID == map.ID);
+                        foreach (var template in temps)
                         {
-                            var spawn = new Spawn
-                            {
-                                Template = template,
-                                Map = map
-                            };
+                            if (template.SpawnOnlyOnActiveMaps && !map.Has<Aisling>())
+                                continue;
 
-                            lock (SpawnQueue)
+
+
+                            if (template.ReadyToSpawn())
                             {
-                                SpawnQueue.Enqueue(spawn);
+                                var spawn = new Spawn
+                                {
+                                    Template = template,
+                                    Map = map
+                                };
+
+                                lock (SpawnQueue)
+                                {
+                                    SpawnQueue.Enqueue(spawn);
+                                }
                             }
                         }
                     }

@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages.Common;
+using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.Buffs;
@@ -130,6 +131,31 @@ namespace Darkages.Types
                 return rand.Next(1, 101) < 50;
 
             return rand.Next(1, 101) < Level;
+        }
+
+        public static bool GiveTo(GameClient client, string args)
+        {
+            var spellTemplate = ServerContext.GlobalSpellTemplateCache[args];
+            var slot = client.Aisling.SpellBook.FindEmpty();
+
+            if (slot <= 0)
+                return false;
+
+            if (client.Aisling.SpellBook.Has(spellTemplate))
+                return false;
+
+            var spell = Create(slot, spellTemplate);
+            spell.Template = spellTemplate;
+
+            spell.Script = ScriptManager.Load<SpellScript>(spell.Template.ScriptKey, spell);
+            {
+                spell.Level = 1;
+                client.Aisling.SpellBook.Assign(spell);
+                client.Aisling.SpellBook.Set(spell, false);
+                client.Send(new ServerFormat17(spell));
+                client.Aisling.SendAnimation(22, client.Aisling, client.Aisling);
+            }
+            return true;
         }
 
         public static bool GiveTo(Aisling Aisling, string spellname, int level = 100)

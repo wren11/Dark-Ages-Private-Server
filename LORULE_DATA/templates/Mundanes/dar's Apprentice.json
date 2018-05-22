@@ -1,0 +1,21 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "Image": 0x4141,
+  "Level": 99,
+  "ScriptKey": "Dar's Apprentice",
+  "EnableWalking": false,
+  "EnableTurning": false,
+  "EnableAttacking": false,
+  "EnableSpeech": false,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": []
+  },
+  "X": 5,
+  "Y": 10,
+  "AreaID": 1014,
+  "Direction": 1,
+  "MaximumHp": 5000,
+  "MaximumMp": 2000,
+  "Name": "Dar's Apprentice"
+}

@@ -55,7 +55,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 var action = new ServerFormat1A
                 {
                     Serial = client.Aisling.Serial,
-                    Number = 0x84,
+                    Number = (byte)(client.Aisling.Path == Class.Monk ? 0x84 : 0x01),
                     Speed = 30
                 };
 

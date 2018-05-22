@@ -597,6 +597,78 @@ namespace Darkages
                 GlobalSpellTemplateCache["mor dion"].Buff = new buff_mordion();
 
 
+                GlobalSpellTemplateCache["fas nadur"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["fas nadur"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 10,
+                    Gold_Required = 10000,
+                };
+                GlobalSpellTemplateCache["mor fas nadur"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["mor fas nadur"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 30,
+                    Gold_Required = 500000,
+                };
+                GlobalSpellTemplateCache["beag sal"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["beag sal"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 3,
+                    Gold_Required = 500,
+                };
+                GlobalSpellTemplateCache["beag srad"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["beag srad"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 3,
+                    Gold_Required = 500,
+                };
+                GlobalSpellTemplateCache["beag athar"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["beag athar"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 3,
+                    Gold_Required = 500,
+                };
+                GlobalSpellTemplateCache["beag puinsein"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["beag puinsein"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 8,
+                    Gold_Required = 5000,
+                };
+                GlobalSpellTemplateCache["puinsein"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["puinsein"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 15,
+                    Gold_Required = 60000,
+                };
+                GlobalSpellTemplateCache["mor puinsein"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["mor puinsein"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 40,
+                    Gold_Required = 150000,
+                };
+                GlobalSpellTemplateCache["ard puinsein"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["ard puinsein"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 85,
+                    Gold_Required = 5000000,
+                };
+
+
+
+
+
+
+
+
+
                 return false;
             });
 

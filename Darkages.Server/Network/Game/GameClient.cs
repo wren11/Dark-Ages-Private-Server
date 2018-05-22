@@ -128,6 +128,20 @@ namespace Darkages.Network.Game
             }
         }
 
+        public void LearnSpell(Mundane Source, SpellTemplate subject, string message)
+        {
+            if (PayPrerequisites(subject.Prerequisites))
+            {
+                Spell.GiveTo(this, subject.Name);
+                SendOptionsDialog(Source, message);
+
+                Aisling.Show(Scope.NearbyAislings,
+                    new ServerFormat29((uint)Aisling.Serial, (uint)Source.Serial,
+                    subject?.TargetAnimation ?? 124,
+                    subject?.TargetAnimation ?? 124, 100));
+            }
+        }
+
         public bool PayPrerequisites(LearningPredicate prerequisites)
         {
             if (prerequisites == null)

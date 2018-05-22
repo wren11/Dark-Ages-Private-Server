@@ -60,5 +60,9 @@ namespace Darkages.Types
         public string NpcKey { get; set; }
 
         public Tier TierLevel { get; set; }
+
+        public string Description { get; set; }
+
+        public ushort TargetAnimation { get; set; }
     }
 }
