@@ -107,5 +107,6 @@
   "PortalTimeOut": 10.0,
   "CancelWalkingIfRefreshing": true,
   "SkullLength": 10,
-  "GroupExpBonus": 5.0
+  "GroupExpBonus": 5.0,
+  "PlayerLevelCap": 99
 }

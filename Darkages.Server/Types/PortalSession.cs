@@ -44,12 +44,11 @@ namespace Darkages
                 = new PortalSession
                 {
                     FieldNumber = 1,
-                    IsMapOpen = false,
+                    IsMapOpen = true,
                     DateOpened = DateTime.UtcNow
                 };
 
             client.Send(new ServerFormat2E(client.Aisling));
-            client.Aisling.PortalSession.IsMapOpen = true;
         }
 
         public void TransitionToMap(GameClient client,

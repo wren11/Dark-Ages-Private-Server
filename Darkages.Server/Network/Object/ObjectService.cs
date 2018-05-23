@@ -44,7 +44,7 @@ namespace Darkages.Network.Object
         {
             lock (_values)
             {
-                return _values.Where(i => predicate(i)).ToArray();
+                return _values.Where(i => predicate(i) && i != null).ToArray();
             }
         }
 

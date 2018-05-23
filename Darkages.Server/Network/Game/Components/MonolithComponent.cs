@@ -49,7 +49,7 @@ namespace Darkages.Network.Game.Components
                         ConsumeSpawns();
                 }
 
-                Thread.Sleep(300);
+                Thread.Sleep(50);
             }
         }
 
@@ -76,7 +76,6 @@ namespace Darkages.Network.Game.Components
             if (ServerContext.Paused)
                 return;
 
-
             _timer.Update(elapsedTime);
 
             if (_timer.Elapsed)
@@ -86,7 +85,6 @@ namespace Darkages.Network.Game.Components
                 var templates = ServerContext.GlobalMonsterTemplateCache;
                 if (templates.Count == 0)
                     return;
-
 
                 foreach (var map in ServerContext.GlobalMapCache.Values)
                 {
@@ -100,8 +98,6 @@ namespace Darkages.Network.Game.Components
                         {
                             if (template.SpawnOnlyOnActiveMaps && !map.Has<Aisling>())
                                 continue;
-
-
 
                             if (template.ReadyToSpawn())
                             {

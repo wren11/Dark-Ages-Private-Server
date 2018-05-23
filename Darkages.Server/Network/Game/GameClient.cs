@@ -732,7 +732,21 @@ namespace Darkages.Network.Game
             Aisling.Remove(update, delete);
         }
 
-        public void EnterArea()
+        public async void EnterArea(bool async = false)
+        {
+            if (!async)
+                Enter();
+            else
+            {
+                await Task.Run(() =>
+                {
+                    Enter();
+                    Thread.Sleep(500);
+                });
+            }
+        }
+
+        private void Enter()
         {
             SendSerial();
             Insert();

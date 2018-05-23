@@ -130,12 +130,21 @@ namespace Darkages.Types
             }
         }
 
+
+
         private void GenerateExperience(Aisling player)
         {
             var exp = 0;
             var seed = (Template.Level * 0.1) + 1.5;
             {
                 exp = (int)(Template.Level * seed * 300);
+            }
+
+            var critical = Math.Abs(GenerateNumber() % 100);
+            if (critical >= 30 && critical <= 32)
+            {
+                player.SendAnimation(341, player, this);
+                exp *= 2;
             }
 
             DistributeExperience(player, exp);

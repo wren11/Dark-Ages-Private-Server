@@ -214,7 +214,7 @@ namespace Darkages.Network.Game
                     logger.Error(err, "Fatal Error: UpdateConnectedClients");
                 }
 
-                Thread.Sleep(300);
+                Thread.Sleep(50);
             }
         }
 

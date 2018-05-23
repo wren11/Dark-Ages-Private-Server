@@ -41,6 +41,12 @@ namespace Darkages
         private readonly GameServerTimer WarpTimer =
             new GameServerTimer(TimeSpan.FromSeconds(ServerContext.Config.WarpUpdateTimer));
 
+        [JsonIgnore]
+        [Browsable(false)]
+        private readonly GameServerTimer ScriptTimer =
+            new GameServerTimer(TimeSpan.FromMilliseconds(100));
+
+
         [JsonIgnore] [Browsable(false)] public byte[] Data { get; set; }
 
         public int Music { get; set; }
@@ -151,8 +157,7 @@ namespace Darkages
 
         public void Update(TimeSpan elapsedTime)
         {
-            if (Has<Monster>())
-                UpdateMonsters(elapsedTime);
+            UpdateScripts(elapsedTime);
 
             if (!Has<Aisling>())
                 return;
@@ -163,12 +168,23 @@ namespace Darkages
             if (Has<Item>() || Has<Money>())
                 UpdateItems(elapsedTime);
 
-
             WarpTimer.Update(elapsedTime);
             if (WarpTimer.Elapsed)
             {
                 UpdateWarps();
                 WarpTimer.Reset();
+            }
+        }
+
+        private void UpdateScripts(TimeSpan elapsedTime)
+        {
+            ScriptTimer.Update(elapsedTime);
+            if (ScriptTimer.Elapsed)
+            {
+                if (Has<Monster>())
+                    UpdateMonsters(elapsedTime);
+
+                ScriptTimer.Reset();
             }
         }
 

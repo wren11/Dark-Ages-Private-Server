@@ -42,7 +42,7 @@ namespace Darkages.Network.ServerFormats
             writer.Write((byte)Area.Flags);
             writer.Write((byte)0x00);
             writer.Write((byte)0x00);
-            writer.Write(Area.Hash);
+            writer.Write((ushort)((Area.Hash << 8) | (Area.Hash >> 8)));
             writer.WriteStringA(Area.Name);
         }
     }

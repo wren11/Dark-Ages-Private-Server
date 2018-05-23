@@ -20,6 +20,7 @@ using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -105,11 +106,14 @@ namespace Darkages.Network
                     return;
 
                 _sending = true;
-                Task.Run(() => SendBuffers());
+                ThreadPool.QueueUserWorkItem(
+                    SendBuffers,
+                    _sending
+                );
             }
         }
 
-        private void SendBuffers()
+        private void SendBuffers(object state)
         {
             while (_sending)
             {
@@ -125,7 +129,6 @@ namespace Darkages.Network
 
                     format = _sendBuffers.Dequeue();
                 }
-
                 SendFormat(format);
             }
         }

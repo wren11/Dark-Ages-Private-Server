@@ -482,17 +482,19 @@ namespace Darkages.Types
                     Target = Source;
             }
 
-
             if (this is Monster)
             {
                 (this as Monster)?.AppendTags(Source);
                 (this as Monster)?.Script?.OnAttacked(Source?.Client);
             }
 
-
             if (Source is Aisling)
             {
                 var client = Source as Aisling;
+
+                if (!client.LoggedIn)
+                    return;
+
                 if (client.EquipmentManager.Weapon != null
                     && client.EquipmentManager.Weapon.Item != null && client.Weapon > 0)
                 {

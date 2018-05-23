@@ -598,19 +598,77 @@ namespace Darkages
 
 
                 GlobalSpellTemplateCache["fas nadur"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["fas nadur"].Description = "Slightly amplifies a target's element.";
                 GlobalSpellTemplateCache["fas nadur"].Prerequisites = new LearningPredicate()
                 {
                     Class_Required = Class.Wizard,
                     ExpLevel_Required = 10,
                     Gold_Required = 10000,
+                    Str_Required = 8,
+                    Dex_Required = 8,
+                    Con_Required = 8,
+                    Wis_Required = 8,
+                    Int_Required = 8,
+                    Items_Required = new List<ItemPredicate>()
+                    {
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 3,
+                             Item = "Viper's Gland"
+                        },
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 3,
+                             Item = "Scorpions's Gland"
+                        },
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 3,
+                             Item = "Goblin's Skull"
+                        },
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 3,
+                             Item = "Wolf's Teeth"
+                        },
+                    },
                 };
                 GlobalSpellTemplateCache["mor fas nadur"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["mor fas nadur"].Description = "Moderately amplifies a target's element.";
                 GlobalSpellTemplateCache["mor fas nadur"].Prerequisites = new LearningPredicate()
                 {
                     Class_Required = Class.Wizard,
                     ExpLevel_Required = 30,
                     Gold_Required = 500000,
+                    Spell_Level_Required = 100,
+                    Spell_Required = "fas nadur",
+                    Spell_Tier_Required = 1,
+                    Str_Required = 30,
+                    Wis_Required = 30,
+                    Con_Required = 30,
+                    Dex_Required = 30,
+                    Int_Required = 30,
+                    Items_Required = new List<ItemPredicate>()
+                    {
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 5,
+                             Item = "Goblin's Skull"
+                        },
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 5,
+                             Item = "Magus Diana"
+                        },
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 1,
+                             Item = "Hag's Replica Girdle"
+                        },
+                    }
                 };
+
+                #region water
                 GlobalSpellTemplateCache["beag sal"].NpcKey = "Dar";
                 GlobalSpellTemplateCache["beag sal"].Prerequisites = new LearningPredicate()
                 {
@@ -618,6 +676,79 @@ namespace Darkages
                     ExpLevel_Required = 3,
                     Gold_Required = 500,
                 };
+                GlobalSpellTemplateCache["sal"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["sal"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 6,
+                    Gold_Required = 3000,
+                    Int_Required = 8,
+                    Wis_Required = 7,
+                    Spell_Required = "beag sal",
+                    Spell_Level_Required = 70,
+                    Spell_Tier_Required = 1,
+                    Items_Required = new List<ItemPredicate>()
+                    {
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 1,
+                             Item = "Viper's Gland"
+                        },
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 1,
+                             Item = "Bee's Honey"
+                        },
+                    },
+                };
+                GlobalSpellTemplateCache["mor sal"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["mor sal"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 33,
+                    Gold_Required = 50000,
+                    Int_Required = 28,
+                    Wis_Required = 17,
+                    Spell_Required = "sal",
+                    Spell_Level_Required = 70,
+                    Spell_Tier_Required = 1,
+                    Items_Required = new List<ItemPredicate>()
+                    {
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 10,
+                             Item = "Viper's Gland"
+                        },
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 10,
+                             Item = "Bee's Honey"
+                        },
+                    },
+                };
+                GlobalSpellTemplateCache["ard sal"].NpcKey = "Dar The Forsakened";
+                GlobalSpellTemplateCache["ard sal"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 33,
+                    Gold_Required = 500000,
+                    Int_Required = 38,
+                    Wis_Required = 87,
+                    Spell_Required = "mor sal",
+                    Spell_Level_Required = 100,
+                    Spell_Tier_Required = 1,
+                    Items_Required = new List<ItemPredicate>()
+                    {
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 20,
+                             Item = "Essense of Water"
+                        }
+                    },
+                };
+                #endregion
+
+                #region Fire
                 GlobalSpellTemplateCache["beag srad"].NpcKey = "Dar";
                 GlobalSpellTemplateCache["beag srad"].Prerequisites = new LearningPredicate()
                 {
@@ -625,6 +756,79 @@ namespace Darkages
                     ExpLevel_Required = 3,
                     Gold_Required = 500,
                 };
+                GlobalSpellTemplateCache["srad"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["srad"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 6,
+                    Gold_Required = 3000,
+                    Str_Required = 8,
+                    Wis_Required = 7,
+                    Spell_Required = "beag srad",
+                    Spell_Level_Required = 70,
+                    Spell_Tier_Required = 1,
+                    Items_Required = new List<ItemPredicate>()
+                    {
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 1,
+                             Item = "Viper's Gland"
+                        },
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 1,
+                             Item = "Bee's Honey"
+                        },
+                    },
+                };
+                GlobalSpellTemplateCache["mor srad"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["mor srad"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 33,
+                    Gold_Required = 50000,
+                    Int_Required = 28,
+                    Str_Required = 17,
+                    Spell_Required = "srad",
+                    Spell_Level_Required = 70,
+                    Spell_Tier_Required = 1,
+                    Items_Required = new List<ItemPredicate>()
+                    {
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 10,
+                             Item = "Viper's Gland"
+                        },
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 10,
+                             Item = "Bee's Honey"
+                        },
+                    },
+                };
+                GlobalSpellTemplateCache["ard srad"].NpcKey = "Dar The Forsakened";
+                GlobalSpellTemplateCache["ard srad"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 65,
+                    Gold_Required = 500000,
+                    Str_Required = 38,
+                    Wis_Required = 87,
+                    Spell_Required = "mor srad",
+                    Spell_Level_Required = 100,
+                    Spell_Tier_Required = 1,
+                    Items_Required = new List<ItemPredicate>()
+                    {
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 20,
+                             Item = "Essense of Fire"
+                        }
+                    },
+                };
+                #endregion
+
+                #region Wind
                 GlobalSpellTemplateCache["beag athar"].NpcKey = "Dar";
                 GlobalSpellTemplateCache["beag athar"].Prerequisites = new LearningPredicate()
                 {
@@ -632,6 +836,10 @@ namespace Darkages
                     ExpLevel_Required = 3,
                     Gold_Required = 500,
                 };
+                #endregion
+
+                #region Poison
+
                 GlobalSpellTemplateCache["beag puinsein"].NpcKey = "Dar";
                 GlobalSpellTemplateCache["beag puinsein"].Prerequisites = new LearningPredicate()
                 {
@@ -645,6 +853,9 @@ namespace Darkages
                     Class_Required = Class.Wizard,
                     ExpLevel_Required = 15,
                     Gold_Required = 60000,
+                    Spell_Tier_Required = 1,
+                    Spell_Level_Required = 100,
+                    Spell_Required = "beag puinsein",
                 };
                 GlobalSpellTemplateCache["mor puinsein"].NpcKey = "Dar";
                 GlobalSpellTemplateCache["mor puinsein"].Prerequisites = new LearningPredicate()
@@ -652,6 +863,9 @@ namespace Darkages
                     Class_Required = Class.Wizard,
                     ExpLevel_Required = 40,
                     Gold_Required = 150000,
+                    Spell_Tier_Required = 1,
+                    Spell_Level_Required = 100,
+                    Spell_Required = "puinsein",
                 };
                 GlobalSpellTemplateCache["ard puinsein"].NpcKey = "Dar";
                 GlobalSpellTemplateCache["ard puinsein"].Prerequisites = new LearningPredicate()
@@ -659,8 +873,12 @@ namespace Darkages
                     Class_Required = Class.Wizard,
                     ExpLevel_Required = 85,
                     Gold_Required = 5000000,
+                    Spell_Tier_Required = 1,
+                    Spell_Level_Required = 100,
+                    Spell_Required = "mor puinsein",
                 };
 
+                #endregion
 
 
 

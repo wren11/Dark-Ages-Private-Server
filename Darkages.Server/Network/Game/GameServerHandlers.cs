@@ -60,8 +60,8 @@ namespace Darkages.Network.Game
             if (ServerContext.Config.AssailsCancelSpells)
                 CancelIfCasting(client);
 
-            if (!client.Aisling.HasSkill<SkillTemplate>(SkillScope.Assail))
-                return;
+            //if (!client.Aisling.HasSkill<SkillTemplate>(SkillScope.Assail))
+            //    return;
 
             foreach (var skill in client.Aisling.GetAssails(SkillScope.Assail))
             {
@@ -161,12 +161,12 @@ namespace Darkages.Network.Game
             if (client.Load())
             {
                 client.SendMessage(0x02, ServerContext.Config.ServerWelcomeMessage);
-
-
                 client.Aisling.LastLogged = DateTime.UtcNow;
-                client.Aisling.LoggedIn = true;
                 client.SendStats(StatusFlags.All);
+                Thread.Sleep(250);
                 client.EnterArea();
+                Thread.Sleep(500);
+                client.Aisling.LoggedIn = true;
             }
             else
             {
@@ -1056,24 +1056,24 @@ namespace Darkages.Network.Game
                         if (format.MovingFrom - 1 < 0)
                             return;
 
-                        var a = client.Aisling.Inventory.Remove(format.MovingFrom);
-                        var b = client.Aisling.Inventory.Remove(format.MovingTo);
-
                         client.Send(new ServerFormat10(format.MovingFrom));
                         client.Send(new ServerFormat10(format.MovingTo));
+
+                        var a = client.Aisling.Inventory.Remove(format.MovingFrom);
+                        var b = client.Aisling.Inventory.Remove(format.MovingTo);
 
                         if (a != null)
                         {
                             a.Slot = format.MovingTo;
-                            client.Aisling.Inventory.Set(a, false);
                             client.Send(new ServerFormat0F(a));
+                            client.Aisling.Inventory.Set(a, false);
                         }
 
                         if (b != null)
                         {
                             b.Slot = format.MovingFrom;
-                            client.Aisling.Inventory.Set(b, false);
                             client.Send(new ServerFormat0F(b));
+                            client.Aisling.Inventory.Set(b, false);
                         }
                     }
                     break;
@@ -1088,23 +1088,24 @@ namespace Darkages.Network.Game
                         if (format.MovingFrom - 1 < 0)
                             return;
 
-                        var a = client.Aisling.SkillBook.Remove(format.MovingFrom);
-                        var b = client.Aisling.SkillBook.Remove(format.MovingTo);
                         client.Send(new ServerFormat2D(format.MovingFrom));
                         client.Send(new ServerFormat2D(format.MovingTo));
+
+                        var a = client.Aisling.SkillBook.Remove(format.MovingFrom);
+                        var b = client.Aisling.SkillBook.Remove(format.MovingTo);
 
                         if (a != null)
                         {
                             a.Slot = format.MovingTo;
-                            client.Aisling.SkillBook.Set(a, false);
                             client.Send(new ServerFormat2C(a.Slot, a.Icon, a.Name));
+                            client.Aisling.SkillBook.Set(a, false);
                         }
 
                         if (b != null)
                         {
                             b.Slot = format.MovingFrom;
-                            client.Aisling.SkillBook.Set(b, false);
                             client.Send(new ServerFormat2C(b.Slot, b.Icon, b.Name));
+                            client.Aisling.SkillBook.Set(b, false);
                         }
                     }
                     break;
@@ -1119,23 +1120,24 @@ namespace Darkages.Network.Game
                         if (format.MovingFrom - 1 < 0)
                             return;
 
-                        var a = client.Aisling.SpellBook.Remove(format.MovingFrom);
-                        var b = client.Aisling.SpellBook.Remove(format.MovingTo);
                         client.Send(new ServerFormat18(format.MovingFrom));
                         client.Send(new ServerFormat18(format.MovingTo));
+
+                        var a = client.Aisling.SpellBook.Remove(format.MovingFrom);
+                        var b = client.Aisling.SpellBook.Remove(format.MovingTo);
 
                         if (a != null)
                         {
                             a.Slot = format.MovingTo;
-                            client.Aisling.SpellBook.Set(a, false);
                             client.Send(new ServerFormat17(a));
+                            client.Aisling.SpellBook.Set(a, false);
                         }
 
                         if (b != null)
                         {
                             b.Slot = format.MovingFrom;
-                            client.Aisling.SpellBook.Set(b, false);
                             client.Send(new ServerFormat17(b));
+                            client.Aisling.SpellBook.Set(b, false);
                         }
                     }
                     break;
@@ -1150,23 +1152,24 @@ namespace Darkages.Network.Game
                         if (format.MovingFrom - 1 < 0)
                             return;
 
-                        var a = client.Aisling.SpellBook.Remove(format.MovingFrom);
-                        var b = client.Aisling.SpellBook.Remove(format.MovingTo);
                         client.Send(new ServerFormat18(format.MovingFrom));
                         client.Send(new ServerFormat18(format.MovingTo));
+
+                        var a = client.Aisling.SpellBook.Remove(format.MovingFrom);
+                        var b = client.Aisling.SpellBook.Remove(format.MovingTo);
 
                         if (a != null)
                         {
                             a.Slot = format.MovingTo;
-                            client.Aisling.SpellBook.Set(a, false);
                             client.Send(new ServerFormat17(a));
+                            client.Aisling.SpellBook.Set(a, false);
                         }
 
                         if (b != null)
                         {
                             b.Slot = format.MovingFrom;
-                            client.Aisling.SpellBook.Set(b, false);
                             client.Send(new ServerFormat17(b));
+                            client.Aisling.SpellBook.Set(b, false);
                         }
                     }
                     break;
@@ -1453,6 +1456,12 @@ namespace Darkages.Network.Game
             var worldmap = client.Aisling.PortalSession?.Template;
 
             if (worldmap == null)
+            {
+                client.Aisling.PortalSession = new PortalSession() { FieldNumber = 1, IsMapOpen = true };
+                worldmap = client.Aisling.PortalSession.Template;
+            }
+
+            if (worldmap == null)
                 return;
 
             var node = worldmap.Portals
@@ -1473,13 +1482,14 @@ namespace Darkages.Network.Game
                 client.Aisling.PortalSession.TransitionToMap(client,
                     (short)node.Destination.Location.X,
                     (short)node.Destination.Location.Y, node.Destination.AreaID);
-
-
-                client.Aisling.PortalSession.IsMapOpen = false;
             }
             catch
             {
-
+                client.Aisling.GoHome();
+            }
+            finally
+            {
+                client.Aisling.PortalSession.IsMapOpen = false;
             }
         }
 
