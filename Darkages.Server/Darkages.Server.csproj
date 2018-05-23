@@ -49,7 +49,8 @@
       <HintPath>include\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.13\lib\net45\NLog.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -97,6 +98,7 @@
     <Content Include="include\Loot.dll" />
     <Content Include="include\Newtonsoft.Json.dll" />
     <Content Include="include\Newtonsoft.Json.xml" />
+    <Content Include="include\NLog.dll" />
     <Content Include="include\zlib.net.dll" />
     <Content Include="include\ZTn.Json.JsonTreeView.dll" />
     <None Include="Notification.txt">

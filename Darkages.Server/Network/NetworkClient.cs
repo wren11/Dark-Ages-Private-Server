@@ -19,7 +19,6 @@ using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Threading;

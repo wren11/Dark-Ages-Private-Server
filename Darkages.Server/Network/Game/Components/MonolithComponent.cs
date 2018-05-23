@@ -49,7 +49,7 @@ namespace Darkages.Network.Game.Components
                         ConsumeSpawns();
                 }
 
-                Thread.Sleep(50);
+                Thread.Sleep(300);
             }
         }
 

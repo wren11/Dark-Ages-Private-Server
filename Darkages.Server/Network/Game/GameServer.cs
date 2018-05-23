@@ -79,11 +79,9 @@ namespace Darkages.Network.Game
                 {
                     logger.Error(error, error.Message + "\n" + error.StackTrace);
                 }
-                finally
-                {
-                    lastClientUpdate = DateTime.UtcNow;
-                    Thread.Sleep(ClientUpdateSpan);
-                }
+
+                lastClientUpdate = DateTime.UtcNow;
+                Thread.Sleep(ClientUpdateSpan);
             }
         }
 
@@ -107,11 +105,9 @@ namespace Darkages.Network.Game
                 {
                     logger.Error(error, "Server Work: Fatal Error");
                 }
-                finally
-                {
-                    lastServerUpdate = DateTime.UtcNow;
-                    Thread.Sleep(ServerUpdateSpan);
-                }
+
+                lastServerUpdate = DateTime.UtcNow;
+                Thread.Sleep(ServerUpdateSpan);
             }
         }
 
@@ -130,45 +126,25 @@ namespace Darkages.Network.Game
         {
             Components = new Dictionary<Type, GameServerComponent>
             {
-                [typeof(MonolithComponent)]      = new MonolithComponent(this),
-                [typeof(DaytimeComponent)]       = new DaytimeComponent(this),
-                [typeof(MundaneComponent)]       = new MundaneComponent(this),
-                [typeof(MessageComponent)]       = new MessageComponent(this),
-                [typeof(ObjectComponent)]        = new ObjectComponent(this),
-                [typeof(PingComponent)]          = new PingComponent(this),
-                [typeof(ServerCacheComponent)]   = new ServerCacheComponent(this)
+                [typeof(MonolithComponent)] = new MonolithComponent(this),
+                [typeof(DaytimeComponent)] = new DaytimeComponent(this),
+                [typeof(MundaneComponent)] = new MundaneComponent(this),
+                [typeof(MessageComponent)] = new MessageComponent(this),
+                [typeof(ObjectComponent)] = new ObjectComponent(this),
+                [typeof(PingComponent)] = new PingComponent(this),
+                [typeof(ServerCacheComponent)] = new ServerCacheComponent(this)
             };
         }
 
         public void ExecuteClientWork(TimeSpan elapsedTime)
         {
-            lock (ServerContext.SyncObj)
-            {
-                try
-                {
-                    UpdateClients(elapsedTime);
-                    UpdateAreas(elapsedTime);
-                }
-                catch (Exception err)
-                {
-                    logger.Error(err, "Fatal Error: ExecuteClientWork");
-                }
-            }
+            UpdateClients(elapsedTime);
+            UpdateAreas(elapsedTime);
         }
 
         public void ExecuteServerWork(TimeSpan elapsedTime)
         {
-            lock (Clients)
-            {
-                try
-                {
-                    UpdateComponents(elapsedTime);
-                }
-                catch (Exception err)
-                {
-                    logger.Error(err, "Fatal Error: ExecuteServerWork");
-                }
-            }
+            UpdateComponents(elapsedTime);
         }
 
         private void UpdateComponents(TimeSpan elapsedTime)
@@ -237,10 +213,8 @@ namespace Darkages.Network.Game
                 {
                     logger.Error(err, "Fatal Error: UpdateConnectedClients");
                 }
-                finally
-                {
-                    Thread.Sleep(100);
-                }
+
+                Thread.Sleep(300);
             }
         }
 
@@ -273,6 +247,9 @@ namespace Darkages.Network.Game
             isRunning = false;
         }
 
+        Thread ServerThread = null;
+        Thread ClientThread = null;
+
         public override void Start(int port)
         {
             base.Start(port);
@@ -281,8 +258,13 @@ namespace Darkages.Network.Game
                 return;
 
 
-            new TaskFactory().StartNew(DoClientWork);
-            new TaskFactory().StartNew(DoServerWork);
+            ServerThread = new Thread(new ThreadStart(DoServerWork));
+            ServerThread.IsBackground = true;
+            ServerThread.Start();
+
+            ClientThread = new Thread(new ThreadStart(DoClientWork));
+            ClientThread.IsBackground = true;
+            ClientThread.Start();
 
             isRunning = true;
         }

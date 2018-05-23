@@ -160,7 +160,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                             return;
 
                         client.SendAnimation(109, client.Aisling, Mundane);
-                        client.LearnSpell(Mundane, subject, "So be it; Use it wisely, chosen one.");
+                        client.LearnSpell(Mundane, subject, "Go Spark, Aisling.");
 
                     }
                     break;

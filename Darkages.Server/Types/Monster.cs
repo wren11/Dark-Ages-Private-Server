@@ -158,10 +158,10 @@ namespace Darkages.Types
             var bonus = exp * player.GroupParty.LengthExcludingSelf * ServerContext.Config.GroupExpBonus / 100;
 
             if (bonus > 0)
-                 exp += bonus;
+                exp += bonus;
 
             player.ExpTotal += (int)exp;
-            player.ExpNext  -= (int)exp;
+            player.ExpNext -= (int)exp;
 
             player.Client.SendMessage(0x02, string.Format("You received {0} Experience!.", (int)exp));
 
@@ -293,6 +293,9 @@ namespace Darkages.Types
 
                                 var rolled_item = Item.Create(this, GlobalItemTemplateCache[i]);
                                 var upgrade = DetermineQuality();
+
+                                if (rolled_item == null || upgrade == null)
+                                    return;
 
                                 if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
                                     upgrade = null;

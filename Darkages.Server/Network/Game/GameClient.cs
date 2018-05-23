@@ -86,15 +86,15 @@ namespace Darkages.Network.Game
         {
             if (warps.WarpType == WarpType.World)
                 return;
-              
+
             if (ServerContext.GlobalMapCache.Values.Any(i => i.ID == warps.ActivationMapId))
             {
                 if (warps.LevelRequired > 0 && Aisling.ExpLevel < warps.LevelRequired)
                 {
                     var msgTier = Math.Abs(Aisling.ExpLevel - warps.LevelRequired);
 
-                    SendMessage(0x02, msgTier <= 10 
-                        ? string.Format("You can't enter there just yet. ({0} req)", warps.LevelRequired) 
+                    SendMessage(0x02, msgTier <= 10
+                        ? string.Format("You can't enter there just yet. ({0} req)", warps.LevelRequired)
                         : string.Format("Nightmarish visions of your own death repel you. ({0} Req)", warps.LevelRequired));
                     return;
                 }
@@ -114,11 +114,11 @@ namespace Darkages.Network.Game
             }
         }
 
-        public void LearnSkill(Mundane Source, SkillTemplate subject, string message)
+        public void LearnSpell(Mundane Source, SpellTemplate subject, string message)
         {
             if (PayPrerequisites(subject.Prerequisites))
             {
-                Skill.GiveTo(this, subject.Name);
+                Spell.GiveTo(this, subject.Name);
                 SendOptionsDialog(Source, message);
 
                 Aisling.Show(Scope.NearbyAislings,
@@ -128,11 +128,11 @@ namespace Darkages.Network.Game
             }
         }
 
-        public void LearnSpell(Mundane Source, SpellTemplate subject, string message)
+        public void LearnSkill(Mundane Source, SkillTemplate subject, string message)
         {
             if (PayPrerequisites(subject.Prerequisites))
             {
-                Spell.GiveTo(this, subject.Name);
+                Skill.GiveTo(this, subject.Name);
                 SendOptionsDialog(Source, message);
 
                 Aisling.Show(Scope.NearbyAislings,
@@ -251,23 +251,16 @@ namespace Darkages.Network.Game
 
             #endregion
 
-            try
-            {
-                StatusCheck();
-                Regeneration(elapsedTime);
-                UpdateStatusBar(elapsedTime);
-                UpdateGlobalScripts(elapsedTime);
-                HandleTimeOuts();
-            }
-            catch (Exception err)
-            {
-                logger.Error(err, "Fatal Exception: Client Update.");
-            }
+            StatusCheck();
+            Regeneration(elapsedTime);
+            UpdateStatusBar(elapsedTime);
+            UpdateGlobalScripts(elapsedTime);
+            HandleTimeOuts();
         }
 
         private void StatusCheck()
         {
-            if (Aisling.Flags.HasFlag(AislingFlags.Dead) 
+            if (Aisling.Flags.HasFlag(AislingFlags.Dead)
                 && (Aisling.Debuffs.Count > 0 || Aisling.Buffs.Count > 0))
             {
                 Aisling.RemoveBuffsAndDebuffs();
@@ -1044,7 +1037,7 @@ namespace Darkages.Network.Game
 
             return true;
         }
-    
+
         public bool CheckReqs(GameClient client, Item item)
         {
             var message = string.Empty;
