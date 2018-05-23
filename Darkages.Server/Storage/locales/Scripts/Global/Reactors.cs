@@ -44,6 +44,10 @@ namespace Darkages.Storage.locales.Scripts.Global
                    
             if (Client.Aisling != null && Client.Aisling.LoggedIn)
             {
+
+                if (Client.Aisling.Map == null)
+                    return;
+
                 if (!Client.Aisling.Map.Ready)
                     return;
 

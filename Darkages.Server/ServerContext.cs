@@ -627,7 +627,7 @@ namespace Darkages
                              Item = "Goblin's Skull"
                         },
                         new ItemPredicate()
-                        {
+                        {  
                              AmountRequired = 3,
                              Item = "Wolf's Teeth"
                         },

@@ -639,6 +639,9 @@ namespace Darkages.Types
             var template =
                 (ItemTemplate)StorageManager.ItemBucket.LoadFromStorage(itemtemplate);
 
+            if (itemtemplate != null && template == null)
+                template = itemtemplate;
+
             if (template == null)
                 return null;
 

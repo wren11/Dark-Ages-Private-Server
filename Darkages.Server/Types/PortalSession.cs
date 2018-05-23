@@ -20,6 +20,8 @@ using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using Newtonsoft.Json;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Darkages
 {
@@ -40,15 +42,18 @@ namespace Darkages
 
         public void ShowFieldMap(GameClient client)
         {
-            client.Aisling.PortalSession
-                = new PortalSession
-                {
-                    FieldNumber = 1,
-                    IsMapOpen = true,
-                    DateOpened = DateTime.UtcNow
-                };
-
             client.Send(new ServerFormat2E(client.Aisling));
+
+            Task.Delay(100).ContinueWith((s) =>
+            {
+                client.Aisling.PortalSession
+                    = new PortalSession
+                    {
+                        FieldNumber = 1,
+                        IsMapOpen = true,
+                        DateOpened = DateTime.UtcNow
+                    };
+            });
         }
 
         public void TransitionToMap(GameClient client,
@@ -78,7 +83,9 @@ namespace Darkages
                     client.Aisling.X = X >= 0 ? X : ServerContext.Config.TransitionPointX;
                     client.Aisling.Y = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
                     client.Aisling.CurrentMapId = DestinationMap;
+                    client.Refresh();
 
+                    Thread.Sleep(50);
                     client.EnterArea();
                     client.Refresh();
                 }

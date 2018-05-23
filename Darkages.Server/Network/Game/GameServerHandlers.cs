@@ -1479,17 +1479,19 @@ namespace Darkages.Network.Game
                     return;
                 }
 
-                client.Aisling.PortalSession.TransitionToMap(client,
-                    (short)node.Destination.Location.X,
-                    (short)node.Destination.Location.Y, node.Destination.AreaID);
+
+                if (client.Aisling.PortalSession != null)
+                {
+                    client.Aisling.PortalSession.TransitionToMap(client,
+                        (short)node.Destination.Location.X,
+                        (short)node.Destination.Location.Y, node.Destination.AreaID);
+
+                    client.Aisling.PortalSession.IsMapOpen = false;
+                }
             }
             catch
             {
                 client.Aisling.GoHome();
-            }
-            finally
-            {
-                client.Aisling.PortalSession.IsMapOpen = false;
             }
         }
 

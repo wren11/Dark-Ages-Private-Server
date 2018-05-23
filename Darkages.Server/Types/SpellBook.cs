@@ -63,7 +63,7 @@ namespace Darkages.Types
 
         public new Spell[] Get(Predicate<Spell> prediate)
         {
-            return Spells.Values.Where(i => i != null && prediate(i)).ToArray();
+            return Spells.Values.Where(i => i != null && prediate(i) && i.Template != null).ToArray();
         }
 
         public void Swap(Spell A, Spell B)

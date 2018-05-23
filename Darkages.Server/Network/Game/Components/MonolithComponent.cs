@@ -139,13 +139,13 @@ namespace Darkages.Network.Game.Components
         {
             await Task.Run(() =>
             {
-                var newObj = Monster.Create(template, map);
-                if (newObj != null)
+                for (int i = 0; i < count; i++)
                 {
-                    AddObject(newObj);
-                    return true;
+                    var newObj = Monster.Create(template, map);
+                    if (newObj != null)
+                        AddObject(newObj);
                 }
-                return false;
+                return true;
             });
 
             return false;

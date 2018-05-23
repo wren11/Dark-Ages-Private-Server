@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Common;
 using Darkages.Systems.Loot.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -42,11 +43,11 @@ namespace Darkages.Systems.Loot.Extensions
 
                 foreach (var item in items)
                 {
-                    lock (Common.Generator.Random)
+                    lock (Generator.Random)
                     {
-                        short luck = (short)Math.Abs(NextFloat(Common.Generator.Random));
+                        var luck = Generator.GenerateNumber() % 100;
 
-                        if (luck < 0 || luck > 0)
+                        if (luck <= item.Weight)
                         {
                             return objs[randomNumber];
                         }

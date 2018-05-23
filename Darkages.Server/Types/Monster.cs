@@ -303,7 +303,7 @@ namespace Darkages.Types
                                 var rolled_item = Item.Create(this, GlobalItemTemplateCache[i]);
                                 var upgrade = DetermineQuality();
 
-                                if (rolled_item == null || upgrade == null)
+                                if (rolled_item == null)
                                     return;
 
                                 if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
@@ -392,9 +392,9 @@ namespace Darkages.Types
 
             var obj = new Monster();
             obj.Template = template;
-            obj.CastTimer = new GameServerTimer(TimeSpan.FromMilliseconds(template.CastSpeed));
-            obj.BashTimer = new GameServerTimer(TimeSpan.FromMilliseconds(template.AttackSpeed));
-            obj.WalkTimer = new GameServerTimer(TimeSpan.FromMilliseconds(template.MovementSpeed));
+            obj.CastTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.CastSpeed / 10));
+            obj.BashTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.AttackSpeed / 10));
+            obj.WalkTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.MovementSpeed / 10));
             obj.CastEnabled = template.MaximumMP > 0;
             obj.TaggedAislings = new ConcurrentDictionary<int, Sprite>();
 
@@ -543,7 +543,7 @@ namespace Darkages.Types
                         lock (Generator.Random)
                         {
                             var available = GlobalItemTemplateCache.Select(i => i.Value)
-                                .Where(i => i.LevelRequired + 6 <= obj.Template.Level).ToList();
+                                .Where(i => Math.Abs(i.LevelRequired - obj.Template.Level) <= 10).ToList();
                             if (available.Count > 0)
                             {
                                 obj.LootTable.Add(available[GenerateNumber() % available.Count]);

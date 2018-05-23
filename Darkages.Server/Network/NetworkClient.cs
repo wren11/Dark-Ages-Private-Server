@@ -32,7 +32,7 @@ namespace Darkages.Network
     public abstract class NetworkClient<TClient>
         : ObjectManager
     {
-        private readonly Queue<NetworkFormat> _sendBuffers = new Queue<NetworkFormat>();
+        private readonly BlockingCollection<NetworkFormat> _sendBuffers = new BlockingCollection<NetworkFormat>();
         private bool _sending;
         public int Errors;
 
@@ -100,37 +100,24 @@ namespace Darkages.Network
         {
             lock (_sendBuffers)
             {
-                _sendBuffers.Enqueue(format);
+                if (_sendBuffers.TryAdd(format))
+                {
+                    if (_sending)
+                        return;
 
-                if (_sending)
-                    return;
-
-                _sending = true;
-                ThreadPool.QueueUserWorkItem(
-                    SendBuffers,
-                    _sending
-                );
+                    _sending = true;
+                    ThreadPool.QueueUserWorkItem(
+                        SendBuffers,
+                        _sending
+                    );
+                }
             }
         }
 
         private void SendBuffers(object state)
         {
-            while (_sending)
-            {
-                NetworkFormat format;
-
-                lock (_sendBuffers)
-                {
-                    if (_sendBuffers.Count == 0)
-                    {
-                        _sending = false;
-                        return;
-                    }
-
-                    format = _sendBuffers.Dequeue();
-                }
+            foreach (var format in _sendBuffers.GetConsumingEnumerable())
                 SendFormat(format);
-            }
         }
 
         public void SendPacket(byte[] data)

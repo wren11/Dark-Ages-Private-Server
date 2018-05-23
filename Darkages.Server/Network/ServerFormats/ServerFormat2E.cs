@@ -26,7 +26,6 @@ namespace Darkages.Network.ServerFormats
 
         public override bool Secured => true;
         public override byte Command => 0x2E;
-        public override int Delay => 5;
 
         private Aisling User { get; }
 

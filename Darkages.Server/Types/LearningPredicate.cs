@@ -165,15 +165,14 @@ namespace Darkages.Types
             if (Spell_Required != null)
             {
                 var spell = ServerContext.GlobalSpellTemplateCache[Spell_Required];
-                var spell_retainer = player.SpellBook.Get(i => i.Template.Name.Equals(spell.Name)).FirstOrDefault();
+                var spell_retainer = player.SpellBook.Get(i => i.Template != null && i.Template.Name.Equals(spell.Name)).FirstOrDefault();
 
                 if (spell_retainer == null)
                 {
                     result[n++] = new Tuple<bool, object>(false,
                         string.Format("You don't have the spell required. ({0})", Spell_Required));
                 }
-
-                if (spell_retainer != null & spell_retainer.Level >= Spell_Level_Required)
+                else if (spell_retainer != null & spell_retainer.Level >= Spell_Level_Required)
                 {
                     result[n++] = new Tuple<bool, object>(true,
                         "Spells Required.");
@@ -182,7 +181,7 @@ namespace Darkages.Types
                 {
                     result[n++] = new Tuple<bool, object>(false,
                         string.Format("{0} Must be level {1} - Go get {2} more levels.",
-                        spell.Name, Skill_Level_Required, Math.Abs(spell_retainer.Level - Spell_Level_Required)));
+                        spell.Name, Spell_Level_Required, Math.Abs(spell_retainer.Level - Spell_Level_Required)));
                 }
             }
 
@@ -210,53 +209,61 @@ namespace Darkages.Types
             {
                 foreach (var ir in Items_Required)
                 {
-                    var item = ServerContext.GlobalItemTemplateCache[ir.Item];
-
-                    if (item == null)
+                    if (ServerContext.GlobalItemTemplateCache.ContainsKey(ir.Item))
                     {
-                        result[n] = new Tuple<bool, object>(false,
-                                string.Format("You don't have enough {0}'s. You have {1} of {2} required.",
-                                ir.Item, "none of ", ir.AmountRequired));
+                        var item = ServerContext.GlobalItemTemplateCache[ir.Item];
 
-                        break;
-                    }
-
-                    var item_obtained = player.Inventory.Get(i => i.Template.Name.Equals(item.Name));
-                    if (ir.AmountRequired <= 1)
-                    {
-                        if (item_obtained == null || item_obtained.Length == 0)
+                        if (item == null)
                         {
                             result[n] = new Tuple<bool, object>(false,
-                                string.Format("You lack the items required. (One {0} Required)", ir.Item));
+                                    string.Format("You don't have enough {0}'s. You have {1} of {2} required.",
+                                    ir.Item, "none of ", ir.AmountRequired));
+
                             break;
                         }
-                    }
-                    else
-                    {
-                        if (ir.AmountRequired > 1)
+
+
+                        var item_obtained = player.Inventory.Get(i => i.Template.Name.Equals(item.Name));
+                        if (ir.AmountRequired <= 1)
                         {
-                            if (item_obtained.Length + 1 >= ir.AmountRequired)
-                            {
-                                result[n] = new Tuple<bool, object>(true, "The right amount!. Thank you.");
-                            }
-                            else
+                            if (item_obtained == null || item_obtained.Length == 0)
                             {
                                 result[n] = new Tuple<bool, object>(false,
-                                    string.Format("You don't have enough ({0}). You have {1}. but {2} is required.",
-                                    ir.Item, item_obtained.Length > 0 ? item_obtained.Length + 1 : 0, ir.AmountRequired));
+                                    string.Format("You lack the items required. (One {0} Required)", ir.Item));
+                                break;
                             }
                         }
                         else
                         {
-                            if (item_obtained.Length + 1 > 1 && ir.AmountRequired <= 1)
+                            if (ir.AmountRequired > 1)
                             {
-                                result[n] = new Tuple<bool, object>(true, "Thank you.");
+                                if (item_obtained.Length + 1 >= ir.AmountRequired)
+                                {
+                                    result[n] = new Tuple<bool, object>(true, "The right amount!. Thank you.");
+                                }
+                                else
+                                {
+                                    result[n] = new Tuple<bool, object>(false,
+                                        string.Format("You don't have enough ({0}). You have {1}. but {2} is required.",
+                                        ir.Item, item_obtained.Length > 0 ? item.CanStack ? item_obtained.Length + 1 : item_obtained.Length : 0, ir.AmountRequired));
+                                }
                             }
                             else
                             {
-                                result[n] = new Tuple<bool, object>(false, "You lack the items required.");
+                                if (item_obtained.Length + 1 > 1 && ir.AmountRequired <= 1)
+                                {
+                                    result[n] = new Tuple<bool, object>(true, "Thank you.");
+                                }
+                                else
+                                {
+                                    result[n] = new Tuple<bool, object>(false, "You lack the items required.");
+                                }
                             }
                         }
+                    }
+                    else
+                    {
+                        result[n] = new Tuple<bool, object>(false, "What i need does not exist in the physical world.");
                     }
                     n++;
                 }
