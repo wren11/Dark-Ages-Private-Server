@@ -163,12 +163,9 @@ namespace Darkages.Network.Game
             if (ServerContext.Paused)
                 return;
 
-            lock (ServerContext.SyncObj)
+            foreach (var area in ServerContext.GlobalMapCache.Values)
             {
-                foreach (var area in ServerContext.GlobalMapCache.Values)
-                {
-                    area.Update(elapsedTime);
-                }
+                area.Update(elapsedTime);
             }
         }
 
@@ -216,7 +213,7 @@ namespace Darkages.Network.Game
                     logger.Error(err, "Fatal Error: UpdateConnectedClients");
                 }
 
-                Thread.Sleep(350);
+                Thread.Sleep(300);
             }
         }
 
