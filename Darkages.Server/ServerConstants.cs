@@ -360,6 +360,15 @@ namespace Darkages
         [JsonProperty] public int PlayerLevelCap = 99;
 
         [JsonProperty]
+        public string[] GlobalScripts = new string[]
+        {
+            "Grim Reaper",
+            "Tutorial",    
+            "Tower Defender Player Reaper",
+            "Reactors",
+        };
+
+        [JsonProperty]
         public GameSetting[] Settings = new GameSetting[]
         {
             new GameSetting("Loot Mode  :Single", "Loot Mode  :Multi", true),

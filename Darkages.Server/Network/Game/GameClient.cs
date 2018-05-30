@@ -468,11 +468,8 @@ namespace Darkages.Network.Game
 
         private void LoadGlobalScripts()
         {
-            GlobalScripts.Add(ScriptManager.Load<GrimReaper>("Grim Reaper", this));
-            GlobalScripts.Add(ScriptManager.Load<Tutorial>("Tutorial", this));
-            GlobalScripts.Add(ScriptManager.Load<TowerDefenders>("Tower Defender Player Reaper", this));
-            GlobalScripts.Add(ScriptManager.Load<Reactors>("Reactors", this));
-
+            foreach (var script in ServerContext.Config.GlobalScripts)
+                GlobalScripts.Add(ScriptManager.Load<GlobalScript>(script, this));
         }
 
         private void SetupRegenTimers()
