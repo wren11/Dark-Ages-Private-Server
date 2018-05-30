@@ -15,11 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System.Collections.Generic;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -69,54 +69,90 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 client.EnterArea();
                 client.SendStats(StatusFlags.All);
 
-                client.Aisling.PortalSession = new PortalSession {IsMapOpen = false, FieldNumber = 1};
+                client.Aisling.PortalSession = new PortalSession { IsMapOpen = false, FieldNumber = 1 };
                 client.Aisling.PortalSession.TransitionToMap(client);
                 client.CloseDialog();
             }
 
+           
             if (responseID == 0x0001)
             {
-                client.LeaveArea(true, false);
-                client.Aisling.X = 4;
-                client.Aisling.Y = 4;
-                client.EnterArea();
-                client.CloseDialog();
+                if (client.Aisling.CurrentMapId == 508)
+                {
+                    client.TransitionToMap(509, new Position(4, 4));
+                }
+                else
+                {
+                    client.LeaveArea(true, false);
+                    client.Aisling.X = 4;
+                    client.Aisling.Y = 4;
+                    client.EnterArea();
+                    client.CloseDialog();
+                }
             }
 
             if (responseID == 0x0002)
             {
-                client.LeaveArea(true, false);
-                client.Aisling.X = 51;
-                client.Aisling.Y = 4;
-                client.EnterArea();
-                client.CloseDialog();
+                if (client.Aisling.CurrentMapId == 508)
+                {
+                    client.TransitionToMap(509, new Position(51, 4));
+                }
+                else
+                {
+                    client.LeaveArea(true, false);
+                    client.Aisling.X = 51;
+                    client.Aisling.Y = 4;
+                    client.EnterArea();
+                    client.CloseDialog();
+                }
             }
 
             if (responseID == 0x0003)
             {
-                client.LeaveArea(true, false);
-                client.Aisling.X = 51;
-                client.Aisling.Y = 51;
-                client.EnterArea();
-                client.CloseDialog();
+                if (client.Aisling.CurrentMapId == 508)
+                {
+                    client.TransitionToMap(509, new Position(51, 51));
+                }
+                else
+                {
+                    client.LeaveArea(true, false);
+                    client.Aisling.X = 51;
+                    client.Aisling.Y = 51;
+                    client.EnterArea();
+                    client.CloseDialog();
+                }
             }
 
             if (responseID == 0x0004)
             {
-                client.LeaveArea(true, false);
-                client.Aisling.X = 4;
-                client.Aisling.Y = 51;
-                client.EnterArea();
-                client.CloseDialog();
+                if (client.Aisling.CurrentMapId == 508)
+                {
+                    client.TransitionToMap(509, new Position(4, 51));
+                }
+                else
+                {
+                    client.LeaveArea(true, false);
+                    client.Aisling.X = 4;
+                    client.Aisling.Y = 51;
+                    client.EnterArea();
+                    client.CloseDialog();
+                }
             }
 
             if (responseID == 0x0005)
             {
-                client.LeaveArea(true, false);
-                client.Aisling.X = 35;
-                client.Aisling.Y = 35;
-                client.EnterArea();
-                client.CloseDialog();
+                if (client.Aisling.CurrentMapId == 508)
+                {
+                    client.TransitionToMap(509, new Position(35, 35));
+                }
+                else
+                {
+                    client.LeaveArea(true, false);
+                    client.Aisling.X = 35;
+                    client.Aisling.Y = 35;
+                    client.EnterArea();
+                    client.CloseDialog();
+                }
             }
         }
     }

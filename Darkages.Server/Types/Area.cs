@@ -74,6 +74,14 @@ namespace Darkages
         {
             lock (Tile.SyncRoot)
             {
+                var w = Tile.GetUpperBound(0);
+                var h = Tile.GetUpperBound(1);
+
+                if (x > w)
+                    return;
+                if (y > h)
+                    return;
+
                 Tile[x, y] = value;
             }
         }

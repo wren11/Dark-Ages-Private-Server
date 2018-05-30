@@ -15,11 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using System;
-using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
+using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Skills
 {
@@ -78,20 +78,20 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         i.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
 
                         sprite.CurrentHp -= dmg * 2;
-                        ((Aisling) sprite).Client.SendStats(StatusFlags.StructB);
+                        ((Aisling)sprite).Client.SendStats(StatusFlags.StructB);
 
 
                         if (i is Aisling)
                         {
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial, byte.MinValue,
+                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial, byte.MinValue,
                                     Skill.Template.TargetAnimation, 100));
                             (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
                         }
 
                         if (i is Monster || i is Mundane || i is Aisling)
                             client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial,
+                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
                                     Skill.Template.TargetAnimation, 0, 100));
                     }
 
@@ -115,10 +115,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         client.Refresh();
                     }
 
-                    client.Send(new ServerFormat3F((byte)Skill.Template.Pane, Skill.Slot, Skill.Template.Cooldown));
-
                     var success = Skill.RollDice(rand);
-
                     if (success)
                         OnSuccess(sprite);
                     else
@@ -134,7 +131,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 if (target is Aisling)
                 {
                     (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29((uint) target.Serial, (uint) target.Serial,
+                        new ServerFormat29((uint)target.Serial, (uint)target.Serial,
                             Skill.Template.TargetAnimation, 0, 100));
 
                     var dmg = Convert.ToInt32(target.CurrentHp / 3);

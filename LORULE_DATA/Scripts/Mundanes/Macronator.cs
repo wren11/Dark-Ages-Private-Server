@@ -152,7 +152,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
                 Type = QuestType.KillCount,
                 Amount = 3,
-                TemplateContext = ServerContext.GlobalMonsterTemplateCache["Helpless Animal"]
+                Value =  "Helpless Animal"
             });
 
             quest.QuestStages.Add(q1);

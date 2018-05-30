@@ -15,11 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Network.ServerFormats;
+using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Darkages.Network.ServerFormats;
-using Darkages.Types;
 
 namespace Darkages.Scripting.Scripts.Skills
 {
@@ -91,7 +91,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 var action = new ServerFormat1A
                 {
                     Serial = client.Aisling.Serial,
-                    Number = 0x81,
+                    Number = (byte)(client.Aisling.Path == Class.Warrior ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01 : 0x01),
                     Speed = 20
                 };
 
@@ -99,34 +99,24 @@ namespace Darkages.Scripting.Scripts.Skills
 
                 if (enemy != null)
                 {
-                    foreach (var i in enemy.Cast<Sprite>())
+                    foreach (var i in enemy.OfType<Monster>())
                     {
                         if (i == null)
                             continue;
 
 
+
                         if (client.Aisling.Serial == i.Serial)
                             continue;
 
-                        if (i is Money)
-                            continue;
 
                         var dmg = client.Aisling.Invisible ? 2 : 1 * client.Aisling.Str * 10 * Skill.Level;
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
+                        i.Target = client.Aisling;
 
-                        if (i is Monster) (i as Monster).Target = client.Aisling;
-                        if (i is Aisling)
-                        {
-                            (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial, byte.MinValue,
-                                    Skill.Template.TargetAnimation, 100));
-                            (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
-                        }
-
-                        if (i is Monster || i is Mundane || i is Aisling)
-                            client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial,
-                                    Skill.Template.TargetAnimation, 0, 100));
+                        client.Aisling.Show(Scope.NearbyAislings,
+                            new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
+                                Skill.Template.TargetAnimation, 0, 100));
                     }
 
                     client.Aisling.Show(Scope.NearbyAislings, action);
@@ -139,7 +129,6 @@ namespace Darkages.Scripting.Scripts.Skills
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                client.TrainSkill(Skill);
 
                 if (Skill.Ready)
                 {
@@ -149,7 +138,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         client.Refresh();
                     }
 
-                    client.Send(new ServerFormat3F((byte)Skill.Template.Pane, Skill.Slot, Skill.Template.Cooldown));
+                    client.TrainSkill(Skill);
 
                     var success = true;
 
@@ -168,7 +157,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 if (target is Aisling)
                 {
                     (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29((uint) target.Serial, (uint) target.Serial,
+                        new ServerFormat29((uint)target.Serial, (uint)target.Serial,
                             Skill.Template.TargetAnimation, 0, 100));
 
                     var dmg = 1 * sprite.Str * 20 * Skill.Level;

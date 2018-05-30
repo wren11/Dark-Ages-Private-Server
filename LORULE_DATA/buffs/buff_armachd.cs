@@ -24,11 +24,11 @@ namespace Darkages.Storage.locales.Buffs
         public buff_armachd() : base()
         {
             Name = "armachd";
-            Length = 5;
-            Icon = 3;
+            Length = 60;
+            Icon = 0;
         }
 
-        public StatusOperator AcModifer => new StatusOperator(StatusOperator.Operator.Remove, 10);
+        public StatusOperator AcModifer => new StatusOperator(StatusOperator.Operator.Remove, 25);
 
         public override void OnApplied(Sprite Affected, Buff buff)
         {

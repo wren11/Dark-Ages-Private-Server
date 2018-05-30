@@ -15,9 +15,9 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using System;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
+using System;
 
 namespace Darkages.Scripting.Scripts.Skills
 {
@@ -73,21 +73,21 @@ namespace Darkages.Scripting.Scripts.Skills
 
                     Target = i;
 
-                    var dmg = client.Aisling.CurrentHp * 300 / 100 + 99 * Skill.Level;
+                    var dmg = sprite.MaximumHp / 100 * 300;
                     i.ApplyDamage(sprite, dmg, false, 44);
 
 
                     if (i is Aisling)
                     {
                         (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                            new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial, byte.MinValue,
+                            new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial, byte.MinValue,
                                 Skill.Template.TargetAnimation, 100));
                         (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
                     }
 
                     if (i is Monster || i is Mundane || i is Aisling)
                         client.Aisling.Show(Scope.NearbyAislings,
-                            new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial,
+                            new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
                                 Skill.Template.TargetAnimation, 0, 100));
                 }
 
@@ -111,8 +111,6 @@ namespace Darkages.Scripting.Scripts.Skills
                         client.Refresh();
                     }
 
-                    client.Send(new ServerFormat3F((byte)Skill.Template.Pane, Skill.Slot, Skill.Template.Cooldown));
-
                     var success = Skill.RollDice(rand);
 
                     if (success)
@@ -130,10 +128,10 @@ namespace Darkages.Scripting.Scripts.Skills
                 if (target is Aisling)
                 {
                     (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29((uint) target.Serial, (uint) sprite.Serial,
+                        new ServerFormat29((uint)target.Serial, (uint)sprite.Serial,
                             Skill.Template.TargetAnimation, 0, 100));
 
-                    var dmg = sprite.CurrentHp * 300 / 100 + 99;
+                    var dmg = sprite.MaximumHp / 100 * 300;
                     target.ApplyDamage(sprite, dmg, false, 44);
 
 

@@ -50,6 +50,7 @@ namespace Darkages
             Remains = new CursedSachel(this);
         }
 
+        public List<ClientGameSettings> GameSettings { get; set; }
         public Bank BankManager { get; set; }
         public int CurrentWeight { get; set; }
         [JsonIgnore] public int MaximumWeight => (int)(_Str * ServerContext.Config.WeightIncreaseModifer);

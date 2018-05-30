@@ -127,7 +127,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 quest.ExpRewards.Add(5000);
                 quest.ExpRewards.Add(5000);
 
-                quest.SpellRewards.Add(ServerContext.GlobalSpellTemplateCache["beag ioc fein"]);
+                quest.SpellRewards.Add("beag ioc fein");
 
                 client.Aisling.Quests.Add(quest);
 
@@ -142,7 +142,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
                 Type = QuestType.KillCount,
                 Amount = 10,
-                TemplateContext = ServerContext.GlobalMonsterTemplateCache["Undead"]
+                Value = "Undead",
             });
 
             quest.QuestStages.Add(q1);

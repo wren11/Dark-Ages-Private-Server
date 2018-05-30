@@ -62,7 +62,7 @@
   "ObjectGarbageCollectorInterval": 1200.0,
   "ObjectHandlerInterval": 1.0,
   "PingInterval": 10.0,
-  "RefreshOnWalkCollision": true,
+  "RefreshOnWalkCollision": false,
   "RefreshRate": 1000,
   "RegenRate": 7000,
   "SaveRate": 25.0,
@@ -105,8 +105,34 @@
   "CantAttack": "Can't Attack.",
   "TimeOutValue": 45,
   "PortalTimeOut": 10.0,
-  "CancelWalkingIfRefreshing": true,
+  "CancelWalkingIfRefreshing": false,
   "SkullLength": 10,
   "GroupExpBonus": 5.0,
-  "PlayerLevelCap": 99
+  "PlayerLevelCap": 99,
+  "Settings": {
+    "$type": "Darkages.ServerConstants+GameSetting[], Darkages.Server",
+    "$values": [
+      {
+        "$type": "Darkages.ServerConstants+GameSetting, Darkages.Server",
+        "SettingOn": "Loot Mode  :Single",
+        "SettingOff": "Loot Mode  :Multi",
+        "Toggled": true,
+        "Enabled": true
+      },
+      {
+        "$type": "Darkages.ServerConstants+GameSetting, Darkages.Server",
+        "SettingOn": "PVP  :ON",
+        "SettingOff": "PVP  :OFF",
+        "Toggled": true,
+        "Enabled": true
+      },
+      {
+        "$type": "Darkages.ServerConstants+GameSetting, Darkages.Server",
+        "SettingOn": "AUTO LOOT GOLD  :OFF",
+        "SettingOff": "AUTO LOOT GOLD  :ON",
+        "Toggled": false,
+        "Enabled": false
+      }
+    ]
+  }
 }

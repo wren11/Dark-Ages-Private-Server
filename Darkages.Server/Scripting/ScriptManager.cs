@@ -17,7 +17,9 @@
 //*************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using Attribute = System.Attribute;
 
 namespace Darkages.Scripting
 {
@@ -40,24 +42,104 @@ namespace Darkages.Scripting
 
         static ScriptManager()
         {
-            var assembly = Assembly.GetExecutingAssembly();
+            var SCRIPTS = ServerContext.StoragePath + "\\Scripts";
+            var TOTALSCRIPTS = Directory.GetFiles(SCRIPTS, "*.cs", SearchOption.AllDirectories);
+            var SCRIPTSPROCESSED = 0;
 
-            if (assembly == null)
-                return;
-            foreach (var type in assembly.GetTypes())
+            Console.WriteLine("");
+            Console.WriteLine("[Processing Server Content]");
+            foreach (var script in TOTALSCRIPTS)
             {
-                ScriptAttribute attribute = null;
+                var assembly = GenerateScript(Path.GetFileNameWithoutExtension(script), File.ReadAllText(Path.GetFullPath(script)));
+                var types = assembly.GetTypes();
 
-                foreach (ScriptAttribute attr in type.GetCustomAttributes(typeof(ScriptAttribute), false))
+                foreach (var type in types)
                 {
-                    attribute = attr;
-                    break;
+                    ScriptAttribute attribute = null;
+
+                    foreach (ScriptAttribute attr in type.GetCustomAttributes(typeof(ScriptAttribute), false))
+                    {
+                        attribute = attr;
+                        break;
+                    }
+
+                    if (attribute == null)
+                        continue;
+                    scripts.Add(attribute.Name, type);
                 }
 
-                if (attribute == null)
-                    continue;
-                scripts.Add(attribute.Name, type);
+                Console.Clear();
+                Console.WriteLine("[Lorule Server]: Initializing...");
+                drawTextProgressBar(string.Format("Processing Scripts {0}", Path.GetFileNameWithoutExtension(script)), SCRIPTSPROCESSED++, TOTALSCRIPTS.Length);
             }
+
+            Console.Clear();
+            Console.WriteLine("[Lorule Server]: Online");
+        }
+
+        public static Assembly GenerateScript(string file, string source)
+        {
+            var provider_opts = new Dictionary<string, string>
+            {
+                { "CompilerVersion","v4.0"}
+            };
+
+            var provider = new Microsoft.CSharp.CSharpCodeProvider(provider_opts);
+            var compiler_params = new System.CodeDom.Compiler.CompilerParameters();
+
+            compiler_params.GenerateInMemory = true;
+            compiler_params.GenerateExecutable = false;
+            compiler_params.ReferencedAssemblies.Add(typeof(ServerContext).Assembly.Location);
+            compiler_params.ReferencedAssemblies.Add(typeof(object).Assembly.Location);
+            compiler_params.ReferencedAssemblies.Add(typeof(NLog.ILogger).Assembly.Location);
+            compiler_params.ReferencedAssemblies.Add("System.dll");
+            compiler_params.ReferencedAssemblies.Add("System.IO.dll");
+            compiler_params.ReferencedAssemblies.Add("System.Linq.dll");
+            compiler_params.ReferencedAssemblies.Add("System.Core.dll");
+            compiler_params.ReferencedAssemblies.Add("System.Collections.dll");
+
+            source = source.Replace("?.", ".");
+            
+            var results = provider.CompileAssemblyFromSource(compiler_params, source);
+            var type = results.CompiledAssembly;
+
+            if (results.Errors.Count > 0)
+            {
+
+            }
+
+            return type;
+        }
+
+        //shamelessly copy pasted from : https://stackoverflow.com/questions/24918768/progress-bar-in-console-application
+        public static void drawTextProgressBar(string stepDescription, int progress, int total)
+        {
+            int totalChunks = 30;
+
+            //draw empty progress bar
+            Console.CursorLeft = 0;
+            Console.Write("["); //start
+            Console.CursorLeft = totalChunks + 1;
+            Console.Write("]"); //end
+            Console.CursorLeft = 1;
+
+            double pctComplete = Convert.ToDouble(progress) / total;
+            int numChunksComplete = Convert.ToInt16(totalChunks * pctComplete);
+
+            //draw completed chunks
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.Write("".PadRight(numChunksComplete));
+
+            //draw incomplete chunks
+            Console.BackgroundColor = ConsoleColor.Gray;
+            Console.Write("".PadRight(totalChunks - numChunksComplete));
+
+            //draw totals
+            Console.CursorLeft = totalChunks + 5;
+            Console.BackgroundColor = ConsoleColor.Black;
+
+            string output = progress.ToString() + " of " + total.ToString();
+            Console.Write(output.PadRight(15) + stepDescription); //pad the output so when changing from 3 to 4 digits we avoid text shifting
         }
 
         public static TScript Load<TScript>(string name, params object[] args)

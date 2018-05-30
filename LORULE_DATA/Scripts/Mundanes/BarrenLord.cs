@@ -15,11 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System.Collections.Generic;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -63,13 +63,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 if (client.Aisling.MaximumHp <= 0)
                     client.Aisling._MaximumHp = ServerContext.Config.MinimumHp;
 
-                client.Aisling.CurrentHp = client.Aisling.MaximumHp;
-                client.Aisling.Flags = AislingFlags.Normal;
-                client.HpRegenTimer.Disabled = false;
-                client.MpRegenTimer.Disabled = false;
-
-                client.CloseDialog();
-                client.SendMessage(0x02, "You have lost some health and feel a deep sharp pain in your ass.");
+                client.Revive();
+                client.SendMessage(0x02, "You have lost some health.");
                 client.SendStats(StatusFlags.All);
                 client.Aisling.GoHome();
             }

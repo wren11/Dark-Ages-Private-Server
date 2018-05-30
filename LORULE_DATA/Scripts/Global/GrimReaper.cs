@@ -15,11 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using System;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
+using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
+using System;
 
 namespace Darkages.Storage.locales.Scripts.Global
 {
@@ -49,22 +50,9 @@ namespace Darkages.Storage.locales.Scripts.Global
                         return;
                     }
 
-
-                    client.Aisling.RemoveAllBuffs();
-                    client.Aisling.RemoveAllDebuffs();
-
                     if (client.Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill))
                     {
-                        client.Aisling.LastMapId = client.Aisling.CurrentMapId;
-                        client.Aisling.LastPosition = client.Aisling.Position;
-
-                        client.CloseDialog();
-                        client.Aisling.Flags = AislingFlags.Dead;
-                        client.HpRegenTimer.Disabled = true;
-                        client.MpRegenTimer.Disabled = true;
-
-                        Client.LeaveArea(true, false);
-                        client.EnterArea();
+                        CastDeath(client);
 
                         var target = client.Aisling.Target;
 
@@ -86,24 +74,33 @@ namespace Darkages.Storage.locales.Scripts.Global
 
                     if (client.Aisling.Path != Class.Peasant)
                     {
-                        client.Aisling.LastMapId = client.Aisling.CurrentMapId;
-                        client.Aisling.LastPosition = client.Aisling.Position;
-
-                        client.CloseDialog();
-                        client.Aisling.Flags = AislingFlags.Dead;
-                        client.HpRegenTimer.Disabled = true;
-                        client.MpRegenTimer.Disabled = true;
-
-                        Client.LeaveArea(true, false);
-                        client.EnterArea();
-
-                        SendToHell(client);
+                        if (!client.Aisling.HasDebuff("skulled"))
+                        {
+                            var debuff = new debuff_reeping();
+                            {
+                                debuff.OnApplied(client.Aisling, debuff);
+                            }
+                        }
                     }
                     else
                     {
-                        client.SendAnimation(78, client.Aisling, client.Aisling);
-                        client.SendMessage(0x02, "You can't die if you have no soul.");
-                        client.Aisling.Recover();
+                        if (client.Aisling.AreaID != 85)
+                        {
+                            client.SendAnimation(78, client.Aisling, client.Aisling);
+                            client.SendMessage(0x02, "You can't die if you have no soul.");
+                            client.Aisling.Recover();
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 2; i++)
+                                client.Aisling.RemoveBuffsAndDebuffs();
+
+                            client.TransitionToMap(1006, new Position(2, 4));
+                            client.Aisling.TutorialCompleted = true;
+                            client.SendMessage(0x02, "You awake from a bad dream... or was it??");
+                            client.SendAnimation(94, client.Aisling, client.Aisling);
+                            client.Aisling.Recover();
+                        }
                     }
 
                     client.Send(new ServerFormat08(client.Aisling,
@@ -111,7 +108,21 @@ namespace Darkages.Storage.locales.Scripts.Global
                 }
         }
 
-        private static void SendToHell(GameClient client)
+        public static void CastDeath(GameClient client)
+        {
+            client.Aisling.LastMapId = client.Aisling.CurrentMapId;
+            client.Aisling.LastPosition = client.Aisling.Position;
+
+            client.CloseDialog();
+            client.Aisling.Flags = AislingFlags.Dead;
+            client.HpRegenTimer.Disabled = true;
+            client.MpRegenTimer.Disabled = true;
+
+            client.LeaveArea(true, false);
+            client.EnterArea();
+        }
+
+        public static void SendToHell(GameClient client)
         {
             if (!ServerContext.GlobalMapCache.ContainsKey(ServerContext.Config.DeathMap))
                 return;
@@ -128,8 +139,9 @@ namespace Darkages.Storage.locales.Scripts.Global
             client.Aisling.Y = 21;
             client.Aisling.Direction = 0;
             client.Aisling.CurrentMapId = ServerContext.Config.DeathMap;
-            client.Aisling.AreaID = ServerContext.Config.DeathMap;
             client.EnterArea();
+
+            client.Send(new ServerFormat08(client.Aisling, StatusFlags.All));
         }
 
         public override void Update(TimeSpan elapsedTime)

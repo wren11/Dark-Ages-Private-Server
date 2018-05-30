@@ -19,8 +19,8 @@ using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
+using NLog;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,7 +32,7 @@ namespace Darkages.Network
     public abstract class NetworkClient<TClient>
         : ObjectManager
     {
-        private readonly BlockingCollection<NetworkFormat> _sendBuffers = new BlockingCollection<NetworkFormat>();
+        private readonly Queue<NetworkFormat> _sendBuffers = new Queue<NetworkFormat>();
         private bool _sending;
         public int Errors;
 
@@ -100,24 +100,35 @@ namespace Darkages.Network
         {
             lock (_sendBuffers)
             {
-                if (_sendBuffers.TryAdd(format))
-                {
-                    if (_sending)
-                        return;
+                _sendBuffers.Enqueue(format);
 
-                    _sending = true;
-                    ThreadPool.QueueUserWorkItem(
-                        SendBuffers,
-                        _sending
-                    );
-                }
+                if (_sending)
+                    return;
+
+                _sending = true;
+                Task.Run(() => SendBuffers());
             }
         }
 
-        private void SendBuffers(object state)
+        private void SendBuffers()
         {
-            foreach (var format in _sendBuffers.GetConsumingEnumerable())
+            while (_sending)
+            {
+                NetworkFormat format;
+
+                lock (_sendBuffers)
+                {
+                    if (_sendBuffers.Count == 0)
+                    {
+                        _sending = false;
+                        return;
+                    }
+
+                    format = _sendBuffers.Dequeue();
+                }
+
                 SendFormat(format);
+            }
         }
 
         public void SendPacket(byte[] data)

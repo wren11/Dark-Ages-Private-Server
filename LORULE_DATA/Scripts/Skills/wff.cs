@@ -15,12 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using System;
-using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
+using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
+using System;
 
 namespace Darkages.Storage.locales.Scripts.Skills
 {
@@ -52,7 +52,9 @@ namespace Darkages.Storage.locales.Scripts.Skills
             {
                 var client = (sprite as Aisling).Client;
 
-                var debuff = Clone(Skill.Template.Debuff);
+                var debuff = Clone<debuff_frozen>(Skill.Template.Debuff);
+                if (debuff == null)
+                    debuff = new debuff_frozen();
 
                 var i = sprite.GetInfront(sprite);
 
@@ -105,8 +107,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                 if (client.Aisling != null && !client.Aisling.Dead)
                 {
-                    client.Send(new ServerFormat3F((byte)Skill.Template.Pane, Skill.Slot, Skill.Template.Cooldown));
-
                     var success = Skill.RollDice(rand);
 
                     if (success)
@@ -122,7 +122,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     return;
                 if (target is Aisling)
                 {
-                    var debuff = Clone(Skill.Template.Debuff);
+                    var debuff = Clone<debuff_frozen>(Skill.Template.Debuff);
 
                     if (!target.HasDebuff(debuff.Name))
                         Apply((target as Aisling)?.Client, debuff, target);

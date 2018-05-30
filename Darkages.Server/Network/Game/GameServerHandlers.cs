@@ -30,6 +30,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using static Darkages.ServerConstants;
 
 namespace Darkages.Network.Game
 {
@@ -251,6 +252,47 @@ namespace Darkages.Network.Game
                 SendMapData(client);
 
             client.ShouldUpdateMap = false;
+        }
+
+        /// <summary>
+        /// Settings Requested
+        /// </summary>
+        protected override void Format1BHandler(GameClient client, ClientFormat1B format)
+        {
+            var settingKeys = client.Aisling.GameSettings.ToArray();
+
+            if (settingKeys.Length == 0)
+                return;
+
+            var settingIdx = format.Index;
+
+            if (settingIdx > 0)
+            {
+                settingIdx--;
+
+                if (settingIdx < 0)
+                    return;
+
+                var setting = settingKeys[settingIdx];
+                setting.Toggle();
+
+                UpdateSettings(client);
+            }
+            else
+            {
+                UpdateSettings(client);
+            }
+        }
+
+        public void UpdateSettings(GameClient client)
+        {
+            var msg = "\t";
+            foreach (var setting in client.Aisling.GameSettings)
+            {
+                msg += setting.Enabled ? setting.EnabledSettingStr : setting.DisabledSettingStr;
+                msg += "\t";
+            }
+            client.SendMessage(0x07, msg);
         }
 
         /// <summary>

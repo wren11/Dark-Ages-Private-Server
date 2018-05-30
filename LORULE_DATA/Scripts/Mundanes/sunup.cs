@@ -15,13 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -34,7 +34,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             Mundane.Template.QuestKey = "sunup_quest";
 
-            SequenceMenu.DisplayImage = (ushort) Mundane.Template.Image;
+            SequenceMenu.DisplayImage = (ushort)Mundane.Template.Image;
             SequenceMenu.Sequences.Add(new DialogSequence
             {
                 Title = Mundane.Template.Name,
@@ -117,12 +117,12 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             if (quest == null)
             {
-                quest = new Quest {Name = Mundane.Template.QuestKey};
+                quest = new Quest { Name = Mundane.Template.QuestKey };
                 quest.LegendRewards.Add(new Legend.LegendItem
                 {
                     Category = "Quest",
-                    Color = (byte) LegendColor.Blue,
-                    Icon = (byte) LegendIcon.Victory,
+                    Color = (byte)LegendColor.Blue,
+                    Icon = (byte)LegendIcon.Victory,
                     Value = "Aided Sunup at the Refugee Camp"
                 });
 
@@ -139,8 +139,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             quest.QuestStages = new List<QuestStep<Template>>();
 
-            var q1 = new QuestStep<Template> {Type = QuestType.Accept};
-            var q2 = new QuestStep<Template> {Type = QuestType.SingleItemHandIn};
+            var q1 = new QuestStep<Template> { Type = QuestType.Accept };
+            var q2 = new QuestStep<Template> { Type = QuestType.SingleItemHandIn };
 
             q2.Prerequisites.Add(new QuestRequirement
             {
@@ -215,7 +215,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     case ushort.MaxValue:
                         if (SequenceMenu.CanMoveBack)
                         {
-                            var idx = (ushort) (SequenceMenu.SequenceIndex - 1);
+                            var idx = (ushort)(SequenceMenu.SequenceIndex - 1);
 
                             SequenceMenu.SequenceIndex = idx;
                             client.DlgSession.Sequence = idx;

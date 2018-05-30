@@ -38,6 +38,20 @@ namespace Darkages.Storage.locales.Scripts.Items
 
             if (sprite is Aisling)
             {
+                var obj = sprite as Aisling;
+                if (obj.EquipmentManager.Weapon != null
+                    && obj.EquipmentManager.Weapon.Item.Template.Flags.HasFlag(ItemFlags.TwoHanded))
+                {
+                    if (!obj.EquipmentManager.RemoveFromExisting(obj.EquipmentManager.Weapon.Slot, true))
+                    {
+                        obj.Client.SendMessage(0x02, "You require both hands to equip such an item.");
+                        return;
+                    }
+                }
+            }
+
+            if (sprite is Aisling)
+            {
                 var client = (sprite as Aisling).Client;
 
                 if (Item.Template.Flags.HasFlag(ItemFlags.Equipable))
@@ -65,7 +79,7 @@ namespace Darkages.Storage.locales.Scripts.Items
 
                 Item.ApplyModifers(client);
 
-                client.Aisling.Shield = (byte) Item.Template.Image;
+                client.Aisling.Shield = (byte)Item.Template.Image;
             }
         }
 

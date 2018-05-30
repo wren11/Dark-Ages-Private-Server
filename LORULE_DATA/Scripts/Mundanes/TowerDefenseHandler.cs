@@ -15,22 +15,20 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
     [Script("TowerDefenseHandler")]
     public class TowerDefenseHandler : MundaneScript
     {
-        public TowerDefenseHandler(GameServer server, Mundane mundane) 
+        public TowerDefenseHandler(GameServer server, Mundane mundane)
             : base(server, mundane)
         {
 

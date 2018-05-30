@@ -27,13 +27,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Darkages
 {
     public class ServerContext : ObjectManager
     {
-        internal static volatile object SyncObj = new object();
+        public static object SyncObj = new object();
 
         public static int Errors, DefaultPort;
         public static bool Running, Paused;
@@ -43,6 +44,7 @@ namespace Darkages
         public static ServerConstants Config;
         public static IPAddress Ipaddress => IPAddress.Parse(File.ReadAllText("server.tbl"));
         public static string StoragePath = @"..\..\..\LORULE_DATA";
+        public static string ScriptOEMPath = @"..\..\..\Darkages.Server\Assets\locales";
 
         public static List<Redirect> GlobalRedirects = new List<Redirect>();
 
@@ -224,6 +226,65 @@ namespace Darkages
             }
 
             InitFromConfig();
+            UpdateLocales();
+        }
+
+        public static void UpdateLocales()
+        {
+            var src = Path.GetFullPath(ScriptOEMPath);
+            var dst = Path.GetFullPath(StoragePath);
+
+            CopyFolderContents(src, dst);
+        }
+
+        private static bool CopyFolderContents(string SourcePath, string DestinationPath)
+        {
+            SourcePath = SourcePath.EndsWith(@"\") ? SourcePath : SourcePath + @"\";
+            DestinationPath = DestinationPath.EndsWith(@"\") ? DestinationPath : DestinationPath + @"\";
+
+            try
+            {
+                if (Directory.Exists(SourcePath))
+                {
+                    if (Directory.Exists(DestinationPath) == false)
+                    {
+                        Directory.CreateDirectory(DestinationPath);
+                    }
+
+                    foreach (string file in Directory.GetFiles(SourcePath))
+                    {
+
+                        var a = new FileInfo(file);
+                        var b = new FileInfo(Path.Combine(DestinationPath, a.Name));
+
+                        if (b.Exists)
+                        {
+                            if (a.LastWriteTimeUtc != b.LastWriteTimeUtc && a.Length != b.Length)
+                            {
+                                a.CopyTo(string.Format(@"{0}\{1}", DestinationPath, a.Name), true);
+                            }
+                        }
+                        else
+                        {
+                            a.CopyTo(string.Format(@"{0}\{1}", DestinationPath, a.Name), true);
+                        }
+                    }
+
+                    foreach (string drs in Directory.GetDirectories(SourcePath))
+                    {
+                        DirectoryInfo directoryInfo = new DirectoryInfo(drs);
+                        if (CopyFolderContents(drs, DestinationPath + directoryInfo.Name) == false)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public static void InitFromConfig()
@@ -239,7 +300,12 @@ namespace Darkages
         {
             logger.Trace("Loading Meta Database");
             {
-                GlobalMetaCache.AddRange(MetafileManager.GetMetafiles());
+                var mfs = MetafileManager.GetMetafiles();
+
+                if (mfs.Count > 0)
+                {
+                    GlobalMetaCache.AddRange(mfs);
+                }
             }
             logger.Trace("Building Meta Cache: {0} loaded.", GlobalMetaCache.Count);
         }
@@ -284,7 +350,6 @@ namespace Darkages
                     LoadMundaneTemplates();
                     LoadWarpTemplates();
                     LoadWorldMapTemplates();
-                    LoadMetaDatabase();
                     CacheCommunityAssets();
                 }
 
@@ -627,7 +692,7 @@ namespace Darkages
                              Item = "Goblin's Skull"
                         },
                         new ItemPredicate()
-                        {  
+                        {
                              AmountRequired = 3,
                              Item = "Wolf's Teeth"
                         },
@@ -889,6 +954,13 @@ namespace Darkages
 
                 return false;
             });
+
+            while (Paused)
+            {
+                Thread.Sleep(1000);
+            }
+
+            LoadMetaDatabase();
 
         }
     }

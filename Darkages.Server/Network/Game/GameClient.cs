@@ -67,6 +67,22 @@ namespace Darkages.Network.Game
 
         public ushort LastBoardActivated { get; set; }
 
+        public void BuildSettings()
+        {
+            if (ServerContext.Config.Settings == null || ServerContext.Config.Settings.Length == 0)
+                return;
+
+            if (Aisling.GameSettings == null || Aisling.GameSettings.Count == 0)
+            {
+                Aisling.GameSettings = new List<ClientGameSettings>();
+
+                foreach (var settings in ServerContext.Config.Settings)
+                {
+                    Aisling.GameSettings.Add(new ClientGameSettings(settings.SettingOn, settings.SettingOff, settings.Enabled));
+                }
+            }
+        }
+
         public bool IsDead()
         {
             return Aisling != null && Aisling.Flags.HasFlag(AislingFlags.Dead);
@@ -447,6 +463,7 @@ namespace Darkages.Network.Game
                 Aisling.PortalSession = null;
                 Aisling.LastMapId = short.MaxValue;
             }
+            BuildSettings();
         }
 
         private void LoadGlobalScripts()
@@ -720,19 +737,7 @@ namespace Darkages.Network.Game
             Aisling.Remove(update, delete);
         }
 
-        public async void EnterArea(bool async = false)
-        {
-            if (!async)
-                Enter();
-            else
-            {
-                await Task.Run(() =>
-                {
-                    Enter();
-                    Thread.Sleep(500);
-                });
-            }
-        }
+        public void EnterArea() => Enter();
 
         private void Enter()
         {
@@ -811,21 +816,16 @@ namespace Darkages.Network.Game
 
         private void SendSerial()
         {
-            //send Serial
             Send(new ServerFormat05(Aisling));
         }
 
         public void SendLocation()
         {
-            //send position
             Send(new ServerFormat04(Aisling));
         }
 
         public void Save()
         {
-            //if (Aisling.AreaID != Aisling.CurrentMapId)
-            //    Aisling.AreaID = Aisling.CurrentMapId;
-
             ThreadPool.QueueUserWorkItem((state) =>
             {
                 StorageManager.AislingBucket.Save(Aisling);

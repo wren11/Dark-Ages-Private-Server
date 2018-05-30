@@ -15,10 +15,10 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using System;
-using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
+using System;
+using System.Linq;
 
 namespace Darkages.Scripting.Scripts.Skills
 {
@@ -56,13 +56,13 @@ namespace Darkages.Scripting.Scripts.Skills
                 var action = new ServerFormat1A
                 {
                     Serial = client.Aisling.Serial,
-                    Number = 0x01,
+                    Number = (byte)(client.Aisling.Path == Class.Warrior ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01 : 0x01),
                     Speed = 20
                 };
 
 
                 var enemy = client.Aisling.GetInfront();
-
+                var success = false;
                 if (enemy != null)
                 {
                     foreach (var i in enemy)
@@ -84,13 +84,11 @@ namespace Darkages.Scripting.Scripts.Skills
                         Target = i;
 
 
-                        var imp = (Skill.Level * 10 / 100);
+
+                        var imp = (Skill.Level * 5 / 100);
                         var dmg = (client.Aisling.Str + client.Aisling.Dex * imp);
-
-                        dmg *= 8;
-
-                        i.ApplyDamage(sprite, dmg);
-
+                        i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
+                        success = true;
 
                         if (i is Aisling)
                         {
@@ -107,6 +105,9 @@ namespace Darkages.Scripting.Scripts.Skills
                     }
                 }
 
+                if (!success)
+                    client.Aisling.Show(Scope.VeryNearbyAislings, new ServerFormat13(0, 0, Skill.Template.Sound));
+
                 client.Aisling.Show(Scope.NearbyAislings, action);
             }
         }
@@ -116,6 +117,7 @@ namespace Darkages.Scripting.Scripts.Skills
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
+
                 client.TrainSkill(Skill);
                 if (Skill.Ready)
                 {
@@ -124,9 +126,6 @@ namespace Darkages.Scripting.Scripts.Skills
                         client.Aisling.Flags = AislingFlags.Normal;
                         client.Refresh();
                     }
-
-                    client.Send(new ServerFormat3F((byte)Skill.Template.Pane, Skill.Slot, Skill.Template.Cooldown));
-
                     OnSuccess(sprite);
                 }
             }

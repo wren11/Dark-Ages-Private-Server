@@ -43,13 +43,10 @@ namespace Darkages.Storage.locales.Scripts.Items
 
                 if (Item.Template.Flags.HasFlag(ItemFlags.Equipable))
                 {
-                    if (!client.CheckReqs(client, Item))
+                    if (client.CheckReqs(client, Item))
                     {
+                        client.Aisling.EquipmentManager.Add(Item.Template.EquipmentSlot, Item);
                     }
-                }
-                else
-                {
-                    client.Aisling.EquipmentManager.Add(Item.Template.EquipmentSlot, Item);
                 }
             }
         }
@@ -66,7 +63,7 @@ namespace Darkages.Storage.locales.Scripts.Items
 
                 Item.ApplyModifers(client);
 
-                client.Aisling.Pants = (byte) (Item.Template.HasPants ? 1 : 0);
+                client.Aisling.Pants = (byte)(Item.Template.HasPants ? 1 : 0);
                 client.Aisling.Armor = Item.Image;
             }
         }

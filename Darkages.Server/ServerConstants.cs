@@ -18,6 +18,7 @@
 using Darkages.Storage;
 using Darkages.Types;
 using Newtonsoft.Json;
+using System;
 
 namespace Darkages
 {
@@ -357,6 +358,27 @@ namespace Darkages
         [JsonProperty] public double GroupExpBonus = 5.0;
 
         [JsonProperty] public int PlayerLevelCap = 99;
+
+        [JsonProperty]
+        public GameSetting[] Settings = new GameSetting[]
+        {
+            new GameSetting("Loot Mode  :Single", "Loot Mode  :Multi", true),
+            new GameSetting("PVP  :ON", "PVP  :OFF", true),
+            new GameSetting("AUTO LOOT GOLD  :OFF", "AUTO LOOT GOLD  :ON", false)
+        };
+
+        public struct GameSetting
+        {
+            public string SettingOn, SettingOff;
+            public bool Enabled;
+
+            public GameSetting(string _SettingOn, string _SettingOff, bool _Enabled = false)
+            {
+                SettingOn   = _SettingOn;
+                SettingOff  = _SettingOff;
+                Enabled     = _Enabled;
+            }
+        }
 
         public override string ToString()
         {
