@@ -35,7 +35,7 @@ namespace Darkages
         [JsonIgnore] [Browsable(false)] public ushort Hash;
 
         [JsonIgnore] [Browsable(false)] private TileContent[,] Tile;
-
+         
         [JsonIgnore]
         [Browsable(false)]
         private readonly GameServerTimer WarpTimer =
