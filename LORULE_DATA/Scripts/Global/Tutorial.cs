@@ -244,6 +244,8 @@ namespace Darkages.Storage.locales.Scripts.Global
             quest.ItemRewards.Add("Small Emerald Ring");
             quest.ItemRewards.Add("Small Spinal Ring");
             quest.ItemRewards.Add("Wooden Shield");
+            quest.ItemRewards.Add("Orbital Wand");
+
 
             client.Aisling.Quests.Add(quest);
             quest.QuestStages = new List<QuestStep<Template>>();

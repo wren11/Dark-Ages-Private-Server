@@ -79,6 +79,8 @@ namespace Darkages
 
         [JsonProperty] public string ConAddedMessage = "You become more fit.";
 
+        [JsonProperty] public string SomethingWentWrong = "Something went wrong.";
+
         [JsonProperty] public int ConnectionCapacity = 2048;
 
         [JsonProperty]

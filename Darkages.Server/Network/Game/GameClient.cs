@@ -643,7 +643,11 @@ namespace Darkages.Network.Game
             var items_Available = Aisling.Inventory.Items.Values
                 .Where(i => i != null && i.Template != null).ToArray();
 
+
             var formats = new List<NetworkFormat>();
+
+            
+
 
             for (var i = 0; i < items_Available.Length; i++)
             {

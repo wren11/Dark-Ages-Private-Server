@@ -20,6 +20,7 @@ using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Storage;
 using Darkages.Storage.locales.Buffs;
+using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
@@ -637,6 +638,28 @@ namespace Darkages
                         ScriptKey = "ao puinsein"
                     };
 
+
+                GlobalSpellTemplateCache["ao sith"]
+                    = new SpellTemplate()
+                    {
+                        Animation = 232,
+                        BaseLines = 1,
+                        Icon = 181,
+                        LevelRate = 0.20,
+                        ManaCost = 200,
+                        MaxLevel = 100,
+                        Name = "ao sith",
+                        NpcKey = "etaen",
+                        MinLines = 0,
+                        Pane = Pane.Spells,
+                        TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                        MaxLines = 2,
+                        TierLevel = Tier.Tier1,
+                        Sound = 8,
+                        ScriptKey = "ao sith",
+                        Description = "Removes all effects from a target.",
+                    };
+
                 GlobalSpellTemplateCache["ia naomh aite"]
                  = new SpellTemplate()
                  {
@@ -657,6 +680,60 @@ namespace Darkages
                      ScriptKey = "aite",
                      Buff = new buff_aite()
                  };
+
+
+                GlobalSpellTemplateCache["fas spiorad"] = new SpellTemplate()
+                {
+                    Animation = 1,
+                    BaseLines = 9,
+                    MinLines = 1,
+                    MaxLines = 9,
+                    ScriptKey = "fas spiorad",
+                    Debuff = new debuff_fasspoirad(),
+                    Description = "Deals 1/3 of mana in damage to the player and restores 100% mana.",
+                    Icon = 26,
+                    LevelRate = 0.0,
+                    ManaCost = 0,
+                    Pane = Pane.Spells,
+                    TierLevel = Tier.Tier1,
+                    Sound = 8,
+                    Name = "fas spiorad",
+                    MaxLevel = 100,
+                    NpcKey = "dar",
+                    TargetType = SpellTemplate.SpellUseType.NoTarget,
+                    Prerequisites = new LearningPredicate()
+                    {
+                        Class_Required = Class.Wizard,
+                        Con_Required = 3,
+                        Int_Required = 3,
+                        Wis_Required = 3,
+                        Dex_Required = 3,
+                        Str_Required = 3,
+                        Stage_Required = ClassStage.Master,
+                        ExpLevel_Required = 99
+                    },
+                };
+
+
+                //make a 1 line staff programatically.
+                //StorageManager.ItemBucket.Save(new ItemTemplate()
+                //{
+                //    DisplayImage = 0x8000 + 2279,
+                //    Image = 151,
+                //    SpellOperator = new SpellOperator(SpellOperator.SpellOperatorPolicy.Set, SpellOperator.SpellOperatorScope.all, 1, 1),
+                //    Class = Class.Wizard,
+                //    LevelRequired = 1,
+                //    CanStack = false,
+                //    Name = "Orbital Wand",
+                //    Color = ItemColor.defaultgreen,
+                //    CarryWeight = 5,
+                //    DropRate = 0.5,
+                //    Value = 10000,
+                //    MaxDurability = 100000,
+                //    Flags = ItemFlags.Dropable | ItemFlags.Bankable | ItemFlags.Equipable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Tradeable | ItemFlags.TwoHanded | ItemFlags.Upgradeable,
+                //    EquipmentSlot = ItemSlots.Weapon,
+                //    ScriptName = "Weapon"
+                //});
 
                 GlobalSpellTemplateCache["dion"].Buff = new buff_dion();
                 GlobalSpellTemplateCache["mor dion"].Buff = new buff_mordion();

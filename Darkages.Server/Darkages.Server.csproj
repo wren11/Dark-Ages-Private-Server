@@ -108,6 +108,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\locales\debuffs\debuff_fasspoirad.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Assets\locales\Scripts\Spells\cures\aosith.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Assets\locales\Scripts\Spells\utility\fasspoirad.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\Generator.cs" />
     <Compile Include="Common\Predicate.cs" />
