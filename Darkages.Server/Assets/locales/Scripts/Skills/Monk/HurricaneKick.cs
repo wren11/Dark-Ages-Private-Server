@@ -53,7 +53,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
             var objects = GetObjects(i => i.WithinRangeOf(sprite, distance), Get.Aislings | Get.Monsters | Get.Mundanes);
             foreach (var obj in objects)
             {
-                if (sprite.Position.DistanceSquared(obj.Position) <= distance)
+                if (sprite.Position.DistanceFrom(obj.Position) <= distance)
                 {
                     if ((Direction)sprite.Direction == Direction.North)
                     {
@@ -117,19 +117,22 @@ namespace Darkages.Storage.locales.Scripts.Skills
                             debuff.OnApplied(i, debuff);
                         }
                     
-                        var dmg = client.Aisling.Invisible ? 2 : 1 * (client.Aisling.Str + client.Aisling.Con) * 25 * Skill.Level;
+                        var dmg = (int)(client.Aisling.Invisible ? 2 : 1 * (client.Aisling.Str + client.Aisling.Con) * 0.05 * Skill.Level);
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
 
-                        if (i is Monster) (i as Monster).Target = client.Aisling;
+                        if (i is Monster)
+                            (i as Monster).Target = client.Aisling;
+
                         if (i is Aisling)
                         {
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
                                 new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial, byte.MinValue,
                                     Skill.Template.TargetAnimation, 100));
+
                             (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
                         }
 
-                        if (i is Monster || i is Mundane || i is Aisling)
+                        if (i is Monster || i is Mundane)
                             client.Aisling.Show(Scope.NearbyAislings,
                                 new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
                                     Skill.Template.TargetAnimation, 0, 100));

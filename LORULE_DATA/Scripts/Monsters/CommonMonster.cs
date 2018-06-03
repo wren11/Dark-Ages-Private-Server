@@ -182,6 +182,9 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void Update(TimeSpan elapsedTime)
         {
+            if (Monster == null)
+                return;
+
             if (!Monster.IsAlive)
                 return;
 
@@ -194,30 +197,37 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             Monster.CastTimer.Update(elapsedTime);
             Monster.WalkTimer.Update(elapsedTime);
 
-            if (Monster.BashTimer.Elapsed)
+            try
             {
-                Monster.BashTimer.Reset();
-
-                if (Monster.BashEnabled)
-                    Bash();
-            }
-
-            if (Monster.CastTimer.Elapsed)
-            {
-                Monster.CastTimer.Reset();
-
-                if (Monster.CastEnabled)
-                    CastSpell();
-            }
-
-            if (Monster.WalkTimer.Elapsed)
-            {
-                Monster.WalkTimer.Reset();
-
-                if (Monster.WalkEnabled)
+                if (Monster.BashTimer.Elapsed)
                 {
-                    Walk();
+                    Monster.BashTimer.Reset();
+
+                    if (Monster.BashEnabled)
+                        Bash();
                 }
+
+                if (Monster.CastTimer.Elapsed)
+                {
+                    Monster.CastTimer.Reset();
+
+                    if (Monster.CastEnabled)
+                        CastSpell();
+                }
+
+                if (Monster.WalkTimer.Elapsed)
+                {
+                    Monster.WalkTimer.Reset();
+
+                    if (Monster.WalkEnabled)
+                    {
+                        Walk();
+                    }
+                }
+            }
+            catch
+            {
+                //ignore
             }
         }
 
@@ -275,13 +285,16 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 if (_random.Next(1, 101) < ServerContext.Config.MonsterSpellSuccessRate)
                 {
                     var spellidx = _random.Next(SpellScripts.Count);
-                    SpellScripts[spellidx].OnUse(Monster, Target);
+
+                    if (SpellScripts[spellidx] != null)
+                        SpellScripts[spellidx].OnUse(Monster, Target);
                 }
             }
 
             if (Monster != null && Monster.Target != null && Monster.Target.CurrentHp > 0)
             {
-                DefaultSpell.OnUse(Monster, Monster.Target);
+                if (DefaultSpell != null)
+                    DefaultSpell.OnUse(Monster, Monster.Target);
             }
         }
 

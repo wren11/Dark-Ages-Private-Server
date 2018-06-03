@@ -44,7 +44,7 @@ namespace Darkages
         [JsonIgnore]
         [Browsable(false)]
         private readonly GameServerTimer ScriptTimer =
-            new GameServerTimer(TimeSpan.FromMilliseconds(100));
+            new GameServerTimer(TimeSpan.FromMilliseconds(200));
 
 
         [JsonIgnore] [Browsable(false)] public byte[] Data { get; set; }

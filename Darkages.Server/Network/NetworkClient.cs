@@ -98,6 +98,13 @@ namespace Darkages.Network
 
         public void SendAsync(NetworkFormat format)
         {
+            if (format is ServerFormat13 || format is ServerFormat29 || format is ServerFormat08
+                || format is ServerFormat0C || format is ServerFormat0E)
+            {
+                SendFormat(format);
+                return;
+            }
+
             lock (_sendBuffers)
             {
                 _sendBuffers.Enqueue(format);
