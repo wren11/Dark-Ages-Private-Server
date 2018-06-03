@@ -124,7 +124,7 @@ namespace Darkages
 
         [JsonIgnore] public List<Aisling> PartyMembers => GroupParty?.Members;
 
-        [JsonIgnore] public PortalSession PortalSession { get; set; }
+        public PortalSession PortalSession { get; set; }
 
         [JsonIgnore] public int LastMapId { get; set; }
 
@@ -186,7 +186,7 @@ namespace Darkages
             {
                 var targetMap = ServerContext.GlobalMapCache[DestinationMap];
 
-                Client.LeaveArea(true, false);
+                Client.LeaveArea(true, true);
                 Client.Aisling.X = ServerContext.Config.TransitionPointX;
                 Client.Aisling.Y = ServerContext.Config.TransitionPointY;
                 Client.Aisling.CurrentMapId = DestinationMap;
@@ -319,38 +319,38 @@ namespace Darkages
                 Nation = (byte)randomFraction,
             };
 
-            int idx = 1;
-            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Keys)
-            {
-                if (ServerContext.GlobalSkillTemplateCache[skill].Pane == Pane.Tools)
-                    continue;
+            //int idx = 1;
+            //foreach (var skill in ServerContext.GlobalSkillTemplateCache.Keys)
+            //{
+            //    if (ServerContext.GlobalSkillTemplateCache[skill].Pane == Pane.Tools)
+            //        continue;
 
-                Skill.GiveTo(result, skill, 100);
-            }
-            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Keys)
-            {
-                if (ServerContext.GlobalSkillTemplateCache[skill].Pane == Pane.Tools)
-                {
-                    Skill.GiveTo(result, skill, (byte)(72 + idx));
-                    idx++;
-                }
-            }
-            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Keys)
-            {
-                if (ServerContext.GlobalSpellTemplateCache[spell].Pane == Pane.Tools)
-                    continue;
+            //    Skill.GiveTo(result, skill, 100);
+            //}
+            //foreach (var skill in ServerContext.GlobalSkillTemplateCache.Keys)
+            //{
+            //    if (ServerContext.GlobalSkillTemplateCache[skill].Pane == Pane.Tools)
+            //    {
+            //        Skill.GiveTo(result, skill, (byte)(72 + idx));
+            //        idx++;
+            //    }
+            //}
+            //foreach (var spell in ServerContext.GlobalSpellTemplateCache.Keys)
+            //{
+            //    if (ServerContext.GlobalSpellTemplateCache[spell].Pane == Pane.Tools)
+            //        continue;
 
-                Spell.GiveTo(result, spell, 100);
-            }
-            idx = 1;
-            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Keys)
-            {
-                if (ServerContext.GlobalSpellTemplateCache[spell].Pane == Pane.Tools)
-                {
-                    Spell.GiveTo(result, spell, (byte)(72 + idx));
-                    idx++;
-                }
-            }
+            //    Spell.GiveTo(result, spell, 100);
+            //}
+            //idx = 1;
+            //foreach (var spell in ServerContext.GlobalSpellTemplateCache.Keys)
+            //{
+            //    if (ServerContext.GlobalSpellTemplateCache[spell].Pane == Pane.Tools)
+            //    {
+            //        Spell.GiveTo(result, spell, (byte)(72 + idx));
+            //        idx++;
+            //    }
+            //}
 
             if (DateTime.UtcNow.Year <= 2019)
             {

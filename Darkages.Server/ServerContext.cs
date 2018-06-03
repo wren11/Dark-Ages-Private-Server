@@ -77,6 +77,7 @@ namespace Darkages
 
         public static Board[] Community = new Board[7];
 
+
         public static void LoadSkillTemplates()
         {
             StorageManager.SkillBucket.CacheFromStorage();
@@ -227,7 +228,6 @@ namespace Darkages
             }
 
             InitFromConfig();
-            UpdateLocales();
         }
 
         public static void UpdateLocales()
@@ -282,7 +282,7 @@ namespace Darkages
                 }
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -343,6 +343,7 @@ namespace Darkages
                 EmptyCacheCollectors();
                 lock (SyncObj)
                 {
+                    UpdateLocales();
                     LoadMaps();
                     LoadSkillTemplates();
                     LoadSpellTemplates();
@@ -639,26 +640,35 @@ namespace Darkages
                     };
 
 
-                GlobalSpellTemplateCache["ao sith"]
-                    = new SpellTemplate()
-                    {
-                        Animation = 232,
-                        BaseLines = 1,
-                        Icon = 181,
-                        LevelRate = 0.20,
-                        ManaCost = 200,
-                        MaxLevel = 100,
-                        Name = "ao sith",
-                        NpcKey = "etaen",
-                        MinLines = 0,
-                        Pane = Pane.Spells,
-                        TargetType = SpellTemplate.SpellUseType.ChooseTarget,
-                        MaxLines = 2,
-                        TierLevel = Tier.Tier1,
-                        Sound = 8,
-                        ScriptKey = "ao sith",
-                        Description = "Removes all effects from a target.",
-                    };
+                //StorageManager.SpellBucket.Save(
+                //    new SpellTemplate()
+                //    {
+                //        Animation = 232,
+                //        BaseLines = 1,
+                //        Icon = 181,
+                //        LevelRate = 0.20,
+                //        ManaCost = 200,
+                //        MaxLevel = 100,
+                //        Name = "ao sith",
+                //        NpcKey = "etaen",
+                //        MinLines = 0,
+                //        Pane = Pane.Spells,
+                //        TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                //        MaxLines = 2,
+                //        TierLevel = Tier.Tier1,
+                //        Sound = 8,
+                //        ScriptKey = "ao sith",
+                //        Description = "Removes all effects from a target.",
+                //        Prerequisites = new LearningPredicate()
+                //        {
+                //            Class_Required = Class.Priest,
+                //            Int_Required = 50,
+                //            Wis_Required = 09,
+                //            Gold_Required = 30000000,        
+                //            Spell_Level_Required = 100,
+                //            Spell_Required = "ao suain",
+                //        },
+                //    });
 
                 GlobalSpellTemplateCache["ia naomh aite"]
                  = new SpellTemplate()

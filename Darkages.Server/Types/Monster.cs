@@ -402,9 +402,8 @@ namespace Darkages.Types
                 obj.Template.Level++;
 
 
-            //=E4 / 0.1 * E6 
-            obj.Template.MaximumHP = (int)(obj.Template.Level / 0.1 * 5);
-            obj.Template.MaximumMP = (int)(obj.Template.Level / 0.1 * 2);
+            obj.Template.MaximumHP = Config.MONSTER_HP_TABLE[obj.Template.Level];
+            obj.Template.MaximumMP = Config.MONSTER_HP_TABLE[obj.Template.Level] / 3;
 
 
             var stat = RandomEnumValue<PrimaryStat>();
@@ -418,19 +417,19 @@ namespace Darkages.Types
             switch (stat)
             {
                 case PrimaryStat.STR:
-                    obj._Str += (byte)(obj.Template.Level * 0.5 * 10);
+                    obj._Str += (byte)(obj.Template.Level * 0.5 * 2);
                     break;
                 case PrimaryStat.INT:
-                    obj._Int += (byte)(obj.Template.Level * 0.5 * 10);
+                    obj._Int += (byte)(obj.Template.Level * 0.5 * 2);
                     break;
                 case PrimaryStat.WIS:
-                    obj._Wis += (byte)(obj.Template.Level * 0.5 * 10);
+                    obj._Wis += (byte)(obj.Template.Level * 0.5 * 2);
                     break;
                 case PrimaryStat.CON:
-                    obj._Con += (byte)(obj.Template.Level * 0.5 * 10);
+                    obj._Con += (byte)(obj.Template.Level * 0.5 * 2);
                     break;
                 case PrimaryStat.DEX:
-                    obj._Dex += (byte)(obj.Template.Level * 0.5 * 10);
+                    obj._Dex += (byte)(obj.Template.Level * 0.5 * 2);
                     break;
 
             }

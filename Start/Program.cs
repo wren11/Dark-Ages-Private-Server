@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages;
+using Darkages.Common;
 using Darkages.Storage;
 using Newtonsoft.Json;
 using NLog;
@@ -121,7 +122,6 @@ namespace Lorule
 
             public void Report()
             {
-
                 new TaskFactory().StartNew(() =>
                 {
                     while (Running)

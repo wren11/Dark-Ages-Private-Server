@@ -139,7 +139,7 @@ namespace Darkages.Types
 
                         //send message
                         (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
-                            string.Format("Received {0}, You now have ({1})", DisplayName, item.Stacks + 1));
+                            string.Format("Received {0}, You now have ({1})", DisplayName, item.Stacks));
 
                         return true;
                     }

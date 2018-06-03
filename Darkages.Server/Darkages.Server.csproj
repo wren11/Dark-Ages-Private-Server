@@ -54,6 +54,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml" />
     <Reference Include="zlib.net, Version=1.0.3.0, Culture=neutral, PublicKeyToken=47d7877cb3620160">
       <SpecificVersion>False</SpecificVersion>
@@ -117,6 +118,7 @@
     <Compile Include="Assets\locales\Scripts\Spells\utility\fasspoirad.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Common\ConsoleSpinner.cs" />
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\Generator.cs" />
     <Compile Include="Common\Predicate.cs" />
@@ -128,6 +130,7 @@
     <Compile Include="IO\BufferWriter.cs" />
     <Compile Include="IO\Crc16Provider.cs" />
     <Compile Include="IO\Crc32Provider.cs" />
+    <Compile Include="MONSTER_HP_TABLE.cs" />
     <Compile Include="Network\Client.cs" />
     <Compile Include="Network\ClientFormats\ClientFormat00.cs" />
     <Compile Include="Network\ClientFormats\ClientFormat02.cs" />

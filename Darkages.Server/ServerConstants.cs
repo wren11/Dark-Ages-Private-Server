@@ -22,7 +22,7 @@ using System;
 
 namespace Darkages
 {
-    public class ServerConstants
+    public partial class ServerConstants
     {
         [JsonProperty] public bool AssailsCancelSpells = true;
 
@@ -365,10 +365,11 @@ namespace Darkages
         public string[] GlobalScripts = new string[]
         {
             "Grim Reaper",
-            "Tutorial",    
+            "Tutorial",
             "Tower Defender Player Reaper",
             "Reactors",
         };
+
 
         [JsonProperty]
         public GameSetting[] Settings = new GameSetting[]
@@ -385,9 +386,9 @@ namespace Darkages
 
             public GameSetting(string _SettingOn, string _SettingOff, bool _Enabled = false)
             {
-                SettingOn   = _SettingOn;
-                SettingOff  = _SettingOff;
-                Enabled     = _Enabled;
+                SettingOn = _SettingOn;
+                SettingOff = _SettingOff;
+                Enabled = _Enabled;
             }
         }
 

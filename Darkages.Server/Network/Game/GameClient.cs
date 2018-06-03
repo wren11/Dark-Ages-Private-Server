@@ -298,6 +298,16 @@ namespace Darkages.Network.Game
                         }
                     }
                 }
+
+                if (Aisling.PortalSession != null && (DateTime.UtcNow - Aisling.PortalSession.DateOpened).TotalSeconds > 10)
+                {
+                    if (Aisling.PortalSession.IsMapOpen)
+                    {
+                        Aisling.GoHome();
+                    }
+                    Aisling.PortalSession = null;
+
+                }
             }
             catch (Exception error)
             {
@@ -456,11 +466,11 @@ namespace Darkages.Network.Game
         {
             LastSave = DateTime.UtcNow;
             LastPingResponse = DateTime.UtcNow;
+
             BoardOpened = DateTime.UtcNow;
             {
                 Aisling.BonusAc = (sbyte)((ServerContext.Config.BaseAC - 20) - (Aisling.ExpLevel / 3));
                 Aisling.Exchange = null;
-                Aisling.PortalSession = null;
                 Aisling.LastMapId = short.MaxValue;
             }
             BuildSettings();

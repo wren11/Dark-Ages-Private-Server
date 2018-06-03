@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Caching;
 using Attribute = System.Attribute;
 
 namespace Darkages.Scripting
@@ -47,10 +48,25 @@ namespace Darkages.Scripting
             var SCRIPTSPROCESSED = 0;
 
             Console.WriteLine("");
-            Console.WriteLine("[Processing Server Content]");
+            Console.WriteLine("[Lorule Server]: Loading Game Scripts...");
+            Console.CursorLeft = 0;
+            ObjectCache cache = MemoryCache.Default;
+
             foreach (var script in TOTALSCRIPTS)
             {
-                var assembly = GenerateScript(Path.GetFileNameWithoutExtension(script), File.ReadAllText(Path.GetFullPath(script)));
+                var scriptKey = Path.GetFileNameWithoutExtension(script);
+                var scriptContents = cache[scriptKey] as string;
+
+                if (scriptContents == null)
+                {
+                    CacheItemPolicy policy = new CacheItemPolicy();
+                    policy.ChangeMonitors.Add(new HostFileChangeMonitor(new string[] { Path.GetFullPath(script) }));
+
+                    scriptContents = File.ReadAllText(Path.GetFullPath(script));
+                    cache.Set("source", scriptContents, policy);
+                }
+
+                var assembly = GenerateScript(Path.GetFileNameWithoutExtension(script), scriptContents);
                 var types = assembly.GetTypes();
 
                 foreach (var type in types)
@@ -68,14 +84,18 @@ namespace Darkages.Scripting
                     scripts.Add(attribute.Name, type);
                 }
 
-                Console.Clear();
-                Console.WriteLine("[Lorule Server]: Initializing...");
-                drawTextProgressBar(string.Format("Processing Scripts {0}", Path.GetFileNameWithoutExtension(script)), SCRIPTSPROCESSED++, TOTALSCRIPTS.Length);
+
+                drawTextProgressBar(string.Format("Processing Script:'{0}'", Path.GetFileNameWithoutExtension(script)), SCRIPTSPROCESSED++, TOTALSCRIPTS.Length);
+                Console.CursorLeft = 0;
             }
 
-            Console.Clear();
+            drawTextProgressBar(string.Format("Scripts Successfully Compiled: {0}", SCRIPTSPROCESSED), 100, 100);
+
+            Console.WriteLine("");
             Console.WriteLine("[Lorule Server]: Online");
         }
+
+
 
         public static Assembly GenerateScript(string file, string source)
         {
@@ -118,9 +138,9 @@ namespace Darkages.Scripting
 
             //draw empty progress bar
             Console.CursorLeft = 0;
-            Console.Write("["); //start
+            Console.Write(""); //start
             Console.CursorLeft = totalChunks + 1;
-            Console.Write("]"); //end
+            Console.Write(""); //end
             Console.CursorLeft = 1;
 
             double pctComplete = Convert.ToDouble(progress) / total;
@@ -138,8 +158,8 @@ namespace Darkages.Scripting
             Console.CursorLeft = totalChunks + 5;
             Console.BackgroundColor = ConsoleColor.Black;
 
-            string output = progress.ToString() + " of " + total.ToString();
-            Console.Write(output.PadRight(15) + stepDescription); //pad the output so when changing from 3 to 4 digits we avoid text shifting
+            string output = stepDescription;
+            Console.Write(output.PadRight(50)); 
         }
 
         public static TScript Load<TScript>(string name, params object[] args)
@@ -151,7 +171,9 @@ namespace Darkages.Scripting
             Type script;
 
             if (scripts.TryGetValue(name, out script))
+            {
                 return Activator.CreateInstance(script, args) as TScript;
+            }
 
             return null;
         }

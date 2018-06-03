@@ -60,15 +60,10 @@ namespace Darkages.Storage.locales.Scripts.Global
 
         private void EastWoodlands()
         {
-            if (Client.Aisling.CurrentMapId == 300 && Client.Aisling.Y > 1 && Client.Aisling.Y < 3)
+            if (Client.Aisling.CurrentMapId == 300 && Client.Aisling.Y == 2)
             {
                 Client.SendMessage(0x02, "This zone is governed by law. A guard has let you pass, this time.");
-
-                Task.Delay(750).ContinueWith((s) =>
-                {
-                    Client.TransitionToMap(Client.Aisling.CurrentMapId, new Types.Position(Client.Aisling.X, 5));
-                    Thread.Sleep(100);
-                });
+                Client.TransitionToMap(300, new Types.Position(3, 5));
             }
         }
     }

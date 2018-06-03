@@ -64,9 +64,11 @@ namespace Darkages.Storage.locales.Scripts.Spells
                             string.Format("{0} Attacks you with {1}.", client.Aisling.Username,
                                 Spell.Template.Name));
 
-                var d = 15 + (Spell.Level * client.Aisling.Int / 10);
+                var imp = (Spell.Level * 2 / 100);
+                var dmg = (int)(client.Aisling.Int / 2 * Spell.Template.DamageExponent);
 
-                var dmg = (int)((sprite.Int * d) * Spell.Template.DamageExponent);
+                dmg *= imp;
+
                 target.ApplyDamage(sprite, dmg, Spell.Template.ElementalProperty, Spell.Template.Sound);
 
                 client.SendMessage(0x02, string.Format("you cast {0}", Spell.Template.Name));
@@ -84,7 +86,11 @@ namespace Darkages.Storage.locales.Scripts.Spells
             else
             {
 
-                var dmg = sprite.GetBaseDamage(target);
+                var imp = (Spell.Level * 2 / 100);
+                var dmg = (int)(sprite.Int / 2 * Spell.Template.DamageExponent);
+
+                dmg *= imp;
+
                 target.ApplyDamage(sprite, dmg, Spell.Template.ElementalProperty, Spell.Template.Sound);
 
                 if (target is Aisling)

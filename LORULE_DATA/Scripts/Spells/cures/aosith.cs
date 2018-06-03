@@ -46,13 +46,18 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
         public override void OnSuccess(Sprite sprite, Sprite target)
         {
+            if (target == null)
+                return;
+
+            target.RemoveBuffsAndDebuffs();
+            target.SendAnimation(Spell.Template.Animation, target, sprite);
+
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
 
                 client.TrainSpell(Spell);
                 client.SendMessage(0x02, string.Format("you cast {0}", Spell.Template.Name));
-                client.SendAnimation(Spell.Template.Animation, target, sprite);
 
                 var action = new ServerFormat1A
                 {
@@ -73,7 +78,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 if (target is Aisling)
                 {
-                    target.RemoveBuffsAndDebuffs();
                     (target as Aisling).Client.SendStats(StatusFlags.All);
 
                     (target as Aisling).Client
@@ -98,8 +102,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
                                 Spell.Template.Name));
                 }
 
-                target.RemoveBuffsAndDebuffs();
-                target.SendAnimation(Spell.Template.Animation, target, sprite);
 
                 var action = new ServerFormat1A
                 {
@@ -122,20 +124,18 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
         public override void OnUse(Sprite sprite, Sprite target)
         {
-            if (sprite.CurrentMp - Spell.Template.ManaCost > 0)
-                sprite.CurrentMp -= Spell.Template.ManaCost;
-            else
+
+            if (sprite is Aisling)
             {
-                if (sprite is Aisling)
-                {
-                    (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
-                }
+                if (sprite.CurrentMp - Spell.Template.ManaCost > 0)
+                    sprite.CurrentMp -= Spell.Template.ManaCost;
 
-                return;
+                if (sprite.CurrentMp < 0)
+                    sprite.CurrentMp = 0;
+
+
+                (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
             }
-
-            if (sprite.CurrentMp < 0)
-                sprite.CurrentMp = 0;
 
             var success = Spell.RollDice(rand);
 

@@ -326,8 +326,8 @@ namespace Darkages.Network.Game
             if (!client.Aisling.Map.Ready)
                 return;
 
-            if (client.IsRefreshing && ServerContext.Config.CancelWalkingIfRefreshing)
-                return;
+            //if (client.IsRefreshing && ServerContext.Config.CancelWalkingIfRefreshing)
+            //    return;
 
             if (client.Aisling.Direction != format.Direction)
                 client.Aisling.Direction = format.Direction;
@@ -1524,11 +1524,11 @@ namespace Darkages.Network.Game
 
                 if (client.Aisling.PortalSession != null)
                 {
+                    client.Aisling.PortalSession.DateOpened = DateTime.UtcNow;
                     client.Aisling.PortalSession.TransitionToMap(client,
                         (short)node.Destination.Location.X,
                         (short)node.Destination.Location.Y, node.Destination.AreaID);
 
-                    client.Aisling.PortalSession.IsMapOpen = false;
                 }
             }
             catch
