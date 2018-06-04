@@ -126,8 +126,6 @@ namespace Darkages.Network
             {
                 SendMessageBox(0x00, "baram");
             }
-
-            logger.Info("Client Proxy: {0}", format.Command);
         }
     }
 }

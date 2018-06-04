@@ -209,7 +209,7 @@ namespace Darkages.Storage.locales.Scripts.Global
 
                             if (!Flags[client.Aisling.Serial]["t9"])
                             {
-                                client.SendMessage(0x08, "*Combat - Assail*\n\nAssail is the your default attack.\nYou can click it from your Skill Book.\nIt's most effective using Space Bar.\n\n\nGo and practice and kill 3 Rats.");
+
                                 client.SendAnimation(94, client.Aisling, client.Aisling);
                                 client.Aisling.Show(Scope.Self, new ServerFormat29(200, 6, 9));
                                 Flags[client.Aisling.Serial]["t9"] = true;
@@ -218,7 +218,6 @@ namespace Darkages.Storage.locales.Scripts.Global
                                 {
                                     if (!Skill.GiveTo(client, "Assail"))
                                     {
-                                        logger.Error("Hm, player {0} did not receive assail for some reason.", client.Aisling.Username);
                                     }
                                 }
                             }

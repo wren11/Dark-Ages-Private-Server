@@ -19,9 +19,6 @@ using Darkages;
 using Darkages.Common;
 using Darkages.Storage;
 using Newtonsoft.Json;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,13 +31,10 @@ namespace Lorule
 {
     class Program
     {
-        private static Logger logger => LogManager.GetCurrentClassLogger();
         public static Instance _Server;
 
         static void Main(string[] args)
         {
-            InitLogger();
-
 #if ISDEAN
             DisplayEnumReferences();
 #endif
@@ -62,8 +56,6 @@ namespace Lorule
 
                     foreach (Type t in query)
                     {
-                        logger.Debug(t.Name);
-
                         var type = Enum.GetValues(t);
                         var names = Enum.GetNames(t);
 
@@ -77,7 +69,7 @@ namespace Lorule
 
                             pair[key] = Convert.ToInt32(jsonobj);
 
-                            logger.Trace(key + ":" + jsonobj);
+                            Console.WriteLine(key + ":" + jsonobj);
 
                             idx++;
                         }
@@ -88,25 +80,6 @@ namespace Lorule
             }
         }
 
-        private static void InitLogger()
-        {
-            LoggingConfiguration config = new LoggingConfiguration();
-            ColoredConsoleTarget consoleTarget = new ColoredConsoleTarget();
-
-            config.AddTarget("console", consoleTarget);
-
-            FileTarget fileTarget = new FileTarget();
-            config.AddTarget("file", fileTarget);
-
-            consoleTarget.Layout = "${date:format=HH\\:MM\\:ss} ${message}";
-            fileTarget.FileName  = "${basedir}/serverlog.txt";
-            fileTarget.Layout    = "${message}";
-
-            config.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, consoleTarget));
-            config.LoggingRules.Add(new LoggingRule("*", LogLevel.Error, fileTarget));
-
-            LogManager.Configuration = config;
-        }
 
         public class Instance : ServerContext
         {

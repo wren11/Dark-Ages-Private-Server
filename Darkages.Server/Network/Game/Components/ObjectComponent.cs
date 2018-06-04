@@ -18,7 +18,6 @@
 using Darkages.Network.ServerFormats;
 using Darkages.Storage.locales.Scripts.Items;
 using Darkages.Types;
-using NLog;
 using System;
 using System.Collections.Generic;
 
@@ -253,9 +252,6 @@ namespace Darkages.Network.Game.Components
                         removes++;
                     }
                 }
-
-            if (removes > 0 && ServerContext.Config.DebugMode)
-                logger.Info("[ObjectComponent] {0} Objects Destroyed. (Abandoned Item, Money.) ", removes);
         }
     }
 }

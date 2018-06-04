@@ -19,7 +19,6 @@ using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -89,7 +88,7 @@ namespace Darkages.Network
             }
 
             if (ServerContext.Config?.LogRecvPackets ?? false)
-                logger.Info("r: {0}", packet);
+                Console.WriteLine("r: {0}", packet);
 
 
             Reader.Packet = packet;
@@ -176,7 +175,7 @@ namespace Darkages.Network
                     {
                         if (ServerContext.Config.LogSentPackets)
                             if (this is GameClient)
-                                logger.Info("{0}: {1}", (this as GameClient)?.Aisling?.Username, packet);
+                                Console.WriteLine("{0}: {1}", (this as GameClient)?.Aisling?.Username, packet);
 
                         if (format.Secured)
                             Encryption.Transform(packet);

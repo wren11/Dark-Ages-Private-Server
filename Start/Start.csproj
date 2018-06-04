@@ -36,9 +36,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\Darkages.Server\include\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\Darkages.Server\include\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />

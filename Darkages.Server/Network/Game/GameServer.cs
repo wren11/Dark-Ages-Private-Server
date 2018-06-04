@@ -77,7 +77,7 @@ namespace Darkages.Network.Game
                 }
                 catch (Exception error)
                 {
-                    logger.Error(error, error.Message + "\n" + error.StackTrace);
+                    Console.WriteLine(error.Message + "\n" + error.StackTrace);
                 }
 
                 lastClientUpdate = DateTime.UtcNow;
@@ -103,7 +103,7 @@ namespace Darkages.Network.Game
                 }
                 catch (Exception error)
                 {
-                    logger.Error(error, "Server Work: Fatal Error");
+                    Console.WriteLine(error.Message + "\n" + error.StackTrace);
                 }
 
                 lastServerUpdate = DateTime.UtcNow;
@@ -119,7 +119,7 @@ namespace Darkages.Network.Game
 
             new TaskFactory().StartNew(() => UpdateConnectedClients(this));
 
-            logger.Info(Components.Count + " Server Components loaded.");
+            Console.WriteLine(string.Format("[Lorule] {0} Server Components loaded.", Components.Count));
         }
 
         private void InitComponentCache()
@@ -208,9 +208,9 @@ namespace Darkages.Network.Game
                         }
                     }
                 }
-                catch (Exception err)
+                catch (Exception error)
                 {
-                    logger.Error(err, "Fatal Error: UpdateConnectedClients");
+                    Console.WriteLine(error.Message + "\n" + error.StackTrace);
                 }
 
                 Thread.Sleep(300);

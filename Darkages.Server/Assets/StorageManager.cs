@@ -19,12 +19,7 @@ using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Types;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.IO;
-using System.Linq;
 
 namespace Darkages.Storage
 {
@@ -51,6 +46,7 @@ namespace Darkages.Storage
         public static TemplateStorage<MonsterTemplate> MonsterBucket = new TemplateStorage<MonsterTemplate>();
         public static TemplateStorage<MundaneTemplate> MundaneBucket = new TemplateStorage<MundaneTemplate>();
         public static TemplateStorage<WorldMapTemplate> WorldMapBucket = new TemplateStorage<WorldMapTemplate>();
+        public static TemplateStorage<Reactor> ReactorBucket = new TemplateStorage<Reactor>();
 
         static StorageManager()
         {

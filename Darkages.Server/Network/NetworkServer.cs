@@ -22,7 +22,6 @@ using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using Newtonsoft.Json;
-using NLog;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -125,9 +124,9 @@ namespace Darkages.Network
                         client.Socket.BeginReceiveHeader(EndReceiveHeader, out error, client);
                 }
             }
-            catch (Exception error)
+            catch (Exception)
             {
-                logger.Error(error, "Error: EndReceiveHeader");
+                //ignore
             }
         }
 
@@ -157,9 +156,9 @@ namespace Darkages.Network
                     }
                 }
             }
-            catch (Exception error)
+            catch (Exception)
             {
-                logger.Error(error, "Error: EndReceivePacket");
+                //ignore
             }
         }
 
@@ -227,7 +226,7 @@ namespace Darkages.Network
             if (ServerContext.Game == null)
                 return;
 
-            logger.Trace("Connection From {0} Established.", client.Socket.RemoteEndPoint.ToString());
+            Console.WriteLine("Connection From {0} Established.", client.Socket.RemoteEndPoint.ToString());
         }
 
 

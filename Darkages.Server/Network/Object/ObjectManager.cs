@@ -15,10 +15,8 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Storage;
 using Darkages.Types;
 using Newtonsoft.Json;
-using NLog;
 using System;
 using System.Collections;
 using System.Linq;
@@ -27,7 +25,6 @@ namespace Darkages.Network.Object
 {
     public class ObjectManager
     {
-        public static Logger logger = LogManager.GetCurrentClassLogger();
 
         [Flags]
         public enum Get

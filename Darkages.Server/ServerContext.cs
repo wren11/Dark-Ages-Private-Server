@@ -38,14 +38,22 @@ namespace Darkages
         public static object SyncObj = new object();
 
         public static int Errors, DefaultPort;
+
         public static bool Running, Paused;
 
         public static GameServer Game;
+
         public static LoginServer Lobby;
+
         public static ServerConstants Config;
+
         public static IPAddress Ipaddress => IPAddress.Parse(File.ReadAllText("server.tbl"));
-        public static string StoragePath = @"..\..\..\LORULE_DATA";
-        public static string ScriptOEMPath = @"..\..\..\Darkages.Server\Assets\locales";
+
+        public static string StoragePath = Path.GetFullPath(@"..\..\..\LORULE_DATA");
+
+        public static string ScriptOEMPath = Path.GetFullPath(@"..\..\..\Darkages.Server\Assets\locales");
+
+        public static Item GlobalLastItemRoll { get; set; }
 
         public static List<Redirect> GlobalRedirects = new List<Redirect>();
 
@@ -75,55 +83,63 @@ namespace Darkages
         public static Dictionary<int, WorldMapTemplate> GlobalWorldMapTemplateCache =
             new Dictionary<int, WorldMapTemplate>();
 
-        public static Board[] Community = new Board[7];
+        public static Dictionary<string, Reactor> GlobalReactorCache =
+            new Dictionary<string, Reactor>();
 
+        public static Board[] Community = new Board[7];
 
         public static void LoadSkillTemplates()
         {
+            StorageManager.ReactorBucket.CacheFromStorage();
+            Console.WriteLine("[Lorule] Reactors Loaded: {0}", GlobalReactorCache.Count);
+        }
+
+        public static void LoadReactorTemplates()
+        {
             StorageManager.SkillBucket.CacheFromStorage();
-            logger.Trace("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
+            Console.WriteLine("[Lorule] Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
         }
 
         public static void LoadSpellTemplates()
         {
             StorageManager.SpellBucket.CacheFromStorage();
-            logger.Trace("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
+            Console.WriteLine("[Lorule] Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
         }
 
         public static void LoadItemTemplates()
         {
             StorageManager.ItemBucket.CacheFromStorage();
-            logger.Trace("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
+            Console.WriteLine("[Lorule] Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
         }
 
         public static void LoadMonsterTemplates()
         {
             StorageManager.MonsterBucket.CacheFromStorage();
-            logger.Trace("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
+            Console.WriteLine("[Lorule] Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
         }
 
         public static void LoadMundaneTemplates()
         {
             StorageManager.MundaneBucket.CacheFromStorage();
-            logger.Trace("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
+            Console.WriteLine("[Lorule] Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
         }
 
         public static void LoadWarpTemplates()
         {
             StorageManager.WarpBucket.CacheFromStorage();
-            logger.Trace("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
+            Console.WriteLine("[Lorule] Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
         }
 
         public static void LoadWorldMapTemplates()
         {
             StorageManager.WorldMapBucket.CacheFromStorage();
-            logger.Trace("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
+            Console.WriteLine("[Lorule] World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
         }
 
         public static void LoadMaps()
         {
             StorageManager.AreaBucket.CacheFromStorage();
-            logger.Trace("Map Templates Loaded: {0}", GlobalMapCache.Count);
+            Console.WriteLine("[Lorule] Map Templates Loaded: {0}", GlobalMapCache.Count);
         }
 
         private static void StartServers()
@@ -180,20 +196,30 @@ namespace Darkages
 
         public static void Startup()
         {
-            logger.Warn(Config.SERVER_TITLE);
+            Console.WriteLine(Config.SERVER_TITLE);
+            Console.Write(@"
+┌─────────────┬─────────────────────────────────┬───────────────────────────┐
+│   Author    │             website             │          Discord          │
+├─────────────┼─────────────────────────────────┼───────────────────────────┤
+│ Wren (Dean) │ http://darkages.creatorlink.net │ https://discord.gg/ZARPGV │
+└─────────────┴─────────────────────────────────┴───────────────────────────┘
+
+");
+
             {
                 try
                 {
                     LoadConstants();
+                    Console.WriteLine("[Lorule] Loading Server Templates...");
                     LoadAndCacheStorage();
+                    Console.WriteLine("[Lorule] Loading Server Templates... Completed.");
                     StartServers();
                 }
-                catch (Exception error)
+                catch (Exception)
                 {
-                    logger.Error(error, "Startup Error.");
+                    Console.WriteLine("Startup Error.");
                 }
             }
-            logger.Warn("{0} Online.", Config.SERVER_TITLE);
         }
 
         private static void EmptyCacheCollectors()
@@ -201,6 +227,7 @@ namespace Darkages
             GlobalItemTemplateCache = new Dictionary<string, ItemTemplate>();
             GlobalMapCache = new Dictionary<int, Area>();
             GlobalMetaCache = new List<Metafile>();
+            GlobalReactorCache = new Dictionary<string, Reactor>();
             GlobalMonsterTemplateCache = new List<MonsterTemplate>();
             GlobalMundaneTemplateCache = new Dictionary<string, MundaneTemplate>();
             GlobalRedirects = new List<Redirect>();
@@ -218,7 +245,7 @@ namespace Darkages
 
             if (_config_ == null)
             {
-                logger.Trace("No config found. Generating defaults.");
+                Console.WriteLine("[Lorule] No config found. Generating defaults.");
                 Config = new ServerConstants();
                 StorageManager.Save(Config);
             }
@@ -299,7 +326,7 @@ namespace Darkages
 
         public static void LoadMetaDatabase()
         {
-            logger.Trace("Loading Meta Database");
+            Console.WriteLine("[Lorule] Loading Meta Database");
             {
                 var mfs = MetafileManager.GetMetafiles();
 
@@ -308,7 +335,7 @@ namespace Darkages
                     GlobalMetaCache.AddRange(mfs);
                 }
             }
-            logger.Trace("Building Meta Cache: {0} loaded.", GlobalMetaCache.Count);
+            Console.WriteLine("[Lorule] Building Meta Cache: {0} loaded.", GlobalMetaCache.Count);
         }
 
         public static void SaveCommunityAssets()
@@ -345,6 +372,7 @@ namespace Darkages
                 {
                     UpdateLocales();
                     LoadMaps();
+                    LoadReactorTemplates();
                     LoadSkillTemplates();
                     LoadSpellTemplates();
                     LoadItemTemplates();
@@ -355,6 +383,45 @@ namespace Darkages
                     CacheCommunityAssets();
                 }
 
+
+                var x = new Reactor()
+                {
+                    Name = "100 - Wake Up Start",
+                    CallBackScriptKey = "Example Reactor 2",
+                    ScriptKey = "example reactor",
+                    CallerType = ReactorQualifer.Map,
+                    MapId = 100,
+                    Location = new Position(6, 6),
+                    Steps = new List<DialogSequence>()
+                     {
+                         new DialogSequence()
+                         {
+                              CanMoveBack = false,
+                              CanMoveNext = true,
+                              DisplayImage = 0x4031,
+                              DisplayText = "Wake up!",
+                              Title = "Hey!"
+                         },
+                         new DialogSequence()
+                         {
+                              CanMoveBack = true,
+                              CanMoveNext = true,
+                              DisplayImage = 0x4032,
+                              DisplayText = "You lazy fucker!",
+                              Title = "Hey!!"
+                         },
+                         new DialogSequence()
+                         {
+                              CanMoveBack = true,
+                              CanMoveNext = true,
+                              DisplayImage = 0x4033,
+                              DisplayText = "Wake up noob!",
+                              Title = "Hey!!!"
+                         },
+                     },                     
+                };
+
+               // StorageManager.ReactorBucket.Save(x);
 
                 GlobalItemTemplateCache["Hy-Brasyl Battle Axe"].Class = Class.Warrior;
 

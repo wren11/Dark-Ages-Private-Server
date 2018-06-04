@@ -24,9 +24,14 @@ namespace Darkages.Network.ServerFormats
     {
         private readonly GameClient _client;
 
-        public ServerFormat30(GameClient gameClient, Dialog sequenceMenu)
+        public ServerFormat30(GameClient gameClient)
         {
             _client = gameClient;
+        }
+
+        public ServerFormat30(GameClient gameClient, Dialog sequenceMenu)
+            : this(gameClient)
+        {
             Sequence = sequenceMenu;
         }
 
@@ -58,6 +63,50 @@ namespace Darkages.Network.ServerFormats
             writer.Write((byte)0);
             writer.WriteStringA(Sequence.Current.Title);
             writer.WriteStringB(Sequence.Current.DisplayText);
+        }
+    }
+
+    public class ReactorSequence : ServerFormat30
+    {
+        DialogSequence sequence;
+        GameClient client;
+
+
+        public ReactorSequence(GameClient gameClient, DialogSequence sequenceMenu) 
+            : base(gameClient)
+        {
+            client = gameClient;
+            sequence = sequenceMenu;
+        }
+
+        public override void Serialize(NetworkPacketReader reader)
+        {
+        }
+
+        public override void Serialize(NetworkPacketWriter writer)
+        {
+            if (!client.Aisling.LoggedIn)
+                return;
+            if (client.Aisling.ActiveReactor == null)
+                return;
+
+            writer.Write((byte)0x00); // type!
+            writer.Write((byte)0x01); // ??
+            writer.Write((uint)sequence.Id);
+            writer.Write((byte)0x00); // ??
+            writer.Write(sequence.DisplayImage);
+            writer.Write((byte)0x00); // ??
+            writer.Write((byte)0x01); // ??
+            writer.Write(ushort.MinValue);
+            writer.Write((byte)0x00);
+            writer.Write(ushort.MaxValue);
+            writer.Write((byte)0);
+            writer.Write((byte)0);
+            writer.Write(sequence.CanMoveBack);
+            writer.Write(sequence.CanMoveNext);
+            writer.Write((byte)0);
+            writer.WriteStringA(sequence.Title);
+            writer.WriteStringB(sequence.DisplayText);
         }
     }
 }

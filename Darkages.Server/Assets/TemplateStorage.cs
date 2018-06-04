@@ -17,7 +17,6 @@
 //*************************************************************************/
 using Darkages.Types;
 using Newtonsoft.Json;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,7 +25,6 @@ namespace Darkages.Storage
 {
     public class TemplateStorage<T> where T : Template, new()
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
         public static string StoragePath;
 
         static TemplateStorage()
@@ -58,6 +56,8 @@ namespace Darkages.Storage
             if (tmp is WorldMapTemplate)
                 StoragePath = StoragePath.Replace("%", "WorldMaps");
 
+            if (tmp is Reactor)
+                StoragePath = StoragePath.Replace("%", "Reactors");
 
             if (!Directory.Exists(StoragePath))
                 Directory.CreateDirectory(StoragePath);
@@ -94,16 +94,18 @@ namespace Darkages.Storage
                     var template =
                         StorageManager.SkillBucket.Load<SkillTemplate>(Path.GetFileNameWithoutExtension(asset));
                     ServerContext.GlobalSkillTemplateCache[template.Name] = template;
-
-                    logger.Info(" -> {0} Loaded From {1}", template.Name, Path.GetFileName(asset));
                 }
                 else if (tmp is SpellTemplate)
                 {
                     var template =
                         StorageManager.SpellBucket.Load<SpellTemplate>(Path.GetFileNameWithoutExtension(asset));
                     ServerContext.GlobalSpellTemplateCache[template.Name] = template;
-
-                    logger.Info(" -> {0} Loaded From {1}", template.Name, Path.GetFileName(asset));
+                }
+                else if (tmp is Reactor)
+                {
+                    var template =
+                        StorageManager.ReactorBucket.Load<Reactor>(Path.GetFileNameWithoutExtension(asset));
+                    ServerContext.GlobalReactorCache[template.Name] = template;
                 }
                 else if (tmp is MonsterTemplate)
                 {
@@ -111,32 +113,24 @@ namespace Darkages.Storage
                         StorageManager.MonsterBucket.Load<MonsterTemplate>(Path.GetFileNameWithoutExtension(asset));
                     ServerContext.GlobalMonsterTemplateCache.Add(template);
                     template.NextAvailableSpawn = DateTime.UtcNow;
-
-                    logger.Info(" -> {0} Loaded From {1}", template.Name, Path.GetFileName(asset));
                 }
                 else if (tmp is MundaneTemplate)
                 {
                     var template =
                         StorageManager.MundaneBucket.Load<MundaneTemplate>(Path.GetFileNameWithoutExtension(asset));
                     ServerContext.GlobalMundaneTemplateCache[template.Name] = template;
-
-                    logger.Info(" -> {0} Loaded From {1}", template.Name, Path.GetFileName(asset));
                 }
                 else if (tmp is ItemTemplate)
                 {
                     var template =
                         StorageManager.ItemBucket.Load<ItemTemplate>(Path.GetFileNameWithoutExtension(asset));
                     ServerContext.GlobalItemTemplateCache[template.Name] = template;
-
-                    logger.Info(" -> {0} Loaded From {1}", template.Name, Path.GetFileName(asset));
                 }
                 else if (tmp is WorldMapTemplate)
                 {
                     var template =
                         StorageManager.WorldMapBucket.Load<WorldMapTemplate>(Path.GetFileNameWithoutExtension(asset));
                     ServerContext.GlobalWorldMapTemplateCache[template.FieldNumber] = template;
-
-                    logger.Info(" -> {0} Loaded From {1}", template.Name, Path.GetFileName(asset));
                 }
             }
         }

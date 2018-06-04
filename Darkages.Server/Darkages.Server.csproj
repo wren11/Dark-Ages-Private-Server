@@ -48,10 +48,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>include\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Caching" />
@@ -112,12 +108,14 @@
     <Compile Include="Assets\locales\debuffs\debuff_fasspoirad.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Assets\locales\Scripts\Reactors\ExampleReactor.cs" />
     <Compile Include="Assets\locales\Scripts\Spells\cures\aosith.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Assets\locales\Scripts\Spells\utility\fasspoirad.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Common\CircularBuffer.cs" />
     <Compile Include="Common\ConsoleSpinner.cs" />
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\Generator.cs" />
@@ -267,6 +265,7 @@
     <Compile Include="Scripting\ItemScript.cs" />
     <Compile Include="Scripting\MonsterScript.cs" />
     <Compile Include="Scripting\MundaneScript.cs" />
+    <Compile Include="Scripting\ReactorScript.cs" />
     <Compile Include="Scripting\ScriptManager.cs" />
     <Compile Include="Scripting\SkillScript.cs" />
     <Compile Include="Scripting\SpellScript.cs" />
@@ -570,6 +569,7 @@
     <Compile Include="Types\PostQualifer.cs" />
     <Compile Include="Types\PrimaryStat.cs" />
     <Compile Include="Types\Quest.cs" />
+    <Compile Include="Types\Reactor.cs" />
     <Compile Include="Types\Redirect.cs" />
     <Compile Include="Types\Scope.cs" />
     <Compile Include="Types\Skill.cs" />

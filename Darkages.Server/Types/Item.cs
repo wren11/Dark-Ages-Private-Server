@@ -839,9 +839,9 @@ namespace Darkages.Types
 
                 }
             }
-            catch (Exception err)
+            catch (Exception)
             {
-                logger.Error(err, "Error: ItemAddQuality. Fatal Exception Raised.");
+                Console.WriteLine("Error: ItemAddQuality. Fatal Exception Raised.");
             }
         }
 

@@ -137,7 +137,7 @@ namespace Darkages.Network.Game
 
 
             if (ServerContext.Config.DebugMode)
-                logger.Info("[{0}] Connection Established to Game Server", client.Aisling.Username);
+                Console.WriteLine("[{0}] Connection Established to Game Server", client.Aisling.Username);
 
             client.Encryption.Parameters = new SecurityParameters(redirect.Seed, redirect.Salt);
             client.Server = this;
@@ -1309,8 +1309,29 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            client.SendSound(12);
-            client.DlgSession?.Callback?.Invoke(this, client, format.Step, string.Empty);
+
+            if (format.ScriptId == ushort.MaxValue)
+            {
+                if (client.Aisling.ActiveReactor == null || client.Aisling.ActiveReactor.Script == null)
+                    return;
+
+                switch (format.Step)
+                {
+                    case 255:
+                        client.Aisling.ActiveReactor.Script.OnBack(client.Aisling);
+                        break;
+                    case 2:
+                        client.Aisling.ActiveReactor.Script.OnClose(client.Aisling);
+                        break;
+                    case 1:
+                        client.Aisling.ActiveReactor.Script.OnNext(client.Aisling);
+                        break;
+                }
+            }
+            else
+            {
+                client.DlgSession?.Callback?.Invoke(this, client, format.Step, string.Empty);
+            }
         }
 
         /// <summary>

@@ -379,9 +379,6 @@ namespace Darkages.Types
                     dmg *= 2;
                 }
 
-                if (ServerContext.Config.DebugMode)
-                    logger.Trace("Base Damage {0}", dmg);
-
                 return dmg;
             }
 

@@ -48,6 +48,7 @@ namespace Darkages
             InvitePrivleges = true;
             LeaderPrivleges = false;
             Remains = new CursedSachel(this);
+            ActiveReactor = null;
         }
 
         public List<ClientGameSettings> GameSettings { get; set; }
@@ -114,6 +115,9 @@ namespace Darkages
         public Dictionary<string, int> MonsterKillCounters 
             = new Dictionary<string, int>();
 
+        public Dictionary<string, DateTime> Reactions
+            = new Dictionary<string, DateTime>();
+
         [JsonIgnore] public bool Skulled => HasDebuff("skulled");
 
         [JsonIgnore] public Party GroupParty { get; set; }
@@ -149,6 +153,9 @@ namespace Darkages
         [JsonIgnore] public ExchangeSession Exchange { get; set; }
 
         [JsonIgnore]
+        public Reactor ActiveReactor { get; set; }
+
+        [JsonIgnore]
         public List<Sprite> ViewableObjects
         {
             get
@@ -156,6 +163,9 @@ namespace Darkages
                 return ViewFrustrum.Select(i => i.Value).ToList();
             }
         }
+
+        [JsonIgnore]
+        public bool ReactorActive { get; set; }
 
         public void Recover()
         {
@@ -566,5 +576,7 @@ namespace Darkages
             Client?.SendStats(StatusFlags.All);
 
         }
+
+        public bool ReactedWith(string str) => Reactions.ContainsKey(str);
     }
 }

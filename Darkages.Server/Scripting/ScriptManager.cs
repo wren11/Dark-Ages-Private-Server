@@ -47,8 +47,7 @@ namespace Darkages.Scripting
             var TOTALSCRIPTS = Directory.GetFiles(SCRIPTS, "*.cs", SearchOption.AllDirectories);
             var SCRIPTSPROCESSED = 0;
 
-            Console.WriteLine("");
-            Console.WriteLine("[Lorule Server]: Loading Game Scripts...");
+            Console.WriteLine("[Lorule] Loading Game Scripts...");
             Console.CursorLeft = 0;
             ObjectCache cache = MemoryCache.Default;
 
@@ -89,10 +88,11 @@ namespace Darkages.Scripting
                 Console.CursorLeft = 0;
             }
 
-            drawTextProgressBar(string.Format("Scripts Successfully Compiled: {0}", SCRIPTSPROCESSED), 100, 100);
-
             Console.WriteLine("");
-            Console.WriteLine("[Lorule Server]: Online");
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.CursorTop = Console.CursorTop -= 1;
+            Console.WriteLine("[Lorule] Servers Online.".PadRight(100));
+            Console.WriteLine("--------------------------------------------------------------------------------");
         }
 
 
@@ -111,7 +111,6 @@ namespace Darkages.Scripting
             compiler_params.GenerateExecutable = false;
             compiler_params.ReferencedAssemblies.Add(typeof(ServerContext).Assembly.Location);
             compiler_params.ReferencedAssemblies.Add(typeof(object).Assembly.Location);
-            compiler_params.ReferencedAssemblies.Add(typeof(NLog.ILogger).Assembly.Location);
             compiler_params.ReferencedAssemblies.Add("System.dll");
             compiler_params.ReferencedAssemblies.Add("System.IO.dll");
             compiler_params.ReferencedAssemblies.Add("System.Linq.dll");

@@ -301,31 +301,35 @@ namespace Darkages.Types
                             {
 
                                 var rolled_item = Item.Create(this, GlobalItemTemplateCache[i]);
-                                var upgrade = DetermineQuality();
-
-                                if (rolled_item == null)
-                                    return;
-
-                                if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
-                                    upgrade = null;
-
-                                rolled_item.Upgrades = upgrade?.Upgrade ?? 0;
-                                Item.ApplyQuality(rolled_item);
-
-                                rolled_item.Cursed = true;
-                                rolled_item.AuthenticatedAislings = GetTaggedAislings();
-                                rolled_item.Release(this, Position);
-
-                                if (rolled_item.Upgrades > 3)
+                                if (rolled_item != GlobalLastItemRoll)
                                 {
-                                    var users = GetTaggedAislings();
-                                    foreach (var user in users)
-                                    {
-                                        var msg = string.Format("{0} Drop!!! ({1})", upgrade?.Name, rolled_item.DisplayName);
-                                        user.Client.SendMessage(3, msg);
+                                    GlobalLastItemRoll = rolled_item;
+                                    var upgrade = DetermineQuality();
 
-                                        //TODO: implement more rarity animations to display.
-                                        user.Client.SendAnimation(341, rolled_item, rolled_item, 0x64, true);
+                                    if (rolled_item == null)
+                                        return;
+
+                                    if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
+                                        upgrade = null;
+
+                                    rolled_item.Upgrades = upgrade?.Upgrade ?? 0;
+                                    Item.ApplyQuality(rolled_item);
+
+                                    rolled_item.Cursed = true;
+                                    rolled_item.AuthenticatedAislings = GetTaggedAislings();
+                                    rolled_item.Release(this, Position);
+
+                                    if (rolled_item.Upgrades > 3)
+                                    {
+                                        var users = GetTaggedAislings();
+                                        foreach (var user in users)
+                                        {
+                                            var msg = string.Format("{0} Drop!!! ({1})", upgrade?.Name, rolled_item.DisplayName);
+                                            user.Client.SendMessage(3, msg);
+
+                                            //TODO: implement more rarity animations to display.
+                                            user.Client.SendAnimation(Config.RareDropAnimation, rolled_item, rolled_item, 100, true);
+                                        }
                                     }
                                 }
                             }

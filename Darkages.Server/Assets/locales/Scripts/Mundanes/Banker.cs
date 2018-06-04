@@ -236,9 +236,9 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                         break;
                 }
             }
-            catch (Exception error)
+            catch (Exception)
             {
-                logger.Error(error, "Mundane Error: {0} - Response {1}", Mundane.Template.Name, responseID);
+                //ignore
             }
         }
 

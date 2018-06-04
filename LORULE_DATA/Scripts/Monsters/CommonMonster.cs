@@ -280,9 +280,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (!Monster.CanCast)
                 return;
 
-            if (Monster.MajorAttribute != PrimaryStat.INT)
-                return;
-
             if (Monster != null && Monster.Target != null && SpellScripts.Count > 0)
             {
                 if (_random.Next(1, 101) < ServerContext.Config.MonsterSpellSuccessRate)

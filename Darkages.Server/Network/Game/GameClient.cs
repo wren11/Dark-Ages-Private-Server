@@ -285,141 +285,115 @@ namespace Darkages.Network.Game
 
         private void HandleTimeOuts()
         {
-            try
+
+            if (Aisling.Exchange != null)
             {
-                if (Aisling.Exchange != null)
+                if (Aisling.Exchange.Trader != null)
                 {
-                    if (Aisling.Exchange.Trader != null)
+                    if (!Aisling.Exchange.Trader.LoggedIn
+                    || !Aisling.WithinRangeOf(Aisling.Exchange.Trader))
                     {
-                        if (!Aisling.Exchange.Trader.LoggedIn
-                        || !Aisling.WithinRangeOf(Aisling.Exchange.Trader))
-                        {
-                            Aisling.CancelExchange();
-                        }
+                        Aisling.CancelExchange();
                     }
-                }
-
-                if (Aisling.PortalSession != null && (DateTime.UtcNow - Aisling.PortalSession.DateOpened).TotalSeconds > 10)
-                {
-                    if (Aisling.PortalSession.IsMapOpen)
-                    {
-                        Aisling.GoHome();
-                    }
-                    Aisling.PortalSession = null;
-
                 }
             }
-            catch (Exception error)
+
+            if (Aisling.PortalSession != null && (DateTime.UtcNow - Aisling.PortalSession.DateOpened).TotalSeconds > 10)
             {
-                logger.Error(error, "Error: HandleTimeOuts");
+                if (Aisling.PortalSession.IsMapOpen)
+                {
+                    Aisling.GoHome();
+                }
+                Aisling.PortalSession = null;
             }
         }
 
         private void UpdateStatusBar(TimeSpan elapsedTime)
         {
-            try
-            {
-                Aisling.UpdateBuffs(elapsedTime);
-                Aisling.UpdateDebuffs(elapsedTime);
-            }
-            catch (Exception error)
-            {
-                logger.Error(error, "Error: UpdateStatusBar");
-            }
+
+            Aisling.UpdateBuffs(elapsedTime);
+            Aisling.UpdateDebuffs(elapsedTime);
         }
 
         private void UpdateGlobalScripts(TimeSpan elapsedTime)
         {
-            try
-            {
-                foreach (var globalscript in GlobalScripts)
-                    globalscript?.Update(elapsedTime);
-            }
-            catch (Exception error)
-            {
-                logger.Error(error, "Error: Update Global Scripts");
-            }
+            foreach (var globalscript in GlobalScripts)
+                globalscript?.Update(elapsedTime);
         }
 
         private void Regeneration(TimeSpan elapsedTime)
         {
-            try
+
+            if (HpRegenTimer == null)
+                return;
+
+            if (MpRegenTimer == null)
+                return;
+
+            var hpChanged = false;
+            var mpChanged = false;
+
+            if (Aisling.CurrentHp <= 0)
             {
-                if (HpRegenTimer == null)
-                    return;
+                Aisling.CurrentHp = 0;
+                hpChanged = true;
+            }
 
-                if (MpRegenTimer == null)
-                    return;
 
-                var hpChanged = false;
-                var mpChanged = false;
+            HpRegenTimer.Update(elapsedTime);
+            MpRegenTimer.Update(elapsedTime);
 
-                if (Aisling.CurrentHp <= 0)
+            #region Hp Regen
+
+            if (HpRegenTimer.Elapsed)
+            {
+                HpRegenTimer.Reset();
+
+                if (!HpRegenTimer.Disabled && Aisling.LoggedIn)
                 {
-                    Aisling.CurrentHp = 0;
-                    hpChanged = true;
-                }
-
-
-                HpRegenTimer.Update(elapsedTime);
-                MpRegenTimer.Update(elapsedTime);
-
-                #region Hp Regen
-
-                if (HpRegenTimer.Elapsed)
-                {
-                    HpRegenTimer.Reset();
-
-                    if (!HpRegenTimer.Disabled && Aisling.LoggedIn)
+                    if (Aisling.CurrentHp < Aisling.MaximumHp)
                     {
-                        if (Aisling.CurrentHp < Aisling.MaximumHp)
-                        {
-                            hpChanged = true;
+                        hpChanged = true;
 
-                            var hpRegenSeed = (Math.Abs(Aisling.Con - Aisling.ExpLevel)).Clamp(0, 10) * 0.01;
-                            var hpRegenAmount = Aisling.MaximumHp * (hpRegenSeed + 0.10);
+                        var hpRegenSeed = (Math.Abs(Aisling.Con - Aisling.ExpLevel)).Clamp(0, 10) * 0.01;
+                        var hpRegenAmount = Aisling.MaximumHp * (hpRegenSeed + 0.10);
 
 
-                            Aisling.CurrentHp = (Aisling.CurrentHp + (int)hpRegenAmount).Clamp(0, Aisling.MaximumHp);
-                        }
+                        Aisling.CurrentHp = (Aisling.CurrentHp + (int)hpRegenAmount).Clamp(0, Aisling.MaximumHp);
                     }
-                }
-
-                #endregion
-
-                #region Mp Regen
-
-                if (MpRegenTimer.Elapsed)
-                {
-                    MpRegenTimer.Reset();
-                    if (!MpRegenTimer.Disabled && Aisling.LoggedIn)
-                    {
-                        if (Aisling.CurrentMp < Aisling.MaximumMp)
-                        {
-                            mpChanged = true;
-
-                            var mpRegenSeed = (Math.Abs(Aisling.Wis - Aisling.ExpLevel)).Clamp(0, 10) * 0.01;
-                            var mpRegenAmount = Aisling.MaximumMp * (mpRegenSeed + 0.10);
-
-                            Aisling.CurrentMp = (Aisling.CurrentMp + (int)mpRegenAmount).Clamp(0, Aisling.MaximumMp);
-                        }
-                    }
-                }
-
-                #endregion
-
-                if (!IsDead())
-                {
-                    if (!Aisling.LoggedIn)
-                        return;
-
-                    if (hpChanged || mpChanged)
-                        Send(new ServerFormat08(Aisling, StatusFlags.StructB));
                 }
             }
-            catch (Exception error)
+
+            #endregion
+
+            #region Mp Regen
+
+            if (MpRegenTimer.Elapsed)
             {
-                logger.Error(error, "Error: Regeneration");
+                MpRegenTimer.Reset();
+                if (!MpRegenTimer.Disabled && Aisling.LoggedIn)
+                {
+                    if (Aisling.CurrentMp < Aisling.MaximumMp)
+                    {
+                        mpChanged = true;
+
+                        var mpRegenSeed = (Math.Abs(Aisling.Wis - Aisling.ExpLevel)).Clamp(0, 10) * 0.01;
+                        var mpRegenAmount = Aisling.MaximumMp * (mpRegenSeed + 0.10);
+
+                        Aisling.CurrentMp = (Aisling.CurrentMp + (int)mpRegenAmount).Clamp(0, Aisling.MaximumMp);
+                    }
+                }
+            }
+
+            #endregion
+
+            if (!IsDead())
+            {
+                if (!Aisling.LoggedIn)
+                    return;
+
+                if (hpChanged || mpChanged)
+                    Send(new ServerFormat08(Aisling, StatusFlags.StructB));
             }
         }
 

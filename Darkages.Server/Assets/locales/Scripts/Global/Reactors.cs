@@ -18,8 +18,8 @@
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Global
 {
@@ -27,9 +27,26 @@ namespace Darkages.Storage.locales.Scripts.Global
     public class Reactors : GlobalScript
     {
         GameClient Client;
+        public List<ReactorScript> Scripts = new List<ReactorScript>();
+
         public Reactors(GameClient client) : base(client)
         {
             Client = client;
+
+            LoadReactorScripts();
+
+        }
+
+        public void LoadReactorScripts()
+        {
+            foreach (var script in ServerContext.GlobalReactorCache.Select(i => i.Value))
+            {
+                var scp = ScriptManager.Load<ReactorScript>(script.ScriptKey, script);
+                if (scp != null)
+                    Scripts.Add(scp);
+            }
+
+            Console.WriteLine("[{0}] Reactor Scripts Loaded: {1}", Client.Aisling.Username, Scripts.Count);
         }
 
         public override void OnDeath(GameClient client, TimeSpan elapsedTime)
@@ -55,6 +72,38 @@ namespace Darkages.Storage.locales.Scripts.Global
 
                 EastWoodlands();
 
+                if (Scripts == null)
+                    return;
+
+                if (Scripts.Count == 0)
+                    return;
+
+                foreach (var script in Scripts)
+                {
+                    if (script == null)
+                        continue;
+
+                    if (script.Reactor != null)
+                    {
+                        if (Client.Aisling.ReactorActive)
+                            continue;
+
+                        if (Client.Aisling.ReactedWith(script.Reactor.Name))
+                            continue;
+
+                        if (script.Reactor.CallerType == Types.ReactorQualifer.Map)
+                        {
+                            if (script.Reactor.MapId == Client.Aisling.CurrentMapId)
+                            {
+                                if (script.Reactor.Location.X == Client.Aisling.X &&
+                                    script.Reactor.Location.Y == Client.Aisling.Y)
+                                {
+                                    script.Reactor.Update(Client);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
