@@ -315,8 +315,16 @@ namespace Darkages.Network.Game
             Aisling.UpdateDebuffs(elapsedTime);
         }
 
+        Reactors s;
         private void UpdateGlobalScripts(TimeSpan elapsedTime)
         {
+
+            //if (s == null)
+            //    s = new Reactors(this);
+
+
+            //s.Update(elapsedTime);
+
             foreach (var globalscript in GlobalScripts)
                 globalscript?.Update(elapsedTime);
         }
@@ -450,12 +458,10 @@ namespace Darkages.Network.Game
             BuildSettings();
         }
 
-        Reactors s;
-
         private void LoadGlobalScripts()
         {
-            //foreach (var script in ServerContext.Config.GlobalScripts)
-            //    GlobalScripts.Add(ScriptManager.Load<GlobalScript>(script, this));
+            foreach (var script in ServerContext.Config.GlobalScripts)
+                GlobalScripts.Add(ScriptManager.Load<GlobalScript>(script, this));
         }
 
         private void SetupRegenTimers()

@@ -24,7 +24,7 @@ using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Global
 {
-    [Script("Reactors")]
+    [Script("Reactors",  author: "Dean")]
     public class Reactors : GlobalScript
     {
         GameClient Client;
@@ -35,7 +35,6 @@ namespace Darkages.Storage.locales.Scripts.Global
             Client = client;
 
             LoadReactorScripts();
-
         }
 
         public string LastKey;
@@ -89,12 +88,12 @@ namespace Darkages.Storage.locales.Scripts.Global
         {
             if (Client == null)
                 return;
+
             if (Client.IsRefreshing)
                 return;
                    
             if (Client.Aisling != null && Client.Aisling.LoggedIn)
             {
-
                 if (Client.Aisling.Map == null)
                     return;
 
@@ -123,27 +122,18 @@ namespace Darkages.Storage.locales.Scripts.Global
                             continue;
 
                         #region Map Reactor
-                        if (script.Reactor.CallerType == Types.ReactorQualifer.Map)
-                        {
-                            if (script.Reactor.MapId == Client.Aisling.CurrentMapId)
-                            {
-                                if (script.Reactor.Location.X == Client.Aisling.X &&
-                                    script.Reactor.Location.Y == Client.Aisling.Y)
-                                {
-                                    script.Reactor.Update(Client);
-                                }
-                            }
-                        }
+                        //if (script.Reactor.CallerType == Types.ReactorQualifer.Map)
+                        //{
+                        //    if (script.Reactor.MapId == Client.Aisling.CurrentMapId)
+                        //    {
+                        //        if (script.Reactor.Location.X == Client.Aisling.X &&
+                        //            script.Reactor.Location.Y == Client.Aisling.Y)
+                        //        {
+                        //            script.Reactor.Update(Client);
+                        //        }
+                        //    }
+                        //}
                         #endregion
-
-                        #region Reactor Triggered Reactor
-                        if (script.Reactor.CallerType == Types.ReactorQualifer.Reactor)
-                        {
-
-                        }
-                        #endregion
-
-
                     }
                 }
             }

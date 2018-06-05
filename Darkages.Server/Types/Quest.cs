@@ -65,6 +65,11 @@ namespace Darkages.Types
 
         public void OnCompleted(Aisling user, bool equipLoot = false)
         {
+            GiveRewards(user, equipLoot);
+        }
+
+        public void GiveRewards(Aisling user, bool equipLoot)
+        {
             Rewarded = true;
             Completed = true;
             TimeCompleted = DateTime.Now;
@@ -97,6 +102,11 @@ namespace Darkages.Types
                 }
             }
 
+            Rewards(user, equipLoot);
+        }
+
+        public void Rewards(Aisling user, bool equipLoot)
+        {
             foreach (var items in SkillRewards)
                 if (!Skill.GiveTo(user.Client, items))
                 {

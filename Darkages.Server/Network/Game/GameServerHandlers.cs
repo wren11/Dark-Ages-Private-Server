@@ -1317,6 +1317,9 @@ namespace Darkages.Network.Game
 
                 switch (format.Step)
                 {
+                    case 0:
+                        client.Aisling.ActiveReactor.Script.OnClose(client.Aisling);
+                        break;
                     case 255:
                         client.Aisling.ActiveReactor.Script.OnBack(client.Aisling);
                         break;

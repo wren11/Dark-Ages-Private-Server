@@ -136,7 +136,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                         quest = CreateQuest(quest);
                     }
 
-                    if (!quest.Completed)
+                    if (!quest.Completed && quest.Started)
                         quest.HandleQuest(client);
 
                     if (!quest.Completed && client.Aisling.Y >= 11)
@@ -149,7 +149,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                     }
                     else
                     {
-                        if (client.Aisling.Position.DistanceFrom(2, 2) <= 1 && quest.Started)
+                        if (client.Aisling.Position.DistanceFrom(1, 2) == 1 && quest.Started)
                         {
                             if (!quest.Completed)
                             {

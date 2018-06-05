@@ -19,6 +19,7 @@ using Darkages.Assets.locales.Scripts.Reactors;
 using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
+using Darkages.Network.ServerFormats;
 using Darkages.Storage;
 using Darkages.Storage.locales.Buffs;
 using Darkages.Storage.locales.debuffs;
@@ -28,7 +29,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -91,14 +94,34 @@ namespace Darkages
 
         public static void LoadSkillTemplates()
         {
-            StorageManager.ReactorBucket.CacheFromStorage();
-            Console.WriteLine("[Lorule] Reactors Loaded: {0}", GlobalReactorCache.Count);
+            StorageManager.SkillBucket.CacheFromStorage();
+            Console.WriteLine("[Lorule] Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
         }
 
         public static void LoadReactorTemplates()
         {
-            StorageManager.SkillBucket.CacheFromStorage();
-            Console.WriteLine("[Lorule] Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
+            StorageManager.ReactorBucket.CacheFromStorage();
+            Console.WriteLine("[Lorule] Reactors Loaded: {0}", GlobalReactorCache.Count);
+            {
+                RegisterReactorCallbacks();
+            }
+        }
+
+        private static void RegisterReactorCallbacks()
+        {
+            int registered = 0;
+            foreach (var reactor in GlobalReactorCache.SelectMany(i => i.Value.Steps))
+            {
+                if (!string.IsNullOrEmpty(reactor.CallbackKey))
+                {
+                    var thisType = typeof(Darkages.ServerContext);
+                    var method = thisType.GetMethod(reactor.CallbackKey);
+
+                    reactor.Callback = (functionCallback)Delegate.CreateDelegate(typeof(functionCallback), method);
+                    registered++;
+                }
+            }
+            Console.WriteLine("[Lorule] Registered Reactor Callbacks: {0}", registered);
         }
 
         public static void LoadSpellTemplates()
@@ -385,6 +408,8 @@ namespace Darkages
                 }
 
 
+#pragma warning TEMPORARY CODE BELOW
+                //Everything below  here are hard-coded examples and should not be here for long.            
                 var x = new Reactor()
                 {
                     Name = "100 - Wake Up Start",
@@ -440,7 +465,7 @@ namespace Darkages
                             CanMoveNext = true,
                             DisplayText = "reactor called me!",
                             DisplayImage = 0x4050,
-                            Title = "test reactor chain",                             
+                            Title = "test reactor chain",
                         },
                         new DialogSequence()
                         {
@@ -450,7 +475,7 @@ namespace Darkages
                             DisplayText = "reactor called me dgfsdfds 2",
                             DisplayImage = 0x4050,
                             Title = "test reactor chain 2",
-                            Callback = new Action<Aisling, DialogSequence>(OncbResponse),
+                            CallbackKey = "OncbResponse",
                         },
                         new DialogSequence()
                         {
@@ -460,15 +485,34 @@ namespace Darkages
                             DisplayText = "reactor called me dgfsdfds 3",
                             DisplayImage = 0x4050,
                             Title = "test reactor chain 3",
-                            Callback = new Action<Aisling, DialogSequence>(OncbResponse),
+                            CallbackKey = "OncbResponse",
                         },
                     },
+                    QuestReward = new Quest()
+                    {
+                        ExpRewards = new List<uint>()
+                        {
+                            1000, 1000, 1000
+                        },
+                        GoldReward = 50000,
+                        LegendRewards = new List<Legend.LegendItem>()
+                        {
+                            new Legend.LegendItem()
+                            {
+                               Category = "Quest",
+                               Color = (byte)LegendColor.Blue,
+                               Icon = (byte)LegendIcon.Community,
+                               Value = "Completed Reactor.",
+                            },
+                        },
+                        ItemRewards = new List<string>()
+                        {
+                             "Dark Belt",
+                             "Dark Bone Necklace"
+                        },
+                        Completed = true,
+                    }
                 };
-
-
-
-
-
 
                 GlobalItemTemplateCache["Hy-Brasyl Battle Axe"].Class = Class.Warrior;
 
@@ -754,35 +798,6 @@ namespace Darkages
                     };
 
 
-                //StorageManager.SpellBucket.Save(
-                //    new SpellTemplate()
-                //    {
-                //        Animation = 232,
-                //        BaseLines = 1,
-                //        Icon = 181,
-                //        LevelRate = 0.20,
-                //        ManaCost = 200,
-                //        MaxLevel = 100,
-                //        Name = "ao sith",
-                //        NpcKey = "etaen",
-                //        MinLines = 0,
-                //        Pane = Pane.Spells,
-                //        TargetType = SpellTemplate.SpellUseType.ChooseTarget,
-                //        MaxLines = 2,
-                //        TierLevel = Tier.Tier1,
-                //        Sound = 8,
-                //        ScriptKey = "ao sith",
-                //        Description = "Removes all effects from a target.",
-                //        Prerequisites = new LearningPredicate()
-                //        {
-                //            Class_Required = Class.Priest,
-                //            Int_Required = 50,
-                //            Wis_Required = 09,
-                //            Gold_Required = 30000000,        
-                //            Spell_Level_Required = 100,
-                //            Spell_Required = "ao suain",
-                //        },
-                //    });
 
                 GlobalSpellTemplateCache["ia naomh aite"]
                  = new SpellTemplate()
@@ -1165,7 +1180,7 @@ namespace Darkages
 
         }
 
-        private static void OncbResponse(Aisling arg1, DialogSequence arg2)
+        public static void OncbResponse(Aisling sender, DialogSequence arg2)
         {
 
         }

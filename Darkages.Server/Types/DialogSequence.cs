@@ -20,10 +20,13 @@ using System;
 
 namespace Darkages.Types
 {
+    public delegate void functionCallback(Aisling a, DialogSequence b);
     public class DialogSequence
     {
         [JsonIgnore]
-        public Action<Aisling, DialogSequence> Callback = null;
+        public functionCallback Callback = null;
+
+        public string CallbackKey { get; set; }
 
         public string Title { get; set; }
         public string DisplayText { get; set; }

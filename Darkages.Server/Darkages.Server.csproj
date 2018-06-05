@@ -108,6 +108,7 @@
     <Compile Include="Assets\locales\debuffs\debuff_fasspoirad.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Assets\locales\Scripts\Mundanes\MunedaneReactorExample.cs" />
     <Compile Include="Assets\locales\Scripts\Reactors\ExampleReactor2.cs" />
     <Compile Include="Assets\locales\Scripts\Reactors\ExampleReactor.cs" />
     <Compile Include="Assets\locales\Scripts\Spells\cures\aosith.cs">

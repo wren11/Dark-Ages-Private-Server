@@ -43,6 +43,33 @@ namespace Darkages.Scripting
 
         static ScriptManager()
         {
+            LoadScriptFiles();
+            return;
+
+            var assembly = Assembly.GetExecutingAssembly();
+
+            if (assembly == null)
+                return;
+            foreach (var type in assembly.GetTypes())
+            {
+                ScriptAttribute attribute = null;
+
+                foreach (ScriptAttribute attr in type.GetCustomAttributes(typeof(ScriptAttribute), false))
+                {
+                    attribute = attr;
+                    break;
+                }
+
+                if (attribute == null)
+                    continue;
+                scripts.Add(attribute.Name, type);
+            }
+
+
+        }
+
+        private static void LoadScriptFiles()
+        {
             var SCRIPTS = ServerContext.StoragePath + "\\Scripts";
             var TOTALSCRIPTS = Directory.GetFiles(SCRIPTS, "*.cs", SearchOption.AllDirectories);
             var SCRIPTSPROCESSED = 0;

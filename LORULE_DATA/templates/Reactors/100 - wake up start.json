@@ -5,6 +5,7 @@
     "$values": [
       {
         "$type": "Darkages.Types.DialogSequence, Darkages.Server",
+        "CallbackKey": null,
         "Title": "Hey!",
         "DisplayText": "Wake up!",
         "HasOptions": false,
@@ -15,6 +16,7 @@
       },
       {
         "$type": "Darkages.Types.DialogSequence, Darkages.Server",
+        "CallbackKey": null,
         "Title": "Hey!!",
         "DisplayText": "You lazy fucker!",
         "HasOptions": false,
@@ -25,6 +27,7 @@
       },
       {
         "$type": "Darkages.Types.DialogSequence, Darkages.Server",
+        "CallbackKey": null,
         "Title": "Hey!!!",
         "DisplayText": "Wake up noob!",
         "HasOptions": false,
@@ -45,5 +48,6 @@
     "X": 6,
     "Y": 6
   },
+  "QuestReward": null,
   "Name": "100 - Wake Up Start"
 }

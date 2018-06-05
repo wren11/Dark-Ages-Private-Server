@@ -13,7 +13,6 @@ namespace Darkages.Assets.locales.Scripts.Reactors
                  = reactor;
         }
 
-        //up
         public override void OnBack(Aisling aisling)
         {
             if (aisling.ActiveReactor == null)
@@ -45,7 +44,7 @@ namespace Darkages.Assets.locales.Scripts.Reactors
                 aisling.Client.CloseDialog();
                 return;
             }
-
+            
             if (aisling.ActiveReactor.Index + 1 < aisling.ActiveReactor.Steps.Count)
             {
                 aisling.ActiveReactor.Index++;
@@ -75,9 +74,11 @@ namespace Darkages.Assets.locales.Scripts.Reactors
                 aisling.ActiveReactor = null;
                 aisling.Client.CloseDialog();
 
+                if (Reactor.QuestReward != null)
+                    Reactor.QuestReward.Rewards(aisling, false);
+
                 if (Reactor.PostScript != null)
                 {
-                    Console.WriteLine("reactor check 1");
                     Reactor.PostScript.OnTriggered(aisling);
                 }
             }

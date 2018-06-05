@@ -1,8 +1,8 @@
 {
   "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
-  "Image": 0x43DC,
+  "Image": 0x42EB,
   "Level": 99,
-  "ScriptKey": "",
+  "ScriptKey": "Mundane Reactor Example",
   "EnableWalking": false,
   "EnableTurning": true,
   "EnableAttacking": false,
@@ -13,6 +13,5 @@
   "Direction": 1,
   "MaximumHp": 0,
   "MaximumMp": 0,
-  "QuestKey": "Wren",
   "Name": "Wren"
 }

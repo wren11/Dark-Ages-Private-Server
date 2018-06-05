@@ -1,6 +1,7 @@
 ﻿using Darkages.Scripting;
 using Darkages.Types;
 using System;
+using System.Linq;
 
 namespace Darkages.Assets.locales.Scripts.Reactors
 {
@@ -61,22 +62,36 @@ namespace Darkages.Assets.locales.Scripts.Reactors
 
         public override void OnTriggered(Aisling aisling)
         {
-            Console.WriteLine("reactor check 2");
-
-
-            aisling.ReactorActive = true;
-            aisling.ActiveReactor = Reactor;
-            aisling.ActiveReactor.Next(aisling.Client);
+            if (aisling.ReactedWith(Reactor.Name))
+            {
+                foreach (var sequences in Reactor.Steps.Where(i => i.Callback != null))
+                    sequences.Callback.Invoke(aisling, sequences);
+            }
+            else
+            {
+                aisling.ReactorActive = true;
+                aisling.ActiveReactor = Reactor;
+                aisling.ActiveReactor.Next(aisling.Client);
+            }
         }
 
         void SequenceComplete(Aisling aisling, DialogSequence sequence)
         {
+            if (aisling.ReactedWith(Reactor.Name))
+                return;
+
             if (sequence == null)
             {
                 aisling.Reactions[Reactor.Name] = DateTime.UtcNow;
                 aisling.ReactorActive = false;
                 aisling.ActiveReactor = null;
                 aisling.Client.CloseDialog();
+
+                foreach (var sequences in Reactor.Steps.Where(i => i.Callback != null))
+                    sequences.Callback.Invoke(aisling, sequences);
+
+                if (Reactor.QuestReward != null)
+                    Reactor.QuestReward.Rewards(aisling, false);
                 
                 if (Reactor.PostScript != null)
                     Reactor.PostScript.OnTriggered(aisling);

@@ -33,8 +33,13 @@ namespace Darkages.Types
 
         public Position Location { get; set; }
 
+        public Quest QuestReward { get; set; }
+
         [JsonIgnore]
         public int Index { get; set; }
+
+        [JsonIgnore]
+        public DialogSequence Current => Steps[Index] ?? null;
 
         [JsonIgnore]
         public ReactorScript Script { get; set; }
@@ -61,6 +66,7 @@ namespace Darkages.Types
             if (!start)
             {
                 client.Send(new ReactorSequence(client, Steps[Index]));
+
                 return;
             }
 

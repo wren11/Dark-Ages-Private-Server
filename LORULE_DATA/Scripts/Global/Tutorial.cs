@@ -136,7 +136,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                         quest = CreateQuest(quest);
                     }
 
-                    if (!quest.Completed)
+                    if (!quest.Completed && quest.Started)
                         quest.HandleQuest(client);
 
                     if (!quest.Completed && client.Aisling.Y >= 11)
