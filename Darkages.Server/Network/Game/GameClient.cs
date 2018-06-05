@@ -450,10 +450,12 @@ namespace Darkages.Network.Game
             BuildSettings();
         }
 
+        Reactors s;
+
         private void LoadGlobalScripts()
         {
-            foreach (var script in ServerContext.Config.GlobalScripts)
-                GlobalScripts.Add(ScriptManager.Load<GlobalScript>(script, this));
+            //foreach (var script in ServerContext.Config.GlobalScripts)
+            //    GlobalScripts.Add(ScriptManager.Load<GlobalScript>(script, this));
         }
 
         private void SetupRegenTimers()

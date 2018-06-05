@@ -9,9 +9,11 @@ namespace Darkages.Assets.locales.Scripts.Reactors
     {
         public ExampleReactor(Reactor reactor) : base(reactor)
         {
-            reactor.Script = this;
+            Reactor 
+                 = reactor;
         }
 
+        //up
         public override void OnBack(Aisling aisling)
         {
             if (aisling.ActiveReactor == null)
@@ -72,10 +74,12 @@ namespace Darkages.Assets.locales.Scripts.Reactors
                 aisling.ReactorActive = false;
                 aisling.ActiveReactor = null;
                 aisling.Client.CloseDialog();
-                
-                if (Reactor.PostScript != null)
-                    Reactor.PostScript.OnTriggered(aisling);
 
+                if (Reactor.PostScript != null)
+                {
+                    Console.WriteLine("reactor check 1");
+                    Reactor.PostScript.OnTriggered(aisling);
+                }
             }
         }
     }

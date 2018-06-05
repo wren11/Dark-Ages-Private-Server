@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Assets.locales.Scripts.Reactors;
 using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
@@ -392,6 +393,7 @@ namespace Darkages
                     CallerType = ReactorQualifer.Map,
                     MapId = 100,
                     Location = new Position(6, 6),
+
                     Steps = new List<DialogSequence>()
                      {
                          new DialogSequence()
@@ -418,10 +420,55 @@ namespace Darkages
                               DisplayText = "Wake up noob!",
                               Title = "Hey!!!"
                          },
-                     },                     
+                     },
                 };
 
-               // StorageManager.ReactorBucket.Save(x);
+
+                var y = new Reactor()
+                {
+                    CallBackScriptKey = null,
+                    CallerType = ReactorQualifer.Reactor,
+                    CallingReactor = "example reactor",
+                    ScriptKey = "Example Reactor 2",
+                    Name = "Example Reactor 2",
+                    Steps = new List<DialogSequence>()
+                    {
+                        new DialogSequence()
+                        {
+                            HasOptions = false,
+                            CanMoveBack = false,
+                            CanMoveNext = true,
+                            DisplayText = "reactor called me!",
+                            DisplayImage = 0x4050,
+                            Title = "test reactor chain",                             
+                        },
+                        new DialogSequence()
+                        {
+                            HasOptions = false,
+                            CanMoveBack = true,
+                            CanMoveNext = true,
+                            DisplayText = "reactor called me dgfsdfds 2",
+                            DisplayImage = 0x4050,
+                            Title = "test reactor chain 2",
+                            Callback = new Action<Aisling, DialogSequence>(OncbResponse),
+                        },
+                        new DialogSequence()
+                        {
+                            HasOptions = true,
+                            CanMoveBack = true,
+                            CanMoveNext = true,
+                            DisplayText = "reactor called me dgfsdfds 3",
+                            DisplayImage = 0x4050,
+                            Title = "test reactor chain 3",
+                            Callback = new Action<Aisling, DialogSequence>(OncbResponse),
+                        },
+                    },
+                };
+
+
+
+
+
 
                 GlobalItemTemplateCache["Hy-Brasyl Battle Axe"].Class = Class.Warrior;
 
@@ -1115,6 +1162,11 @@ namespace Darkages
             }
 
             LoadMetaDatabase();
+
+        }
+
+        private static void OncbResponse(Aisling arg1, DialogSequence arg2)
+        {
 
         }
     }

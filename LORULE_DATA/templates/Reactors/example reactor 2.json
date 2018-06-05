@@ -5,45 +5,41 @@
     "$values": [
       {
         "$type": "Darkages.Types.DialogSequence, Darkages.Server",
-        "Title": "Hey!",
-        "DisplayText": "Wake up!",
+        "Title": "test reactor chain",
+        "DisplayText": "reactor called me!",
         "HasOptions": false,
         "Id": 0,
         "CanMoveNext": true,
         "CanMoveBack": false,
-        "DisplayImage": 16433
+        "DisplayImage": 16464
       },
       {
         "$type": "Darkages.Types.DialogSequence, Darkages.Server",
-        "Title": "Hey!!",
-        "DisplayText": "You lazy fucker!",
+        "Title": "test reactor chain 2",
+        "DisplayText": "reactor called me dgfsdfds 2",
         "HasOptions": false,
         "Id": 0,
         "CanMoveNext": true,
         "CanMoveBack": true,
-        "DisplayImage": 16434
+        "DisplayImage": 16464
       },
       {
         "$type": "Darkages.Types.DialogSequence, Darkages.Server",
-        "Title": "Hey!!!",
-        "DisplayText": "Wake up noob!",
-        "HasOptions": false,
+        "Title": "test reactor chain 3",
+        "DisplayText": "reactor called me dgfsdfds 3",
+        "HasOptions": true,
         "Id": 0,
         "CanMoveNext": true,
         "CanMoveBack": true,
-        "DisplayImage": 16435
+        "DisplayImage": 16464
       }
     ]
   },
-  "ScriptKey": "example reactor",
-  "CallBackScriptKey": "Example Reactor 2",
-  "CallerType": 0,
-  "MapId": 100,
-  "CallingReactor": null,
-  "Location": {
-    "$type": "Darkages.Types.Position, Darkages.Server",
-    "X": 6,
-    "Y": 6
-  },
-  "Name": "100 - Wake Up Start"
+  "ScriptKey": "Example Reactor 2",
+  "CallBackScriptKey": null,
+  "CallerType": 6,
+  "MapId": 0,
+  "CallingReactor": "example reactor",
+  "Location": null,
+  "Name": "Example Reactor 2"
 }

@@ -17,6 +17,7 @@
 //*************************************************************************/
 using Darkages.Network.Game;
 using Darkages.Scripting;
+using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,13 +38,43 @@ namespace Darkages.Storage.locales.Scripts.Global
 
         }
 
+        public string LastKey;
+
         public void LoadReactorScripts()
         {
-            foreach (var script in ServerContext.GlobalReactorCache.Select(i => i.Value))
+
+            foreach (var scripttemplate in ServerContext.GlobalReactorCache.Select(i => i.Value))
             {
-                var scp = ScriptManager.Load<ReactorScript>(script.ScriptKey, script);
-                if (scp != null)
-                    Scripts.Add(scp);
+                ReactorScript scp = ScriptManager.Load<ReactorScript>(scripttemplate.ScriptKey, scripttemplate);
+
+                if (scp != null && scp.Reactor != null)
+                {
+                    if (LastKey != scripttemplate.ScriptKey && scripttemplate.CallerType != ReactorQualifer.Reactor)
+                    {
+                        LastKey = scripttemplate.ScriptKey;
+                        scp.Reactor.Script = scp;
+                        Scripts.Add(scp);
+                    }
+                    else
+                    {
+                        var post = ServerContext.GlobalReactorCache
+                            .FirstOrDefault(i => i.Value.ScriptKey == LastKey);
+
+                        if (post.Value != null)
+                        {
+                            var ps = ScriptManager.Load<ReactorScript>(post.Value.CallBackScriptKey, scp.Reactor);
+                            var parent = Scripts.Find(i => i.Reactor.ScriptKey == scp.Reactor.CallingReactor);
+
+                            if (parent != null)
+                            {
+                                scp.Reactor.Script = scp;
+
+                                parent.Reactor.PostScript = ps;
+                                Scripts.Add(scp);
+                            }
+                        }
+                    }
+                }
             }
 
             Console.WriteLine("[{0}] Reactor Scripts Loaded: {1}", Client.Aisling.Username, Scripts.Count);
@@ -91,6 +122,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                         if (Client.Aisling.ReactedWith(script.Reactor.Name))
                             continue;
 
+                        #region Map Reactor
                         if (script.Reactor.CallerType == Types.ReactorQualifer.Map)
                         {
                             if (script.Reactor.MapId == Client.Aisling.CurrentMapId)
@@ -102,6 +134,16 @@ namespace Darkages.Storage.locales.Scripts.Global
                                 }
                             }
                         }
+                        #endregion
+
+                        #region Reactor Triggered Reactor
+                        if (script.Reactor.CallerType == Types.ReactorQualifer.Reactor)
+                        {
+
+                        }
+                        #endregion
+
+
                     }
                 }
             }

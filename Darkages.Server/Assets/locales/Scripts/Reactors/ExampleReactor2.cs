@@ -4,12 +4,12 @@ using System;
 
 namespace Darkages.Assets.locales.Scripts.Reactors
 {
-    [Script("example reactor")]
-    public class ExampleReactor : ReactorScript
+    [Script("Example Reactor 2")]
+    public class ExampleReactor2 : ReactorScript
     {
-        public ExampleReactor(Reactor reactor) : base(reactor)
+        public ExampleReactor2(Reactor reactor) : base(reactor)
         {
-            Reactor 
+            Reactor
                  = reactor;
         }
 
@@ -61,6 +61,9 @@ namespace Darkages.Assets.locales.Scripts.Reactors
 
         public override void OnTriggered(Aisling aisling)
         {
+            Console.WriteLine("reactor check 2");
+
+
             aisling.ReactorActive = true;
             aisling.ActiveReactor = Reactor;
             aisling.ActiveReactor.Next(aisling.Client);
@@ -74,12 +77,10 @@ namespace Darkages.Assets.locales.Scripts.Reactors
                 aisling.ReactorActive = false;
                 aisling.ActiveReactor = null;
                 aisling.Client.CloseDialog();
-
+                
                 if (Reactor.PostScript != null)
-                {
-                    Console.WriteLine("reactor check 1");
                     Reactor.PostScript.OnTriggered(aisling);
-                }
+
             }
         }
     }
