@@ -24,8 +24,8 @@ using System.IO;
 namespace Darkages.Storage
 {
     public class StorageManager
-    {     
-        
+    {
+
         public static JsonSerializerSettings Settings = new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.All,
@@ -66,11 +66,15 @@ namespace Darkages.Storage
                     if (!File.Exists(path))
                         return null;
 
-                    using (var s = File.OpenRead(path))
+                    T result;
+
+                    using (FileStream s = File.OpenRead(path))
                     using (var f = new StreamReader(s))
                     {
-                        return JsonConvert.DeserializeObject<T>(f.ReadToEnd(), Settings);
+                        result = JsonConvert.DeserializeObject<ServerConstants>(f.ReadToEnd(), Settings) as T;
                     }
+
+                    return result;
                 }
 
                 if (obj is GameServer)
@@ -81,12 +85,15 @@ namespace Darkages.Storage
                     if (!File.Exists(path))
                         return null;
 
+                    T result;
+
                     using (var s = File.OpenRead(path))
                     using (var f = new StreamReader(s))
                     {
-                        var objd = JsonConvert.DeserializeObject<GameServer>(f.ReadToEnd(), Settings);
-                        return objd as T;
+                        result = JsonConvert.DeserializeObject<GameServer>(f.ReadToEnd(), Settings) as T;
                     }
+
+                    return result;
                 }
 
                 if (obj is ObjectService)
@@ -97,11 +104,15 @@ namespace Darkages.Storage
                     if (!File.Exists(path))
                         return null;
 
+                    T result;
+
                     using (var s = File.OpenRead(path))
                     using (var f = new StreamReader(s))
                     {
-                        return JsonConvert.DeserializeObject<T>(f.ReadToEnd(), Settings);
+                        result = JsonConvert.DeserializeObject<GameServer>(f.ReadToEnd(), Settings) as T;
                     }
+
+                    return result;
                 }
 
                 return null;

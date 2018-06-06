@@ -367,11 +367,6 @@ namespace Darkages.Types
                         mod = 3;
                 }
 
-            }
-
-            if (this is Monster)
-            {
-                var mon = this as Monster;
                 var dmg = mon.GetPrimaryAttribute() * mod;
 
                 if (mon.MajorAttribute == PrimaryStat.INT || mon.MajorAttribute == PrimaryStat.WIS)
@@ -841,7 +836,7 @@ namespace Darkages.Types
         /// <summary>
         ///     Sends Format With Target Scope.
         /// </summary>
-        public void Show<T>(Scope op, T format, Sprite[] definer = null) where T : NetworkFormat
+        public void Show<T>(Scope op, T format, IEnumerable<Sprite> definer = null) where T : NetworkFormat
         {
             switch (op)
             {
@@ -927,16 +922,13 @@ namespace Darkages.Types
                         if (this is Aisling)
                             foreach (var gc in GetObjects<Aisling>(that => (this as Aisling).GroupParty.Has(that)))
                             {
-                                if (this is Aisling)
-                                {
-                                    if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
-                                        if (format is ServerFormat33)
-                                            return;
+                                if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
+                                    if (format is ServerFormat33)
+                                        return;
 
-                                    if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
-                                        if (format is ServerFormat33)
-                                            return;
-                                }
+                                if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
+                                    if (format is ServerFormat33)
+                                        return;
 
                                 gc.Client.Send(format);
                             }
@@ -948,8 +940,6 @@ namespace Darkages.Types
                             foreach (var gc in GetObjects<Aisling>(that =>
                                 that.WithinRangeOf(this) && (this as Aisling).GroupParty.Has(that)))
                             {
-                                if (this is Aisling)
-                                {
                                     if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
                                         if (format is ServerFormat33)
                                             return;
@@ -957,7 +947,6 @@ namespace Darkages.Types
                                     if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
                                         if (format is ServerFormat33)
                                             return;
-                                }
 
                                 gc.Client.Send(format);
                             }
@@ -969,8 +958,6 @@ namespace Darkages.Types
                             foreach (var gc in GetObjects<Aisling>(that =>
                                 that.WithinRangeOf(this) && (this as Aisling).GroupParty.Has(that, true)))
                             {
-                                if (this is Aisling)
-                                {
                                     if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
                                         if (format is ServerFormat33)
                                             return;
@@ -978,14 +965,13 @@ namespace Darkages.Types
                                     if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
                                         if (format is ServerFormat33)
                                             return;
-                                }
 
                                 gc.Client.Send(format);
                             }
                     }
                     break;
                 case Scope.DefinedAislings:
-                    if (definer != null && definer.Length > 0)
+                    if (definer != null)
                         foreach (var gc in definer)
                         {
                             if (this is Aisling)
@@ -1269,7 +1255,7 @@ namespace Darkages.Types
             return GetObject(i => i.X == x && i.Y == y, Get.All);
         }
 
-        public Sprite[] GetSprites(int x, int y)
+        public IEnumerable<Sprite> GetSprites(int x, int y)
         {
             return GetObjects(i => i.X == x && i.Y == y, Get.All);
         }
@@ -1470,17 +1456,17 @@ namespace Darkages.Types
 
         public Aisling[] AislingsNearby()
         {
-            return GetObjects<Aisling>(i => i.WithinRangeOf(this));
+            return GetObjects<Aisling>(i => i.WithinRangeOf(this)).ToArray();
         }
 
         public Monster[] MonstersNearby()
         {
-            return GetObjects<Monster>(i => i.WithinRangeOf(this));
+            return GetObjects<Monster>(i => i.WithinRangeOf(this)).ToArray();
         }
 
         public Mundane[] MundanesNearby()
         {
-            return GetObjects<Mundane>(i => i.WithinRangeOf(this));
+            return GetObjects<Mundane>(i => i.WithinRangeOf(this)).ToArray();
         }
 
 
@@ -1801,7 +1787,7 @@ namespace Darkages.Types
             if (this is Monster)
             {
                 var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(this) && i.InsideView(this));
-                if (nearby.Length > 0)
+                if (nearby != null)
                     foreach (var obj in nearby)
                         obj.Show(Scope.Self, response, nearby);
             }
@@ -1809,7 +1795,7 @@ namespace Darkages.Types
             if (this is Mundane)
             {
                 var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(this) && i.InsideView(this));
-                if (nearby.Length > 0)
+                if (nearby != null)
                     foreach (var obj in nearby)
                         obj.Show(Scope.Self, response, nearby);
 

@@ -29,7 +29,7 @@ using System.Reflection;
 
 namespace Darkages.Network
 {
-    public abstract class NetworkServer<TClient> : ObjectManager
+    public abstract class NetworkServer<TClient> : ObjectManager 
         where TClient : NetworkClient<TClient>, new()
     {
         private readonly MethodInfo[] _handlers;

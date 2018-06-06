@@ -26,7 +26,6 @@ namespace Darkages.Scripting.Scripts.Skills
     [Script("Cone Attack", "Dean")]
     public class ConeAttack : SkillScript
     {
-        private readonly Random rand = new Random();
         public Skill _skill;
 
         public Sprite Target;

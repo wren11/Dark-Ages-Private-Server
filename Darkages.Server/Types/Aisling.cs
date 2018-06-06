@@ -425,8 +425,9 @@ namespace Darkages
             try
             {
                 var objs = GetObjects(i => i.WithinRangeOf(this) && i.Target != null && i.Target.Serial == Serial, Get.Monsters | Get.Mundanes);
-                for (int i = 0; i < objs.Length; i++)
-                    objs[i].Target = null;
+
+                foreach (var obj in objs)
+                    obj.Target = null;
             }
             finally
             {

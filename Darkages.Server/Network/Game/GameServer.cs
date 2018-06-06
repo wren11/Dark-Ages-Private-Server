@@ -24,7 +24,6 @@ using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
-    [Serializable]
     public partial class GameServer
     {
         bool isRunning;
@@ -32,6 +31,9 @@ namespace Darkages.Network.Game
         DateTime lastServerUpdate = DateTime.UtcNow;
         DateTime lastClientUpdate = DateTime.UtcNow;
         TimeSpan ServerUpdateSpan, ClientUpdateSpan;
+        private Thread ServerThread = null;
+        private Thread ClientThread = null;
+
 
         public ObjectService ObjectFactory;
         public Dictionary<Type, GameServerComponent> Components;
@@ -245,9 +247,6 @@ namespace Darkages.Network.Game
 
             isRunning = false;
         }
-
-        Thread ServerThread = null;
-        Thread ClientThread = null;
 
         public override void Start(int port)
         {

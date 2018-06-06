@@ -117,7 +117,7 @@ namespace Darkages.Storage.locales.Scripts.Global
 
                     if (client.Aisling.X == 8)
                     {
-                        if (quest == null || (quest != null && !quest.Completed))
+                        if (quest != null && !quest.Completed)
                         {
                             client.Aisling.X = 11;
                             client.SendMessage(0x02, "You are not ready to enter yet.");

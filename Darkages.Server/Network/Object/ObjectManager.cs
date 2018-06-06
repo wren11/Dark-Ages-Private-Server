@@ -19,6 +19,7 @@ using Darkages.Types;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Darkages.Network.Object
@@ -40,7 +41,7 @@ namespace Darkages.Network.Object
         public void DelObject<T>(T obj) where T : Sprite => ServerContext.Game?.ObjectFactory.RemoveGameObject(obj);
         public void DelObjects<T>(T[] obj) where T : Sprite => ServerContext.Game?.ObjectFactory.RemoveAllGameObjects(obj);
         public T GetObject<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.Query(p);
-        public T[] GetObjects<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.QueryAll(p);
+        public IEnumerable<T> GetObjects<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.QueryAll(p).ToList();
 
         public static T Clone<T>(object source)
         {
@@ -84,9 +85,9 @@ namespace Darkages.Network.Object
             ServerContext.Game.ObjectFactory.AddGameObject(obj);
         }
 
-        public Sprite[] GetObjects(Predicate<Sprite> p, Get selections)
+        public IEnumerable<Sprite> GetObjects(Predicate<Sprite> p, Get selections)
         {
-            var bucket = new ArrayList();
+            var bucket = new List<Sprite>();
 
             if ((selections & Get.All) == Get.All)
                 selections = Get.Items | Get.Money | Get.Monsters | Get.Mundanes | Get.Aislings;
@@ -102,7 +103,7 @@ namespace Darkages.Network.Object
             if ((selections & Get.Items) == Get.Items)
                 bucket.AddRange(GetObjects<Item>(p));
 
-            return bucket.Cast<Sprite>().ToArray();
+            return bucket;
         }
 
         public Sprite GetObject(Predicate<Sprite> p, Get selections)

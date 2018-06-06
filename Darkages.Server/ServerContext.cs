@@ -15,11 +15,9 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Assets.locales.Scripts.Reactors;
 using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
-using Darkages.Network.ServerFormats;
 using Darkages.Storage;
 using Darkages.Storage.locales.Buffs;
 using Darkages.Storage.locales.debuffs;
@@ -29,9 +27,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -391,784 +387,790 @@ namespace Darkages
             Paused = true;
             Paused = await Task.Run(() =>
             {
-                EmptyCacheCollectors();
-                lock (SyncObj)
+                try
                 {
-                    UpdateLocales();
-                    LoadMaps();
-                    LoadReactorTemplates();
-                    LoadSkillTemplates();
-                    LoadSpellTemplates();
-                    LoadItemTemplates();
-                    LoadMonsterTemplates();
-                    LoadMundaneTemplates();
-                    LoadWarpTemplates();
-                    LoadWorldMapTemplates();
-                    CacheCommunityAssets();
-                }
-
-
-#pragma warning TEMPORARY CODE BELOW
-                //Everything below  here are hard-coded examples and should not be here for long.            
-                var x = new Reactor()
-                {
-                    Name = "100 - Wake Up Start",
-                    CallBackScriptKey = "Example Reactor 2",
-                    ScriptKey = "example reactor",
-                    CallerType = ReactorQualifer.Map,
-                    MapId = 100,
-                    Location = new Position(6, 6),
-
-                    Steps = new List<DialogSequence>()
-                     {
-                         new DialogSequence()
-                         {
-                              CanMoveBack = false,
-                              CanMoveNext = true,
-                              DisplayImage = 0x4031,
-                              DisplayText = "Wake up!",
-                              Title = "Hey!"
-                         },
-                         new DialogSequence()
-                         {
-                              CanMoveBack = true,
-                              CanMoveNext = true,
-                              DisplayImage = 0x4032,
-                              DisplayText = "You lazy fucker!",
-                              Title = "Hey!!"
-                         },
-                         new DialogSequence()
-                         {
-                              CanMoveBack = true,
-                              CanMoveNext = true,
-                              DisplayImage = 0x4033,
-                              DisplayText = "Wake up noob!",
-                              Title = "Hey!!!"
-                         },
-                     },
-                };
-
-
-                var y = new Reactor()
-                {
-                    CallBackScriptKey = null,
-                    CallerType = ReactorQualifer.Reactor,
-                    CallingReactor = "example reactor",
-                    ScriptKey = "Example Reactor 2",
-                    Name = "Example Reactor 2",
-                    Steps = new List<DialogSequence>()
+                    EmptyCacheCollectors();
+                    lock (SyncObj)
                     {
-                        new DialogSequence()
-                        {
-                            HasOptions = false,
-                            CanMoveBack = false,
-                            CanMoveNext = true,
-                            DisplayText = "reactor called me!",
-                            DisplayImage = 0x4050,
-                            Title = "test reactor chain",
-                        },
-                        new DialogSequence()
-                        {
-                            HasOptions = false,
-                            CanMoveBack = true,
-                            CanMoveNext = true,
-                            DisplayText = "reactor called me dgfsdfds 2",
-                            DisplayImage = 0x4050,
-                            Title = "test reactor chain 2",
-                            CallbackKey = "OncbResponse",
-                        },
-                        new DialogSequence()
-                        {
-                            HasOptions = true,
-                            CanMoveBack = true,
-                            CanMoveNext = true,
-                            DisplayText = "reactor called me dgfsdfds 3",
-                            DisplayImage = 0x4050,
-                            Title = "test reactor chain 3",
-                            CallbackKey = "OncbResponse",
-                        },
-                    },
-                    QuestReward = new Quest()
-                    {
-                        ExpRewards = new List<uint>()
-                        {
-                            1000, 1000, 1000
-                        },
-                        GoldReward = 50000,
-                        LegendRewards = new List<Legend.LegendItem>()
-                        {
-                            new Legend.LegendItem()
-                            {
-                               Category = "Quest",
-                               Color = (byte)LegendColor.Blue,
-                               Icon = (byte)LegendIcon.Community,
-                               Value = "Completed Reactor.",
-                            },
-                        },
-                        ItemRewards = new List<string>()
-                        {
-                             "Dark Belt",
-                             "Dark Bone Necklace"
-                        },
-                        Completed = true,
+                        UpdateLocales();
+                        LoadMaps();
+                        LoadReactorTemplates();
+                        LoadSkillTemplates();
+                        LoadSpellTemplates();
+                        LoadItemTemplates();
+                        LoadMonsterTemplates();
+                        LoadMundaneTemplates();
+                        LoadWarpTemplates();
+                        LoadWorldMapTemplates();
+                        CacheCommunityAssets();
                     }
-                };
-
-                GlobalItemTemplateCache["Hy-Brasyl Battle Axe"].Class = Class.Warrior;
 
 
-                GlobalItemTemplateCache["Earth Necklace"] = new ItemTemplate()
-                {
-                    CanStack = false,
-                    Class = Class.Peasant,
-                    CarryWeight = 1,
-                    Color = ItemColor.defaultgreen,
-                    OffenseElement = ElementManager.Element.Earth,
-                    DisplayImage = 0x80C5,
-                    Image = 0xC5,
-                    LevelRequired = 6,
-                    DropRate = 0.50,
-                    Value = 10000,
-                    MaxDurability = 5000,
-                    Name = "Earth Necklace",
-                    NpcKey = "Precious Jewels",
-                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
-                    Gender = Gender.Both,
-                    EquipmentSlot = ItemSlots.Necklace,
-                    ScriptName = "Necklace"
-                };
-
-                GlobalItemTemplateCache["Fire Necklace"] = new ItemTemplate()
-                {
-                    CanStack = false,
-                    Class = Class.Peasant,
-                    CarryWeight = 1,
-                    Color = ItemColor.defaultgreen,
-                    OffenseElement = ElementManager.Element.Fire,
-                    DisplayImage = 0x80CD,
-                    Image = 0xCD,
-                    LevelRequired = 6,
-                    DropRate = 0.50,
-                    Value = 10000,
-                    MaxDurability = 5000,
-                    Name = "Fire Necklace",
-                    NpcKey = "Precious Jewels",
-                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
-                    Gender = Gender.Both,
-                    EquipmentSlot = ItemSlots.Necklace,
-                    ScriptName = "Necklace"
-                };
-
-                GlobalItemTemplateCache["Wind Necklace"] = new ItemTemplate()
-                {
-                    CanStack = false,
-                    Class = Class.Peasant,
-                    CarryWeight = 1,
-                    Color = ItemColor.defaultgreen,
-                    OffenseElement = ElementManager.Element.Wind,
-                    DisplayImage = 0x80C6,
-                    Image = 0xC6,
-                    LevelRequired = 6,
-                    DropRate = 0.50,
-                    Value = 10000,
-                    MaxDurability = 5000,
-                    Name = "Wind Necklace",
-                    NpcKey = "Precious Jewels",
-                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
-                    Gender = Gender.Both,
-                    EquipmentSlot = ItemSlots.Necklace,
-                    ScriptName = "Necklace"
-                };
-
-
-                GlobalItemTemplateCache["Sea Necklace"] = new ItemTemplate()
-                {
-                    CanStack = false,
-                    Class = Class.Peasant,
-                    CarryWeight = 1,
-                    Color = ItemColor.defaultgreen,
-                    OffenseElement = ElementManager.Element.Water,
-                    DisplayImage = 0x80C7,
-                    Image = 0xC7,
-                    LevelRequired = 6,
-                    DropRate = 0.50,
-                    Value = 10000,
-                    MaxDurability = 5000,
-                    Name = "Sea Necklace",
-                    NpcKey = "Precious Jewels",
-                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
-                    Gender = Gender.Both,
-                    EquipmentSlot = ItemSlots.Necklace,
-                    ScriptName = "Necklace"
-                };
-
-
-                GlobalItemTemplateCache["Dark Necklace"] = new ItemTemplate()
-                {
-                    CanStack = false,
-                    Class = Class.Peasant,
-                    CarryWeight = 1,
-                    Color = ItemColor.defaultgreen,
-                    OffenseElement = ElementManager.Element.Dark,
-                    DisplayImage = 0x80CA,
-                    Image = 0xCA,
-                    LevelRequired = 6,
-                    DropRate = 0.20,
-                    Value = 1000000,
-                    MaxDurability = 5000,
-                    Name = "Dark Necklace",
-                    NpcKey = "Precious Jewels",
-                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
-                    Gender = Gender.Both,
-                    EquipmentSlot = ItemSlots.Necklace,
-                    ScriptName = "Necklace"
-                };
-
-                GlobalItemTemplateCache["Elemental Band"] = new ItemTemplate()
-                {
-                    CanStack = false,
-                    Class = Class.Peasant,
-                    CarryWeight = 1,
-                    Color = ItemColor.defaultgreen,
-                    OffenseElement = ElementManager.Element.Random,
-                    DisplayImage = 0x8820,
-                    Image = 0x0820,
-                    LevelRequired = 6,
-                    DropRate = 0.02,
-                    Value = 100000000,
-                    MaxDurability = 5000,
-                    Name = "Elemental Band",
-                    NpcKey = "Precious Jewels",
-                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
-                    Gender = Gender.Both,
-                    EquipmentSlot = ItemSlots.Necklace,
-                    ScriptName = "Necklace",
-                };
-
-                GlobalItemTemplateCache["Black Pearl Ring"] = new ItemTemplate()
-                {
-                    CanStack = false,
-                    Class = Class.Peasant,
-                    CarryWeight = 1,
-                    AcModifer = new StatusOperator(StatusOperator.Operator.Remove, 5),
-                    StrModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
-                    ConModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
-                    DexModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
-                    IntModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
-                    WisModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
-                    HitModifer = new StatusOperator(StatusOperator.Operator.Add, 5),
-                    DmgModifer = new StatusOperator(StatusOperator.Operator.Add, 5),
-                    HealthModifer = new StatusOperator(StatusOperator.Operator.Add, 2000),
-                    ManaModifer = new StatusOperator(StatusOperator.Operator.Add, 2000),
-                    DisplayImage = 0x829E,
-                    Image = 0x029E,
-                    LevelRequired = 99,
-                    DropRate = 0.05,
-                    Value = 20000000,
-                    MaxDurability = 5000,
-                    Name = "Black Pearl Ring",
-                    NpcKey = "Precious Jewels",
-                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
-                    Gender = Gender.Both,
-                    EquipmentSlot = ItemSlots.LHand,
-                    ScriptName = "Ring"
-                };
-
-
-                GlobalSpellTemplateCache["ao beag cradh"]
-                 = new SpellTemplate()
-                 {
-                     Animation = 39,
-                     BaseLines = 2,
-                     Icon = 23,
-                     LevelRate = 0.20,
-                     ManaCost = 40,
-                     MaxLevel = 100,
-                     Name = "ao beag cradh",
-                     NpcKey = "etaen",
-                     MinLines = 0,
-                     Pane = Pane.Spells,
-                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
-                     MaxLines = 3,
-                     TierLevel = Tier.Tier1,
-                     Sound = 8,
-                     ScriptKey = "ao beag cradh"
-                 };
-
-
-                GlobalSpellTemplateCache["ao cradh"]
-                 = new SpellTemplate()
-                 {
-                     Animation = 38,
-                     BaseLines = 2,
-                     Icon = 79,
-                     LevelRate = 0.20,
-                     ManaCost = 100,
-                     MaxLevel = 100,
-                     Name = "ao cradh",
-                     NpcKey = "etaen",
-                     MinLines = 0,
-                     Pane = Pane.Spells,
-                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
-                     MaxLines = 3,
-                     TierLevel = Tier.Tier1,
-                     Sound = 8,
-                     ScriptKey = "ao cradh"
-                 };
-
-                GlobalSpellTemplateCache["ao mor cradh"]
-                 = new SpellTemplate()
-                 {
-                     Animation = 8,
-                     BaseLines = 2,
-                     Icon = 80,
-                     LevelRate = 0.20,
-                     ManaCost = 150,
-                     MaxLevel = 100,
-                     Name = "ao mor cradh",
-                     NpcKey = "dar",
-                     MinLines = 0,
-                     Pane = Pane.Spells,
-                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
-                     MaxLines = 3,
-                     TierLevel = Tier.Tier1,
-                     Sound = 8,
-                     ScriptKey = "ao mor cradh"
-                 };
-
-                GlobalSpellTemplateCache["ao ard cradh"]
-                 = new SpellTemplate()
-                 {
-                     Animation = 37,
-                     BaseLines = 2,
-                     Icon = 81,
-                     LevelRate = 0.30,
-                     ManaCost = 240,
-                     MaxLevel = 100,
-                     Name = "ao ard cradh",
-                     NpcKey = "dar",
-                     MinLines = 0,
-                     Pane = Pane.Spells,
-                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
-                     MaxLines = 3,
-                     TierLevel = Tier.Tier1,
-                     Sound = 8,
-                     ScriptKey = "ao ard cradh"
-                 };
-
-
-                GlobalSpellTemplateCache["ao suain"]
-                 = new SpellTemplate()
-                 {
-                     Animation = 2,
-                     BaseLines = 2,
-                     Icon = 51,
-                     LevelRate = 0.20,
-                     ManaCost = 40,
-                     MaxLevel = 100,
-                     Name = "ao suain",
-                     NpcKey = "etaen",
-                     MinLines = 0,
-                     Pane = Pane.Spells,
-                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
-                     MaxLines = 3,
-                     TierLevel = Tier.Tier1,
-                     Sound = 8,
-                     ScriptKey = "ao suain"
-                 };
-
-                GlobalSpellTemplateCache["ao puinsein"]
-                    = new SpellTemplate()
+                    //Everything below  here are hard-coded examples and should not be here for long.            
+                    var x = new Reactor()
                     {
-                        Animation = 279,
-                        BaseLines = 1,
-                        Icon = 24,
-                        LevelRate = 0.20,
-                        ManaCost = 30,
-                        MaxLevel = 100,
-                        Name = "ao puinsein",
-                        NpcKey = "etaen",
-                        MinLines = 0,
-                        Pane = Pane.Spells,
-                        TargetType = SpellTemplate.SpellUseType.ChooseTarget,
-                        MaxLines = 2,
-                        TierLevel = Tier.Tier1,
-                        Sound = 8,
-                        ScriptKey = "ao puinsein"
+                        Name = "100 - Wake Up Start",
+                        CallBackScriptKey = "Example Reactor 2",
+                        ScriptKey = "example reactor",
+                        CallerType = ReactorQualifer.Map,
+                        MapId = 100,
+                        Location = new Position(6, 6),
+
+                        Steps = new List<DialogSequence>()
+                         {
+                             new DialogSequence()
+                             {
+                                  CanMoveBack = false,
+                                  CanMoveNext = true,
+                                  DisplayImage = 0x4031,
+                                  DisplayText = "Wake up!",
+                                  Title = "Hey!"
+                             },
+                             new DialogSequence()
+                             {
+                                  CanMoveBack = true,
+                                  CanMoveNext = true,
+                                  DisplayImage = 0x4032,
+                                  DisplayText = "You lazy fucker!",
+                                  Title = "Hey!!"
+                             },
+                             new DialogSequence()
+                             {
+                                  CanMoveBack = true,
+                                  CanMoveNext = true,
+                                  DisplayImage = 0x4033,
+                                  DisplayText = "Wake up noob!",
+                                  Title = "Hey!!!"
+                             },
+                         },
                     };
 
 
+                    var y = new Reactor()
+                    {
+                        CallBackScriptKey = null,
+                        CallerType = ReactorQualifer.Reactor,
+                        CallingReactor = "example reactor",
+                        ScriptKey = "Example Reactor 2",
+                        Name = "Example Reactor 2",
+                        Steps = new List<DialogSequence>()
+                        {
+                            new DialogSequence()
+                            {
+                                HasOptions = false,
+                                CanMoveBack = false,
+                                CanMoveNext = true,
+                                DisplayText = "reactor called me!",
+                                DisplayImage = 0x4050,
+                                Title = "test reactor chain",
+                            },
+                            new DialogSequence()
+                            {
+                                HasOptions = false,
+                                CanMoveBack = true,
+                                CanMoveNext = true,
+                                DisplayText = "reactor called me dgfsdfds 2",
+                                DisplayImage = 0x4050,
+                                Title = "test reactor chain 2",
+                                CallbackKey = "OncbResponse",
+                            },
+                            new DialogSequence()
+                            {
+                                HasOptions = true,
+                                CanMoveBack = true,
+                                CanMoveNext = true,
+                                DisplayText = "reactor called me dgfsdfds 3",
+                                DisplayImage = 0x4050,
+                                Title = "test reactor chain 3",
+                                CallbackKey = "OncbResponse",
+                            },
+                        },
+                        QuestReward = new Quest()
+                        {
+                            ExpRewards = new List<uint>()
+                            {
+                                1000, 1000, 1000
+                            },
+                            GoldReward = 50000,
+                            LegendRewards = new List<Legend.LegendItem>()
+                            {
+                                new Legend.LegendItem()
+                                {
+                                   Category = "Quest",
+                                   Color = (byte)LegendColor.Blue,
+                                   Icon = (byte)LegendIcon.Community,
+                                   Value = "Completed Reactor.",
+                                },
+                            },
+                            ItemRewards = new List<string>()
+                            {
+                                 "Dark Belt",
+                                 "Dark Bone Necklace"
+                            },
+                            Completed = true,
+                        }
+                    };
 
-                GlobalSpellTemplateCache["ia naomh aite"]
-                 = new SpellTemplate()
-                 {
-                     Animation = 383,
-                     BaseLines = 4,
-                     Icon = 11,
-                     LevelRate = 1.50,
-                     ManaCost = 500,
-                     MaxLevel = 100,
-                     Name = "ia naomh aite",
-                     NpcKey = "etaen",
-                     MinLines = 1,
-                     Pane = Pane.Spells,
-                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
-                     MaxLines = 4,
-                     TierLevel = Tier.Tier1,
-                     Sound = 8,
-                     ScriptKey = "aite",
-                     Buff = new buff_aite()
-                 };
+                    GlobalItemTemplateCache["Hy-Brasyl Battle Axe"].Class = Class.Warrior;
 
 
-                GlobalSpellTemplateCache["fas spiorad"] = new SpellTemplate()
-                {
-                    Animation = 1,
-                    BaseLines = 9,
-                    MinLines = 1,
-                    MaxLines = 9,
-                    ScriptKey = "fas spiorad",
-                    Debuff = new debuff_fasspoirad(),
-                    Description = "Deals 1/3 of mana in damage to the player and restores 100% mana.",
-                    Icon = 26,
-                    LevelRate = 0.0,
-                    ManaCost = 0,
-                    Pane = Pane.Spells,
-                    TierLevel = Tier.Tier1,
-                    Sound = 8,
-                    Name = "fas spiorad",
-                    MaxLevel = 100,
-                    NpcKey = "dar",
-                    TargetType = SpellTemplate.SpellUseType.NoTarget,
-                    Prerequisites = new LearningPredicate()
+                    GlobalItemTemplateCache["Earth Necklace"] = new ItemTemplate()
+                    {
+                        CanStack = false,
+                        Class = Class.Peasant,
+                        CarryWeight = 1,
+                        Color = ItemColor.defaultgreen,
+                        OffenseElement = ElementManager.Element.Earth,
+                        DisplayImage = 0x80C5,
+                        Image = 0xC5,
+                        LevelRequired = 6,
+                        DropRate = 0.50,
+                        Value = 10000,
+                        MaxDurability = 5000,
+                        Name = "Earth Necklace",
+                        NpcKey = "Precious Jewels",
+                        Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                        Gender = Gender.Both,
+                        EquipmentSlot = ItemSlots.Necklace,
+                        ScriptName = "Necklace"
+                    };
+
+                    GlobalItemTemplateCache["Fire Necklace"] = new ItemTemplate()
+                    {
+                        CanStack = false,
+                        Class = Class.Peasant,
+                        CarryWeight = 1,
+                        Color = ItemColor.defaultgreen,
+                        OffenseElement = ElementManager.Element.Fire,
+                        DisplayImage = 0x80CD,
+                        Image = 0xCD,
+                        LevelRequired = 6,
+                        DropRate = 0.50,
+                        Value = 10000,
+                        MaxDurability = 5000,
+                        Name = "Fire Necklace",
+                        NpcKey = "Precious Jewels",
+                        Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                        Gender = Gender.Both,
+                        EquipmentSlot = ItemSlots.Necklace,
+                        ScriptName = "Necklace"
+                    };
+
+                    GlobalItemTemplateCache["Wind Necklace"] = new ItemTemplate()
+                    {
+                        CanStack = false,
+                        Class = Class.Peasant,
+                        CarryWeight = 1,
+                        Color = ItemColor.defaultgreen,
+                        OffenseElement = ElementManager.Element.Wind,
+                        DisplayImage = 0x80C6,
+                        Image = 0xC6,
+                        LevelRequired = 6,
+                        DropRate = 0.50,
+                        Value = 10000,
+                        MaxDurability = 5000,
+                        Name = "Wind Necklace",
+                        NpcKey = "Precious Jewels",
+                        Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                        Gender = Gender.Both,
+                        EquipmentSlot = ItemSlots.Necklace,
+                        ScriptName = "Necklace"
+                    };
+
+
+                    GlobalItemTemplateCache["Sea Necklace"] = new ItemTemplate()
+                    {
+                        CanStack = false,
+                        Class = Class.Peasant,
+                        CarryWeight = 1,
+                        Color = ItemColor.defaultgreen,
+                        OffenseElement = ElementManager.Element.Water,
+                        DisplayImage = 0x80C7,
+                        Image = 0xC7,
+                        LevelRequired = 6,
+                        DropRate = 0.50,
+                        Value = 10000,
+                        MaxDurability = 5000,
+                        Name = "Sea Necklace",
+                        NpcKey = "Precious Jewels",
+                        Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                        Gender = Gender.Both,
+                        EquipmentSlot = ItemSlots.Necklace,
+                        ScriptName = "Necklace"
+                    };
+
+
+                    GlobalItemTemplateCache["Dark Necklace"] = new ItemTemplate()
+                    {
+                        CanStack = false,
+                        Class = Class.Peasant,
+                        CarryWeight = 1,
+                        Color = ItemColor.defaultgreen,
+                        OffenseElement = ElementManager.Element.Dark,
+                        DisplayImage = 0x80CA,
+                        Image = 0xCA,
+                        LevelRequired = 6,
+                        DropRate = 0.20,
+                        Value = 1000000,
+                        MaxDurability = 5000,
+                        Name = "Dark Necklace",
+                        NpcKey = "Precious Jewels",
+                        Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                        Gender = Gender.Both,
+                        EquipmentSlot = ItemSlots.Necklace,
+                        ScriptName = "Necklace"
+                    };
+
+                    GlobalItemTemplateCache["Elemental Band"] = new ItemTemplate()
+                    {
+                        CanStack = false,
+                        Class = Class.Peasant,
+                        CarryWeight = 1,
+                        Color = ItemColor.defaultgreen,
+                        OffenseElement = ElementManager.Element.Random,
+                        DisplayImage = 0x8820,
+                        Image = 0x0820,
+                        LevelRequired = 6,
+                        DropRate = 0.02,
+                        Value = 100000000,
+                        MaxDurability = 5000,
+                        Name = "Elemental Band",
+                        NpcKey = "Precious Jewels",
+                        Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                        Gender = Gender.Both,
+                        EquipmentSlot = ItemSlots.Necklace,
+                        ScriptName = "Necklace",
+                    };
+
+                    GlobalItemTemplateCache["Black Pearl Ring"] = new ItemTemplate()
+                    {
+                        CanStack = false,
+                        Class = Class.Peasant,
+                        CarryWeight = 1,
+                        AcModifer = new StatusOperator(StatusOperator.Operator.Remove, 5),
+                        StrModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                        ConModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                        DexModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                        IntModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                        WisModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                        HitModifer = new StatusOperator(StatusOperator.Operator.Add, 5),
+                        DmgModifer = new StatusOperator(StatusOperator.Operator.Add, 5),
+                        HealthModifer = new StatusOperator(StatusOperator.Operator.Add, 2000),
+                        ManaModifer = new StatusOperator(StatusOperator.Operator.Add, 2000),
+                        DisplayImage = 0x829E,
+                        Image = 0x029E,
+                        LevelRequired = 99,
+                        DropRate = 0.05,
+                        Value = 20000000,
+                        MaxDurability = 5000,
+                        Name = "Black Pearl Ring",
+                        NpcKey = "Precious Jewels",
+                        Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                        Gender = Gender.Both,
+                        EquipmentSlot = ItemSlots.LHand,
+                        ScriptName = "Ring"
+                    };
+
+
+                    GlobalSpellTemplateCache["ao beag cradh"]
+                     = new SpellTemplate()
+                     {
+                         Animation = 39,
+                         BaseLines = 2,
+                         Icon = 23,
+                         LevelRate = 0.20,
+                         ManaCost = 40,
+                         MaxLevel = 100,
+                         Name = "ao beag cradh",
+                         NpcKey = "etaen",
+                         MinLines = 0,
+                         Pane = Pane.Spells,
+                         TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                         MaxLines = 3,
+                         TierLevel = Tier.Tier1,
+                         Sound = 8,
+                         ScriptKey = "ao beag cradh"
+                     };
+
+
+                    GlobalSpellTemplateCache["ao cradh"]
+                     = new SpellTemplate()
+                     {
+                         Animation = 38,
+                         BaseLines = 2,
+                         Icon = 79,
+                         LevelRate = 0.20,
+                         ManaCost = 100,
+                         MaxLevel = 100,
+                         Name = "ao cradh",
+                         NpcKey = "etaen",
+                         MinLines = 0,
+                         Pane = Pane.Spells,
+                         TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                         MaxLines = 3,
+                         TierLevel = Tier.Tier1,
+                         Sound = 8,
+                         ScriptKey = "ao cradh"
+                     };
+
+                    GlobalSpellTemplateCache["ao mor cradh"]
+                     = new SpellTemplate()
+                     {
+                         Animation = 8,
+                         BaseLines = 2,
+                         Icon = 80,
+                         LevelRate = 0.20,
+                         ManaCost = 150,
+                         MaxLevel = 100,
+                         Name = "ao mor cradh",
+                         NpcKey = "dar",
+                         MinLines = 0,
+                         Pane = Pane.Spells,
+                         TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                         MaxLines = 3,
+                         TierLevel = Tier.Tier1,
+                         Sound = 8,
+                         ScriptKey = "ao mor cradh"
+                     };
+
+                    GlobalSpellTemplateCache["ao ard cradh"]
+                     = new SpellTemplate()
+                     {
+                         Animation = 37,
+                         BaseLines = 2,
+                         Icon = 81,
+                         LevelRate = 0.30,
+                         ManaCost = 240,
+                         MaxLevel = 100,
+                         Name = "ao ard cradh",
+                         NpcKey = "dar",
+                         MinLines = 0,
+                         Pane = Pane.Spells,
+                         TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                         MaxLines = 3,
+                         TierLevel = Tier.Tier1,
+                         Sound = 8,
+                         ScriptKey = "ao ard cradh"
+                     };
+
+
+                    GlobalSpellTemplateCache["ao suain"]
+                     = new SpellTemplate()
+                     {
+                         Animation = 2,
+                         BaseLines = 2,
+                         Icon = 51,
+                         LevelRate = 0.20,
+                         ManaCost = 40,
+                         MaxLevel = 100,
+                         Name = "ao suain",
+                         NpcKey = "etaen",
+                         MinLines = 0,
+                         Pane = Pane.Spells,
+                         TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                         MaxLines = 3,
+                         TierLevel = Tier.Tier1,
+                         Sound = 8,
+                         ScriptKey = "ao suain"
+                     };
+
+                    GlobalSpellTemplateCache["ao puinsein"]
+                        = new SpellTemplate()
+                        {
+                            Animation = 279,
+                            BaseLines = 1,
+                            Icon = 24,
+                            LevelRate = 0.20,
+                            ManaCost = 30,
+                            MaxLevel = 100,
+                            Name = "ao puinsein",
+                            NpcKey = "etaen",
+                            MinLines = 0,
+                            Pane = Pane.Spells,
+                            TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                            MaxLines = 2,
+                            TierLevel = Tier.Tier1,
+                            Sound = 8,
+                            ScriptKey = "ao puinsein"
+                        };
+
+
+
+                    GlobalSpellTemplateCache["ia naomh aite"]
+                     = new SpellTemplate()
+                     {
+                         Animation = 383,
+                         BaseLines = 4,
+                         Icon = 11,
+                         LevelRate = 1.50,
+                         ManaCost = 500,
+                         MaxLevel = 100,
+                         Name = "ia naomh aite",
+                         NpcKey = "etaen",
+                         MinLines = 1,
+                         Pane = Pane.Spells,
+                         TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                         MaxLines = 4,
+                         TierLevel = Tier.Tier1,
+                         Sound = 8,
+                         ScriptKey = "aite",
+                         Buff = new buff_aite()
+                     };
+
+
+                    GlobalSpellTemplateCache["fas spiorad"] = new SpellTemplate()
+                    {
+                        Animation = 1,
+                        BaseLines = 9,
+                        MinLines = 1,
+                        MaxLines = 9,
+                        ScriptKey = "fas spiorad",
+                        Debuff = new debuff_fasspoirad(),
+                        Description = "Deals 1/3 of mana in damage to the player and restores 100% mana.",
+                        Icon = 26,
+                        LevelRate = 0.0,
+                        ManaCost = 0,
+                        Pane = Pane.Spells,
+                        TierLevel = Tier.Tier1,
+                        Sound = 8,
+                        Name = "fas spiorad",
+                        MaxLevel = 100,
+                        NpcKey = "dar",
+                        TargetType = SpellTemplate.SpellUseType.NoTarget,
+                        Prerequisites = new LearningPredicate()
+                        {
+                            Class_Required = Class.Wizard,
+                            Con_Required = 3,
+                            Int_Required = 3,
+                            Wis_Required = 3,
+                            Dex_Required = 3,
+                            Str_Required = 3,
+                            Stage_Required = ClassStage.Master,
+                            ExpLevel_Required = 99
+                        },
+                    };
+
+
+                    //make a 1 line staff programatically.
+                    //StorageManager.ItemBucket.Save(new ItemTemplate()
+                    //{
+                    //    DisplayImage = 0x8000 + 2279,
+                    //    Image = 151,
+                    //    SpellOperator = new SpellOperator(SpellOperator.SpellOperatorPolicy.Set, SpellOperator.SpellOperatorScope.all, 1, 1),
+                    //    Class = Class.Wizard,
+                    //    LevelRequired = 1,
+                    //    CanStack = false,
+                    //    Name = "Orbital Wand",
+                    //    Color = ItemColor.defaultgreen,
+                    //    CarryWeight = 5,
+                    //    DropRate = 0.5,
+                    //    Value = 10000,
+                    //    MaxDurability = 100000,
+                    //    Flags = ItemFlags.Dropable | ItemFlags.Bankable | ItemFlags.Equipable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Tradeable | ItemFlags.TwoHanded | ItemFlags.Upgradeable,
+                    //    EquipmentSlot = ItemSlots.Weapon,
+                    //    ScriptName = "Weapon"
+                    //});
+
+                    GlobalSpellTemplateCache["dion"].Buff = new buff_dion();
+                    GlobalSpellTemplateCache["mor dion"].Buff = new buff_mordion();
+
+
+                    GlobalSpellTemplateCache["fas nadur"].NpcKey = "Dar";
+                    GlobalSpellTemplateCache["fas nadur"].Description = "Slightly amplifies a target's element.";
+                    GlobalSpellTemplateCache["fas nadur"].Prerequisites = new LearningPredicate()
                     {
                         Class_Required = Class.Wizard,
-                        Con_Required = 3,
-                        Int_Required = 3,
-                        Wis_Required = 3,
-                        Dex_Required = 3,
-                        Str_Required = 3,
-                        Stage_Required = ClassStage.Master,
-                        ExpLevel_Required = 99
-                    },
-                };
-
-
-                //make a 1 line staff programatically.
-                //StorageManager.ItemBucket.Save(new ItemTemplate()
-                //{
-                //    DisplayImage = 0x8000 + 2279,
-                //    Image = 151,
-                //    SpellOperator = new SpellOperator(SpellOperator.SpellOperatorPolicy.Set, SpellOperator.SpellOperatorScope.all, 1, 1),
-                //    Class = Class.Wizard,
-                //    LevelRequired = 1,
-                //    CanStack = false,
-                //    Name = "Orbital Wand",
-                //    Color = ItemColor.defaultgreen,
-                //    CarryWeight = 5,
-                //    DropRate = 0.5,
-                //    Value = 10000,
-                //    MaxDurability = 100000,
-                //    Flags = ItemFlags.Dropable | ItemFlags.Bankable | ItemFlags.Equipable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Tradeable | ItemFlags.TwoHanded | ItemFlags.Upgradeable,
-                //    EquipmentSlot = ItemSlots.Weapon,
-                //    ScriptName = "Weapon"
-                //});
-
-                GlobalSpellTemplateCache["dion"].Buff = new buff_dion();
-                GlobalSpellTemplateCache["mor dion"].Buff = new buff_mordion();
-
-
-                GlobalSpellTemplateCache["fas nadur"].NpcKey = "Dar";
-                GlobalSpellTemplateCache["fas nadur"].Description = "Slightly amplifies a target's element.";
-                GlobalSpellTemplateCache["fas nadur"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 10,
-                    Gold_Required = 10000,
-                    Str_Required = 8,
-                    Dex_Required = 8,
-                    Con_Required = 8,
-                    Wis_Required = 8,
-                    Int_Required = 8,
-                    Items_Required = new List<ItemPredicate>()
+                        ExpLevel_Required = 10,
+                        Gold_Required = 10000,
+                        Str_Required = 8,
+                        Dex_Required = 8,
+                        Con_Required = 8,
+                        Wis_Required = 8,
+                        Int_Required = 8,
+                        Items_Required = new List<ItemPredicate>()
+                        {
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 3,
+                                 Item = "Viper's Gland"
+                            },
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 3,
+                                 Item = "Scorpions's Gland"
+                            },
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 3,
+                                 Item = "Goblin's Skull"
+                            },
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 3,
+                                 Item = "Wolf's Teeth"
+                            },
+                        },
+                    };
+                    GlobalSpellTemplateCache["mor fas nadur"].NpcKey = "Dar";
+                    GlobalSpellTemplateCache["mor fas nadur"].Description = "Moderately amplifies a target's element.";
+                    GlobalSpellTemplateCache["mor fas nadur"].Prerequisites = new LearningPredicate()
                     {
-                        new ItemPredicate()
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 30,
+                        Gold_Required = 500000,
+                        Spell_Level_Required = 100,
+                        Spell_Required = "fas nadur",
+                        Spell_Tier_Required = 1,
+                        Str_Required = 30,
+                        Wis_Required = 30,
+                        Con_Required = 30,
+                        Dex_Required = 30,
+                        Int_Required = 30,
+                        Items_Required = new List<ItemPredicate>()
                         {
-                             AmountRequired = 3,
-                             Item = "Viper's Gland"
-                        },
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 3,
-                             Item = "Scorpions's Gland"
-                        },
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 3,
-                             Item = "Goblin's Skull"
-                        },
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 3,
-                             Item = "Wolf's Teeth"
-                        },
-                    },
-                };
-                GlobalSpellTemplateCache["mor fas nadur"].NpcKey = "Dar";
-                GlobalSpellTemplateCache["mor fas nadur"].Description = "Moderately amplifies a target's element.";
-                GlobalSpellTemplateCache["mor fas nadur"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 30,
-                    Gold_Required = 500000,
-                    Spell_Level_Required = 100,
-                    Spell_Required = "fas nadur",
-                    Spell_Tier_Required = 1,
-                    Str_Required = 30,
-                    Wis_Required = 30,
-                    Con_Required = 30,
-                    Dex_Required = 30,
-                    Int_Required = 30,
-                    Items_Required = new List<ItemPredicate>()
-                    {
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 5,
-                             Item = "Goblin's Skull"
-                        },
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 5,
-                             Item = "Magus Diana"
-                        },
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 1,
-                             Item = "Hag's Replica Girdle"
-                        },
-                    }
-                };
-
-                #region water
-                GlobalSpellTemplateCache["beag sal"].NpcKey = "Dar";
-                GlobalSpellTemplateCache["beag sal"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 3,
-                    Gold_Required = 500,
-                };
-                GlobalSpellTemplateCache["sal"].NpcKey = "Dar";
-                GlobalSpellTemplateCache["sal"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 6,
-                    Gold_Required = 3000,
-                    Int_Required = 8,
-                    Wis_Required = 7,
-                    Spell_Required = "beag sal",
-                    Spell_Level_Required = 70,
-                    Spell_Tier_Required = 1,
-                    Items_Required = new List<ItemPredicate>()
-                    {
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 1,
-                             Item = "Viper's Gland"
-                        },
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 1,
-                             Item = "Bee's Honey"
-                        },
-                    },
-                };
-                GlobalSpellTemplateCache["mor sal"].NpcKey = "Dar";
-                GlobalSpellTemplateCache["mor sal"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 33,
-                    Gold_Required = 50000,
-                    Int_Required = 28,
-                    Wis_Required = 17,
-                    Spell_Required = "sal",
-                    Spell_Level_Required = 70,
-                    Spell_Tier_Required = 1,
-                    Items_Required = new List<ItemPredicate>()
-                    {
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 10,
-                             Item = "Viper's Gland"
-                        },
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 10,
-                             Item = "Bee's Honey"
-                        },
-                    },
-                };
-                GlobalSpellTemplateCache["ard sal"].NpcKey = "Dar The Forsakened";
-                GlobalSpellTemplateCache["ard sal"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 33,
-                    Gold_Required = 500000,
-                    Int_Required = 38,
-                    Wis_Required = 87,
-                    Spell_Required = "mor sal",
-                    Spell_Level_Required = 100,
-                    Spell_Tier_Required = 1,
-                    Items_Required = new List<ItemPredicate>()
-                    {
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 20,
-                             Item = "Essense of Water"
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 5,
+                                 Item = "Goblin's Skull"
+                            },
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 5,
+                                 Item = "Magus Diana"
+                            },
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 1,
+                                 Item = "Hag's Replica Girdle"
+                            },
                         }
-                    },
-                };
-                #endregion
+                    };
 
-                #region Fire
-                GlobalSpellTemplateCache["beag srad"].NpcKey = "Dar";
-                GlobalSpellTemplateCache["beag srad"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 3,
-                    Gold_Required = 500,
-                };
-                GlobalSpellTemplateCache["srad"].NpcKey = "Dar";
-                GlobalSpellTemplateCache["srad"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 6,
-                    Gold_Required = 3000,
-                    Str_Required = 8,
-                    Wis_Required = 7,
-                    Spell_Required = "beag srad",
-                    Spell_Level_Required = 70,
-                    Spell_Tier_Required = 1,
-                    Items_Required = new List<ItemPredicate>()
+                    #region water
+                    GlobalSpellTemplateCache["beag sal"].NpcKey = "Dar";
+                    GlobalSpellTemplateCache["beag sal"].Prerequisites = new LearningPredicate()
                     {
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 1,
-                             Item = "Viper's Gland"
-                        },
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 1,
-                             Item = "Bee's Honey"
-                        },
-                    },
-                };
-                GlobalSpellTemplateCache["mor srad"].NpcKey = "Dar";
-                GlobalSpellTemplateCache["mor srad"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 33,
-                    Gold_Required = 50000,
-                    Int_Required = 28,
-                    Str_Required = 17,
-                    Spell_Required = "srad",
-                    Spell_Level_Required = 70,
-                    Spell_Tier_Required = 1,
-                    Items_Required = new List<ItemPredicate>()
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 3,
+                        Gold_Required = 500,
+                    };
+                    GlobalSpellTemplateCache["sal"].NpcKey = "Dar";
+                    GlobalSpellTemplateCache["sal"].Prerequisites = new LearningPredicate()
                     {
-                        new ItemPredicate()
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 6,
+                        Gold_Required = 3000,
+                        Int_Required = 8,
+                        Wis_Required = 7,
+                        Spell_Required = "beag sal",
+                        Spell_Level_Required = 70,
+                        Spell_Tier_Required = 1,
+                        Items_Required = new List<ItemPredicate>()
                         {
-                             AmountRequired = 10,
-                             Item = "Viper's Gland"
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 1,
+                                 Item = "Viper's Gland"
+                            },
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 1,
+                                 Item = "Bee's Honey"
+                            },
                         },
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 10,
-                             Item = "Bee's Honey"
-                        },
-                    },
-                };
-                GlobalSpellTemplateCache["ard srad"].NpcKey = "Dar The Forsakened";
-                GlobalSpellTemplateCache["ard srad"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 65,
-                    Gold_Required = 500000,
-                    Str_Required = 38,
-                    Wis_Required = 87,
-                    Spell_Required = "mor srad",
-                    Spell_Level_Required = 100,
-                    Spell_Tier_Required = 1,
-                    Items_Required = new List<ItemPredicate>()
+                    };
+                    GlobalSpellTemplateCache["mor sal"].NpcKey = "Dar";
+                    GlobalSpellTemplateCache["mor sal"].Prerequisites = new LearningPredicate()
                     {
-                        new ItemPredicate()
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 33,
+                        Gold_Required = 50000,
+                        Int_Required = 28,
+                        Wis_Required = 17,
+                        Spell_Required = "sal",
+                        Spell_Level_Required = 70,
+                        Spell_Tier_Required = 1,
+                        Items_Required = new List<ItemPredicate>()
                         {
-                             AmountRequired = 20,
-                             Item = "Essense of Fire"
-                        }
-                    },
-                };
-                #endregion
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 10,
+                                 Item = "Viper's Gland"
+                            },
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 10,
+                                 Item = "Bee's Honey"
+                            },
+                        },
+                    };
+                    GlobalSpellTemplateCache["ard sal"].NpcKey = "Dar The Forsakened";
+                    GlobalSpellTemplateCache["ard sal"].Prerequisites = new LearningPredicate()
+                    {
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 33,
+                        Gold_Required = 500000,
+                        Int_Required = 38,
+                        Wis_Required = 87,
+                        Spell_Required = "mor sal",
+                        Spell_Level_Required = 100,
+                        Spell_Tier_Required = 1,
+                        Items_Required = new List<ItemPredicate>()
+                        {
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 20,
+                                 Item = "Essense of Water"
+                            }
+                        },
+                    };
+                    #endregion
 
-                #region Wind
-                GlobalSpellTemplateCache["beag athar"].NpcKey = "Dar";
-                GlobalSpellTemplateCache["beag athar"].Prerequisites = new LearningPredicate()
+                    #region Fire
+                    GlobalSpellTemplateCache["beag srad"].NpcKey = "Dar";
+                    GlobalSpellTemplateCache["beag srad"].Prerequisites = new LearningPredicate()
+                    {
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 3,
+                        Gold_Required = 500,
+                    };
+                    GlobalSpellTemplateCache["srad"].NpcKey = "Dar";
+                    GlobalSpellTemplateCache["srad"].Prerequisites = new LearningPredicate()
+                    {
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 6,
+                        Gold_Required = 3000,
+                        Str_Required = 8,
+                        Wis_Required = 7,
+                        Spell_Required = "beag srad",
+                        Spell_Level_Required = 70,
+                        Spell_Tier_Required = 1,
+                        Items_Required = new List<ItemPredicate>()
+                        {
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 1,
+                                 Item = "Viper's Gland"
+                            },
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 1,
+                                 Item = "Bee's Honey"
+                            },
+                        },
+                    };
+                    GlobalSpellTemplateCache["mor srad"].NpcKey = "Dar";
+                    GlobalSpellTemplateCache["mor srad"].Prerequisites = new LearningPredicate()
+                    {
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 33,
+                        Gold_Required = 50000,
+                        Int_Required = 28,
+                        Str_Required = 17,
+                        Spell_Required = "srad",
+                        Spell_Level_Required = 70,
+                        Spell_Tier_Required = 1,
+                        Items_Required = new List<ItemPredicate>()
+                        {
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 10,
+                                 Item = "Viper's Gland"
+                            },
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 10,
+                                 Item = "Bee's Honey"
+                            },
+                        },
+                    };
+                    GlobalSpellTemplateCache["ard srad"].NpcKey = "Dar The Forsakened";
+                    GlobalSpellTemplateCache["ard srad"].Prerequisites = new LearningPredicate()
+                    {
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 65,
+                        Gold_Required = 500000,
+                        Str_Required = 38,
+                        Wis_Required = 87,
+                        Spell_Required = "mor srad",
+                        Spell_Level_Required = 100,
+                        Spell_Tier_Required = 1,
+                        Items_Required = new List<ItemPredicate>()
+                        {
+                            new ItemPredicate()
+                            {
+                                 AmountRequired = 20,
+                                 Item = "Essense of Fire"
+                            }
+                        },
+                    };
+                    #endregion
+
+                    #region Wind
+                    GlobalSpellTemplateCache["beag athar"].NpcKey = "Dar";
+                    GlobalSpellTemplateCache["beag athar"].Prerequisites = new LearningPredicate()
+                    {
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 3,
+                        Gold_Required = 500,
+                    };
+                    #endregion
+
+                    #region Poison
+
+                    GlobalSpellTemplateCache["beag puinsein"].NpcKey = "Dar";
+                    GlobalSpellTemplateCache["beag puinsein"].Prerequisites = new LearningPredicate()
+                    {
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 8,
+                        Gold_Required = 5000,
+                    };
+                    GlobalSpellTemplateCache["puinsein"].NpcKey = "Dar";
+                    GlobalSpellTemplateCache["puinsein"].Prerequisites = new LearningPredicate()
+                    {
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 15,
+                        Gold_Required = 60000,
+                        Spell_Tier_Required = 1,
+                        Spell_Level_Required = 100,
+                        Spell_Required = "beag puinsein",
+                    };
+                    GlobalSpellTemplateCache["mor puinsein"].NpcKey = "Dar";
+                    GlobalSpellTemplateCache["mor puinsein"].Prerequisites = new LearningPredicate()
+                    {
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 40,
+                        Gold_Required = 150000,
+                        Spell_Tier_Required = 1,
+                        Spell_Level_Required = 100,
+                        Spell_Required = "puinsein",
+                    };
+                    GlobalSpellTemplateCache["ard puinsein"].NpcKey = "Dar";
+                    GlobalSpellTemplateCache["ard puinsein"].Prerequisites = new LearningPredicate()
+                    {
+                        Class_Required = Class.Wizard,
+                        ExpLevel_Required = 85,
+                        Gold_Required = 5000000,
+                        Spell_Tier_Required = 1,
+                        Spell_Level_Required = 100,
+                        Spell_Required = "mor puinsein",
+                    };
+
+                    #endregion
+
+
+
+
+
+
+
+
+                    return false;
+                }
+                catch (Exception)
                 {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 3,
-                    Gold_Required = 500,
-                };
-                #endregion
-
-                #region Poison
-
-                GlobalSpellTemplateCache["beag puinsein"].NpcKey = "Dar";
-                GlobalSpellTemplateCache["beag puinsein"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 8,
-                    Gold_Required = 5000,
-                };
-                GlobalSpellTemplateCache["puinsein"].NpcKey = "Dar";
-                GlobalSpellTemplateCache["puinsein"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 15,
-                    Gold_Required = 60000,
-                    Spell_Tier_Required = 1,
-                    Spell_Level_Required = 100,
-                    Spell_Required = "beag puinsein",
-                };
-                GlobalSpellTemplateCache["mor puinsein"].NpcKey = "Dar";
-                GlobalSpellTemplateCache["mor puinsein"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 40,
-                    Gold_Required = 150000,
-                    Spell_Tier_Required = 1,
-                    Spell_Level_Required = 100,
-                    Spell_Required = "puinsein",
-                };
-                GlobalSpellTemplateCache["ard puinsein"].NpcKey = "Dar";
-                GlobalSpellTemplateCache["ard puinsein"].Prerequisites = new LearningPredicate()
-                {
-                    Class_Required = Class.Wizard,
-                    ExpLevel_Required = 85,
-                    Gold_Required = 5000000,
-                    Spell_Tier_Required = 1,
-                    Spell_Level_Required = 100,
-                    Spell_Required = "mor puinsein",
-                };
-
-                #endregion
-
-
-
-
-
-
-
-
-                return false;
+                    return false;
+                }
             });
 
             while (Paused)
@@ -1177,7 +1179,6 @@ namespace Darkages
             }
 
             LoadMetaDatabase();
-
         }
 
         public static void OncbResponse(Aisling sender, DialogSequence arg2)

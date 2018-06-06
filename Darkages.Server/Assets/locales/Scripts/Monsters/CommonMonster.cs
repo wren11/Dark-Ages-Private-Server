@@ -253,20 +253,27 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             {
                 if (Monster.Aggressive)
                 {
-                    if (Monster.Target != null && Monster.Target is Monster || Monster.Target == null)
+                    if (Monster == null)
                     {
-                        Monster.Target = GetObjects(i => i.Serial != Monster.Serial
-                        && i.WithinRangeOf(Monster) && i.CurrentHp > 0,
-                        Monster.Template.MoodType == MoodQualifer.VeryAggressive ? Get.Aislings : Get.Monsters | Get.Aislings)
-                                          .OrderBy(v => v.Position.DistanceFrom(Monster.Position)).FirstOrDefault();
+                        return;
+                    }
 
+
+                    if (Monster.Target is Monster)
+                    {
+                        if (Monster.Target == null)
+                        {
+                            Monster.Target = GetObjects(i => i.Serial != Monster.Serial
+                            && i.WithinRangeOf(Monster) && i.CurrentHp > 0,
+                            Monster.Template.MoodType == MoodQualifer.VeryAggressive ? Get.Aislings : Get.Monsters | Get.Aislings)
+                                              .OrderBy(v => v.Position.DistanceFrom(Monster.Position)).FirstOrDefault();
+                        }
 
                         if (Monster.Target != null && Monster.Target is Monster && Monster.AislingsNearby().Length > 0)
                         {
                             Monster.Target = GetObjects(i => i.Serial != Monster.Serial
                             && i.WithinRangeOf(Monster) && i.CurrentHp > 0, Get.Aislings)
                                               .OrderBy(v => v.Position.DistanceFrom(Monster.Position)).FirstOrDefault();
-
                         }
                     }
                     Monster.WalkEnabled = true;

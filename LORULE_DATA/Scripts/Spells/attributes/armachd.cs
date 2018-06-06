@@ -26,7 +26,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
     [Script("armachd", "Dean")]
     public class armachd : SpellScript
     {
-        private readonly Random rand = new Random();
 
         public armachd(Spell spell) : base(spell)
         {

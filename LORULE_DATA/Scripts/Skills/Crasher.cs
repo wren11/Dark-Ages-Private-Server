@@ -24,7 +24,6 @@ namespace Darkages.Scripting.Scripts.Skills
     [Script("Crasher", "Huy")]
     public class Crasher : SkillScript
     {
-        private Random _rand = new Random();
         private Skill _skill;
         public Random rand = new Random();
         public Sprite Target;
@@ -73,7 +72,7 @@ namespace Darkages.Scripting.Scripts.Skills
 
                     Target = i;
 
-                    var dmg = sprite.MaximumHp / 100 * 300;
+                    var dmg = sprite.MaximumHp * 300 / 100;
                     i.ApplyDamage(sprite, dmg, false, 44);
 
 
@@ -131,7 +130,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         new ServerFormat29((uint)target.Serial, (uint)sprite.Serial,
                             Skill.Template.TargetAnimation, 0, 100));
 
-                    var dmg = sprite.MaximumHp / 100 * 300;
+                    var dmg = sprite.MaximumHp * 300 / 100;
                     target.ApplyDamage(sprite, dmg, false, 44);
 
 

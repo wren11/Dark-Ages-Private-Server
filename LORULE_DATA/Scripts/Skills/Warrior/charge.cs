@@ -81,7 +81,8 @@ namespace Darkages.Scripting.Scripts.Skills
 
                     int direction;
                     var hits = GetObjects(n => n.Facing(sprite, out direction), Get.Monsters | Get.Aislings | Get.Mundanes);
-                    if (hits != null && hits.Length > 0)
+
+                    if (hits.Count() > 0)
                     {
                         break;
                     }

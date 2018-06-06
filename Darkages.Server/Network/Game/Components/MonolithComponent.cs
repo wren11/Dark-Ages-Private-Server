@@ -120,17 +120,25 @@ namespace Darkages.Network.Game.Components
 
         public async void SpawnOn(MonsterTemplate template, Area map)
         {
-            if (!ServerContext.Running)
-                return;
-
-            var count = GetObjects<Monster>(i => i.Template.Name == template.Name).Length;
-            if (count < Math.Abs(template.SpawnMax))
+            try
             {
-                //                if (template.SpawnType.HasFlag(SpawnQualifer.Defined) || template.SpawnType.HasFlag(SpawnQualifer.Random))
-                if (!await CreateFromTemplate(template, map, template.SpawnSize))
+                if (!ServerContext.Running)
+                    return;
+
+                var count = GetObjects<Monster>(i => i.Template.Name == template.Name).Count();
+                if (count < Math.Abs(template.SpawnMax))
                 {
+                    if (await CreateFromTemplate(template, map, template.SpawnSize))
+                    {
+                        return;
+                    }
+
                     Thread.Yield();
                 }
+            }
+            catch (Exception)
+            {
+
             }
         }
 
@@ -146,7 +154,7 @@ namespace Darkages.Network.Game.Components
                         AddObject(newObj);
                 }
                 return true;
-            });
+            }, CancellationToken.None);
 
             return false;
         }

@@ -27,13 +27,6 @@ namespace Darkages.Systems.Loot.Extensions
     {
         private static readonly Random Random = new Random();
 
-        static float NextFloat(Random random)
-        {
-            double mantissa = (random.NextDouble() * 2.0) - 1.0;
-            double exponent = Math.Pow(2.0, random.Next(-126, 128));
-            return (float)(mantissa * exponent);
-        }
-
         public static T WeightedChoice<T>(this IEnumerable<T> items, double sum) where T : IWeighable
         {
             lock (Random)

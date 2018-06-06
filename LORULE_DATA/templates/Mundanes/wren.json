@@ -1,6 +1,6 @@
 {
   "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
-  "Image": 0x42EB,
+  "Image": 0x403D,
   "Level": 99,
   "ScriptKey": "Mundane Reactor Example",
   "EnableWalking": false,

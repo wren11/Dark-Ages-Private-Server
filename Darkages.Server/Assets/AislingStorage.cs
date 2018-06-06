@@ -41,15 +41,13 @@ namespace Darkages.Storage
             if (!File.Exists(path))
                 return null;
 
-            using (var s = File.OpenRead(path))
-            using (var f = new StreamReader(s))
+            var content = File.ReadAllText(path);
+            return JsonConvert.DeserializeObject<Aisling>(content, new JsonSerializerSettings
             {
-                return JsonConvert.DeserializeObject<Aisling>(f.ReadToEnd(), new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.All
-                });
-            }
+                TypeNameHandling = TypeNameHandling.All
+            });
         }
+
         public void Save(Aisling obj)
         {
 

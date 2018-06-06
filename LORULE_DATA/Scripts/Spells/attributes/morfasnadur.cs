@@ -89,12 +89,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
             else
             {
 
-
                 if (target.HasDebuff("mor fas nadur") || target.HasDebuff("fas nadur"))
                 {
-                    if (sprite is Aisling)
-                        (sprite as Aisling).Client.SendMessage(0x02, "You have already casted that spell.");
-
                     return;
                 }
 

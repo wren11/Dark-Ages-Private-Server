@@ -18,6 +18,7 @@
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Spells
 {
@@ -105,7 +106,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     var nearby = target.GetObjects(i => i.CurrentMapId == sprite.CurrentMapId &&
                                     i.CurrentHp != i.MaximumHp, Get.Aislings);
 
-                    if (nearby.Length > 0)
+                    if (nearby.Count() > 0)
                     {
                         foreach (var s in nearby)
                         {

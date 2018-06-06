@@ -26,6 +26,7 @@ using Darkages.Storage.locales.debuffs;
 using Darkages.Storage.locales.Scripts.Mundanes;
 using Darkages.Types;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -396,7 +397,7 @@ namespace Darkages.Network.Game
 
             var objs = GetObjects(i => i.X == format.Position.X && i.Y == format.Position.Y, Get.Items | Get.Money);
 
-            if (objs.Length <= 0)
+            if (objs == null)
                 return;
 
             foreach (var obj in objs.Reverse())
@@ -586,7 +587,7 @@ namespace Darkages.Network.Game
                 Text = string.Empty
             };
 
-            Aisling[] audience;
+            IEnumerable<Aisling> audience;
 
             switch (format.Type)
             {
@@ -612,7 +613,7 @@ namespace Darkages.Network.Game
             foreach (var npc in nearbyMundanes)
                 npc?.Script?.OnGossip(this, client, format.Text);
 
-            client.Aisling.Show(Scope.DefinedAislings, response, audience);
+            client.Aisling.Show(Scope.DefinedAislings, response, audience.ToArray());
         }
 
         /// <summary>
@@ -809,7 +810,7 @@ namespace Darkages.Network.Game
 
             var user = GetObject<Aisling>(i => i.Username.Equals(format.Name, StringComparison.CurrentCultureIgnoreCase));
             if (user == null || !user.LoggedIn)
-                client.SendMessage(0x02, string.Format("is nowhere to be found.", format.Name));
+                client.SendMessage(0x02, string.Format("{0} is nowhere to be found.", format.Name));
 
             if (user != null && user.LoggedIn)
             {

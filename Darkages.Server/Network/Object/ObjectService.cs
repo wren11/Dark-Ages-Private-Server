@@ -26,34 +26,25 @@ namespace Darkages.Network.Object
 {
     public class SpriteCollection<T> : IEnumerable<T>, INotifyCollectionChanged
     {
-        private readonly ISet<T> _values;
+        private readonly ConcurrentList<T> _values;
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        public SpriteCollection(IEnumerable<T> values) => _values = new HashSet<T>(values);
+        public SpriteCollection(IEnumerable<T> values) => _values = new ConcurrentList<T>(values);
 
         public T Query(Predicate<T> predicate)
         {
-            lock (_values)
-            {
-                return _values.FirstOrDefault(i => predicate(i));
-            }
+            return _values.FirstOrDefault(i => predicate(i));
         }
 
-        public T[] QueryAll(Predicate<T> predicate)
+        public IEnumerable<T> QueryAll(Predicate<T> predicate)
         {
-            lock (_values)
-            {
-                return _values.Where(i => predicate(i) && i != null).ToArray();
-            }
+            return _values.Where(i => predicate(i) && i != null);
         }
 
         public void Add(T obj)
         {
-            lock (_values)
-            {
-                _values.Add(obj);
-            }
+            _values.Add(obj);
 
             CollectionChanged?
                 .Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add));
@@ -61,13 +52,10 @@ namespace Darkages.Network.Object
 
         public void Delete(T obj)
         {
-            lock (_values)
+            if (_values.Remove(obj))
             {
-                if (_values.Remove(obj))
-                {
-                    CollectionChanged?
-                        .Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove));
-                }
+                CollectionChanged?
+                    .Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove));
             }
         }
 
@@ -90,14 +78,14 @@ namespace Darkages.Network.Object
 
         public T Query<T>(Predicate<T> predicate)
         {
-            var obj = (SpriteCollection<T>)_spriteCollections[typeof(T)];
-            return obj.Query(predicate);
+                var obj = (SpriteCollection<T>)_spriteCollections[typeof(T)];
+                return obj.Query(predicate);
         }
 
-        public T[] QueryAll<T>(Predicate<T> predicate)
+        public IEnumerable<T> QueryAll<T>(Predicate<T> predicate)
         {
-            var obj = (SpriteCollection<T>)_spriteCollections[typeof(T)];
-            return obj.QueryAll(predicate);
+                var obj = (SpriteCollection<T>)_spriteCollections[typeof(T)];
+                return obj.QueryAll(predicate);
         }
 
         public void RemoveAllGameObjects<T>(T[] objects) where T : Sprite

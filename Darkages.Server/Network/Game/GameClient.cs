@@ -315,16 +315,8 @@ namespace Darkages.Network.Game
             Aisling.UpdateDebuffs(elapsedTime);
         }
 
-        Reactors s;
         private void UpdateGlobalScripts(TimeSpan elapsedTime)
         {
-
-            //if (s == null)
-            //    s = new Reactors(this);
-
-
-            //s.Update(elapsedTime);
-
             foreach (var globalscript in GlobalScripts)
                 globalscript?.Update(elapsedTime);
         }

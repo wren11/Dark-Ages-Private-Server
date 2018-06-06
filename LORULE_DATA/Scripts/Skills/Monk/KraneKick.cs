@@ -27,7 +27,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
     [Script("Krane Kick", "Dean")]
     public class KraneKick : SkillScript
     {
-        private readonly Random rand = new Random();
         public Skill _skill;
         public Sprite Target;
 

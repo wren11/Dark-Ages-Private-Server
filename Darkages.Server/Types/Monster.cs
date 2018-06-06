@@ -95,7 +95,7 @@ namespace Darkages.Types
             return NextTo(target.X, target.Y);
         }
 
-        public void GenerateRewards(Aisling player, bool TestingMode = false)
+        public void GenerateRewards(Aisling player)
         {
             if (Rewarded)
                 return;
@@ -108,13 +108,9 @@ namespace Darkages.Types
 
             UpdateCounters(player);
 
-            if (!TestingMode)
-            {
-                GenerateExperience(player);
-                GenerateGold();
-            }
-
-            GenerateDrops(TestingMode);
+            GenerateExperience(player);
+            GenerateGold();           
+            GenerateDrops();
 
             Rewarded = true;
             player.UpdateStats();
@@ -284,7 +280,7 @@ namespace Darkages.Types
             }
         }
 
-        private void GenerateDrops(bool TestMode = false)
+        private void GenerateDrops()
         {
             if (Template.LootType.HasFlag(LootQualifer.Table))
             {

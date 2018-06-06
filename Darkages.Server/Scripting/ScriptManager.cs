@@ -43,8 +43,10 @@ namespace Darkages.Scripting
 
         static ScriptManager()
         {
+#if !ISDEAN
             LoadScriptFiles();
             return;
+#endif
 
             var assembly = Assembly.GetExecutingAssembly();
 

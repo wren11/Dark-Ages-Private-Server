@@ -26,7 +26,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
     [Script("aite", "Dean")]
     public class aite : SpellScript
     {
-        private readonly Random rand = new Random();
         private readonly buff_aite Buff = new buff_aite();
 
         public aite(Spell spell) : base(spell)

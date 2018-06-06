@@ -274,7 +274,7 @@ namespace Darkages.Types
                         Target = target;
                     }
 
-                    if (Target != null && Target != null && SpellScripts.Count > 0)
+                    if (Target != null && SpellScripts.Count > 0)
                     {
                         var idx = 0;
                         lock (Generator.Random)

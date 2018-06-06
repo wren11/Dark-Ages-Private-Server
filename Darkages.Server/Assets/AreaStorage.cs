@@ -59,9 +59,10 @@ namespace Darkages.Storage
                 }
                 catch
                 {
-                    return null;
                 }
             }
+
+            return null;
         }
 
         public void Save(Area obj)

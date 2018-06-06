@@ -93,7 +93,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     {
                         var c = curses.FirstOrDefault();
                         if (c != null)
-                            client.SendMessage(0x02, string.Format("A greater cure is required.", c.Name));
+                            client.SendMessage(0x02, string.Format("A greater cure is required [{0}]", c.Name));
                     }
                 }
             }

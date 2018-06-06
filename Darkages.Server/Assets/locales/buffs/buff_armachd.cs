@@ -21,7 +21,7 @@ namespace Darkages.Storage.locales.Buffs
 {
     public class buff_armachd : Buff
     {
-        public buff_armachd() : base()
+        public buff_armachd()
         {
             Name = "armachd";
             Length = 60;

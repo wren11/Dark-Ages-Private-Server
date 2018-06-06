@@ -211,7 +211,7 @@ namespace Darkages
                 var nearby = GetObjects<Aisling>(i =>
                     i.LoggedIn && i.CurrentMapId == warp.ActivationMapId);
 
-                if (nearby.Length == 0)
+                if (nearby.Count() == 0)
                     continue;
 
                 foreach (var warpObj in warp.Activations)
@@ -226,11 +226,9 @@ namespace Darkages
 
         private void UpdateMonsters(TimeSpan elapsedTime)
         {
-            foreach (var obj in GetObjects<Monster>(i => i.CurrentMapId == ID))
-            {
-                var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(obj) && i.CurrentMapId == ID).Length;
-
-                if (nearby == 0 && !obj.Template.UpdateMapWide)
+            foreach (var obj in GetObjects<Monster>(i => i.CurrentMapId == ID && i.AislingsNearby().Length > 0))
+            {             
+                if (obj.Template.UpdateMapWide)
                 {
                     if (obj.TaggedAislings != null && obj.TaggedAislings.Count > 0)
                     {
@@ -257,9 +255,9 @@ namespace Darkages
         {
             foreach (var obj in GetObjects(i => i.CurrentMapId == ID, Get.Items | Get.Money))
             {
-                var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(obj) && i.CurrentMapId == ID);
+                var nearby = obj.AislingsNearby();
 
-                if (nearby.Length == 0)
+                if (nearby == null)
                     continue;
 
                 if (obj != null)
@@ -299,7 +297,7 @@ namespace Darkages
                 if (obj == null)
                     continue;
 
-                var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(obj) && i.CurrentMapId == ID);
+                var nearby = obj.AislingsNearby();
 
                 if (nearby.Length == 0)
                     continue;
@@ -323,7 +321,7 @@ namespace Darkages
         {
             var objs = GetObjects<T>(i => i != null && i.CurrentMapId == ID);
 
-            return objs.Length > 0;
+            return objs != null;
         }
 
         public void OnLoaded(Aisling obj = null)
@@ -357,10 +355,7 @@ namespace Darkages
         private void SetWarps()
         {
             var warps = ServerContext.GlobalWarpTemplateCache
-                .Where(i => i.ActivationMapId == ID).ToArray();
-
-            if (warps.Length == 0)
-                return;
+                .Where(i => i.ActivationMapId == ID);
 
             foreach (var warp in warps)
                 foreach (var o in warp.Activations)

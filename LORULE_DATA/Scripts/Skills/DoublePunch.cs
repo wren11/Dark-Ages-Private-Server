@@ -25,7 +25,6 @@ namespace Darkages.Scripting.Scripts.Skills
     [Script("Double Punch", "Dean")]
     public class DoublePunch : SkillScript
     {
-        private readonly Random rand = new Random();
         public Skill _skill;
 
         public Sprite Target;

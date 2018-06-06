@@ -27,7 +27,6 @@ namespace Darkages.Scripting.Scripts.Skills
     {
         public Skill _skill;
 
-        private Random rand = new Random();
 
         public Sprite Target;
 

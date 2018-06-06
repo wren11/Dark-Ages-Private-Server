@@ -19,6 +19,7 @@ using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
 using System;
+using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Monsters
 {
@@ -56,7 +57,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         public override void OnDeath(GameClient client)
         {
             var remaining = GetObjects<Monster>(i => i.CurrentMapId == client.Aisling.AreaID
-                && i.Template.Name == Monster.Template.Name).Length;
+                && i.Template.Name == Monster.Template.Name).Count();
 
             if (remaining <= 1)
             {

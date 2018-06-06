@@ -24,7 +24,6 @@ namespace Darkages.Scripting.Scripts.Skills
     [Script("Crasher", "Huy")]
     public class Crasher : SkillScript
     {
-        private Random _rand = new Random();
         private Skill _skill;
         public Random rand = new Random();
         public Sprite Target;
