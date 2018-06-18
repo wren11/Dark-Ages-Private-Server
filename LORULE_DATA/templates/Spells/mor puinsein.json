@@ -8,9 +8,7 @@
   "ManaCost": 0,
   "Text": "\u0000",
   "Debuff": {
-    "$type": "Darkages.Storage.locales.debuffs.debuff_poison, Darkages.Server",
-    "Animation": 25,
-    "Modifier": 0.3,
+    "$type": "Darkages.Types.Debuff, Darkages.Server",
     "Name": "mor puinsein",
     "Length": 215,
     "Icon": 35,
@@ -46,31 +44,27 @@
     },
     "Items_Required": {
       "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
-      "$values": [
-        {
-          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
-          "Item": "Bat's Wing",
-          "AmountRequired": 5
-        }
-      ]
+      "$values": []
     },
     "Stage_Required": 0,
     "Class_Required": 3,
-    "ExpLevel_Required": 35,
+    "ExpLevel_Required": 40,
     "Str_Required": 0,
-    "Int_Required": 41,
-    "Wis_Required": 25,
+    "Int_Required": 0,
+    "Wis_Required": 0,
     "Dex_Required": 0,
     "Con_Required": 0,
-    "Gold_Required": 25000,
+    "Gold_Required": 150000,
     "Skill_Required": null,
     "Skill_Level_Required": 0,
     "Skill_Tier_Required": 0,
     "Spell_Required": "puinsein",
-    "Spell_Level_Required": 90,
-    "Spell_Tier_Required": 0
+    "Spell_Level_Required": 100,
+    "Spell_Tier_Required": 1
   },
-  "NpcKey": null,
+  "NpcKey": "Dar",
   "TierLevel": 9,
+  "Description": null,
+  "TargetAnimation": 0,
   "Name": "mor puinsein"
 }

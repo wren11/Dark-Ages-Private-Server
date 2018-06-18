@@ -1,37 +1,21 @@
 {
   "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
-  "Icon": 53,
+  "Icon": 81,
   "MaxLevel": 100,
-  "ScriptKey": "dion",
+  "ScriptKey": "ao ard cradh",
   "MinLines": 0,
-  "MaxLines": 9,
-  "ManaCost": 6,
+  "MaxLines": 3,
+  "ManaCost": 240,
   "Text": "\u0000",
   "Debuff": null,
-  "Buff": {
-    "$type": "Darkages.Storage.locales.Buffs.buff_dion, Darkages.Server",
-    "Name": "dion",
-    "Length": 4,
-    "Icon": 53,
-    "value": 0,
-    "Cancelled": false,
-    "Timer": {
-      "$type": "Darkages.Network.Game.GameServerTimer, Darkages.Server",
-      "Timer": "00:00:00",
-      "Delay": "00:00:01",
-      "Elapsed": false,
-      "Disabled": false,
-      "Interval": 0,
-      "Tick": 0
-    }
-  },
-  "TargetType": 5,
-  "BaseLines": 0,
-  "LevelRate": 0.9,
-  "Sound": 0,
-  "Animation": 0,
+  "Buff": null,
+  "TargetType": 2,
+  "BaseLines": 2,
+  "LevelRate": 0.3,
+  "Sound": 8,
+  "Animation": 37,
   "DamageExponent": 0.0,
-  "Pane": 0,
+  "Pane": 1,
   "ElementalProperty": 0,
   "Prerequisites": {
     "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
@@ -45,27 +29,33 @@
     },
     "Items_Required": {
       "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
-      "$values": []
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Bee's Wax",
+          "AmountRequired": 10
+        }
+      ]
     },
     "Stage_Required": 0,
-    "Class_Required": 5,
-    "ExpLevel_Required": 11,
+    "Class_Required": 4,
+    "ExpLevel_Required": 78,
     "Str_Required": 0,
-    "Int_Required": 25,
-    "Wis_Required": 8,
+    "Int_Required": 35,
+    "Wis_Required": 81,
     "Dex_Required": 0,
     "Con_Required": 0,
-    "Gold_Required": 5000,
+    "Gold_Required": 500000,
     "Skill_Required": null,
     "Skill_Level_Required": 0,
     "Skill_Tier_Required": 0,
-    "Spell_Required": null,
-    "Spell_Level_Required": 0,
+    "Spell_Required": "ao mor cradh",
+    "Spell_Level_Required": 100,
     "Spell_Tier_Required": 0
   },
-  "NpcKey": "etaen",
-  "TierLevel": 0,
-  "Description": "Makes the player immune to all physical and magical damage for a short duration.",
+  "NpcKey": "dar",
+  "TierLevel": 9,
+  "Description": "Removes the curse ard cradh from a target.",
   "TargetAnimation": 0,
-  "Name": "dion"
+  "Name": "ao ard cradh"
 }

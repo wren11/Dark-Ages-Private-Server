@@ -8,9 +8,7 @@
   "ManaCost": 0,
   "Text": "\u0000",
   "Debuff": {
-    "$type": "Darkages.Storage.locales.debuffs.debuff_poison, Darkages.Server",
-    "Animation": 25,
-    "Modifier": 0.5,
+    "$type": "Darkages.Types.Debuff, Darkages.Server",
     "Name": "ard puinsein",
     "Length": 1025,
     "Icon": 35,
@@ -46,36 +44,27 @@
     },
     "Items_Required": {
       "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
-      "$values": [
-        {
-          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
-          "Item": "Greater Bat's Wing",
-          "AmountRequired": 2
-        },
-        {
-          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
-          "Item": "Australia's Deadliest Venom",
-          "AmountRequired": 2
-        }
-      ]
+      "$values": []
     },
     "Stage_Required": 0,
     "Class_Required": 3,
-    "ExpLevel_Required": 65,
+    "ExpLevel_Required": 85,
     "Str_Required": 0,
-    "Int_Required": 65,
-    "Wis_Required": 40,
+    "Int_Required": 0,
+    "Wis_Required": 0,
     "Dex_Required": 0,
     "Con_Required": 0,
-    "Gold_Required": 55000,
+    "Gold_Required": 5000000,
     "Skill_Required": null,
     "Skill_Level_Required": 0,
     "Skill_Tier_Required": 0,
     "Spell_Required": "mor puinsein",
     "Spell_Level_Required": 100,
-    "Spell_Tier_Required": 0
+    "Spell_Tier_Required": 1
   },
-  "NpcKey": null,
+  "NpcKey": "Dar",
   "TierLevel": 9,
+  "Description": null,
+  "TargetAnimation": 0,
   "Name": "ard puinsein"
 }

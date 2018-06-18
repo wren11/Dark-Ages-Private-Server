@@ -36,7 +36,7 @@ namespace Darkages.Storage.locales.Buffs
         {
             get
             {
-                return 5;
+                return 4;
             }
         }
         public override byte Icon

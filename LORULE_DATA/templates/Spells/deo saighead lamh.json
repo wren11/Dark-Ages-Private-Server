@@ -49,5 +49,7 @@
   },
   "NpcKey": "High Priest",
   "TierLevel": 8,
+  "Description": null,
+  "TargetAnimation": 0,
   "Name": "deo saighead lamh"
 }
