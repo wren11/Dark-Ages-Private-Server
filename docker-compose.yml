@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+  start:
+    image: start
+    build:
+      context: .\Start
+      dockerfile: Dockerfile
