@@ -63,6 +63,7 @@
       <DependentUpon>Dockerfile</DependentUpon>
     </None>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controller.resx">
@@ -82,4 +83,5 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Web.WebJobs.Publish.1.0.12\tools\webjobs.targets" Condition="Exists('..\packages\Microsoft.Web.WebJobs.Publish.1.0.12\tools\webjobs.targets')" />
 </Project>

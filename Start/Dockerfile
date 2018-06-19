@@ -1,5 +1,4 @@
-FROM microsoft/windowsservercore
-ARG source
-WORKDIR /app
-COPY ${source:-obj/Docker/publish} .
-ENTRYPOINT ["C:\app\Start.exe"]
+FROM microsoft/dotnet-framework:4.6.2
+WORKDIR ..\Staging\bin\Release\
+COPY ..\Staging\bin\Release .
+ENTRYPOINT ["Start.exe"]
