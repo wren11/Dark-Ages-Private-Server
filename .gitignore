@@ -30,3 +30,7 @@ git\*
 *.lock
 *.ide
 *.ide-shm
+*.cr
+packages\*
+*\packages
+*.exe
