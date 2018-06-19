@@ -35,7 +35,7 @@
   "Value": 100000,
   "EquipmentSlot": 1,
   "NpcKey": "Arms Dealer",
-  "Class": 0,
+  "Class": 1,
   "LevelRequired": 95,
   "DmgMin": 342,
   "DmgMax": 420,

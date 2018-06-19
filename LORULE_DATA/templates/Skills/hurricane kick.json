@@ -14,15 +14,10 @@
   "PostQualifers": 1,
   "Sound": 14,
   "Debuff": {
-    "$type": "Darkages.Storage.locales.debuffs.debuff_hurricane, Darkages.Server",
+    "$type": "Darkages.Types.Debuff, Darkages.Server",
     "Name": "hurricane",
-    "Icon": 116,
     "Length": 1,
-    "AcModifer": {
-      "$type": "Darkages.Types.StatusOperator, Darkages.Server",
-      "Option": 0,
-      "Value": 30
-    },
+    "Icon": 116,
     "Cancelled": false,
     "Timer": {
       "$type": "Darkages.Network.Game.GameServerTimer, Darkages.Server",

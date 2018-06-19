@@ -17,8 +17,50 @@
   "DamageExponent": 0.0,
   "Pane": 0,
   "ElementalProperty": 0,
-  "Prerequisites": null,
-  "NpcKey": null,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Holy Diana",
+          "AmountRequired": 2
+        },
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Dark Bone Necklace",
+          "AmountRequired": 2
+        }
+      ]
+    },
+    "Stage_Required": 0,
+    "Class_Required": 4,
+    "ExpLevel_Required": 86,
+    "Str_Required": 13,
+    "Int_Required": 89,
+    "Wis_Required": 69,
+    "Dex_Required": 0,
+    "Con_Required": 0,
+    "Gold_Required": 300000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": "cradh",
+    "Spell_Level_Required": 100,
+    "Spell_Tier_Required": 1
+  },
+  "NpcKey": "Dar",
   "TierLevel": 0,
+  "Description": "Bind a curse onto that an unwilling target.",
+  "TargetAnimation": 0,
   "Name": "mor cradh"
 }

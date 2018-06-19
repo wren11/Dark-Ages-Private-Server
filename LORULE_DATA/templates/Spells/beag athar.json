@@ -29,17 +29,11 @@
     },
     "Items_Required": {
       "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
-      "$values": [
-        {
-          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
-          "Item": "Bat's Wing",
-          "AmountRequired": 1
-        }
-      ]
+      "$values": []
     },
     "Stage_Required": 0,
     "Class_Required": 3,
-    "ExpLevel_Required": 0,
+    "ExpLevel_Required": 3,
     "Str_Required": 0,
     "Int_Required": 0,
     "Wis_Required": 0,
@@ -53,7 +47,9 @@
     "Spell_Level_Required": 0,
     "Spell_Tier_Required": 0
   },
-  "NpcKey": "some npc we will learn this from",
+  "NpcKey": "Dar",
   "TierLevel": 9,
+  "Description": null,
+  "TargetAnimation": 0,
   "Name": "beag athar"
 }

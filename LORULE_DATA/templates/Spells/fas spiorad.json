@@ -1,19 +1,22 @@
 {
   "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
-  "Icon": 53,
+  "Icon": 26,
   "MaxLevel": 100,
-  "ScriptKey": "dion",
-  "MinLines": 0,
+  "ScriptKey": "fas spiorad",
+  "MinLines": 1,
   "MaxLines": 9,
-  "ManaCost": 6,
+  "ManaCost": 0,
   "Text": "\u0000",
-  "Debuff": null,
-  "Buff": {
-    "$type": "Darkages.Storage.locales.Buffs.buff_dion, Darkages.Server",
-    "Name": "dion",
-    "Length": 4,
-    "Icon": 53,
-    "value": 0,
+  "Debuff": {
+    "$type": "Darkages.Storage.locales.debuffs.debuff_fasspoirad, Darkages.Server",
+    "Name": "fas spiorad",
+    "Icon": 26,
+    "Length": 2,
+    "AcModifer": {
+      "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+      "Option": 1,
+      "Value": 50
+    },
     "Cancelled": false,
     "Timer": {
       "$type": "Darkages.Network.Game.GameServerTimer, Darkages.Server",
@@ -25,13 +28,14 @@
       "Tick": 0
     }
   },
+  "Buff": null,
   "TargetType": 5,
-  "BaseLines": 0,
-  "LevelRate": 0.9,
-  "Sound": 0,
-  "Animation": 0,
+  "BaseLines": 9,
+  "LevelRate": 0.0,
+  "Sound": 8,
+  "Animation": 1,
   "DamageExponent": 0.0,
-  "Pane": 0,
+  "Pane": 1,
   "ElementalProperty": 0,
   "Prerequisites": {
     "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
@@ -47,15 +51,15 @@
       "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
       "$values": []
     },
-    "Stage_Required": 0,
-    "Class_Required": 5,
-    "ExpLevel_Required": 11,
-    "Str_Required": 0,
-    "Int_Required": 25,
-    "Wis_Required": 8,
-    "Dex_Required": 0,
-    "Con_Required": 0,
-    "Gold_Required": 5000,
+    "Stage_Required": 1,
+    "Class_Required": 3,
+    "ExpLevel_Required": 99,
+    "Str_Required": 3,
+    "Int_Required": 3,
+    "Wis_Required": 3,
+    "Dex_Required": 3,
+    "Con_Required": 3,
+    "Gold_Required": 0,
     "Skill_Required": null,
     "Skill_Level_Required": 0,
     "Skill_Tier_Required": 0,
@@ -63,9 +67,9 @@
     "Spell_Level_Required": 0,
     "Spell_Tier_Required": 0
   },
-  "NpcKey": "etaen",
-  "TierLevel": 0,
-  "Description": "Makes the player immune to all physical and magical damage for a short duration.",
+  "NpcKey": "Dar",
+  "TierLevel": 9,
+  "Description": "Deals 1/3 of mana in damage to the player and restores 100% mana.",
   "TargetAnimation": 0,
-  "Name": "dion"
+  "Name": "fas spiorad"
 }
