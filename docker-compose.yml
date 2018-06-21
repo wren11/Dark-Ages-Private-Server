@@ -1,8 +1,8 @@
 version: '2.1'
 
 services:
-  start:
-    image: start
-    build:
-      context: .\Start
-      dockerfile: Dockerfile
+  darkages-lorule-server:
+    image: darkages-lorule-server
+    build: .
+    ports:
+      - 3000:3000
