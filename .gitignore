@@ -34,3 +34,5 @@ git\*
 packages\*
 *\packages
 *.exe
+/$tf
+/BuildProcessTemplates
