@@ -535,25 +535,28 @@ namespace Darkages.Types
                 obj.LootTable = new LootTable(template.Name);
                 obj.UpgradeTable = new LootTable("Probabilities");
 
-                foreach (var drop in obj.Template.Drops)
+                lock (ServerContext.SyncObj)
                 {
-                    if (drop.Equals("random", StringComparison.OrdinalIgnoreCase))
+                    foreach (var drop in obj.Template.Drops)
                     {
-                        lock (Generator.Random)
+                        if (drop.Equals("random", StringComparison.OrdinalIgnoreCase))
                         {
-                            var available = GlobalItemTemplateCache.Select(i => i.Value)
-                                .Where(i => Math.Abs(i.LevelRequired - obj.Template.Level) <= 10).ToList();
-                            if (available.Count > 0)
+                            lock (Generator.Random)
                             {
-                                obj.LootTable.Add(available[GenerateNumber() % available.Count]);
+                                var available = GlobalItemTemplateCache.Select(i => i.Value)
+                                    .Where(i => Math.Abs(i.LevelRequired - obj.Template.Level) <= 10).ToList();
+                                if (available.Count > 0)
+                                {
+                                    obj.LootTable.Add(available[GenerateNumber() % available.Count]);
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        if (GlobalItemTemplateCache.ContainsKey(drop))
+                        else
                         {
-                            obj.LootTable.Add(GlobalItemTemplateCache[drop]);
+                            if (GlobalItemTemplateCache.ContainsKey(drop))
+                            {
+                                obj.LootTable.Add(GlobalItemTemplateCache[drop]);
+                            }
                         }
                     }
                 }

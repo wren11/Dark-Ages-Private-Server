@@ -226,6 +226,9 @@ namespace Darkages
 
         private void UpdateMonsters(TimeSpan elapsedTime)
         {
+            if (!ServerContext.Running || ServerContext.Paused)
+                return;
+
             foreach (var obj in GetObjects<Monster>(i => i.CurrentMapId == ID && i.AislingsNearby().Length > 0))
             {             
                 if (obj.Template.UpdateMapWide)

@@ -82,8 +82,6 @@ namespace Darkages.Types
                     server.Name = text[0];
                     server.Description = text[1];
 
-                    var id = reader.ReadByte();
-
                     Servers.Add(server);
                 }
             }
@@ -102,7 +100,6 @@ namespace Darkages.Types
                     writer.Write(server.Address);
                     writer.Write(server.Port);
                     writer.Write(server.Name + ";" + server.Description);
-                    writer.Write(server.ID);
                 }
             }
         }

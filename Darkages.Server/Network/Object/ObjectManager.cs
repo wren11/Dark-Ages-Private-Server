@@ -41,7 +41,7 @@ namespace Darkages.Network.Object
         public void DelObject<T>(T obj) where T : Sprite => ServerContext.Game?.ObjectFactory.RemoveGameObject(obj);
         public void DelObjects<T>(T[] obj) where T : Sprite => ServerContext.Game?.ObjectFactory.RemoveAllGameObjects(obj);
         public T GetObject<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.Query(p);
-        public IEnumerable<T> GetObjects<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.QueryAll(p).ToList();
+        public IEnumerable<T> GetObjects<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory?.QueryAll(p).ToList();
 
         public static T Clone<T>(object source)
         {
@@ -87,23 +87,32 @@ namespace Darkages.Network.Object
 
         public IEnumerable<Sprite> GetObjects(Predicate<Sprite> p, Get selections)
         {
-            var bucket = new List<Sprite>();
+            try
+            {
+                var bucket = new List<Sprite>();
 
-            if ((selections & Get.All) == Get.All)
-                selections = Get.Items | Get.Money | Get.Monsters | Get.Mundanes | Get.Aislings;
+                if ((selections & Get.All) == Get.All)
+                    selections = Get.Items | Get.Money | Get.Monsters | Get.Mundanes | Get.Aislings;
 
-            if ((selections & Get.Aislings) == Get.Aislings)
-                bucket.AddRange(GetObjects<Aisling>(p));
-            if ((selections & Get.Monsters) == Get.Monsters)
-                bucket.AddRange(GetObjects<Monster>(p));
-            if ((selections & Get.Mundanes) == Get.Mundanes)
-                bucket.AddRange(GetObjects<Mundane>(p));
-            if ((selections & Get.Money) == Get.Money)
-                bucket.AddRange(GetObjects<Money>(p));
-            if ((selections & Get.Items) == Get.Items)
-                bucket.AddRange(GetObjects<Item>(p));
+                if ((selections & Get.Aislings) == Get.Aislings)
+                    bucket.AddRange(GetObjects<Aisling>(p));
+                if ((selections & Get.Monsters) == Get.Monsters)
+                    bucket.AddRange(GetObjects<Monster>(p));
+                if ((selections & Get.Mundanes) == Get.Mundanes)
+                    bucket.AddRange(GetObjects<Mundane>(p));
+                if ((selections & Get.Money) == Get.Money)
+                    bucket.AddRange(GetObjects<Money>(p));
+                if ((selections & Get.Items) == Get.Items)
+                    bucket.AddRange(GetObjects<Item>(p));
 
-            return bucket;
+                return bucket;
+            }
+            catch (Exception)
+            {
+                //ignore
+            }
+
+            return null;
         }
 
         public Sprite GetObject(Predicate<Sprite> p, Get selections)

@@ -3,10 +3,30 @@
     <MServer>
       <Addr>127.0.0.1</Addr>
       <Port>2610</Port>
-      <Guid>1</Guid>
-      <Name>Dark Ages</Name>
-      <Desc>Lorule Server</Desc>
-      <ID>1</ID>
-    </MServer>    
+      <Guid>2</Guid>
+      <Name>Lorule</Name>
+      <Desc>Sandbox Server</Desc>
+    </MServer>
+    <MServer>
+      <Addr>127.0.0.2</Addr>
+      <Port>2610</Port>
+      <Guid>4</Guid>
+      <Name>Lorule</Name>
+      <Desc>PVP Server (US)</Desc>
+    </MServer>
+    <MServer>
+      <Addr>127.0.0.3</Addr>
+      <Port>2610</Port>
+      <Guid>8</Guid>
+      <Name>Lorule</Name>
+      <Desc>Oceanic Server</Desc>
+    </MServer>
+    <MServer>
+      <Addr>127.0.0.5</Addr>
+      <Port>2610</Port>
+      <Guid>16</Guid>
+      <Name>Lorule</Name>
+      <Desc>US West</Desc>
+    </MServer>
   </Servers>
 </MServerTable>

@@ -238,6 +238,10 @@ namespace Darkages.Network.Login
 
                 ServerContext.GlobalRedirects.Add(redirect);
 
+                var selected = MServerTable.Servers.FirstOrDefault(i => i.Guid == format.Slot);
+                Console.WriteLine("{0} => Server Selected: {1}", client.Serial, selected.Name + ": " + selected.Description);
+
+
                 client.Send(new ServerFormat03
                 {
                     EndPoint = new IPEndPoint(MServerTable.Servers[0].Address, MServerTable.Servers[0].Port),
@@ -250,6 +254,7 @@ namespace Darkages.Network.Login
                 {
                     Size = MServerTable.Size,
                     Data = MServerTable.Data,
+                    Type = 0x02
                 });
             }
         }

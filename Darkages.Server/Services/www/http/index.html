@@ -1,0 +1,19 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Lorule : Online Dark Ages Server</title>
+</head>
+
+<body ng-app="sampleApp">
+	<div ng-view></div>
+
+	<div ng-controller="ServerController">
+		Users Online: {{OnlineUsers}} | <a href="/#user" ng-click="getUsers()">Update</a><hr />
+		<a href="#" ng-click="go()">Reboot Server</a> | {{server_status}}
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>
