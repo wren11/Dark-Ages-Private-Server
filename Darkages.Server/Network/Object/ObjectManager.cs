@@ -82,7 +82,7 @@ namespace Darkages.Network.Object
                 return;
             }
 
-            ServerContext.Game.ObjectFactory.AddGameObject(obj);
+            ServerContext.Game?.ObjectFactory?.AddGameObject(obj);
         }
 
         public IEnumerable<Sprite> GetObjects(Predicate<Sprite> p, Get selections)

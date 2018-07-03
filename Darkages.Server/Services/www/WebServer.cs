@@ -17,6 +17,7 @@
 //*************************************************************************/
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -120,6 +121,7 @@ namespace Darkages.Services.www
             else
             {
                 input = input.Replace("%user_count%", ServerContext.Game?.Clients?.Count(i => i != null && i.Aisling != null && i.Aisling.LoggedIn).ToString());
+                input = input.Replace("%stats%", Console.Title);
                 input = input.Replace("%base_dir%", ".");
             }
 
@@ -165,11 +167,17 @@ namespace Darkages.Services.www
 
             ServerContext.Startup();
 
+            PerformanceCounter cpuCounter;
+            PerformanceCounter ramCounter;
+
+            cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+
             var result = new api_result
             {
-                message = id,
+                message = string.Format("Server Status: {0}", ServerContext.Running),
                 code = "200",
-                data = new[] { "1", "2", "3", id },
+                data = new[] { string.Format("Paused: {0}", ServerContext.Paused), cpuCounter.NextValue().ToString(), ramCounter.NextValue().ToString(), id },
             };
             return JsonConvert.SerializeObject(result);
         }

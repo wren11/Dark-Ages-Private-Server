@@ -8,8 +8,8 @@
 	<div ng-view></div>
 
 	<div ng-controller="ServerController">
-		Users Online: {{OnlineUsers}} | <a href="/#user" ng-click="getUsers()">Update</a><hr />
-		<a href="#" ng-click="go()">Reboot Server</a> | {{server_status}}
+		<b>{{stats}}</b> <hr />
+		<a href="#" ng-click="go()">Reboot Server</a> &nbsp;<i>{{server_status}}</i>
 	</div>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
