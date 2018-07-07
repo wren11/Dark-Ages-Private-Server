@@ -28,7 +28,6 @@ sampleApp.config(['$routeProvider',
 	}]);
 
 sampleApp.controller('ServerController', function ($scope, $routeParams, $http) {
-	$scope.stats = "%stats%";
 	$scope.go = function() {
 		$http({
 			method: "GET",
