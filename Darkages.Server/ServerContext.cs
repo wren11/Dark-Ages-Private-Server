@@ -18,8 +18,9 @@
 using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
-using Darkages.Services.www;
 using Darkages.Storage;
+using Darkages.Storage.locales.Buffs;
+using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
@@ -34,17 +35,6 @@ namespace Darkages
 {
     public class ServerContext : ObjectManager
     {
-        static ServerContext()
-        {
-            LoadConstants();
-
-            Web = new WebServer(WebServer.Lorule, Config.WEBSERVER);
-            Web.Run();
-            {
-                Process.Start(Config.WEBSERVER);
-            }
-        }
-
         public static object SyncObj = new object();
 
         public static int Errors, DefaultPort;
@@ -54,8 +44,6 @@ namespace Darkages
         public static GameServer Game;
 
         public static LoginServer Lobby;
-
-        public static WebServer Web;
 
         public static ServerConstants Config;
 
@@ -228,7 +216,6 @@ namespace Darkages
 
         public static void Startup()
         {
-            Console.Clear();
             Console.WriteLine(Config.SERVER_TITLE);
             Console.Write(@"
 ┌─────────────┬─────────────────────────────────┬───────────────────────────┐
@@ -242,6 +229,7 @@ namespace Darkages
             {
                 try
                 {
+                    LoadConstants();
                     Console.WriteLine("[Lorule] Loading Server Templates...");
                     LoadAndCacheStorage();
                     Console.WriteLine("[Lorule] Loading Server Templates... Completed.");
@@ -254,7 +242,7 @@ namespace Darkages
             }
         }
 
-        public static void EmptyCacheCollectors()
+        private static void EmptyCacheCollectors()
         {
             GlobalItemTemplateCache = new Dictionary<string, ItemTemplate>();
             GlobalMapCache = new Dictionary<int, Area>();

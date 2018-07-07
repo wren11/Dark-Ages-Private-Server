@@ -23,11 +23,8 @@ namespace Darkages.Network.ClientFormats
 
         public override byte Command => 0x4B;
 
-        public byte Type { get; set; }
-
         public override void Serialize(NetworkPacketReader reader)
         {
-            Type = reader.ReadByte();
         }
 
         public override void Serialize(NetworkPacketWriter writer)

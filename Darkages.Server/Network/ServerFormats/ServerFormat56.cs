@@ -25,7 +25,6 @@ namespace Darkages.Network.ServerFormats
 
         public ushort Size { get; set; }
         public byte[] Data { get; set; }
-        public byte   Type { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -33,11 +32,9 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((ushort)Size);
+            writer.Write(Size);
             writer.Write(Data);
-            writer.Write((byte)Type);
-            writer.Write((byte)1);
-
+            writer.Write(0x02);
         }
     }
 }

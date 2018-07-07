@@ -196,6 +196,7 @@ namespace Darkages.Network.Game
                     Salt = client.Encryption.Parameters.Salt,
                     Seed = client.Encryption.Parameters.Seed,
                     Name = client.Aisling.Username,
+                    Client = client,
                     Type = 2
                 };
 

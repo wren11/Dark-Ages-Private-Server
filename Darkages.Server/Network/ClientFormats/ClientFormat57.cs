@@ -1,4 +1,5 @@
-﻿//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+﻿///************************************************************************
+//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -14,8 +15,6 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using System.Collections;
-///************************************************************************
 namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat57 : NetworkFormat
@@ -24,16 +23,14 @@ namespace Darkages.Network.ClientFormats
 
         public override byte Command => 0x57;
 
-        public int Type { get; set; }
-        public int Slot { get; set; }
+        public byte Type { get; set; }
+        public byte Slot { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {
             Type = reader.ReadByte();
-
             if (reader.CanRead)
                 Slot = reader.ReadByte();
-
         }
 
         public override void Serialize(NetworkPacketWriter writer)

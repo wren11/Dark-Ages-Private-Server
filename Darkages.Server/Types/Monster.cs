@@ -535,28 +535,25 @@ namespace Darkages.Types
                 obj.LootTable = new LootTable(template.Name);
                 obj.UpgradeTable = new LootTable("Probabilities");
 
-                lock (ServerContext.SyncObj)
+                foreach (var drop in obj.Template.Drops)
                 {
-                    foreach (var drop in obj.Template.Drops)
+                    if (drop.Equals("random", StringComparison.OrdinalIgnoreCase))
                     {
-                        if (drop.Equals("random", StringComparison.OrdinalIgnoreCase))
+                        lock (Generator.Random)
                         {
-                            lock (Generator.Random)
+                            var available = GlobalItemTemplateCache.Select(i => i.Value)
+                                .Where(i => Math.Abs(i.LevelRequired - obj.Template.Level) <= 10).ToList();
+                            if (available.Count > 0)
                             {
-                                var available = GlobalItemTemplateCache.Select(i => i.Value)
-                                    .Where(i => Math.Abs(i.LevelRequired - obj.Template.Level) <= 10).ToList();
-                                if (available.Count > 0)
-                                {
-                                    obj.LootTable.Add(available[GenerateNumber() % available.Count]);
-                                }
+                                obj.LootTable.Add(available[GenerateNumber() % available.Count]);
                             }
                         }
-                        else
+                    }
+                    else
+                    {
+                        if (GlobalItemTemplateCache.ContainsKey(drop))
                         {
-                            if (GlobalItemTemplateCache.ContainsKey(drop))
-                            {
-                                obj.LootTable.Add(GlobalItemTemplateCache[drop]);
-                            }
+                            obj.LootTable.Add(GlobalItemTemplateCache[drop]);
                         }
                     }
                 }

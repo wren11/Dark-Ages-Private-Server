@@ -165,12 +165,9 @@ namespace Darkages.Network.Game
             if (ServerContext.Paused)
                 return;
 
-            lock (ServerContext.SyncObj)
+            foreach (var area in ServerContext.GlobalMapCache.Values)
             {
-                foreach (var area in ServerContext.GlobalMapCache.Values)
-                {
-                    area.Update(elapsedTime);
-                }
+                area.Update(elapsedTime);
             }
         }
 
@@ -179,14 +176,12 @@ namespace Darkages.Network.Game
             if (ServerContext.Paused)
                 return;
 
-            lock (Clients)
+
+            foreach (var client in Clients)
             {
-                foreach (var client in Clients)
+                if (client != null && client.Aisling != null)
                 {
-                    if (client != null && client.Aisling != null)
-                    {
-                        client.Update(elapsedTime);
-                    }
+                    client.Update(elapsedTime);
                 }
             }
         }

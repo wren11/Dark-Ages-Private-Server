@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages;
+using Darkages.Common;
 using Darkages.Storage;
 using Newtonsoft.Json;
 using System;
@@ -25,7 +26,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Darkages.Services.www.WebServer;
 
 namespace Lorule
 {
@@ -35,8 +35,6 @@ namespace Lorule
 
         static void Main(string[] args)
         {
-            using (var consoleWriter = new ConsoleWriter())
-                Console.SetOut(consoleWriter);
 #if ISDEAN
             DisplayEnumReferences();
 #endif
