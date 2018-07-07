@@ -19,8 +19,6 @@ using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Storage;
-using Darkages.Storage.locales.Buffs;
-using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
@@ -28,8 +26,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Darkages
 {
@@ -382,42 +378,35 @@ namespace Darkages
             }
         }
 
-        public static async void LoadAndCacheStorage()
+        public static void LoadAndCacheStorage()
         {
             Paused = true;
-            Paused = await Task.Run(() =>
-            {
-                try
-                {
-                    EmptyCacheCollectors();
-                    lock (SyncObj)
-                    {
-                        UpdateLocales();
-                        LoadMaps();
-                        LoadReactorTemplates();
-                        LoadSkillTemplates();
-                        LoadSpellTemplates();
-                        LoadItemTemplates();
-                        LoadMonsterTemplates();
-                        LoadMundaneTemplates();
-                        LoadWarpTemplates();
-                        LoadWorldMapTemplates();
-                        CacheCommunityAssets();
-                    }
-                    return false;
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-            });
 
-            while (Paused)
+            try
             {
-                Thread.Sleep(1000);
+                EmptyCacheCollectors();
+                lock (SyncObj)
+                {
+                    UpdateLocales();
+                    LoadMaps();
+                    LoadReactorTemplates();
+                    LoadSkillTemplates();
+                    LoadSpellTemplates();
+                    LoadItemTemplates();
+                    LoadMonsterTemplates();
+                    LoadMundaneTemplates();
+                    LoadWarpTemplates();
+                    LoadWorldMapTemplates();
+                    CacheCommunityAssets();
+                }
+            }
+            catch (Exception)
+            {
+                Paused = false;
             }
 
             LoadMetaDatabase();
+            Paused = false;
         }
 
         public static void OncbResponse(Aisling sender, DialogSequence arg2)

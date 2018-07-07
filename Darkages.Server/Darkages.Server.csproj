@@ -91,6 +91,15 @@
     <None Include="Assets\locales\metafile\SEvent7" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shelmets.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="sarmors.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="armors.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="include\Loot.dll" />
     <Content Include="include\Newtonsoft.Json.dll" />
     <Content Include="include\Newtonsoft.Json.xml" />

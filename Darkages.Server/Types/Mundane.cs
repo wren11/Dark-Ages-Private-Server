@@ -206,14 +206,6 @@ namespace Darkages.Types
                         if (Template.Speech.Count > 0)
                         {
                             var msg = Template.Speech[ChatIdx++ % Template.Speech.Count];
-
-                            obj.Show(Scope.Self,
-                                new ServerFormat0D
-                                {
-                                    Serial = int.MaxValue,
-                                    Text = Template.Name + ": " + msg,
-                                    Type = 0
-                                });
                             obj.Show(Scope.Self,
                                 new ServerFormat0D
                                 {

@@ -20,6 +20,9 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Darkages.Storage
 {
@@ -136,7 +139,7 @@ namespace Darkages.Storage
         }
 
 #pragma warning disable CS0693 
-        public T Load<T>(string Name) where T: class, new()
+        public T Load<T>(string Name) where T : class, new()
 #pragma warning restore CS0693
         {
             var path = Path.Combine(StoragePath, string.Format("{0}.json", Name.ToLower()));
@@ -162,7 +165,7 @@ namespace Darkages.Storage
                 if (File.Exists(path))
                     File.Delete(path);
 
-                var objString = JsonConvert.SerializeObject(obj,  Formatting.Indented, new JsonSerializerSettings
+                var objString = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.All
                 });
@@ -179,7 +182,7 @@ namespace Darkages.Storage
                 });
                 File.WriteAllText(path, objString);
             }
-        }
+        }      
 
         public FileInfo MakeUnique(string path)
         {

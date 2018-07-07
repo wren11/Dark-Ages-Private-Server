@@ -50,9 +50,10 @@ namespace Lorule
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 12);
+            this.button1.Location = new System.Drawing.Point(9, 10);
+            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(177, 30);
+            this.button1.Size = new System.Drawing.Size(133, 24);
             this.button1.TabIndex = 0;
             this.button1.Text = "Reload Server Content";
             this.button1.UseVisualStyleBackColor = true;
@@ -60,14 +61,15 @@ namespace Lorule
             // 
             // Controller
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(350, 51);
+            this.ClientSize = new System.Drawing.Size(262, 41);
             this.Controls.Add(this.button1);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Controller";
             this.Text = "Controller";
-            this.TopMost = true;
+            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.ResumeLayout(false);
 
         }

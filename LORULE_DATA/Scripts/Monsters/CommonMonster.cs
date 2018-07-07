@@ -248,6 +248,17 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             {
                 if (Monster.Target.CurrentHp == 0)
                     ClearTarget();
+
+                if (!Monster.WithinRangeOf(Monster.Target))
+                    ClearTarget();
+
+                if (Monster.Target is Monster)
+                {
+                    if (Monster.AislingsNearby().Length > 0)
+                    {
+                        ClearTarget();
+                    }
+                }
             }
             else
             {
@@ -258,13 +269,11 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                         return;
                     }
 
-                    if (Monster.Target == null)
-                    {
+
                         Monster.Target = GetObjects(i => i.Serial != Monster.Serial
                         && i.WithinRangeOf(Monster) && i.CurrentHp > 0,
                         Monster.Template.MoodType == MoodQualifer.VeryAggressive ? Get.Aislings : Get.Monsters | Get.Aislings)
                                           .OrderBy(v => v.Position.DistanceFrom(Monster.Position)).FirstOrDefault();
-                    }
 
                     if (Monster.Target != null && Monster.Target.CurrentHp <= 0)
                         Monster.Target = null;
