@@ -1,6 +1,6 @@
 {
   "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
-  "Image": 0x4395,
+  "Image": 0x42BA,
   "Level": 99,
   "ScriptKey": "Class Chooser",
   "EnableWalking": false,

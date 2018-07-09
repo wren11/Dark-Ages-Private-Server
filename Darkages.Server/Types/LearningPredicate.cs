@@ -137,7 +137,7 @@ namespace Darkages.Types
             if (Skill_Required != null)
             {
                 var skill = ServerContext.GlobalSkillTemplateCache[Skill_Required];
-                var skill_retainer = player.SkillBook.Get(i => i.Template.Name.Equals(skill.Name)).FirstOrDefault();
+                var skill_retainer = player.SkillBook.Get(i => i.Template != null && i.Template.Name.Equals(skill.Name)).FirstOrDefault();
 
                 if (skill_retainer == null)
                 {
