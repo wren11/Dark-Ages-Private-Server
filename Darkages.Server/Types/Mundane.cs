@@ -117,20 +117,20 @@ namespace Darkages.Types
             npc.CurrentMp = npc.Template.MaximumMp;
             npc.Direction = npc.Template.Direction;
             npc.CurrentMapId = npc.Template.AreaID;
-
             npc.BonusAc = (sbyte)(70 - 101 / 70 * template.Level);
 
             npc.DefenseElement = Generator.RandomEnumValue<ElementManager.Element>();
             npc.OffenseElement = Generator.RandomEnumValue<ElementManager.Element>();
 
             npc.Script = ScriptManager.Load<MundaneScript>(template.ScriptKey, ServerContext.Game, npc);
-
-            npc.Template.AttackTimer = new GameServerTimer(TimeSpan.FromMilliseconds(450));
-            npc.Template.EnableTurning = false;
-            npc.Template.WalkTimer = new GameServerTimer(TimeSpan.FromSeconds(npc.Template.WalkRate));
-            npc.Template.ChatTimer = new GameServerTimer(TimeSpan.FromSeconds(Generator.Random.Next(25, 40)));
-            npc.Template.TurnTimer = new GameServerTimer(TimeSpan.FromSeconds(npc.Template.TurnRate));
-            npc.Template.SpellTimer = new GameServerTimer(TimeSpan.FromSeconds(npc.Template.CastRate));
+            {
+                npc.Template.AttackTimer = new GameServerTimer(TimeSpan.FromMilliseconds(450));
+                npc.Template.EnableTurning = false;
+                npc.Template.WalkTimer = new GameServerTimer(TimeSpan.FromSeconds(npc.Template.WalkRate));
+                npc.Template.ChatTimer = new GameServerTimer(TimeSpan.FromSeconds(Generator.Random.Next(25, 40)));
+                npc.Template.TurnTimer = new GameServerTimer(TimeSpan.FromSeconds(npc.Template.TurnRate));
+                npc.Template.SpellTimer = new GameServerTimer(TimeSpan.FromSeconds(npc.Template.CastRate));
+            }
             npc.InitMundane();
             npc.AddObject(npc);
         }

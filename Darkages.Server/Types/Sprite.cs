@@ -205,6 +205,8 @@ namespace Darkages.Types
 
         [JsonIgnore] public bool Attackable => this is Monster || this is Aisling || this is Mundane;
 
+        [JsonIgnore] public bool Alive => CurrentHp > 0;
+
         [JsonIgnore] public DateTime AbandonedDate { get; set; }
 
         [JsonIgnore] public DateTime CreationDate { get; set; }

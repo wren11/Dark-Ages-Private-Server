@@ -156,6 +156,19 @@ namespace Darkages
         public Reactor ActiveReactor { get; set; }
 
         [JsonIgnore]
+        public Trap[] Traps => Trap.TrapCache.Select(i => i.Value)
+            .ToList().Where(i => i.Creator.Serial == Serial).ToArray();
+
+        [JsonIgnore]
+        public int SelectedTrapIndex = 0;
+
+        [JsonIgnore]
+        public Trap SelectedTrap => Traps[SelectedTrapIndex++ % Traps.Length];
+
+        public void CycleTraps() => SelectedTrapIndex++;
+
+
+        [JsonIgnore]
         public List<Sprite> ViewableObjects
         {
             get
@@ -244,18 +257,22 @@ namespace Darkages
                 var target = GetObject(i => i.Serial == info.Target, Get.Monsters | Get.Aislings | Get.Mundanes);
                 spell.InUse = true;
 
-                if (target != null)
+
+                if (spell.Script != null)
                 {
-                    if (target is Aisling)
-                        spell.Script.OnUse(this, target as Aisling);
-                    if (target is Monster)
-                        spell.Script.OnUse(this, target as Monster);
-                    if (target is Mundane)
-                        spell.Script.OnUse(this, target as Mundane);
-                }
-                else
-                {
-                    spell.Script.OnUse(this, this);
+                    if (target != null)
+                    {
+                        if (target is Aisling)
+                            spell.Script.OnUse(this, target as Aisling);
+                        if (target is Monster)
+                            spell.Script.OnUse(this, target as Monster);
+                        if (target is Mundane)
+                            spell.Script.OnUse(this, target as Mundane);
+                    }
+                    else
+                    {
+                        spell.Script.OnUse(this, this);
+                    }
                 }
             }
 
@@ -361,6 +378,8 @@ namespace Darkages
             //        idx++;
             //    }
             //}
+
+            Spell.GiveTo(result, "Needle Trap", 100);
 
             if (DateTime.UtcNow.Year <= 2019)
             {

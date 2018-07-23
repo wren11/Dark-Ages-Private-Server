@@ -111,7 +111,10 @@ namespace Darkages.Types
                 obj.Template.Debuff = new debuff_morfasnadur();
         }
 
-
+        public static void AttachScript(Aisling Aisling, Spell spell)
+        {
+            spell.Script = ScriptManager.Load<SpellScript>(spell.Template.ScriptKey, spell);
+        }
         public static bool GiveTo(Aisling Aisling, string spellname, byte slot)
         {
             var spellTemplate = ServerContext.GlobalSpellTemplateCache[spellname];
@@ -120,10 +123,14 @@ namespace Darkages.Types
                 return false;
 
             var spell = Create(slot, spellTemplate);
-            spell.Script = ScriptManager.Load<SpellScript>(spell.Template.ScriptKey, spell);
+
+            AttachScript(Aisling, spell);
+
             Aisling.SpellBook.Assign(spell);
+
             return true;
         }
+
 
         public bool RollDice(Random rand)
         {
@@ -147,7 +154,8 @@ namespace Darkages.Types
             var spell = Create(slot, spellTemplate);
             spell.Template = spellTemplate;
 
-            spell.Script = ScriptManager.Load<SpellScript>(spell.Template.ScriptKey, spell);
+
+            AttachScript(client.Aisling, spell);
             {
                 spell.Level = 1;
                 client.Aisling.SpellBook.Assign(spell);
@@ -171,13 +179,15 @@ namespace Darkages.Types
                 return false;
 
             var spell = Create(slot, spellTemplate);
-            spell.Level = (byte)level;
-            spell.Script = ScriptManager.Load<SpellScript>(spell.Template.ScriptKey, spell);
             {
-                Aisling.SpellBook.Assign(spell);
-                Aisling.SpellBook.Set(spell, false);
-                Aisling.Show(Scope.Self, new ServerFormat17(spell));
-                Aisling.SendAnimation(22, Aisling, Aisling);
+                spell.Level = (byte)level;
+                AttachScript(Aisling, spell);
+                {
+                    Aisling.SpellBook.Assign(spell);
+                    Aisling.SpellBook.Set(spell, false);
+                    Aisling.Show(Scope.Self, new ServerFormat17(spell));
+                    Aisling.SendAnimation(22, Aisling, Aisling);
+                }
             }
             return true;
         }

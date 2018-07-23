@@ -134,7 +134,8 @@ namespace Darkages.Network.Game
                 [typeof(MessageComponent)] = new MessageComponent(this),
                 [typeof(ObjectComponent)] = new ObjectComponent(this),
                 [typeof(PingComponent)] = new PingComponent(this),
-                [typeof(ServerCacheComponent)] = new ServerCacheComponent(this)
+                [typeof(ServerCacheComponent)] = new ServerCacheComponent(this),
+                [typeof(GameTrapComponent)] = new GameTrapComponent(this)
             };
         }
 

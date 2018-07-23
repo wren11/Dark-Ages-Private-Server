@@ -1,5 +1,4 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+﻿//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -15,8 +14,6 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Newtonsoft.Json;
-
 namespace Darkages.Types
 {
     public class SpellTemplate : Template
@@ -30,7 +27,7 @@ namespace Darkages.Types
             ThreeDigit = 4,
             NoTarget = 5,
             TwoDigit = 6,
-            OneDigit = 7
+            OneDigit = 7,
         }
 
         public SpellTemplate()
@@ -64,5 +61,8 @@ namespace Darkages.Types
         public string Description { get; set; }
 
         public ushort TargetAnimation { get; set; }
+
+        public bool IsTrap { get; set; }
+
     }
 }

@@ -178,7 +178,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                 }
                                 else
                                 {
-                                    client.SendMessage(0x02, "You could not buy this item, because you can't physically hold it.");
+                                    client.SendMessage(0x02, "Yeah right, You can't even physically hold it.");
                                     return;
                                 }
                             }

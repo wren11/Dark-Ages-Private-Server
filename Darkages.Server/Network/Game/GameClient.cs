@@ -572,10 +572,12 @@ namespace Darkages.Network.Game
 
                 spell.InUse = false;
                 spell.NextAvailableUse = DateTime.UtcNow;
-
                 spell.Lines = spell.Template.BaseLines;
-                spell.Script = ScriptManager.Load<SpellScript>(spell.Template.ScriptKey, spell);
-                Aisling.SpellBook.Set(spell, false);
+
+                Spell.AttachScript(Aisling, spell);
+                {
+                    Aisling.SpellBook.Set(spell, false);
+                }
 
                 formats.Add(new ServerFormat17(spell));
             }

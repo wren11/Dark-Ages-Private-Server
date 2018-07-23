@@ -121,6 +121,12 @@ namespace Darkages
                     return false;
             }
 
+            if (GetObjects(i => i.CurrentMapId == obj.CurrentMapId 
+                && i.X == x && i.Y == y && i.Serial != obj.Serial && i.Alive, Get.Aislings | Get.Monsters | Get.Mundanes).Any())
+            {
+                return true;
+            }
+
             return IsWall(x, y);
         }
 

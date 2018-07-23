@@ -15,33 +15,32 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Object;
 using Darkages.Types;
-using Newtonsoft.Json;
+using System;
 
-namespace Darkages.Scripting
+namespace Darkages.Network.Game.Components
 {
-    public abstract class SpellScript : ObjectManager
+    public class GameTrapComponent : GameServerComponent
     {
-        public SpellScript(Spell spell)
+        GameServerTimer Timer;
+        public GameTrapComponent(GameServer server) : base(server)
         {
-            Spell = spell;
+            Timer = new GameServerTimer(TimeSpan.FromSeconds(1));
         }
 
-        public Spell Spell { get; set; }
+        public override void Update(TimeSpan elapsedTime)
+        {
+            Timer.Update(elapsedTime);
 
-        [JsonIgnore]
-        public string Arguments { get; set; }
+            if (Timer.Elapsed)
+            {
+                if (Trap.UpdateAll(elapsedTime))
+                {
 
-        public bool IsScriptDefault { get; set; }
+                }
 
-        public abstract void OnUse(Sprite sprite, Sprite target);
-        public abstract void OnFailed(Sprite sprite, Sprite target);
-        public abstract void OnSuccess(Sprite sprite, Sprite target);
-
-        public virtual void OnSelectionToggle(Sprite sprite) { }
-        public virtual void OnActivated(Sprite sprite) { }
-        public virtual void OnTriggeredBy(Sprite sprite, Sprite target) { }
-
+                Timer.Reset();
+            }
+        }
     }
 }

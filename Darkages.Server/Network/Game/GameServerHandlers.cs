@@ -62,9 +62,6 @@ namespace Darkages.Network.Game
             if (ServerContext.Config.AssailsCancelSpells)
                 CancelIfCasting(client);
 
-            //if (!client.Aisling.HasSkill<SkillTemplate>(SkillScope.Assail))
-            //    return;
-
             foreach (var skill in client.Aisling.GetAssails(SkillScope.Assail))
             {
                 if (skill == null)
@@ -199,6 +196,8 @@ namespace Darkages.Network.Game
                     Client = client,
                     Type = 2
                 };
+
+                Trap.RemoveTraps(client.Aisling);
 
                 client.Aisling.LoggedIn = false;
 
@@ -656,15 +655,12 @@ namespace Darkages.Network.Game
                     client.Aisling.ActiveSpellInfo.Position = format.Point;
                     client.Aisling.ActiveSpellInfo.Data = format.Data;
 
-                    var spell = client.Aisling.SpellBook.Get(i => i != null &&
-                                                                  i.Slot == client.Aisling.ActiveSpellInfo.Slot)
+                    var spell = client.Aisling.SpellBook
+                        .Get(i => i != null && i.Slot == client.Aisling.ActiveSpellInfo.Slot)
                         .FirstOrDefault();
 
-                    if (spell?.Script != null)
-                    {
-                        client.Aisling.IsCastingSpell = true;
-                        client.Aisling.CastSpell(spell);
-                    }
+                    client.Aisling.IsCastingSpell = true;
+                    client.Aisling.CastSpell(spell);
                 }
                 else
                 {
@@ -1978,7 +1974,7 @@ namespace Darkages.Network.Game
                 return;
 
             #endregion
-
+             
             if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
             {
                 client.Interupt();
