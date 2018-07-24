@@ -114,6 +114,9 @@
     <Compile Include="Assets\locales\Scripts\Spells\cures\aosith.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Assets\locales\Scripts\Spells\rogue\Clone.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Assets\locales\Scripts\Spells\utility\fasspoirad.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

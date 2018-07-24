@@ -99,6 +99,6 @@ namespace Darkages.Assets.locales.Scripts.Spells.utility
                         OnFailed(sprite, target);
                 }
             }
-            }
+        }
     }
 }

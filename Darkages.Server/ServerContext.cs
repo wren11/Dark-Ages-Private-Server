@@ -422,6 +422,59 @@ namespace Darkages
                     };
 
                     GlobalSpellTemplateCache["Needle Trap"] = trap;
+
+                    GlobalItemTemplateCache["Bible of Tricks"] = new ItemTemplate()
+                    {
+                        CanStack = true,
+                        MaxStack = 5,
+                        Color = ItemColor.defaultgreen,
+                        Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.QuestRelated | ItemFlags.Sellable | ItemFlags.Tradeable,
+                        Image = 0x80D8,
+                        DisplayImage = 0x80D8,
+                        CarryWeight = 0,
+                        DropRate = 0.55,
+                        LevelRequired = 3
+                    };
+
+                    GlobalSpellTemplateCache["Clone"] = new SpellTemplate()
+                    {
+                        Name = "Clone",
+                        ScriptKey = "Clone",
+                        Description = "Duplicate a Creature",
+                        Animation = 246,
+                        TargetAnimation = 246,
+                        LevelRate = 0.12,
+                        BaseLines = 2,
+                        MaxLines = 9,
+                        MinLines = 1,
+                        DamageExponent = 0.0,
+                        ElementalProperty = ElementManager.Element.None,
+                        IsTrap = false,
+                        ManaCost = 200,
+                        NpcKey = "Old Thief",
+                        Icon = 85,
+                        MaxLevel = 100,
+                        Pane = Pane.Spells,
+                        TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                        Prerequisites = new LearningPredicate()
+                        {
+                            Int_Required = 40,
+                            Gold_Required = 50000,
+                            ExpLevel_Required = 18,
+                            Wis_Required = 16,
+                            Class_Required = Class.Rogue,
+                            Skill_Required = "Study Creature",
+                            Skill_Level_Required = 80,
+                            Items_Required = new List<ItemPredicate>()
+                                  {
+                                      new ItemPredicate()
+                                      {
+                                           AmountRequired = 1,
+                                           Item = "Bible of Tricks"
+                                      }
+                                  }
+                        }
+                    };
                 }
             }
             catch (Exception)

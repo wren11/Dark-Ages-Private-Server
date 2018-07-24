@@ -54,6 +54,10 @@ namespace Darkages.Assets.locales.Scripts.Traps
         {
 
             target.ApplyDamage(sprite, 1000, true, 1);
+            if (target is Aisling)
+            {
+                target.Show(Scope.Self, new ServerFormat0A(0x01, $"Uh oh. [{Spell.Name}]"));
+            }
 
             if (target is Monster || target is Mundane || target is Aisling)
                 target.Show(Scope.NearbyAislings,
