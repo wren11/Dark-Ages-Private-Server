@@ -26,7 +26,6 @@ namespace Darkages.Network.ServerFormats
 
         public override bool Secured => true;
         public override byte Command => 0x2E;
-
         private Aisling User { get; }
 
         public override void Serialize(NetworkPacketReader reader)

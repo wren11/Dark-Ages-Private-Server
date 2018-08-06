@@ -942,13 +942,13 @@ namespace Darkages.Types
                             foreach (var gc in GetObjects<Aisling>(that =>
                                 that.WithinRangeOf(this) && (this as Aisling).GroupParty.Has(that)))
                             {
-                                    if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
-                                        if (format is ServerFormat33)
-                                            return;
+                                if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
+                                    if (format is ServerFormat33)
+                                        return;
 
-                                    if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
-                                        if (format is ServerFormat33)
-                                            return;
+                                if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
+                                    if (format is ServerFormat33)
+                                        return;
 
                                 gc.Client.Send(format);
                             }
@@ -960,13 +960,13 @@ namespace Darkages.Types
                             foreach (var gc in GetObjects<Aisling>(that =>
                                 that.WithinRangeOf(this) && (this as Aisling).GroupParty.Has(that, true)))
                             {
-                                    if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
-                                        if (format is ServerFormat33)
-                                            return;
+                                if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
+                                    if (format is ServerFormat33)
+                                        return;
 
-                                    if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
-                                        if (format is ServerFormat33)
-                                            return;
+                                if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
+                                    if (format is ServerFormat33)
+                                        return;
 
                                 gc.Client.Send(format);
                             }

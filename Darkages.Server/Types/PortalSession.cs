@@ -20,7 +20,6 @@ using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using Newtonsoft.Json;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Darkages
@@ -91,7 +90,7 @@ namespace Darkages
                         });
                     }
 
-                    
+
                 }
             }
         }

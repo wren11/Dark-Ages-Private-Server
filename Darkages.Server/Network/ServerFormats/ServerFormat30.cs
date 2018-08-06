@@ -72,7 +72,7 @@ namespace Darkages.Network.ServerFormats
         GameClient client;
 
 
-        public ReactorSequence(GameClient gameClient, DialogSequence sequenceMenu) 
+        public ReactorSequence(GameClient gameClient, DialogSequence sequenceMenu)
             : base(gameClient)
         {
             client = gameClient;

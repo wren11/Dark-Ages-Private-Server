@@ -19,6 +19,7 @@ using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Storage;
+using Darkages.Storage.locales.Buffs;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
@@ -26,30 +27,22 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Darkages
 {
     public class ServerContext : ObjectManager
     {
-        public static object SyncObj = new object();
+        internal static volatile object SyncObj = new object();
 
         public static int Errors, DefaultPort;
-
         public static bool Running, Paused;
 
         public static GameServer Game;
-
         public static LoginServer Lobby;
-
         public static ServerConstants Config;
-
         public static IPAddress Ipaddress => IPAddress.Parse(File.ReadAllText("server.tbl"));
-
-        public static string StoragePath = Path.GetFullPath(@"..\..\..\LORULE_DATA");
-
-        public static string ScriptOEMPath = Path.GetFullPath(@"..\..\..\Darkages.Server\Assets\locales");
-
-        public static Item GlobalLastItemRoll { get; set; }
+        public static string StoragePath = @"..\..\..\LORULE_DATA";
 
         public static List<Redirect> GlobalRedirects = new List<Redirect>();
 
@@ -87,75 +80,49 @@ namespace Darkages
         public static void LoadSkillTemplates()
         {
             StorageManager.SkillBucket.CacheFromStorage();
-            Console.WriteLine("[Lorule] Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
-        }
-
-        public static void LoadReactorTemplates()
-        {
-            StorageManager.ReactorBucket.CacheFromStorage();
-            Console.WriteLine("[Lorule] Reactors Loaded: {0}", GlobalReactorCache.Count);
-            {
-                RegisterReactorCallbacks();
-            }
-        }
-
-        private static void RegisterReactorCallbacks()
-        {
-            int registered = 0;
-            foreach (var reactor in GlobalReactorCache.SelectMany(i => i.Value.Steps))
-            {
-                if (!string.IsNullOrEmpty(reactor.CallbackKey))
-                {
-                    var thisType = typeof(Darkages.ServerContext);
-                    var method = thisType.GetMethod(reactor.CallbackKey);
-
-                    reactor.Callback = (functionCallback)Delegate.CreateDelegate(typeof(functionCallback), method);
-                    registered++;
-                }
-            }
-            Console.WriteLine("[Lorule] Registered Reactor Callbacks: {0}", registered);
+            logger.Trace("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
         }
 
         public static void LoadSpellTemplates()
         {
             StorageManager.SpellBucket.CacheFromStorage();
-            Console.WriteLine("[Lorule] Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
+            logger.Trace("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
         }
 
         public static void LoadItemTemplates()
         {
             StorageManager.ItemBucket.CacheFromStorage();
-            Console.WriteLine("[Lorule] Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
+            logger.Trace("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
         }
 
         public static void LoadMonsterTemplates()
         {
             StorageManager.MonsterBucket.CacheFromStorage();
-            Console.WriteLine("[Lorule] Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
+            logger.Trace("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
         }
 
         public static void LoadMundaneTemplates()
         {
             StorageManager.MundaneBucket.CacheFromStorage();
-            Console.WriteLine("[Lorule] Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
+            logger.Trace("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
         }
 
         public static void LoadWarpTemplates()
         {
             StorageManager.WarpBucket.CacheFromStorage();
-            Console.WriteLine("[Lorule] Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
+            logger.Trace("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
         }
 
         public static void LoadWorldMapTemplates()
         {
             StorageManager.WorldMapBucket.CacheFromStorage();
-            Console.WriteLine("[Lorule] World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
+            logger.Trace("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
         }
 
         public static void LoadMaps()
         {
             StorageManager.AreaBucket.CacheFromStorage();
-            Console.WriteLine("[Lorule] Map Templates Loaded: {0}", GlobalMapCache.Count);
+            logger.Trace("Map Templates Loaded: {0}", GlobalMapCache.Count);
         }
 
         private static void StartServers()
@@ -212,30 +179,20 @@ namespace Darkages
 
         public static void Startup()
         {
-            Console.WriteLine(Config.SERVER_TITLE);
-            Console.Write(@"
-┌─────────────┬─────────────────────────────────┬───────────────────────────┐
-│   Author    │             website             │          Discord          │
-├─────────────┼─────────────────────────────────┼───────────────────────────┤
-│ Wren (Dean) │ http://darkages.creatorlink.net │ https://discord.gg/ZARPGV │
-└─────────────┴─────────────────────────────────┴───────────────────────────┘
-
-");
-
+            logger.Warn(Config.SERVER_TITLE);
             {
                 try
                 {
                     LoadConstants();
-                    Console.WriteLine("[Lorule] Loading Server Templates...");
                     LoadAndCacheStorage();
-                    Console.WriteLine("[Lorule] Loading Server Templates... Completed.");
                     StartServers();
                 }
-                catch (Exception)
+                catch (Exception error)
                 {
-                    Console.WriteLine("Startup Error.");
+                    logger.Error(error, "Startup Error.");
                 }
             }
+            logger.Warn("{0} Online.", Config.SERVER_TITLE);
         }
 
         private static void EmptyCacheCollectors()
@@ -243,7 +200,6 @@ namespace Darkages
             GlobalItemTemplateCache = new Dictionary<string, ItemTemplate>();
             GlobalMapCache = new Dictionary<int, Area>();
             GlobalMetaCache = new List<Metafile>();
-            GlobalReactorCache = new Dictionary<string, Reactor>();
             GlobalMonsterTemplateCache = new List<MonsterTemplate>();
             GlobalMundaneTemplateCache = new Dictionary<string, MundaneTemplate>();
             GlobalRedirects = new List<Redirect>();
@@ -251,7 +207,7 @@ namespace Darkages
             GlobalSpellTemplateCache = new Dictionary<string, SpellTemplate>();
             GlobalWarpTemplateCache = new List<WarpTemplate>();
             GlobalWorldMapTemplateCache = new Dictionary<int, WorldMapTemplate>();
-
+            GlobalReactorCache = new Dictionary<string, Reactor>();
         }
 
         public static void LoadConstants()
@@ -260,7 +216,7 @@ namespace Darkages
 
             if (_config_ == null)
             {
-                Console.WriteLine("[Lorule] No config found. Generating defaults.");
+                logger.Trace("No config found. Generating defaults.");
                 Config = new ServerConstants();
                 StorageManager.Save(Config);
             }
@@ -270,64 +226,6 @@ namespace Darkages
             }
 
             InitFromConfig();
-        }
-
-        public static void UpdateLocales()
-        {
-            var src = Path.GetFullPath(ScriptOEMPath);
-            var dst = Path.GetFullPath(StoragePath);
-
-            CopyFolderContents(src, dst);
-        }
-
-        private static bool CopyFolderContents(string SourcePath, string DestinationPath)
-        {
-            SourcePath = SourcePath.EndsWith(@"\") ? SourcePath : SourcePath + @"\";
-            DestinationPath = DestinationPath.EndsWith(@"\") ? DestinationPath : DestinationPath + @"\";
-
-            try
-            {
-                if (Directory.Exists(SourcePath))
-                {
-                    if (Directory.Exists(DestinationPath) == false)
-                    {
-                        Directory.CreateDirectory(DestinationPath);
-                    }
-
-                    foreach (string file in Directory.GetFiles(SourcePath))
-                    {
-
-                        var a = new FileInfo(file);
-                        var b = new FileInfo(Path.Combine(DestinationPath, a.Name));
-
-                        if (b.Exists)
-                        {
-                            if (a.LastWriteTimeUtc != b.LastWriteTimeUtc && a.Length != b.Length)
-                            {
-                                a.CopyTo(string.Format(@"{0}\{1}", DestinationPath, a.Name), true);
-                            }
-                        }
-                        else
-                        {
-                            a.CopyTo(string.Format(@"{0}\{1}", DestinationPath, a.Name), true);
-                        }
-                    }
-
-                    foreach (string drs in Directory.GetDirectories(SourcePath))
-                    {
-                        DirectoryInfo directoryInfo = new DirectoryInfo(drs);
-                        if (CopyFolderContents(drs, DestinationPath + directoryInfo.Name) == false)
-                        {
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
 
         public static void InitFromConfig()
@@ -341,16 +239,14 @@ namespace Darkages
 
         public static void LoadMetaDatabase()
         {
-            Console.WriteLine("[Lorule] Loading Meta Database");
+            logger.Trace("Loading Meta Database");
             {
-                var mfs = MetafileManager.GetMetafiles();
+                var files = MetafileManager.GetMetafiles();
 
-                if (mfs.Count > 0)
-                {
-                    GlobalMetaCache.AddRange(mfs);
-                }
+                if (files.Count > 0)
+                    GlobalMetaCache.AddRange(files);
             }
-            Console.WriteLine("[Lorule] Building Meta Cache: {0} loaded.", GlobalMetaCache.Count);
+            logger.Trace("Building Meta Cache: {0} loaded.", GlobalMetaCache.Count);
         }
 
         public static void SaveCommunityAssets()
@@ -377,18 +273,15 @@ namespace Darkages
             }
         }
 
-        public static void LoadAndCacheStorage()
+        public static async void LoadAndCacheStorage()
         {
             Paused = true;
-
-            try
+            Paused = await Task.Run(() =>
             {
                 EmptyCacheCollectors();
                 lock (SyncObj)
                 {
-                    UpdateLocales();
                     LoadMaps();
-                    LoadReactorTemplates();
                     LoadSkillTemplates();
                     LoadSpellTemplates();
                     LoadItemTemplates();
@@ -396,98 +289,393 @@ namespace Darkages
                     LoadMundaneTemplates();
                     LoadWarpTemplates();
                     LoadWorldMapTemplates();
+                    LoadMetaDatabase();
                     CacheCommunityAssets();
+                }
 
-                    var trap = new SpellTemplate()
+
+                GlobalItemTemplateCache["Hy-Brasyl Battle Axe"].Class = Class.Warrior;
+
+
+                GlobalItemTemplateCache["Earth Necklace"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    Color = ItemColor.defaultgreen,
+                    OffenseElement = ElementManager.Element.Earth,
+                    DisplayImage = 0x80C5,
+                    Image = 0xC5,
+                    LevelRequired = 6,
+                    DropRate = 0.50,
+                    Value = 10000,
+                    MaxDurability = 5000,
+                    Name = "Earth Necklace",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.Necklace,
+                    ScriptName = "Necklace"
+                };
+
+                GlobalItemTemplateCache["Fire Necklace"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    Color = ItemColor.defaultgreen,
+                    OffenseElement = ElementManager.Element.Fire,
+                    DisplayImage = 0x80CD,
+                    Image = 0xCD,
+                    LevelRequired = 6,
+                    DropRate = 0.50,
+                    Value = 10000,
+                    MaxDurability = 5000,
+                    Name = "Fire Necklace",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.Necklace,
+                    ScriptName = "Necklace"
+                };
+
+                GlobalItemTemplateCache["Wind Necklace"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    Color = ItemColor.defaultgreen,
+                    OffenseElement = ElementManager.Element.Wind,
+                    DisplayImage = 0x80C6,
+                    Image = 0xC6,
+                    LevelRequired = 6,
+                    DropRate = 0.50,
+                    Value = 10000,
+                    MaxDurability = 5000,
+                    Name = "Wind Necklace",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.Necklace,
+                    ScriptName = "Necklace"
+                };
+
+
+                GlobalItemTemplateCache["Sea Necklace"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    Color = ItemColor.defaultgreen,
+                    OffenseElement = ElementManager.Element.Water,
+                    DisplayImage = 0x80C7,
+                    Image = 0xC7,
+                    LevelRequired = 6,
+                    DropRate = 0.50,
+                    Value = 10000,
+                    MaxDurability = 5000,
+                    Name = "Sea Necklace",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.Necklace,
+                    ScriptName = "Necklace"
+                };
+
+
+                GlobalItemTemplateCache["Dark Necklace"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    Color = ItemColor.defaultgreen,
+                    OffenseElement = ElementManager.Element.Dark,
+                    DisplayImage = 0x80CA,
+                    Image = 0xCA,
+                    LevelRequired = 6,
+                    DropRate = 0.20,
+                    Value = 1000000,
+                    MaxDurability = 5000,
+                    Name = "Dark Necklace",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.Necklace,
+                    ScriptName = "Necklace"
+                };
+
+                GlobalItemTemplateCache["Elemental Band"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    Color = ItemColor.defaultgreen,
+                    OffenseElement = ElementManager.Element.Random,
+                    DisplayImage = 0x8820,
+                    Image = 0x0820,
+                    LevelRequired = 6,
+                    DropRate = 0.02,
+                    Value = 100000000,
+                    MaxDurability = 5000,
+                    Name = "Elemental Band",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.Necklace,
+                    ScriptName = "Necklace",
+                };
+
+                GlobalItemTemplateCache["Black Pearl Ring"] = new ItemTemplate()
+                {
+                    CanStack = false,
+                    Class = Class.Peasant,
+                    CarryWeight = 1,
+                    AcModifer = new StatusOperator(StatusOperator.Operator.Remove, 5),
+                    StrModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                    ConModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                    DexModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                    IntModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                    WisModifer = new StatusOperator(StatusOperator.Operator.Add, 6),
+                    HitModifer = new StatusOperator(StatusOperator.Operator.Add, 5),
+                    DmgModifer = new StatusOperator(StatusOperator.Operator.Add, 5),
+                    HealthModifer = new StatusOperator(StatusOperator.Operator.Add, 2000),
+                    ManaModifer = new StatusOperator(StatusOperator.Operator.Add, 2000),
+                    DisplayImage = 0x829E,
+                    Image = 0x029E,
+                    LevelRequired = 99,
+                    DropRate = 0.05,
+                    Value = 20000000,
+                    MaxDurability = 5000,
+                    Name = "Black Pearl Ring",
+                    NpcKey = "Precious Jewels",
+                    Flags = ItemFlags.Bankable | ItemFlags.Elemental | ItemFlags.Equipable | ItemFlags.Dropable | ItemFlags.Repairable | ItemFlags.Sellable | ItemFlags.Upgradeable,
+                    Gender = Gender.Both,
+                    EquipmentSlot = ItemSlots.LHand,
+                    ScriptName = "Ring"
+                };
+
+
+                GlobalSpellTemplateCache["ao beag cradh"]
+                 = new SpellTemplate()
+                 {
+                     Animation = 39,
+                     BaseLines = 2,
+                     Icon = 23,
+                     LevelRate = 0.20,
+                     ManaCost = 40,
+                     MaxLevel = 100,
+                     Name = "ao beag cradh",
+                     NpcKey = "etaen",
+                     MinLines = 0,
+                     Pane = Pane.Spells,
+                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                     MaxLines = 3,
+                     TierLevel = Tier.Tier1,
+                     Sound = 8,
+                     ScriptKey = "ao beag cradh"
+                 };
+
+
+                GlobalSpellTemplateCache["ao cradh"]
+                 = new SpellTemplate()
+                 {
+                     Animation = 38,
+                     BaseLines = 2,
+                     Icon = 79,
+                     LevelRate = 0.20,
+                     ManaCost = 100,
+                     MaxLevel = 100,
+                     Name = "ao cradh",
+                     NpcKey = "etaen",
+                     MinLines = 0,
+                     Pane = Pane.Spells,
+                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                     MaxLines = 3,
+                     TierLevel = Tier.Tier1,
+                     Sound = 8,
+                     ScriptKey = "ao cradh"
+                 };
+
+                GlobalSpellTemplateCache["ao mor cradh"]
+                 = new SpellTemplate()
+                 {
+                     Animation = 8,
+                     BaseLines = 2,
+                     Icon = 80,
+                     LevelRate = 0.20,
+                     ManaCost = 150,
+                     MaxLevel = 100,
+                     Name = "ao mor cradh",
+                     NpcKey = "dar",
+                     MinLines = 0,
+                     Pane = Pane.Spells,
+                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                     MaxLines = 3,
+                     TierLevel = Tier.Tier1,
+                     Sound = 8,
+                     ScriptKey = "ao mor cradh"
+                 };
+
+                GlobalSpellTemplateCache["ao ard cradh"]
+                 = new SpellTemplate()
+                 {
+                     Animation = 37,
+                     BaseLines = 2,
+                     Icon = 81,
+                     LevelRate = 0.30,
+                     ManaCost = 240,
+                     MaxLevel = 100,
+                     Name = "ao ard cradh",
+                     NpcKey = "dar",
+                     MinLines = 0,
+                     Pane = Pane.Spells,
+                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                     MaxLines = 3,
+                     TierLevel = Tier.Tier1,
+                     Sound = 8,
+                     ScriptKey = "ao ard cradh"
+                 };
+
+
+                GlobalSpellTemplateCache["ao suain"]
+                 = new SpellTemplate()
+                 {
+                     Animation = 2,
+                     BaseLines = 2,
+                     Icon = 51,
+                     LevelRate = 0.20,
+                     ManaCost = 40,
+                     MaxLevel = 100,
+                     Name = "ao suain",
+                     NpcKey = "etaen",
+                     MinLines = 0,
+                     Pane = Pane.Spells,
+                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                     MaxLines = 3,
+                     TierLevel = Tier.Tier1,
+                     Sound = 8,
+                     ScriptKey = "ao suain"
+                 };
+
+                GlobalSpellTemplateCache["ao puinsein"]
+                    = new SpellTemplate()
                     {
-                        Animation = 91,
-                        ScriptKey = "Needle Trap",
-                        IsTrap = true,
-                        Name = "Needle Trap",
-                        TargetType = SpellTemplate.SpellUseType.NoTarget,
-                        Icon = 20,
-                        ManaCost = 20,
-                        BaseLines = 2,
-                        MaxLines = 9,
+                        Animation = 279,
+                        BaseLines = 1,
+                        Icon = 24,
+                        LevelRate = 0.20,
+                        ManaCost = 30,
                         MaxLevel = 100,
-                        Pane = Pane.Spells,
-                        Sound = 0,
+                        Name = "ao puinsein",
+                        NpcKey = "etaen",
                         MinLines = 0,
-                        DamageExponent = 5.0,
-                        Description = "Place a Small Trap damaging enemies who walk over it.",
-                        ElementalProperty = ElementManager.Element.Light,
-                        TargetAnimation = 68,
-                        LevelRate = 0.05,
-                        TierLevel = Tier.Tier1
-                    };
-
-                    GlobalSpellTemplateCache["Needle Trap"] = trap;
-
-                    GlobalItemTemplateCache["Bible of Tricks"] = new ItemTemplate()
-                    {
-                        CanStack = true,
-                        MaxStack = 5,
-                        Color = ItemColor.defaultgreen,
-                        Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.QuestRelated | ItemFlags.Sellable | ItemFlags.Tradeable,
-                        Image = 0x80D8,
-                        DisplayImage = 0x80D8,
-                        CarryWeight = 0,
-                        DropRate = 0.55,
-                        LevelRequired = 3
-                    };
-
-                    GlobalSpellTemplateCache["Clone"] = new SpellTemplate()
-                    {
-                        Name = "Clone",
-                        ScriptKey = "Clone",
-                        Description = "Duplicate a Creature",
-                        Animation = 246,
-                        TargetAnimation = 246,
-                        LevelRate = 0.12,
-                        BaseLines = 2,
-                        MaxLines = 9,
-                        MinLines = 1,
-                        DamageExponent = 0.0,
-                        ElementalProperty = ElementManager.Element.None,
-                        IsTrap = false,
-                        ManaCost = 200,
-                        NpcKey = "Old Thief",
-                        Icon = 85,
-                        MaxLevel = 100,
                         Pane = Pane.Spells,
                         TargetType = SpellTemplate.SpellUseType.ChooseTarget,
-                        Prerequisites = new LearningPredicate()
-                        {
-                            Int_Required = 40,
-                            Gold_Required = 50000,
-                            ExpLevel_Required = 18,
-                            Wis_Required = 16,
-                            Class_Required = Class.Rogue,
-                            Skill_Required = "Study Creature",
-                            Skill_Level_Required = 80,
-                            Items_Required = new List<ItemPredicate>()
-                                  {
-                                      new ItemPredicate()
-                                      {
-                                           AmountRequired = 1,
-                                           Item = "Bible of Tricks"
-                                      }
-                                  }
-                        }
+                        MaxLines = 2,
+                        TierLevel = Tier.Tier1,
+                        Sound = 8,
+                        ScriptKey = "ao puinsein"
                     };
-                }
-            }
-            catch (Exception)
-            {
-                Paused = false;
-            }
 
-            LoadMetaDatabase();
-            Paused = false;
-        }
+                GlobalSpellTemplateCache["ia naomh aite"]
+                 = new SpellTemplate()
+                 {
+                     Animation = 383,
+                     BaseLines = 4,
+                     Icon = 11,
+                     LevelRate = 1.50,
+                     ManaCost = 500,
+                     MaxLevel = 100,
+                     Name = "ia naomh aite",
+                     NpcKey = "etaen",
+                     MinLines = 1,
+                     Pane = Pane.Spells,
+                     TargetType = SpellTemplate.SpellUseType.ChooseTarget,
+                     MaxLines = 4,
+                     TierLevel = Tier.Tier1,
+                     Sound = 8,
+                     ScriptKey = "aite",
+                     Buff = new buff_aite()
+                 };
 
-        public static void OncbResponse(Aisling sender, DialogSequence arg2)
-        {
+                GlobalSpellTemplateCache["dion"].Buff = new buff_dion();
+                GlobalSpellTemplateCache["mor dion"].Buff = new buff_mordion();
+
+
+                GlobalSpellTemplateCache["fas nadur"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["fas nadur"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 10,
+                    Gold_Required = 10000,
+                };
+                GlobalSpellTemplateCache["mor fas nadur"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["mor fas nadur"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 30,
+                    Gold_Required = 500000,
+                };
+                GlobalSpellTemplateCache["beag sal"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["beag sal"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 3,
+                    Gold_Required = 500,
+                };
+                GlobalSpellTemplateCache["beag srad"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["beag srad"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 3,
+                    Gold_Required = 500,
+                };
+                GlobalSpellTemplateCache["beag athar"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["beag athar"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 3,
+                    Gold_Required = 500,
+                };
+                GlobalSpellTemplateCache["beag puinsein"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["beag puinsein"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 8,
+                    Gold_Required = 5000,
+                };
+                GlobalSpellTemplateCache["puinsein"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["puinsein"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 15,
+                    Gold_Required = 60000,
+                };
+                GlobalSpellTemplateCache["mor puinsein"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["mor puinsein"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 40,
+                    Gold_Required = 150000,
+                };
+                GlobalSpellTemplateCache["ard puinsein"].NpcKey = "Dar";
+                GlobalSpellTemplateCache["ard puinsein"].Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Wizard,
+                    ExpLevel_Required = 85,
+                    Gold_Required = 5000000,
+                };
+
+
+
+
+
+
+
+
+
+                return false;
+            });
 
         }
     }

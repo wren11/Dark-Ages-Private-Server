@@ -112,7 +112,7 @@ namespace Darkages
         public EquipmentManager EquipmentManager { get; set; }
         public ActivityStatus ActiveStatus { get; set; }
 
-        public Dictionary<string, int> MonsterKillCounters 
+        public Dictionary<string, int> MonsterKillCounters
             = new Dictionary<string, int>();
 
         public Dictionary<string, DateTime> Reactions
@@ -154,18 +154,6 @@ namespace Darkages
 
         [JsonIgnore]
         public Reactor ActiveReactor { get; set; }
-
-        [JsonIgnore]
-        public Trap[] Traps => Trap.TrapCache.Select(i => i.Value)
-            .ToList().Where(i => i.Creator.Serial == Serial).ToArray();
-
-        [JsonIgnore]
-        public int SelectedTrapIndex = 0;
-
-        [JsonIgnore]
-        public Trap SelectedTrap => Traps[SelectedTrapIndex++ % Traps.Length];
-
-        public void CycleTraps() => SelectedTrapIndex++;
 
 
         [JsonIgnore]
@@ -225,9 +213,9 @@ namespace Darkages
             {
                 ViewFrustrum.TryAdd(obj.Serial, obj);
 
-                    if (obj is Monster)
-                        (obj as Monster).Script
-                            ?.OnApproach(Client);
+                if (obj is Monster)
+                    (obj as Monster).Script
+                        ?.OnApproach(Client);
 
                 return true;
             }

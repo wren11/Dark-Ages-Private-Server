@@ -35,17 +35,11 @@ namespace Darkages
         [JsonIgnore] [Browsable(false)] public ushort Hash;
 
         [JsonIgnore] [Browsable(false)] private TileContent[,] Tile;
-         
+
         [JsonIgnore]
         [Browsable(false)]
         private readonly GameServerTimer WarpTimer =
             new GameServerTimer(TimeSpan.FromSeconds(ServerContext.Config.WarpUpdateTimer));
-
-        [JsonIgnore]
-        [Browsable(false)]
-        private readonly GameServerTimer ScriptTimer =
-            new GameServerTimer(TimeSpan.FromMilliseconds(200));
-
 
         [JsonIgnore] [Browsable(false)] public byte[] Data { get; set; }
 
@@ -74,14 +68,6 @@ namespace Darkages
         {
             lock (Tile.SyncRoot)
             {
-                var w = Tile.GetUpperBound(0);
-                var h = Tile.GetUpperBound(1);
-
-                if (x > w)
-                    return;
-                if (y > h)
-                    return;
-
                 Tile[x, y] = value;
             }
         }
@@ -119,12 +105,6 @@ namespace Darkages
             {
                 if ((obj as Monster).Template.IgnoreCollision)
                     return false;
-            }
-
-            if (GetObjects(i => i.CurrentMapId == obj.CurrentMapId 
-                && i.X == x && i.Y == y && i.Serial != obj.Serial && i.Alive, Get.Aislings | Get.Monsters | Get.Mundanes).Any())
-            {
-                return true;
             }
 
             return IsWall(x, y);
@@ -171,7 +151,8 @@ namespace Darkages
 
         public void Update(TimeSpan elapsedTime)
         {
-            UpdateScripts(elapsedTime);
+            if (Has<Monster>())
+                UpdateMonsters(elapsedTime);
 
             if (!Has<Aisling>())
                 return;
@@ -182,23 +163,12 @@ namespace Darkages
             if (Has<Item>() || Has<Money>())
                 UpdateItems(elapsedTime);
 
+
             WarpTimer.Update(elapsedTime);
             if (WarpTimer.Elapsed)
             {
                 UpdateWarps();
                 WarpTimer.Reset();
-            }
-        }
-
-        private void UpdateScripts(TimeSpan elapsedTime)
-        {
-            ScriptTimer.Update(elapsedTime);
-            if (ScriptTimer.Elapsed)
-            {
-                if (Has<Monster>())
-                    UpdateMonsters(elapsedTime);
-
-                ScriptTimer.Reset();
             }
         }
 
@@ -217,7 +187,7 @@ namespace Darkages
                 var nearby = GetObjects<Aisling>(i =>
                     i.LoggedIn && i.CurrentMapId == warp.ActivationMapId);
 
-                if (nearby.Count() == 0)
+                if (nearby.Length == 0)
                     continue;
 
                 foreach (var warpObj in warp.Activations)
@@ -232,9 +202,11 @@ namespace Darkages
 
         private void UpdateMonsters(TimeSpan elapsedTime)
         {
-            foreach (var obj in GetObjects<Monster>(i => i.CurrentMapId == ID && i.AislingsNearby().Length > 0))
-            {             
-                if (obj.Template.UpdateMapWide)
+            foreach (var obj in GetObjects<Monster>(i => i.CurrentMapId == ID))
+            {
+                var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(obj) && i.CurrentMapId == ID).Length;
+
+                if (nearby == 0 && !obj.Template.UpdateMapWide)
                 {
                     if (obj.TaggedAislings != null && obj.TaggedAislings.Count > 0)
                     {
@@ -261,9 +233,9 @@ namespace Darkages
         {
             foreach (var obj in GetObjects(i => i.CurrentMapId == ID, Get.Items | Get.Money))
             {
-                var nearby = obj.AislingsNearby();
+                var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(obj) && i.CurrentMapId == ID);
 
-                if (nearby == null)
+                if (nearby.Length == 0)
                     continue;
 
                 if (obj != null)
@@ -303,7 +275,7 @@ namespace Darkages
                 if (obj == null)
                     continue;
 
-                var nearby = obj.AislingsNearby();
+                var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(obj) && i.CurrentMapId == ID);
 
                 if (nearby.Length == 0)
                     continue;
@@ -327,7 +299,7 @@ namespace Darkages
         {
             var objs = GetObjects<T>(i => i != null && i.CurrentMapId == ID);
 
-            return objs != null;
+            return objs.Length > 0;
         }
 
         public void OnLoaded(Aisling obj = null)
@@ -361,7 +333,10 @@ namespace Darkages
         private void SetWarps()
         {
             var warps = ServerContext.GlobalWarpTemplateCache
-                .Where(i => i.ActivationMapId == ID);
+                .Where(i => i.ActivationMapId == ID).ToArray();
+
+            if (warps.Length == 0)
+                return;
 
             foreach (var warp in warps)
                 foreach (var o in warp.Activations)

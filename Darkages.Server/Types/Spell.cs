@@ -142,6 +142,10 @@ namespace Darkages.Types
 
         public static bool GiveTo(GameClient client, string args)
         {
+            if (!ServerContext.GlobalSpellTemplateCache.ContainsKey(args))
+                return false;
+
+
             var spellTemplate = ServerContext.GlobalSpellTemplateCache[args];
             var slot = client.Aisling.SpellBook.FindEmpty();
 
@@ -168,6 +172,9 @@ namespace Darkages.Types
 
         public static bool GiveTo(Aisling Aisling, string spellname, int level = 100)
         {
+            if (!ServerContext.GlobalSpellTemplateCache.ContainsKey(spellname))
+                return false;
+
             var spellTemplate = ServerContext.GlobalSpellTemplateCache[spellname];
 
             if (Aisling.SpellBook.Has(spellTemplate))

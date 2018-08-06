@@ -134,8 +134,7 @@ namespace Darkages.Network.Game
                 [typeof(MessageComponent)] = new MessageComponent(this),
                 [typeof(ObjectComponent)] = new ObjectComponent(this),
                 [typeof(PingComponent)] = new PingComponent(this),
-                [typeof(ServerCacheComponent)] = new ServerCacheComponent(this),
-                [typeof(GameTrapComponent)] = new GameTrapComponent(this)
+                [typeof(ServerCacheComponent)] = new ServerCacheComponent(this)
             };
         }
 
@@ -155,9 +154,12 @@ namespace Darkages.Network.Game
             if (ServerContext.Paused)
                 return;
 
-            foreach (var component in Components.Values)
+            lock (Components)
             {
-                component.Update(elapsedTime);
+                foreach (var component in Components.Values)
+                {
+                    component.Update(elapsedTime);
+                }
             }
         }
 
@@ -166,9 +168,12 @@ namespace Darkages.Network.Game
             if (ServerContext.Paused)
                 return;
 
-            foreach (var area in ServerContext.GlobalMapCache.Values)
+            lock (ServerContext.GlobalMapCache)
             {
-                area.Update(elapsedTime);
+                foreach (var area in ServerContext.GlobalMapCache.Values)
+                {
+                    area.Update(elapsedTime);
+                }
             }
         }
 
@@ -177,12 +182,14 @@ namespace Darkages.Network.Game
             if (ServerContext.Paused)
                 return;
 
-
-            foreach (var client in Clients)
+            lock (Clients)
             {
-                if (client != null && client.Aisling != null)
+                foreach (var client in Clients)
                 {
-                    client.Update(elapsedTime);
+                    if (client != null && client.Aisling != null)
+                    {
+                        client.Update(elapsedTime);
+                    }
                 }
             }
         }
@@ -216,7 +223,7 @@ namespace Darkages.Network.Game
                     Console.WriteLine(error.Message + "\n" + error.StackTrace);
                 }
 
-                Thread.Sleep(300);
+                Thread.Sleep(50);
             }
         }
 

@@ -15,17 +15,19 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Storage;
 using Darkages.Types;
 using Newtonsoft.Json;
+using NLog;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Darkages.Network.Object
 {
     public class ObjectManager
     {
+        public static Logger logger = LogManager.GetCurrentClassLogger();
 
         [Flags]
         public enum Get
@@ -41,7 +43,7 @@ namespace Darkages.Network.Object
         public void DelObject<T>(T obj) where T : Sprite => ServerContext.Game?.ObjectFactory.RemoveGameObject(obj);
         public void DelObjects<T>(T[] obj) where T : Sprite => ServerContext.Game?.ObjectFactory.RemoveAllGameObjects(obj);
         public T GetObject<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.Query(p);
-        public IEnumerable<T> GetObjects<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.QueryAll(p).ToList();
+        public T[] GetObjects<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.QueryAll(p);
 
         public static T Clone<T>(object source)
         {
@@ -85,9 +87,9 @@ namespace Darkages.Network.Object
             ServerContext.Game.ObjectFactory.AddGameObject(obj);
         }
 
-        public IEnumerable<Sprite> GetObjects(Predicate<Sprite> p, Get selections)
+        public Sprite[] GetObjects(Predicate<Sprite> p, Get selections)
         {
-            var bucket = new List<Sprite>();
+            var bucket = new ArrayList();
 
             if ((selections & Get.All) == Get.All)
                 selections = Get.Items | Get.Money | Get.Monsters | Get.Mundanes | Get.Aislings;
@@ -103,7 +105,7 @@ namespace Darkages.Network.Object
             if ((selections & Get.Items) == Get.Items)
                 bucket.AddRange(GetObjects<Item>(p));
 
-            return bucket;
+            return bucket.Cast<Sprite>().ToArray();
         }
 
         public Sprite GetObject(Predicate<Sprite> p, Get selections)

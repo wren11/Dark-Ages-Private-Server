@@ -15,7 +15,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\Staging\bin\Release\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ISDEAN</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>none</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -48,9 +48,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.13\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="zlib.net, Version=1.0.3.0, Culture=neutral, PublicKeyToken=47d7877cb3620160">
       <SpecificVersion>False</SpecificVersion>
@@ -66,35 +70,34 @@
     <None Include="sotp.dat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Assets\locales\metafile\ItemInfo0" />
-    <None Include="Assets\locales\metafile\ItemInfo1" />
-    <None Include="Assets\locales\metafile\ItemInfo2" />
-    <None Include="Assets\locales\metafile\ItemInfo3" />
-    <None Include="Assets\locales\metafile\ItemInfo4" />
-    <None Include="Assets\locales\metafile\ItemInfo5" />
-    <None Include="Assets\locales\metafile\ItemInfo6" />
-    <None Include="Assets\locales\metafile\ItemInfo7" />
-    <None Include="Assets\locales\metafile\Light" />
-    <None Include="Assets\locales\metafile\NationDesc" />
-    <None Include="Assets\locales\metafile\NPCIllust" />
-    <None Include="Assets\locales\metafile\SClass1" />
-    <None Include="Assets\locales\metafile\SClass2" />
-    <None Include="Assets\locales\metafile\SClass3" />
-    <None Include="Assets\locales\metafile\SClass4" />
-    <None Include="Assets\locales\metafile\SClass5" />
-    <None Include="Assets\locales\metafile\SEvent1" />
-    <None Include="Assets\locales\metafile\SEvent2" />
-    <None Include="Assets\locales\metafile\SEvent3" />
-    <None Include="Assets\locales\metafile\SEvent4" />
-    <None Include="Assets\locales\metafile\SEvent5" />
-    <None Include="Assets\locales\metafile\SEvent6" />
-    <None Include="Assets\locales\metafile\SEvent7" />
+    <None Include="Storage\locales\metafile\ItemInfo0" />
+    <None Include="Storage\locales\metafile\ItemInfo1" />
+    <None Include="Storage\locales\metafile\ItemInfo2" />
+    <None Include="Storage\locales\metafile\ItemInfo3" />
+    <None Include="Storage\locales\metafile\ItemInfo4" />
+    <None Include="Storage\locales\metafile\ItemInfo5" />
+    <None Include="Storage\locales\metafile\ItemInfo6" />
+    <None Include="Storage\locales\metafile\ItemInfo7" />
+    <None Include="Storage\locales\metafile\Light" />
+    <None Include="Storage\locales\metafile\NationDesc" />
+    <None Include="Storage\locales\metafile\NPCIllust" />
+    <None Include="Storage\locales\metafile\SClass1" />
+    <None Include="Storage\locales\metafile\SClass2" />
+    <None Include="Storage\locales\metafile\SClass3" />
+    <None Include="Storage\locales\metafile\SClass4" />
+    <None Include="Storage\locales\metafile\SClass5" />
+    <None Include="Storage\locales\metafile\SEvent1" />
+    <None Include="Storage\locales\metafile\SEvent2" />
+    <None Include="Storage\locales\metafile\SEvent3" />
+    <None Include="Storage\locales\metafile\SEvent4" />
+    <None Include="Storage\locales\metafile\SEvent5" />
+    <None Include="Storage\locales\metafile\SEvent6" />
+    <None Include="Storage\locales\metafile\SEvent7" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="include\Loot.dll" />
     <Content Include="include\Newtonsoft.Json.dll" />
     <Content Include="include\Newtonsoft.Json.xml" />
-    <Content Include="include\NLog.dll" />
     <Content Include="include\zlib.net.dll" />
     <Content Include="include\ZTn.Json.JsonTreeView.dll" />
     <None Include="Notification.txt">
@@ -103,29 +106,9 @@
     <None Include="MServerTable.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="Systems\Loot\Loot.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\locales\debuffs\debuff_fasspoirad.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Mundanes\MunedaneReactorExample.cs" />
-    <Compile Include="Assets\locales\Scripts\Reactors\ExampleReactor2.cs" />
-    <Compile Include="Assets\locales\Scripts\Reactors\ExampleReactor.cs" />
-    <Compile Include="Assets\locales\Scripts\Spells\cures\aosith.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\rogue\Clone.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\utility\fasspoirad.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Traps\NeedleTrap.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Common\CircularBuffer.cs" />
-    <Compile Include="Common\ConcurrentList.cs" />
-    <Compile Include="Common\ConsoleSpinner.cs" />
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\Generator.cs" />
     <Compile Include="Common\Predicate.cs" />
@@ -137,7 +120,6 @@
     <Compile Include="IO\BufferWriter.cs" />
     <Compile Include="IO\Crc16Provider.cs" />
     <Compile Include="IO\Crc32Provider.cs" />
-    <Compile Include="MONSTER_HP_TABLE.cs" />
     <Compile Include="Network\Client.cs" />
     <Compile Include="Network\ClientFormats\ClientFormat00.cs" />
     <Compile Include="Network\ClientFormats\ClientFormat02.cs" />
@@ -196,7 +178,6 @@
     <Compile Include="Network\Game\Components\ObjectComponent.cs" />
     <Compile Include="Network\Game\Components\PingComponent.cs" />
     <Compile Include="Network\Game\Components\ServerCacheComponent.cs" />
-    <Compile Include="Network\Game\Components\TrapperComponent.cs" />
     <Compile Include="Network\Game\GameClient.cs" />
     <Compile Include="Network\Game\GameServer.cs" />
     <Compile Include="Network\Game\GameServerComponent.cs" />
@@ -283,220 +264,119 @@
     <Compile Include="Security\SecurityProvider.cs" />
     <Compile Include="ServerConstants.cs" />
     <Compile Include="ServerContext.cs" />
-    <Compile Include="Assets\AislingStorage.cs" />
-    <Compile Include="Assets\AreaStorage.cs" />
-    <Compile Include="Assets\IStorage.cs" />
-    <Compile Include="Assets\locales\buffs\buff_armachd.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\buffs\buff_aite.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\buffs\buff_dion.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\buffs\buff_mordion.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\debuffs\debuff_ardcradh.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\debuffs\debuff_beagcradh.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\debuffs\debuff_hurricane.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\debuffs\debuff_beagsuain.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\debuffs\debuff_cradh.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\debuffs\debuff_cursed.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\debuffs\debuff_fasnadur.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\debuffs\debuff_frozen.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\debuffs\debuff_morcradh.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\debuffs\debuff_morfasnadur.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\debuffs\debuff_poison.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\debuffs\debuff_reeping.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\debuffs\debuff_sleep.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Global\GrimReaper.cs" />
-    <Compile Include="Assets\locales\Scripts\Global\Reactors.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Global\TowerDefenders.cs" />
-    <Compile Include="Assets\locales\Scripts\Global\Tutorial.cs" />
-    <Compile Include="Assets\locales\Scripts\Items\Armor.cs" />
-    <Compile Include="Assets\locales\Scripts\Items\Belt.cs" />
-    <Compile Include="Assets\locales\Scripts\Items\Boot.cs" />
-    <Compile Include="Assets\locales\Scripts\Items\Earring.cs" />
-    <Compile Include="Assets\locales\Scripts\Items\Generic.cs" />
-    <Compile Include="Assets\locales\Scripts\Items\Helmet.cs" />
-    <Compile Include="Assets\locales\Scripts\Items\Necklace.cs" />
-    <Compile Include="Assets\locales\Scripts\Items\Sachel.cs" />
-    <Compile Include="Assets\locales\Scripts\Items\Scroll.cs" />
-    <Compile Include="Assets\locales\Scripts\Items\Shield.cs" />
-    <Compile Include="Assets\locales\Scripts\Items\Weapon.cs" />
-    <Compile Include="Assets\locales\Scripts\Monsters\CommonMonster.cs" />
-    <Compile Include="Assets\locales\Scripts\Monsters\TowerDefense.cs" />
-    <Compile Include="Assets\locales\Scripts\Monsters\TrainingDummy.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\ArenaMaster.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\BarrenLord.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\Benson.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\ClassChooser.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\Delta.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\gos.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\GrandMaster01.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\LearnSkills.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\Banker.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\Macronator.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\shop2.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Mundanes\shop1.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\sunup.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\TowerDefenseHandler.cs" />
-    <Compile Include="Assets\locales\Scripts\Mundanes\UserHelper.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Skills\Ambush.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\Assail.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\beagsuain.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Skills\beagsuainia.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Skills\Clobber.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\ConeAttack.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\Crasher.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\Destroyer.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\DoublePunch.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\KelberothStrike.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\LocateMonster.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\LocatePlayer.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\Monk\KraneKick.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Skills\Monk\HurricaneKick.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Skills\Sneak.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\Unstuck.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\Warrior\Two-Handed-Attack.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Skills\Warrior\wallop.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Skills\Warrior\rescue.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\Warrior\charge.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\wff.cs" />
-    <Compile Include="Assets\locales\Scripts\Skills\WindBlade.cs" />
-    <Compile Include="Assets\locales\Scripts\Spells\affilictions\ardpuinsein.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\affilictions\morpuinsein.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\affilictions\puinsein.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\attributes\aite.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\cures\aopuinsein.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\cures\aoardcradh.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\cures\aomorcradh.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\cures\aocradh.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\cures\aosuain.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\cures\aobeagcradh.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\elemental\aoe_Spells.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\curses\ard_cradh.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\attributes\armachd.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\heals\beagioc.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\heals\beagiocfein.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\affilictions\beagpuinsein.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\curses\beag_cradh.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\curses\cradh.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\utility\Create.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\attributes\dion.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\attributes\fasnadur.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\elemental\MassElementalSpell.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\attributes\mordion.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\attributes\morfasnadur.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\curses\mor_cradh.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\affilictions\pramh.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\elemental\SingleElementalSpell.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\locales\Scripts\Spells\elemental\wizard_Spells.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Assets\StorageManager.cs" />
-    <Compile Include="Assets\TemplateStorage.cs" />
-    <Compile Include="Assets\WarpStorage.cs" />
+    <Compile Include="Storage\AislingStorage.cs" />
+    <Compile Include="Storage\AreaStorage.cs" />
+    <Compile Include="Storage\IStorage.cs" />
+    <Compile Include="Storage\locales\buffs\buff_aite.cs" />
+    <Compile Include="Storage\locales\buffs\buff_armachd.cs" />
+    <Compile Include="Storage\locales\buffs\buff_dion.cs" />
+    <Compile Include="Storage\locales\buffs\buff_mordion.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_ardcradh.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_beagcradh.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_beagsuain.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_cradh.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_cursed.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_fasnadur.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_fasspoirad.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_frozen.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_hurricane.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_morcradh.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_morfasnadur.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_poison.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_reeping.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_sleep.cs" />
+    <Compile Include="Storage\locales\Scripts\Global\GrimReaper.cs" />
+    <Compile Include="Storage\locales\Scripts\Global\Reactors.cs" />
+    <Compile Include="Storage\locales\Scripts\Global\TowerDefenders.cs" />
+    <Compile Include="Storage\locales\Scripts\Global\Tutorial.cs" />
+    <Compile Include="Storage\locales\Scripts\Items\Armor.cs" />
+    <Compile Include="Storage\locales\Scripts\Items\Belt.cs" />
+    <Compile Include="Storage\locales\Scripts\Items\Boot.cs" />
+    <Compile Include="Storage\locales\Scripts\Items\Earring.cs" />
+    <Compile Include="Storage\locales\Scripts\Items\Generic.cs" />
+    <Compile Include="Storage\locales\Scripts\Items\Helmet.cs" />
+    <Compile Include="Storage\locales\Scripts\Items\Necklace.cs" />
+    <Compile Include="Storage\locales\Scripts\Items\Sachel.cs" />
+    <Compile Include="Storage\locales\Scripts\Items\Scroll.cs" />
+    <Compile Include="Storage\locales\Scripts\Items\Shield.cs" />
+    <Compile Include="Storage\locales\Scripts\Items\Weapon.cs" />
+    <Compile Include="Storage\locales\Scripts\Monsters\CommonMonster.cs" />
+    <Compile Include="Storage\locales\Scripts\Monsters\TowerDefense.cs" />
+    <Compile Include="Storage\locales\Scripts\Monsters\TrainingDummy.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\ArenaMaster.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\Banker.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\BarrenLord.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\Benson.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\ClassChooser.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\Delta.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\gos.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\GrandMaster01.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\LearnSkills.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\Macronator.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\MunedaneReactorExample.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\shop1.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\shop2.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\sunup.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\TowerDefenseHandler.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\UserHelper.cs" />
+    <Compile Include="Storage\locales\Scripts\Reactors\ExampleReactor.cs" />
+    <Compile Include="Storage\locales\Scripts\Reactors\ExampleReactor2.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Ambush.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Assail.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\beagsuain.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\beagsuainia.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Clobber.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\ConeAttack.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Crasher.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Destroyer.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\DoublePunch.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\KelberothStrike.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\LocateMonster.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\LocatePlayer.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Monk\HurricaneKick.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Monk\KraneKick.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Sneak.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Unstuck.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Warrior\charge.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Warrior\rescue.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Warrior\Two-Handed-Attack.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Warrior\wallop.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\wff.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\WindBlade.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\affilictions\ardpuinsein.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\affilictions\beagpuinsein.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\affilictions\morpuinsein.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\affilictions\pramh.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\affilictions\puinsein.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\aite.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\armachd.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\dion.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\fasnadur.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\mordion.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\morfasnadur.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\cures\aoardcradh.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\cures\aobeagcradh.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\cures\aocradh.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\cures\aomorcradh.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\cures\aopuinsein.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\cures\aosith.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\cures\aosuain.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\curses\ard_cradh.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\curses\beag_cradh.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\curses\cradh.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\curses\mor_cradh.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\elemental\aoe_Spells.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\elemental\MassElementalSpell.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\elemental\SingleElementalSpell.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\elemental\wizard_Spells.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\heals\beagioc.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\heals\beagiocfein.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\rogue\Clone.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\utility\Create.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\utility\fasspoirad.cs" />
+    <Compile Include="Storage\StorageManager.cs" />
+    <Compile Include="Storage\TemplateStorage.cs" />
+    <Compile Include="Storage\WarpStorage.cs" />
     <Compile Include="Systems\Loot\Extensions\EnumerableExtensions.cs" />
     <Compile Include="Systems\Loot\Interfaces\ILootDefinition.cs" />
     <Compile Include="Systems\Loot\Interfaces\ILootDropper.cs" />
@@ -526,7 +406,7 @@
     <Compile Include="Types\CastInfo.cs" />
     <Compile Include="Types\Class.cs" />
     <Compile Include="Types\ClassStage.cs" />
-    <Compile Include="Types\ClientSetting.cs" />
+    <Compile Include="Types\ClientGameSettings.cs" />
     <Compile Include="Types\CursedSachel.cs" />
     <Compile Include="Types\Debuff.cs" />
     <Compile Include="Types\Dialog.cs" />
@@ -602,7 +482,6 @@
     <Compile Include="Types\Template.cs" />
     <Compile Include="Types\Tier.cs" />
     <Compile Include="Types\TileContent.cs" />
-    <Compile Include="Types\Trap.cs" />
     <Compile Include="Types\Warp.cs" />
     <Compile Include="Types\WarpTemplate.cs" />
     <Compile Include="Types\WorldMapTemplate.cs" />

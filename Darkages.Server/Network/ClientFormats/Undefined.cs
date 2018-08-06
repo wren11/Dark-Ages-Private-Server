@@ -77,7 +77,7 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //public class ClientFormat1B { } Added - Settings Requested
+    //public class ClientFormat1B { } Client Settings
 
     //public class ClientFormat1C { } Added (Use Item)
     //public class ClientFormat1D { } Added (Emote)

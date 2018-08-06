@@ -26,7 +26,6 @@ namespace Darkages.Network.ClientFormats
         public ushort ScriptId { get; set; }
         public ushort Step { get; set; }
         public uint Serial { get; set; }
-        public byte Type { get; set; }
 
 
         public override void Serialize(NetworkPacketReader reader)
@@ -34,13 +33,12 @@ namespace Darkages.Network.ClientFormats
             var type = reader.ReadByte();
             var id = reader.ReadUInt32();
             var scriptid = reader.ReadUInt16();
-            var step = (ushort)(reader.ReadUInt16() % 256);
+            var step = reader.ReadUInt16();
 
 
             ScriptId = scriptid;
             Step = step;
             Serial = id;
-            Type = type;
         }
 
         public override void Serialize(NetworkPacketWriter writer)

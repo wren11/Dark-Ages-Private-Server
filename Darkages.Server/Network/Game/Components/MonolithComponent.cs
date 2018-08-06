@@ -76,6 +76,7 @@ namespace Darkages.Network.Game.Components
             if (ServerContext.Paused)
                 return;
 
+
             _timer.Update(elapsedTime);
 
             if (_timer.Elapsed)
@@ -85,6 +86,7 @@ namespace Darkages.Network.Game.Components
                 var templates = ServerContext.GlobalMonsterTemplateCache;
                 if (templates.Count == 0)
                     return;
+
 
                 foreach (var map in ServerContext.GlobalMapCache.Values)
                 {
@@ -98,6 +100,8 @@ namespace Darkages.Network.Game.Components
                         {
                             if (template.SpawnOnlyOnActiveMaps && !map.Has<Aisling>())
                                 continue;
+
+
 
                             if (template.ReadyToSpawn())
                             {
@@ -120,25 +124,17 @@ namespace Darkages.Network.Game.Components
 
         public async void SpawnOn(MonsterTemplate template, Area map)
         {
-            try
+            if (!ServerContext.Running)
+                return;
+
+            var count = GetObjects<Monster>(i => i.Template.Name == template.Name).Length;
+            if (count < Math.Abs(template.SpawnMax))
             {
-                if (!ServerContext.Running)
-                    return;
-
-                var count = GetObjects<Monster>(i => i.Template.Name == template.Name).Count();
-                if (count < Math.Abs(template.SpawnMax))
+                //                if (template.SpawnType.HasFlag(SpawnQualifer.Defined) || template.SpawnType.HasFlag(SpawnQualifer.Random))
+                if (!await CreateFromTemplate(template, map, template.SpawnSize))
                 {
-                    if (await CreateFromTemplate(template, map, template.SpawnSize))
-                    {
-                        return;
-                    }
-
                     Thread.Yield();
                 }
-            }
-            catch (Exception)
-            {
-
             }
         }
 
@@ -147,14 +143,14 @@ namespace Darkages.Network.Game.Components
         {
             await Task.Run(() =>
             {
-                for (int i = 0; i < count; i++)
+                var newObj = Monster.Create(template, map);
+                if (newObj != null)
                 {
-                    var newObj = Monster.Create(template, map);
-                    if (newObj != null)
-                        AddObject(newObj);
+                    AddObject(newObj);
+                    return true;
                 }
-                return true;
-            }, CancellationToken.None);
+                return false;
+            });
 
             return false;
         }

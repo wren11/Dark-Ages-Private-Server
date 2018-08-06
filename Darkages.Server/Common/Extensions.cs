@@ -28,6 +28,7 @@ namespace Darkages.Common
     {
         private readonly static Random rng = new Random();
 
+
         public static IEnumerable<int> ArmorRange(this IEnumerable<int> selector, int start, int stop)
         {
             for (int i = start; i < stop; i++)

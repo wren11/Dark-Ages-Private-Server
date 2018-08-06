@@ -12,8 +12,6 @@ Darkages.Server\obj
 DarkagesLauncher\obj
 Staging
 Staging\*
-Start\Bin
-Start\Bin\*
 *.vs
 *.vs\*
 .vs
@@ -30,7 +28,3 @@ git\*
 *.lock
 *.ide
 *.ide-shm
-*.cr
-packages\*
-*\packages
-*.exe

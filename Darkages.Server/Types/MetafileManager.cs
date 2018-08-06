@@ -36,7 +36,7 @@ namespace Darkages.Types
 
 
 
-            var files = Directory.GetFiles(path, "*.*", SearchOption.TopDirectoryOnly);
+            var files = Directory.GetFiles(path, "*.deflated", SearchOption.TopDirectoryOnly);
             if (files.Length > 0)
             {
                 metafiles = new MetafileCollection(files.Length);
@@ -69,7 +69,7 @@ namespace Darkages.Types
                                 }
                             }
                             mf.Nodes.Add(new MetafileNode("Skill_End"));
-                            mf.Nodes.Add(new MetafileNode(string.Empty));
+                            mf.Nodes.Add(new MetafileNode(""));
                         }
 
                         //CompressableObject.Save(file, mf);

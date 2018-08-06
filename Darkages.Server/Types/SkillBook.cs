@@ -82,6 +82,12 @@ namespace Darkages.Types
             return copy;
         }
 
+        public bool Has(Skill s)
+        {
+            return Skills.Where(i => i.Value != null && i.Value != null).Select(i => i.Value.Template)
+                .FirstOrDefault(i => i.Name.Equals(s.Template.Name)) != null;
+        }
+
         public bool Has(SkillTemplate s)
         {
             return Skills.Where(i => i.Value != null && i.Value.Template != null).Select(i => i.Value.Template)

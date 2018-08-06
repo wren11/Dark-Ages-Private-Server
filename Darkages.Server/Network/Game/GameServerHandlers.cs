@@ -197,8 +197,6 @@ namespace Darkages.Network.Game
                     Type = 2
                 };
 
-                Trap.RemoveTraps(client.Aisling);
-
                 client.Aisling.LoggedIn = false;
 
                 ServerContext.GlobalRedirects.Add(redirect);
@@ -641,7 +639,7 @@ namespace Darkages.Network.Game
                 if (spellReq == null)
                     return;
 
-                if (client.Aisling.IsSleeping || 
+                if (client.Aisling.IsSleeping ||
                      (client.Aisling.IsFrozen && !(spellReq.Template.Name == "ao suain")))
                 {
                     CancelIfCasting(client);
@@ -1974,7 +1972,7 @@ namespace Darkages.Network.Game
                 return;
 
             #endregion
-             
+
             if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
             {
                 client.Interupt();

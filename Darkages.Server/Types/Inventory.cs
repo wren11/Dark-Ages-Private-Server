@@ -154,17 +154,9 @@ namespace Darkages.Types
             }
         }
 
-        public bool IsEquipped(GameClient client, Item item)
-        {
-            return client.Aisling.EquipmentManager.Equipment
-                .Where(i => i.Value != null && i.Value.Item != null)
-                .Select(i => i.Value.Item).Any(i => i.Serial == item.Serial);
-        }
-
         public void UpdateSlot(GameClient client, Item item)
         {
-            if (!IsEquipped(client, item))
-                client.Send(new ServerFormat0F(item));
+            client.Send(new ServerFormat0F(item));
         }
     }
 }

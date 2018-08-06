@@ -21,7 +21,6 @@ namespace Darkages.Network.ServerFormats
     {
         public ServerFormat13()
         {
-
         }
 
         public ServerFormat13(int serial, byte health)

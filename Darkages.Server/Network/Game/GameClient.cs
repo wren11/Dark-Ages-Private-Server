@@ -632,7 +632,7 @@ namespace Darkages.Network.Game
 
             var formats = new List<NetworkFormat>();
 
-            
+
 
 
             for (var i = 0; i < items_Available.Length; i++)

@@ -139,7 +139,7 @@ namespace Darkages.Types
 
                         //send message
                         (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
-                            string.Format("Received {0}, You now have ({1})", DisplayName, item.Stacks));
+                            string.Format("Received {0}, You now have ({1})", DisplayName, item.Stacks + 1));
 
                         return true;
                     }
@@ -639,9 +639,6 @@ namespace Darkages.Types
             var template =
                 (ItemTemplate)StorageManager.ItemBucket.LoadFromStorage(itemtemplate);
 
-            if (itemtemplate != null && template == null)
-                template = itemtemplate;
-
             if (template == null)
                 return null;
 
@@ -839,9 +836,9 @@ namespace Darkages.Types
 
                 }
             }
-            catch (Exception)
+            catch (Exception err)
             {
-                Console.WriteLine("Error: ItemAddQuality. Fatal Exception Raised.");
+                logger.Error(err, "Error: ItemAddQuality. Fatal Exception Raised.");
             }
         }
 

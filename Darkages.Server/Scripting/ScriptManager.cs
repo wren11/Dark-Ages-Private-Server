@@ -43,7 +43,7 @@ namespace Darkages.Scripting
 
         static ScriptManager()
         {
-#if !ISDEAN
+#if ISDEAN
             LoadScriptFiles();
             return;
 #endif
@@ -147,7 +147,7 @@ namespace Darkages.Scripting
             compiler_params.ReferencedAssemblies.Add("System.Collections.dll");
 
             source = source.Replace("?.", ".");
-            
+
             var results = provider.CompileAssemblyFromSource(compiler_params, source);
             var type = results.CompiledAssembly;
 
@@ -187,7 +187,7 @@ namespace Darkages.Scripting
             Console.BackgroundColor = ConsoleColor.Black;
 
             string output = stepDescription;
-            Console.Write(output.PadRight(50)); 
+            Console.Write(output.PadRight(50));
         }
 
         public static TScript Load<TScript>(string name, params object[] args)

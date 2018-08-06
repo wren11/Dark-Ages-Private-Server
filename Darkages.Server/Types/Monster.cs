@@ -82,6 +82,9 @@ namespace Darkages.Types
         [JsonIgnore]
         public LootDropper LootManager { get; set; }
 
+        [JsonIgnore]
+        public Item GlobalLastItemRoll { get; set; }
+
         public bool NextTo(int x, int y)
         {
             var xDist = Math.Abs(x - X);
@@ -109,7 +112,7 @@ namespace Darkages.Types
             UpdateCounters(player);
 
             GenerateExperience(player);
-            GenerateGold();           
+            GenerateGold();
             GenerateDrops();
 
             Rewarded = true;
@@ -310,22 +313,10 @@ namespace Darkages.Types
 
                                     rolled_item.Upgrades = upgrade?.Upgrade ?? 0;
                                     Item.ApplyQuality(rolled_item);
-
-                                    rolled_item.Cursed = true;
-                                    rolled_item.AuthenticatedAislings = GetTaggedAislings();
-                                    rolled_item.Release(this, Position);
-
-                                    if (rolled_item.Upgrades > 3)
                                     {
-                                        var users = GetTaggedAislings();
-                                        foreach (var user in users)
-                                        {
-                                            var msg = string.Format("{0} Drop!!! ({1})", upgrade?.Name, rolled_item.DisplayName);
-                                            user.Client.SendMessage(3, msg);
-
-                                            //TODO: implement more rarity animations to display.
-                                            user.Client.SendAnimation(Config.RareDropAnimation, rolled_item, rolled_item, 100, true);
-                                        }
+                                        rolled_item.Cursed = true;
+                                        rolled_item.AuthenticatedAislings = GetTaggedAislings();
+                                        rolled_item.Release(this, Position);
                                     }
                                 }
                             }
@@ -392,9 +383,9 @@ namespace Darkages.Types
 
             var obj = new Monster();
             obj.Template = template;
-            obj.CastTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.CastSpeed / 10));
-            obj.BashTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.AttackSpeed / 10));
-            obj.WalkTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.MovementSpeed / 10));
+            obj.CastTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.CastSpeed));
+            obj.BashTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.AttackSpeed));
+            obj.WalkTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.MovementSpeed));
             obj.CastEnabled = template.MaximumMP > 0;
             obj.TaggedAislings = new ConcurrentDictionary<int, Sprite>();
 
