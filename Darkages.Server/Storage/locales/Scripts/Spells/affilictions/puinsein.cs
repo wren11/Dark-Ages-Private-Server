@@ -28,13 +28,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
     public class puinsein : SpellScript
     {
         private readonly Random rand = new Random();
-        private debuff_poison Debuff
-        {
-            get
-            {
-                return new debuff_poison("puinsein", 200, 35, 25, 0.08);
-            }
-        }
+
 
         public puinsein(Spell spell) : base(spell)
         {
@@ -62,7 +56,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 client.TrainSpell(Spell);
 
 
-                var debuff = Clone<debuff_poison>(Debuff);
+                var debuff = new debuff_poison("puinsein", 200, 35, 25, 0.08);
                 var curses = target.Debuffs.Values.OfType<debuff_poison>().ToList();
 
                 if (curses.Count == 0)
@@ -107,7 +101,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                var debuff = Clone<debuff_poison>(Debuff);
+                var debuff = new debuff_poison("puinsein", 200, 35, 25, 0.08);
                 var curses = target.Debuffs.Values.OfType<debuff_poison>().ToList();
 
                 if (curses.Count == 0)

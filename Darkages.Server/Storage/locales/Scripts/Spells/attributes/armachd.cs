@@ -45,7 +45,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 client.TrainSpell(Spell);
 
-                var buff = Clone<buff_armachd>(Spell.Template.Buff);
+                var buff = new buff_armachd();
 
                 if (!target.HasBuff(buff.Name))
                 {
@@ -113,7 +113,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                var buff = Clone<buff_armachd>(Spell.Template.Buff);
+                var buff = new buff_armachd();
 
                 if (!sprite.HasBuff(buff.Name))
                 {

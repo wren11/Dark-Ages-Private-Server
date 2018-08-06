@@ -28,13 +28,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
     public class beagpuinsein : SpellScript
     {
         private readonly Random rand = new Random();
-        private debuff_poison Debuff
-        {
-            get
-            {
-                return new debuff_poison("beag puinsein", 100, 35, 25, 0.10);
-            }
-        }
 
         public beagpuinsein(Spell spell) : base(spell)
         {
@@ -62,7 +55,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 client.TrainSpell(Spell);
 
 
-                var debuff = Clone<debuff_poison>(Debuff);
+                var debuff = new debuff_poison("beag puinsein", 100, 35, 25, 0.10);
                 var curses = target.Debuffs.Values.OfType<debuff_poison>().ToList();
 
                 if (curses.Count == 0)
@@ -107,7 +100,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                var debuff = Clone<debuff_poison>(Debuff);
+                var debuff = new debuff_poison("beag puinsein", 100, 35, 25, 0.10);
                 var curses = target.Debuffs.Values.OfType<debuff_poison>().ToList();
 
                 if (curses.Count == 0)

@@ -27,7 +27,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
     [Script("Hurricane Kick", "Dean")]
     public class HurricaneKick : SkillScript
     {
-        private debuff_hurricane Debuff = new debuff_hurricane();
         public Skill _skill;
         public Sprite Target;
 
@@ -111,7 +110,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         if (i is Money)
                             continue;
 
-                        var debuff = Clone<debuff_hurricane>(Debuff);
+                        var debuff = new debuff_hurricane();
                         if (!i.HasDebuff(debuff.Name))
                         {
                             debuff.OnApplied(i, debuff);

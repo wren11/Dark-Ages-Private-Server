@@ -54,7 +54,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 client.TrainSpell(Spell);
 
-                var debuff = Spell.Template.Debuff;
+                var debuff = new debuff_sleep();
 
                 target.RemoveDebuff("frozen");
 
@@ -91,7 +91,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             else
             {
 
-                var debuff = Spell.Template.Debuff;
+                var debuff = new debuff_sleep();
                 var curses = target.Debuffs.OfType<debuff_cursed>().ToList();
 
                 if (curses.Count == 0)

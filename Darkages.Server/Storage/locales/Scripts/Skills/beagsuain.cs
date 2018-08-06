@@ -64,7 +64,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 }
             }
 
-            var debuff = Clone<debuff_beagsuain>(Skill.Template.Debuff);
+            var debuff = new debuff_beagsuain();
 
             if (debuff == null)
                 return;

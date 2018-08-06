@@ -62,30 +62,7 @@ namespace Darkages.Scripting.Scripts.Skills
 
                 for (int i = 0; i < 5; i++)
                 {
-                    if (sprite.FacingDir == Direction.East)
-                    {
-                        sprite.X++;
-                    }
-                    else if (sprite.FacingDir == Direction.West)
-                    {
-                        sprite.X--;
-                    }
-                    else if (sprite.FacingDir == Direction.North)
-                    {
-                        sprite.Y--;
-                    }
-                    else if (sprite.FacingDir == Direction.South)
-                    {
-                        sprite.Y++;
-                    }
-
-                    int direction;
-                    var hits = GetObjects(n => n.Facing(sprite, out direction), Get.Monsters | Get.Aislings | Get.Mundanes);
-
-                    if (hits.Count() > 0)
-                    {
-                        break;
-                    }
+                    sprite.Walk();
                 }
 
                 client.Refresh();

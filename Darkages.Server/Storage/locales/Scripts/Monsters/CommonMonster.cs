@@ -269,14 +269,19 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                         return;
                     }
 
+                    if (Monster.Target == null)
+                    {
 
                         Monster.Target = GetObjects(i => i.Serial != Monster.Serial
                         && i.WithinRangeOf(Monster) && i.CurrentHp > 0,
                         Monster.Template.MoodType == MoodQualifer.VeryAggressive ? Get.Aislings : Get.Monsters | Get.Aislings)
                                           .OrderBy(v => v.Position.DistanceFrom(Monster.Position)).FirstOrDefault();
+                    }
 
                     if (Monster.Target != null && Monster.Target.CurrentHp <= 0)
+                    {
                         Monster.Target = null;
+                    }
 
                     Monster.WalkEnabled = Monster.Target != null;
                 }

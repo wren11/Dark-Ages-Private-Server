@@ -52,9 +52,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
             {
                 var client = (sprite as Aisling).Client;
 
-                var debuff = Clone<debuff_frozen>(Skill.Template.Debuff);
-                if (debuff == null)
-                    debuff = new debuff_frozen();
+                var debuff = new debuff_frozen();
 
                 var i = sprite.GetInfront(sprite);
 
@@ -122,10 +120,11 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     return;
                 if (target is Aisling)
                 {
-                    var debuff = Clone<debuff_frozen>(Skill.Template.Debuff);
-
-                    if (!target.HasDebuff(debuff.Name))
-                        Apply((target as Aisling)?.Client, debuff, target);
+                    var debuff = new debuff_frozen();
+                    {
+                        if (!target.HasDebuff(debuff.Name))
+                            Apply((target as Aisling)?.Client, debuff, target);
+                    }
                 }
             }
         }

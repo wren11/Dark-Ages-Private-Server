@@ -28,7 +28,6 @@ namespace Darkages.Assets.locales.Scripts.Spells.utility
     public class fasspoirad : SpellScript
     {
         private readonly Random rand = new Random();
-        private readonly debuff_fasspoirad Debuff = new debuff_fasspoirad();
 
         public fasspoirad(Spell spell) : base(spell)
         {
@@ -49,7 +48,7 @@ namespace Darkages.Assets.locales.Scripts.Spells.utility
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                var debuff = Clone<debuff_fasspoirad>(Debuff);
+                var debuff = new debuff_fasspoirad();
 
                 client.TrainSpell(Spell);
 

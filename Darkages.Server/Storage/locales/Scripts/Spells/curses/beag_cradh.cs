@@ -28,7 +28,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
     public class beag_cradh : SpellScript
     {
         private readonly Random rand = new Random();
-        private debuff_beagcradh Debuff = new debuff_beagcradh();
 
         public beag_cradh(Spell spell) : base(spell)
         {
@@ -55,7 +54,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 client.TrainSpell(Spell);
 
-                var debuff = Clone<debuff_beagcradh>(Debuff);
+                var debuff = new debuff_beagcradh();
                 var curses = target.Debuffs.Values.OfType<debuff_cursed>().ToList();
 
                 if (curses.Count == 0)
@@ -100,7 +99,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                var debuff = Clone<debuff_beagcradh>(Debuff);
+                var debuff = new debuff_beagcradh();
                 var curses = target.Debuffs.Values.OfType<debuff_cursed>().ToList();
 
                 if (curses.Count == 0)

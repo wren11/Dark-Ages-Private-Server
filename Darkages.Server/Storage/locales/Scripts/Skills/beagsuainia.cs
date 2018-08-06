@@ -30,8 +30,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
         public Random rand = new Random();
         public Sprite Target;
 
-        public Debuff Debuff = new debuff_beagsuain();
-
         public beagsuainia(Skill skill) : base(skill)
         {
 
@@ -72,7 +70,8 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     continue;
 
 
-                var debuff = Clone<debuff_beagsuain>(Debuff);
+                var debuff = new debuff_beagsuain();
+
                 if (!target.HasDebuff(debuff.Name))
                 {
                     if (sprite is Aisling)

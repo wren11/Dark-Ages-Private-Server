@@ -354,8 +354,8 @@ namespace Darkages.Types
 
         public int GetBaseDamage(Sprite target)
         {
-            var formula = 0;
-            var mod = 0;
+            var formula = 0.28;
+            var mod = 0.0;
 
             if (this is Monster)
             {
@@ -363,29 +363,16 @@ namespace Darkages.Types
 
                 if (target is Aisling)
                 {
-                    if (mon.Template.Level > (target as Aisling).ExpLevel)
-                        mod = Math.Abs(mod) + 2;
-                    else
-                        mod = 3;
+                    mod = mon.Template.Level * formula;
                 }
 
-                var dmg = mon.GetPrimaryAttribute() * mod;
+                var dmg = mod * mon.Template.Level;
 
-                if (mon.MajorAttribute == PrimaryStat.INT || mon.MajorAttribute == PrimaryStat.WIS)
-                {
-                    dmg *= 2;
-                }
 
-                return dmg;
+                return (int)Math.Abs(dmg);
             }
 
-
-            if (this is Mundane)
-                formula = (int)((this as Mundane)
-                    .Template.Level * ServerContext.Config.MonsterDamageFactor)
-                    * ServerContext.Config.MonsterDamageMultipler;
-
-            return Math.Abs(formula) + 1;
+            return 0;
         }
 
         public void RemoveAllBuffs()
@@ -1248,7 +1235,7 @@ namespace Darkages.Types
             var mod = AcTable[Ac];
             var result = mod < 0 ? (int)(dmg / mod) : (int)(dmg * mod);
 
-            return dmg * Math.Abs
+            return dmg + Math.Abs
                 (result);
         }
 
