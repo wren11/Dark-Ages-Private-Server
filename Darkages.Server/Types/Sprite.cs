@@ -523,6 +523,7 @@ namespace Darkages.Types
                     };
 
                     Show(Scope.VeryNearbyAislings, empty);
+                    return;
                 }
                 else
                 {
@@ -531,10 +532,13 @@ namespace Darkages.Types
 
                     RemoveDebuff("sleep");
 
-                    //split damage by half, if aited.
+                    //split damage by one third, if aited.
                     if (IsAited && dmg > 5)
                     {
-                        dmg /= 3;
+                        checked
+                        {
+                            dmg /= 3;
+                        }
                     }
 
                     double amplifier = GetElementalModifier(Source);
@@ -784,9 +788,9 @@ namespace Darkages.Types
             if (CurrentHp > MaximumHp)
                 CurrentHp = MaximumHp;
 
-            var dealth = (int)(Math.Abs(dmg * amplifier));
+            var dmg_applied = (int)(Math.Abs(dmg * amplifier));
 
-            CurrentHp -= dealth;
+            CurrentHp -= dmg_applied;
 
             if (CurrentHp < 0)
                 CurrentHp = 0;
@@ -800,10 +804,10 @@ namespace Darkages.Types
 
             Show(Scope.VeryNearbyAislings, hpbar);
             {
-                dmgcb?.Invoke(dealth);
+                dmgcb?.Invoke(dmg_applied);
             }
 
-            return dealth;
+            return dmg_applied;
         }
 
         /// <summary>

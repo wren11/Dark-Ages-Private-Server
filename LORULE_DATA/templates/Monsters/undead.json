@@ -17,7 +17,7 @@
     ]
   },
   "ID": 152,
-  "Image": 0x42EB,
+  "Image": 0x42EE,
   "ScriptName": "Common Monster",
   "DefinedX": 33,
   "DefinedY": 13,
@@ -39,7 +39,7 @@
   "SpawnSize": 15,
   "AttackSpeed": 750,
   "IgnoreCollision": false,
-  "ImageVarience": 2,
+  "ImageVarience": 0,
   "SpawnOnlyOnActiveMaps": false,
   "Grow": false,
   "SpellScripts": {
