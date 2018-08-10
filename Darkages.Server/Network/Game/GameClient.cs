@@ -19,7 +19,6 @@ using Darkages.Common;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage;
-using Darkages.Storage.locales.Scripts.Global;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
@@ -443,9 +442,9 @@ namespace Darkages.Network.Game
 
             BoardOpened = DateTime.UtcNow;
             {
-                Aisling.BonusAc = (sbyte)((ServerContext.Config.BaseAC - 20) - (Aisling.ExpLevel / 3));
-                Aisling.Exchange = null;
-                Aisling.LastMapId = short.MaxValue;
+                Aisling.BonusAc    = ServerContext.Config.BaseAC + (Aisling.ExpLevel / 3);
+                Aisling.Exchange   = null;
+                Aisling.LastMapId  = short.MaxValue;
             }
             BuildSettings();
         }

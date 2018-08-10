@@ -20,6 +20,7 @@ using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Darkages.Scripting.Scripts.Skills
 {
@@ -49,6 +50,7 @@ namespace Darkages.Scripting.Scripts.Skills
 
         public override void OnSuccess(Sprite sprite)
         {
+            var collided = false;
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
@@ -56,16 +58,56 @@ namespace Darkages.Scripting.Scripts.Skills
                 var action = new ServerFormat1A
                 {
                     Serial = client.Aisling.Serial,
-                    Number = 0x81,
+                    Number = 0x82,
                     Speed = 20
                 };
 
+                int steps = 0;
                 for (int i = 0; i < 5; i++)
                 {
                     sprite.Walk();
+                    steps++;
+
+                    var targets = sprite.GetInfront(1, true);
+
+                    foreach (var target in targets)
+                    {
+                        if (target.Serial == sprite.Serial)
+                            continue;
+
+                        if (target != null && sprite.Position.IsNextTo(target.Position))
+                        {
+                            var imp = (Skill.Level * 5 / 100);
+                            var dmg = 15 * (((client.Aisling.Str * 2) + client.Aisling.Dex * imp));
+                            target.ApplyDamage(client.Aisling, dmg, false, Skill.Template.Sound);
+                            {
+                                Target = target;
+                                collided = true;
+                            }
+                        }
+                    }
+
+                    if (collided)
+                        break;
                 }
 
-                client.Refresh();
+                if (steps > 0)
+                    client.Refresh();
+
+                Task.Delay(150).ContinueWith((dc) =>
+                {
+                    if (Target != null && collided)
+                    {
+                        if (Target is Monster || Target is Mundane || Target is Aisling)
+                            client.Aisling.Show(Scope.NearbyAislings,
+                                new ServerFormat29((uint)client.Aisling.Serial, (uint)Target.Serial,
+                                    Skill.Template.TargetAnimation, 0, 100));
+
+                        client.Aisling.Show(Scope.NearbyAislings, action);
+                    }
+                }).Wait();
+
+                return;
             }
         }
 

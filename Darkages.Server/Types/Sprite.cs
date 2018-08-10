@@ -126,7 +126,7 @@ namespace Darkages.Types
 
         [JsonIgnore] public byte Dex => (byte)(Extensions.Clamp(_Dex + BonusDex, 1, byte.MaxValue));
 
-        [JsonIgnore] public int Ac => ((int)(BonusAc)).Clamp(ServerContext.Config.MinAC, ServerContext.Config.MaxAC);
+        [JsonIgnore] public int Ac => BonusAc;
 
         [JsonIgnore] public byte Mr => (byte)(Extensions.Clamp(_Mr + BonusMr, 0, 70));
 
@@ -146,7 +146,7 @@ namespace Darkages.Types
 
         [JsonIgnore] public byte BonusMr { get; set; }
 
-        [JsonIgnore] public sbyte BonusAc { get; set; }
+        [JsonIgnore] public int BonusAc { get; set; }
 
         [JsonIgnore] public byte BonusHit { get; set; }
 
@@ -366,7 +366,7 @@ namespace Darkages.Types
                     mod = mon.Template.Level * formula;
                 }
 
-                var dmg = mod * mon.Template.Level;
+                var dmg = 10 + (mod * mon.Template.Level);
 
 
                 return (int)Math.Abs(dmg);
@@ -541,7 +541,7 @@ namespace Darkages.Types
                         }
                     }
 
-                    double amplifier = GetElementalModifier(Source);
+                    double amplifier = GetElementalModifier(Target);
                     {
                         dmg = ComputeDmgFromAc(dmg);
                         dmg = CompleteDamageApplication(dmg, sound, dmgcb, amplifier);
@@ -571,8 +571,8 @@ namespace Darkages.Types
 
                 amplifier = CalcaluteElementalAmplifier(element, amplifier);
                 amplifier *=
-                      Amplified == 1 ? ServerContext.Config.FasNadurStrength :
-                      Amplified == 2 ? ServerContext.Config.MorFasNadurStrength : 1.00;
+                      Amplified == 1 ? ServerContext.Config.FasNadurStrength + 10 :
+                      Amplified == 2 ? ServerContext.Config.MorFasNadurStrength + 30 : 1.00;
 
                 if (element == Element.None && DefenseElement != Element.None)
                 {
@@ -581,12 +581,12 @@ namespace Darkages.Types
 
                 if (DefenseElement == Element.None && element != Element.None)
                 {
-                    return 1.75;
+                    return 5.75;
                 }
 
                 if (DefenseElement == Element.None && element == Element.None)
                 {
-                    return 1.00;
+                    return 0.25;
                 }
 
                 return amplifier;
@@ -1236,11 +1236,11 @@ namespace Darkages.Types
             if (Ac == 0)
                 BonusAc = 1;
 
-            var mod = AcTable[Ac];
-            var result = mod < 0 ? (int)(dmg / mod) : (int)(dmg * mod);
-
-            return dmg + Math.Abs
-                (result);
+            //=D1 / (E1 * 10 / 99)
+            var val = dmg / ((Ac * 5.0 / ServerContext.Config.MaxAC));
+            {
+                return (int)Math.Abs(val);
+            }
         }
 
         public Sprite GetSprite(int x, int y)

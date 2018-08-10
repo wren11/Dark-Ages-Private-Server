@@ -35,13 +35,13 @@ namespace Darkages
         /// <summary>
         /// WHat is the starting base armor class?
         /// </summary>
-        public sbyte BaseAC = 70;
+        public byte BaseAC = 0;
 
         [JsonProperty]
-        public sbyte MinAC = -70;
+        public byte MinAC  = 0;
 
         [JsonProperty]
-        public sbyte MaxAC = sbyte.MaxValue;
+        public byte MaxAC  = 99;
 
 
         [JsonProperty] public byte BaseMR = 70;

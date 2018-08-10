@@ -39,7 +39,7 @@ namespace Darkages.Storage.locales.debuffs
 
         public override void OnEnded(Sprite Affected, Debuff debuff)
         {
-            Affected.Amplified = 2;
+            Affected.Amplified = 0;
 
             if (Affected is Aisling)
                 (Affected as Aisling)

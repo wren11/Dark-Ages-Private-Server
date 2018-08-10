@@ -231,10 +231,11 @@ namespace Darkages.Types
 
             if (Template.AcModifer != null)
             {
+                //Inverted Modifier
                 if (Template.AcModifer.Option == StatusOperator.Operator.Add)
-                    client.Aisling.BonusAc -= (sbyte)Template.AcModifer.Value;
-                if (Template.AcModifer.Option == StatusOperator.Operator.Remove)
                     client.Aisling.BonusAc += (sbyte)Template.AcModifer.Value;
+                if (Template.AcModifer.Option == StatusOperator.Operator.Remove)
+                    client.Aisling.BonusAc -= (sbyte)Template.AcModifer.Value;
 
                 client.SendMessage(0x03, string.Format("E: {0}, AC: {1}", Template.Name, client.Aisling.Ac));
                 client.SendStats(StatusFlags.StructD);
@@ -413,10 +414,11 @@ namespace Darkages.Types
 
             if (Template.AcModifer != null)
             {
+                //Inverted
                 if (Template.AcModifer.Option == StatusOperator.Operator.Add)
-                    client.Aisling.BonusAc += (sbyte)Template.AcModifer.Value;
-                if (Template.AcModifer.Option == StatusOperator.Operator.Remove)
                     client.Aisling.BonusAc -= (sbyte)Template.AcModifer.Value;
+                if (Template.AcModifer.Option == StatusOperator.Operator.Remove)
+                    client.Aisling.BonusAc += (sbyte)Template.AcModifer.Value;
 
                 client.SendMessage(0x03, string.Format("E: {0}, AC: {1}", Template.Name, client.Aisling.Ac));
                 client.SendStats(StatusFlags.StructD);

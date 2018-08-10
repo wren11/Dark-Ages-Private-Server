@@ -157,11 +157,6 @@ namespace Darkages.Types
 
         public static void DistributeExperience(Aisling player, double exp)
         {
-            if (player.ExpLevel >= ServerContext.Config.PlayerLevelCap)
-            {
-                player.ExpLevel = 1;
-            }
-
             //Formula BoilerPlate: 1000 * E7 * 10 /100
             var bonus = exp * player.GroupParty.LengthExcludingSelf * ServerContext.Config.GroupExpBonus / 100;
 
@@ -169,11 +164,16 @@ namespace Darkages.Types
                 exp += bonus;
 
             player.ExpTotal += (int)exp;
-            player.ExpNext -= (int)exp;
-
+            player.ExpNext  -= (int)exp;
             player.Client.SendMessage(0x02, string.Format("You received {0} Experience!.", (int)exp));
 
             var seed = (player.ExpLevel * 0.1) + 0.5;
+            { 
+                if (player.ExpLevel >= ServerContext.Config.PlayerLevelCap)
+                {
+                    return;
+                }
+            }
 
             while (player.ExpNext <= 0 && player.ExpLevel < 99)
             {
@@ -185,24 +185,16 @@ namespace Darkages.Types
                 }
 
                 if (player.ExpTotal <= 0)
-                {
                     player.ExpTotal = int.MaxValue;
-                }
 
                 if (player.ExpTotal > int.MaxValue)
-                {
                     player.ExpTotal = int.MaxValue;
-                }
 
                 if (player.ExpNext <= 0)
-                {
                     player.ExpNext = 1;
-                }
 
                 if (player.ExpNext > int.MaxValue)
-                {
                     player.ExpNext = int.MaxValue;
-                }
 
                 Levelup(player);
             }
@@ -210,27 +202,17 @@ namespace Darkages.Types
 
         private static void Levelup(Aisling player)
         {
-            player._MaximumHp += (int)(ServerContext.Config.HpGainFactor * player.Con * 0.65);
-            player._MaximumMp += (int)(ServerContext.Config.MpGainFactor * player.Wis * 0.45);
-            player.StatPoints += ServerContext.Config.StatsPerLevel;
-
-            player.ExpLevel++;
-
-            if (player.ExpLevel > 99)
+            if (player.ExpLevel < ServerContext.Config.PlayerLevelCap)
             {
-                player.AbpLevel++;
-                player.ExpLevel = 99;
-            }
+                player._MaximumHp += (int)(ServerContext.Config.HpGainFactor * player.Con * 0.65);
+                player._MaximumMp += (int)(ServerContext.Config.MpGainFactor * player.Wis * 0.45);
+                player.StatPoints += ServerContext.Config.StatsPerLevel;
+                player.ExpLevel++;
 
-            if (player.AbpLevel > 99)
-            {
-                player.AbpLevel = 99;
-                player.GamePoints++;
+                player.Client.SendMessage(0x02, string.Format(ServerContext.Config.LevelUpMessage, player.ExpLevel));
+                player.Show(Scope.NearbyAislings,
+                    new ServerFormat29((uint)player.Serial, (uint)player.Serial, 0x004F, 0x004F, 64));
             }
-
-            player.Client.SendMessage(0x02, string.Format(ServerContext.Config.LevelUpMessage, player.ExpLevel));
-            player.Show(Scope.NearbyAislings,
-                new ServerFormat29((uint)player.Serial, (uint)player.Serial, 0x004F, 0x004F, 64));
         }
 
         private void GenerateGold()
@@ -427,16 +409,11 @@ namespace Darkages.Types
 
             obj.MajorAttribute = stat;
 
-            //calculate what ac to give depending on level.
-            obj.BonusAc = (sbyte)(70 - 101 / 70 * template.Level);
+            //=ROUND(5 + H1-40  / 100 * H1, 0)
+            obj.BonusAc = (int)((5 + template.Level - 40 / 100 * template.Level));
 
-            if (obj.Template.Level > 99)
-            {
-                var remaining = Math.Abs(ServerContext.Config.MaxAC - obj.Template.Level) + obj.Template.Level / 10;
-
-                obj.BonusAc = (sbyte)-remaining;
-
-            }
+            if (obj.BonusAc < 0 || obj.BonusAc >= 100)
+                obj.BonusAc = 100;
 
             obj.DefenseElement = ElementManager.Element.None;
             obj.OffenseElement = ElementManager.Element.None;
