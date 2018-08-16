@@ -1,0 +1,17 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "Image": 0x41F6,
+  "Level": 9999,
+  "ScriptKey": "The Grand Master",
+  "EnableWalking": false,
+  "EnableTurning": true,
+  "EnableAttacking": false,
+  "EnableSpeech": false,
+  "X": 95,
+  "Y": 24,
+  "AreaID": 1,
+  "Direction": 1,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "Name": "Etaen"
+}

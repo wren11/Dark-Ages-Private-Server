@@ -78,7 +78,7 @@ namespace Darkages
                         client.LeaveArea(true, true);
                         client.Refresh();
 
-                        Task.Delay(500).ContinueWith((s) =>
+                        Task.Delay(50).ContinueWith((s) =>
                         {
                             client.Aisling.X = X >= 0 ? X : ServerContext.Config.TransitionPointX;
                             client.Aisling.Y = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;

@@ -53,19 +53,57 @@ namespace Darkages.Types
         public List<string> Quests_Completed_Required = new List<string>();
         public List<ushort> Areas_Visited_Required = new List<ushort>();
         public List<ItemPredicate> Items_Required = new List<ItemPredicate>();
+
+        private Template _template = null;
+
+
+        private string Script =>
+            _template is SkillTemplate 
+            ? AreaAndPosition((_template as SkillTemplate).NpcKey)
+            : AreaAndPosition((_template as SpellTemplate).NpcKey);
+
+        private string AreaAndPosition(string npcKey)
+        {
+            if (!ServerContext.GlobalMundaneTemplateCache.ContainsKey(npcKey))
+            {
+                return "Secret!";
+            }
+
+            var npc = ServerContext.GlobalMundaneTemplateCache[npcKey];
+
+            if (!ServerContext.GlobalMapCache.ContainsKey(npc.AreaID))
+                return "Secret!";
+
+            var map = ServerContext.GlobalMapCache[npc.AreaID];
+            {
+                return string.Format("From Who: {0}\nFrom Where:{1} - (Coordinates: {2},{3})", npc.Name, map.Name, npc.X, npc.Y);
+            }
+        }
+
+        public LearningPredicate(Template template)
+        {
+            _template = template;
+        }
+
+        public LearningPredicate()
+        {
+            _template = null;
+        }
+
         internal string[] MetaData
             => new[] {
-                "0/0/0",
-                "0/0/0",
-                string.Format("{0}/{1}/{2}/{3}/{4}", 
-                    Str_Required, 
-                    Int_Required, 
-                    Wis_Required, 
-                    Con_Required, 
-                    Dex_Required),
-                string.Format("{0}/{1}", Skill_Required, Skill_Level_Required),
-                "0/0",
-                "",                
+                string.Format("{0}/0/0", ExpLevel_Required > 0 ? ExpLevel_Required : 0),
+                string.Format("{0}/0/0", _template is SkillTemplate ? (_template as SkillTemplate).Icon : (_template as SpellTemplate).Icon),
+                string.Format("{0}/{1}/{2}/{3}/{4}",
+                    Str_Required == 0 ? 1 : Str_Required,
+                    Int_Required == 0 ? 1 : Int_Required,
+                    Wis_Required == 0 ? 1 : Wis_Required,
+                    Con_Required == 0 ? 1 : Con_Required,
+                    Dex_Required == 0 ? 3 : Dex_Required),
+                string.Format("{0}/{1}", !string.IsNullOrEmpty(Skill_Required) ? Skill_Required : "0", Skill_Level_Required > 0 ? Skill_Level_Required : 0),
+                string.Format("{0}/{1}", !string.IsNullOrEmpty(Spell_Required) ? Spell_Required : "0", Spell_Level_Required > 0 ? Spell_Level_Required : 0),
+                string.Format("{0} \n\n$Items Required: {1} $gold: {2}\n\n{3}", _template.Description != "" ? _template.Description : _template.Name, 
+                    Items_Required.Count > 0 ? string.Join(",", Items_Required.Select(i => i.AmountRequired + " " + i.Item)) : "None", Gold_Required > 0 ? Gold_Required : 0, Script ?? "unknown."),
             };
 
 
@@ -165,7 +203,9 @@ namespace Darkages.Types
             if (Spell_Required != null)
             {
                 var spell = ServerContext.GlobalSpellTemplateCache[Spell_Required];
-                var spell_retainer = player.SpellBook.Get(i => i.Template.Name.Equals(spell.Name)).FirstOrDefault();
+                var spell_retainer = player.SpellBook.Get(i => i 
+                    != null && i.Template != null && 
+                    i.Template.Name.Equals(spell.Name)).FirstOrDefault();
 
                 if (spell_retainer == null)
                 {
@@ -264,6 +304,8 @@ namespace Darkages.Types
 
             return n;
         }
+
+        public void AssociatedWith<T>(T template) where T: Template { _template = template; }
 
         private static bool CheckPredicates(Action<string, bool> callbackMsg, Dictionary<int, Tuple<bool, object>> result)
         {

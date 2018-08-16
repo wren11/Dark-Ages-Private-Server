@@ -15,7 +15,6 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Newtonsoft.Json;
 
 namespace Darkages.Types
 {
@@ -60,8 +59,6 @@ namespace Darkages.Types
         public string NpcKey { get; set; }
 
         public Tier TierLevel { get; set; }
-
-        public string Description { get; set; }
 
         public ushort TargetAnimation { get; set; }
     }

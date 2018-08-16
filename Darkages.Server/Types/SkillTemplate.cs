@@ -55,6 +55,5 @@ namespace Darkages.Types
 
         public Tier TierLevel { get; set; }
 
-        public string Description { get; set; }
     }
 }

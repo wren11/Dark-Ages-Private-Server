@@ -289,15 +289,23 @@ namespace Darkages
                     LoadMundaneTemplates();
                     LoadWarpTemplates();
                     LoadWorldMapTemplates();
-                    LoadMetaDatabase();
                     CacheCommunityAssets();
+                    BindTemplates();
+                    LoadMetaDatabase();
                 }
-
 
 
                 return false;
             });
 
+        }
+
+        private static void BindTemplates()
+        {
+            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Values)
+                spell.Prerequisites?.AssociatedWith(spell);
+            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values)
+                skill.Prerequisites?.AssociatedWith(skill);
         }
     }
 }

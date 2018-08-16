@@ -35,7 +35,6 @@ namespace Darkages.Types
                 Directory.CreateDirectory(path);
 
 
-
             var files = Directory.GetFiles(path, "*.deflated", SearchOption.TopDirectoryOnly);
             if (files.Length > 0)
             {
@@ -72,9 +71,10 @@ namespace Darkages.Types
                             mf.Nodes.Add(new MetafileNode(""));
                         }
 
-                        //CompressableObject.Save(file, mf);
-                        metafiles.Add(mf);
 
+                        //CompressableObject.Save(file, mf);
+
+                        metafiles.Add(mf);
 
                     }
                 }
