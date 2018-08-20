@@ -55,6 +55,7 @@ namespace Darkages.Types
         [JsonIgnore]
         int ChatIdx = new ThreadLocal<int>(() => 0, true).Value;
 
+
         public void InitMundane()
         {
             if (Template.Spells != null)
@@ -146,9 +147,11 @@ namespace Darkages.Types
             var script = ScriptManager.Load<SkillScript>(skillscriptstr,
                 obj = Skill.Create(1, ServerContext.GlobalSkillTemplateCache[skillscriptstr]));
 
+            obj.NextAvailableUse = DateTime.UtcNow;
 
             if (script != null)
             {
+                script.Skill = obj;
                 script.IsScriptDefault = primary;
                 SkillScripts.Add(script);
             }
@@ -333,13 +336,26 @@ namespace Darkages.Types
 
                                 if (SkillScripts.Count > 0 && target.Target != null)
                                 {
-                                    var idx = 0;
-                                    lock (Generator.Random)
-                                    {
-                                        idx = Generator.Random.Next(SkillScripts.Count);
-                                    }
 
-                                    SkillScripts[idx]?.OnUse(this);
+
+                                    var obj = SkillScripts.FirstOrDefault(i => i.Skill.Ready);
+
+                                    if (obj != null)
+                                    {
+                                        var skill = obj.Skill;
+
+                                        obj?.OnUse(this);
+                                        {
+                                            skill.InUse = true;
+
+                                            if (skill.Template.Cooldown > 0)
+                                                skill.NextAvailableUse = DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
+                                            else
+                                                skill.NextAvailableUse = DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
+                                        }
+
+                                        skill.InUse = false;
+                                    }
                                 }
                             }
                         }

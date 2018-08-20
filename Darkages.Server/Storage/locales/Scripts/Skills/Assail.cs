@@ -130,6 +130,9 @@ namespace Darkages.Scripting.Scripts.Skills
             }
             else
             {
+                if (!Skill.Ready)
+                    return;
+
                 var enemy = sprite.GetInfront();
 
 

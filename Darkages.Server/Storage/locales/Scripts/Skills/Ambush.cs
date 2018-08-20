@@ -48,74 +48,85 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public override void OnSuccess(Sprite sprite)
         {
-            if (sprite is Aisling)
-            {
-                var client = (sprite as Aisling).Client;
 
-                var targets = client.Aisling.GetInfront(3, true).ToList();
-                var prev = client.Aisling.Position;
-                Position targetPosition = null;
+            var targets = sprite.GetInfront(3, true).ToList();
+            var prev = sprite.Position;
 
-                if (targets != null && targets.Count > 0)
-                    foreach (var target in targets)
+            Position targetPosition = null;
+
+            if (targets != null && targets.Count > 0)
+                foreach (var target in targets)
+                {
+                    if (target == null)
+                        continue;
+
+                    if (target is Money)
+                        continue;
+
+                    if (target is Item)
+                        continue;
+
+                    if (target.Serial == sprite.Serial)
+                        continue;
+
+                    var blocks = target.Position.SurroundingContent(sprite.Map);
+
+
+                    if (blocks.Length > 0)
                     {
-                        if (target == null)
-                            continue;
+                        var selections = blocks.Where(i => i.Content ==
+                                                           TileContent.Item
+                                                           || i.Content == TileContent.Money
+                                                           || i.Content == TileContent.None).ToArray();
+                        var selection = selections
+                            .OrderByDescending(i => i.Position.DistanceFrom(sprite.Position))
+                            .FirstOrDefault();
 
-                        if (target is Money)
-                            continue;
-
-                        if (target is Item)
-                            continue;
-
-                        if (target.Serial == client.Aisling.Serial)
-                            continue;
-
-                        var blocks = target.Position.SurroundingContent(client.Aisling.Map);
-
-
-                        if (blocks.Length > 0)
+                        if (selections.Length == 0 || selection == null)
                         {
-                            var selections = blocks.Where(i => i.Content ==
-                                                               TileContent.Item
-                                                               || i.Content == TileContent.Money
-                                                               || i.Content == TileContent.None).ToArray();
-                            var selection = selections
-                                .OrderByDescending(i => i.Position.DistanceFrom(client.Aisling.Position))
-                                .FirstOrDefault();
-                            if (selections.Length == 0 || selection == null)
+                            if (sprite is Aisling)
                             {
-                                client.SendMessageBox(0x02, ServerContext.Config.CantDoThat);
+                                (sprite as Aisling).Client.SendMessageBox(0x02, ServerContext.Config.CantDoThat);
                                 return;
                             }
-
-                            targetPosition = selection.Position;
                         }
 
-
-                        if (targetPosition != null)
-                        {
-                            client.Aisling.X = targetPosition.X;
-                            client.Aisling.Y = targetPosition.Y;
-
-                            int direction;
-
-                            if (!client.Aisling.Facing(target.X, target.Y, out direction))
-                            {
-                                client.Aisling.Direction = (byte)direction;
-
-                                if (client.Aisling.Position.IsNextTo(target.Position))
-                                    client.Aisling.Turn();
-                            }
-
-                            client.Aisling.Map.Update(prev.X, prev.Y, TileContent.None);
-                            client.Aisling.Map.Update(client.Aisling.X, client.Aisling.Y, TileContent.Aisling);
-
-                            client.Refresh();
-                            return;
-                        }
+                        targetPosition = selection.Position;
                     }
-            }
+
+
+                    if (targetPosition != null)
+                    {
+                        sprite.X = targetPosition.X;
+                        sprite.Y = targetPosition.Y;
+
+                        int direction;
+
+                        if (!sprite.Facing(target.X, target.Y, out direction))
+                        {
+                            sprite.Direction = (byte)direction;
+
+                            if (sprite.Position.IsNextTo(target.Position))
+                                sprite.Turn();
+                        }
+
+                        sprite.Map.Update(prev.X, prev.Y, TileContent.None);
+                        sprite.Map.Update(sprite.X, sprite.Y, sprite.Content);
+
+                        if (sprite is Aisling)
+                        {
+                            var client = (sprite as Aisling).Client;
+                            client.Refresh();
+                        }
+                        else
+                        {
+                            sprite.Show(Scope.NearbyAislings, new ServerFormat0E(sprite.Serial));
+                            sprite.Show(Scope.NearbyAislings, new ServerFormat07(new[] { sprite }));
+                        }
+
+                        return;
+                    }
+                }
         }
 
         public override void OnUse(Sprite sprite)
@@ -126,14 +137,17 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 if (client.Aisling != null && !client.Aisling.Dead && Skill.Ready)
                 {
                     client.TrainSkill(Skill);
-
-                    var success = Skill.Level < 100 ? rand.Next(1, 3) == 1 : true;
-
-                    if (success)
-                        OnSuccess(sprite);
-                    else
-                        OnFailed(sprite);
                 }
+            }
+
+            if (Skill.Ready)
+            {
+                var success = Skill.Level < 100 ? rand.Next(1, 3) == 1 : true;
+
+                if (success)
+                    OnSuccess(sprite);
+                else
+                    OnFailed(sprite);
             }
         }
     }

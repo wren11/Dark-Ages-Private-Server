@@ -84,6 +84,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         private void Apply(GameClient client, Debuff debuff, Sprite target)
         {
+
             var action = new ServerFormat1A
             {
                 Serial = client.Aisling.Serial,
@@ -98,6 +99,9 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public override void OnUse(Sprite sprite)
         {
+            if (!Skill.Ready)
+                return;
+
             if (sprite is Aisling && Skill.Ready)
             {
                 var client = (sprite as Aisling).Client;
@@ -118,6 +122,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 var target = sprite.Target;
                 if (target == null)
                     return;
+
                 if (target is Aisling)
                 {
                     var debuff = new debuff_frozen();

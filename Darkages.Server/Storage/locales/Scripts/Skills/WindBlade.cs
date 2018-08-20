@@ -124,15 +124,16 @@ namespace Darkages.Scripting.Scripts.Skills
             }
             else
             {
-                var target = sprite.Target;
-                if (target == null)
-                    return;
-
-                if (target is Aisling)
+                if (Skill.Ready)
                 {
-                    (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29((uint)target.Serial, (uint)target.Serial,
-                            Skill.Template.TargetAnimation, 0, 100));
+                    var target = sprite.Target;
+                    if (target == null)
+                        return;
+
+
+                    target.Show(Scope.NearbyAislings,
+                         new ServerFormat29((uint)target.Serial, (uint)target.Serial,
+                             Skill.Template.TargetAnimation, 0, 100));
 
                     var dmg = 1 * sprite.Str * 20 * Skill.Level;
                     target.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
@@ -144,11 +145,8 @@ namespace Darkages.Scripting.Scripts.Skills
                         Speed = 20
                     };
 
-                    if (sprite is Monster)
-                    {
-                        (target as Aisling).Client.SendStats(StatusFlags.All);
-                        (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings, action);
-                    }
+
+                    target.Show(Scope.NearbyAislings, action);
                 }
             }
         }

@@ -18,8 +18,6 @@
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Darkages.Scripting.Scripts.Skills
@@ -51,68 +49,69 @@ namespace Darkages.Scripting.Scripts.Skills
         public override void OnSuccess(Sprite sprite)
         {
             var collided = false;
-            if (sprite is Aisling)
+
+            var action = new ServerFormat1A
             {
-                var client = (sprite as Aisling).Client;
+                Serial = sprite.Serial,
+                Number = 0x82,
+                Speed = 20
+            };
 
-                var action = new ServerFormat1A
+            int steps = 0;
+            for (int i = 0; i < 5; i++)
+            {
+                sprite.Walk();
+                steps++;
+
+                var targets = sprite.GetInfront(1, true);
+
+                foreach (var target in targets)
                 {
-                    Serial = client.Aisling.Serial,
-                    Number = 0x82,
-                    Speed = 20
-                };
+                    if (target.Serial == sprite.Serial)
+                        continue;
 
-                int steps = 0;
-                for (int i = 0; i < 5; i++)
-                {
-                    sprite.Walk();
-                    steps++;
-
-                    var targets = sprite.GetInfront(1, true);
-
-                    foreach (var target in targets)
+                    if (target != null && sprite.Position.IsNextTo(target.Position))
                     {
-                        if (target.Serial == sprite.Serial)
-                            continue;
-
-                        if (target != null && sprite.Position.IsNextTo(target.Position))
+                        var imp = (Skill.Level * 5 / 100);
+                        var dmg = 15 * (((sprite.Str * 2) + sprite.Dex * imp));
+                        target.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
                         {
-                            var imp = (Skill.Level * 5 / 100);
-                            var dmg = 15 * (((client.Aisling.Str * 2) + client.Aisling.Dex * imp));
-                            target.ApplyDamage(client.Aisling, dmg, false, Skill.Template.Sound);
-                            {
-                                Target = target;
-                                collided = true;
-                            }
+                            Target = target;
+                            collided = true;
                         }
                     }
-
-                    if (collided)
-                        break;
                 }
 
-                if (steps > 0)
-                    client.Refresh();
-
-                Task.Delay(150).ContinueWith((dc) =>
-                {
-                    if (Target != null && collided)
-                    {
-                        if (Target is Monster || Target is Mundane || Target is Aisling)
-                            client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint)client.Aisling.Serial, (uint)Target.Serial,
-                                    Skill.Template.TargetAnimation, 0, 100));
-
-                        client.Aisling.Show(Scope.NearbyAislings, action);
-                    }
-                }).Wait();
-
-                return;
+                if (collided)
+                    break;
             }
+
+            if (sprite is Aisling)
+            {
+                (sprite as Aisling).Client.Refresh();
+            }
+
+            Task.Delay(150).ContinueWith((dc) =>
+            {
+                if (Target != null && collided)
+                {
+                    if (Target is Monster || Target is Mundane || Target is Aisling)
+                        Target.Show(Scope.NearbyAislings,
+                            new ServerFormat29((uint)sprite.Serial, (uint)Target.Serial,
+                                Skill.Template.TargetAnimation, 0, 100));
+
+                }
+
+                sprite.Show(Scope.NearbyAislings, action);
+            }).Wait();
+
         }
 
         public override void OnUse(Sprite sprite)
         {
+            if (!Skill.Ready)
+                return;
+
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
@@ -126,15 +125,15 @@ namespace Darkages.Scripting.Scripts.Skills
                     }
 
                     client.TrainSkill(Skill);
-
-                    var success = Skill.RollDice(rand);
-
-                    if (success)
-                        OnSuccess(sprite);
-                    else
-                        OnFailed(sprite);
                 }
             }
+
+            var success = Skill.RollDice(rand);
+
+            if (success)
+                OnSuccess(sprite);
+            else
+                OnFailed(sprite);
         }
     }
 }

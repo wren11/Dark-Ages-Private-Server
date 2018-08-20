@@ -33,7 +33,7 @@ namespace Darkages.Storage.locales.debuffs
             base.OnApplied(Affected, debuff);
 
             if (AcModifer.Option == StatusOperator.Operator.Add)
-                Affected.BonusAc += (sbyte)AcModifer.Value;
+                Affected.BonusAc -= (sbyte)AcModifer.Value;
 
             if (Affected is Aisling)
             {
@@ -109,7 +109,7 @@ namespace Darkages.Storage.locales.debuffs
                     .SendMessage(0x02, "The hurricane has passed.");
 
             if (AcModifer.Option == StatusOperator.Operator.Add)
-                Affected.BonusAc -= (sbyte)AcModifer.Value;
+                Affected.BonusAc += (sbyte)AcModifer.Value;
 
             base.OnEnded(Affected, debuff);
         }
