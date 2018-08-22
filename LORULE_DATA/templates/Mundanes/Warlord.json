@@ -1,6 +1,6 @@
 {
   "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
-  "Image": 0x43C9,
+  "Image": 0x411B,
   "Level": 9999,
   "ScriptKey": "Warlord",
   "EnableWalking": false,

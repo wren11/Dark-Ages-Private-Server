@@ -61,5 +61,7 @@ namespace Darkages.Types
         public Tier TierLevel { get; set; }
 
         public ushort TargetAnimation { get; set; }
+
+        public bool IsTrap { get; set; }
     }
 }

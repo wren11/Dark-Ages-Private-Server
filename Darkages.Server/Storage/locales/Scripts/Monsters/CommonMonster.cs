@@ -192,7 +192,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (Monster.IsConfused || Monster.IsFrozen || Monster.IsParalyzed || Monster.IsSleeping)
                 return;
 
-            UpdateTarget();
 
             Monster.BashTimer.Update(elapsedTime);
             Monster.CastTimer.Update(elapsedTime);
@@ -213,7 +212,9 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     Monster.CastTimer.Reset();
 
                     if (Monster.CastEnabled)
+                    {
                         CastSpell();
+                    }
                 }
 
                 if (Monster.WalkTimer.Elapsed)

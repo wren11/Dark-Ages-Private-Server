@@ -47,7 +47,7 @@ namespace Lorule
                         ServerContext.LoadAndCacheStorage();
                     }
                 }
-                catch (Exception)
+                catch
                 {
                     //error
                 }

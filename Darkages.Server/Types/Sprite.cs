@@ -187,8 +187,6 @@ namespace Darkages.Types
 
         public byte Direction { get; set; }
 
-        [JsonIgnore] public Direction FacingDir => (Direction)Direction;
-
         public int CurrentMapId { get; set; }
 
         public Element OffenseElement { get; set; }
@@ -198,6 +196,8 @@ namespace Darkages.Types
         public int Amplified { get; set; }
 
         public PrimaryStat MajorAttribute { get; set; }
+
+        [JsonIgnore] public Direction FacingDir => (Direction)Direction;
 
         [JsonIgnore] public Sprite Target { get; set; }
 
@@ -217,6 +217,13 @@ namespace Darkages.Types
 
         [JsonIgnore] public DateTime LastMovementChanged { get; set; }
 
+        [JsonIgnore]
+        public int Level => (Content == TileContent.Aisling) ? (this as Aisling).ExpLevel
+            : (Content == TileContent.Monster) ? (this as Monster).Template.Level
+            : (Content == TileContent.Mundane) ? (this as Mundane).Template.Level
+            : (Content == TileContent.Item)    ? ((this as Item).Template.LevelRequired) : 0;
+
+        public bool Exists => GetObject(i => i.Serial == this.Serial, Get.All) != null;
 
         public Sprite()
         {
@@ -235,8 +242,8 @@ namespace Darkages.Types
             Target = null;
 
 
-            Buffs = new ConcurrentDictionary<string, Buff>();
-            Debuffs = new ConcurrentDictionary<string, Debuff>();
+            Buffs      = new ConcurrentDictionary<string, Buff>();
+            Debuffs    = new ConcurrentDictionary<string, Debuff>();
             TargetPool = new ConcurrentDictionary<uint, TimeSpan>();
 
             LastTargetAcquired = DateTime.UtcNow;
@@ -247,6 +254,16 @@ namespace Darkages.Types
 
         public bool CanCast => !(IsFrozen || IsSleeping);
 
+        public bool TriggerNearbyTraps()
+        {
+            var trap = Trap.Traps.Select(i => i.Value).FirstOrDefault(i => i.Owner.Serial != this.Serial 
+                && this.Position.DistanceFrom(i.Location) <= i.Radius);
+
+            if (trap != null)
+                Trap.Activate(trap, this);
+
+            return false;
+        }
 
         public bool CanHitTarget(Sprite target)
         {
@@ -354,25 +371,21 @@ namespace Darkages.Types
 
         public int GetBaseDamage(Sprite target)
         {
-            var formula = 0.28;
-            var mod = 0.0;
-
             if (this is Monster)
             {
                 var mon = this as Monster;
-
-                if (target is Aisling)
+                var dmg = ServerContext.Config.MONSTER_DMG_TABLE[mon.Template.Level % ServerContext.Config.MONSTER_DMG_TABLE.Length];
                 {
-                    mod = mon.Template.Level * formula;
+                    return (int)Math.Abs(dmg);
                 }
-
-                var dmg = 10 + (mod * mon.Template.Level);
-
-
-                return (int)Math.Abs(dmg);
             }
 
-            return 0;
+            if (target != null)
+            {
+                return ServerContext.Config.MONSTER_DMG_TABLE[target.Level];
+            }
+
+            return 1;
         }
 
         public void RemoveAllBuffs()
@@ -1756,6 +1769,8 @@ namespace Darkages.Types
             Map.Update(savedX, savedY, TileContent.None);
             Map.Update(X, Y, Content);
 
+            TriggerNearbyTraps();
+
             if (this is Aisling)
             {
                 Client.Send(new ServerFormat0B
@@ -1768,7 +1783,7 @@ namespace Darkages.Types
                 Client.Send(new ServerFormat32());
             }
 
-            //create format to send to all nearby users.
+
             var response = new ServerFormat0C
             {
                 Direction = Direction,
@@ -1777,29 +1792,16 @@ namespace Darkages.Types
                 Y = (short)savedY
             };
 
-            if (this is Monster)
-            {
-                var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(this) && i.InsideView(this));
-                if (nearby != null)
-                    foreach (var obj in nearby)
-                        obj.Show(Scope.Self, response, nearby);
-            }
-
-            if (this is Mundane)
-            {
-                var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(this) && i.InsideView(this));
-                if (nearby != null)
-                    foreach (var obj in nearby)
-                        obj.Show(Scope.Self, response, nearby);
-
-            }
-
-
             if (this is Aisling)
             {
-                Client.Aisling.Show(this is Aisling
-                    ? Scope.NearbyAislingsExludingSelf
-                    : Scope.NearbyAislings, response);
+                Client.Aisling.Show(Scope.NearbyAislingsExludingSelf, response);
+            }
+            else
+            {
+                var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(this) && i.InsideView(this));
+                if (nearby != null)
+                    foreach (var obj in nearby)
+                        obj.Show(Scope.Self, response, nearby);
             }
         }
 

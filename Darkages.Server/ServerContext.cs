@@ -295,6 +295,31 @@ namespace Darkages
                 }
 
 
+                var trap = new SpellTemplate()
+                {
+                    Animation = 91,
+                    ScriptKey = "Needle Trap",
+                    IsTrap = true,
+                    Name = "Needle Trap",
+                    TargetType = SpellTemplate.SpellUseType.NoTarget,
+                    Icon = 20,
+                    ManaCost = 20,
+                    BaseLines = 2,
+                    MaxLines = 9,
+                    MaxLevel = 100,
+                    Pane = Pane.Spells,
+                    Sound = 0,
+                    MinLines = 0,
+                    DamageExponent = 5.0,
+                    Description = "Place a Small Trap damaging enemies who walk over it.",
+                    ElementalProperty = ElementManager.Element.Light,
+                    TargetAnimation = 68,
+                    LevelRate = 0.05,
+                    TierLevel = Tier.Tier1
+                };
+
+                GlobalSpellTemplateCache["Needle Trap"] = trap;
+
                 return false;
             });
 

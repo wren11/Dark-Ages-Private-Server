@@ -21,6 +21,7 @@ using Darkages.Types;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Darkages.Network.Game.Components
 {
@@ -28,6 +29,7 @@ namespace Darkages.Network.Game.Components
     {
         private readonly GameServerTimer _updateEventScheduler;
         private readonly GameServerTimer _updateMediatorScheduler;
+        private readonly GameServerTimer _updateTrapScheduler;
 
         public ObjectComponent(GameServer server)
             : base(server)
@@ -36,7 +38,8 @@ namespace Darkages.Network.Game.Components
                 new GameServerTimer(TimeSpan.FromSeconds(ServerContext.Config.ObjectHandlerInterval));
             _updateMediatorScheduler =
                 new GameServerTimer(TimeSpan.FromMilliseconds(ServerContext.Config.ObjectGarbageCollectorInterval));
-
+            _updateTrapScheduler =
+                new GameServerTimer(TimeSpan.FromMilliseconds(1000));
         }
 
         public void OnObjectAdded(Sprite obj)
@@ -167,12 +170,6 @@ namespace Darkages.Network.Game.Components
 
                         nearbyAisling.View(obj);
 
-                        //check how much packets we need to send.
-                        //this makes sure we don't overflow the client
-                        //sending to much display packets at once.
-                        //so we chunk them up.
-                        // var blocks = Split(spriteBatch).ToArray();
-
                         var payLoad = new ServerFormat07(spriteBatch.ToArray());
 
                         nearbyAisling.Show(
@@ -192,6 +189,7 @@ namespace Darkages.Network.Game.Components
         {
             _updateEventScheduler.Update(elapsedTime);
             _updateMediatorScheduler.Update(elapsedTime);
+            _updateTrapScheduler.Update(elapsedTime);
 
             if (_updateMediatorScheduler.Elapsed)
             {
@@ -199,12 +197,31 @@ namespace Darkages.Network.Game.Components
 
                 _updateMediatorScheduler.Reset();
             }
+
+
+            if (_updateTrapScheduler.Elapsed)
+            {
+                UpdateTraps(elapsedTime);
+
+                _updateTrapScheduler.Reset();
+            }
+
         }
 
         public void InvokeMediators(Area area = null)
         {
             MonsterMediator(area);
             ItemMediator(area);
+        }
+
+        private void UpdateTraps(TimeSpan elapsed)
+        {
+            var traps = Trap.Traps.Select(i => i.Value).ToArray();
+
+            for (int i = 0; i < traps.Length; i++)
+            {
+                traps[i].Update(elapsed);
+            }
         }
 
         private void MonsterMediator(Area area = null)

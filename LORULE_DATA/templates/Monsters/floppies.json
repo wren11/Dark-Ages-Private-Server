@@ -6,7 +6,7 @@
     ]
   },
   "ID": 0,
-  "Image": 0x43C9,
+  "Image": 0x4101,
   "ScriptName": "Common Monster",
   "DefinedX": 31,
   "DefinedY": 25,
@@ -28,7 +28,7 @@
   "SpawnSize": 10,
   "AttackSpeed": 2000,
   "IgnoreCollision": false,
-  "ImageVarience": 0,
+  "ImageVarience": 5,
   "SpawnOnlyOnActiveMaps": false,
   "Grow": false,
   "DefenseElement": 0,

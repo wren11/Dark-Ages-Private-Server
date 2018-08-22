@@ -38,5 +38,9 @@ namespace Darkages.Scripting
         public abstract void OnUse(Sprite sprite, Sprite target);
         public abstract void OnFailed(Sprite sprite, Sprite target);
         public abstract void OnSuccess(Sprite sprite, Sprite target);
+
+        public virtual void OnSelectionToggle(Sprite sprite) { }
+        public virtual void OnActivated(Sprite sprite) { }
+        public virtual void OnTriggeredBy(Sprite sprite, Sprite target) { }
     }
 }

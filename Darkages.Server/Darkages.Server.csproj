@@ -372,6 +372,7 @@
     <Compile Include="Storage\locales\Scripts\Spells\heals\beagioc.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\heals\beagiocfein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\Clone.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\rogue\NeedleTrap.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\utility\Create.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\utility\fasspoirad.cs" />
     <Compile Include="Storage\StorageManager.cs" />
@@ -482,6 +483,7 @@
     <Compile Include="Types\Template.cs" />
     <Compile Include="Types\Tier.cs" />
     <Compile Include="Types\TileContent.cs" />
+    <Compile Include="Types\Trap.cs" />
     <Compile Include="Types\Warp.cs" />
     <Compile Include="Types\WarpTemplate.cs" />
     <Compile Include="Types\WorldMapTemplate.cs" />

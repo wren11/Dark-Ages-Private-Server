@@ -433,7 +433,7 @@ namespace Darkages.Types
                     : template.OffenseElement;
             }
 
-            obj.BonusMr = (byte)(10 * (template.Level / 10 * 100 / 100));
+            obj.BonusMr = (byte)(10 * (template.Level / 20));
 
             if (obj.BonusMr > Config.BaseMR)
                 obj.BonusMr = Config.BaseMR;

@@ -155,6 +155,13 @@ namespace Darkages
         [JsonIgnore]
         public Reactor ActiveReactor { get; set; }
 
+        [JsonIgnore]
+        public List<Trap> MyTraps => Trap.Traps.Select(i => i.Value).Where(i => i.Owner.Serial == this.Serial).ToList();
+
+        public Trap NearestTrap()
+        {
+            return MyTraps.OrderBy(i => this.Position.DistanceFrom(i.Location)).FirstOrDefault();
+        }
 
         [JsonIgnore]
         public List<Sprite> ViewableObjects
