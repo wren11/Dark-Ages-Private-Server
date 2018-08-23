@@ -24,7 +24,12 @@ namespace Darkages.Assets.locales.Scripts.Traps
 
         public override void OnUse(Sprite sprite, Sprite target)
         {
-            Trap.Set(sprite, 10, 1, OnTriggeredBy);
+            Trap.Set(sprite, 300, 1, OnTriggeredBy);
+
+            if (sprite is Aisling)
+            {
+                (sprite as Aisling).Client.SendMessage(0x02, string.Format("You Cast {0}", Spell.Template.Name));
+            }
         }
 
 

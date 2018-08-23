@@ -254,6 +254,11 @@ namespace Darkages.Types
 
         public bool CanCast => !(IsFrozen || IsSleeping);
 
+        public bool TrapsAreNearby()
+        {
+            return Trap.Traps.Select(i => i.Value).Any(i => i.CurrentMapId == this.CurrentMapId);
+        }
+
         public bool TriggerNearbyTraps()
         {
             var trap = Trap.Traps.Select(i => i.Value).FirstOrDefault(i => i.Owner.Serial != this.Serial 
