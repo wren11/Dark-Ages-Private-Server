@@ -34,6 +34,7 @@ namespace Darkages.Types
         Elemental = 1 << 10,
         QuestRelated = 1 << 11,
         Upgradeable = 1 << 12,
-        TwoHanded = 1 << 13
+        TwoHanded = 1 << 13,
+        LongRanged = 1 << 14,
     }
 }

@@ -252,6 +252,7 @@
     <Compile Include="Network\ServerFormats\ServerFormat7E.cs" />
     <Compile Include="Network\ServerFormats\Undefined.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripting\WeaponScript.cs" />
     <Compile Include="Scripting\GlobalScript.cs" />
     <Compile Include="Scripting\ItemScript.cs" />
     <Compile Include="Scripting\MonsterScript.cs" />
@@ -375,6 +376,7 @@
     <Compile Include="Storage\locales\Scripts\Spells\rogue\NeedleTrap.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\utility\Create.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\utility\fasspoirad.cs" />
+    <Compile Include="Storage\locales\Scripts\Weapons\SnowSecret.cs" />
     <Compile Include="Storage\StorageManager.cs" />
     <Compile Include="Storage\TemplateStorage.cs" />
     <Compile Include="Storage\WarpStorage.cs" />

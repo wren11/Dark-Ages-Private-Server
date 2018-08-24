@@ -32,6 +32,8 @@ namespace Darkages.Types
 
         [JsonIgnore] public ItemScript Script { get; set; }
 
+        [JsonIgnore] public WeaponScript WeaponScript { get; set; }
+
         [JsonIgnore] public Sprite[] AuthenticatedAislings { get; set; }
 
         public bool Cursed { get; set; }
@@ -641,8 +643,8 @@ namespace Darkages.Types
             var template =
                 (ItemTemplate)StorageManager.ItemBucket.LoadFromStorage(itemtemplate);
 
-            if (template == null)
-                return null;
+            if (itemtemplate != null && template == null)
+                template = itemtemplate;
 
             var obj = new Item
             {
@@ -696,7 +698,10 @@ namespace Darkages.Types
             }
 
             obj.Script = ScriptManager.Load<ItemScript>(template.ScriptName, obj);
-
+            if (!string.IsNullOrEmpty(obj.Template.WeaponScript))
+            {
+                obj.WeaponScript = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
+            }
             return obj;
         }
 

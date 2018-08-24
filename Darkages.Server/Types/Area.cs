@@ -194,7 +194,7 @@ namespace Darkages
                     foreach (var obj in nearby)
                         if (obj.Position.WithinSquare(warpObj.Location, 10))
                             obj.Show(Scope.Self, new ServerFormat29(
-                                ServerContext.Config.WarpAnimationNumber,
+                                 ServerContext.Config.WarpAnimationNumber,
                                 warpObj.Location.X, warpObj.Location.Y));
 
             }

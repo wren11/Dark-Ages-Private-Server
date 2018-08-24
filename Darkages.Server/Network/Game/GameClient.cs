@@ -512,6 +512,9 @@ namespace Darkages.Network.Game
 
 
                 equipment.Item.Script = ScriptManager.Load<ItemScript>(equipment.Item.Template.ScriptName, equipment.Item);
+                if (!string.IsNullOrEmpty(equipment.Item.Template.WeaponScript))
+                    equipment.Item.WeaponScript = ScriptManager.Load<WeaponScript>(equipment.Item.Template.WeaponScript, equipment.Item);
+
                 equipment.Item.Script?.Equipped(Aisling, (byte)equipment.Slot);
 
                 if (equipment.Item.CanCarry(Aisling))
@@ -637,12 +640,18 @@ namespace Darkages.Network.Game
             for (var i = 0; i < items_Available.Length; i++)
             {
                 var item = items_Available[i];
-                {
-                    item.Script = ScriptManager.Load<ItemScript>(item.Template.ScriptName, item);
-                }
 
                 if (string.IsNullOrEmpty(item.Template.Name))
                     continue;
+
+
+                item.Script = ScriptManager.Load<ItemScript>(item.Template.ScriptName, item);
+
+                if (!string.IsNullOrEmpty(item.Template.WeaponScript))
+                {
+                    item.WeaponScript = ScriptManager.Load<WeaponScript>(item.Template.WeaponScript, item);
+                }
+
 
                 if (ServerContext.GlobalItemTemplateCache.ContainsKey(item.Template.Name))
                 {

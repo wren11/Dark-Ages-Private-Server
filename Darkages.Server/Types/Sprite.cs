@@ -519,7 +519,7 @@ namespace Darkages.Types
                 {
                     Serial = Serial,
                     Health = byte.MaxValue,
-                    Sound = sound
+                    Sound = sound,
                 };
 
                 Show(Scope.VeryNearbyAislings, empty);

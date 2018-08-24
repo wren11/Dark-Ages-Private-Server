@@ -150,6 +150,8 @@ namespace Darkages.Types
 
         public ItemColor Color { get; set; }
 
+        public string WeaponScript { get; set; }
+
         [JsonIgnore]
         public double Weight
         {

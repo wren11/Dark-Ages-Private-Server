@@ -315,14 +315,77 @@ namespace Darkages
                     ElementalProperty = ElementManager.Element.Light,
                     TargetAnimation = 68,
                     LevelRate = 0.05,
-                    TierLevel = Tier.Tier1
+                    TierLevel = Tier.Tier1,
+                    Prerequisites = new LearningPredicate()
+                    {
+                        Class_Required = Class.Rogue,
+                        Dex_Required = 6,
+                        Gold_Required = 1000,
+                        Int_Required = 8,
+                        Stage_Required = ClassStage.Class,
+                        ExpLevel_Required = 5
+                    }
                 };
+
+
 
                 GlobalSpellTemplateCache["Needle Trap"] = trap;
 
+                GlobalReactorCache["tut_reactor_1"] = new Reactor()
+                {
+                    CallerType = ReactorQualifer.Map,
+                    Description = "test description",
+                    Name = "tut_reactor_1",
+                    Location = new Position(40, 21),
+                    MapId = 101,
+                    ScriptKey = "example reactor",
+                    QuestReward = new Quest()
+                    {
+                        ExpRewards = new List<uint>() { 500 },
+                        GoldReward = 500,
+                        LegendRewards = new List<Legend.LegendItem>()
+                         {
+                             new Legend.LegendItem()
+                             {
+                                  Category = Convert.ToString(LegendIcon.Wizard),
+                                  Color = (byte)LegendColor.White,
+                                  Icon = (byte)LegendIcon.Heart,
+                                  Value = "Witnessed the Magical Tree.",
+                             }
+                         },
+                    },
+
+                    Steps = new List<DialogSequence>()
+                      {
+                          new DialogSequence()
+                          {
+                               Title = "Hi",
+                               DisplayText = "This tree does not belong here. you can see it's out of place. It was stolen.",
+                               DisplayImage = 0x4004,
+                               CanMoveBack = false,
+                               CanMoveNext = true,
+                          },
+                          new DialogSequence()
+                          {
+                               Title = "Hi",
+                               DisplayText = "I found it here, We've all been looking for it. I must go report this. If i don't make it. Please visit East Woodlands and travel north.",
+                               DisplayImage = 0x4004,
+                               CanMoveBack = false,
+                               CanMoveNext = true,
+                          },
+                          new DialogSequence()
+                          {
+                               Title = "Hi",
+                               DisplayText = "Oh yeah, Take this. \n\nRemember!, If i don't make it back - Visit my family in East Woodlands.",
+                               DisplayImage = 0x4004,
+                               CanMoveBack = false,
+                               CanMoveNext = true,
+                          },
+                      }
+                };
+
                 return false;
             });
-
         }
 
         private static void BindTemplates()

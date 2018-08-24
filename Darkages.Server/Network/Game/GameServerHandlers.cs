@@ -88,6 +88,15 @@ namespace Darkages.Network.Game
             skill.InUse = true;
             skill.Script.OnUse(client.Aisling);
 
+
+            var itemScript = client.Aisling.EquipmentManager.Weapon?.Item?.WeaponScript;
+            if (itemScript != null)
+            {
+                itemScript.OnUse(client.Aisling, (targets) => {
+
+                });
+            }
+
             if (skill.Template.Cooldown > 0)
                 skill.NextAvailableUse = DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
             else
@@ -848,6 +857,9 @@ namespace Darkages.Network.Game
                     if (item.Script == null)
                         item.Script = ScriptManager.Load<ItemScript>(item.Template.ScriptName, item);
 
+                if (!string.IsNullOrEmpty(item.Template.WeaponScript))
+                    if (item.WeaponScript == null)
+                        item.WeaponScript = ScriptManager.Load<WeaponScript>(item.Template.WeaponScript, item);
 
                 if (item.Script == null)
                 {

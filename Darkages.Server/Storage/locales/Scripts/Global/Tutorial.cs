@@ -239,12 +239,9 @@ namespace Darkages.Storage.locales.Scripts.Global
             });
             quest.GoldReward = 1000;
             quest.ItemRewards.Add(client.Aisling.Gender == Gender.Male ? "Shirt" : "Blouse");
-            quest.ItemRewards.Add("Stick");
             quest.ItemRewards.Add("Small Emerald Ring");
             quest.ItemRewards.Add("Small Spinal Ring");
-            quest.ItemRewards.Add("Wooden Shield");
-            quest.ItemRewards.Add("Orbital Wand");
-
+            quest.ItemRewards.Add("Snow Secret");
 
             client.Aisling.Quests.Add(quest);
             quest.QuestStages = new List<QuestStep<Template>>();
@@ -255,7 +252,7 @@ namespace Darkages.Storage.locales.Scripts.Global
             {
                 Type = QuestType.HasItem,
                 Amount = 1,
-                TemplateContext = ServerContext.GlobalItemTemplateCache["Stick"]
+                TemplateContext = ServerContext.GlobalItemTemplateCache["Small Spinal Ring"]
             });
 
             quest.QuestStages.Add(q2);

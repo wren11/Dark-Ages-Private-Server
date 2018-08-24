@@ -10,7 +10,7 @@
       "dia deo saighead"
     ]
   },
-  "Image": 16734,
+  "Image": 0x42F0,
   "Level": 99,
   "ScriptKey": "welcome aisling",
   "EnableWalking": false,
@@ -28,5 +28,5 @@
   "MaximumHp": 0,
   "MaximumMp": 0,
   "QuestKey": "welcome trials 3",
-  "Name": "Ascended Priest"
+  "Name": "Magic Tree"
 }

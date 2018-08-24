@@ -68,7 +68,7 @@ namespace Lorule
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Controller";
-            this.Text = "Controller";
+            this.Text = "  ";
             this.ResumeLayout(false);
 
         }
