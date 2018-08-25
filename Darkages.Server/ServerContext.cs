@@ -331,6 +331,10 @@ namespace Darkages
 
                 GlobalSpellTemplateCache["Needle Trap"] = trap;
 
+
+
+
+
                 GlobalReactorCache["tut_reactor_1"] = new Reactor()
                 {
                     CallerType = ReactorQualifer.Map,

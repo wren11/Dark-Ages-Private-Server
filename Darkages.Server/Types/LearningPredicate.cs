@@ -232,7 +232,7 @@ namespace Darkages.Types
         private int CHeckAttributePredicates(Aisling player, Dictionary<int, Tuple<bool, object>> result, int n)
         {
             result[n++] = new Tuple<bool, object>(player.ExpLevel >= ExpLevel_Required, string.Format("Go level more. (Level {0} Required.)", ExpLevel_Required));
-            result[n++] = new Tuple<bool, object>(player.Str >= Str_Required, string.Format("You are not strong enough. ({0} Str Required.).", Str_Required));
+            result[n++] = new Tuple<bool, object>(player.Str>= Str_Required, string.Format("You are not strong enough. ({0} Str Required.).", Str_Required));
             result[n++] = new Tuple<bool, object>(player.Int >= Int_Required, string.Format("You are not smart enough.  ({0} Int Required.).", Int_Required));
             result[n++] = new Tuple<bool, object>(player.Wis >= Wis_Required, string.Format("You are not wise enough. ({0} Wis Required.).", Wis_Required));
             result[n++] = new Tuple<bool, object>(player.Con >= Con_Required, string.Format("You lack stamina. ({0} Con Required.).", Con_Required));

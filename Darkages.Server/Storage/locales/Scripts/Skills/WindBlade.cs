@@ -75,7 +75,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (i is Money)
                             continue;
 
-                        var dmg = client.Aisling.Invisible ? 2 : 1 * client.Aisling.Str * 20 * Skill.Level;
+                        var dmg = client.Aisling.Invisible ? 2 : 1 * client.Aisling.Str* 20 * Skill.Level;
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
 
                         if (i is Monster) (i as Monster).Target = client.Aisling;
@@ -135,7 +135,7 @@ namespace Darkages.Scripting.Scripts.Skills
                          new ServerFormat29((uint)target.Serial, (uint)target.Serial,
                              Skill.Template.TargetAnimation, 0, 100));
 
-                    var dmg = 1 * sprite.Str * 20 * Skill.Level;
+                    var dmg = 1 * sprite.Str* 20 * Skill.Level;
                     target.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
 
                     var action = new ServerFormat1A

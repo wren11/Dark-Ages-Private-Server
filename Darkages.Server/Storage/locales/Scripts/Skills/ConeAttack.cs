@@ -167,7 +167,7 @@ namespace Darkages.Scripting.Scripts.Skills
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
                                 new ServerFormat29(Skill.Template.TargetAnimation, (ushort)i.X, (ushort)i.Y));
 
-                            var dmg = (50 * (sprite.Str + Skill.Level)) / 100;
+                            var dmg = (50 * (sprite.Str+ Skill.Level)) / 100;
                             i.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
                         }
                     }

@@ -116,15 +116,72 @@ namespace Darkages.Types
 
         public byte _Hit { get; set; }
 
-        [JsonIgnore] public byte Str => (byte)(Extensions.Clamp(_Str + BonusStr, 1, byte.MaxValue));
 
-        [JsonIgnore] public byte Int => (byte)(Extensions.Clamp(_Int + BonusInt, 1, byte.MaxValue));
+        [JsonIgnore]
+        public byte Str
+        {
+            get {
+                var tmp = (byte)(Extensions.Clamp(_Str + BonusStr, 1, byte.MaxValue));
+                if (tmp > 255)
+                    return 255;
 
-        [JsonIgnore] public byte Wis => (byte)(Extensions.Clamp(_Wis + BonusWis, 1, byte.MaxValue));
+                return tmp;
+            }
+        }
 
-        [JsonIgnore] public byte Con => (byte)(Extensions.Clamp(_Con + BonusCon, 1, byte.MaxValue));
+        [JsonIgnore]
+        public byte Int
+        {
+            get
+            {
+                var tmp = (byte)(Extensions.Clamp(_Int + BonusInt, 1, byte.MaxValue));
+                if (tmp > 255)
+                    return 255;
 
-        [JsonIgnore] public byte Dex => (byte)(Extensions.Clamp(_Dex + BonusDex, 1, byte.MaxValue));
+                return tmp;
+            }
+        }
+
+        [JsonIgnore]
+        public byte Wis
+        {
+            get
+            {
+                var tmp = (byte)(Extensions.Clamp(_Wis + BonusWis, 1, byte.MaxValue));
+                if (tmp > 255)
+                    return 255;
+
+                return tmp;
+            }
+        }
+
+        [JsonIgnore]
+        public byte Con
+        {
+            get
+            {
+                var tmp = (byte)(Extensions.Clamp(_Con + BonusCon, 1, byte.MaxValue));
+                if (tmp > 255)
+                    return 255;
+
+                return tmp;
+            }
+        }
+
+        [JsonIgnore]
+        public byte Dex
+        {
+            get
+            {
+                var tmp = (byte)(Extensions.Clamp(_Dex + BonusDex, 1, byte.MaxValue));
+                if (tmp > 255)
+                    return 255;
+
+                return tmp;
+            }
+        }
+
+
 
         [JsonIgnore] public int Ac => BonusAc;
 
@@ -134,15 +191,15 @@ namespace Darkages.Types
 
         [JsonIgnore] public byte Hit => (byte)(Extensions.Clamp(_Hit + BonusHit, 0, byte.MaxValue));
 
-        [JsonIgnore] public byte BonusStr { get; set; }
+        [JsonIgnore] public int BonusStr { get; set; }
 
-        [JsonIgnore] public byte BonusInt { get; set; }
+        [JsonIgnore] public int BonusInt { get; set; }
 
-        [JsonIgnore] public byte BonusWis { get; set; }
+        [JsonIgnore] public int BonusWis { get; set; }
 
-        [JsonIgnore] public byte BonusCon { get; set; }
+        [JsonIgnore] public int BonusCon { get; set; }
 
-        [JsonIgnore] public byte BonusDex { get; set; }
+        [JsonIgnore] public int BonusDex { get; set; }
 
         [JsonIgnore] public byte BonusMr { get; set; }
 
@@ -1321,6 +1378,7 @@ namespace Darkages.Types
             {
                 if (nearbyAisling != null && nearbyAisling.LoggedIn)
                 {
+                    nearbyAisling.Show(Scope.Self, new ServerFormat0E(Serial));
                     nearbyAisling.Show(Scope.Self, new ServerFormat0E(Serial));
 
                     if (this is Item || this is Money)

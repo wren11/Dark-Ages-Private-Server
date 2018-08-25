@@ -266,17 +266,12 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             {
                 if (Monster.Aggressive)
                 {
-                    if (Monster == null)
-                    {
-                        return;
-                    }
-
                     if (Monster.Target == null)
                     {
 
                         Monster.Target = GetObjects(i => i.Serial != Monster.Serial
                         && i.WithinRangeOf(Monster) && i.CurrentHp > 0,
-                        Monster.Template.MoodType == MoodQualifer.VeryAggressive ? Get.Aislings : Get.Monsters | Get.Aislings)
+                        Monster.Template.MoodType == MoodQualifer.VeryAggressive ? Get.Aislings | Get.Monsters : Get.Aislings)
                                           .OrderBy(v => v.Position.DistanceFrom(Monster.Position)).FirstOrDefault();
                     }
 
@@ -339,6 +334,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 {
                     if (Monster.Facing(Target.X, Target.Y, out direction))
                     {
+                        Bash();
                         Monster.BashEnabled = true;
                         Monster.CastEnabled = true;
                     }

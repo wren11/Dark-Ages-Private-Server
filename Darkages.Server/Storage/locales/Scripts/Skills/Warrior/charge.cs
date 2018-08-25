@@ -73,7 +73,7 @@ namespace Darkages.Scripting.Scripts.Skills
                     if (target != null && sprite.Position.IsNextTo(target.Position))
                     {
                         var imp = (Skill.Level * 5 / 100);
-                        var dmg = 15 * (((sprite.Str * 2) + sprite.Dex * imp));
+                        var dmg = 15 * (((sprite.Str* 2) + sprite.Dex * imp));
                         target.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
                         {
                             Target = target;

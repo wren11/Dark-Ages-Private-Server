@@ -545,6 +545,7 @@ namespace Darkages.Types
                     client.Aisling.BonusStr += (byte)Template.StrModifer.Value;
                 if (Template.StrModifer.Option == StatusOperator.Operator.Remove)
                     client.Aisling.BonusStr -= (byte)Template.StrModifer.Value;
+
             }
 
             #endregion

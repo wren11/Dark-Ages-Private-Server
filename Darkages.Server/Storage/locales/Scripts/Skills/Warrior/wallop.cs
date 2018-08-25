@@ -81,7 +81,7 @@ namespace Darkages.Scripting.Scripts.Skills
 
 
                         var imp = (Skill.Level * 5 / 100);
-                        var dmg = (client.Aisling.Str + client.Aisling.Dex * (imp * 2));
+                        var dmg = (client.Aisling.Str+ client.Aisling.Dex * (imp * 2));
 
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
 

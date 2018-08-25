@@ -116,7 +116,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                             debuff.OnApplied(i, debuff);
                         }
                     
-                        var dmg = (int)(client.Aisling.Invisible ? 2 : 1 * (client.Aisling.Str + client.Aisling.Con) * 0.05 * Skill.Level);
+                        var dmg = (int)(client.Aisling.Invisible ? 2 : 1 * (client.Aisling.Str+ client.Aisling.Con) * 0.05 * Skill.Level);
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
 
                         if (i is Monster)
