@@ -34,7 +34,7 @@ namespace Darkages.Storage.locales.debuffs
             base.OnApplied(Affected, debuff);
 
             if (AcModifer.Option == StatusOperator.Operator.Add)
-                Affected.BonusAc += (sbyte)AcModifer.Value;
+                Affected.BonusAc += AcModifer.Value;
         }
 
         public override void OnDurationUpdate(Sprite Affected, Debuff debuff)
@@ -45,7 +45,7 @@ namespace Darkages.Storage.locales.debuffs
         public override void OnEnded(Sprite Affected, Debuff debuff)
         {
             if (AcModifer.Option == StatusOperator.Operator.Add)
-                Affected.BonusAc -= (sbyte)AcModifer.Value;
+                Affected.BonusAc -= AcModifer.Value;
 
             base.OnEnded(Affected, debuff);
         }
