@@ -593,5 +593,6 @@ namespace Darkages
         }
 
         public bool ReactedWith(string str) => Reactions.ContainsKey(str);
+
     }
 }

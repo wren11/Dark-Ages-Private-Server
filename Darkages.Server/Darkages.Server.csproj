@@ -44,6 +44,10 @@
     <RootNamespace>Darkages</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\Mono.CSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\Newtonsoft.Json.dll</HintPath>
@@ -96,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="include\Loot.dll" />
+    <Content Include="include\Mono.CSharp.dll" />
     <Content Include="include\Newtonsoft.Json.dll" />
     <Content Include="include\Newtonsoft.Json.xml" />
     <Content Include="include\zlib.net.dll" />
@@ -252,6 +257,7 @@
     <Compile Include="Network\ServerFormats\ServerFormat7E.cs" />
     <Compile Include="Network\ServerFormats\Undefined.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripting\Mono.cs" />
     <Compile Include="Scripting\WeaponScript.cs" />
     <Compile Include="Scripting\GlobalScript.cs" />
     <Compile Include="Scripting\ItemScript.cs" />
@@ -374,6 +380,7 @@
     <Compile Include="Storage\locales\Scripts\Spells\heals\beagiocfein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\Clone.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\NeedleTrap.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\rogue\StilettoTrap.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\utility\Create.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\utility\fasspoirad.cs" />
     <Compile Include="Storage\locales\Scripts\Weapons\SnowSecret.cs" />

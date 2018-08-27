@@ -15,8 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Common;
+using Darkages.Network.Game;
+using Darkages.Script.Context;
 using Darkages.Systems.Loot.Interfaces;
 using Newtonsoft.Json;
+using System;
 using static Darkages.Types.ElementManager;
 
 namespace Darkages.Types
@@ -80,6 +84,9 @@ namespace Darkages.Types
 
     public class ItemTemplate : Template, ILootDefinition
     {
+        [JsonProperty]
+        public string MiniScript{ get; set; }
+
         public int ID { get; set; }
 
         public bool CanStack { get; set; }
@@ -156,6 +163,25 @@ namespace Darkages.Types
         public double Weight
         {
             get => DropRate; set { }
+        }
+
+
+        public void RunMiniScript(GameClient client)
+        {
+            Context.Items["client"] = client;
+            Context.Items["user"] = client.Aisling;
+
+            "var client = (GameClient)Context.Items[\"client\"];".Run();
+            "var user   = (Sprite)Context.Items[\"user\"];".Run();
+
+            try
+            {
+                MiniScript.Run();
+            }
+            catch (Exception)
+            {
+                //ingore
+            }
         }
     }
 }

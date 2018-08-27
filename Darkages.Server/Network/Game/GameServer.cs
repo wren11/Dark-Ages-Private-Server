@@ -223,7 +223,7 @@ namespace Darkages.Network.Game
                     Console.WriteLine(error.Message + "\n" + error.StackTrace);
                 }
 
-                Thread.Sleep(50);
+                Thread.Sleep(30);
             }
         }
 

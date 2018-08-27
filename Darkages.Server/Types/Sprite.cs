@@ -1643,5 +1643,67 @@ namespace Darkages.Types
                 Show(Scope.NearbyAislings, format);
             }
         }
+
+        public void Say(string message, byte type = 0x00)
+        {
+            var response = new ServerFormat0D
+            {
+                Serial = this.Serial,
+                Type = type,
+                Text = message
+            };
+
+            Show(Scope.NearbyAislings, response);
+        }
+
+        public void GiveHP(int value) => _MaximumHp += value;
+
+        public void GiveMP(int value) => _MaximumMp += value;
+
+        public void Kill() => CurrentHp = 0;
+
+        public void Update()
+        {
+            Show(Scope.NearbyAislings, new ServerFormat0E(Serial));
+            Show(Scope.NearbyAislings, new ServerFormat07(new[] { this }));
+        }
+        public void Charge(int steps)
+        {
+            for (int i = 0; i < steps; i++)
+                Walk();
+
+            Update();
+        }
+
+        public void Animate(ushort animation)
+        {
+            Show(Scope.NearbyAislings, new ServerFormat29((uint)Serial, (uint)Serial, animation, animation, 100));
+        }
+
+        public void ApplyBuff(string buff)
+        {
+            if (ServerContext.GlobalBuffCache.ContainsKey(buff))
+            {
+                var Buff = Clone<Buff>(ServerContext.GlobalBuffCache[buff]);
+                if (!HasBuff(Buff.Name))
+                {
+                    Buff.OnApplied(this, Buff);
+                }
+            }
+        }
+
+        public void WarpTo(Position newLocation)
+        {
+            Map.Update(X, Y, TileContent.None);
+            {
+                var location = new Position(newLocation.X, newLocation.Y);
+
+                this.X = location.X;
+                this.Y = location.Y;
+            }
+
+            Map.Update(X, Y, Content);
+            Update();
+        }
     }
 }

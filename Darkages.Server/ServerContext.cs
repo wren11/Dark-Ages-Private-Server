@@ -15,19 +15,23 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
+using Darkages.Script.Context;
 using Darkages.Storage;
-using Darkages.Storage.locales.Buffs;
 using Darkages.Types;
+using Mono.CSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
+using Class = Darkages.Types.Class;
 
 namespace Darkages
 {
@@ -74,6 +78,8 @@ namespace Darkages
 
         public static Dictionary<string, Reactor> GlobalReactorCache =
             new Dictionary<string, Reactor>();
+
+        public static Dictionary<string, Buff> GlobalBuffCache = new Dictionary<string, Buff>();
 
         public static Board[] Community = new Board[7];
 
@@ -294,6 +300,38 @@ namespace Darkages
                     LoadMetaDatabase();
                 }
 
+                var listOfBuffs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
+                                from assemblyType in domainAssembly.GetTypes()
+                                where typeof(Buff).IsAssignableFrom(assemblyType)
+                                select assemblyType).ToArray();
+
+                foreach (var buff in listOfBuffs)
+                {
+                    GlobalBuffCache[buff.Name] = (Buff)Activator.CreateInstance(buff);
+                }
+
+                Evaluator.Init(new string[0]);
+                var assembly = Assembly.Load("Darkages.Server");
+                Evaluator.ReferenceAssembly(assembly);
+
+                @"using Darkages.Common;
+                using Darkages.Common;
+                using Darkages.Network.Game;
+                using Darkages.Network.Login;
+                using Darkages.Network.Object;
+                using Darkages.Script.Context;
+                using Darkages.Storage;
+                using Darkages.Types;
+                using System;
+                using System.Collections.Generic;
+                using System.Diagnostics;
+                using System.IO;
+                using System.Linq;
+                using System.Net;
+                using System.Reflection;
+                using System.Threading.Tasks;".Run();
+
+                Context.Items["game"] = Game;
 
                 var trap = new SpellTemplate()
                 {
@@ -302,13 +340,13 @@ namespace Darkages
                     IsTrap = true,
                     Name = "Needle Trap",
                     TargetType = SpellTemplate.SpellUseType.NoTarget,
-                    Icon = 20,
+                    Icon = 16,
                     ManaCost = 20,
-                    BaseLines = 2,
+                    BaseLines = 1,
                     MaxLines = 9,
                     MaxLevel = 100,
                     Pane = Pane.Spells,
-                    Sound = 0,
+                    Sound = 89,
                     MinLines = 0,
                     DamageExponent = 5.0,
                     Description = "Place a Small Trap damaging enemies who walk over it.",
@@ -319,18 +357,77 @@ namespace Darkages
                     Prerequisites = new LearningPredicate()
                     {
                         Class_Required = Class.Rogue,
-                        Dex_Required = 6,
+                        Dex_Required = 19,
                         Gold_Required = 1000,
-                        Int_Required = 8,
+                        Int_Required = 3,
                         Stage_Required = ClassStage.Class,
                         ExpLevel_Required = 5
                     }
                 };
 
 
+                //items level 1-10
+
+                /*
+                GlobalItemTemplateCache["Apple"] = new ItemTemplate()
+                {
+                    LevelRequired = 1,
+                    Name = "Apple",
+                    MiniScript = "user.CurrentHp += 10;",
+                    CanStack = true,
+                    MaxStack = 100,
+                    Flags = ItemFlags.Consumable | ItemFlags.Bankable | ItemFlags.Stackable | ItemFlags.Sellable | ItemFlags.Tradeable | ItemFlags.QuestRelated | ItemFlags.Dropable,
+                    DropRate = 0.95,
+                    CarryWeight = 0,
+                    Image = 0x8028,
+                    DisplayImage = 0x8028,
+                };
+                */
+               var x = GlobalItemTemplateCache["Apple"];
+
+
+                var trap2 = new SpellTemplate()
+                {
+                    Animation = 91,
+                    ScriptKey = "Stiletto Trap",
+                    IsTrap = true,
+                    Name = "Stiletto Trap",
+                    TargetType = SpellTemplate.SpellUseType.NoTarget,
+                    Icon = 52,
+                    ManaCost = 20,
+                    BaseLines = 1,
+                    MaxLines = 9,
+                    MaxLevel = 100,
+                    Pane = Pane.Spells,
+                    Sound = 60,
+                    MinLines = 0,
+                    DamageExponent = 5.0,
+                    Description = "Place a medium Trap damaging enemies who walk over it.",
+                    ElementalProperty = ElementManager.Element.Light,
+                    TargetAnimation = 394,
+                    LevelRate = 0.05,
+                    TierLevel = Tier.Tier1,
+                    Prerequisites = new LearningPredicate()
+                    {
+                        Class_Required = Class.Rogue,
+                        Dex_Required = 6,
+                        Gold_Required = 5000,
+                        Int_Required = 8,
+                        Stage_Required = ClassStage.Class,
+                        ExpLevel_Required = 9,
+                        Items_Required = new List<ItemPredicate>()
+                        {
+                            new ItemPredicate()
+                            {
+                                 Item = "Snow Secret",
+                                 AmountRequired = 1,
+                            }
+                        }
+                    }
+                };
 
                 GlobalSpellTemplateCache["Needle Trap"] = trap;
-
+                GlobalSpellTemplateCache["Stiletto Trap"] = trap2;
 
 
 
@@ -390,6 +487,13 @@ namespace Darkages
 
                 return false;
             });
+        }
+
+        public static bool OnUseMethod(Sprite a, int value)
+        {
+            a.CurrentHp += value;
+
+            return true;
         }
 
         private static void BindTemplates()

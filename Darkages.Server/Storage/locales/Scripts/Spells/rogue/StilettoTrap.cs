@@ -4,10 +4,10 @@ using Darkages.Types;
 
 namespace Darkages.Assets.locales.Scripts.Traps
 {
-    [Script("Needle Trap")]
-    public class NeedleTrap : SpellScript
+    [Script("Stiletto Trap")]
+    public class StilettoTrap : SpellScript
     {
-        public NeedleTrap(Spell spell) : base(spell)
+        public StilettoTrap(Spell spell) : base(spell)
         {
 
         }
@@ -24,7 +24,7 @@ namespace Darkages.Assets.locales.Scripts.Traps
 
         public override void OnUse(Sprite sprite, Sprite target)
         {
-            Trap.Set(sprite, 300, 1, OnTriggeredBy);
+            Trap.Set(sprite, 300, 0, OnTriggeredBy);
 
             if (sprite is Aisling)
             {
@@ -46,7 +46,7 @@ namespace Darkages.Assets.locales.Scripts.Traps
         public override void OnTriggeredBy(Sprite sprite, Sprite target)
         {
 
-            target.ApplyDamage(sprite, 1000, true, Spell.Template.Sound);
+            target.ApplyDamage(sprite, 4500, true, Spell.Template.Sound);
 
             if (target is Monster || target is Mundane || target is Aisling)
                 target.Show(Scope.NearbyAislings,

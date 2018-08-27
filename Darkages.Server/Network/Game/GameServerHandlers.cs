@@ -40,7 +40,7 @@ namespace Darkages.Network.Game
         /// <summary>
         ///     Activate Assails
         /// </summary>
-        private static void ActivateAssails(GameClient client)
+        public static void ActivateAssails(GameClient client)
         {
             #region Sanity Checks
 
@@ -851,25 +851,45 @@ namespace Darkages.Network.Game
 
             client.LastActivatedLost = slot;
 
+            bool Activated = false;
+
             if (item.Template != null)
             {
-                if (!string.IsNullOrEmpty(item.Template.ScriptName))
-                    if (item.Script == null)
-                        item.Script = ScriptManager.Load<ItemScript>(item.Template.ScriptName, item);
-
-                if (!string.IsNullOrEmpty(item.Template.WeaponScript))
-                    if (item.WeaponScript == null)
-                        item.WeaponScript = ScriptManager.Load<WeaponScript>(item.Template.WeaponScript, item);
-
-                if (item.Script == null)
+                if (!string.IsNullOrEmpty(item?.Template?.MiniScript))
                 {
-                    client.SendMessage(0x02, ServerContext.Config.CantUseThat);
+                    item.Template.RunMiniScript(client);
+                    Activated = true;
                 }
                 else
                 {
-                    item.Script.OnUse(client.Aisling, slot);
+                    if (!string.IsNullOrEmpty(item.Template.ScriptName))
+                    {
+                        if (item.Script == null)
+                            item.Script = ScriptManager.Load<ItemScript>(item.Template.ScriptName, item);
+                    }
 
+                    if (!string.IsNullOrEmpty(item.Template.WeaponScript))
+                    {
+                        if (item.WeaponScript == null)
+                            item.WeaponScript = ScriptManager.Load<WeaponScript>(item.Template.WeaponScript, item);
+                    }
+
+                    if (item.Script == null)
+                    {
+                        client.SendMessage(0x02, ServerContext.Config.CantUseThat);
+                    }
+                    else
+                    {
+
+                        item.Script.OnUse(client.Aisling, slot);
+                        Activated = true;
+                    }
+                }
+
+                if (Activated)
+                {
                     if (item.Template.Flags.HasFlag(ItemFlags.Stackable))
+                    {
                         if (item.Template.Flags.HasFlag(ItemFlags.Consumable))
                         {
                             var stack = item.Stacks - 1;
@@ -893,6 +913,7 @@ namespace Darkages.Network.Game
                                 client.Send(new ServerFormat10(item.Slot));
                             }
                         }
+                    }
                 }
             }
         }

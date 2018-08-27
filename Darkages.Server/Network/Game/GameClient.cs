@@ -709,11 +709,7 @@ namespace Darkages.Network.Game
                 var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(Aisling) && i.Client.CanSeeGhosts());
                 Aisling.Show(Scope.NearbyAislingsExludingSelf, response, nearby);
             }
-            else
-            {
-                //show to everyone except myself.
-                Aisling.Show(Scope.NearbyAislingsExludingSelf, response);
-            }
+
         }
 
         public void Refresh(bool delete = false)
