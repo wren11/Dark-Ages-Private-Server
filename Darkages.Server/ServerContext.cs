@@ -79,7 +79,11 @@ namespace Darkages
         public static Dictionary<string, Reactor> GlobalReactorCache =
             new Dictionary<string, Reactor>();
 
-        public static Dictionary<string, Buff> GlobalBuffCache = new Dictionary<string, Buff>();
+        public static Dictionary<string, Buff> GlobalBuffCache 
+            = new Dictionary<string, Buff>();
+
+        public static Dictionary<string, Debuff> GlobalDeBuffCache
+            = new Dictionary<string, Debuff>();
 
         public static Board[] Community = new Board[7];
 
@@ -298,40 +302,9 @@ namespace Darkages
                     CacheCommunityAssets();
                     BindTemplates();
                     LoadMetaDatabase();
+                    LoadExtensions();
+                    InitScriptEvaluators();
                 }
-
-                var listOfBuffs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
-                                from assemblyType in domainAssembly.GetTypes()
-                                where typeof(Buff).IsAssignableFrom(assemblyType)
-                                select assemblyType).ToArray();
-
-                foreach (var buff in listOfBuffs)
-                {
-                    GlobalBuffCache[buff.Name] = (Buff)Activator.CreateInstance(buff);
-                }
-
-                Evaluator.Init(new string[0]);
-                var assembly = Assembly.Load("Darkages.Server");
-                Evaluator.ReferenceAssembly(assembly);
-
-                @"using Darkages.Common;
-                using Darkages.Common;
-                using Darkages.Network.Game;
-                using Darkages.Network.Login;
-                using Darkages.Network.Object;
-                using Darkages.Script.Context;
-                using Darkages.Storage;
-                using Darkages.Types;
-                using System;
-                using System.Collections.Generic;
-                using System.Diagnostics;
-                using System.IO;
-                using System.Linq;
-                using System.Net;
-                using System.Reflection;
-                using System.Threading.Tasks;".Run();
-
-                Context.Items["game"] = Game;
 
                 var trap = new SpellTemplate()
                 {
@@ -383,7 +356,7 @@ namespace Darkages
                     DisplayImage = 0x8028,
                 };
                 */
-               var x = GlobalItemTemplateCache["Apple"];
+                var x = GlobalItemTemplateCache["Apple"];
 
 
                 var trap2 = new SpellTemplate()
@@ -487,6 +460,81 @@ namespace Darkages
 
                 return false;
             });
+        }
+
+        private static void LoadExtensions()
+        {
+            CacheBuffs();
+            logger.Trace("Building Buff Cache: {0} loaded.", GlobalBuffCache.Count);
+            CacheDebuffs();
+            logger.Trace("Building Debuff Cache: {0} loaded.", GlobalDeBuffCache.Count);
+        }
+
+        private static void InitScriptEvaluators()
+        {
+            logger.Trace("Loading Script Evaluator...");
+
+            try
+            {
+                InitScriptEvaluator();
+                logger.Trace("Loading Script Evaluator... Success");
+            }
+            catch
+            {
+                logger.Trace("Loading Script Evaluator... Error.");
+            }
+        }
+
+        private static void InitScriptEvaluator()
+        {
+            Evaluator.Init(new string[0]);
+            var assembly = Assembly.Load("Darkages.Server");
+            Evaluator.ReferenceAssembly(assembly);
+
+            @"using Darkages.Common;
+                using Darkages.Common;
+                using Darkages.Network.Game;
+                using Darkages.Network.Login;
+                using Darkages.Network.Object;
+                using Darkages.Script.Context;
+                using Darkages.Storage;
+                using Darkages.Types;
+                using System;
+                using System.Collections.Generic;
+                using System.Diagnostics;
+                using System.IO;
+                using System.Linq;
+                using System.Net;
+                using System.Reflection;
+                using System.Threading.Tasks;".Run();
+
+            Context.Items["game"] = Game;
+        }
+
+        private static void CacheDebuffs()
+        {
+            var listOfDebuffs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
+                                 from assemblyType in domainAssembly.GetTypes()
+                                 where typeof(Debuff).IsAssignableFrom(assemblyType)
+                                 select assemblyType).ToArray();
+
+            foreach (var debuff in listOfDebuffs)
+            {
+                GlobalDeBuffCache[debuff.Name] = (Debuff)Activator.CreateInstance(debuff);
+            }
+        }
+
+        private static void CacheBuffs()
+        {
+            var listOfBuffs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
+                               from assemblyType in domainAssembly.GetTypes()
+                               where typeof(Buff).IsAssignableFrom(assemblyType)
+                               select assemblyType).ToArray();
+
+            foreach (var buff in listOfBuffs)
+            {
+                GlobalBuffCache[buff.Name] = (Buff)Activator.CreateInstance(buff);
+            }
         }
 
         public static bool OnUseMethod(Sprite a, int value)

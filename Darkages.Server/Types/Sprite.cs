@@ -194,7 +194,7 @@ namespace Darkages.Types
                 return BonusAc;
             }
         }
-          
+
 
         [JsonIgnore] public byte Mr => (byte)(Extensions.Clamp(_Mr + BonusMr, 0, 70));
 
@@ -289,7 +289,7 @@ namespace Darkages.Types
         public int Level => (Content == TileContent.Aisling) ? (this as Aisling).ExpLevel
             : (Content == TileContent.Monster) ? (this as Monster).Template.Level
             : (Content == TileContent.Mundane) ? (this as Mundane).Template.Level
-            : (Content == TileContent.Item)    ? ((this as Item).Template.LevelRequired) : 0;
+            : (Content == TileContent.Item) ? ((this as Item).Template.LevelRequired) : 0;
 
         public bool Exists => GetObject(i => i.Serial == this.Serial, Get.All) != null;
 
@@ -310,8 +310,8 @@ namespace Darkages.Types
             Target = null;
 
 
-            Buffs      = new ConcurrentDictionary<string, Buff>();
-            Debuffs    = new ConcurrentDictionary<string, Debuff>();
+            Buffs = new ConcurrentDictionary<string, Buff>();
+            Debuffs = new ConcurrentDictionary<string, Debuff>();
             TargetPool = new ConcurrentDictionary<uint, TimeSpan>();
 
             LastTargetAcquired = DateTime.UtcNow;
@@ -329,7 +329,7 @@ namespace Darkages.Types
 
         public bool TriggerNearbyTraps()
         {
-            var trap = Trap.Traps.Select(i => i.Value).FirstOrDefault(i => i.Owner.Serial != this.Serial 
+            var trap = Trap.Traps.Select(i => i.Value).FirstOrDefault(i => i.Owner.Serial != this.Serial
                 && this.Position.DistanceFrom(i.Location) <= i.Radius);
 
             if (trap != null)
@@ -1644,7 +1644,7 @@ namespace Darkages.Types
             }
         }
 
-        public void Say(string message, byte type = 0x00)
+        public void BarMsg(string message, byte type = 0x02)
         {
             var response = new ServerFormat0D
             {
@@ -1675,6 +1675,22 @@ namespace Darkages.Types
             Update();
         }
 
+        public void ScrollTo(string destination, short x, short y)
+        {
+            var map = ServerContext.GlobalMapCache.Where(i =>
+            i.Value.Name.Equals(destination, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+            if (map.Value != null)
+            {
+                if (this is Aisling)
+                {
+                    var client = (this as Aisling).Client;
+
+                    client.TransitionToMap(map.Value, new Position(x, y));
+                }
+            }
+        }
+
         public void Animate(ushort animation)
         {
             Show(Scope.NearbyAislings, new ServerFormat29((uint)Serial, (uint)Serial, animation, animation, 100));
@@ -1690,6 +1706,24 @@ namespace Darkages.Types
                     Buff.OnApplied(this, Buff);
                 }
             }
+        }
+
+        public void ApplyDebuff(string debuff)
+        {
+            if (ServerContext.GlobalDeBuffCache.ContainsKey(debuff))
+            {
+                var Debuff = Clone<Debuff>(ServerContext.GlobalBuffCache[debuff]);
+                if (!HasDebuff(Debuff.Name))
+                {
+                    Debuff.OnApplied(this, Debuff);
+                }
+            }
+        }
+
+        public void RefreshStats()
+        {
+            if (this is Aisling)
+                (this as Aisling).Client.SendStats(StatusFlags.All);
         }
 
         public void WarpTo(Position newLocation)

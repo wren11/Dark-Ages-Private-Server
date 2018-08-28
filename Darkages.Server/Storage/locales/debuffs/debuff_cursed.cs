@@ -21,6 +21,11 @@ namespace Darkages.Storage.locales.debuffs
 {
     public class debuff_cursed : Debuff
     {
+        public debuff_cursed()
+        {
+
+        }
+
         public debuff_cursed(string name, int length, byte icon)
         {
             Name = name;
