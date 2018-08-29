@@ -218,6 +218,8 @@ namespace Darkages
             GlobalWarpTemplateCache = new List<WarpTemplate>();
             GlobalWorldMapTemplateCache = new Dictionary<int, WorldMapTemplate>();
             GlobalReactorCache = new Dictionary<string, Reactor>();
+            GlobalBuffCache = new Dictionary<string, Buff>();
+            GlobalDeBuffCache = new Dictionary<string, Debuff>();
         }
 
         public static void LoadConstants()
@@ -339,9 +341,6 @@ namespace Darkages
                 };
 
 
-                //items level 1-10
-
-                /*
                 GlobalItemTemplateCache["Apple"] = new ItemTemplate()
                 {
                     LevelRequired = 1,
@@ -355,9 +354,57 @@ namespace Darkages
                     Image = 0x8028,
                     DisplayImage = 0x8028,
                 };
-                */
-                var x = GlobalItemTemplateCache["Apple"];
 
+                var spider = new MonsterTemplate()
+                {
+                    Name = "Spider",
+                    ScriptName = "Common Monster",
+                    AreaID = 426,
+                    Level = 1,
+                    BaseName = "Spider",
+                    AttackSpeed = 1000,
+                    MovementSpeed = 1000,
+                    CastSpeed = 10000,
+                    DefenseElement = ElementManager.Element.None,
+                    OffenseElement = ElementManager.Element.None,
+                    Description = "Small creature that dwells in dark places, such as crypts. Not very Aggressive, Unless Attacked.",
+                    ElementType = ElementQualifer.None,
+                    IgnoreCollision = false,
+                    LootType = LootQualifer.Table,
+                    ImageVarience = 0,
+                    Image = 0x4035,
+                    UpdateMapWide = false,
+                    MoodType = MoodQualifer.Neutral,
+                    SpawnType = SpawnQualifer.Random,
+                    PathQualifer = PathQualifer.Wander,
+                    SpawnRate = 12,
+                    SpawnSize = 26,
+                    SpawnMax = 200,
+                    FamilyKey = "Insect",
+                    Grow = false,
+                    Drops = new System.Collections.ObjectModel.Collection<string>()
+                    {
+                        "Spiders's Eye"
+                    },
+                };
+
+
+                var item = new ItemTemplate()
+                {
+                    Name = "Spider's Eye",
+                    Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.Tradeable | ItemFlags.QuestRelated | ItemFlags.Sellable | ItemFlags.Stackable,
+                    CanStack = true,
+                    MaxStack = 20,
+                    Value = 300,
+                    CarryWeight = 1,
+                    DropRate = 80,
+                    Image = 0x814F,
+                    LevelRequired = 1,
+                    Description = "These can be found by killing spiders down in the mileth crypt.",
+                };
+
+               //StorageManager.ItemBucket.Save(item);
+               //StorageManager.MonsterBucket.Save(spider);
 
                 var trap2 = new SpellTemplate()
                 {
@@ -399,8 +446,8 @@ namespace Darkages
                     }
                 };
 
-                GlobalSpellTemplateCache["Needle Trap"] = trap;
-                GlobalSpellTemplateCache["Stiletto Trap"] = trap2;
+                //GlobalSpellTemplateCache["Needle Trap"] = trap;
+               // GlobalSpellTemplateCache["Stiletto Trap"] = trap2;
 
 
 

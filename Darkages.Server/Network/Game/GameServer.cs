@@ -141,12 +141,12 @@ namespace Darkages.Network.Game
         public void ExecuteClientWork(TimeSpan elapsedTime)
         {
             UpdateClients(elapsedTime);
-            UpdateAreas(elapsedTime);
         }
 
         public void ExecuteServerWork(TimeSpan elapsedTime)
         {
             UpdateComponents(elapsedTime);
+            UpdateAreas(elapsedTime);
         }
 
         private void UpdateComponents(TimeSpan elapsedTime)
@@ -168,12 +168,9 @@ namespace Darkages.Network.Game
             if (ServerContext.Paused)
                 return;
 
-            lock (ServerContext.GlobalMapCache)
+            foreach (var area in ServerContext.GlobalMapCache.Values)
             {
-                foreach (var area in ServerContext.GlobalMapCache.Values)
-                {
-                    area.Update(elapsedTime);
-                }
+                area.Update(elapsedTime);
             }
         }
 
@@ -182,14 +179,12 @@ namespace Darkages.Network.Game
             if (ServerContext.Paused)
                 return;
 
-            lock (Clients)
+
+            foreach (var client in Clients)
             {
-                foreach (var client in Clients)
+                if (client != null && client.Aisling != null)
                 {
-                    if (client != null && client.Aisling != null)
-                    {
-                        client.Update(elapsedTime);
-                    }
+                    client.Update(elapsedTime);
                 }
             }
         }

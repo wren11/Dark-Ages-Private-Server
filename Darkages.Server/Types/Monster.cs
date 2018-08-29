@@ -294,12 +294,14 @@ namespace Darkages.Types
                                         upgrade = null;
 
                                     rolled_item.Upgrades = upgrade?.Upgrade ?? 0;
-                                    Item.ApplyQuality(rolled_item);
+
+                                    if (rolled_item.Upgrades > 0)
                                     {
-                                        rolled_item.Cursed = true;
-                                        rolled_item.AuthenticatedAislings = GetTaggedAislings();
-                                        rolled_item.Release(this, Position);
+                                        Item.ApplyQuality(rolled_item);
                                     }
+                                    rolled_item.Cursed = true;
+                                    rolled_item.AuthenticatedAislings = GetTaggedAislings();
+                                    rolled_item.Release(this, Position);
                                 }
                             }
                         }
@@ -503,6 +505,11 @@ namespace Darkages.Types
                 obj.LootTable = new LootTable(template.Name);
                 obj.UpgradeTable = new LootTable("Probabilities");
 
+                if (obj.Template.Name == "Spider")
+                {
+
+                }
+
                 foreach (var drop in obj.Template.Drops)
                 {
                     if (drop.Equals("random", StringComparison.OrdinalIgnoreCase))
@@ -519,6 +526,11 @@ namespace Darkages.Types
                     }
                     else
                     {
+                        if (drop == "Spider's Eye")
+                        {
+
+                        }
+
                         if (GlobalItemTemplateCache.ContainsKey(drop))
                         {
                             obj.LootTable.Add(GlobalItemTemplateCache[drop]);
