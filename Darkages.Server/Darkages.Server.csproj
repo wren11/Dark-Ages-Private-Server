@@ -114,6 +114,7 @@
     <Content Include="Systems\Loot\Loot.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ConcurrentList.cs" />
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\Generator.cs" />
     <Compile Include="Common\Predicate.cs" />

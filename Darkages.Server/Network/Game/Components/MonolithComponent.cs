@@ -98,8 +98,9 @@ namespace Darkages.Network.Game.Components
                         var temps = templates.Where(i => i.AreaID == map.ID);
                         foreach (var template in temps)
                         {
-                            if (template.SpawnOnlyOnActiveMaps && !map.Has<Aisling>())
-                                continue;
+                            // disabled for now.
+                           // if (template.SpawnOnlyOnActiveMaps)
+                           //     continue;
 
 
 
@@ -127,13 +128,12 @@ namespace Darkages.Network.Game.Components
             if (!ServerContext.Running)
                 return;
 
-            var count = GetObjects<Monster>(i => i.Template.Name == template.Name).Length;
+            var count = GetObjects<Monster>(i => i.Template.Name == template.Name).Count();
             if (count < Math.Abs(template.SpawnMax))
             {
-                //                if (template.SpawnType.HasFlag(SpawnQualifer.Defined) || template.SpawnType.HasFlag(SpawnQualifer.Random))
                 if (!await CreateFromTemplate(template, map, template.SpawnSize))
                 {
-                    Thread.Yield();
+
                 }
             }
         }

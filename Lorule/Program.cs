@@ -126,7 +126,7 @@ namespace Lorule
                 {
                     while (Running)
                     {
-                        Console.Title = $"Lorule - Server Uptime {Math.Round(Uptime.TotalDays, 2)}:{Math.Round(Uptime.TotalHours, 2)} - { _Server.GetObjects<Aisling>(i => i.LoggedIn).Length} Players Online | Total Characters ({ StorageManager.AislingBucket.Count })";
+                        Console.Title = $"Lorule - Server Uptime {Math.Round(Uptime.TotalDays, 2)}:{Math.Round(Uptime.TotalHours, 2)} - { _Server.GetObjects<Aisling>(i => i.LoggedIn).Count()} Players Online | Total Characters ({ StorageManager.AislingBucket.Count })";
                         Thread.Sleep(5000);
                     }
                 });

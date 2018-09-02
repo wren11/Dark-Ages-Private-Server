@@ -25,6 +25,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Darkages
 {
@@ -54,7 +56,9 @@ namespace Darkages
         [JsonRequired] public int Number { get; set; }
 
         public int ID { get; set; }
+
         public string Name { get; set; }
+
         public MapFlags Flags { get; set; }
 
         public TileContent this[int x, int y]
@@ -149,19 +153,17 @@ namespace Darkages
             return buffer;
         }
 
-        public void Update(TimeSpan elapsedTime)
+        public async void Update(TimeSpan elapsedTime)
         {
-            if (Has<Monster>())
-                UpdateMonsters(elapsedTime);
+            var tmp = GetObjects(i => i.CurrentMapId == ID, Get.All);
 
-            if (!Has<Aisling>())
-                return;
+            await UpdateMonsters(elapsedTime, tmp.OfType<Monster>());
 
-            if (Has<Mundane>())
-                UpdateMundanes(elapsedTime);
+            await UpdateMundanes(elapsedTime,
+                tmp.OfType<Mundane>());
 
-            if (Has<Item>() || Has<Money>())
-                UpdateItems(elapsedTime);
+            await UpdateItems(elapsedTime,
+                tmp.OfType<Money>().Concat<Sprite>(tmp.OfType<Item>()));
 
 
             WarpTimer.Update(elapsedTime);
@@ -178,16 +180,13 @@ namespace Darkages
 
             foreach (var warp in warpsOnMap)
             {
-                if (!Has<Aisling>())
-                    continue;
-
                 if (!warp.Activations.Any())
                     continue;
 
                 var nearby = GetObjects<Aisling>(i =>
                     i.LoggedIn && i.CurrentMapId == warp.ActivationMapId);
 
-                if (nearby.Length == 0)
+                if (!nearby.Any())
                     continue;
 
                 foreach (var warpObj in warp.Activations)
@@ -200,13 +199,16 @@ namespace Darkages
             }
         }
 
-        private void UpdateMonsters(TimeSpan elapsedTime)
+        private Task<bool> UpdateMonsters(TimeSpan elapsedTime, IEnumerable<Monster> objects)
         {
-            foreach (var obj in GetObjects<Monster>(i => i.CurrentMapId == ID))
-            {
-                var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(obj) && i.CurrentMapId == ID).Length;
+            var tcs     = new TaskCompletionSource<bool>();
+            var updates = 0;
 
-                if (nearby == 0 && !obj.Template.UpdateMapWide)
+            foreach (var obj in objects)
+            {
+                var nearby = obj.AislingsNearby();
+
+                if (nearby.Length == 0 && !obj.Template.UpdateMapWide)
                 {
                     if (obj.TaggedAislings != null && obj.TaggedAislings.Count > 0)
                     {
@@ -216,26 +218,31 @@ namespace Darkages
                     continue;
                 }
 
-
-
                 if (obj != null && obj.Map != null && obj.Script != null)
                 {
-                    obj.Script.Update(elapsedTime);
+                    //obj.Script.Update(elapsedTime);
                     obj.UpdateBuffs(elapsedTime);
                     obj.UpdateDebuffs(elapsedTime);
-
                     obj.LastUpdated = DateTime.UtcNow;
+
+                    updates++;
                 }
             }
+
+            tcs.SetResult(updates > 0);
+            return tcs.Task;
         }
 
-        private void UpdateItems(TimeSpan elapsedTime)
+        private Task<bool> UpdateItems(TimeSpan elapsedTime, IEnumerable<Sprite> objects)
         {
-            foreach (var obj in GetObjects(i => i.CurrentMapId == ID, Get.Items | Get.Money))
+            var tcs     = new TaskCompletionSource<bool>();
+            var updates = 0;
+
+            foreach (var obj in objects)
             {
                 var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(obj) && i.CurrentMapId == ID);
 
-                if (nearby.Length == 0)
+                if (!nearby.Any())
                     continue;
 
                 if (obj != null)
@@ -248,6 +255,7 @@ namespace Darkages
                     }
 
                     obj.LastUpdated = DateTime.UtcNow;
+                    updates++;
 
                     if (obj is Item)
                     {
@@ -262,13 +270,15 @@ namespace Darkages
                     }
                 }
             }
+
+            tcs.SetResult(updates > 0);
+            return tcs.Task;
         }
 
-        private void UpdateMundanes(TimeSpan elapsedTime)
+        private Task<bool> UpdateMundanes(TimeSpan elapsedTime, IEnumerable<Mundane> objects)
         {
-            var objects = GetObjects<Mundane>(i => i != null && i.CurrentMapId == ID);
-            if (objects == null)
-                return;
+            var tcs = new TaskCompletionSource<bool>();
+            var updates = 0;
 
             foreach (var obj in objects)
             {
@@ -277,7 +287,7 @@ namespace Darkages
 
                 var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(obj) && i.CurrentMapId == ID);
 
-                if (nearby.Length == 0)
+                if (!nearby.Any())
                     continue;
 
                 foreach (var nb in nearby)
@@ -291,16 +301,13 @@ namespace Darkages
                 obj.Update(elapsedTime);
 
                 obj.LastUpdated = DateTime.UtcNow;
+                updates++;
             }
+
+            tcs.SetResult(updates > 0);
+            return tcs.Task;
         }
 
-        public bool Has<T>()
-            where T : Sprite, new()
-        {
-            var objs = GetObjects<T>(i => i != null && i.CurrentMapId == ID);
-
-            return objs.Length > 0;
-        }
 
         public void OnLoaded(Aisling obj = null)
         {

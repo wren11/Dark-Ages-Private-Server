@@ -30,22 +30,27 @@ namespace Darkages.Network.Game
 
         DateTime lastServerUpdate = DateTime.UtcNow;
         DateTime lastClientUpdate = DateTime.UtcNow;
-        TimeSpan ServerUpdateSpan, ClientUpdateSpan;
+        DateTime lastHeavyUpdate  = DateTime.UtcNow;
+
+        TimeSpan ServerUpdateSpan, ClientUpdateSpan, HeavyUpdateSpan;
+
         private Thread ServerThread = null;
         private Thread ClientThread = null;
+        private Thread HeavyThread = null;
 
 
         public ObjectService ObjectFactory;
-        public Dictionary<Type, GameServerComponent> Components;
-        public ObjectComponent ObjectPulseController
-            => Components[typeof(ObjectComponent)] as ObjectComponent;
 
-        public GameServer(int capacity)
-            : base(capacity)
+        public Dictionary<Type, GameServerComponent> Components;
+
+        public ObjectComponent ObjectPulseController => Components[typeof(ObjectComponent)] as ObjectComponent;
+
+        public GameServer(int capacity) : base(capacity)
         {
 
-            ServerUpdateSpan = TimeSpan.FromSeconds(1.0 / 60);
-            ClientUpdateSpan = TimeSpan.FromSeconds(1.0 / 60);
+            ServerUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
+            ClientUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
+            HeavyUpdateSpan  = TimeSpan.FromSeconds(1.0 / 30);
 
             InitializeGameServer();
         }
@@ -68,6 +73,8 @@ namespace Darkages.Network.Game
 
             while (isRunning)
             {
+                if (ServerContext.Paused)
+                    continue;
 
                 try
                 {
@@ -87,6 +94,32 @@ namespace Darkages.Network.Game
             }
         }
 
+        private void DoHeavyWork()
+        {
+            lastHeavyUpdate = DateTime.UtcNow;
+
+            while (isRunning)
+            {
+                if (ServerContext.Paused)
+                    continue;
+
+                try
+                {
+                    var delta = DateTime.UtcNow - lastHeavyUpdate;
+                    {
+                        if (!ServerContext.Paused)
+                            ExecuteHeavyWork(delta);
+                    }
+                }
+                catch (Exception error)
+                {
+                    Console.WriteLine(error.Message + "\n" + error.StackTrace);
+                }
+
+                lastHeavyUpdate = DateTime.UtcNow;
+                Thread.Sleep(HeavyUpdateSpan);
+            }
+        }
 
         private void DoServerWork()
         {
@@ -146,6 +179,10 @@ namespace Darkages.Network.Game
         public void ExecuteServerWork(TimeSpan elapsedTime)
         {
             UpdateComponents(elapsedTime);
+        }
+
+        public void ExecuteHeavyWork(TimeSpan elapsedTime)
+        {
             UpdateAreas(elapsedTime);
         }
 
@@ -179,12 +216,14 @@ namespace Darkages.Network.Game
             if (ServerContext.Paused)
                 return;
 
-
-            foreach (var client in Clients)
+            lock (Clients)
             {
-                if (client != null && client.Aisling != null)
+                foreach (var client in Clients)
                 {
-                    client.Update(elapsedTime);
+                    if (client != null && client.Aisling != null)
+                    {
+                        client.Update(elapsedTime);
+                    }
                 }
             }
         }
@@ -203,10 +242,7 @@ namespace Darkages.Network.Game
                             {
                                 if (client.Aisling.LoggedIn)
                                 {
-                                    ServerContext.Game
-                                        .ObjectPulseController?
-                                        .OnObjectUpdate(client.Aisling);
-
+                                    ServerContext.Game.ObjectPulseController?.OnObjectUpdate(client.Aisling);
                                     client.RefreshObjects();
                                 }
                             }
@@ -266,6 +302,10 @@ namespace Darkages.Network.Game
             ClientThread = new Thread(new ThreadStart(DoClientWork));
             ClientThread.IsBackground = true;
             ClientThread.Start();
+
+            HeavyThread = new Thread(new ThreadStart(DoHeavyWork));
+            HeavyThread.IsBackground = true;
+            HeavyThread.Start();
 
             isRunning = true;
         }
