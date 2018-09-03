@@ -153,18 +153,18 @@ namespace Darkages
             return buffer;
         }
 
-        public async void Update(TimeSpan elapsedTime)
+        public void Update(TimeSpan elapsedTime)
         {
             var tmp = GetObjects(i => i.CurrentMapId == ID, Get.All);
 
-            await UpdateMonsters(elapsedTime, tmp.OfType<Monster>());
+            UpdateMonsters(elapsedTime,
+                tmp.OfType<Monster>());
 
-            await UpdateMundanes(elapsedTime,
+            UpdateMundanes(elapsedTime,
                 tmp.OfType<Mundane>());
 
-            await UpdateItems(elapsedTime,
+            UpdateItems(elapsedTime, 
                 tmp.OfType<Money>().Concat<Sprite>(tmp.OfType<Item>()));
-
 
             WarpTimer.Update(elapsedTime);
             if (WarpTimer.Elapsed)
@@ -220,7 +220,7 @@ namespace Darkages
 
                 if (obj != null && obj.Map != null && obj.Script != null)
                 {
-                    //obj.Script.Update(elapsedTime);
+                    obj.Script.Update(elapsedTime);
                     obj.UpdateBuffs(elapsedTime);
                     obj.UpdateDebuffs(elapsedTime);
                     obj.LastUpdated = DateTime.UtcNow;
@@ -259,7 +259,7 @@ namespace Darkages
 
                     if (obj is Item)
                     {
-                        if ((DateTime.UtcNow - obj.CreationDate).TotalMinutes > 3)
+                        if ((DateTime.UtcNow - obj.AbandonedDate).TotalMinutes > 3)
                         {
                             if ((obj as Item).Cursed)
                             {
@@ -333,7 +333,6 @@ namespace Darkages
             }
 
             UpdateCollisions(obj);
-
             Ready = true;
         }
 
@@ -376,7 +375,8 @@ namespace Darkages
             lock (obj.ViewFrustrum)
             {
                 foreach (var sprite in obj.ViewFrustrum.Select(i => i.Value))
-                    this[sprite.X, sprite.Y] = sprite.Content;
+                    if (sprite.CurrentMapId == ID)
+                        this[sprite.X, sprite.Y] = sprite.Content;
             }
         }
     }

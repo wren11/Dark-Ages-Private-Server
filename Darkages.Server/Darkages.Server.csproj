@@ -27,7 +27,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\Staging\bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>none</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -114,12 +114,11 @@
     <Content Include="Systems\Loot\Loot.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Cache.cs" />
     <Compile Include="Common\ConcurrentList.cs" />
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\Generator.cs" />
-    <Compile Include="Common\Predicate.cs" />
     <Compile Include="Common\Reflection.cs" />
-    <Compile Include="Common\SealedCounter.cs" />
     <Compile Include="Compression\CompressableObject.cs" />
     <Compile Include="Compression\CompressionProvider.cs" />
     <Compile Include="IO\BufferReader.cs" />

@@ -21,7 +21,9 @@ using Darkages.Network.ServerFormats;
 using Darkages.Security;
 using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using static System.Threading.Tasks.Parallel;
@@ -32,7 +34,7 @@ namespace Darkages.Network
     public abstract class NetworkClient<TClient>
         : ObjectManager
     {
-        private readonly Queue<NetworkFormat> _sendBuffers = new Queue<NetworkFormat>();
+        private readonly ConcurrentQueue<NetworkFormat> _sendBuffers = new ConcurrentQueue<NetworkFormat>();
         private bool _sending;
         public int Errors;
 
@@ -98,24 +100,19 @@ namespace Darkages.Network
 
         public void SendAsync(NetworkFormat format)
         {
-            lock (_sendBuffers)
-            {
-                _sendBuffers.Enqueue(format);
+            _sendBuffers.Enqueue(format);
 
-                if (_sending)
-                    return;
+            if (_sending)
+                return;
 
-                _sending = true;
-                Task.Run(() => SendBuffers());
-            }
+            _sending = true;
+            ThreadPool.QueueUserWorkItem(SendBuffers, this);
         }
 
-        private void SendBuffers()
-        {
+        private void SendBuffers(object state)
+        {           
             while (_sending)
             {
-                NetworkFormat format;
-
                 lock (_sendBuffers)
                 {
                     if (_sendBuffers.Count == 0)
@@ -124,10 +121,11 @@ namespace Darkages.Network
                         return;
                     }
 
-                    format = _sendBuffers.Dequeue();
+                    if (_sendBuffers.TryDequeue(out var format))
+                    {
+                        SendFormat(format);
+                    } 
                 }
-
-                SendFormat(format);
             }
         }
 
@@ -160,22 +158,23 @@ namespace Darkages.Network
                 if (format == null)
                     return;
 
-                lock (Writer)
+                PreparePacketWriter(format);
+
+                var packet = Writer.ToPacket();
                 {
-                    if (!GetPacket(format))
-                        return;
+                    if (ServerContext.Config.LogSentPackets)
+                        if (this is GameClient)
+                            logger.Info("{0}: {1}", (this as GameClient)?.Aisling?.Username, packet);
 
-                    var packet = Writer.ToPacket();
+                    if (format.Secured)
+                        Encryption.Transform(packet);
+
+                    var buffer = packet.ToArray();
                     {
-                        if (ServerContext.Config.LogSentPackets)
-                            if (this is GameClient)
-                                logger.Info("{0}: {1}", (this as GameClient)?.Aisling?.Username, packet);
+                        Socket.Send(buffer, 0, buffer.Length, SocketFlags.None, out var errorcode);
 
-                        if (format.Secured)
-                            Encryption.Transform(packet);
-
-                        var buffer = packet.ToArray();
-                        Socket.Send(buffer);
+                        if (errorcode != SocketError.Success)
+                            logger.Debug(string.Format("[Network] Packet Error: {0} for Action {1}", errorcode, packet.Command));
                     }
                 }
             }
@@ -185,16 +184,17 @@ namespace Darkages.Network
             }
         }
 
-        private bool GetPacket(NetworkFormat format)
+        private void PreparePacketWriter(NetworkFormat format)
         {
             Writer.Position = 0;
             Writer.Write(format.Command);
 
             if (format.Secured)
+            {
                 Writer.Write(Ordinal++);
+            }
 
             format.Serialize(Writer);
-            return true;
         }
 
         public void Send(NetworkFormat format)

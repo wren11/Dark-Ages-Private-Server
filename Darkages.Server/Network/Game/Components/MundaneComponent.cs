@@ -62,7 +62,7 @@ namespace Darkages.Network.Game.Components
                 if (npc != null && npc.CurrentHp > 0)
                     continue;
 
-                new TaskFactory().StartNew(() => { Mundane.Create(mundane.Value); });
+                Mundane.Create(mundane.Value);
             }
         }
     }

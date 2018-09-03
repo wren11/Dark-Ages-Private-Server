@@ -35,6 +35,7 @@ namespace Darkages.Network.Game.Components
             : base(server)
         {
             _timer = new GameServerTimer(TimeSpan.FromMilliseconds(ServerContext.Config.GlobalSpawnTimer));
+
             var spawnThread = new Thread(SpawnEmitter) { IsBackground = true };
             spawnThread.Start();
         }
@@ -53,21 +54,27 @@ namespace Darkages.Network.Game.Components
             }
         }
 
-        private void ConsumeSpawns()
+        private async void ConsumeSpawns()
         {
             if (ServerContext.Paused)
                 return;
-
-            Spawn spawn;
-
-            lock (SpawnQueue)
+            try
             {
-                spawn = SpawnQueue.Dequeue();
+                Spawn spawn;
+
+                lock (SpawnQueue)
+                {
+                    spawn = SpawnQueue.Dequeue();
+                }
+
+                if (spawn != null)
+                {
+                    await SpawnOn(spawn.Template, spawn.Map);
+                }
             }
-
-            if (spawn != null)
+            catch (Exception)
             {
-                SpawnOn(spawn.Template, spawn.Map);
+                //ignore
             }
         }
 
@@ -87,7 +94,6 @@ namespace Darkages.Network.Game.Components
                 if (templates.Count == 0)
                     return;
 
-
                 foreach (var map in ServerContext.GlobalMapCache.Values)
                 {
                     if (map == null || map.Rows == 0 || map.Cols == 0)
@@ -98,12 +104,6 @@ namespace Darkages.Network.Game.Components
                         var temps = templates.Where(i => i.AreaID == map.ID);
                         foreach (var template in temps)
                         {
-                            // disabled for now.
-                           // if (template.SpawnOnlyOnActiveMaps)
-                           //     continue;
-
-
-
                             if (template.ReadyToSpawn())
                             {
                                 var spawn = new Spawn
@@ -123,36 +123,49 @@ namespace Darkages.Network.Game.Components
             }
         }
 
-        public async void SpawnOn(MonsterTemplate template, Area map)
+        public Task<bool> SpawnOn(MonsterTemplate template, Area map)
         {
-            if (!ServerContext.Running)
-                return;
-
+            var tcs = new TaskCompletionSource<bool>();
             var count = GetObjects<Monster>(i => i.Template.Name == template.Name).Count();
+
             if (count < Math.Abs(template.SpawnMax))
             {
-                if (!await CreateFromTemplate(template, map, template.SpawnSize))
-                {
-
-                }
+                tcs.SetResult(CreateFromTemplate(template, map, template.SpawnSize));
             }
+            else
+            {
+                tcs.SetResult(false);
+            }
+
+            return tcs.Task;
         }
 
 
-        public async Task<bool> CreateFromTemplate(MonsterTemplate template, Area map, int count)
+        public bool CreateFromTemplate(MonsterTemplate template, Area map, int count)
         {
-            await Task.Run(() =>
-            {
-                var newObj = Monster.Create(template, map);
-                if (newObj != null)
-                {
-                    AddObject(newObj);
-                    return true;
-                }
-                return false;
-            });
+            var objectsAdded = 0;
 
-            return false;
+            try
+            {
+
+                for (int i = 0; i < count; i++)
+                {
+                    var newObj = Monster.Create(template, map);
+
+                    if (newObj != null)
+                    {
+                        AddObject(newObj);
+                        objectsAdded++;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                //ignore
+                return false;
+            }
+
+            return objectsAdded > 0;
         }
 
         public class Spawn

@@ -76,6 +76,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
                 if (script != null)
                 {
+                    script.Skill.NextAvailableUse = DateTime.UtcNow;
                     script.IsScriptDefault = primary;
                     SkillScripts.Add(script);
                 }
@@ -191,7 +192,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (Monster.IsConfused || Monster.IsFrozen || Monster.IsParalyzed || Monster.IsSleeping)
                 return;
 
-            UpdateTarget();
 
             Monster.BashTimer.Update(elapsedTime);
             Monster.CastTimer.Update(elapsedTime);
@@ -212,7 +212,9 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     Monster.CastTimer.Reset();
 
                     if (Monster.CastEnabled)
+                    {
                         CastSpell();
+                    }
                 }
 
                 if (Monster.WalkTimer.Elapsed)
@@ -264,19 +266,19 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             {
                 if (Monster.Aggressive)
                 {
-                    if (Monster == null)
+                    if (Monster.Target == null)
                     {
-                        return;
-                    }
-
 
                         Monster.Target = GetObjects(i => i.Serial != Monster.Serial
                         && i.WithinRangeOf(Monster) && i.CurrentHp > 0,
-                        Monster.Template.MoodType == MoodQualifer.VeryAggressive ? Get.Aislings : Get.Monsters | Get.Aislings)
+                        Monster.Template.MoodType == MoodQualifer.VeryAggressive ? Get.Aislings | Get.Monsters : Get.Aislings)
                                           .OrderBy(v => v.Position.DistanceFrom(Monster.Position)).FirstOrDefault();
+                    }
 
                     if (Monster.Target != null && Monster.Target.CurrentHp <= 0)
+                    {
                         Monster.Target = null;
+                    }
 
                     Monster.WalkEnabled = Monster.Target != null;
                 }
@@ -332,6 +334,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 {
                     if (Monster.Facing(Target.X, Target.Y, out direction))
                     {
+                        Bash();
                         Monster.BashEnabled = true;
                         Monster.CastEnabled = true;
                     }
@@ -404,11 +407,24 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
             if (Monster != null && Monster.Target != null && SkillScripts.Count > 0)
             {
-                var idx = _random.Next(SkillScripts.Count);
+                var sobj = SkillScripts.FirstOrDefault(i => i.Skill.Ready);
 
-                if (_random.Next(1, 101) < ServerContext.Config.MonsterSkillSuccessRate)
-                    if (SkillScripts[idx] != null && !SkillScripts[idx].IsScriptDefault)
-                        SkillScripts[idx].OnUse(Monster);
+                if (sobj != null)
+                {
+                    var skill = sobj.Skill;
+
+                    sobj?.OnUse(Monster);
+                    {
+                        skill.InUse = true;
+
+                        if (skill.Template.Cooldown > 0)
+                            skill.NextAvailableUse = DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
+                        else
+                            skill.NextAvailableUse = DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
+                    }
+
+                    skill.InUse = false;
+                }
             }
 
             if (Monster != null && DefaultSkill != null)

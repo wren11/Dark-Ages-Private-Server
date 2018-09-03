@@ -18,8 +18,7 @@
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace Darkages.Scripting.Scripts.Skills
 {
@@ -49,51 +48,70 @@ namespace Darkages.Scripting.Scripts.Skills
 
         public override void OnSuccess(Sprite sprite)
         {
-            if (sprite is Aisling)
+            var collided = false;
+
+            var action = new ServerFormat1A
             {
-                var client = (sprite as Aisling).Client;
+                Serial = sprite.Serial,
+                Number = 0x82,
+                Speed = 20
+            };
 
-                var action = new ServerFormat1A
+            int steps = 0;
+            for (int i = 0; i < 5; i++)
+            {
+                sprite.Walk();
+                steps++;
+
+                var targets = sprite.GetInfront(1, true);
+
+                foreach (var target in targets)
                 {
-                    Serial = client.Aisling.Serial,
-                    Number = 0x81,
-                    Speed = 20
-                };
+                    if (target.Serial == sprite.Serial)
+                        continue;
 
-                for (int i = 0; i < 5; i++)
-                {
-                    if (sprite.FacingDir == Direction.East)
+                    if (target != null && sprite.Position.IsNextTo(target.Position))
                     {
-                        sprite.X++;
-                    }
-                    else if (sprite.FacingDir == Direction.West)
-                    {
-                        sprite.X--;
-                    }
-                    else if (sprite.FacingDir == Direction.North)
-                    {
-                        sprite.Y--;
-                    }
-                    else if (sprite.FacingDir == Direction.South)
-                    {
-                        sprite.Y++;
-                    }
-
-                    int direction;
-                    var hits = GetObjects(n => n.Facing(sprite, out direction), Get.Monsters | Get.Aislings | Get.Mundanes);
-
-                    if (hits.Count() > 0)
-                    {
-                        break;
+                        var imp = (Skill.Level * 5 / 100);
+                        var dmg = 15 * (((sprite.Str* 2) + sprite.Dex * imp));
+                        target.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
+                        {
+                            Target = target;
+                            collided = true;
+                        }
                     }
                 }
 
-                client.Refresh();
+                if (collided)
+                    break;
             }
+
+            if (sprite is Aisling)
+            {
+                (sprite as Aisling).Client.Refresh();
+            }
+
+            Task.Delay(150).ContinueWith((dc) =>
+            {
+                if (Target != null && collided)
+                {
+                    if (Target is Monster || Target is Mundane || Target is Aisling)
+                        Target.Show(Scope.NearbyAislings,
+                            new ServerFormat29((uint)sprite.Serial, (uint)Target.Serial,
+                                Skill.Template.TargetAnimation, 0, 100));
+
+                }
+
+                sprite.Show(Scope.NearbyAislings, action);
+            }).Wait();
+
         }
 
         public override void OnUse(Sprite sprite)
         {
+            if (!Skill.Ready)
+                return;
+
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
@@ -107,15 +125,15 @@ namespace Darkages.Scripting.Scripts.Skills
                     }
 
                     client.TrainSkill(Skill);
-
-                    var success = Skill.RollDice(rand);
-
-                    if (success)
-                        OnSuccess(sprite);
-                    else
-                        OnFailed(sprite);
                 }
             }
+
+            var success = Skill.RollDice(rand);
+
+            if (success)
+                OnSuccess(sprite);
+            else
+                OnFailed(sprite);
         }
     }
 }

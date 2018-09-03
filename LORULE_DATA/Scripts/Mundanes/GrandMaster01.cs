@@ -54,7 +54,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 // Skill Learn
                 case 0x0001:
                     var skills = ServerContext.GlobalSpellTemplateCache.Select(i => i.Value)
-                        .Where(i => i.Prerequisites != null && i.NpcKey != null && i.NpcKey.Equals(this.Mundane.Template.Name)
+                        .Where(i => i.Prerequisites != null && i.NpcKey != null && i.NpcKey.ToLower().Equals(this.Mundane.Template.Name.ToLower())
                         && i.Prerequisites.Class_Required == client.Aisling.Path).ToList();
                     var learned_skills = client.Aisling.SpellBook.Spells.Where(i => i.Value != null).Select(i => i.Value.Template)
                         .ToList();

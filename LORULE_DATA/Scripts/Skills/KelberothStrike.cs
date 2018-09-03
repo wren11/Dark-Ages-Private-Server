@@ -102,6 +102,9 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public override void OnUse(Sprite sprite)
         {
+            if (!Skill.Ready)
+                return;
+
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
@@ -128,30 +131,25 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 if (target == null)
                     return;
 
-                if (target is Aisling)
-                {
-                    (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
+
+                target.Show(Scope.NearbyAislings,
                         new ServerFormat29((uint)target.Serial, (uint)target.Serial,
                             Skill.Template.TargetAnimation, 0, 100));
 
-                    var dmg = Convert.ToInt32(target.CurrentHp / 3);
-                    target.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
+                var dmg = Convert.ToInt32(target.CurrentHp / 3);
+                target.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
 
-                    sprite.CurrentHp -= dmg * 2;
+                sprite.CurrentHp -= dmg * 2;
 
-                    var action = new ServerFormat1A
-                    {
-                        Serial = sprite.Serial,
-                        Number = 0x82,
-                        Speed = 20
-                    };
+                var action = new ServerFormat1A
+                {
+                    Serial = sprite.Serial,
+                    Number = 0x82,
+                    Speed = 20
+                };
 
-                    if (sprite is Monster)
-                    {
-                        (target as Aisling).Client.SendStats(StatusFlags.All);
-                        (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings, action);
-                    }
-                }
+
+                target.Show(Scope.NearbyAislings, action);
             }
         }
     }

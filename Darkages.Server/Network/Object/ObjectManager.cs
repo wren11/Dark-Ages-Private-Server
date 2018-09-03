@@ -27,6 +27,7 @@ namespace Darkages.Network.Object
     public class ObjectManager
     {
         public static Logger logger = LogManager.GetCurrentClassLogger();
+
         [Flags]
         public enum Get
         {
@@ -39,9 +40,12 @@ namespace Darkages.Network.Object
         }
 
         public void DelObject<T>(T obj) where T : Sprite => ServerContext.Game?.ObjectFactory.RemoveGameObject(obj);
+
         public void DelObjects<T>(T[] obj) where T : Sprite => ServerContext.Game?.ObjectFactory.RemoveAllGameObjects(obj);
+
         public T GetObject<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.Query(p);
-        public IEnumerable<T> GetObjects<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.QueryAll(p).ToList();
+
+        public IEnumerable<T> GetObjects<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.QueryAll(p);
 
         public static T Clone<T>(object source)
         {
@@ -70,19 +74,21 @@ namespace Darkages.Network.Object
             if ((source as Mundane) != null)
                 (obj as Mundane).Template = (source as Mundane).Template;
 
-            return (T)obj;
+            return obj;
         }
 
-        public void AddObject<T>(T obj, Predicate<T> p = null)
-            where T : Sprite
+        public void AddObject<T>(T obj, Predicate<T> p = null) where T : Sprite
         {
+            //if there is a predicate to match, only add if the condition is met.
             if (p != null && p(obj))
             {
                 ServerContext.Game.ObjectFactory.AddGameObject(obj);
                 return;
             }
-
-            ServerContext.Game.ObjectFactory.AddGameObject(obj);
+            else if (p == null) // no condition. so we just add.
+            {
+                ServerContext.Game.ObjectFactory.AddGameObject(obj);
+            }
         }
 
         public IEnumerable<Sprite> GetObjects(Predicate<Sprite> p, Get selections)
@@ -91,6 +97,7 @@ namespace Darkages.Network.Object
 
             if ((selections & Get.All) == Get.All)
                 selections = Get.Items | Get.Money | Get.Monsters | Get.Mundanes | Get.Aislings;
+
 
             if ((selections & Get.Aislings) == Get.Aislings)
                 bucket.AddRange(GetObjects<Aisling>(p));
@@ -103,12 +110,13 @@ namespace Darkages.Network.Object
             if ((selections & Get.Items) == Get.Items)
                 bucket.AddRange(GetObjects<Item>(p));
 
+
             return bucket;
         }
 
         public Sprite GetObject(Predicate<Sprite> p, Get selections)
         {
-            return GetObjects(p, selections).LastOrDefault();
+            return GetObjects(p, selections).FirstOrDefault();
         }
     }
 }

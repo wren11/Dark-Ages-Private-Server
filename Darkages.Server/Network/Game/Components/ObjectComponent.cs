@@ -18,7 +18,6 @@
 using Darkages.Network.ServerFormats;
 using Darkages.Storage.locales.Scripts.Items;
 using Darkages.Types;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,18 +41,6 @@ namespace Darkages.Network.Game.Components
                 new GameServerTimer(TimeSpan.FromMilliseconds(1000));
         }
 
-        public void OnObjectAdded(Sprite obj)
-        {
-            var Map = ServerContext.GlobalMapCache[obj.CurrentMapId];
-            if (Map == null)
-                return;
-
-            OnObjectUpdate(obj);
-
-            if (obj.CurrentHp > 0)
-                Map.Update(obj.X, obj.Y, obj.Content);
-        }
-
         public void OnObjectRemoved(Sprite obj)
         {
             if (obj == null)
@@ -66,7 +53,8 @@ namespace Darkages.Network.Game.Components
 
             if (obj is Monster || obj is Mundane)
             {
-                var nearByAislings = obj.GetObjects<Aisling>(i => i.WithinRangeOf(obj));
+                var nearByAislings = obj.AislingsNearby();
+
                 foreach (var nearbyAisling in nearByAislings)
                 {
                     if (obj is Monster)
@@ -75,11 +63,7 @@ namespace Darkages.Network.Game.Components
 
                     if (nearbyAisling.RemoveFromView(obj))
                     {
-                        lock (ServerContext.SyncObj)
-                        {
-                            for (int i = 0; i < 2; i++)
-                                obj.RemoveFrom(nearbyAisling);
-                        }
+                        obj.RemoveFrom(nearbyAisling);
                     }
                 }
             }
@@ -96,13 +80,12 @@ namespace Darkages.Network.Game.Components
 
         public void UpdateOutOfRangeObjects(Sprite obj)
         {
-            var distantObjs = obj.GetObjects(i => !i.WithinRangeOf(obj)
-                                                  && obj.CurrentMapId == i.CurrentMapId,
-                Get.Aislings | Get.Monsters | Get.Mundanes | Get.Items | Get.Money);
+            var distantObjs = obj.GetObjects<Aisling>(i => !i.WithinRangeOf(obj));
 
             foreach (var dObj in distantObjs)
             {
                 if (obj is Aisling)
+                {
                     if ((obj as Aisling).InsideView(dObj))
                     {
                         if ((obj as Aisling).RemoveFromView(dObj))
@@ -110,6 +93,7 @@ namespace Darkages.Network.Game.Components
                             dObj.RemoveFrom(obj as Aisling);
                         }
                     }
+                }
             }
         }
 
@@ -139,6 +123,7 @@ namespace Darkages.Network.Game.Components
 
                 //aisling has not seen this object before.
                 if (!nearbyAisling.InsideView(obj))
+                {
                     if (nearbyAisling.WithinRangeOf(obj))
                     {
                         //construct batch
@@ -163,25 +148,24 @@ namespace Darkages.Network.Game.Components
                                 if ((obj as Aisling).Flags == AislingFlags.Invisible)
                                     return;
 
-                                nearbyAisling.Show(Scope.Self,
-                                    new ServerFormat33(nearbyAisling.Client, obj as Aisling));
+                                obj.ShowTo(nearbyAisling);
                             }
                         }
 
                         nearbyAisling.View(obj);
 
-                        var payLoad = new ServerFormat07(spriteBatch.ToArray());
-
-                        nearbyAisling.Show(
-                            Scope.DefinedAislings,
-                            payLoad,
-                            nearByAislings);
-
-                        foreach (var block in spriteBatch)
+                        if (spriteBatch.Count > 0)
                         {
-                            nearbyAisling.View(block);
+                            foreach (var block in spriteBatch)
+                            {
+                                if (nearbyAisling.View(block))
+                                {
+                                    block.ShowTo(nearbyAisling);
+                                }
+                            }
                         }
                     }
+                }
             }
         }
 
@@ -243,6 +227,7 @@ namespace Darkages.Network.Game.Components
                         OnObjectRemoved(obj);
                         c++;
                     }
+
             }
         }
 

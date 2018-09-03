@@ -139,11 +139,14 @@ namespace Darkages.Types
                 exp = (int)(Template.Level * seed * 300);
             }
 
-            var critical = Math.Abs(GenerateNumber() % 100);
-            if (critical >= 30 && critical <= 32)
+            lock (Generator.Random)
             {
-                player.SendAnimation(341, player, this);
-                exp *= 2;
+                var critical = Math.Abs(GenerateNumber() % 100);
+                if (critical >= 30 && critical <= 32)
+                {
+                    player.SendAnimation(341, player, this);
+                    exp *= 2;
+                }
             }
 
             DistributeExperience(player, exp);

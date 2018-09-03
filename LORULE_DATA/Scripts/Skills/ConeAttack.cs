@@ -17,7 +17,6 @@
 //*************************************************************************/
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,7 +27,7 @@ namespace Darkages.Scripting.Scripts.Skills
     {
         public Skill _skill;
 
-        public Sprite Target;
+        public int Damage => (150 * _skill.Level) / 100;
 
         public ConeAttack(Skill skill) : base(skill)
         {
@@ -89,7 +88,7 @@ namespace Darkages.Scripting.Scripts.Skills
 
                 var action = new ServerFormat1A
                 {
-                    Serial = client.Aisling.Serial,
+                    Serial = sprite.Serial,
                     Number = (byte)(client.Aisling.Path == Class.Warrior ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01 : 0x01),
                     Speed = 20
                 };
@@ -109,13 +108,12 @@ namespace Darkages.Scripting.Scripts.Skills
                             continue;
 
 
-                        var dmg = client.Aisling.Invisible ? 2 : 1 * client.Aisling.Str * 10 * Skill.Level;
+                        var dmg = Damage;
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
                         i.Target = client.Aisling;
 
                         client.Aisling.Show(Scope.NearbyAislings,
-                            new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
-                                Skill.Template.TargetAnimation, 0, 100));
+                            new ServerFormat29(Skill.Template.TargetAnimation, (ushort)i.X, (ushort)i.Y));
                     }
 
                     client.Aisling.Show(Scope.NearbyAislings, action);
@@ -125,6 +123,9 @@ namespace Darkages.Scripting.Scripts.Skills
 
         public override void OnUse(Sprite sprite)
         {
+            if (!Skill.Ready)
+                return;
+
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
@@ -149,30 +150,26 @@ namespace Darkages.Scripting.Scripts.Skills
             }
             else
             {
-                var target = sprite.Target;
-                if (target == null)
-                    return;
+                var enemy = GetInCone(sprite, 3);
 
-                if (target is Aisling)
+                if (enemy != null)
                 {
-                    (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29((uint)target.Serial, (uint)target.Serial,
-                            Skill.Template.TargetAnimation, 0, 100));
-
-                    var dmg = 1 * sprite.Str * 20 * Skill.Level;
-                    target.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
-
-                    var action = new ServerFormat1A
+                    foreach (var i in enemy)
                     {
-                        Serial = sprite.Serial,
-                        Number = 0x82,
-                        Speed = 20
-                    };
+                        if (i == null)
+                            continue;
 
-                    if (sprite is Monster)
-                    {
-                        (target as Aisling).Client.SendStats(StatusFlags.All);
-                        (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings, action);
+                        if (sprite.Serial == i.Serial)
+                            continue;
+
+                        if (i is Aisling || i is Monster)
+                        {
+                            (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
+                                new ServerFormat29(Skill.Template.TargetAnimation, (ushort)i.X, (ushort)i.Y));
+
+                            var dmg = (50 * (sprite.Str+ Skill.Level)) / 100;
+                            i.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
+                        }
                     }
                 }
             }

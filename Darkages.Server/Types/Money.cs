@@ -58,7 +58,6 @@ namespace Darkages.Types
             }
 
             money.AbandonedDate = DateTime.UtcNow;
-            money.CreationDate = DateTime.UtcNow;
             money.CurrentMapId = Parent.CurrentMapId;
             money.X = location.X;
             money.Y = location.Y;

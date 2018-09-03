@@ -43,10 +43,6 @@ namespace Darkages.Scripting
 
         static ScriptManager()
         {
-#if ISDEAN
-            LoadScriptFiles();
-            return;
-#endif
 
             var assembly = Assembly.GetExecutingAssembly();
 
@@ -82,39 +78,46 @@ namespace Darkages.Scripting
 
             foreach (var script in TOTALSCRIPTS)
             {
-                var scriptKey = Path.GetFileNameWithoutExtension(script);
-                var scriptContents = cache[scriptKey] as string;
-
-                if (scriptContents == null)
+                try
                 {
-                    CacheItemPolicy policy = new CacheItemPolicy();
-                    policy.ChangeMonitors.Add(new HostFileChangeMonitor(new string[] { Path.GetFullPath(script) }));
+                    var scriptKey = Path.GetFileNameWithoutExtension(script);
+                    var scriptContents = cache[scriptKey] as string;
 
-                    scriptContents = File.ReadAllText(Path.GetFullPath(script));
-                    cache.Set("source", scriptContents, policy);
-                }
-
-                var assembly = GenerateScript(Path.GetFileNameWithoutExtension(script), scriptContents);
-                var types = assembly.GetTypes();
-
-                foreach (var type in types)
-                {
-                    ScriptAttribute attribute = null;
-
-                    foreach (ScriptAttribute attr in type.GetCustomAttributes(typeof(ScriptAttribute), false))
+                    if (scriptContents == null)
                     {
-                        attribute = attr;
-                        break;
+                        CacheItemPolicy policy = new CacheItemPolicy();
+                        policy.ChangeMonitors.Add(new HostFileChangeMonitor(new string[] { Path.GetFullPath(script) }));
+
+                        scriptContents = File.ReadAllText(Path.GetFullPath(script));
+                        cache.Set("source", scriptContents, policy);
                     }
 
-                    if (attribute == null)
-                        continue;
-                    scripts.Add(attribute.Name, type);
+                    var assembly = GenerateScript(Path.GetFileNameWithoutExtension(script), scriptContents);
+                    var types = assembly.GetTypes();
+
+                    foreach (var type in types)
+                    {
+                        ScriptAttribute attribute = null;
+
+                        foreach (ScriptAttribute attr in type.GetCustomAttributes(typeof(ScriptAttribute), false))
+                        {
+                            attribute = attr;
+                            break;
+                        }
+
+                        if (attribute == null)
+                            continue;
+                        scripts.Add(attribute.Name, type);
+                    }
+
+
+                    drawTextProgressBar(string.Format("Processing Script:'{0}'", Path.GetFileNameWithoutExtension(script)), SCRIPTSPROCESSED++, TOTALSCRIPTS.Length);
+                    Console.CursorLeft = 0;
                 }
-
-
-                drawTextProgressBar(string.Format("Processing Script:'{0}'", Path.GetFileNameWithoutExtension(script)), SCRIPTSPROCESSED++, TOTALSCRIPTS.Length);
-                Console.CursorLeft = 0;
+                catch (Exception)
+                {
+                    //ignore
+                }
             }
 
             Console.WriteLine("");

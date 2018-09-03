@@ -30,6 +30,9 @@ namespace Darkages
 {
     public class Aisling : Sprite
     {
+        [JsonIgnore]
+        public DateTime LookupTime { get; set; }
+
         public Aisling()
         {
             OffenseElement = ElementManager.Element.None;
@@ -49,6 +52,12 @@ namespace Darkages
             LeaderPrivleges = false;
             Remains = new CursedSachel(this);
             ActiveReactor = null;
+            LookupTime = DateTime.UtcNow;
+        }
+
+        public override string ToString()
+        {
+            return Username;
         }
 
         public List<ClientGameSettings> GameSettings { get; set; }
@@ -438,10 +447,15 @@ namespace Darkages
 
             try
             {
-                var objs = GetObjects(i => i.WithinRangeOf(this) && i.Target != null && i.Target.Serial == Serial, Get.Monsters | Get.Mundanes);
-
-                foreach (var obj in objs)
-                    obj.Target = null;
+                if (delete)
+                {
+                    var objs = GetObjects(i => i.WithinRangeOf(this) && i.Target != null && i.Target.Serial == Serial, Get.Monsters | Get.Mundanes);
+                    if (objs != null)
+                    {
+                        foreach (var obj in objs)
+                            obj.Target = null;
+                    }
+                }
             }
             finally
             {

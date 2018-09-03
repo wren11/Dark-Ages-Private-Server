@@ -27,7 +27,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
     public class mordion : SpellScript
     {
         private readonly Random rand = new Random();
-        private readonly buff_mordion Buff = new buff_mordion();
 
 
         public mordion(Spell spell) : base(spell)
@@ -48,11 +47,11 @@ namespace Darkages.Storage.locales.Scripts.Spells
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                var buff   = Clone<buff_mordion>(Buff);
+                var buff = new buff_mordion();
 
                 client.TrainSpell(Spell);
 
-                if (!sprite.HasBuff(buff.Name))
+                if (!sprite.HasBuff("dion") && !sprite.HasBuff("mor dion"))
                 {
                     buff.OnApplied(sprite, buff);
 
@@ -105,9 +104,9 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                var buff = Clone<buff_mordion>(Buff);
+                var buff = new buff_mordion();
 
-                if (!sprite.HasBuff(buff.Name))
+                if (!sprite.HasBuff("dion") && !sprite.HasBuff("mor dion"))
                 {
                     buff.OnApplied(sprite, buff);
                     target.SendAnimation(244, sprite, sprite);

@@ -75,7 +75,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (i is Money)
                             continue;
 
-                        var dmg = client.Aisling.Invisible ? 2 : 1 * client.Aisling.Str * 20 * Skill.Level;
+                        var dmg = client.Aisling.Invisible ? 2 : 1 * client.Aisling.Str* 20 * Skill.Level;
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
 
                         if (i is Monster) (i as Monster).Target = client.Aisling;
@@ -124,17 +124,18 @@ namespace Darkages.Scripting.Scripts.Skills
             }
             else
             {
-                var target = sprite.Target;
-                if (target == null)
-                    return;
-
-                if (target is Aisling)
+                if (Skill.Ready)
                 {
-                    (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29((uint)target.Serial, (uint)target.Serial,
-                            Skill.Template.TargetAnimation, 0, 100));
+                    var target = sprite.Target;
+                    if (target == null)
+                        return;
 
-                    var dmg = 1 * sprite.Str * 20 * Skill.Level;
+
+                    target.Show(Scope.NearbyAislings,
+                         new ServerFormat29((uint)target.Serial, (uint)target.Serial,
+                             Skill.Template.TargetAnimation, 0, 100));
+
+                    var dmg = 1 * sprite.Str* 20 * Skill.Level;
                     target.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
 
                     var action = new ServerFormat1A
@@ -144,11 +145,8 @@ namespace Darkages.Scripting.Scripts.Skills
                         Speed = 20
                     };
 
-                    if (sprite is Monster)
-                    {
-                        (target as Aisling).Client.SendStats(StatusFlags.All);
-                        (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings, action);
-                    }
+
+                    target.Show(Scope.NearbyAislings, action);
                 }
             }
         }

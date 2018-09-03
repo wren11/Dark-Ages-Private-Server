@@ -164,8 +164,6 @@ namespace Darkages.Network.Game
                 return false;
             }
 
-
-
             PayItemPrerequisites(prerequisites);
             {
                 if (prerequisites.Gold_Required > 0)
@@ -266,11 +264,15 @@ namespace Darkages.Network.Game
 
             #endregion
 
-            StatusCheck();
             Regeneration(elapsedTime);
             UpdateStatusBar(elapsedTime);
             UpdateGlobalScripts(elapsedTime);
+
+            StatusCheck();
             HandleTimeOuts();
+            RefreshObjects();
+
+            ServerContext.Game.ObjectPulseController?.OnObjectUpdate(Aisling);
         }
 
         private void StatusCheck()
@@ -284,7 +286,6 @@ namespace Darkages.Network.Game
 
         private void HandleTimeOuts()
         {
-
             if (Aisling.Exchange != null)
             {
                 if (Aisling.Exchange.Trader != null)
@@ -630,11 +631,7 @@ namespace Darkages.Network.Game
             var items_Available = Aisling.Inventory.Items.Values
                 .Where(i => i != null && i.Template != null).ToArray();
 
-
             var formats = new List<NetworkFormat>();
-
-
-
 
             for (var i = 0; i < items_Available.Length; i++)
             {
@@ -651,7 +648,6 @@ namespace Darkages.Network.Game
                     item.WeaponScript = ScriptManager.Load<WeaponScript>(item.Template.WeaponScript, item);
                 }
 
-
                 if (ServerContext.GlobalItemTemplateCache.ContainsKey(item.Template.Name))
                 {
                     var template = ServerContext.GlobalItemTemplateCache[item.Template.Name];
@@ -665,8 +661,6 @@ namespace Darkages.Network.Game
 
                 if (item.Template != null)
                 {
-
-
                     if (Aisling.CurrentWeight + item.Template.CarryWeight < Aisling.MaximumWeight)
                     {
                         var format = new ServerFormat0F(item);
@@ -708,7 +702,10 @@ namespace Darkages.Network.Game
                 var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(Aisling) && i.Client.CanSeeGhosts());
                 Aisling.Show(Scope.NearbyAislingsExludingSelf, response, nearby);
             }
-
+            else
+            {
+                Aisling.Show(Scope.NearbyAislingsExludingSelf, response);
+            }
         }
 
         public void Refresh(bool delete = false)
@@ -760,6 +757,15 @@ namespace Darkages.Network.Game
             Aisling.Show(scope, empty);
         }
 
+        /// <summary>
+        /// Client.Insert: if map is ready (loaded), Inserts an Aisling onto the map in question.
+        /// condition: if it's not present in the object manager.
+        /// 
+        /// true: inserts the object into the object manager, then updates the Map tile location.
+        /// false: does not insert the object into the object manager.
+        /// 
+        /// Note: It will update the map object grid regardless of the above condition.
+        /// </summary>       
         public void Insert()
         {
             if (!Aisling.Map.Ready)

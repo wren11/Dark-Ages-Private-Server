@@ -277,7 +277,7 @@ namespace Darkages
 
         [JsonProperty] public int SERVER_PORT = 2615;
 
-        [JsonProperty] public string SERVER_TITLE = "Lorule Dark ages Server - Accepting Clients Version 7.18";
+        [JsonProperty] public string SERVER_TITLE = "Lorule Dark ages Server - Prepping...";
 
         [JsonProperty] public string ServerTablePath = "server.tbl";
 

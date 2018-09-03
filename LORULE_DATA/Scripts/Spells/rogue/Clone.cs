@@ -1,5 +1,4 @@
-﻿using Darkages.Common;
-using Darkages.Network.ServerFormats;
+﻿using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
 using System;
@@ -47,52 +46,44 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
 
                 Task.Run(() =>
                 {
-                    var mon = Clone<Monster>(target as Monster);
+                    var obj = Clone<Monster>(target as Monster);
 
-                    for (int i = 0; i < 128; i++)
+
+                    var posA = new Position(obj.X - 1, obj.Y);
+                    var posB = new Position(obj.X + 1, obj.Y);
+                    var posC = new Position(obj.X, obj.Y - 1);
+                    var posD = new Position(obj.X, obj.Y + 1);
+
+                    if (obj.Map.IsWall(obj, posA.X, posA.Y))
                     {
-                        var obj = mon;
+                        obj.X = posA.X;
+                        obj.Y = posA.Y;
+                    }
+                    else if (obj.Map.IsWall(obj, posB.X, posB.Y))
+                    {
+                        obj.X = posB.X;
+                        obj.Y = posB.Y;
+                    }
+                    else if (obj.Map.IsWall(obj, posC.X, posC.Y))
+                    {
+                        obj.X = posC.X;
+                        obj.Y = posC.Y;
+                    }
+                    else if (obj.Map.IsWall(obj, posD.X, posD.Y))
+                    {
+                        obj.X = posD.X;
+                        obj.Y = posD.Y;
+                    }
 
-                        var posA = new Position(obj.X - 1, obj.Y);
-                        var posB = new Position(obj.X + 1, obj.Y);
-                        var posC = new Position(obj.X, obj.Y - 1);
-                        var posD = new Position(obj.X, obj.Y + 1);
-
-                        if (obj.Map.IsWall(obj, posA.X, posA.Y))
+                    var monster = Monster.Create(obj.Template, obj.Map);
+                    {
+                        if (monster != null)
                         {
-                            obj.X = posA.X;
-                            obj.Y = posA.Y;
+                            monster.X = obj.X;
+                            monster.Y = obj.Y;
+                            AddObject<Monster>(monster);
                         }
-                        else if (obj.Map.IsWall(obj, posB.X, posB.Y))
-                        {
-                            obj.X = posB.X;
-                            obj.Y = posB.Y;
-                        }
-                        else if (obj.Map.IsWall(obj, posC.X, posC.Y))
-                        {
-                            obj.X = posC.X;
-                            obj.Y = posC.Y;
-                        }
-                        else if (obj.Map.IsWall(obj, posD.X, posD.Y))
-                        {
-                            obj.X = posD.X;
-                            obj.Y = posD.Y;
-                        }
-
-                        var monster = Monster.Create(obj.Template, obj.Map);
-                        {
-                            if (monster != null)
-                            {
-                                monster.X = obj.X;
-                                monster.Y = obj.Y;
-                                AddObject<Monster>(monster);
-                                {
-                                    obj = monster;
-                                    mon = obj;
-                                }
-                            }
-                        }
-                    }                   
+                    }
                 });
 
                 client.Aisling.Show(Scope.NearbyAislings, action);

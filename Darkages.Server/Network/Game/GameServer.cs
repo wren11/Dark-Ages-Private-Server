@@ -38,8 +38,7 @@ namespace Darkages.Network.Game
         private Thread ClientThread = null;
         private Thread HeavyThread = null;
 
-
-        public ObjectService ObjectFactory;
+        public ObjectService ObjectFactory { get; set; }
 
         public Dictionary<Type, GameServerComponent> Components;
 
@@ -49,7 +48,7 @@ namespace Darkages.Network.Game
         {
 
             ServerUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
-            ClientUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
+            ClientUpdateSpan = TimeSpan.FromSeconds(1.0 / 60);
             HeavyUpdateSpan  = TimeSpan.FromSeconds(1.0 / 30);
 
             InitializeGameServer();
@@ -152,8 +151,6 @@ namespace Darkages.Network.Game
 
             InitComponentCache();
 
-            new TaskFactory().StartNew(() => UpdateConnectedClients(this));
-
             Console.WriteLine(string.Format("[Lorule] {0} Server Components loaded.", Components.Count));
         }
 
@@ -216,45 +213,12 @@ namespace Darkages.Network.Game
             if (ServerContext.Paused)
                 return;
 
-            lock (Clients)
+            foreach (var client in Clients)
             {
-                foreach (var client in Clients)
+                if (client != null && client.Aisling != null)
                 {
-                    if (client != null && client.Aisling != null)
-                    {
-                        client.Update(elapsedTime);
-                    }
+                    client.Update(elapsedTime);
                 }
-            }
-        }
-
-        private void UpdateConnectedClients(object state)
-        {
-            while (true)
-            {
-                try
-                {
-                    if (!ServerContext.Paused)
-                    {
-                        foreach (var client in Clients)
-                        {
-                            if (client != null && client.Aisling != null)
-                            {
-                                if (client.Aisling.LoggedIn)
-                                {
-                                    ServerContext.Game.ObjectPulseController?.OnObjectUpdate(client.Aisling);
-                                    client.RefreshObjects();
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (Exception error)
-                {
-                    Console.WriteLine(error.Message + "\n" + error.StackTrace);
-                }
-
-                Thread.Sleep(30);
             }
         }
 

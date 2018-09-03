@@ -34,6 +34,9 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
+            if (User == null || User.PortalSession == null)
+                return;
+
             var portal = ServerContext.GlobalWorldMapTemplateCache[User.PortalSession.FieldNumber];
             var name = string.Format("field{0:000}", portal.FieldNumber);
 

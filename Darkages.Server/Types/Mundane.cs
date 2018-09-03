@@ -78,7 +78,7 @@ namespace Darkages.Types
             if (template == null)
                 return;
 
-            var existing = template.GetObject<Mundane>(p => p.Template != null && p.Template.Name == template.Name);
+            var existing = template.GetObject<Mundane>(p => p != null && p.Template != null && p.Template.Name == template.Name);
 
             //this npc was already created?
             if (existing != null)

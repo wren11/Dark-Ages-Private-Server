@@ -50,7 +50,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 client.TrainSpell(Spell);
 
-                var debuff = Clone<debuff_morfasnadur>(Spell.Template.Debuff);
+                var debuff = new debuff_morfasnadur();
+
                 if (!target.HasDebuff(debuff.Name))
                 {
                     debuff.OnApplied(target, debuff);
@@ -94,7 +95,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     return;
                 }
 
-                var debuff = Clone<debuff_morfasnadur>(Spell.Template.Debuff);
+                var debuff = new debuff_morfasnadur();
 
                 if (!target.HasDebuff(debuff.Name))
                 {

@@ -26,6 +26,11 @@ namespace Darkages.Storage.locales.debuffs
         public override byte Icon => 90;
         public override int Length => 8;
 
+        public debuff_sleep() : base()
+        {
+
+        }
+
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {
             base.OnApplied(Affected, debuff);

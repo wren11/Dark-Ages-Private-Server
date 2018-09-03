@@ -98,6 +98,9 @@ namespace Darkages.Scripting.Scripts.Skills
 
         public override void OnUse(Sprite sprite)
         {
+            if (!Skill.Ready)
+                return;
+
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
@@ -124,30 +127,24 @@ namespace Darkages.Scripting.Scripts.Skills
                 if (target == null)
                     return;
 
-                if (target is Aisling)
+                sprite.Show(Scope.NearbyAislings,
+                    new ServerFormat29((uint)target.Serial, (uint)sprite.Serial,
+                        Skill.Template.TargetAnimation, 0, 100));
+
+                var dmg = sprite.MaximumHp * 300 / 100;
+                target.ApplyDamage(sprite, dmg, false, 44);
+
+
+                var action = new ServerFormat1A
                 {
-                    (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29((uint)target.Serial, (uint)sprite.Serial,
-                            Skill.Template.TargetAnimation, 0, 100));
-
-                    var dmg = sprite.MaximumHp * 300 / 100;
-                    target.ApplyDamage(sprite, dmg, false, 44);
+                    Serial = sprite.Serial,
+                    Number = 0x82,
+                    Speed = 20
+                };
 
 
-                    var action = new ServerFormat1A
-                    {
-                        Serial = sprite.Serial,
-                        Number = 0x82,
-                        Speed = 20
-                    };
-
-                    if (sprite is Monster)
-                    {
-                        sprite.CurrentHp = 1;
-                        (target as Aisling).Client.SendStats(StatusFlags.All);
-                        (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings, action);
-                    }
-                }
+                sprite.CurrentHp = 1;
+                sprite.Show(Scope.NearbyAislings, action);
             }
         }
     }

@@ -172,7 +172,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         new ServerFormat29((uint)target.Serial, (uint)target.Serial,
                             Skill.Template.TargetAnimation, 0, 100));
 
-                    var dmg = 1 * sprite.Str * 200;
+                    var dmg = 1 * sprite.Str* 200;
                     target.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
 
                     var action = new ServerFormat1A

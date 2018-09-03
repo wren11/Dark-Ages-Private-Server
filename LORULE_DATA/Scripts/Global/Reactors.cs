@@ -121,18 +121,18 @@ namespace Darkages.Storage.locales.Scripts.Global
                         if (Client.Aisling.ReactedWith(script.Reactor.Name))
                             continue;
 
-                        #region Map Reactor
-                        //if (script.Reactor.CallerType == Types.ReactorQualifer.Map)
-                        //{
-                        //    if (script.Reactor.MapId == Client.Aisling.CurrentMapId)
-                        //    {
-                        //        if (script.Reactor.Location.X == Client.Aisling.X &&
-                        //            script.Reactor.Location.Y == Client.Aisling.Y)
-                        //        {
-                        //            script.Reactor.Update(Client);
-                        //        }
-                        //    }
-                        //}
+                        #region Update Map Reactors
+                        if (script.Reactor.CallerType == Types.ReactorQualifer.Map)
+                        {
+                            if (script.Reactor.MapId == Client.Aisling.CurrentMapId)
+                            {
+                                if (script.Reactor.Location.X == Client.Aisling.X &&
+                                    script.Reactor.Location.Y == Client.Aisling.Y)
+                                {
+                                    script.Reactor.Update(Client);
+                                }
+                            }
+                        }
                         #endregion
                     }
                 }

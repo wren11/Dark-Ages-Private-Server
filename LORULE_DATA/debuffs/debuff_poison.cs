@@ -24,6 +24,11 @@ namespace Darkages.Storage.locales.debuffs
         public ushort Animation { get; set; }
         public double Modifier  { get; set; }
 
+        public debuff_poison()
+        {
+
+        }
+
         public debuff_poison(string name, int length, byte icon, ushort animation, double mod = 0.05)
         {
             Animation = animation;

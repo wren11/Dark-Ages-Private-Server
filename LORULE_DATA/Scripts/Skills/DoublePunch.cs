@@ -77,7 +77,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         Target = i;
 
                         var imp = (Skill.Level * 10 / 100);
-                        var dmg = (client.Aisling.Str + client.Aisling.Con * imp);
+                        var dmg = (client.Aisling.Str+ client.Aisling.Con * imp);
 
                         dmg *= 3;
 

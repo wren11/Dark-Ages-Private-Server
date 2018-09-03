@@ -29,7 +29,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
     {
         public TrainingDummy(Monster monster, Area map) : base(monster, map)
         {
-
+            Monster.BonusMr = 0;
         }
 
         public override void OnApproach(GameClient client)

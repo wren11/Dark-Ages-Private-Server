@@ -27,7 +27,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
     [Script("Hurricane Kick", "Dean")]
     public class HurricaneKick : SkillScript
     {
-        private debuff_hurricane Debuff = new debuff_hurricane();
         public Skill _skill;
         public Sprite Target;
 
@@ -111,13 +110,13 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         if (i is Money)
                             continue;
 
-                        var debuff = Clone<debuff_hurricane>(Debuff);
+                        var debuff = new debuff_hurricane();
                         if (!i.HasDebuff(debuff.Name))
                         {
                             debuff.OnApplied(i, debuff);
                         }
                     
-                        var dmg = (int)(client.Aisling.Invisible ? 2 : 1 * (client.Aisling.Str + client.Aisling.Con) * 0.05 * Skill.Level);
+                        var dmg = (int)(client.Aisling.Invisible ? 2 : 1 * (client.Aisling.Str+ client.Aisling.Con) * 0.05 * Skill.Level);
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
 
                         if (i is Monster)
@@ -145,6 +144,9 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public override void OnUse(Sprite sprite)
         {
+            if (!Skill.Ready)
+                return;
+
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
@@ -173,28 +175,25 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 if (target == null)
                     return;
 
-                if (target is Aisling)
-                {
-                    (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
+
+                target.Show(Scope.NearbyAislings,
                         new ServerFormat29((uint)target.Serial, (uint)target.Serial,
                             Skill.Template.TargetAnimation, 0, 100));
 
-                    var dmg = 1 * sprite.Str * 200;
-                    target.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
+                var dmg = (50 * sprite.Str) / 100;
+                target.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
 
-                    var action = new ServerFormat1A
-                    {
-                        Serial = sprite.Serial,
-                        Number = 0x82,
-                        Speed = 20
-                    };
+                var action = new ServerFormat1A
+                {
+                    Serial = sprite.Serial,
+                    Number = 0x82,
+                    Speed = 20
+                };
 
-                    if (sprite is Monster)
-                    {
-                        (target as Aisling).Client.SendStats(StatusFlags.All);
-                        (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings, action);
-                    }
-                }
+
+                target.Show(Scope.NearbyAislings, action);
+
+
             }
         }
     }

@@ -3,7 +3,11 @@
   "Drops": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
     "$values": [
-      "Spider's Eye"
+      "Spider's Eye",
+      "beag spiorad deum",
+      "Apple",
+      "Chicken",
+      "Ancuisa Ceir"
     ]
   },
   "Image": 16437,

@@ -19,12 +19,13 @@ using System;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading;
-using static Darkages.Types.ElementManager;
 
 namespace Darkages.Common
 {
     public static class Generator
     {
+        internal static Random Random { get; }
+
         public static volatile int SERIAL;
 
         static Generator()
@@ -34,10 +35,8 @@ namespace Darkages.Common
             GeneratedStrings = new Collection<string>();
         }
 
-        public static Random Random { get; }
         public static Collection<int> GeneratedNumbers { get; }
         public static Collection<string> GeneratedStrings { get; }
-
 
         public static T RandomEnumValue<T>()
         {
@@ -50,29 +49,17 @@ namespace Darkages.Common
 
         public static int GenerateNumber()
         {
-            uint id = 0;
+            var id = (0);
 
-            lock (Random)
+            do
             {
-                do
+                lock (Random)
                 {
-                    if (ServerContext.Config?.UseIncrementalSerials ?? false)
-                        Interlocked.Increment(ref SERIAL);
-                    else
-                        id = (uint)Random.Next();
-                } while (GeneratedNumbers
-                    .Contains(ServerContext.Config?.UseIncrementalSerials ?? false ? SERIAL : (int)id));
-            }
+                    id = Random.Next();
+                }
+            } while (GeneratedNumbers.Contains(id));
 
-            if (ServerContext.Config?.UseIncrementalSerials ?? false)
-                return SERIAL;
-
-            lock (Random)
-            {
-                GeneratedNumbers.Add(SERIAL);
-            }
-
-            return (int)id;
+            return id;
         }
 
         public static string CreateString(int size)

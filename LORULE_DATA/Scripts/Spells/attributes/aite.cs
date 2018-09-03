@@ -26,8 +26,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
     [Script("aite", "Dean")]
     public class aite : SpellScript
     {
-        private readonly buff_aite Buff = new buff_aite();
-
         public aite(Spell spell) : base(spell)
         {
         }
@@ -46,7 +44,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                var buff = Clone<buff_aite>(Buff);
+                var buff = new buff_aite();
 
                 client.TrainSpell(Spell);
 
@@ -101,7 +99,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                var buff = Clone<buff_aite>(Buff);
+                var buff = new buff_aite();
 
                 if (!target.HasBuff(buff.Name))
                 {

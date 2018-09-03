@@ -650,7 +650,6 @@ namespace Darkages.Types
             var obj = new Item
             {
                 AbandonedDate = DateTime.UtcNow,
-                CreationDate = DateTime.UtcNow,
                 Template = template,
                 X = Owner.X,
                 Y = Owner.Y,
@@ -865,7 +864,6 @@ namespace Darkages.Types
 
             if (owner is Aisling)
             {
-                CreationDate = DateTime.UtcNow;
                 AuthenticatedAislings = new Sprite[0];
                 Cursed = false;
             }

@@ -84,8 +84,8 @@ namespace Darkages.Scripting.Scripts.Skills
 
 
 
-                        var imp = (Skill.Level * 5 / 100);
-                        var dmg = ((client.Aisling.Str * 2) + client.Aisling.Dex * imp);
+                        var imp = (Skill.Level * sprite.Level / 70);
+                        var dmg = ((client.Aisling.Str * 4) + client.Aisling.Dex * 2) * imp;
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
                         success = true;
 
@@ -130,6 +130,9 @@ namespace Darkages.Scripting.Scripts.Skills
             }
             else
             {
+                if (!Skill.Ready)
+                    return;
+
                 var enemy = sprite.GetInfront();
 
 

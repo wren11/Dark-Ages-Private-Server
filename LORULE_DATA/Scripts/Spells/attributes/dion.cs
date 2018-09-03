@@ -20,7 +20,6 @@ using Darkages.Scripting;
 using Darkages.Storage.locales.Buffs;
 using Darkages.Types;
 using System;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Spells
 {
@@ -28,7 +27,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
     public class dion : SpellScript
     {
         private readonly Random rand = new Random();
-        private readonly buff_dion Buff = new buff_dion();
 
         public dion(Spell spell) : base(spell)
         {
@@ -48,11 +46,11 @@ namespace Darkages.Storage.locales.Scripts.Spells
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                var buff = Clone<buff_dion>(Buff);
+                var buff = new buff_dion();
 
                 client.TrainSpell(Spell);
 
-                if (!sprite.HasBuff(buff.Name))
+                if (!sprite.HasBuff("dion") && !sprite.HasBuff("mor dion"))
                 {
                     buff.OnApplied(sprite, buff);
 
@@ -106,7 +104,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                var buff = Clone<buff_dion>(Buff);
+                var buff = new buff_dion();
 
                 if (!sprite.HasBuff(buff.Name))
                 {

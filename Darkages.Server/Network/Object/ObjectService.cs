@@ -15,77 +15,110 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Network.Game;
 using Darkages.Types;
+using Newtonsoft.Json;
+using NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace Darkages.Network.Object
 {
-    public class SpriteCollection<T> : IEnumerable<T>, INotifyCollectionChanged
+    public class SpriteCollection<T> : IEnumerable<T>
+        where T: Sprite
     {
-        private readonly ConcurrentList<T> _values;
+        public static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
+        private readonly List<T> _values;
 
-        public SpriteCollection(IEnumerable<T> values) => _values = new ConcurrentList<T>(values);
+        public SpriteCollection(IEnumerable<T> values)
+        {
+            _values = new List<T>(values);
+        }
 
         public T Query(Predicate<T> predicate)
         {
-            return _values.FirstOrDefault(i => predicate(i));
+            for (int i = _values.Count - 1; i >= 0; i--)
+            {
+                var subject = predicate(_values[i]);
+
+                if (subject)
+                {
+                    return _values[i];
+                }
+            }
+
+            return default(T);
         }
 
         public IEnumerable<T> QueryAll(Predicate<T> predicate)
         {
-            return _values.Where(i => predicate(i) && i != null);
+            for (int i = _values.Count - 1; i >= 0; i--)
+            {
+                var subject = predicate(_values[i]);
+
+                if (subject)
+                {
+                    yield return _values[i];
+                }
+            }
         }
 
         public void Add(T obj)
         {
             _values.Add(obj);
-
-            CollectionChanged?
-                .Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add));
         }
 
         public void Delete(T obj)
         {
-            if (_values.Remove(obj))
+            for (int i = _values.Count - 1; i >= 0; i--)
             {
-                CollectionChanged?
-                    .Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove));
+                var subject   = (obj as Sprite);
+                var predicate = (_values[i] as Sprite);
+
+                if (subject == predicate)
+                {
+                    _values.RemoveAt(i);
+                }
             }
         }
 
-        public IEnumerator<T> GetEnumerator() => _values.GetEnumerator();
+        public IEnumerator<T> GetEnumerator()   => _values.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
-    public sealed class ObjectService
+    public sealed class ObjectService 
     {
         private readonly IDictionary<Type, object> _spriteCollections = new Dictionary<Type, object>
         {
-            [typeof(Aisling)] = new SpriteCollection<Aisling>(Enumerable.Empty<Aisling>()),
-            [typeof(Monster)] = new SpriteCollection<Monster>(Enumerable.Empty<Monster>()),
-            [typeof(Mundane)] = new SpriteCollection<Mundane>(Enumerable.Empty<Mundane>()),
-            [typeof(Money)] = new SpriteCollection<Money>(Enumerable.Empty<Money>()),
-            [typeof(Item)] = new SpriteCollection<Item>(Enumerable.Empty<Item>()),
+            [typeof(Aisling)]  = new SpriteCollection<Aisling>(Enumerable.Empty<Aisling>()),
+            [typeof(Monster)]  = new SpriteCollection<Monster>(Enumerable.Empty<Monster>()),
+            [typeof(Mundane)]  = new SpriteCollection<Mundane>(Enumerable.Empty<Mundane>()),
+            [typeof(Money)]    = new SpriteCollection<Money>(Enumerable.Empty<Money>()),
+            [typeof(Item)]     = new SpriteCollection<Item>(Enumerable.Empty<Item>()),
         };
 
-
-        public T Query<T>(Predicate<T> predicate)
+        public T Query<T>(Predicate<T> predicate) where T: Sprite
         {
             var obj = (SpriteCollection<T>)_spriteCollections[typeof(T)];
-            return obj.Query(predicate);
+            var queryResult = obj.Query(predicate);
+            {
+                return queryResult;
+            }
         }
 
-        public IEnumerable<T> QueryAll<T>(Predicate<T> predicate)
+        public IEnumerable<T> QueryAll<T>(Predicate<T> predicate) where T: Sprite
         {
             var obj = (SpriteCollection<T>)_spriteCollections[typeof(T)];
-            return obj.QueryAll(predicate);
+            var queryResult = obj.QueryAll(predicate);
+            {
+                return queryResult;
+            }
         }
 
         public void RemoveAllGameObjects<T>(T[] objects) where T : Sprite
