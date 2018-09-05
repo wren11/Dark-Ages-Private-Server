@@ -108,6 +108,9 @@
     <None Include="Storage\locales\metafile\SEvent7" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="zlib.net.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Notification.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
