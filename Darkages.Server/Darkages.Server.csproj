@@ -46,19 +46,18 @@
   <ItemGroup>
     <Reference Include="Darkages.Interops, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>include\Darkages.Interops.dll</HintPath>
+      <HintPath>..\Dependacies\Darkages.Interops.dll</HintPath>
     </Reference>
     <Reference Include="Darkages.Security, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>include\Darkages.Security.dll</HintPath>
+      <HintPath>..\Dependacies\Darkages.Security.dll</HintPath>
     </Reference>
     <Reference Include="Mono.CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>include\Mono.CSharp.dll</HintPath>
+      <HintPath>..\Dependacies\Mono.CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>include\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -72,7 +71,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="zlib.net, Version=1.0.3.0, Culture=neutral, PublicKeyToken=47d7877cb3620160">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>include\zlib.net.dll</HintPath>
+      <HintPath>..\Dependacies\zlib.net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -109,12 +108,6 @@
     <None Include="Storage\locales\metafile\SEvent7" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="include\Loot.dll" />
-    <Content Include="include\Mono.CSharp.dll" />
-    <Content Include="include\Newtonsoft.Json.dll" />
-    <Content Include="include\Newtonsoft.Json.xml" />
-    <Content Include="include\zlib.net.dll" />
-    <Content Include="include\ZTn.Json.JsonTreeView.dll" />
     <None Include="Notification.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

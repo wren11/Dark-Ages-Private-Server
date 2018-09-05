@@ -48,11 +48,11 @@ namespace Darkages
 
         [JsonIgnore] [Browsable(false)] public bool Ready { get; set; }
 
-        [JsonRequired] public ushort Rows { get; set; }
+        public ushort Rows { get; set; }
 
-        [JsonRequired] public ushort Cols { get; set; }
+        public ushort Cols { get; set; }
 
-        [JsonRequired] public int Number { get; set; }
+        public int Number { get; set; }
 
         public int ID { get; set; }
 
