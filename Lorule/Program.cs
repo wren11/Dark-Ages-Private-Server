@@ -43,7 +43,7 @@ namespace Lorule
 #if ISDEAN
             DisplayEnumReferences();
 #endif
-            _Server = new Instance();
+            _Server = new Instance();        
             _Server.Start();
             _Server.Report();
         }

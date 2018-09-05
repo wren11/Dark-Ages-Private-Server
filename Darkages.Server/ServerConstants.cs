@@ -1019,6 +1019,12 @@ namespace Darkages
 
         };
 
+        [JsonProperty]
+        public bool UsingDatabase = true;
+
+        [JsonProperty]
+        public string ConnectionString = @"Server=localhost;Database=master;Trusted_Connection=True;";
+
         public override string ToString()
         {
             return StorageManager.Save(this)

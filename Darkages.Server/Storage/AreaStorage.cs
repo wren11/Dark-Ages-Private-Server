@@ -26,6 +26,8 @@ namespace Darkages.Storage
     {
         public static string StoragePath;
 
+        public int Count => Directory.GetFiles(StoragePath, "*.json", SearchOption.TopDirectoryOnly).Length;
+
         static AreaStorage()
         {
             if (ServerContext.StoragePath == null)

@@ -25,15 +25,10 @@ namespace Darkages.Storage
 {
     public class StorageManager
     {
-
         public static JsonSerializerSettings Settings = new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.All,
-            //NullValueHandling = NullValueHandling.Ignore,
-            //ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            //ObjectCreationHandling = ObjectCreationHandling.Auto,
             Formatting = Formatting.Indented,
-            //TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full
         };
 
         public static AislingStorage AislingBucket = new AislingStorage();

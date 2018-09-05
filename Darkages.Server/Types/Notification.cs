@@ -32,11 +32,14 @@ namespace Darkages.Types
 
         public static Notification FromFile(string filename)
         {
-            var result = new Notification();
+            var result          = new Notification();
+            var message         = File.ReadAllText(filename);
 
-            result.InflatedData = File.ReadAllText(filename).ToByteArray();
-            result.Hash = Crc32Provider.ComputeChecksum(result.InflatedData);
+            result.InflatedData = message.ToByteArray();
+            result.Hash         = Crc32Provider.ComputeChecksum(result.InflatedData);
             result.Compress();
+
+            ServerContext.GlobalMessage = message;
 
             return result;
         }

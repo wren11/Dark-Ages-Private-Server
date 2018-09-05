@@ -896,35 +896,10 @@ namespace Darkages.Network.Game
             Aisling.Show(Scope.NearbyAislings, response);
         }
 
-        public void SendAnimation(ushort Animation, Sprite To, Sprite From, byte speed = 100, bool repeat = false)
+        public void SendAnimation(ushort Animation, Sprite To, Sprite From, byte speed = 100)
         {
             var format = new ServerFormat29((uint)From.Serial, (uint)To.Serial, Animation, 0, speed);
-
-            if (!repeat)
-            {
-                Aisling.Show(Scope.NearbyAislings, format);
-                return;
-            }
-
-            new TaskFactory().StartNew(() =>
-            {
-                while (ServerContext.Running)
-                {
-                    if (To == null)
-                        break;
-
-                    if (From == null)
-                        break;
-
-                    if (!Aisling.WithinRangeOf(To, 6))
-                        break;
-
-
-                    To?.Show(Scope.NearbyAislings, format);
-
-                    Thread.Sleep(1000);
-                }
-            });
+            Aisling.Show(Scope.NearbyAislings, format);
         }
 
         public void SendItemShopDialog(Mundane mundane, string text, ushort step, IEnumerable<ItemTemplate> items)

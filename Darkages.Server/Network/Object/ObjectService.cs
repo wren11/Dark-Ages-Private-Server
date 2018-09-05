@@ -15,40 +15,38 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Game;
 using Darkages.Types;
-using Newtonsoft.Json;
 using NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Linq.Expressions;
+using System.Runtime.Serialization;
 
 namespace Darkages.Network.Object
 {
+    [DataContract]
     public class SpriteCollection<T> : IEnumerable<T>
         where T: Sprite
     {
         public static Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly List<T> _values;
+        public readonly List<T> Values = null;
 
         public SpriteCollection(IEnumerable<T> values)
         {
-            _values = new List<T>(values);
+            Values = new List<T>(values);
         }
 
         public T Query(Predicate<T> predicate)
         {
-            for (int i = _values.Count - 1; i >= 0; i--)
+            for (int i = Values.Count - 1; i >= 0; i--)
             {
-                var subject = predicate(_values[i]);
+                var subject = predicate(Values[i]);
 
                 if (subject)
                 {
-                    return _values[i];
+                    return Values[i];
                 }
             }
 
@@ -57,37 +55,37 @@ namespace Darkages.Network.Object
 
         public IEnumerable<T> QueryAll(Predicate<T> predicate)
         {
-            for (int i = _values.Count - 1; i >= 0; i--)
+            for (int i = Values.Count - 1; i >= 0; i--)
             {
-                var subject = predicate(_values[i]);
+                var subject = predicate(Values[i]);
 
                 if (subject)
                 {
-                    yield return _values[i];
+                    yield return Values[i];
                 }
             }
         }
 
         public void Add(T obj)
         {
-            _values.Add(obj);
+            Values.Add(obj);
         }
 
         public void Delete(T obj)
         {
-            for (int i = _values.Count - 1; i >= 0; i--)
+            for (int i = Values.Count - 1; i >= 0; i--)
             {
                 var subject   = (obj as Sprite);
-                var predicate = (_values[i] as Sprite);
+                var predicate = (Values[i] as Sprite);
 
                 if (subject == predicate)
                 {
-                    _values.RemoveAt(i);
+                    Values.RemoveAt(i);
                 }
             }
         }
 
-        public IEnumerator<T> GetEnumerator()   => _values.GetEnumerator();
+        public IEnumerator<T> GetEnumerator()   => Values.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

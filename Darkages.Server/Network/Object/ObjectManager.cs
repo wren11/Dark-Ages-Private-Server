@@ -24,9 +24,9 @@ using System.Linq;
 
 namespace Darkages.Network.Object
 {
+
     public class ObjectManager
     {
-        public static Logger logger = LogManager.GetCurrentClassLogger();
 
         [Flags]
         public enum Get
@@ -38,6 +38,8 @@ namespace Darkages.Network.Object
             Money = 16,
             All = Aislings | Items | Money | Monsters | Mundanes
         }
+
+        public static Logger logger = LogManager.GetCurrentClassLogger();
 
         public void DelObject<T>(T obj) where T : Sprite => ServerContext.Game?.ObjectFactory.RemoveGameObject(obj);
 
@@ -79,13 +81,12 @@ namespace Darkages.Network.Object
 
         public void AddObject<T>(T obj, Predicate<T> p = null) where T : Sprite
         {
-            //if there is a predicate to match, only add if the condition is met.
             if (p != null && p(obj))
             {
                 ServerContext.Game.ObjectFactory.AddGameObject(obj);
                 return;
             }
-            else if (p == null) // no condition. so we just add.
+            else if (p == null) 
             {
                 ServerContext.Game.ObjectFactory.AddGameObject(obj);
             }
@@ -98,7 +99,6 @@ namespace Darkages.Network.Object
             if ((selections & Get.All) == Get.All)
                 selections = Get.Items | Get.Money | Get.Monsters | Get.Mundanes | Get.Aislings;
 
-
             if ((selections & Get.Aislings) == Get.Aislings)
                 bucket.AddRange(GetObjects<Aisling>(p));
             if ((selections & Get.Monsters) == Get.Monsters)
@@ -109,7 +109,6 @@ namespace Darkages.Network.Object
                 bucket.AddRange(GetObjects<Money>(p));
             if ((selections & Get.Items) == Get.Items)
                 bucket.AddRange(GetObjects<Item>(p));
-
 
             return bucket;
         }

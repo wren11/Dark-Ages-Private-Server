@@ -30,7 +30,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Threading.Tasks;
+using System.Text;
+using System.Text.RegularExpressions;
 using Class = Darkages.Types.Class;
 
 namespace Darkages
@@ -40,12 +41,19 @@ namespace Darkages
         internal static volatile object SyncObj = new object();
 
         public static int Errors, DefaultPort;
+
         public static bool Running, Paused;
 
         public static GameServer Game;
+
         public static LoginServer Lobby;
+
         public static ServerConstants Config;
+
         public static IPAddress Ipaddress => IPAddress.Parse(File.ReadAllText("server.tbl"));
+
+        public static string GlobalMessage { get; internal set; }
+
         public static string StoragePath = @"..\..\..\LORULE_DATA";
 
         public static List<Redirect> GlobalRedirects = new List<Redirect>();
@@ -161,7 +169,7 @@ namespace Darkages
                 }
             }
 
-
+        
             Running = true;
         }
 
@@ -196,6 +204,7 @@ namespace Darkages
                     LoadConstants();
                     LoadAndCacheStorage();
                     StartServers();
+                    InitScriptEvaluators();
                 }
                 catch (Exception error)
                 {
@@ -203,7 +212,7 @@ namespace Darkages
                 }
             }
             logger.Warn("{0} Online.", Config.SERVER_TITLE);
-        }
+        }        
 
         private static void EmptyCacheCollectors()
         {
@@ -285,157 +294,155 @@ namespace Darkages
             }
         }
 
-        public static async void LoadAndCacheStorage()
+        public static void LoadAndCacheStorage()
         {
             Paused = true;
-            Paused = await Task.Run(() =>
+
+            EmptyCacheCollectors();
+            lock (SyncObj)
             {
-                EmptyCacheCollectors();
-                lock (SyncObj)
+                LoadMaps();
+                LoadSkillTemplates();
+                LoadSpellTemplates();
+                LoadItemTemplates();
+                LoadMonsterTemplates();
+                LoadMundaneTemplates();
+                LoadWarpTemplates();
+                LoadWorldMapTemplates();
+                CacheCommunityAssets();
+                BindTemplates();
+                LoadMetaDatabase();
+                LoadExtensions();
+            }
+
+            var trap = new SpellTemplate()
+            {
+                Animation = 91,
+                ScriptKey = "Needle Trap",
+                IsTrap = true,
+                Name = "Needle Trap",
+                TargetType = SpellTemplate.SpellUseType.NoTarget,
+                Icon = 16,
+                ManaCost = 20,
+                BaseLines = 1,
+                MaxLines = 9,
+                MaxLevel = 100,
+                Pane = Pane.Spells,
+                Sound = 89,
+                MinLines = 0,
+                DamageExponent = 5.0,
+                Description = "Place a Small Trap damaging enemies who walk over it.",
+                ElementalProperty = ElementManager.Element.Light,
+                TargetAnimation = 68,
+                LevelRate = 0.05,
+                TierLevel = Tier.Tier1,
+                Prerequisites = new LearningPredicate()
                 {
-                    LoadMaps();
-                    LoadSkillTemplates();
-                    LoadSpellTemplates();
-                    LoadItemTemplates();
-                    LoadMonsterTemplates();
-                    LoadMundaneTemplates();
-                    LoadWarpTemplates();
-                    LoadWorldMapTemplates();
-                    CacheCommunityAssets();
-                    BindTemplates();
-                    LoadMetaDatabase();
-                    LoadExtensions();
-                    InitScriptEvaluators();
+                    Class_Required = Class.Rogue,
+                    Dex_Required = 19,
+                    Gold_Required = 1000,
+                    Int_Required = 3,
+                    Stage_Required = ClassStage.Class,
+                    ExpLevel_Required = 5
                 }
-
-                var trap = new SpellTemplate()
-                {
-                    Animation = 91,
-                    ScriptKey = "Needle Trap",
-                    IsTrap = true,
-                    Name = "Needle Trap",
-                    TargetType = SpellTemplate.SpellUseType.NoTarget,
-                    Icon = 16,
-                    ManaCost = 20,
-                    BaseLines = 1,
-                    MaxLines = 9,
-                    MaxLevel = 100,
-                    Pane = Pane.Spells,
-                    Sound = 89,
-                    MinLines = 0,
-                    DamageExponent = 5.0,
-                    Description = "Place a Small Trap damaging enemies who walk over it.",
-                    ElementalProperty = ElementManager.Element.Light,
-                    TargetAnimation = 68,
-                    LevelRate = 0.05,
-                    TierLevel = Tier.Tier1,
-                    Prerequisites = new LearningPredicate()
-                    {
-                        Class_Required = Class.Rogue,
-                        Dex_Required = 19,
-                        Gold_Required = 1000,
-                        Int_Required = 3,
-                        Stage_Required = ClassStage.Class,
-                        ExpLevel_Required = 5
-                    }
-                };
+            };
 
 
-                GlobalItemTemplateCache["Apple"] = new ItemTemplate()
-                {
-                    LevelRequired = 1,
-                    Name = "Apple",
-                    MiniScript = "user.CurrentHp += 10;",
-                    CanStack = true,
-                    MaxStack = 100,
-                    Flags = ItemFlags.Consumable | ItemFlags.Bankable | ItemFlags.Stackable | ItemFlags.Sellable | ItemFlags.Tradeable | ItemFlags.QuestRelated | ItemFlags.Dropable,
-                    DropRate = 0.95,
-                    CarryWeight = 0,
-                    Image = 0x8028,
-                    DisplayImage = 0x8028,
-                };
+            GlobalItemTemplateCache["Apple"] = new ItemTemplate()
+            {
+                LevelRequired = 1,
+                Name = "Apple",
+                MiniScript = "user.CurrentHp += 10;",
+                CanStack = true,
+                MaxStack = 100,
+                Flags = ItemFlags.Consumable | ItemFlags.Bankable | ItemFlags.Stackable | ItemFlags.Sellable | ItemFlags.Tradeable | ItemFlags.QuestRelated | ItemFlags.Dropable,
+                DropRate = 0.95,
+                CarryWeight = 0,
+                Image = 0x8028,
+                DisplayImage = 0x8028,
+            };
 
-                var spider = new MonsterTemplate()
-                {
-                    Name = "Spider",
-                    ScriptName = "Common Monster",
-                    AreaID = 426,
-                    Level = 1,
-                    BaseName = "Spider",
-                    AttackSpeed = 1000,
-                    MovementSpeed = 1000,
-                    CastSpeed = 10000,
-                    DefenseElement = ElementManager.Element.None,
-                    OffenseElement = ElementManager.Element.None,
-                    Description = "Small creature that dwells in dark places, such as crypts. Not very Aggressive, Unless Attacked.",
-                    ElementType = ElementQualifer.None,
-                    IgnoreCollision = false,
-                    LootType = LootQualifer.Table,
-                    ImageVarience = 0,
-                    Image = 0x4035,
-                    UpdateMapWide = false,
-                    MoodType = MoodQualifer.Neutral,
-                    SpawnType = SpawnQualifer.Random,
-                    PathQualifer = PathQualifer.Wander,
-                    SpawnRate = 12,
-                    SpawnSize = 26,
-                    SpawnMax = 200,
-                    FamilyKey = "Insect",
-                    Grow = false,
-                    Drops = new System.Collections.ObjectModel.Collection<string>()
+            var spider = new MonsterTemplate()
+            {
+                Name = "Spider",
+                ScriptName = "Common Monster",
+                AreaID = 426,
+                Level = 1,
+                BaseName = "Spider",
+                AttackSpeed = 1000,
+                MovementSpeed = 1000,
+                CastSpeed = 10000,
+                DefenseElement = ElementManager.Element.None,
+                OffenseElement = ElementManager.Element.None,
+                Description = "Small creature that dwells in dark places, such as crypts. Not very Aggressive, Unless Attacked.",
+                ElementType = ElementQualifer.None,
+                IgnoreCollision = false,
+                LootType = LootQualifer.Table,
+                ImageVarience = 0,
+                Image = 0x4035,
+                UpdateMapWide = false,
+                MoodType = MoodQualifer.Neutral,
+                SpawnType = SpawnQualifer.Random,
+                PathQualifer = PathQualifer.Wander,
+                SpawnRate = 12,
+                SpawnSize = 26,
+                SpawnMax = 200,
+                FamilyKey = "Insect",
+                Grow = false,
+                Drops = new System.Collections.ObjectModel.Collection<string>()
                     {
                         "Spiders's Eye"
                     },
-                };
+            };
 
 
-                var item = new ItemTemplate()
+            var item = new ItemTemplate()
+            {
+                Name = "Spider's Eye",
+                Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.Tradeable | ItemFlags.QuestRelated | ItemFlags.Sellable | ItemFlags.Stackable,
+                CanStack = true,
+                MaxStack = 20,
+                Value = 300,
+                CarryWeight = 1,
+                DropRate = 80,
+                Image = 0x814F,
+                LevelRequired = 1,
+                Description = "These can be found by killing spiders down in the mileth crypt.",
+            };
+
+            //StorageManager.ItemBucket.Save(item);
+            //StorageManager.MonsterBucket.Save(spider);
+
+            var trap2 = new SpellTemplate()
+            {
+                Animation = 91,
+                ScriptKey = "Stiletto Trap",
+                IsTrap = true,
+                Name = "Stiletto Trap",
+                TargetType = SpellTemplate.SpellUseType.NoTarget,
+                Icon = 52,
+                ManaCost = 20,
+                BaseLines = 1,
+                MaxLines = 9,
+                MaxLevel = 100,
+                Pane = Pane.Spells,
+                Sound = 60,
+                MinLines = 0,
+                DamageExponent = 5.0,
+                Description = "Place a medium Trap damaging enemies who walk over it.",
+                ElementalProperty = ElementManager.Element.Light,
+                TargetAnimation = 394,
+                LevelRate = 0.05,
+                TierLevel = Tier.Tier1,
+                Prerequisites = new LearningPredicate()
                 {
-                    Name = "Spider's Eye",
-                    Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.Tradeable | ItemFlags.QuestRelated | ItemFlags.Sellable | ItemFlags.Stackable,
-                    CanStack = true,
-                    MaxStack = 20,
-                    Value = 300,
-                    CarryWeight = 1,
-                    DropRate = 80,
-                    Image = 0x814F,
-                    LevelRequired = 1,
-                    Description = "These can be found by killing spiders down in the mileth crypt.",
-                };
-
-               //StorageManager.ItemBucket.Save(item);
-               //StorageManager.MonsterBucket.Save(spider);
-
-                var trap2 = new SpellTemplate()
-                {
-                    Animation = 91,
-                    ScriptKey = "Stiletto Trap",
-                    IsTrap = true,
-                    Name = "Stiletto Trap",
-                    TargetType = SpellTemplate.SpellUseType.NoTarget,
-                    Icon = 52,
-                    ManaCost = 20,
-                    BaseLines = 1,
-                    MaxLines = 9,
-                    MaxLevel = 100,
-                    Pane = Pane.Spells,
-                    Sound = 60,
-                    MinLines = 0,
-                    DamageExponent = 5.0,
-                    Description = "Place a medium Trap damaging enemies who walk over it.",
-                    ElementalProperty = ElementManager.Element.Light,
-                    TargetAnimation = 394,
-                    LevelRate = 0.05,
-                    TierLevel = Tier.Tier1,
-                    Prerequisites = new LearningPredicate()
-                    {
-                        Class_Required = Class.Rogue,
-                        Dex_Required = 6,
-                        Gold_Required = 5000,
-                        Int_Required = 8,
-                        Stage_Required = ClassStage.Class,
-                        ExpLevel_Required = 9,
-                        Items_Required = new List<ItemPredicate>()
+                    Class_Required = Class.Rogue,
+                    Dex_Required = 6,
+                    Gold_Required = 5000,
+                    Int_Required = 8,
+                    Stage_Required = ClassStage.Class,
+                    ExpLevel_Required = 9,
+                    Items_Required = new List<ItemPredicate>()
                         {
                             new ItemPredicate()
                             {
@@ -443,28 +450,28 @@ namespace Darkages
                                  AmountRequired = 1,
                             }
                         }
-                    }
-                };
+                }
+            };
 
-                //GlobalSpellTemplateCache["Needle Trap"] = trap;
-               // GlobalSpellTemplateCache["Stiletto Trap"] = trap2;
-
-
+            //GlobalSpellTemplateCache["Needle Trap"] = trap;
+            // GlobalSpellTemplateCache["Stiletto Trap"] = trap2;
 
 
-                GlobalReactorCache["tut_reactor_1"] = new Reactor()
+
+
+            GlobalReactorCache["tut_reactor_1"] = new Reactor()
+            {
+                CallerType = ReactorQualifer.Map,
+                Description = "test description",
+                Name = "tut_reactor_1",
+                Location = new Position(40, 21),
+                MapId = 101,
+                ScriptKey = "example reactor",
+                QuestReward = new Quest()
                 {
-                    CallerType = ReactorQualifer.Map,
-                    Description = "test description",
-                    Name = "tut_reactor_1",
-                    Location = new Position(40, 21),
-                    MapId = 101,
-                    ScriptKey = "example reactor",
-                    QuestReward = new Quest()
-                    {
-                        ExpRewards = new List<uint>() { 500 },
-                        GoldReward = 500,
-                        LegendRewards = new List<Legend.LegendItem>()
+                    ExpRewards = new List<uint>() { 500 },
+                    GoldReward = 500,
+                    LegendRewards = new List<Legend.LegendItem>()
                          {
                              new Legend.LegendItem()
                              {
@@ -474,9 +481,9 @@ namespace Darkages
                                   Value = "Witnessed the Magical Tree.",
                              }
                          },
-                    },
+                },
 
-                    Steps = new List<DialogSequence>()
+                Steps = new List<DialogSequence>()
                       {
                           new DialogSequence()
                           {
@@ -503,10 +510,10 @@ namespace Darkages
                                CanMoveNext = true,
                           },
                       }
-                };
+            };
 
-                return false;
-            });
+
+            Paused = false;
         }
 
         private static void LoadExtensions()
@@ -532,13 +539,13 @@ namespace Darkages
             }
         }
 
-        private static void InitScriptEvaluator()
+        public static void InitScriptEvaluator()
         {
             Evaluator.Init(new string[0]);
             var assembly = Assembly.Load("Darkages.Server");
             Evaluator.ReferenceAssembly(assembly);
 
-            @"using Darkages.Common;
+            @"  using Darkages.Common;
                 using Darkages.Common;
                 using Darkages.Network.Game;
                 using Darkages.Network.Login;

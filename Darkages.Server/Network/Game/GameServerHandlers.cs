@@ -19,10 +19,8 @@ using Darkages.Common;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
-using Darkages.Scripting.Scripts.Skills;
 using Darkages.Security;
 using Darkages.Storage;
-using Darkages.Storage.locales.debuffs;
 using Darkages.Storage.locales.Scripts.Mundanes;
 using Darkages.Types;
 using System;
@@ -31,7 +29,6 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using static Darkages.ServerConstants;
 
 namespace Darkages.Network.Game
 {
@@ -1620,9 +1617,8 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            if (format.Type == 1) // object clicked.
+            if (format.Type == 1)
             {
-                //only search for aislings/monsters/npcs for now.
                 var obj = GetObject(i => i.Serial == format.Serial, Get.All);
 
                 switch (obj)

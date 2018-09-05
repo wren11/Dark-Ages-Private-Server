@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Darkages
@@ -155,16 +154,18 @@ namespace Darkages
 
         public void Update(TimeSpan elapsedTime)
         {
-            var tmp = GetObjects(i => i.CurrentMapId == ID, Get.All);
+            List<Sprite> tmp;
 
-            UpdateMonsters(elapsedTime,
-                tmp.OfType<Monster>());
+            lock (ServerContext.SyncObj)
+            {
+                tmp = new List<Sprite>(GetObjects(i => i.CurrentMapId == ID, Get.All)).ToList();
+            }
 
-            UpdateMundanes(elapsedTime,
-                tmp.OfType<Mundane>());
+            UpdateMonsters(elapsedTime,tmp.OfType<Monster>());
 
-            UpdateItems(elapsedTime, 
-                tmp.OfType<Money>().Concat<Sprite>(tmp.OfType<Item>()));
+            UpdateMundanes(elapsedTime, tmp.OfType<Mundane>());
+
+            UpdateItems(elapsedTime, tmp.OfType<Money>().Concat<Sprite>(tmp.OfType<Item>()));
 
             WarpTimer.Update(elapsedTime);
             if (WarpTimer.Elapsed)

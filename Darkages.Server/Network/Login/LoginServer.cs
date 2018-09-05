@@ -35,8 +35,8 @@ namespace Darkages.Network.Login
             Notification = Notification.FromFile("notification.txt");
         }
 
-        public MServerTable MServerTable { get; set; }
-        public Notification Notification { get; set; }
+        public static MServerTable MServerTable { get; set; }
+        public static Notification Notification { get; set; }
 
         /// <summary>
         ///     Send Encryption Parameters.
