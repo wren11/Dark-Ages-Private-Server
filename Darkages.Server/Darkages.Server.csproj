@@ -46,11 +46,11 @@
   <ItemGroup>
     <Reference Include="Darkages.Interops, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Darkages.Interops.dll</HintPath>
+      <HintPath>include\Darkages.Interops.dll</HintPath>
     </Reference>
     <Reference Include="Darkages.Security, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Darkages.Security.dll</HintPath>
+      <HintPath>include\Darkages.Security.dll</HintPath>
     </Reference>
     <Reference Include="Mono.CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
