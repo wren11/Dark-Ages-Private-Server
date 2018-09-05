@@ -30,8 +30,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 using Class = Darkages.Types.Class;
 
 namespace Darkages
@@ -206,7 +204,7 @@ namespace Darkages
                     StartServers();
                     InitScriptEvaluators();
                 }
-                catch (Exception error)
+                catch (Exception)
                 {
                     Console.WriteLine("Startup Error.");
                 }

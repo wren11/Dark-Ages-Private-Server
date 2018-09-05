@@ -104,7 +104,7 @@ namespace Darkages.Network.Game.Components
                         CollectedMeta.Aislings = objCache.OfType<Aisling>().Count();
                         CollectedMeta.Mundanes = objCache.OfType<Mundane>().Count();
                         CollectedMeta.Monsters = objCache.OfType<Monster>().Count();
-                        CollectedMeta.ServerName = ServerContext.Config.SERVER_TITLE;
+                        CollectedMeta.ServerName = string.Concat(ServerContext.Config.SERVER_TITLE, " (", Environment.MachineName, ")");
                         CollectedMeta.Version = ServerContext.Config.Version.ToString();
                         CollectedMeta.EndPoint = ServerContext.Ipaddress.ToString();
                         CollectedMeta.WelcomeMessage = ServerContext.GlobalMessage;
