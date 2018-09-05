@@ -17,7 +17,6 @@
 //*************************************************************************/
 using Darkages.Types;
 using Newtonsoft.Json;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,8 +37,6 @@ namespace Darkages.Network.Object
             Money = 16,
             All = Aislings | Items | Money | Monsters | Mundanes
         }
-
-        public static Logger logger = LogManager.GetCurrentClassLogger();
 
         public void DelObject<T>(T obj) where T : Sprite => ServerContext.Game?.ObjectFactory.RemoveGameObject(obj);
 

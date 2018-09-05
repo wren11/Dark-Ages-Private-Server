@@ -60,9 +60,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.13\lib\net45\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -138,7 +135,6 @@
     <Compile Include="IO\BufferWriter.cs" />
     <Compile Include="IO\Crc16Provider.cs" />
     <Compile Include="IO\Crc32Provider.cs" />
-    <Compile Include="Network\Client.cs" />
     <Compile Include="Network\ClientFormats\ClientFormat00.cs" />
     <Compile Include="Network\ClientFormats\ClientFormat02.cs" />
     <Compile Include="Network\ClientFormats\ClientFormat03.cs" />

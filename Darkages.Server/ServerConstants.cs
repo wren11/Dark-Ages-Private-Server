@@ -25,8 +25,6 @@ namespace Darkages
     {
         [JsonProperty] public bool AssailsCancelSpells = true;
 
-        [JsonProperty] public int AutoLootPickupDistance = 2;
-
         [JsonProperty] public string BadRequestMessage = "(Invalid Request)";
 
         [JsonProperty] public string SomethingWentWrong = "Something went wrong.";
@@ -37,8 +35,6 @@ namespace Darkages
         /// </summary>
         public byte BaseAC = 0;
 
-        [JsonProperty]
-        public byte MinAC  = 0;
 
         [JsonProperty]
         public byte MaxAC  = 99;
@@ -63,7 +59,7 @@ namespace Darkages
 
         [JsonProperty] public string CantDropItemMsg = "You can't drop that.";
 
-        [JsonProperty] public string CantEquipThatMessage = "You can't use that.";
+        [JsonProperty] public string CantEquipThatMessage = "You can't wear that.";
 
         [JsonProperty] public string CantUseThat = "You can't use that.";
 
@@ -87,8 +83,6 @@ namespace Darkages
         /// In seconds, what is the daytime interval
         /// </summary>
         public double DayTimeInterval = 30.0;
-
-        [JsonProperty] public int DeathFreeLevelCap = 11;
 
         [JsonProperty]
         /// <summary>
@@ -167,8 +161,6 @@ namespace Darkages
 
         [JsonProperty] public string LevelUpMessage = "You have reached level {0}";
 
-        [JsonProperty] public bool LimitWalkingWhenRefreshing;
-
         [JsonProperty]
         /// <summary>
         /// How long should an aisling linger around, before we declare them as logged-in?
@@ -189,8 +181,6 @@ namespace Darkages
         /// </summary>
         public bool LogSentPackets;
 
-        [JsonProperty] public bool LootSingleMode = true;
-
         [JsonProperty] public int MaxCarryGold = 100000000;
 
         [JsonProperty]
@@ -207,19 +197,8 @@ namespace Darkages
         /// </summary>
         public int MinimumHp = 50;
 
-        /// <summary>
-        /// By default this is 3.58
-        /// </summary>
-        [JsonProperty] public double MonsterDamageFactor = 3.58;
-
-        /// <summary>
-        /// By Default this is 4.
-        /// </summary>
-        [JsonProperty] public int MonsterDamageMultipler = 4;
 
         [JsonProperty] public ushort MonsterDeathAnimationNumber = 350;
-
-        [JsonProperty] public int MonsterSkillSuccessRate = 40;
 
         [JsonProperty] public int MonsterSpellSuccessRate = 30;
 
@@ -231,7 +210,7 @@ namespace Darkages
         /// to keep server usage down. but you can probably go as high as 60.0.
         /// this value is in seconds.
         /// </summary>
-        public double MundaneRespawnInterval = 2.0;
+        public double MundaneRespawnInterval = 10.0;
 
         [JsonProperty] public string NotEnoughGoldToDropMsg = "You wish you had that much.";
 
@@ -243,7 +222,7 @@ namespace Darkages
         /// and remove out of view objects, add inview objects?
         /// This value is in seconds, And to keep usage low, I would not recommend going below 1.
         /// </summary>
-        public double ObjectHandlerInterval = 1;
+        public double ObjectHandlerInterval = 2;
 
         [JsonProperty]
         /// <summary>
@@ -277,9 +256,7 @@ namespace Darkages
 
         [JsonProperty] public int SERVER_PORT = 2615;
 
-        [JsonProperty] public string SERVER_TITLE = "Lorule Dark ages Server - Prepping...";
-
-        [JsonProperty] public string ServerTablePath = "server.tbl";
+        [JsonProperty] public string SERVER_TITLE = "Lorule";
 
         [JsonProperty]
         public string ServerWelcomeMessage = "Welcome to Lorule, If you need help, Please use The [F1] menu.";
@@ -309,10 +286,6 @@ namespace Darkages
         [JsonProperty] public short TransitionPointY = 3;
 
         [JsonProperty] public int TransitionZone = 9999;
-
-        [JsonProperty] public bool UseFastSqrtMethod = false;
-
-        [JsonProperty] public bool UseIncrementalSerials = true;
 
         [JsonProperty] public string UserDroppedGoldMsg = "noname has dropped some money nearby.";
 
@@ -347,12 +320,6 @@ namespace Darkages
         [JsonProperty] public double MorFasNadurStrength = 4.50;
 
         [JsonProperty] public string CantAttack = "Can't Attack.";
-
-        [JsonProperty] public int TimeOutValue = 45;
-
-        [JsonProperty] public double PortalTimeOut = 10;
-
-        [JsonProperty] public bool CancelWalkingIfRefreshing = true;
 
         [JsonProperty] public int SkullLength = 10;
 
@@ -1021,9 +988,6 @@ namespace Darkages
 
         [JsonProperty]
         public bool UsingDatabase = true;
-
-        [JsonProperty]
-        public string ConnectionString = @"Server=localhost;Database=master;Trusted_Connection=True;";
 
         public override string ToString()
         {

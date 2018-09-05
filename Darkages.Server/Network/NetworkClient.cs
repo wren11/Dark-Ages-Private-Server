@@ -19,13 +19,10 @@ using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
-using NLog;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
 using static System.Threading.Tasks.Parallel;
 
 namespace Darkages.Network
@@ -91,7 +88,7 @@ namespace Darkages.Network
             }
 
             if (ServerContext.Config?.LogRecvPackets ?? false)
-                logger.Info("r: {0}", packet);
+                Console.WriteLine("r: {0}", packet);
 
 
             Reader.Packet = packet;
@@ -164,7 +161,7 @@ namespace Darkages.Network
                 {
                     if (ServerContext.Config.LogSentPackets)
                         if (this is GameClient)
-                            logger.Info("{0}: {1}", (this as GameClient)?.Aisling?.Username, packet);
+                            Console.WriteLine("{0}: {1}", (this as GameClient)?.Aisling?.Username, packet);
 
                     if (format.Secured)
                         Encryption.Transform(packet);
@@ -174,7 +171,7 @@ namespace Darkages.Network
                         Socket.Send(buffer, 0, buffer.Length, SocketFlags.None, out var errorcode);
 
                         if (errorcode != SocketError.Success)
-                            logger.Debug(string.Format("[Network] Packet Error: {0} for Action {1}", errorcode, packet.Command));
+                            Console.WriteLine(string.Format("[Network] Packet Error: {0} for Action {1}", errorcode, packet.Command));
                     }
                 }
             }

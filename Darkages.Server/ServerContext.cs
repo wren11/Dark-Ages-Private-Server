@@ -98,49 +98,49 @@ namespace Darkages
         public static void LoadSkillTemplates()
         {
             StorageManager.SkillBucket.CacheFromStorage();
-            logger.Trace("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
+            Console.WriteLine("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
         }
 
         public static void LoadSpellTemplates()
         {
             StorageManager.SpellBucket.CacheFromStorage();
-            logger.Trace("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
+            Console.WriteLine("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
         }
 
         public static void LoadItemTemplates()
         {
             StorageManager.ItemBucket.CacheFromStorage();
-            logger.Trace("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
+            Console.WriteLine("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
         }
 
         public static void LoadMonsterTemplates()
         {
             StorageManager.MonsterBucket.CacheFromStorage();
-            logger.Trace("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
+            Console.WriteLine("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
         }
 
         public static void LoadMundaneTemplates()
         {
             StorageManager.MundaneBucket.CacheFromStorage();
-            logger.Trace("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
+            Console.WriteLine("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
         }
 
         public static void LoadWarpTemplates()
         {
             StorageManager.WarpBucket.CacheFromStorage();
-            logger.Trace("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
+            Console.WriteLine("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
         }
 
         public static void LoadWorldMapTemplates()
         {
             StorageManager.WorldMapBucket.CacheFromStorage();
-            logger.Trace("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
+            Console.WriteLine("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
         }
 
         public static void LoadMaps()
         {
             StorageManager.AreaBucket.CacheFromStorage();
-            logger.Trace("Map Templates Loaded: {0}", GlobalMapCache.Count);
+            Console.WriteLine("Map Templates Loaded: {0}", GlobalMapCache.Count);
         }
 
         private static void StartServers()
@@ -197,7 +197,7 @@ namespace Darkages
 
         public static void Startup()
         {
-            logger.Warn(Config.SERVER_TITLE);
+            Console.WriteLine(Config.SERVER_TITLE);
             {
                 try
                 {
@@ -208,10 +208,10 @@ namespace Darkages
                 }
                 catch (Exception error)
                 {
-                    logger.Error(error, "Startup Error.");
+                    Console.WriteLine("Startup Error.");
                 }
             }
-            logger.Warn("{0} Online.", Config.SERVER_TITLE);
+            Console.WriteLine("{0} Online.", Config.SERVER_TITLE);
         }        
 
         private static void EmptyCacheCollectors()
@@ -237,7 +237,7 @@ namespace Darkages
 
             if (_config_ == null)
             {
-                logger.Trace("No config found. Generating defaults.");
+                Console.WriteLine("No config found. Generating defaults.");
                 Config = new ServerConstants();
                 StorageManager.Save(Config);
             }
@@ -260,14 +260,14 @@ namespace Darkages
 
         public static void LoadMetaDatabase()
         {
-            logger.Trace("Loading Meta Database");
+            Console.WriteLine("Loading Meta Database");
             {
                 var files = MetafileManager.GetMetafiles();
 
                 if (files.Count > 0)
                     GlobalMetaCache.AddRange(files);
             }
-            logger.Trace("Building Meta Cache: {0} loaded.", GlobalMetaCache.Count);
+            Console.WriteLine("Building Meta Cache: {0} loaded.", GlobalMetaCache.Count);
         }
 
         public static void SaveCommunityAssets()
@@ -519,23 +519,23 @@ namespace Darkages
         private static void LoadExtensions()
         {
             CacheBuffs();
-            logger.Trace("Building Buff Cache: {0} loaded.", GlobalBuffCache.Count);
+            Console.WriteLine("Building Buff Cache: {0} loaded.", GlobalBuffCache.Count);
             CacheDebuffs();
-            logger.Trace("Building Debuff Cache: {0} loaded.", GlobalDeBuffCache.Count);
+            Console.WriteLine("Building Debuff Cache: {0} loaded.", GlobalDeBuffCache.Count);
         }
 
         private static void InitScriptEvaluators()
         {
-            logger.Trace("Loading Script Evaluator...");
+            Console.WriteLine("Loading Script Evaluator...");
 
             try
             {
                 InitScriptEvaluator();
-                logger.Trace("Loading Script Evaluator... Success");
+                Console.WriteLine("Loading Script Evaluator... Success");
             }
             catch
             {
-                logger.Trace("Loading Script Evaluator... Error.");
+                Console.WriteLine("Loading Script Evaluator... Error.");
             }
         }
 

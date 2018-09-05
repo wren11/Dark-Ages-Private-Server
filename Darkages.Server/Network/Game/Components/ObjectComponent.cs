@@ -257,7 +257,7 @@ namespace Darkages.Network.Game.Components
                 }
 
             if (removes > 0 && ServerContext.Config.DebugMode)
-                logger.Info("[ObjectComponent] {0} Objects Destroyed. (Abandoned Item, Money.) ", removes);
+                Console.WriteLine("[ObjectComponent] {0} Objects Destroyed. (Abandoned Item, Money.) ", removes);
         }
     }
 }

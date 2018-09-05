@@ -16,7 +16,6 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages.Types;
-using NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,8 +28,6 @@ namespace Darkages.Network.Object
     public class SpriteCollection<T> : IEnumerable<T>
         where T: Sprite
     {
-        public static Logger logger = LogManager.GetCurrentClassLogger();
-
         public readonly List<T> Values = null;
 
         public SpriteCollection(IEnumerable<T> values)
