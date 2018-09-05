@@ -88,31 +88,39 @@ namespace Darkages.Network.Game.Components
 
         private bool CollectData()
         {
-            CollectedMeta = CollectedMeta ?? new ServerStatistics();
+            try
             {
-                CollectedMeta.LastCollected = DateTime.UtcNow;
-                CollectedMeta.CollectionInqueries++;
-            }
-
-            if (CollectedMeta != null)
-            {
-                var objCache = GetObjects(i => true, Get.All);
+                CollectedMeta = CollectedMeta ?? new ServerStatistics();
                 {
-                    CollectedMeta.Items = objCache.OfType<Item>().Count();
-                    CollectedMeta.Aislings = objCache.OfType<Aisling>().Count();
-                    CollectedMeta.Mundanes = objCache.OfType<Mundane>().Count();
-                    CollectedMeta.Monsters = objCache.OfType<Monster>().Count();
-                    CollectedMeta.ServerName = ServerContext.Config.SERVER_TITLE;
-                    CollectedMeta.Version = ServerContext.Config.Version.ToString();
-                    CollectedMeta.EndPoint = ServerContext.Ipaddress.ToString();
-                    CollectedMeta.WelcomeMessage = ServerContext.GlobalMessage;
-                    CollectedMeta.Accounts = StorageManager.AislingBucket.Count;
-                    CollectedMeta.Maps = StorageManager.AreaBucket.Count;
-
-                    CollectedMeta.CPU    = getCurrentCpuUsage();
-                    CollectedMeta.Memory = getAvailableRAM();
+                    CollectedMeta.LastCollected = DateTime.UtcNow;
+                    CollectedMeta.CollectionInqueries++;
                 }
-                return true;
+
+                if (CollectedMeta != null)
+                {
+                    var objCache = GetObjects(i => true, Get.All);
+                    {
+                        CollectedMeta.Items = objCache.OfType<Item>().Count();
+                        CollectedMeta.Aislings = objCache.OfType<Aisling>().Count();
+                        CollectedMeta.Mundanes = objCache.OfType<Mundane>().Count();
+                        CollectedMeta.Monsters = objCache.OfType<Monster>().Count();
+                        CollectedMeta.ServerName = ServerContext.Config.SERVER_TITLE;
+                        CollectedMeta.Version = ServerContext.Config.Version.ToString();
+                        CollectedMeta.EndPoint = ServerContext.Ipaddress.ToString();
+                        CollectedMeta.WelcomeMessage = ServerContext.GlobalMessage;
+                        CollectedMeta.Accounts = StorageManager.AislingBucket.Count;
+                        CollectedMeta.Maps = StorageManager.AreaBucket.Count;
+
+                        CollectedMeta.CPU = getCurrentCpuUsage();
+                        CollectedMeta.Memory = getAvailableRAM();
+                    }
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                ResetCollector();
+                //ignore
             }
             return false;
         }
@@ -129,13 +137,23 @@ namespace Darkages.Network.Game.Components
 
         private bool RunServices()
         {
-            if (CollectedMeta != null)
+            try
             {
-                CollectionService.AddOrUpdate(CollectedMeta);
-            }
+                if (CollectedMeta != null)
+                {
+                    CollectionService.AddOrUpdate(CollectedMeta);
+                }
 
-            ResetCollector();
-            return true;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                ResetCollector();
+            }
         }
 
         private void ResetCollector()
