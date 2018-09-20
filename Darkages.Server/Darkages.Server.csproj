@@ -410,9 +410,7 @@
     <Compile Include="Types\AislingFlags.cs" />
     <Compile Include="Types\Area.cs" />
     <Compile Include="Types\AttackModifier.cs" />
-    <Compile Include="Types\Bank.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
+    <Compile Include="Types\Bank.cs" />
     <Compile Include="Types\BarColors.cs" />
     <Compile Include="Types\Board.cs" />
     <Compile Include="Types\BoardDescriptors.cs" />
@@ -436,9 +434,7 @@
     <Compile Include="Types\Fraction.cs" />
     <Compile Include="Types\Gender.cs" />
     <Compile Include="Types\GroupStatus.cs" />
-    <Compile Include="Types\Inventory.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
+    <Compile Include="Types\Inventory.cs" />
     <Compile Include="Types\Item.cs" />
     <Compile Include="Types\ItemColor.cs" />
     <Compile Include="Types\ItemFlags.cs" />

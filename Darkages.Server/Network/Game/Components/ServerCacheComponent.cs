@@ -42,41 +42,10 @@ namespace Darkages.Network.Game.Components
         public ServerCacheComponent(GameServer server) : base(server)
         {
             Timer = new GameServerTimer(TimeSpan.FromSeconds(45));
-
-            if (ServerContext.Config.UsingDatabase)
-            {
-                ResetCounters();
-
-                CollectionTimer = new GameServerTimer(TimeSpan.FromSeconds(10));
-                CollectionServiceTimer = new GameServerTimer(TimeSpan.FromSeconds(5));
-            }
         }
 
         public override void Update(TimeSpan elapsedTime)
         {
-            if (ServerContext.Config.UsingDatabase)
-            {
-                if (string.IsNullOrEmpty(ServerContext.Config.SERVER_TITLE))
-                    return;
-
-                CollectionTimer.Update(elapsedTime);
-                CollectionServiceTimer.Update(elapsedTime);
-
-                if (CollectionTimer.Elapsed)
-                {
-                    Task.Run(() => RunServices());
-                    CollectionTimer.Reset();
-                }
-                else
-                {
-                    if (CollectionServiceTimer.Elapsed)
-                    {
-                        Task.Run(() => CollectData());
-                        CollectionServiceTimer.Reset();
-                    }
-                }
-            }
-
             Timer.Update(elapsedTime);
 
             if (Timer.Elapsed)

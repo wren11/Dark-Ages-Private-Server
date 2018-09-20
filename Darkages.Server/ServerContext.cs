@@ -451,8 +451,8 @@ namespace Darkages
                 }
             };
 
-            //GlobalSpellTemplateCache["Needle Trap"] = trap;
-            // GlobalSpellTemplateCache["Stiletto Trap"] = trap2;
+            GlobalSpellTemplateCache["Needle Trap"] = trap;
+            GlobalSpellTemplateCache["Stiletto Trap"] = trap2;
 
 
 
@@ -587,13 +587,6 @@ namespace Darkages
             {
                 GlobalBuffCache[buff.Name] = (Buff)Activator.CreateInstance(buff);
             }
-        }
-
-        public static bool OnUseMethod(Sprite a, int value)
-        {
-            a.CurrentHp += value;
-
-            return true;
         }
 
         private static void BindTemplates()

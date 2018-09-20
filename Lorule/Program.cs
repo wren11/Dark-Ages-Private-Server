@@ -17,11 +17,8 @@
 //*************************************************************************/
 using Darkages;
 using Darkages.Storage;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -35,9 +32,25 @@ namespace Lorule
         static void Main(string[] args)
         {
 
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
             _Server = new Instance();        
             _Server.Start();
             _Server.Report();
+        }
+
+        static int r = 0;
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Interlocked.Increment(ref r);
+            Console.WriteLine("unknown error handled. {0}", r);
+
+            Thread.CurrentThread.IsBackground = true;
+            Thread.CurrentThread.Name = string.Format("Error {0}", r);
+
+            while (true)
+                Thread.Sleep(TimeSpan.FromHours(1));
         }
 
         public class Instance : ServerContext
