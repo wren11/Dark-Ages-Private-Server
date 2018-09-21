@@ -628,10 +628,7 @@ namespace Darkages.Types
                     //split damage by one third, if aited.
                     if (IsAited && dmg > 5)
                     {
-                        checked
-                        {
-                            dmg /= 3;
-                        }
+                        dmg /= 3;
                     }
 
                     double amplifier = GetElementalModifier(Target);
@@ -1375,7 +1372,7 @@ namespace Darkages.Types
             if (this is Mundane)
                 DelObject(this as Mundane);
 
-            Map?.Update(X, Y, TileContent.None);
+            Map?.Update(X, Y, this, true);
         }
 
         public void UpdateBuffs(TimeSpan elapsedTime)
@@ -1481,11 +1478,8 @@ namespace Darkages.Types
                         offset = 0;
                     }
 
-                    checked
-                    {
-                        if (offset < buffer.Length)
-                            buffer[offset] = i;
-                    }
+                    if (offset < buffer.Length)
+                        buffer[offset] = i;
 
                     offset++;
                 }
@@ -1604,33 +1598,11 @@ namespace Darkages.Types
             X = X.Clamp(X, Map.Cols - 1);
             Y = Y.Clamp(Y, Map.Rows - 1);
 
-            if (this is Aisling)
-            {
-                Map.OnLoaded(this as Aisling);
-            }
-
             LastPosition = new Position(savedX, savedY);
-
-            Map[savedX, savedY] = TileContent.None;
-            Map[this.X, this.Y] = this.Content;
-
-            if (Content != TileContent.Aisling)
             {
-                var obj = AislingsNearby().OrderBy(i =>
-                    Position.DistanceFrom(i.Position))
-                    .FirstOrDefault();
-
-                if (obj != null)
-                {
-                    if (obj.X == X && obj.Y == Y || savedX == X && savedY == Y)
-                        return false;
-
-                }
+                CompleteWalk(savedX, savedY);
+                ServerContext.Game.ObjectPulseController?.OnObjectUpdate(this);
             }
-
-            CompleteWalk(savedX, savedY);
-            ServerContext.Game.ObjectPulseController?.OnObjectUpdate(this);
-
             return true;
         }
 
@@ -1641,8 +1613,8 @@ namespace Darkages.Types
 
         private void CompleteWalk(int savedX, int savedY)
         {
-            Map.Update(savedX, savedY, TileContent.None);
-            Map.Update(X, Y, Content);
+            Map.Update(savedX, savedY, this, true);
+            Map.Update(X, Y, this);
 
             TriggerNearbyTraps();
 
@@ -1772,7 +1744,7 @@ namespace Darkages.Types
 
         public void WarpTo(Position newLocation)
         {
-            Map.Update(X, Y, TileContent.None);
+            Map.Update(X, Y, this, true);
             {
                 var location = new Position(newLocation.X, newLocation.Y);
 
@@ -1780,7 +1752,7 @@ namespace Darkages.Types
                 this.Y = location.Y;
             }
 
-            Map.Update(X, Y, Content);
+            Map.Update(X, Y, this);
             Update();
         }
 

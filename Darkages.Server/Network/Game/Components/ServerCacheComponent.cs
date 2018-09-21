@@ -56,24 +56,31 @@ namespace Darkages.Network.Game.Components
         {
             if (ServerContext.Config.UsingDatabase)
             {
-                if (string.IsNullOrEmpty(ServerContext.Config.SERVER_TITLE))
-                    return;
-
-                CollectionTimer.Update(elapsedTime);
-                CollectionServiceTimer.Update(elapsedTime);
-
-                if (CollectionTimer.Elapsed)
+                try
                 {
-                    Task.Run(() => RunServices());
-                    CollectionTimer.Reset();
-                }
-                else
-                {
-                    if (CollectionServiceTimer.Elapsed)
+                    if (string.IsNullOrEmpty(ServerContext.Config.SERVER_TITLE))
+                        return;
+
+                    CollectionTimer.Update(elapsedTime);
+                    CollectionServiceTimer.Update(elapsedTime);
+
+                    if (CollectionTimer.Elapsed)
                     {
-                        Task.Run(() => CollectData());
-                        CollectionServiceTimer.Reset();
+                        Task.Run(() => RunServices());
+                        CollectionTimer.Reset();
                     }
+                    else
+                    {
+                        if (CollectionServiceTimer.Elapsed)
+                        {
+                            Task.Run(() => CollectData());
+                            CollectionServiceTimer.Reset();
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    //ignore
                 }
             }
 

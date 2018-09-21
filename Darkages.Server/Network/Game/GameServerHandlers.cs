@@ -59,6 +59,17 @@ namespace Darkages.Network.Game
             if (ServerContext.Config.AssailsCancelSpells)
                 CancelIfCasting(client);
 
+            var ready = DateTime.UtcNow > client.LastScriptExecuted;
+
+            var itemScript = client.Aisling.EquipmentManager.Weapon?.Item?.WeaponScript;
+            if (itemScript != null && ready)
+            {
+                itemScript.OnUse(client.Aisling, (targets) =>
+                {
+                   client.LastScriptExecuted = DateTime.UtcNow.AddMilliseconds(450);
+                });
+            }
+
             foreach (var skill in client.Aisling.GetAssails(SkillScope.Assail))
             {
                 if (skill == null)
@@ -84,15 +95,6 @@ namespace Darkages.Network.Game
         {
             skill.InUse = true;
             skill.Script.OnUse(client.Aisling);
-
-
-            var itemScript = client.Aisling.EquipmentManager.Weapon?.Item?.WeaponScript;
-            if (itemScript != null)
-            {
-                itemScript.OnUse(client.Aisling, (targets) => {
-
-                });
-            }
 
             if (skill.Template.Cooldown > 0)
                 skill.NextAvailableUse = DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);

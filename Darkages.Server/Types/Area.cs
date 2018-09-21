@@ -16,15 +16,18 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages.Network.Game;
+using Darkages.Network.Game.Components;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Darkages
@@ -34,8 +37,6 @@ namespace Darkages
         [JsonIgnore] private static readonly byte[] sotp = File.ReadAllBytes("sotp.dat");
 
         [JsonIgnore] [Browsable(false)] public ushort Hash;
-
-        [JsonIgnore] [Browsable(false)] private TileContent[,] Tile;
 
         [JsonIgnore]
         [Browsable(false)]
@@ -60,20 +61,111 @@ namespace Darkages
 
         public MapFlags Flags { get; set; }
 
-        public TileContent this[int x, int y]
-        {
-            get => Tile[x, y];
-            set => Update(x, y, value);
-        }
+        public MapTile[,] MapNodes;
 
 
-        public void Update(int x, int y, TileContent value)
+        public class MapTile
         {
-            lock (Tile.SyncRoot)
+            public ushort X, Y;
+
+            public TileContent BaseObject { get; set; }
+
+            public bool HasWall => BaseObject == TileContent.Wall;
+          
+            private ConcurrentDictionary<int, Sprite> Objects = new ConcurrentDictionary<int, Sprite>();
+
+            public List<Sprite> Sprites
             {
-                Tile[x, y] = value;
+                get => Objects.Select(i => i.Value).ToList(); 
+            }
+
+            public void Empty()
+            {
+                Objects = new ConcurrentDictionary<int, Sprite>();
+            }
+
+            public bool SpotVacant()
+            {
+                var result = true;
+
+                if (BaseObject == TileContent.Warp)
+                    return true;
+
+                if (BaseObject == TileContent.Wall)
+                    return false;
+
+
+                for (int i = 0; i < Sprites.Count; i++)
+                {
+                    if (Sprites[i] is Monster)
+                    {
+                        if ((Sprites[i] as Monster).Template.IgnoreCollision)
+                        {
+                            return false;
+                        }
+                    }
+
+                    if (Sprites[i] is Mundane)
+                    {
+                        return false;
+                    }
+
+                    if (Sprites[i].CurrentHp > 0)
+                    {
+                        return false;
+                    }
+                }
+
+                return result;
+            }
+
+            public Sprite Find(Func<Sprite, bool> subject)
+            {
+                return Sprites.Find(i => subject(i));
+            }
+
+            public Sprite[] FindAll(Func<Sprite, bool> subject)
+            {
+                return Sprites.FindAll(i => subject(i)).ToArray();
+            }
+
+
+            public bool Add(Sprite obj)
+            {
+                return Objects.TryAdd(obj.Serial, obj);
+            }
+
+            public bool Remove(Sprite obj)
+            {
+                Sprite removedObj;
+                return Objects.TryRemove(obj.Serial, out removedObj);
             }
         }
+
+        public void Update(int x, int y, Sprite obj)
+        {
+            if (MapNodes[x, y]?.Add(obj) ?? false)
+            {
+
+            }
+        }
+
+        public void Update(int x, int y, bool clear)
+        {
+            MapNodes[x, y].Empty();
+        }
+
+        public void Update(int x, int y, Sprite obj, bool remove)
+        {
+            if (remove)
+            {
+                if (MapNodes[x, y]?.Remove(obj) ?? false)
+                {
+
+                }
+            }
+        }
+
 
         public static bool ParseSotp(short lWall, short rWall)
         {
@@ -99,7 +191,13 @@ namespace Darkages
                 y >= this.Rows)
                 return true;
 
-            return (this.Tile[x, y] != TileContent.None);
+            var obj = MapNodes[x, y];
+
+            if (obj == null)
+                return false;
+
+            var isEmpty = obj.SpotVacant();
+            return !isEmpty;
         }
 
         public bool IsWall(Sprite obj, int x, int y)
@@ -168,6 +266,7 @@ namespace Darkages
             UpdateItems(elapsedTime, tmp.OfType<Money>().Concat<Sprite>(tmp.OfType<Item>()));
 
             WarpTimer.Update(elapsedTime);
+
             if (WarpTimer.Elapsed)
             {
                 UpdateWarps();
@@ -225,7 +324,6 @@ namespace Darkages
                     obj.UpdateBuffs(elapsedTime);
                     obj.UpdateDebuffs(elapsedTime);
                     obj.LastUpdated = DateTime.UtcNow;
-
                     updates++;
                 }
             }
@@ -248,13 +346,6 @@ namespace Darkages
 
                 if (obj != null)
                 {
-
-                    foreach (var nb in nearby)
-                    {
-                        if (!nb.InsideView(obj))
-                            obj.ShowTo(nb);
-                    }
-
                     obj.LastUpdated = DateTime.UtcNow;
                     updates++;
 
@@ -286,21 +377,9 @@ namespace Darkages
                 if (obj == null)
                     continue;
 
-                var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(obj) && i.CurrentMapId == ID);
-
-                if (!nearby.Any())
-                    continue;
-
-                foreach (var nb in nearby)
-                {
-                    if (!nb.InsideView(obj))
-                        obj.ShowTo(nb);
-                }
-
                 obj.UpdateBuffs(elapsedTime);
                 obj.UpdateDebuffs(elapsedTime);
                 obj.Update(elapsedTime);
-
                 obj.LastUpdated = DateTime.UtcNow;
                 updates++;
             }
@@ -312,7 +391,7 @@ namespace Darkages
 
         public void OnLoaded(Aisling obj = null)
         {
-            Tile = new TileContent[Cols, Rows];
+            MapNodes = new MapTile[Cols, Rows];
 
             using (var stream = new MemoryStream(Data))
             {
@@ -324,10 +403,16 @@ namespace Darkages
                         {
                             reader.BaseStream.Seek(2, SeekOrigin.Current);
 
+                            MapNodes[x, y] = new MapTile();
+
                             if (ParseSotp(reader.ReadInt16(), reader.ReadInt16()))
-                                this[x, y] = TileContent.Wall;
+                            {
+                                MapNodes[x, y].BaseObject = TileContent.Wall;
+                            }
                             else
-                                this[x, y] = TileContent.None;
+                            {
+                                MapNodes[x, y].BaseObject = TileContent.None;
+                            }
                         }
                     }
                 }
@@ -348,7 +433,7 @@ namespace Darkages
             foreach (var warp in warps)
                 foreach (var o in warp.Activations)
                     if (warp.WarpType == WarpType.Map)
-                        this[o.Location.X, o.Location.Y] = TileContent.None;
+                        MapNodes[o.Location.X, o.Location.Y].BaseObject = TileContent.Warp;
         }
 
         public Position FindNearestEmpty(Position aislingPosition)
@@ -357,9 +442,7 @@ namespace Darkages
 
             for (var y = 0; y < Rows; y++)
                 for (var x = 0; x < Cols; x++)
-                    if (this[x, y] == TileContent.None
-                        || this[x, y] == TileContent.Money
-                        || this[x, y] == TileContent.Item)
+                    if (MapNodes[x, y].SpotVacant())
                         positions.Add(new Position(x, y));
 
             return positions.OrderBy(i => i.DistanceFrom(aislingPosition))
@@ -369,16 +452,6 @@ namespace Darkages
         internal void UpdateCollisions(Aisling obj)
         {
             SetWarps();
-
-            if (obj == null)
-                return;
-
-            lock (obj.ViewFrustrum)
-            {
-                foreach (var sprite in obj.ViewFrustrum.Select(i => i.Value))
-                    if (sprite.CurrentMapId == ID)
-                        this[sprite.X, sprite.Y] = sprite.Content;
-            }
         }
     }
 }

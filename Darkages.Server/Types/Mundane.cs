@@ -172,7 +172,7 @@ namespace Darkages.Types
 
         public void OnDeath()
         {
-            Map.Update(X, Y, TileContent.None);
+            Map.Update(X, Y, this, true);
 
             RemoveActiveTargets();
 

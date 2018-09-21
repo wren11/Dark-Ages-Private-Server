@@ -243,21 +243,19 @@ namespace Darkages.Security
                 return;
             }
 
-            for (var i = 0; i < packet.Data.Length; i++) Xor(packet, i);
+            for (var i = 0; i < packet.Data.Length; i++)
+                Xor(packet, i);
         }
 
         private void Xor(NetworkPacket packet, int i)
         {
-            checked
-            {
-                var mod = (i / Parameters.Salt.Length) & 0xFF;
+            var mod = (i / Parameters.Salt.Length) & 0xFF;
 
-                packet.Data[i] ^= (byte)(Parameters.Salt[i % Parameters.Salt.Length]
-                                          ^ tree[Parameters.Seed][packet.Ordinal]
-                                          ^ tree[Parameters.Seed][mod]);
+            packet.Data[i] ^= (byte)(Parameters.Salt[i % Parameters.Salt.Length]
+                                      ^ tree[Parameters.Seed][packet.Ordinal]
+                                      ^ tree[Parameters.Seed][mod]);
 
-                if (packet.Ordinal == mod) packet.Data[i] ^= tree[Parameters.Seed][packet.Ordinal];
-            }
+            if (packet.Ordinal == mod) packet.Data[i] ^= tree[Parameters.Seed][packet.Ordinal];
         }
     }
 }

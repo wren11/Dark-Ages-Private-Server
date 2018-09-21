@@ -44,14 +44,10 @@
     <RootNamespace>Darkages</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Darkages.Interops, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependacies\Darkages.Interops.dll</HintPath>
+    <Reference Include="Colorful.Console, Version=1.2.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Colorful.Console.1.2.9\lib\net461\Colorful.Console.dll</HintPath>
     </Reference>
-    <Reference Include="Darkages.Security, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependacies\Darkages.Security.dll</HintPath>
-    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependacies\Mono.CSharp.dll</HintPath>
@@ -62,6 +58,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.Runtime.Remoting" />
@@ -410,9 +407,7 @@
     <Compile Include="Types\AislingFlags.cs" />
     <Compile Include="Types\Area.cs" />
     <Compile Include="Types\AttackModifier.cs" />
-    <Compile Include="Types\Bank.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
+    <Compile Include="Types\Bank.cs" />
     <Compile Include="Types\BarColors.cs" />
     <Compile Include="Types\Board.cs" />
     <Compile Include="Types\BoardDescriptors.cs" />
@@ -436,9 +431,7 @@
     <Compile Include="Types\Fraction.cs" />
     <Compile Include="Types\Gender.cs" />
     <Compile Include="Types\GroupStatus.cs" />
-    <Compile Include="Types\Inventory.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
+    <Compile Include="Types\Inventory.cs" />
     <Compile Include="Types\Item.cs" />
     <Compile Include="Types\ItemColor.cs" />
     <Compile Include="Types\ItemFlags.cs" />
@@ -502,7 +495,16 @@
     <Compile Include="Types\WarpTemplate.cs" />
     <Compile Include="Types\WorldMapTemplate.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Darkages.Interops\Darkages.Interops.csproj">
+      <Project>{3bef5386-d9f2-46da-beb6-e78a6fbf105a}</Project>
+      <Name>Darkages.Interops</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Darkages.Security\Darkages.Security.csproj">
+      <Project>{d17ec20a-3881-41b3-b56d-899ed45b3d11}</Project>
+      <Name>Darkages.Security</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
     <VisualStudio AllowExistingFolder="true" />

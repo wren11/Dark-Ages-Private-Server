@@ -156,16 +156,17 @@ namespace Darkages.Network.Game
 
         private void InitComponentCache()
         {
-            Components = new Dictionary<Type, GameServerComponent>
-            {
-                [typeof(MonolithComponent)] = new MonolithComponent(this),
-                [typeof(DaytimeComponent)] = new DaytimeComponent(this),
-                [typeof(MundaneComponent)] = new MundaneComponent(this),
-                [typeof(MessageComponent)] = new MessageComponent(this),
-                [typeof(ObjectComponent)] = new ObjectComponent(this),
-                [typeof(PingComponent)] = new PingComponent(this),
-                [typeof(ServerCacheComponent)] = new ServerCacheComponent(this)
-            };
+            Components = new Dictionary<Type, GameServerComponent>();
+
+
+
+            Components[typeof(MonolithComponent)]    = new MonolithComponent(this);
+            Components[typeof(DaytimeComponent)]     = new DaytimeComponent(this);
+            Components[typeof(MundaneComponent)]     = new MundaneComponent(this);
+            Components[typeof(MessageComponent)]     = new MessageComponent(this);
+            Components[typeof(ObjectComponent)]      = new ObjectComponent(this);
+            Components[typeof(PingComponent)]        = new PingComponent(this);
+            Components[typeof(ServerCacheComponent)] = new ServerCacheComponent(this);
         }
 
         public void ExecuteClientWork(TimeSpan elapsedTime)

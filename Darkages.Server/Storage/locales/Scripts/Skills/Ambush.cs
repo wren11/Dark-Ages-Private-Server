@@ -110,8 +110,8 @@ namespace Darkages.Storage.locales.Scripts.Skills
                                 sprite.Turn();
                         }
 
-                        sprite.Map.Update(prev.X, prev.Y, TileContent.None);
-                        sprite.Map.Update(sprite.X, sprite.Y, sprite.Content);
+                        sprite.Map.Update(prev.X, prev.Y, sprite, true);
+                        sprite.Map.Update(sprite.X, sprite.Y, sprite);
 
                         if (sprite is Aisling)
                         {

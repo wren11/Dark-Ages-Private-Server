@@ -227,11 +227,15 @@ namespace Darkages
         {
             if (!InsideView(obj))
             {
-                ViewFrustrum.TryAdd(obj.Serial, obj);
+                if (ViewFrustrum.TryAdd(obj.Serial, obj))
+                {
+                    obj.Map.Update(obj.X, obj.Y, obj, true);
+                    obj.Map.Update(obj.X, obj.Y, obj);
 
-                if (obj is Monster)
-                    (obj as Monster).Script
-                        ?.OnApproach(Client);
+                    if (obj is Monster)
+                        (obj as Monster).Script
+                            ?.OnApproach(Client);
+                }
 
                 return true;
             }
@@ -438,8 +442,7 @@ namespace Darkages
         {
             if (Map != null)
             {
-                Map.Update(X, Y, TileContent.None);
-                ServerContext.GlobalMapCache[Map.ID].Update(X, Y, TileContent.None);
+                Map.Update(X, Y, this, true);
             }
 
             if (update)

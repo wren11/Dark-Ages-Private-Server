@@ -41,8 +41,8 @@ namespace Darkages.Security
             Salt = key;
         }
 
-        public byte Seed { get; private set; }
-        public byte[] Salt { get; private set; }
+        public byte Seed { get; set; }
+        public byte[] Salt { get; set; }
 
         public void Serialize(NetworkPacketReader reader)
         {

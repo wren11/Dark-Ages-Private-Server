@@ -65,9 +65,11 @@ namespace Darkages.Network
             For(0, value.Data.Length - 6, i => value.Data[6 + i] ^= (byte)(((byte)(P(value) + 0x28) + i + 2) % 256));
         }
 
+        public ManualResetEvent ReadEvent = new ManualResetEvent(true);
 
         public virtual void Read(NetworkPacket packet, NetworkFormat format)
         {
+
             if (format.Secured)
             {
                 Encryption.Transform(packet);
@@ -97,13 +99,16 @@ namespace Darkages.Network
 
         public void SendAsync(NetworkFormat format)
         {
-            _sendBuffers.Enqueue(format);
+            lock (_sendBuffers)
+            {
+                _sendBuffers.Enqueue(format);
 
-            if (_sending)
-                return;
+                if (_sending)
+                    return;
 
-            _sending = true;
-            ThreadPool.QueueUserWorkItem(SendBuffers, this);
+                _sending = true;
+                ThreadPool.QueueUserWorkItem(SendBuffers, this);
+            }
         }
 
         private void SendBuffers(object state)
@@ -155,20 +160,29 @@ namespace Darkages.Network
                 if (format == null)
                     return;
 
-                PreparePacketWriter(format);
-
-                var packet = Writer.ToPacket();
+                lock (Writer)
                 {
-                    if (ServerContext.Config.LogSentPackets)
-                        if (this is GameClient)
-                            Console.WriteLine("{0}: {1}", (this as GameClient)?.Aisling?.Username, packet);
+                    PreparePacketWriter(format);
 
-                    if (format.Secured)
-                        Encryption.Transform(packet);
-
-                    var buffer = packet.ToArray();
+                    var packet = Writer.ToPacket();
                     {
-                        Socket.Send(buffer, 0, buffer.Length, SocketFlags.None, out var errorcode);
+                        if (ServerContext.Config.LogSentPackets)
+                            if (this is GameClient)
+                                Console.WriteLine("{0}: {1}", (this as GameClient)?.Aisling?.Username, packet);
+
+                        if (format.Secured)
+                            Encryption.Transform(packet);
+
+                        var buffer = packet.ToArray();
+                        SocketError errorcode = SocketError.Success;
+
+                        for (int i = 0; i < buffer.Length; i += 1024)
+                        {
+                            if (i + 1024 <= buffer.Length)
+                                Socket.Send(buffer, i, 1024, SocketFlags.None, out errorcode);
+                            else
+                                Socket.Send(buffer, i, buffer.Length - i, SocketFlags.None, out errorcode);
+                        }
 
                         if (errorcode != SocketError.Success)
                             Console.WriteLine(string.Format("[Network] Packet Error: {0} for Action {1}", errorcode, packet.Command));
@@ -178,7 +192,7 @@ namespace Darkages.Network
             catch (Exception)
             {
                 //ignore
-            }
+            }           
         }
 
         private void PreparePacketWriter(NetworkFormat format)

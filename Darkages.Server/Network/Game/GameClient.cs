@@ -44,6 +44,9 @@ namespace Darkages.Network.Game
         public bool IsRefreshing =>
             DateTime.Now - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContext.Config.RefreshRate);
 
+
+        public DateTime LastScriptExecuted { get; set; }
+
         public GameServerTimer HpRegenTimer { get; set; }
 
         public GameServerTimer MpRegenTimer { get; set; }
@@ -728,6 +731,8 @@ namespace Darkages.Network.Game
 
         private void Enter()
         {
+            LastScriptExecuted = DateTime.UtcNow;
+
             SendSerial();
             Insert();
             RefreshMap();
@@ -774,7 +779,7 @@ namespace Darkages.Network.Game
             if (GetObject<Aisling>(i => i.Serial == Aisling.Serial) == null)
                 AddObject(Aisling);
 
-            Aisling.Map.Update(Aisling.X, Aisling.Y, TileContent.Aisling);
+            Aisling.Map.Update(Aisling.X, Aisling.Y, Aisling);
         }
 
         public void RefreshMap()
@@ -785,7 +790,6 @@ namespace Darkages.Network.Game
                 Aisling.LastMapId = Aisling.CurrentMapId;
                 SendMusic();
             }
-
 
             if (ShouldUpdateMap)
             {

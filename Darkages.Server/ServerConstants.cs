@@ -44,13 +44,6 @@ namespace Darkages
 
         [JsonProperty] public byte BaseStatAttribute = 3;
 
-        [JsonProperty]
-        /// <summary>
-        /// Buffer Size - this can be changed, but the minimum recommended value
-        /// should be between 2048 and 16384, by default we use 16384
-        /// </summary>
-        public int BufferSize = 0x8192;
-
         [JsonProperty] public bool CancelCastingWhenWalking = true;
 
         [JsonProperty] public string CantCarryMoreMsg = "You can't carry more.";

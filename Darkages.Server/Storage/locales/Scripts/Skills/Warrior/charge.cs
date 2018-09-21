@@ -60,30 +60,33 @@ namespace Darkages.Scripting.Scripts.Skills
             int steps = 0;
             for (int i = 0; i < 5; i++)
             {
-                sprite.Walk();
-                steps++;
-
-                var targets = sprite.GetInfront(1, true);
-
-                foreach (var target in targets)
+                if (sprite.Walk())
                 {
-                    if (target.Serial == sprite.Serial)
-                        continue;
+                    steps++;
 
-                    if (target != null && sprite.Position.IsNextTo(target.Position))
+                    var targets = sprite.GetInfront(1, true);
+
+                    foreach (var target in targets)
                     {
-                        var imp = (Skill.Level * 5 / 100);
-                        var dmg = 15 * (((sprite.Str* 2) + sprite.Dex * imp));
-                        target.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
+                        if (target.Serial == sprite.Serial)
+                            continue;
+
+                        if (target != null && sprite.Position.IsNextTo(target.Position))
                         {
-                            Target = target;
-                            collided = true;
+                            var imp = (Skill.Level * 5 / 100);
+                            var dmg = 15 * (((sprite.Str * 2) + sprite.Dex * imp));
+                            target.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
+                            {
+                                Target = target;
+                                collided = true;
+                            }
                         }
                     }
                 }
 
                 if (collided)
                     break;
+
             }
 
             if (sprite is Aisling)

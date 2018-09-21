@@ -21,11 +21,11 @@ using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
-using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Threading;
 
 namespace Darkages.Network
 {
@@ -35,6 +35,12 @@ namespace Darkages.Network
         private readonly MethodInfo[] _handlers;
         private Socket _listener;
         private bool _listening;
+
+        public EventHandler<NetworkFormat>[] ClientPacketHandlers = new EventHandler<NetworkFormat>[256];
+
+        public IPAddress Address { get; }
+
+        public TClient[] Clients { get; }
 
         protected NetworkServer(int capacity)
         {
@@ -51,13 +57,7 @@ namespace Darkages.Network
                     BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
-        public NetworkServer()
-        {
-        }
-
-        [JsonIgnore] public IPAddress Address { get; }
-
-        public TClient[] Clients { get; }
+        public NetworkServer() { }
 
         private void EndConnectClient(IAsyncResult result)
         {
@@ -124,7 +124,7 @@ namespace Darkages.Network
                         client.Socket.BeginReceiveHeader(EndReceiveHeader, out error, client);
                 }
             }
-            catch (Exception error)
+            catch (Exception)
             {
                 Console.WriteLine("Error: EndReceiveHeader");
             }
@@ -156,7 +156,7 @@ namespace Darkages.Network
                     }
                 }
             }
-            catch (Exception error)
+            catch (Exception)
             {
                 Console.WriteLine("Error: EndReceivePacket");
             }
@@ -182,13 +182,16 @@ namespace Darkages.Network
 
         public void RemoveClient(TClient client)
         {
-            for (var i = Clients.Length - 1; i >= 0; i--)
-                if (Clients[i] != null &&
-                    Clients[i].Serial == client.Serial)
-                {
-                    Clients[i] = null;
-                    break;
-                }
+            lock (Clients)
+            {
+                for (var i = Clients.Length - 1; i >= 0; i--)
+                    if (Clients[i] != null &&
+                        Clients[i].Serial == client.Serial)
+                    {
+                        Clients[i] = null;
+                        break;
+                    }
+            }
         }
 
         public virtual void Abort()
@@ -215,7 +218,7 @@ namespace Darkages.Network
                 return;
 
             _listening = true;
-            _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _listener  = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             _listener.Bind(new IPEndPoint(IPAddress.Any, port));
             _listener.Listen(ServerContext.Config?.ConnectionCapacity ?? 1000);
             _listener.BeginAccept(EndConnectClient, null);
@@ -229,13 +232,24 @@ namespace Darkages.Network
             Console.WriteLine("Connection From {0} Established.", client.Socket.RemoteEndPoint.ToString());
         }
 
+        public static Cache<byte, NetworkFormat> FormatCache = new Cache<byte, NetworkFormat>();
 
         public virtual void ClientDataReceived(TClient client, NetworkPacket packet)
         {
             if (ServerContext.Game == null)
                 return;
 
-            var format = NetworkFormatManager.GetClientFormat(packet.Command);
+            NetworkFormat format;
+
+            if (FormatCache.Exists(packet.Command))
+            {
+                format = FormatCache.Get(packet.Command);
+            }
+            else
+            {
+                format = NetworkFormatManager.GetClientFormat(packet.Command);
+                FormatCache.AddOrUpdate(packet.Command, format, Timeout.Infinite);
+            }
 
             if (format != null)
             {
@@ -294,8 +308,7 @@ namespace Darkages.Network
                     if (near.Map != null && near.Map.Ready)
                         near.Map.Update(
                             (client as GameClient).Aisling.X,
-                            (client as GameClient).Aisling.Y,
-                            TileContent.None);
+                            (client as GameClient).Aisling.Y, (client as GameClient).Aisling, true);
 
                     near.Show(Scope.Self, new ServerFormat0E((client as GameClient).Aisling.Serial));
                 }

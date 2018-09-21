@@ -126,7 +126,7 @@ namespace Darkages.Network.Game.Components
         public Task<bool> SpawnOn(MonsterTemplate template, Area map)
         {
             var tcs = new TaskCompletionSource<bool>();
-            var count = GetObjects<Monster>(i => i.Template.Name == template.Name).Count();
+            var count = GetObjects<Monster>(i => i.Template.Name == template.Name && i.CurrentMapId == map.ID).Count();
 
             if (count < Math.Abs(template.SpawnMax))
             {

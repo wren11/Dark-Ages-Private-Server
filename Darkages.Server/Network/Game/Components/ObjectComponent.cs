@@ -49,7 +49,7 @@ namespace Darkages.Network.Game.Components
             if (!ServerContext.GlobalMapCache.ContainsKey(obj.CurrentMapId))
                 return;
 
-            obj.Map?.Update(obj.X, obj.Y, TileContent.None);
+            obj.Map?.Update(obj.X, obj.Y, obj, true);
 
             if (obj is Monster || obj is Mundane)
             {

@@ -83,7 +83,7 @@ namespace Darkages.Network.Login
             template.HairColor = format.HairColor;
             template.HairStyle = format.HairStyle;
 
-            Console.WriteLine("New character Created: " + template.Username);
+            Console.WriteLine  ("New character Created: " + template.Username);
 
             StorageManager.AislingBucket.Save(template);
             client.SendMessageBox(0x00, "\0");

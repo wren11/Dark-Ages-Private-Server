@@ -130,6 +130,22 @@
           "AreaID": 1009,
           "PortalKey": 1
         }
+      },
+      {
+        "$type": "Darkages.Types.WorldPortal, Darkages.Server",
+        "DisplayName": "Battle Grounds",
+        "PointX": 386,
+        "PointY": 145,
+        "Destination": {
+          "$type": "Darkages.Types.Warp, Darkages.Server",
+          "Location": {
+            "$type": "Darkages.Types.Position, Darkages.Server",
+            "X": 5,
+            "Y": 5
+          },
+          "AreaID": 1015,
+          "PortalKey": 1
+        }
       }
     ]
   },
@@ -144,5 +160,6 @@
     "AreaID": 9999,
     "PortalKey": 0
   },
-  "Name": "Temuair"
+  "Name": "Temuair",
+  "Description": null
 }

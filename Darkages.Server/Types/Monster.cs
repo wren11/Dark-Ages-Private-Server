@@ -508,11 +508,6 @@ namespace Darkages.Types
                 obj.LootTable = new LootTable(template.Name);
                 obj.UpgradeTable = new LootTable("Probabilities");
 
-                if (obj.Template.Name == "Spider")
-                {
-
-                }
-
                 foreach (var drop in obj.Template.Drops)
                 {
                     if (drop.Equals("random", StringComparison.OrdinalIgnoreCase))
@@ -529,11 +524,6 @@ namespace Darkages.Types
                     }
                     else
                     {
-                        if (drop == "Spider's Eye")
-                        {
-
-                        }
-
                         if (GlobalItemTemplateCache.ContainsKey(drop))
                         {
                             obj.LootTable.Add(GlobalItemTemplateCache[drop]);

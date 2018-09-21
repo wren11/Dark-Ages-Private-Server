@@ -65,7 +65,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     {
                         client.Aisling.X = targetPosition.X;
                         client.Aisling.Y = targetPosition.Y;
-                        client.Aisling.Map.Update(prev.X, prev.Y, TileContent.None);
+                        client.Aisling.Map.Update(prev.X, prev.Y, client.Aisling, true);
 
                         int direction;
                         if (!client.Aisling.Facing(nearest.X, nearest.Y, out direction))

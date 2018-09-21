@@ -117,20 +117,20 @@ namespace Darkages.Types
             if (X > 0)
                 list.Add(new TileContentPosition(
                     new Position(X - 1, Y),
-                    map[X - 1, Y]));
+                    map.MapNodes[X - 1, Y].BaseObject));
             if (Y > 0)
                 list.Add(new TileContentPosition(
                     new Position(X, Y - 1),
-                    map[X, Y - 1]));
+                    map.MapNodes[X, Y - 1].BaseObject));
             if (X < map.Rows - 1)
                 list.Add(new TileContentPosition(
                     new Position(X + 1, Y),
-                    map[X + 1, Y])
+                    map.MapNodes[X + 1, Y].BaseObject)
                 );
             if (Y < map.Cols - 1)
                 list.Add(new TileContentPosition(
                     new Position(X, Y + 1),
-                    map[X, Y + 1])
+                    map.MapNodes[X, Y + 1].BaseObject)
                 );
 
             return list.ToArray();

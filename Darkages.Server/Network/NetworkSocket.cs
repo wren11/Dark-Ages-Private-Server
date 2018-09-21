@@ -27,7 +27,7 @@ namespace Darkages.Network
         private static readonly int headerLength = 3;
 
         private readonly byte[] header = new byte[0x0003];
-        private readonly byte[] packet = new byte[ServerContext.Config?.BufferSize ?? 8192];
+        private readonly byte[] packet = new byte[0x10000];
 
         private int headerOffset;
         private int packetLength;
@@ -102,7 +102,7 @@ namespace Darkages.Network
 
         public NetworkPacket ToPacket()
         {
-            return PacketComplete ? new NetworkPacket(packet, 0, packetLength) : null;
+            return PacketComplete ? new NetworkPacket(packet, packetLength) : null;
         }
     }
 }
