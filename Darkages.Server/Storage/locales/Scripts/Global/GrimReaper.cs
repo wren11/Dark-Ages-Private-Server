@@ -21,6 +21,7 @@ using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
 using System;
+using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Global
 {
@@ -129,9 +130,19 @@ namespace Darkages.Storage.locales.Scripts.Global
 
             client.Aisling.Remains.Owner = client.Aisling;
 
-            if (client.Aisling.Inventory.Length > 0 || client.Aisling.EquipmentManager.Length > 0)
+            var reepStack = client.Aisling.Remains;
+            var items = reepStack.Items;
+
+            if (items.Count > 0)
             {
-                client.Aisling.Remains.ReepItems();
+                client.Aisling.Remains.ReepItems(items.ToList());
+            }
+            else
+            {
+                if (client.Aisling.Inventory.Length > 0 || client.Aisling.EquipmentManager.Length > 0)
+                {
+                    client.Aisling.Remains.ReepItems();
+                }
             }
 
             client.LeaveArea(true, true);

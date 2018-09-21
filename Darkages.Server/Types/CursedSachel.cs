@@ -23,7 +23,7 @@ namespace Darkages.Types
 {
     public class CursedSachel
     {
-        private ISet<Item> Items { get; set; }
+        public ISet<Item> Items { get; set; }
         public Aisling Owner { get; set; }
         public DateTime DateReleased { get; set; }
         public Position Location { get; set; }
@@ -83,19 +83,21 @@ namespace Darkages.Types
 
         }
 
-        public void ReepItems()
+        public void ReepItems(List<Item> items = null)
         {
-            Items = new HashSet<Item>();
-            Location = new Position(Owner.X, Owner.Y);
-            MapId = Owner.CurrentMapId;
+            Items = items != null ? new HashSet<Item>(items) : new HashSet<Item>();
+            {
+                Location = new Position(Owner.X, Owner.Y);
+                MapId = Owner.CurrentMapId;
 
-            ReepInventory();
-            ReepEquipment();
-            ReepGold();
-            GenerateReeper();
+                ReepInventory();
+                ReepEquipment();
+                ReepGold();
+                GenerateReeper();
 
-            Owner.Client.SendMessage(0x02, "Everyone is a bad ass, til they meet one.");
-            Owner.Client.SendStats(StatusFlags.All);
+                Owner.Client.SendMessage(0x02, "Everyone is a bad ass, til they meet one.");
+                Owner.Client.SendStats(StatusFlags.All);
+            }
         }
 
         private void ReepGold()

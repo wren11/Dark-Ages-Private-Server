@@ -462,7 +462,7 @@ namespace Darkages.Types
 
             if (target != null)
             {
-                return ServerContext.Config.MONSTER_DMG_TABLE[target.Level];
+                return ServerContext.Config.MONSTER_DMG_TABLE[target.Level % ServerContext.Config.MONSTER_DMG_TABLE.Length];
             }
 
             return 1;
