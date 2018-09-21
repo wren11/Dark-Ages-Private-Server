@@ -43,6 +43,7 @@ namespace Lorule
         public class Instance : ServerContext
         {
             DateTime SystemStartTime = DateTime.Now;
+
             TimeSpan Uptime => (DateTime.Now - SystemStartTime);
 
             public Instance()
