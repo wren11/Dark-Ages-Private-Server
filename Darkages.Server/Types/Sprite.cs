@@ -1210,10 +1210,12 @@ namespace Darkages.Types
 
         public bool WithinRangeOf(int x, int y, int distance)
         {
-            var other = new Aisling();
-            other.X = x;
-            other.Y = y;
-            other.CurrentMapId = CurrentMapId;
+            var other = new Aisling
+            {
+                X = x,
+                Y = y,
+                CurrentMapId = CurrentMapId
+            };
             return WithinRangeOf(other, distance);
         }
 
@@ -1756,29 +1758,5 @@ namespace Darkages.Types
             Update();
         }
 
-        public static bool operator == (Sprite p1, Sprite p2)
-        {
-            bool rc;
-
-            if (ReferenceEquals(p1, p2))
-            {
-                rc = true;
-            }
-            else if (((object)p1 == null) || ((object)p2 == null))
-            {
-                rc = false;
-            }
-            else
-            {
-                rc = (p1.Serial == p2.Serial);
-            }
-
-            return rc;
-        }
-
-        public static bool operator != (Sprite p1, Sprite p2)
-        {
-            return !(p1 == p2);
-        }
     }
 }

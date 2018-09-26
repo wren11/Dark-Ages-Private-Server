@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages.Types;
+using System.Linq;
 
 namespace Darkages.Storage.locales.debuffs
 {
@@ -23,19 +24,21 @@ namespace Darkages.Storage.locales.debuffs
     {
         public ushort Animation { get; set; }
         public double Modifier  { get; set; }
+        public bool IsSpreading { get; set;  }
 
         public debuff_poison()
         {
 
         }
 
-        public debuff_poison(string name, int length, byte icon, ushort animation, double mod = 0.05)
+        public debuff_poison(string name, int length, byte icon, ushort animation, double mod = 0.05, bool spread = false)
         {
             Animation = animation;
             Name = name;
             Length = length;
             Icon = icon;
             Modifier = mod;
+            IsSpreading = spread;
         }
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
@@ -104,6 +107,29 @@ namespace Darkages.Storage.locales.debuffs
 
         private void ApplyPoison(Sprite Affected)
         {
+
+            if (IsSpreading)
+            {
+                var nearby = (from v in Affected.MonstersNearby()
+                              where v.Serial != Affected.Serial &&
+                              !v.HasDebuff(this.Name)
+                              select v).ToList();
+
+                if (nearby.Count > 0)
+                {
+                    foreach (var near in nearby)
+                    {
+                        if (near.Target == null && Affected.Target != null)
+                        {
+                            near.Target = Affected.Target;
+                        }
+
+                        OnApplied(near, new debuff_poison("Poison Trap", Length, Icon, Animation, 0.35, false));
+                    }
+                }
+            }
+
+
             if (Modifier <= 0.0)
                 Modifier = 0.3;
 

@@ -9,10 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lorule", "Lorule\Lorule.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Content Maker", "Content Maker\Content Maker.csproj", "{E204C94C-7855-4CB4-91A1-D74492CE0CA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darkages.Interops", "..\Darkages.Interops\Darkages.Interops.csproj", "{3BEF5386-D9F2-46DA-BEB6-E78A6FBF105A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Darkages.Security", "..\Darkages.Security\Darkages.Security.csproj", "{D17EC20A-3881-41B3-B56D-899ED45B3D11}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,22 +41,6 @@ Global
 		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Release|x64.ActiveCfg = Debug|Any CPU
 		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Release|x64.Build.0 = Debug|Any CPU
-		{3BEF5386-D9F2-46DA-BEB6-E78A6FBF105A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3BEF5386-D9F2-46DA-BEB6-E78A6FBF105A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3BEF5386-D9F2-46DA-BEB6-E78A6FBF105A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{3BEF5386-D9F2-46DA-BEB6-E78A6FBF105A}.Debug|x64.Build.0 = Debug|Any CPU
-		{3BEF5386-D9F2-46DA-BEB6-E78A6FBF105A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3BEF5386-D9F2-46DA-BEB6-E78A6FBF105A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3BEF5386-D9F2-46DA-BEB6-E78A6FBF105A}.Release|x64.ActiveCfg = Release|Any CPU
-		{3BEF5386-D9F2-46DA-BEB6-E78A6FBF105A}.Release|x64.Build.0 = Release|Any CPU
-		{D17EC20A-3881-41B3-B56D-899ED45B3D11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D17EC20A-3881-41B3-B56D-899ED45B3D11}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D17EC20A-3881-41B3-B56D-899ED45B3D11}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D17EC20A-3881-41B3-B56D-899ED45B3D11}.Debug|x64.Build.0 = Debug|Any CPU
-		{D17EC20A-3881-41B3-B56D-899ED45B3D11}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D17EC20A-3881-41B3-B56D-899ED45B3D11}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D17EC20A-3881-41B3-B56D-899ED45B3D11}.Release|x64.ActiveCfg = Release|Any CPU
-		{D17EC20A-3881-41B3-B56D-899ED45B3D11}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

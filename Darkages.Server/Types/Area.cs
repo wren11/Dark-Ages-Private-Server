@@ -259,11 +259,15 @@ namespace Darkages
                 tmp = new List<Sprite>(GetObjects(i => i.CurrentMapId == ID, Get.All)).ToList();
             }
 
-            UpdateMonsters(elapsedTime,tmp.OfType<Monster>());
+            if (tmp != null)
+            {
 
-            UpdateMundanes(elapsedTime, tmp.OfType<Mundane>());
+                UpdateMonsters(elapsedTime, tmp.OfType<Monster>());
 
-            UpdateItems(elapsedTime, tmp.OfType<Money>().Concat<Sprite>(tmp.OfType<Item>()));
+                UpdateMundanes(elapsedTime, tmp.OfType<Mundane>());
+
+                UpdateItems(elapsedTime, tmp.OfType<Money>().Concat<Sprite>(tmp.OfType<Item>()));
+            }
 
             WarpTimer.Update(elapsedTime);
 

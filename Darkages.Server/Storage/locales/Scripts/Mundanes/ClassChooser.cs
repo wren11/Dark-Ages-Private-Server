@@ -21,6 +21,7 @@ using Darkages.Scripting;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -45,9 +46,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             if (client.Aisling.ClassID == 0)
             {
-                var options = new List<OptionsDataItem>();
-                options.Add(new OptionsDataItem(0x06, "I'm ready to choose a Path,"));
-                options.Add(new OptionsDataItem(0x07, "I'm not ready."));
+                var options = new List<OptionsDataItem>
+                {
+                    new OptionsDataItem(0x06, "I'm ready to choose a Path,"),
+                    new OptionsDataItem(0x07, "I'm not ready.")
+                };
                 client.SendOptionsDialog(Mundane, "Hm? You look weak. you are a peasant. You can't survive this world without a set of skills and discipline. You must make a choice. Now is the time.", options.ToArray());
 
             }
@@ -65,14 +68,16 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 if (responseID == 6)
                 {
-                    var options = new List<OptionsDataItem>();
-                    options.Add(new OptionsDataItem(0x01, "I devote myself to the Warrior"));
-                    options.Add(new OptionsDataItem(0x02, "I devote myself to the Rogue"));
-                    options.Add(new OptionsDataItem(0x03, "I devote myself to the Wizard."));
-                    options.Add(new OptionsDataItem(0x04, "I devote myself to the priest."));
-                    options.Add(new OptionsDataItem(0x05, "I devote myself to the monk."));
+                    var options = new List<OptionsDataItem>
+                    {
+                        new OptionsDataItem(0x01, "Warrior"),
+                        new OptionsDataItem(0x02, "Rogue"),
+                        new OptionsDataItem(0x03, "Wizard"),
+                        new OptionsDataItem(0x04, "Priest"),
+                        new OptionsDataItem(0x05, "Monk")
+                    };
 
-                    client.SendOptionsDialog(Mundane, "It is time to make a choice. Peasant. You must begin your journey here, Now.", options.ToArray());
+                    client.SendOptionsDialog(Mundane, "What do you seek?", options.ToArray());
                 }
                 if (responseID == 7)
                 {
@@ -91,17 +96,19 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 if (client.Aisling.Path == Class.Priest)
                 {
-                    Spell.GiveTo(client.Aisling, "deo saighead");
-                    Spell.GiveTo(client.Aisling, "deo saighead lamh");
+                    Spell.GiveTo(client.Aisling, "beag ia saighead");
                     Spell.GiveTo(client.Aisling, "beag ioc");
                     Spell.GiveTo(client.Aisling, "beag cradh");
+                    Spell.GiveTo(client.Aisling, "ao beag cradh");
+                    Spell.GiveTo(client.Aisling, "armachd");
                 }
 
                 if (client.Aisling.Path == Class.Wizard)
                 {
-                    Spell.GiveTo(client.Aisling, "fas nadur", 1);
                     Spell.GiveTo(client.Aisling, "beag srad", 1);
                     Spell.GiveTo(client.Aisling, "beag sal", 1);
+                    Spell.GiveTo(client.Aisling, "beag athar", 1);
+                    Spell.GiveTo(client.Aisling, "beag creag", 1);
                     Spell.GiveTo(client.Aisling, "beag puinsein", 1);
                 }
 
@@ -110,22 +117,28 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     Skill.GiveTo(client.Aisling, "Wind Blade", 1);
                     Skill.GiveTo(client.Aisling, "Crasher", 1);
                     Skill.GiveTo(client.Aisling, "Clobber", 1);
+                    Skill.GiveTo(client.Aisling, "Two-Handed Attack", 1);
                 }
 
                 if (client.Aisling.Path == Class.Monk)
                 {
                     Skill.GiveTo(client.Aisling, "Double Punch", 1);
                     Skill.GiveTo(client.Aisling, "Ambush", 1);
-                    // Skill.GiveTo(client.Aisling, "Kick");
+                    Skill.GiveTo(client.Aisling, "Kick", 1);
+                    Spell.GiveTo(client.Aisling, "dion", 1);
                 }
 
-                //if (client.Aisling.Path == Class.Rogue)
-                //{
-                //    Skill.GiveTo(client.Aisling, "Stab and Twist");
-                //    Skill.GiveTo(client.Aisling, "Throw Dagger");
-                //    Skill.GiveTo(client.Aisling, "Throw");
-                //    Spell.GiveTo(client.Aisling, "Needle Trap");
-                //}
+                if (client.Aisling.Path == Class.Rogue)
+                {
+                    Skill.GiveTo(client.Aisling, "Stab");
+                    Spell.GiveTo(client.Aisling, "Needle Trap");
+                    Skill.GiveTo(client.Aisling, "Poison Trap");
+
+                    var item = Item.Create(client.Aisling, ServerContext.GlobalItemTemplateCache["Snow Secret"]);
+                    {
+                        item.GiveTo(client.Aisling);
+                    }
+                }
 
                 client.CloseDialog();
 
@@ -138,6 +151,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 });
 
                 client.Aisling.GoHome();
+
+                Task.Delay(250).ContinueWith((ct) => {
+                    client.Aisling.Animate(5);
+                });
             }
         }
     }

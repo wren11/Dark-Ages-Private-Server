@@ -78,14 +78,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Darkages.Interops\Darkages.Interops.csproj">
-      <Project>{3bef5386-d9f2-46da-beb6-e78a6fbf105a}</Project>
-      <Name>Darkages.Interops</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Darkages.Security\Darkages.Security.csproj">
-      <Project>{d17ec20a-3881-41b3-b56d-899ed45b3d11}</Project>
-      <Name>Darkages.Security</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Darkages.Server\Darkages.Server.csproj">
       <Project>{2f0321e0-ebe0-468b-8f25-d08241ad14f7}</Project>
       <Name>Darkages.Server</Name>

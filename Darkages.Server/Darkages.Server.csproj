@@ -344,6 +344,7 @@
     <Compile Include="Storage\locales\Scripts\Skills\LocatePlayer.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Monk\HurricaneKick.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Monk\KraneKick.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Rogue\Stab.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Sneak.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Unstuck.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Warrior\charge.cs" />
@@ -382,6 +383,7 @@
     <Compile Include="Storage\locales\Scripts\Spells\heals\beagiocfein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\Clone.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\NeedleTrap.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\rogue\PoisonTrap.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\StilettoTrap.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\utility\Create.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\utility\fasspoirad.cs" />
@@ -494,16 +496,6 @@
     <Compile Include="Types\Warp.cs" />
     <Compile Include="Types\WarpTemplate.cs" />
     <Compile Include="Types\WorldMapTemplate.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Darkages.Interops\Darkages.Interops.csproj">
-      <Project>{3bef5386-d9f2-46da-beb6-e78a6fbf105a}</Project>
-      <Name>Darkages.Interops</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Darkages.Security\Darkages.Security.csproj">
-      <Project>{d17ec20a-3881-41b3-b56d-899ed45b3d11}</Project>
-      <Name>Darkages.Security</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>

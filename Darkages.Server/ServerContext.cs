@@ -95,9 +95,8 @@ namespace Darkages
 
         public static Board[] Community = new Board[7];
 
-
+        static readonly int g = 255;
         static int r = 223;
-        static int g = 255;
         static int b = 250;
 
         public static void Log(string message, params object[] args)
@@ -366,6 +365,39 @@ namespace Darkages
                 }
             };
 
+            var poisontrap = new SpellTemplate()
+            {
+                Animation = 196,
+                ScriptKey = "Poison Trap",
+                IsTrap = true,
+                Name = "Poison Trap",
+                TargetType = SpellTemplate.SpellUseType.NoTarget,
+                Icon = 35,
+                ManaCost = 20,
+                BaseLines = 0,
+                MaxLines = 9,
+                MaxLevel = 100,
+                Pane = Pane.Spells,
+                Sound = 89,
+                MinLines = 0,
+                DamageExponent = 5.0,
+                Description = "Place a Small Trap that will poison enemies who walk over it.",
+                ElementalProperty = ElementManager.Element.None,
+                TargetAnimation = 196,
+                LevelRate = 0.15,
+                TierLevel = Tier.Tier1,
+                Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Rogue,
+                    Dex_Required = 10,
+                    Gold_Required = 500,
+                    Int_Required = 8,
+                    Stage_Required = ClassStage.Class,
+                    ExpLevel_Required = 5
+                }
+            };
+
+            GlobalSpellTemplateCache["Poison Trap"] = poisontrap;
 
             GlobalItemTemplateCache["Apple"] = new ItemTemplate()
             {
@@ -429,8 +461,119 @@ namespace Darkages
                 Description = "These can be found by killing spiders down in the mileth crypt.",
             };
 
+            var rawberyl = new ItemTemplate()
+            {
+                Name = "Raw Beryl",
+                Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.Tradeable | ItemFlags.QuestRelated | ItemFlags.Sellable | ItemFlags.Stackable,
+                CanStack = true,
+                MaxStack = 20,
+                Value = 300,
+                CarryWeight = 1,
+                DropRate = 40,
+                Image = 0x80E8,
+                DisplayImage = 0x80E8,
+                LevelRequired = 1,
+                Description = "A beryl that is used for upgrading.",
+            };
+
+            var rawcoral = new ItemTemplate()
+            {
+                Name = "Raw Coral",
+                Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.Tradeable | ItemFlags.QuestRelated | ItemFlags.Sellable | ItemFlags.Stackable,
+                CanStack = true,
+                MaxStack = 20,
+                Value = 300,
+                CarryWeight = 1,
+                DropRate = 20,
+                Image = 0x80E9,
+                DisplayImage = 0x80E9,
+                LevelRequired = 1,
+                Description = "A coral fragment that is used for upgrading.",
+            };
+
+            var rawruby = new ItemTemplate()
+            {
+                Name = "Raw Ruby",
+                Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.Tradeable | ItemFlags.QuestRelated | ItemFlags.Sellable | ItemFlags.Stackable,
+                CanStack = true,
+                MaxStack = 20,
+                Value = 300,
+                CarryWeight = 1,
+                DropRate = 10,
+                Image = 0x80EA,
+                DisplayImage = 0x80EA,
+                LevelRequired = 1,
+                Description = "A ruby fragment that is used for upgrading.",
+            };
+
+            var forsakenjewel = new ItemTemplate()
+            {
+                Name = "Forsaken Jewel",
+                Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.Tradeable | ItemFlags.QuestRelated | ItemFlags.Sellable | ItemFlags.Stackable,
+                CanStack = true,
+                MaxStack = 20,
+                Value = 300000000,
+                CarryWeight = 1,
+                DropRate = 1,
+                Image = 0x8385,
+                DisplayImage = 0x8385,
+                LevelRequired = 1,
+                Description = "Used to upgrade a weapon.",
+            };
+
+            GlobalItemTemplateCache["Raw Ruby"] = rawruby;
+            GlobalItemTemplateCache["Raw Coral"] = rawcoral;
+            GlobalItemTemplateCache["Raw Beryl"] = rawberyl;
+            GlobalItemTemplateCache["Forsaken Jewel"] = forsakenjewel;
+
+
             //StorageManager.ItemBucket.Save(item);
             //StorageManager.MonsterBucket.Save(spider);
+
+            var stab = new SkillTemplate()
+            {
+                Name = "Stab",
+                ScriptName = "Stab",
+                Cooldown = 5,
+                Description = "Stab an target, dealing heavy damage. and weaken the target.",
+                Icon = 5,
+                FailMessage = "You failed to stab.",
+                LevelRate = 0.3,
+                MaxLevel = 100,
+                TierLevel = Tier.Tier1,
+                MissAnimation = 68,
+                TargetAnimation = 70,
+                Pane = Pane.Skills,
+                NpcKey = "Bullop",
+                PostQualifers = PostQualifer.BreakInvisible | PostQualifer.IgnoreDefense,
+                Sound = 34,
+                Type = SkillScope.Ability,
+                Prerequisites = new LearningPredicate()
+                {
+                    Class_Required = Class.Rogue,
+                    Dex_Required = 15,
+                    ExpLevel_Required = 9,
+                    Gold_Required = 15000,
+                    Int_Required = 8,
+                    Wis_Required = 5,
+                    Str_Required = 6,
+                    Items_Required = new List<ItemPredicate>()
+                                {
+                                    new ItemPredicate()
+                                    {
+                                         AmountRequired = 3,
+                                         Item = "Raw Beryl",
+                                    },
+                                    new ItemPredicate()
+                                    {
+                                         Item = "Raw Ruby",
+                                         AmountRequired = 1,
+                                    },
+                                }
+                },                 
+            };
+
+            GlobalSkillTemplateCache["Stab"] = stab;
 
             var trap2 = new SpellTemplate()
             {

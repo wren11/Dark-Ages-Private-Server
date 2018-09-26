@@ -58,6 +58,7 @@ namespace Darkages.Network.Game.Components
         {
             if (ServerContext.Paused)
                 return;
+
             try
             {
                 Spawn spawn;
