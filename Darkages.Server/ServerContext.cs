@@ -545,9 +545,10 @@ namespace Darkages
                 TargetAnimation = 70,
                 Pane = Pane.Skills,
                 NpcKey = "Bullop",
-                PostQualifers = PostQualifer.BreakInvisible | PostQualifer.IgnoreDefense,
-                Sound = 34,
+                PostQualifers = PostQualifer.BreakInvisible | PostQualifer.IgnoreDefense,                 
+                Sound = 31,
                 Type = SkillScope.Ability,
+                ID =  77,
                 Prerequisites = new LearningPredicate()
                 {
                     Class_Required = Class.Rogue,
@@ -649,7 +650,7 @@ namespace Darkages
                       {
                           new DialogSequence()
                           {
-                               Title = "Hi",
+                               Title = "Oi",
                                DisplayText = "This tree does not belong here. you can see it's out of place. It was stolen.",
                                DisplayImage = 0x4004,
                                CanMoveBack = false,
@@ -657,7 +658,7 @@ namespace Darkages
                           },
                           new DialogSequence()
                           {
-                               Title = "Hi",
+                               Title = "Oi",
                                DisplayText = "I found it here, We've all been looking for it. I must go report this. If i don't make it. Please visit East Woodlands and travel north.",
                                DisplayImage = 0x4004,
                                CanMoveBack = false,
@@ -665,7 +666,7 @@ namespace Darkages
                           },
                           new DialogSequence()
                           {
-                               Title = "Hi",
+                               Title = "Oi",
                                DisplayText = "Oh yeah, Take this. \n\nRemember!, If i don't make it back - Visit my family in East Woodlands.",
                                DisplayImage = 0x4004,
                                CanMoveBack = false,
