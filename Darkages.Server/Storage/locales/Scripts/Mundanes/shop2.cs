@@ -140,6 +140,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                             .Concat(gear).Where(i => i != null && i.Template.Flags.HasFlag(ItemFlags.Repairable)))
                         {
                             item.Durability = item.Template.MaxDurability;
+
+                            if (item.Equipped)
+                                continue;
+
                             client.Aisling.Inventory.UpdateSlot(client, item);
                         }
 

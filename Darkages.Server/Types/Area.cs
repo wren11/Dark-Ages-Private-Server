@@ -144,19 +144,32 @@ namespace Darkages
 
         public void Update(int x, int y, Sprite obj)
         {
+            if (x < 0 ||
+                x >= this.Cols)
+                return;
+
+            if (y < 0 ||
+                y >= this.Rows)
+                return;
+
+
             if (MapNodes[x, y]?.Add(obj) ?? false)
             {
 
             }
         }
 
-        public void Update(int x, int y, bool clear)
-        {
-            MapNodes[x, y].Empty();
-        }
-
         public void Update(int x, int y, Sprite obj, bool remove)
         {
+            if (x < 0 ||
+                x >= this.Cols)
+                return;
+
+            if (y < 0 ||
+                y >= this.Rows)
+                return;
+
+
             if (remove)
             {
                 if (MapNodes[x, y]?.Remove(obj) ?? false)

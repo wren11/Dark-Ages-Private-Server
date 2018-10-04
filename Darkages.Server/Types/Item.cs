@@ -94,6 +94,9 @@ namespace Darkages.Types
             }
         }
 
+        [JsonIgnore]
+        public bool Equipped { get; set; }
+
         public bool CanCarry(Sprite sprite)
         {
             if ((sprite as Aisling).CurrentWeight + Template.CarryWeight > (sprite as Aisling).MaximumWeight)

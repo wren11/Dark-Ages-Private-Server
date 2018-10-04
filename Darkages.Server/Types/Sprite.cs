@@ -588,6 +588,9 @@ namespace Darkages.Types
             }
             #endregion
 
+            if (!this.WithinRangeOf(Source))
+                return;
+
             if (truedamage)
             {
                 var empty = new ServerFormat13

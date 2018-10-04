@@ -83,6 +83,8 @@ namespace Darkages.Types
                 return;
 
             Equipment[displayslot].Item?.Script?.UnEquipped(Client.Aisling, displayslot);
+            Equipment[displayslot].Item.Equipped = false;
+
             Client.SendStats(StatusFlags.All);
             Client.UpdateDisplay();
         }
@@ -90,6 +92,8 @@ namespace Darkages.Types
         private void OnEquipmentAdded(byte displayslot)
         {
             Equipment[displayslot].Item?.Script?.Equipped(Client.Aisling, displayslot);
+            Equipment[displayslot].Item.Equipped = true;
+
             Client.SendStats(StatusFlags.All);
             Client.UpdateDisplay();
         }
