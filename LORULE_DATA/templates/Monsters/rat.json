@@ -3,10 +3,9 @@
   "Drops": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
     "$values": [
-	"rat shit"
-]
+      "rat shit"
+    ]
   },
-  "ID": 0,
   "Image": 16391,
   "ScriptName": "Common Monster",
   "DefinedX": 31,
@@ -19,11 +18,9 @@
   "Level": 1,
   "MaximumHP": 200,
   "MaximumMP": 200,
-  "SpawnerID": 0,
   "AreaID": 100,
   "MovementSpeed": 450,
   "CastSpeed": 1000,
-  "IsBoss": false,
   "SpawnMax": 12,
   "SpawnRate": 1,
   "SpawnSize": 6,
@@ -32,8 +29,15 @@
   "ImageVarience": 0,
   "SpawnOnlyOnActiveMaps": false,
   "Grow": false,
+  "SpellScripts": null,
+  "SkillScripts": null,
   "DefenseElement": 0,
   "OffenseElement": 0,
+  "Waypoints": null,
   "UpdateMapWide": false,
-  "Name": "Rat"
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Rat",
+  "Description": null,
+  "Group": null
 }

@@ -20,9 +20,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
 
 namespace Darkages.Storage
 {
@@ -66,6 +63,43 @@ namespace Darkages.Storage
                 Directory.CreateDirectory(StoragePath);
         }
 
+
+        public bool IsStored(T obj)
+        {
+            if (Load<T>(obj.Name) == null)
+                return false;
+
+            return true;
+        }
+
+        public void SaveOrReplace(T template)
+        {
+            var path = Path.Combine(StoragePath, string.Format("{0}.json", template.Name.ToLower()));
+
+            if (IsStored(template))
+                File.Delete(path);
+
+            if (template is ItemTemplate)
+                StorageManager.ItemBucket.Save(template as ItemTemplate, false);
+
+            if (template is SpellTemplate)
+                StorageManager.SpellBucket.Save(template as SpellTemplate, false);
+
+            if (template is SkillTemplate)
+                StorageManager.SkillBucket.Save(template as SkillTemplate, false);
+
+            if (template is MonsterTemplate)
+                StorageManager.MonsterBucket.Save(template as MonsterTemplate, false);
+
+            if (template is MundaneTemplate)
+                StorageManager.MundaneBucket.Save(template as MundaneTemplate, false);
+
+            if (template is Reactor)
+                StorageManager.ReactorBucket.Save(template as Reactor, false);
+
+            if (template is WarpTemplate)
+                StorageManager.WarpBucket.Save(template as WarpTemplate);
+        }
 
         public Template LoadFromStorage(Template existing)
         {
@@ -116,6 +150,7 @@ namespace Darkages.Storage
                         StorageManager.MonsterBucket.Load<MonsterTemplate>(Path.GetFileNameWithoutExtension(asset));
                     ServerContext.GlobalMonsterTemplateCache.Add(template);
                     template.NextAvailableSpawn = DateTime.UtcNow;
+
                 }
                 else if (tmp is MundaneTemplate)
                 {

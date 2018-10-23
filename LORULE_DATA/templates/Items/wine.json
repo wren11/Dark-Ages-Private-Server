@@ -1,13 +1,11 @@
 {
   "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
-  "MiniScript": "user.CurrentHp -= 100; 
-	         user.Animate(7); 
-                 user.RefreshStats();",
+  "MiniScript": "user.CurrentHp -= 100; \r\n\t         user.Animate(7); \r\n                 user.RefreshStats();",
   "ID": 0,
   "CanStack": true,
   "MaxStack": 100,
-  "Image": 0x8027,
-  "DisplayImage": 0x8027,
+  "Image": 32807,
+  "DisplayImage": 32807,
   "ScriptName": null,
   "Gender": 0,
   "HealthModifer": null,
@@ -40,5 +38,6 @@
   "Color": 0,
   "WeaponScript": null,
   "Name": "wine",
-  "Description": null
+  "Description": null,
+  "Group": null
 }

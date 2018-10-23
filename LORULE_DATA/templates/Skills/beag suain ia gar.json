@@ -63,6 +63,7 @@
   },
   "NpcKey": "Combat Trainer",
   "TierLevel": 0,
+  "Name": "beag suain ia gar",
   "Description": "Paralyze all targets near the warrior. Granting double damage to targets from behind while paralyzed.",
-  "Name": "beag suain ia gar"
+  "Group": null
 }

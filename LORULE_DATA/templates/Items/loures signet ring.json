@@ -1,5 +1,6 @@
 {
   "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
   "ID": 0,
   "CanStack": false,
   "MaxStack": 0,
@@ -71,5 +72,8 @@
   "StageRequired": 0,
   "HasPants": false,
   "Color": 0,
-  "Name": "Loures Signet Ring"
+  "WeaponScript": null,
+  "Name": "Loures Signet Ring",
+  "Description": null,
+  "Group": null
 }

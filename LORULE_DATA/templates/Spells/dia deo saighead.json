@@ -20,7 +20,9 @@
   "Prerequisites": null,
   "NpcKey": null,
   "TierLevel": 0,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "dia deo saighead"
+  "IsTrap": false,
+  "Name": "dia deo saighead",
+  "Description": null,
+  "Group": null
 }

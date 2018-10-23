@@ -63,6 +63,7 @@
   },
   "NpcKey": "Combat Trainer",
   "TierLevel": 0,
+  "Name": "Wind Blade",
   "Description": "Attack and Strike up to 4 enemies in front of you.",
-  "Name": "Wind Blade"
+  "Group": null
 }

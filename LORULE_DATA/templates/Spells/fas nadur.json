@@ -85,7 +85,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 9,
-  "Description": "Slightly amplifies a target's element.",
   "TargetAnimation": 0,
-  "Name": "fas nadur"
+  "IsTrap": false,
+  "Name": "fas nadur",
+  "Description": "Slightly amplifies a target's element.",
+  "Group": null
 }

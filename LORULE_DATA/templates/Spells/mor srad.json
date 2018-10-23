@@ -60,7 +60,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 0,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "mor srad"
+  "IsTrap": false,
+  "Name": "mor srad",
+  "Description": null,
+  "Group": null
 }

@@ -53,5 +53,10 @@ namespace Content_Maker
         {
             new AreaCreateWizard().ShowDialog();
         }
+
+        private void button4_Click(object sender, System.EventArgs e)
+        {
+
+        }
     }
 }

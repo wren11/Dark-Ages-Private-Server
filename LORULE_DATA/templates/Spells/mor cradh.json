@@ -60,7 +60,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 0,
-  "Description": "Bind a curse onto that an unwilling target.",
   "TargetAnimation": 0,
-  "Name": "mor cradh"
+  "IsTrap": false,
+  "Name": "mor cradh",
+  "Description": "Bind a curse onto that an unwilling target.",
+  "Group": null
 }

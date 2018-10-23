@@ -1,25 +1,31 @@
 {
   "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
-  "Image": 0x415C,
+  "WalkRate": 0,
+  "TurnRate": 0,
+  "CastRate": 0,
+  "EnableCasting": false,
+  "Spells": null,
+  "Skills": {
+    "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Crasher",
+      "Wind Blade"
+    ]
+  },
+  "Image": 16732,
   "Level": 50,
   "ScriptKey": "Nukage",
   "EnableWalking": true,
   "EnableTurning": true,
   "EnableAttacking": true,
   "EnableSpeech": true,
+  "AttackPlayers": false,
   "Speech": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
     "$values": [
       "am hurry",
       "gave am or am hurry",
-      "game am now",
-    ]
-  },
-  "Skills": {
-    "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
-    "$values": [
-      "Crasher",
-      "Wind Blade",
+      "game am now"
     ]
   },
   "X": 14,
@@ -29,8 +35,6 @@
   "MaximumHp": 0,
   "MaximumMp": 0,
   "QuestKey": "Nukage",
-  "Name": "Nukage",
-  "PathQualifer": 3,
   "Waypoints": {
     "$type": "System.Collections.Generic.List`1[[Darkages.Types.Position, Darkages.Server]], mscorlib",
     "$values": [
@@ -38,7 +42,11 @@
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 21,
         "Y": 21
-      },
+      }
     ]
   },
+  "PathQualifer": 3,
+  "Name": "Nukage",
+  "Description": null,
+  "Group": null
 }

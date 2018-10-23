@@ -3,11 +3,10 @@
   "Drops": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
     "$values": [
-	"random",
-	"Human Remains"
+      "random",
+      "Human Remains"
     ]
   },
-  "ID": 152,
   "Image": 16536,
   "ScriptName": "Common Monster",
   "DefinedX": 33,
@@ -20,11 +19,9 @@
   "Level": 6,
   "MaximumHP": 0,
   "MaximumMP": 0,
-  "SpawnerID": 0,
   "AreaID": 152,
   "MovementSpeed": 2000,
   "CastSpeed": 4000,
-  "IsBoss": false,
   "SpawnMax": 100,
   "SpawnRate": 5,
   "SpawnSize": 10,
@@ -40,8 +37,14 @@
       "deo saighead"
     ]
   },
+  "SkillScripts": null,
   "DefenseElement": 1,
   "OffenseElement": 0,
+  "Waypoints": null,
   "UpdateMapWide": false,
-  "Name": "Crypt Walker"
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Crypt Walker",
+  "Description": null,
+  "Group": null
 }

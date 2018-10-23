@@ -64,7 +64,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 9,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "ard puinsein"
+  "IsTrap": false,
+  "Name": "ard puinsein",
+  "Description": null,
+  "Group": null
 }

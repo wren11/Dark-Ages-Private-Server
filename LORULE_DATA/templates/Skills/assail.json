@@ -47,6 +47,7 @@
   },
   "NpcKey": "Martial Arts Trainer",
   "TierLevel": 0,
+  "Name": "Assail",
   "Description": "Attack.",
-  "Name": "Assail"
+  "Group": null
 }

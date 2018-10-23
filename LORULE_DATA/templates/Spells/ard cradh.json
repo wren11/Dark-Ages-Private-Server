@@ -60,7 +60,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 0,
-  "Description": "Bind a great curse onto that an unwilling target.",
   "TargetAnimation": 0,
-  "Name": "ard cradh"
+  "IsTrap": false,
+  "Name": "ard cradh",
+  "Description": "Bind a great curse onto that an unwilling target.",
+  "Group": null
 }

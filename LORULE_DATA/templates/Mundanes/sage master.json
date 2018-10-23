@@ -1,5 +1,8 @@
 {
   "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "WalkRate": 0,
+  "TurnRate": 0,
+  "CastRate": 0,
   "EnableCasting": true,
   "Spells": {
     "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
@@ -15,6 +18,7 @@
       "beag ioc fein"
     ]
   },
+  "Skills": null,
   "Image": 16731,
   "Level": 99,
   "ScriptKey": "welcome aisling",
@@ -22,6 +26,7 @@
   "EnableTurning": true,
   "EnableAttacking": true,
   "EnableSpeech": true,
+  "AttackPlayers": false,
   "Speech": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
     "$values": [
@@ -39,5 +44,9 @@
   "MaximumHp": 0,
   "MaximumMp": 0,
   "QuestKey": "welcome trials 1",
-  "Name": "Sage Master"
+  "Waypoints": null,
+  "PathQualifer": 0,
+  "Name": "Sage Master",
+  "Description": null,
+  "Group": null
 }

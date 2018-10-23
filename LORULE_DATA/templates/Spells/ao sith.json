@@ -49,7 +49,9 @@
   },
   "NpcKey": "etaen",
   "TierLevel": 9,
-  "Description": "Removes all effects from a target.",
   "TargetAnimation": 0,
-  "Name": "ao sith"
+  "IsTrap": false,
+  "Name": "ao sith",
+  "Description": "Removes all effects from a target.",
+  "Group": null
 }

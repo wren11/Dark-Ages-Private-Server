@@ -1,5 +1,6 @@
 {
   "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
   "ID": 0,
   "CanStack": false,
   "MaxStack": 0,
@@ -55,5 +56,8 @@
   "StageRequired": 1,
   "HasPants": false,
   "Color": 0,
-  "Name": "Black Stone Ring"
+  "WeaponScript": null,
+  "Name": "Black Stone Ring",
+  "Description": null,
+  "Group": null
 }

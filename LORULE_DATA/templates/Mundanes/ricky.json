@@ -1,12 +1,25 @@
 {
   "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
-  "Image": 0x4163,
+  "WalkRate": 0,
+  "TurnRate": 0,
+  "CastRate": 0,
+  "EnableCasting": false,
+  "Spells": null,
+  "Skills": {
+    "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Wind Blade",
+      "Crasher"
+    ]
+  },
+  "Image": 16739,
   "Level": 12,
   "ScriptKey": "Ricky",
   "EnableWalking": true,
   "EnableTurning": true,
   "EnableAttacking": true,
   "EnableSpeech": true,
+  "AttackPlayers": false,
   "Speech": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
     "$values": [
@@ -19,13 +32,6 @@
       "Do onto others as you do onto you"
     ]
   },
-  "Skills": {
-    "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
-    "$values": [
-      "Wind Blade",
-      "Crasher",
-    ]
-  },
   "X": 14,
   "Y": 22,
   "AreaID": 81,
@@ -33,8 +39,6 @@
   "MaximumHp": 0,
   "MaximumMp": 0,
   "QuestKey": "Ricky",
-  "Name": "Ricky",
-  "PathQualifer": 3,
   "Waypoints": {
     "$type": "System.Collections.Generic.List`1[[Darkages.Types.Position, Darkages.Server]], mscorlib",
     "$values": [
@@ -42,7 +46,11 @@
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 15,
         "Y": 21
-      },
+      }
     ]
   },
+  "PathQualifer": 3,
+  "Name": "Ricky",
+  "Description": null,
+  "Group": null
 }

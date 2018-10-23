@@ -49,7 +49,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 0,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "beag sal"
+  "IsTrap": false,
+  "Name": "beag sal",
+  "Description": null,
+  "Group": null
 }

@@ -55,7 +55,9 @@
   },
   "NpcKey": "dar",
   "TierLevel": 9,
-  "Description": "removes the curse mor cradh from a target.",
   "TargetAnimation": 0,
-  "Name": "ao mor cradh"
+  "IsTrap": false,
+  "Name": "ao mor cradh",
+  "Description": "removes the curse mor cradh from a target.",
+  "Group": null
 }

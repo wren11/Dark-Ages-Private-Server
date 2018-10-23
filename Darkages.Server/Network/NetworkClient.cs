@@ -74,14 +74,16 @@ namespace Darkages.Network
             {
                 Encryption.Transform(packet);
 
-                if (format.Command == 0x39 || format.Command == 0x3A)
+                switch (format.Command)
                 {
-                    TransFormDialog(packet);
-                    Reader.Position = 6;
-                }
-                else
-                {
-                    Reader.Position = 0;
+                    case 0x39:
+                    case 0x3A:
+                        TransFormDialog(packet);
+                        Reader.Position = 6;
+                        break;
+                    default:
+                        Reader.Position = 0;
+                        break;
                 }
             }
             else
@@ -151,6 +153,24 @@ namespace Darkages.Network
             {
                 //ignore
             }
+        }
+
+
+        public class PacketCache
+        {
+            public uint Hash;
+            public byte[] Data { get; set; }
+
+        }
+
+        public Cache<PacketCache> Packets = new Cache<PacketCache>();
+
+        private void CachePacket(byte[] data)
+        {
+            var crc = IO.Crc32Provider.ComputeChecksum(data);
+            var key = crc.ToString();
+
+            Packets.AddOrUpdate(key, new PacketCache() { Hash = crc, Data = data });
         }
 
         private void SendFormat(NetworkFormat format)

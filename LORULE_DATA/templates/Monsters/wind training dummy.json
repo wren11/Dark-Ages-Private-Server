@@ -2,11 +2,9 @@
   "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
   "Drops": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
-    "$values": [
-    ]
+    "$values": []
   },
-  "ID": 0,
-  "Image": 0x4085,
+  "Image": 16517,
   "ScriptName": "Training Dummy",
   "DefinedX": 113,
   "DefinedY": 18,
@@ -18,11 +16,9 @@
   "Level": 200,
   "MaximumHP": 200,
   "MaximumMP": 200,
-  "SpawnerID": 0,
   "AreaID": 1,
   "MovementSpeed": 2000,
   "CastSpeed": 3000,
-  "IsBoss": false,
   "SpawnMax": 1,
   "SpawnRate": 15,
   "SpawnSize": 1,
@@ -31,8 +27,15 @@
   "ImageVarience": 0,
   "SpawnOnlyOnActiveMaps": false,
   "Grow": false,
+  "SpellScripts": null,
+  "SkillScripts": null,
   "DefenseElement": 3,
   "OffenseElement": 3,
+  "Waypoints": null,
   "UpdateMapWide": false,
-  "Name": "Wind Training Dummy"
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Wind Training Dummy",
+  "Description": null,
+  "Group": null
 }

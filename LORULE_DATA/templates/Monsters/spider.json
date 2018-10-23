@@ -42,5 +42,6 @@
   "FamilyKey": "Insect",
   "BaseName": "Spider",
   "Name": "Spider",
-  "Description": "Small creature that dwells in dark places, such as crypts. Not very Aggressive, Unless Attacked."
+  "Description": "Small creature that dwells in dark places, such as crypts. Not very Aggressive, Unless Attacked.",
+  "Group": null
 }

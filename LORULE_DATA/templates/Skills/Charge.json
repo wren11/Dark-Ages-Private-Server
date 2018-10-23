@@ -47,6 +47,7 @@
   },
   "NpcKey": "Martial Arts Trainer",
   "TierLevel": 0,
+  "Name": "Charge",
   "Description": "Charge and attack at anything in front of you.",
-  "Name": "Charge"
+  "Group": null
 }

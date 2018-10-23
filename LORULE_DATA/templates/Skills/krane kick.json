@@ -47,6 +47,7 @@
   },
   "NpcKey": "Combat Trainer",
   "TierLevel": 9,
+  "Name": "Krane Kick",
   "Description": "Leverage Objects surrounding you, To deliver a powerful kick.",
-  "Name": "Krane Kick"
+  "Group": null
 }

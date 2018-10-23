@@ -1,5 +1,6 @@
 {
   "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
   "ID": 0,
   "CanStack": false,
   "MaxStack": 0,
@@ -39,5 +40,8 @@
   "StageRequired": 0,
   "HasPants": false,
   "Color": 0,
-  "Name": "Earth Bodice"
+  "WeaponScript": null,
+  "Name": "Earth Bodice",
+  "Description": null,
+  "Group": null
 }

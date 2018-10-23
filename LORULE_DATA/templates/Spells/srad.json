@@ -60,7 +60,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 0,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "srad"
+  "IsTrap": false,
+  "Name": "srad",
+  "Description": null,
+  "Group": null
 }

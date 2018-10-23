@@ -62,6 +62,7 @@
   },
   "NpcKey": "Combat Trainer",
   "TierLevel": 9,
+  "Name": "Hurricane Kick",
   "Description": "Attack and leave nothing but a victim remaining, No amount of armor can sustain this attack.",
-  "Name": "Hurricane Kick"
+  "Group": null
 }

@@ -1,5 +1,6 @@
 {
   "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
   "ID": 0,
   "CanStack": false,
   "MaxStack": 0,
@@ -55,5 +56,8 @@
   "StageRequired": 0,
   "HasPants": false,
   "Color": 0,
-  "Name": "Great Emerald Sword"
+  "WeaponScript": null,
+  "Name": "Great Emerald Sword",
+  "Description": null,
+  "Group": null
 }

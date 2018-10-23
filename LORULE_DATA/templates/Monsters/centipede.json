@@ -42,5 +42,6 @@
   "FamilyKey": "Insect",
   "BaseName": "Centipede",
   "Name": "Centipede",
-  "Description": "Small creature that dwells in dark places, such as crypts. Known to be aggresive."
+  "Description": "Small creature that dwells in dark places, such as crypts. Known to be aggresive.",
+  "Group": null
 }

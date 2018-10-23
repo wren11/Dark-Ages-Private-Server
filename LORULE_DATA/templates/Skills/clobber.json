@@ -63,6 +63,7 @@
   },
   "NpcKey": "Combat Trainer",
   "TierLevel": 0,
+  "Name": "Clobber",
   "Description": "A third Assail, Makes your space bar even stronger!",
-  "Name": "Clobber"
+  "Group": null
 }

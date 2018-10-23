@@ -47,6 +47,7 @@
   },
   "NpcKey": "Martial Arts Trainer",
   "TierLevel": 0,
+  "Name": "Wolf Fang Fist",
   "Description": "Freeze a Target for 6 seconds.",
-  "Name": "Wolf Fang Fist"
+  "Group": null
 }

@@ -1,5 +1,6 @@
 {
   "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
   "ID": 0,
   "CanStack": true,
   "MaxStack": 10,
@@ -35,5 +36,8 @@
   "StageRequired": 0,
   "HasPants": false,
   "Color": 0,
-  "Name": "Hobogoblin's Skull"
+  "WeaponScript": null,
+  "Name": "Hobogoblin's Skull",
+  "Description": null,
+  "Group": null
 }

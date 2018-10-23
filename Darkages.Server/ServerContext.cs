@@ -315,8 +315,8 @@ namespace Darkages
         public static void LoadAndCacheStorage()
         {
             Paused = true;
-
             EmptyCacheCollectors();
+
             lock (SyncObj)
             {
                 LoadMaps();
@@ -545,10 +545,10 @@ namespace Darkages
                 TargetAnimation = 70,
                 Pane = Pane.Skills,
                 NpcKey = "Bullop",
-                PostQualifers = PostQualifer.BreakInvisible | PostQualifer.IgnoreDefense,                 
+                PostQualifers = PostQualifer.BreakInvisible | PostQualifer.IgnoreDefense,
                 Sound = 31,
                 Type = SkillScope.Ability,
-                ID =  77,
+                ID = 77,
                 Prerequisites = new LearningPredicate()
                 {
                     Class_Required = Class.Rogue,
@@ -571,7 +571,7 @@ namespace Darkages
                                          AmountRequired = 1,
                                     },
                                 }
-                },                 
+                },
             };
 
             GlobalSkillTemplateCache["Stab"] = stab;
@@ -675,8 +675,27 @@ namespace Darkages
                       }
             };
 
+            SyncStorage();
 
             Paused = false;
+        }
+
+        private static void SyncStorage()
+        {
+            foreach (var obj in GlobalItemTemplateCache.Select(i => i.Value))
+                StorageManager.ItemBucket.SaveOrReplace(obj);
+
+            foreach (var obj in GlobalSpellTemplateCache.Select(i => i.Value))
+                StorageManager.SpellBucket.SaveOrReplace(obj);
+
+            foreach (var obj in GlobalSkillTemplateCache.Select(i => i.Value))
+                StorageManager.SkillBucket.SaveOrReplace(obj);
+
+            foreach (var obj in GlobalMonsterTemplateCache)
+                StorageManager.MonsterBucket.SaveOrReplace(obj);
+
+            foreach (var obj in GlobalMundaneTemplateCache.Select(i => i.Value))
+                StorageManager.MundaneBucket.SaveOrReplace(obj);
         }
 
         private static void LoadExtensions()

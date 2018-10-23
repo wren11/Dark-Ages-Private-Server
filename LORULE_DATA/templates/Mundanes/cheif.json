@@ -1,12 +1,23 @@
 {
   "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
-  "Image": 0x43DB,
+  "WalkRate": 0,
+  "TurnRate": 0,
+  "CastRate": 0,
+  "EnableCasting": false,
+  "Spells": null,
+  "Skills": null,
+  "Image": 17371,
   "Level": 99,
   "ScriptKey": "",
   "EnableWalking": false,
   "EnableTurning": false,
   "EnableAttacking": false,
   "EnableSpeech": false,
+  "AttackPlayers": false,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": []
+  },
   "X": 31,
   "Y": 21,
   "AreaID": 101,
@@ -14,5 +25,9 @@
   "MaximumHp": 0,
   "MaximumMp": 0,
   "QuestKey": "",
-  "Name": "cheif"
+  "Waypoints": null,
+  "PathQualifer": 0,
+  "Name": "cheif",
+  "Description": null,
+  "Group": null
 }

@@ -55,7 +55,9 @@
   },
   "NpcKey": "Dar The Forsakened",
   "TierLevel": 0,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "ard srad"
+  "IsTrap": false,
+  "Name": "ard srad",
+  "Description": null,
+  "Group": null
 }

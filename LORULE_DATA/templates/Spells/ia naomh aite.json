@@ -9,7 +9,7 @@
   "Text": "\u0000",
   "Debuff": null,
   "Buff": {
-    "$type": "Darkages.Storage.locales.Buffs.buff_aite, Darkages.Server",
+    "$type": "Darkages.Types.Buff, Darkages.Server",
     "Name": "aite",
     "Length": 3000,
     "Icon": 11,
@@ -65,7 +65,9 @@
   },
   "NpcKey": "etaen",
   "TierLevel": 9,
-  "Description": "Greatly Reduces the amount of incoming damage.",
   "TargetAnimation": 0,
-  "Name": "ia naomh aite"
+  "IsTrap": false,
+  "Name": "ia naomh aite",
+  "Description": "Greatly Reduces the amount of incoming damage.",
+  "Group": null
 }

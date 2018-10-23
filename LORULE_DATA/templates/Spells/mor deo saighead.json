@@ -49,7 +49,9 @@
   },
   "NpcKey": "etaen",
   "TierLevel": 0,
-  "Description": "Attack a single target using the power of light.",
   "TargetAnimation": 0,
-  "Name": "mor deo saighead"
+  "IsTrap": false,
+  "Name": "mor deo saighead",
+  "Description": "Attack a single target using the power of light.",
+  "Group": null
 }

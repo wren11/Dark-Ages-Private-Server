@@ -53,6 +53,7 @@
   },
   "NpcKey": "Dean",
   "TierLevel": 0,
+  "Name": "Double Punch",
   "Description": null,
-  "Name": "Double Punch"
+  "Group": null
 }

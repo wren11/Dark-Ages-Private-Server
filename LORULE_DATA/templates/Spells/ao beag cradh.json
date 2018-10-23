@@ -55,7 +55,9 @@
   },
   "NpcKey": "etaen",
   "TierLevel": 9,
-  "Description": "Removes the curse beag cradh from a target.",
   "TargetAnimation": 0,
-  "Name": "ao beag cradh"
+  "IsTrap": false,
+  "Name": "ao beag cradh",
+  "Description": "Removes the curse beag cradh from a target.",
+  "Group": null
 }
