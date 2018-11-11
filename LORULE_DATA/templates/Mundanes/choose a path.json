@@ -1,6 +1,6 @@
 {
   "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
-  "Image": 0x42BA,
+  "Image": 0x418D,
   "Level": 99,
   "ScriptKey": "Class Chooser",
   "EnableWalking": false,
@@ -14,7 +14,7 @@
   "X": 5,
   "Y": 5,
   "AreaID": 1007,
-  "Direction": 0,
+  "Direction":1,
   "MaximumHp": 0,
   "MaximumMp": 0,
   "Name": "The Forsaken"

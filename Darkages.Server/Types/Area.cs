@@ -16,7 +16,6 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages.Network.Game;
-using Darkages.Network.Game.Components;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
@@ -27,8 +26,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Darkages
 {
@@ -42,6 +39,12 @@ namespace Darkages
         [Browsable(false)]
         private readonly GameServerTimer WarpTimer =
             new GameServerTimer(TimeSpan.FromSeconds(ServerContext.Config.WarpUpdateTimer));
+
+        [JsonIgnore]
+        [Browsable(false)]
+        private readonly GameServerTimer UpdateTimer =
+            new GameServerTimer(TimeSpan.FromMilliseconds(250));
+
 
         [JsonIgnore] [Browsable(false)] public byte[] Data { get; set; }
 
@@ -263,24 +266,29 @@ namespace Darkages
             return buffer;
         }
 
+        private List<Sprite> ObjectCache { get; set; }
+
         public void Update(TimeSpan elapsedTime)
         {
-            List<Sprite> tmp;
+            UpdateTimer.Update(elapsedTime);
 
-            lock (ServerContext.SyncObj)
+            if (UpdateTimer.Elapsed)
             {
-                tmp = new List<Sprite>(GetObjects(i => i.CurrentMapId == ID, Get.All)).ToList();
+                lock (ServerContext.SyncObj)
+                {
+                    ObjectCache = new List<Sprite>(GetObjects(i => i.CurrentMapId == ID, Get.All)).ToList();
+                }
+
+                UpdateTimer.Reset();
             }
 
-            if (tmp != null)
+            if (ObjectCache != null && ObjectCache.Count > 0)
             {
-
-                UpdateMonsters(elapsedTime, tmp.OfType<Monster>());
-
-                UpdateMundanes(elapsedTime, tmp.OfType<Mundane>());
-
-                UpdateItems(elapsedTime, tmp.OfType<Money>().Concat<Sprite>(tmp.OfType<Item>()));
+                UpdateMonsters(elapsedTime, ObjectCache.OfType<Monster>());
+                UpdateMundanes(elapsedTime, ObjectCache.OfType<Mundane>());
+                UpdateItems(elapsedTime, ObjectCache.OfType<Money>().Concat<Sprite>(ObjectCache.OfType<Item>()));
             }
+
 
             WarpTimer.Update(elapsedTime);
 
@@ -316,9 +324,8 @@ namespace Darkages
             }
         }
 
-        private Task<bool> UpdateMonsters(TimeSpan elapsedTime, IEnumerable<Monster> objects)
+        private void UpdateMonsters(TimeSpan elapsedTime, IEnumerable<Monster> objects)
         {
-            var tcs     = new TaskCompletionSource<bool>();
             var updates = 0;
 
             foreach (var obj in objects)
@@ -337,21 +344,19 @@ namespace Darkages
 
                 if (obj != null && obj.Map != null && obj.Script != null)
                 {
+
                     obj.Script.Update(elapsedTime);
                     obj.UpdateBuffs(elapsedTime);
                     obj.UpdateDebuffs(elapsedTime);
+
                     obj.LastUpdated = DateTime.UtcNow;
                     updates++;
                 }
             }
-
-            tcs.SetResult(updates > 0);
-            return tcs.Task;
         }
 
-        private Task<bool> UpdateItems(TimeSpan elapsedTime, IEnumerable<Sprite> objects)
+        private void UpdateItems(TimeSpan elapsedTime, IEnumerable<Sprite> objects)
         {
-            var tcs     = new TaskCompletionSource<bool>();
             var updates = 0;
 
             foreach (var obj in objects)
@@ -379,14 +384,10 @@ namespace Darkages
                     }
                 }
             }
-
-            tcs.SetResult(updates > 0);
-            return tcs.Task;
         }
 
-        private Task<bool> UpdateMundanes(TimeSpan elapsedTime, IEnumerable<Mundane> objects)
+        private void UpdateMundanes(TimeSpan elapsedTime, IEnumerable<Mundane> objects)
         {
-            var tcs = new TaskCompletionSource<bool>();
             var updates = 0;
 
             foreach (var obj in objects)
@@ -400,9 +401,6 @@ namespace Darkages
                 obj.LastUpdated = DateTime.UtcNow;
                 updates++;
             }
-
-            tcs.SetResult(updates > 0);
-            return tcs.Task;
         }
 
 

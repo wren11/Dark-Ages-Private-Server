@@ -312,6 +312,7 @@
     <Compile Include="Storage\locales\Scripts\Monsters\CommonMonster.cs" />
     <Compile Include="Storage\locales\Scripts\Monsters\TowerDefense.cs" />
     <Compile Include="Storage\locales\Scripts\Monsters\TrainingDummy.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\Aoife.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\ArenaMaster.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\Banker.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\BarrenLord.cs" />

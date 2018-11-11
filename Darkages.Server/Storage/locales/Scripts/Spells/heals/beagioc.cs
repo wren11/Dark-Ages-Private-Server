@@ -45,7 +45,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 var client = (sprite as Aisling).Client;
                 if (client.Aisling.CurrentMp >= Spell.Template.ManaCost)
                 {
-                    client.TrainSpell(Spell);
 
                     var action = new ServerFormat1A
                     {
@@ -53,6 +52,9 @@ namespace Darkages.Storage.locales.Scripts.Spells
                         Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                         Speed = 30
                     };
+
+                    target.Client.SendAnimation(Spell.Template.Animation, target, client.Aisling);
+                    client.Aisling.Show(Scope.NearbyAislings, action);
 
                     sprite.CurrentMp -= Spell.Template.ManaCost;
                     target.CurrentHp += (200 + ((Spell.Level + sprite.Wis) * 26));
@@ -75,15 +77,13 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     }
 
                     sprite.Client.SendStats(StatusFlags.StructB);
-                    target.Client.SendAnimation(Spell.Template.Animation, target, client.Aisling);
-
-                    client.Aisling.Show(Scope.NearbyAislings, action);
                     client.SendMessage(0x02, "you cast " + Spell.Template.Name + ".");
                     client.SendStats(StatusFlags.All);
+                    client.TrainSpell(Spell);
                 }
                 else
                 {
-                    if (sprite is Aisling)
+                    if (sprite is    Aisling)
                     {
                         (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
                     }

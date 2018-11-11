@@ -20,7 +20,6 @@ using Darkages.Storage.locales.Scripts.Items;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Darkages.Network.Game.Components
 {
@@ -28,7 +27,6 @@ namespace Darkages.Network.Game.Components
     {
         private readonly GameServerTimer _updateEventScheduler;
         private readonly GameServerTimer _updateMediatorScheduler;
-        private readonly GameServerTimer _updateTrapScheduler;
 
         public ObjectComponent(GameServer server)
             : base(server)
@@ -37,8 +35,19 @@ namespace Darkages.Network.Game.Components
                 new GameServerTimer(TimeSpan.FromSeconds(ServerContext.Config.ObjectHandlerInterval));
             _updateMediatorScheduler =
                 new GameServerTimer(TimeSpan.FromMilliseconds(ServerContext.Config.ObjectGarbageCollectorInterval));
-            _updateTrapScheduler =
-                new GameServerTimer(TimeSpan.FromMilliseconds(1000));
+
+        }
+
+        public void OnObjectAdded(Sprite obj)
+        {
+            var Map = ServerContext.GlobalMapCache[obj.CurrentMapId];
+            if (Map == null)
+                return;
+
+            OnObjectUpdate(obj);
+
+            if (obj.CurrentHp > 0)
+                Map.Update(obj.X, obj.Y, obj);
         }
 
         public void OnObjectRemoved(Sprite obj)
@@ -53,8 +62,7 @@ namespace Darkages.Network.Game.Components
 
             if (obj is Monster || obj is Mundane)
             {
-                var nearByAislings = obj.AislingsNearby();
-
+                var nearByAislings = obj.GetObjects<Aisling>(i => i.WithinRangeOf(obj));
                 foreach (var nearbyAisling in nearByAislings)
                 {
                     if (obj is Monster)
@@ -63,7 +71,11 @@ namespace Darkages.Network.Game.Components
 
                     if (nearbyAisling.RemoveFromView(obj))
                     {
-                        obj.RemoveFrom(nearbyAisling);
+                        lock (ServerContext.SyncObj)
+                        {
+                            for (int i = 0; i < 2; i++)
+                                obj.RemoveFrom(nearbyAisling);
+                        }
                     }
                 }
             }
@@ -80,12 +92,13 @@ namespace Darkages.Network.Game.Components
 
         public void UpdateOutOfRangeObjects(Sprite obj)
         {
-            var distantObjs = obj.GetObjects<Aisling>(i => !i.WithinRangeOf(obj));
+            var distantObjs = obj.GetObjects(i => !i.WithinRangeOf(obj)
+                                                  && obj.CurrentMapId == i.CurrentMapId,
+                Get.Aislings | Get.Monsters | Get.Mundanes | Get.Items | Get.Money);
 
             foreach (var dObj in distantObjs)
             {
                 if (obj is Aisling)
-                {
                     if ((obj as Aisling).InsideView(dObj))
                     {
                         if ((obj as Aisling).RemoveFromView(dObj))
@@ -93,7 +106,6 @@ namespace Darkages.Network.Game.Components
                             dObj.RemoveFrom(obj as Aisling);
                         }
                     }
-                }
             }
         }
 
@@ -123,7 +135,6 @@ namespace Darkages.Network.Game.Components
 
                 //aisling has not seen this object before.
                 if (!nearbyAisling.InsideView(obj))
-                {
                     if (nearbyAisling.WithinRangeOf(obj))
                     {
                         //construct batch
@@ -148,24 +159,31 @@ namespace Darkages.Network.Game.Components
                                 if ((obj as Aisling).Flags == AislingFlags.Invisible)
                                     return;
 
-                                obj.ShowTo(nearbyAisling);
+                                nearbyAisling.Show(Scope.Self,
+                                    new ServerFormat33(nearbyAisling.Client, obj as Aisling));
                             }
                         }
 
                         nearbyAisling.View(obj);
 
-                        if (spriteBatch.Count > 0)
+                        //check how much packets we need to send.
+                        //this makes sure we don't overflow the client
+                        //sending to much display packets at once.
+                        //so we chunk them up.
+                        // var blocks = Split(spriteBatch).ToArray();
+
+                        var payLoad = new ServerFormat07(spriteBatch.ToArray());
+
+                        nearbyAisling.Show(
+                            Scope.DefinedAislings,
+                            payLoad,
+                            nearByAislings);
+
+                        foreach (var block in spriteBatch)
                         {
-                            foreach (var block in spriteBatch)
-                            {
-                                if (nearbyAisling.View(block))
-                                {
-                                    block.ShowTo(nearbyAisling);
-                                }
-                            }
+                            nearbyAisling.View(block);
                         }
                     }
-                }
             }
         }
 
@@ -173,7 +191,6 @@ namespace Darkages.Network.Game.Components
         {
             _updateEventScheduler.Update(elapsedTime);
             _updateMediatorScheduler.Update(elapsedTime);
-            _updateTrapScheduler.Update(elapsedTime);
 
             if (_updateMediatorScheduler.Elapsed)
             {
@@ -181,31 +198,12 @@ namespace Darkages.Network.Game.Components
 
                 _updateMediatorScheduler.Reset();
             }
-
-
-            if (_updateTrapScheduler.Elapsed)
-            {
-                UpdateTraps(elapsedTime);
-
-                _updateTrapScheduler.Reset();
-            }
-
         }
 
         public void InvokeMediators(Area area = null)
         {
             MonsterMediator(area);
             ItemMediator(area);
-        }
-
-        private void UpdateTraps(TimeSpan elapsed)
-        {
-            var traps = Trap.Traps.Select(i => i.Value).ToArray();
-
-            for (int i = 0; i < traps.Length; i++)
-            {
-                traps[i].Update(elapsed);
-            }
         }
 
         private void MonsterMediator(Area area = null)
@@ -227,7 +225,6 @@ namespace Darkages.Network.Game.Components
                         OnObjectRemoved(obj);
                         c++;
                     }
-
             }
         }
 
@@ -255,9 +252,6 @@ namespace Darkages.Network.Game.Components
                         removes++;
                     }
                 }
-
-            if (removes > 0 && ServerContext.Config.DebugMode)
-                Console.WriteLine("[ObjectComponent] {0} Objects Destroyed. (Abandoned Item, Money.) ", removes);
         }
     }
 }

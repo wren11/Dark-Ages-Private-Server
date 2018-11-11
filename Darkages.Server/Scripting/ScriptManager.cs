@@ -18,6 +18,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Attribute = System.Attribute;
 
 namespace Darkages.Scripting
