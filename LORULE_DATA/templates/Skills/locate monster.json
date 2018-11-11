@@ -18,6 +18,7 @@
   "Prerequisites": null,
   "NpcKey": null,
   "TierLevel": 0,
+  "Name": "Locate Monster",
   "Description": null,
-  "Name": "Locate Monster"
+  "Group": null
 }

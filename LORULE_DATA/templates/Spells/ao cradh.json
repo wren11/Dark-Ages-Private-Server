@@ -55,7 +55,9 @@
   },
   "NpcKey": "etaen",
   "TierLevel": 9,
-  "Description": "Removes the curse cradh from a target.",
   "TargetAnimation": 0,
-  "Name": "ao cradh"
+  "IsTrap": false,
+  "Name": "ao cradh",
+  "Description": "Removes the curse cradh from a target.",
+  "Group": null
 }

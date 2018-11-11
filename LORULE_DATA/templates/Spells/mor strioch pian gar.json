@@ -49,7 +49,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 8,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "mor strioch pian gar"
+  "IsTrap": false,
+  "Name": "mor strioch pian gar",
+  "Description": null,
+  "Group": null
 }

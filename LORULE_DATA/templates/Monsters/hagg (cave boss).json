@@ -3,10 +3,9 @@
   "Drops": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
     "$values": [
-	"Hag's Replica Girdle"
-]
+      "Hag's Replica Girdle"
+    ]
   },
-  "ID": 151,
   "Image": 16542,
   "ScriptName": "Common Monster",
   "DefinedX": 0,
@@ -19,11 +18,9 @@
   "Level": 30,
   "MaximumHP": 0,
   "MaximumMP": 0,
-  "SpawnerID": 0,
   "AreaID": 151,
   "MovementSpeed": 450,
   "CastSpeed": 500,
-  "IsBoss": false,
   "SpawnMax": 3,
   "SpawnRate": 60,
   "SpawnSize": 1,
@@ -45,8 +42,14 @@
       "dion"
     ]
   },
+  "SkillScripts": null,
   "DefenseElement": 0,
   "OffenseElement": 0,
+  "Waypoints": null,
   "UpdateMapWide": false,
-  "Name": "Hagg (Cave Boss)"
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Hagg (Cave Boss)",
+  "Description": null,
+  "Group": null
 }

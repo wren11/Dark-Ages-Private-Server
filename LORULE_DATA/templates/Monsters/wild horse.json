@@ -1,0 +1,58 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "random",
+      "Wolf's Fur",
+      "Wolf's Teeth"
+    ]
+  },
+  "Image": 16527,
+  "ScriptName": "Common Monster",
+  "DefinedX": 0,
+  "DefinedY": 0,
+  "LootType": 36,
+  "MoodType": 0,
+  "SpawnType": 2,
+  "ElementType": 1,
+  "PathQualifer": 1,
+  "Level": 21,
+  "MaximumHP": 0,
+  "MaximumMP": 0,
+  "AreaID": 1013,
+  "MovementSpeed": 750,
+  "CastSpeed": 6500,
+  "SpawnMax": 300,
+  "SpawnRate": 5,
+  "SpawnSize": 32,
+  "AttackSpeed": 1250,
+  "IgnoreCollision": false,
+  "ImageVarience": 5,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "SpellScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "cradh",
+      "sal",
+      "srad"
+    ]
+  },
+  "SkillScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Wind Blade",
+      "Ambush"
+    ]
+  },
+  "DefenseElement": 1,
+  "OffenseElement": 0,
+  "Waypoints": null,
+  "UpdateMapWide": false,
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Wild Horse",
+  "Description": null,
+  "Group": null
+}

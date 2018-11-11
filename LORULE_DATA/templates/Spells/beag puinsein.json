@@ -64,7 +64,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 9,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "beag puinsein"
+  "IsTrap": false,
+  "Name": "beag puinsein",
+  "Description": null,
+  "Group": null
 }

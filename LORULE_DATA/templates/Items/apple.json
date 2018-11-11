@@ -1,10 +1,6 @@
 {
   "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
-  "MiniScript": "user.CurrentHp += 500; 
-		 user.BarMsg(\"You ate the apple.\");
-	         user.Animate(124); 
-		 user.ApplyBuff(\"buff_mordion\"); 
-                 user.RefreshStats();",
+  "MiniScript": "user.CurrentHp += 10;",
   "ID": 0,
   "CanStack": true,
   "MaxStack": 100,
@@ -42,5 +38,6 @@
   "Color": 0,
   "WeaponScript": null,
   "Name": "Apple",
-  "Description": null
+  "Description": null,
+  "Group": null
 }

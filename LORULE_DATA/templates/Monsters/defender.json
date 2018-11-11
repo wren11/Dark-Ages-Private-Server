@@ -2,9 +2,10 @@
   "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
   "Drops": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
-    "$values": [ "random" ]
+    "$values": [
+      "random"
+    ]
   },
-  "ID": 0,
   "Image": 16385,
   "ScriptName": "Tower Defense",
   "DefinedX": 12,
@@ -17,11 +18,9 @@
   "Level": 1,
   "MaximumHP": 0,
   "MaximumMP": 0,
-  "SpawnerID": 0,
   "AreaID": 510,
   "MovementSpeed": 1000,
   "CastSpeed": 0,
-  "IsBoss": false,
   "SpawnMax": 1,
   "SpawnRate": 3,
   "SpawnSize": 1,
@@ -30,6 +29,8 @@
   "ImageVarience": 0,
   "SpawnOnlyOnActiveMaps": true,
   "Grow": true,
+  "SpellScripts": null,
+  "SkillScripts": null,
   "DefenseElement": 0,
   "OffenseElement": 0,
   "Waypoints": {
@@ -103,5 +104,9 @@
     ]
   },
   "UpdateMapWide": true,
-  "Name": "Defender"
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Defender",
+  "Description": null,
+  "Group": null
 }

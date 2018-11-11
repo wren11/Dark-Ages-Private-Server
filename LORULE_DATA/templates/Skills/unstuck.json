@@ -18,6 +18,7 @@
   "Prerequisites": null,
   "NpcKey": null,
   "TierLevel": 0,
+  "Name": "Unstuck",
   "Description": null,
-  "Name": "Unstuck"
+  "Group": null
 }

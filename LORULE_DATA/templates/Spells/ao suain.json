@@ -55,7 +55,9 @@
   },
   "NpcKey": "etaen",
   "TierLevel": 9,
-  "Description": "Unfreeze a frozen target.",
   "TargetAnimation": 0,
-  "Name": "ao suain"
+  "IsTrap": false,
+  "Name": "ao suain",
+  "Description": "Unfreeze a frozen target.",
+  "Group": null
 }

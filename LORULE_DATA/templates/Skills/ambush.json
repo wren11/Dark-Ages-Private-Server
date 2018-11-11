@@ -47,6 +47,7 @@
   },
   "NpcKey": "Martial Arts Trainer",
   "TierLevel": 0,
+  "Name": "Ambush",
   "Description": "Ambush a Target. Leaping behind it.",
-  "Name": "Ambush"
+  "Group": null
 }

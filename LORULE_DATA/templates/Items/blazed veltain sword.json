@@ -1,5 +1,6 @@
 {
   "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
   "ID": 0,
   "CanStack": false,
   "MaxStack": 0,
@@ -43,5 +44,8 @@
   "StageRequired": 1,
   "HasPants": false,
   "Color": 0,
-  "Name": "Blazed Veltain Sword"
+  "WeaponScript": null,
+  "Name": "Blazed Veltain Sword",
+  "Description": null,
+  "Group": null
 }

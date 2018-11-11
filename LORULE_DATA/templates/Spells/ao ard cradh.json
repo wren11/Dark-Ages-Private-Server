@@ -55,7 +55,9 @@
   },
   "NpcKey": "dar",
   "TierLevel": 9,
-  "Description": "Removes the curse ard cradh from a target.",
   "TargetAnimation": 0,
-  "Name": "ao ard cradh"
+  "IsTrap": false,
+  "Name": "ao ard cradh",
+  "Description": "Removes the curse ard cradh from a target.",
+  "Group": null
 }

@@ -4,8 +4,8 @@
   "ID": 0,
   "CanStack": true,
   "MaxStack": 10,
-  "Image": 0x8147,
-  "DisplayImage": 0x8147,
+  "Image": 33095,
+  "DisplayImage": 33095,
   "ScriptName": null,
   "Gender": 0,
   "HealthModifer": null,
@@ -38,5 +38,6 @@
   "Color": 0,
   "WeaponScript": null,
   "Name": "Centipede's Gland",
-  "Description": "Glands of a centipede fetch a good price for Dar the Wizard. These can be found by killing centipedes in the mileth crypt."
+  "Description": "Glands of a centipede fetch a good price for Dar the Wizard. These can be found by killing centipedes in the mileth crypt.",
+  "Group": null
 }

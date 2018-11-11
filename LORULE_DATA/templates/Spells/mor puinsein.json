@@ -64,7 +64,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 9,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "mor puinsein"
+  "IsTrap": false,
+  "Name": "mor puinsein",
+  "Description": null,
+  "Group": null
 }

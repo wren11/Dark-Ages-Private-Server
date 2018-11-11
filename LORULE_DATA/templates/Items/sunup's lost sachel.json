@@ -1,5 +1,6 @@
 {
   "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
   "ID": 0,
   "CanStack": false,
   "MaxStack": 0,
@@ -35,5 +36,8 @@
   "StageRequired": 0,
   "HasPants": false,
   "Color": 37,
-  "Name": "Sunup's Lost Sachel"
+  "WeaponScript": null,
+  "Name": "Sunup's Lost Sachel",
+  "Description": null,
+  "Group": null
 }

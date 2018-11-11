@@ -32,11 +32,12 @@
   "LevelRequired": 1,
   "DmgMin": 0,
   "DmgMax": 0,
-  "DropRate": 0.80,
+  "DropRate": 0.8,
   "StageRequired": 0,
   "HasPants": false,
   "Color": 0,
   "WeaponScript": null,
   "Name": "Spider's Eye",
-  "Description": "These can be found by killing spiders down in the mileth crypt."
+  "Description": "These can be found by killing spiders down in the mileth crypt.",
+  "Group": null
 }

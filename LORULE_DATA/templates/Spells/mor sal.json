@@ -60,7 +60,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 0,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "mor sal"
+  "IsTrap": false,
+  "Name": "mor sal",
+  "Description": null,
+  "Group": null
 }

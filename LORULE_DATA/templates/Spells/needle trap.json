@@ -1,0 +1,57 @@
+{
+  "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
+  "Icon": 16,
+  "MaxLevel": 100,
+  "ScriptKey": "Needle Trap",
+  "MinLines": 0,
+  "MaxLines": 9,
+  "ManaCost": 20,
+  "Text": "\u0000",
+  "Debuff": null,
+  "Buff": null,
+  "TargetType": 5,
+  "BaseLines": 1,
+  "LevelRate": 0.05,
+  "Sound": 89,
+  "Animation": 91,
+  "DamageExponent": 5.0,
+  "Pane": 1,
+  "ElementalProperty": 5,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": []
+    },
+    "Stage_Required": 0,
+    "Class_Required": 2,
+    "ExpLevel_Required": 5,
+    "Str_Required": 0,
+    "Int_Required": 3,
+    "Wis_Required": 0,
+    "Dex_Required": 19,
+    "Con_Required": 0,
+    "Gold_Required": 1000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": null,
+    "Spell_Level_Required": 0,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": null,
+  "TierLevel": 9,
+  "TargetAnimation": 68,
+  "IsTrap": true,
+  "Name": "Needle Trap",
+  "Description": "Place a Small Trap damaging enemies who walk over it.",
+  "Group": null
+}

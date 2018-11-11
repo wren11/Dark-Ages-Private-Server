@@ -18,7 +18,6 @@
       "Human Remains"
     ]
   },
-  "ID": 0,
   "Image": 16568,
   "ScriptName": "Common Monster",
   "DefinedX": 31,
@@ -31,11 +30,9 @@
   "Level": 1,
   "MaximumHP": 200,
   "MaximumMP": 200,
-  "SpawnerID": 0,
   "AreaID": 101,
   "MovementSpeed": 1000,
   "CastSpeed": 5000,
-  "IsBoss": false,
   "SpawnMax": 200,
   "SpawnRate": 155,
   "SpawnSize": 3,
@@ -44,8 +41,15 @@
   "ImageVarience": 4,
   "SpawnOnlyOnActiveMaps": false,
   "Grow": false,
+  "SpellScripts": null,
+  "SkillScripts": null,
   "DefenseElement": 0,
   "OffenseElement": 0,
+  "Waypoints": null,
   "UpdateMapWide": false,
-  "Name": "Walkers"
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Walkers",
+  "Description": null,
+  "Group": null
 }

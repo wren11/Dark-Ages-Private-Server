@@ -18,6 +18,7 @@
   "Prerequisites": null,
   "NpcKey": null,
   "TierLevel": 0,
+  "Name": "Locate Player",
   "Description": null,
-  "Name": "Locate Player"
+  "Group": null
 }

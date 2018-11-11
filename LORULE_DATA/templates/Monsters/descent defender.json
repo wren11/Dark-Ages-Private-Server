@@ -2,9 +2,10 @@
   "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
   "Drops": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
-    "$values": [ "random" ]
+    "$values": [
+      "random"
+    ]
   },
-  "ID": 151,
   "Image": 16393,
   "ScriptName": "Common Monster",
   "DefinedX": 0,
@@ -17,11 +18,9 @@
   "Level": 7,
   "MaximumHP": 0,
   "MaximumMP": 0,
-  "SpawnerID": 0,
   "AreaID": 151,
   "MovementSpeed": 1000,
   "CastSpeed": 4000,
-  "IsBoss": false,
   "SpawnMax": 80,
   "SpawnRate": 30,
   "SpawnSize": 32,
@@ -38,8 +37,14 @@
       "dion"
     ]
   },
+  "SkillScripts": null,
   "DefenseElement": 0,
   "OffenseElement": 0,
+  "Waypoints": null,
   "UpdateMapWide": false,
-  "Name": "Descent Defender"
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Descent Defender",
+  "Description": null,
+  "Group": null
 }

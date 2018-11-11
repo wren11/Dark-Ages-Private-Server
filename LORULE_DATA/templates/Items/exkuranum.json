@@ -1,14 +1,11 @@
 {
   "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
-  "MiniScript": "user.CurrentHp += 500000; 
-		 user.BarMsg(\"You Recover!\");
-	         user.Animate(46); 
-                 user.RefreshStats();",
+  "MiniScript": "user.CurrentHp += 500000; \r\n\t\t user.BarMsg(\"You Recover!\");\r\n\t         user.Animate(46); \r\n                 user.RefreshStats();",
   "ID": 0,
   "CanStack": true,
   "MaxStack": 100,
-  "Image": 0x802C,
-  "DisplayImage": 0x802C,
+  "Image": 32812,
+  "DisplayImage": 32812,
   "ScriptName": null,
   "Gender": 0,
   "HealthModifer": null,
@@ -35,11 +32,12 @@
   "LevelRequired": 1,
   "DmgMin": 0,
   "DmgMax": 0,
-  "DropRate": 0.50,
+  "DropRate": 0.5,
   "StageRequired": 0,
   "HasPants": false,
   "Color": 0,
   "WeaponScript": null,
   "Name": "Exkuranum",
-  "Description": null
+  "Description": null,
+  "Group": null
 }

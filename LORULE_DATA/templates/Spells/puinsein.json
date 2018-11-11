@@ -64,7 +64,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 9,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "puinsein"
+  "IsTrap": false,
+  "Name": "puinsein",
+  "Description": null,
+  "Group": null
 }

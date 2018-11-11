@@ -68,6 +68,7 @@
   },
   "NpcKey": "Combat Trainer",
   "TierLevel": 9,
+  "Name": "Titan's Cleave",
   "Description": "A Powerful Area Affect Skill. Every 3 seconds your space bar turns into complete sodomization.",
-  "Name": "Titan's Cleave"
+  "Group": null
 }

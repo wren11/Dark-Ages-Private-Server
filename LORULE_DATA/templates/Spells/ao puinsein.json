@@ -49,7 +49,9 @@
   },
   "NpcKey": "etaen",
   "TierLevel": 9,
-  "Description": "Remove poison from a target, Instantly.",
   "TargetAnimation": 0,
-  "Name": "ao puinsein"
+  "IsTrap": false,
+  "Name": "ao puinsein",
+  "Description": "Remove poison from a target, Instantly.",
+  "Group": null
 }

@@ -17,13 +17,6 @@
 //*************************************************************************/
 using Darkages;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Lorule
@@ -44,6 +37,14 @@ namespace Lorule
                 {
                     lock (ServerContext.Game.Clients)
                     {
+
+                        var objects = ServerContext.Game.GetObjects(i => true, Darkages.Network.Object.ObjectManager.Get.All);
+
+                        foreach (var obj in objects)
+                        {
+                            obj.Remove();
+                        }
+
                         ServerContext.LoadAndCacheStorage();
                     }
                 }

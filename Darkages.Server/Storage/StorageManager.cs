@@ -47,6 +47,19 @@ namespace Darkages.Storage
         {
         }
 
+        public void SaveSorageContainers()
+        {
+            foreach (var item in ServerContext.GlobalItemTemplateCache.Values)
+            {
+                if (ItemBucket.IsStored(item))
+                {
+                    continue;
+                }
+
+                ItemBucket.Save(item);
+            }
+        }
+
         public static T Load<T>() where T : class, new()
         {
             try

@@ -49,7 +49,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 9,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "beag athar"
+  "IsTrap": false,
+  "Name": "beag athar",
+  "Description": null,
+  "Group": null
 }

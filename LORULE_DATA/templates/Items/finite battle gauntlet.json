@@ -1,10 +1,11 @@
 {
   "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
   "ID": 0,
   "CanStack": false,
   "MaxStack": 0,
-  "Image": 0xB927,
-  "DisplayImage": 0xB927,
+  "Image": 47399,
+  "DisplayImage": 47399,
   "ScriptName": "Generic",
   "Gender": 255,
   "HealthModifer": {
@@ -57,5 +58,6 @@
   "Color": 0,
   "WeaponScript": null,
   "Name": "Finite Battle Gauntlet",
-  "Description": "I grant you, Invulerablity."
+  "Description": "I grant you, Invulerablity.",
+  "Group": null
 }

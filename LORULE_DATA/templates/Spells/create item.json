@@ -20,7 +20,9 @@
   "Prerequisites": null,
   "NpcKey": null,
   "TierLevel": 0,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "Create Item"
+  "IsTrap": false,
+  "Name": "Create Item",
+  "Description": null,
+  "Group": null
 }

@@ -20,7 +20,9 @@
   "Prerequisites": null,
   "NpcKey": null,
   "TierLevel": 0,
-  "Description": null,
   "TargetAnimation": 0,
-  "Name": "Macronator's Magic Spell"
+  "IsTrap": false,
+  "Name": "Macronator's Magic Spell",
+  "Description": null,
+  "Group": null
 }

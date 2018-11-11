@@ -2,9 +2,10 @@
   "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
   "Drops": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
-    "$values": [ "random" ]
+    "$values": [
+      "random"
+    ]
   },
-  "ID": 151,
   "Image": 16394,
   "ScriptName": "Common Monster",
   "DefinedX": 0,
@@ -17,11 +18,9 @@
   "Level": 6,
   "MaximumHP": 0,
   "MaximumMP": 0,
-  "SpawnerID": 0,
   "AreaID": 151,
   "MovementSpeed": 2050,
   "CastSpeed": 3000,
-  "IsBoss": false,
   "SpawnMax": 1000,
   "SpawnRate": 3,
   "SpawnSize": 16,
@@ -36,8 +35,14 @@
       "beag cradh"
     ]
   },
+  "SkillScripts": null,
   "DefenseElement": 0,
   "OffenseElement": 0,
+  "Waypoints": null,
   "UpdateMapWide": false,
-  "Name": "Descent Worker"
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Descent Worker",
+  "Description": null,
+  "Group": null
 }

@@ -80,7 +80,9 @@
   },
   "NpcKey": "Dar",
   "TierLevel": 9,
-  "Description": "Moderately amplifies a target's element.",
   "TargetAnimation": 0,
-  "Name": "mor fas nadur"
+  "IsTrap": false,
+  "Name": "mor fas nadur",
+  "Description": "Moderately amplifies a target's element.",
+  "Group": null
 }

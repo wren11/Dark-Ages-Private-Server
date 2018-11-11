@@ -1,5 +1,8 @@
 {
   "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "WalkRate": 0,
+  "TurnRate": 0,
+  "CastRate": 0,
   "EnableCasting": true,
   "Spells": {
     "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
@@ -10,6 +13,7 @@
       "mor fas nadur"
     ]
   },
+  "Skills": null,
   "Image": 16738,
   "Level": 99,
   "ScriptKey": "welcome aisling",
@@ -17,6 +21,7 @@
   "EnableTurning": true,
   "EnableAttacking": true,
   "EnableSpeech": true,
+  "AttackPlayers": false,
   "Speech": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
     "$values": [
@@ -35,5 +40,9 @@
   "MaximumHp": 0,
   "MaximumMp": 0,
   "QuestKey": "welcome trials 2",
-  "Name": "Arch Wizard"
+  "Waypoints": null,
+  "PathQualifer": 0,
+  "Name": "Arch Wizard",
+  "Description": null,
+  "Group": null
 }

@@ -18,6 +18,7 @@
   "Prerequisites": null,
   "NpcKey": null,
   "TierLevel": 0,
+  "Name": "Destroy All",
   "Description": null,
-  "Name": "Destroy All"
+  "Group": null
 }

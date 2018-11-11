@@ -1,5 +1,6 @@
 {
   "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
   "ID": 0,
   "CanStack": false,
   "MaxStack": 0,
@@ -59,5 +60,8 @@
   "StageRequired": 1,
   "HasPants": false,
   "Color": 0,
-  "Name": "Empowered Azoth"
+  "WeaponScript": null,
+  "Name": "Empowered Azoth",
+  "Description": null,
+  "Group": null
 }

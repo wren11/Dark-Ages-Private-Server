@@ -3,10 +3,9 @@
   "Drops": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
     "$values": [
-	"Secret Canal's Key"
-]
+      "Secret Canal's Key"
+    ]
   },
-  "ID": 0,
   "Image": 16572,
   "ScriptName": "Common Monster",
   "DefinedX": 18,
@@ -19,11 +18,9 @@
   "Level": 1,
   "MaximumHP": 200,
   "MaximumMP": 200,
-  "SpawnerID": 0,
   "AreaID": 81,
   "MovementSpeed": 1000,
   "CastSpeed": 3000,
-  "IsBoss": false,
   "SpawnMax": 7,
   "SpawnRate": 15,
   "SpawnSize": 1,
@@ -32,8 +29,15 @@
   "ImageVarience": 0,
   "SpawnOnlyOnActiveMaps": false,
   "Grow": false,
+  "SpellScripts": null,
+  "SkillScripts": null,
   "DefenseElement": 0,
   "OffenseElement": 0,
+  "Waypoints": null,
   "UpdateMapWide": false,
-  "Name": "Broken"
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Broken",
+  "Description": null,
+  "Group": null
 }

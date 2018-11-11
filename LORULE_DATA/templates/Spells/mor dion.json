@@ -9,7 +9,7 @@
   "Text": "\u0000",
   "Debuff": null,
   "Buff": {
-    "$type": "Darkages.Storage.locales.Buffs.buff_mordion, Darkages.Server",
+    "$type": "Darkages.Types.Buff, Darkages.Server",
     "Name": "mor dion",
     "Length": 18,
     "Icon": 53,
@@ -65,7 +65,9 @@
   },
   "NpcKey": "etaen",
   "TierLevel": 0,
-  "Description": "Makes the player immune to all physical and magical damage for a long duration.",
   "TargetAnimation": 0,
-  "Name": "mor dion"
+  "IsTrap": false,
+  "Name": "mor dion",
+  "Description": "Makes the player immune to all physical and magical damage for a long duration.",
+  "Group": null
 }
