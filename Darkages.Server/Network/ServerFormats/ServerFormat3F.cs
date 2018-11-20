@@ -31,7 +31,7 @@ namespace Darkages.Network.ServerFormats
 
         public byte Pane { get; set; }
         public byte Slot { get; set; }
-        public int Time { get; set; }
+        public int  Time { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

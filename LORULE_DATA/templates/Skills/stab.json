@@ -10,7 +10,7 @@
   "TargetAnimation": 70,
   "FailMessage": "You failed to stab.",
   "Type": 1,
-  "Pane": 2,
+  "Pane": 1,
   "PostQualifers": 1,
   "Sound": 31,
   "Debuff": null,
@@ -57,7 +57,7 @@
     "Spell_Tier_Required": 0
   },
   "NpcKey": "Bullop",
-  "TierLevel": 9,
+  "TierLevel": 0,
   "Name": "Stab",
   "Description": "Stab an target, dealing heavy damage. and weaken the target.",
   "Group": null

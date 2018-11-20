@@ -213,7 +213,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         break;
                     case 0x0012:
                         quest = null;
-                        client.SendOptionsDialog(Mundane, "Well you can eat my {=sdick");
+                        client.SendOptionsDialog(Mundane, "Well then, I will leave you alone.");
                         break;
                     case ushort.MaxValue:
                         if (SequenceMenu.CanMoveBack)

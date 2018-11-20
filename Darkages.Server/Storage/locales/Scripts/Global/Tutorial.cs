@@ -95,7 +95,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                 {
                     if (client.Aisling.WithinRangeOf(42, 93))
                     {
-                        client.SendMessage(0x02, "A Whore here, Really?");
+                        client.SendMessage(0x02, "Zombies... Is this one of those games???....");
                         client.SendAnimation(94, client.Aisling, client.Aisling);
 
                         Flags[client.Aisling.Serial]["t8"] = true;
@@ -143,13 +143,13 @@ namespace Darkages.Storage.locales.Scripts.Global
                     {
                         quest.Started = true;
                         client.Aisling.Y = 10;
-                        client.SendMessage(0x02, "You hear walkers outside. you better find some equipment first.");
+                        client.SendMessage(0x02, "You can't go outside without gear, It's dangerous!");
                         client.SendAnimation(94, client.Aisling, client.Aisling);
                         client.Refresh();
                     }
                     else
                     {
-                        if (client.Aisling.Position.DistanceFrom(1, 2) == 1 && quest.Started)
+                        if (client.Aisling.Position.DistanceFrom(1, 2) <= 3 && quest.Started)
                         {
                             if (!quest.Completed)
                             {
@@ -157,7 +157,7 @@ namespace Darkages.Storage.locales.Scripts.Global
 
                                 client.Aisling.Recover();
 
-                                client.SendMessage(0x02, "You pick up your gear from the chest, and begin putting it on.");
+                                client.SendMessage(0x02, "You gather your equipment, All prepared you look.");
                                 client.SendAnimation(94, client.Aisling, client.Aisling);
                             }
                         }
@@ -201,7 +201,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                             {
                                 quest2.Started = true;
                                 client.Aisling.Y = 10;
-                                client.SendMessage(0x02, "You need more practice first.");
+                                client.SendMessage(0x02, "Practice more and clean up the rats.");
                                 client.SendAnimation(94, client.Aisling, client.Aisling);
                                 client.Refresh();
                             }
@@ -241,7 +241,6 @@ namespace Darkages.Storage.locales.Scripts.Global
             quest.ItemRewards.Add(client.Aisling.Gender == Gender.Male ? "Shirt" : "Blouse");
             quest.ItemRewards.Add("Small Emerald Ring");
             quest.ItemRewards.Add("Small Spinal Ring");
-            quest.ItemRewards.Add("Snow Secret");
 
             client.Aisling.Quests.Add(quest);
             quest.QuestStages = new List<QuestStep<Template>>();

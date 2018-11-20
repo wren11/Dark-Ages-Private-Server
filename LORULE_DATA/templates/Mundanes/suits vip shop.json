@@ -6,28 +6,31 @@
   "EnableCasting": false,
   "Spells": null,
   "Skills": null,
-  "Image": 17131,
-  "Level": 5000,
-  "ScriptKey": "shop2",
+  "Image": 16983,
+  "Level": 1,
+  "ScriptKey": "shop1",
   "EnableWalking": false,
   "EnableTurning": false,
   "EnableAttacking": false,
-  "EnableSpeech": false,
+  "EnableSpeech": true,
   "AttackPlayers": false,
   "Speech": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
-    "$values": []
+    "$values": [
+      "Looking for something?",
+      "Get scrolls here."
+    ]
   },
-  "X": 21,
-  "Y": 2,
-  "AreaID": 6,
-  "Direction": 2,
+  "X": 7,
+  "Y": 24,
+  "AreaID": 7,
+  "Direction": 0,
   "MaximumHp": 0,
   "MaximumMp": 0,
   "QuestKey": null,
   "Waypoints": null,
   "PathQualifer": 0,
-  "Name": "Arms Dealer",
+  "Name": "Suits VIP Shop",
   "Description": null,
   "Group": null
 }

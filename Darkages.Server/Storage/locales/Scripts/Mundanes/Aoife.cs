@@ -101,7 +101,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                             new OptionsDataItem(0x03, "I'm ready."),
                         };
                         client.SendOptionsDialog(Mundane,
-                            string.Format("To become a master {0}, You must have earned {1} Billions Experience.\nYou must also have obtained the item {2}\nHave Alteast {3} Health and {4} Mana Points\nAnd Finally, You must have mastered {5}.",
+                            string.Format("To become a master {0}, You must have earned {1} Experience.\nYou must also have obtained the item {2}\nHave At least {3} Health and {4} Mana Points\nAnd Finally, You must have mastered using {5}.",
                             client.Aisling.Path, 
                             ExpReqs[client.Aisling.Path],
                             ItemsReqs[client.Aisling.Path],

@@ -291,9 +291,15 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (!Monster.CanCast)
                 return;
 
-            if (Monster != null && Monster.Target != null && SpellScripts.Count > 0)
+            if (Monster.Target == null)
+                return;
+
+            if (!Monster.Target.WithinRangeOf(Monster))
+                return;
+
+            if (Monster != null && Monster.Target   != null && SpellScripts.Count > 0)
             {
-                if (_random.Next(1, 101) < ServerContext.Config.MonsterSpellSuccessRate)
+                if (_random.  Next(1, 101) < ServerContext.Config.MonsterSpellSuccessRate)
                 {
                     var spellidx = _random.Next(SpellScripts.Count);
 

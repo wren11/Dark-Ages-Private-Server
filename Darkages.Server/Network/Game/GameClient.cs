@@ -616,6 +616,11 @@ namespace Darkages.Network.Game
                 skill.InUse = false;
                 skill.NextAvailableUse = DateTime.UtcNow;
 
+                if (skill.Template.Name == "Stab")
+                {
+
+                }
+
                 formats.Add(new ServerFormat2C(skill.Slot,
                     skill.Icon,
                     skill.Name));

@@ -10,7 +10,7 @@
       "Ancuisa Ceir"
     ]
   },
-  "Image": 0x42F5,
+  "Image": 17141,
   "ScriptName": "Common Monster",
   "DefinedX": 0,
   "DefinedY": 0,
@@ -42,5 +42,6 @@
   "FamilyKey": "Insect",
   "BaseName": "Slime",
   "Name": "Slime",
-  "Description": "Small creature that dwells in dark places, such as crypts. Not very Aggressive, Unless Attacked."
+  "Description": "Small creature that dwells in dark places, such as crypts. Not very Aggressive, Unless Attacked.",
+  "Group": null
 }

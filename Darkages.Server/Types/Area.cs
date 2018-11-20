@@ -274,6 +274,7 @@ namespace Darkages
 
             if (UpdateTimer.Elapsed)
             {
+
                 lock (ServerContext.SyncObj)
                 {
                     ObjectCache = new List<Sprite>(GetObjects(i => i.CurrentMapId == ID, Get.All)).ToList();

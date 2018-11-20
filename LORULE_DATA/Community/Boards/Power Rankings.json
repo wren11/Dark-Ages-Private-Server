@@ -22,7 +22,7 @@
   "Index": 1,
   "IsMail": false,
   "Subject": "Power Rankings",
-  "LetterId": 0,
+  "LetterId": 1,
   "Delay": 0,
   "Throttle": false
 }

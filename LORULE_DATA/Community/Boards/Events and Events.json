@@ -15,6 +15,22 @@
       "Secured": true,
       "Delay": 0,
       "Throttle": false
+    },
+    {
+      "Owner": "lol",
+      "TopicId": 1140,
+      "PostId": 2,
+      "BoardId": 1,
+      "Read": false,
+      "DatePosted": "2018-11-11T11:08:31.5904415Z",
+      "Sender": "lol",
+      "Message": "test",
+      "Recipient": null,
+      "Subject": "test",
+      "Command": 49,
+      "Secured": true,
+      "Delay": 0,
+      "Throttle": false
     }
   ],
   "Secured": true,
@@ -22,7 +38,7 @@
   "Index": 2,
   "IsMail": false,
   "Subject": "Events and Events",
-  "LetterId": 1,
+  "LetterId": 2,
   "Delay": 0,
   "Throttle": false
 }

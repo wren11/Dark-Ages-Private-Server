@@ -49,7 +49,7 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
                             HasOptions = false,
                             CanMoveBack = false,
                             CanMoveNext = true,
-                            DisplayText = "Wake up ya soft cock. Can't you here the monsters outside?",
+                            DisplayText = "Finally, You're awake!, What are you still doing here? Have you not heard what happened last night?",
                             DisplayImage = (ushort)Mundane.Template.Image,
                             Title = "Wren",
                         },
@@ -58,7 +58,7 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
                             HasOptions = false,
                             CanMoveBack = true,
                             CanMoveNext = true,
-                            DisplayText = "Looks like you been on the piss all night again, you are in the bloody horrors mate!",
+                            DisplayText = "All i heard was it has something to do with Crovax, The Barron Lord.",
                             DisplayImage = (ushort)Mundane.Template.Image,
                             Title = "Wren",
                         },
@@ -67,7 +67,7 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
                             HasOptions = true,
                             CanMoveBack = true,
                             CanMoveNext = true,
-                            DisplayText = "and where is all your shit?! you can't go outside like that. go put ya gear on.",
+                            DisplayText = "You better go assemble outside with the other residents and group up.",
                             DisplayImage = (ushort)Mundane.Template.Image,
                             Title = "Wren",
                         },
@@ -76,7 +76,7 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
                             HasOptions = true,
                             CanMoveBack = true,
                             CanMoveNext = true,
-                            DisplayText = "and don't ask me where you stashed ya shit. go look for it. and clean up the rats around here.\noh and here, i found this outside. you must of dropped it.",
+                            DisplayText = "Let me know what you find out. I'll stay here and warn other who may come along...",
                             DisplayImage = (ushort)Mundane.Template.Image,
                             Callback = new functionCallback(SequenceCompletedCallback),
                             Title = "Wren"
@@ -167,13 +167,13 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
 
                 if (subject != null && subject.Completed)
                 {
-                    a.Client.SendOptionsDialog(Mundane, "You found it, good. Now go clean up the rats in here. It looks like a rape dungeon in here.",
+                    a.Client.SendOptionsDialog(Mundane, "You look all set, Please let me know what you find out what's happening...",
                         new OptionsDataItem(0x0010, "How do i attack?")
                     );
                 }
                 else
                 {
-                    a.Client.SendOptionsDialog(Mundane, "Your stuff ain't up my ass mate. try checking the chest over there. if you can wade through the porno mags.");
+                    a.Client.SendOptionsDialog(Mundane, "Don't tell me you forgot where your stuff is? try the chest. You probably locked it up.");
                     return;
                 }
 
@@ -181,7 +181,7 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
 
                 if (subject != null && subject.Completed)
                 {
-                    a.Client.SendOptionsDialog(Mundane, string.Format("Thank you {0}, Looks better in here now. So what you want to do here?", a.Username),
+                    a.Client.SendOptionsDialog(Mundane, string.Format("Thank you {0}, I have a secret way out of this tutorial if you desire!", a.Username),
                         new OptionsDataItem(0x0012, "Skip Tutorial (Advanced Users Only)")
                     );
                 }
