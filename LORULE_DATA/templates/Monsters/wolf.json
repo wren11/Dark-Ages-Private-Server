@@ -17,11 +17,11 @@
   "SpawnType": 2,
   "ElementType": 1,
   "PathQualifer": 1,
-  "Level": 24,
+  "Level": 9,
   "MaximumHP": 0,
   "MaximumMP": 0,
-  "AreaID": 305,
-  "MovementSpeed": 1000,
+  "AreaID": 304,
+  "MovementSpeed": 2000,
   "CastSpeed": 6500,
   "SpawnMax": 150,
   "SpawnRate": 5,
@@ -34,8 +34,8 @@
   "SpellScripts": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
     "$values": [
-      "cradh",
-      "sal"
+      "beag cradh",
+      "beag sal"
     ]
   },
   "SkillScripts": {

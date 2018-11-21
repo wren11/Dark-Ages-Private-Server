@@ -30,6 +30,8 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Principal;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static ClientLauncher.frmMain.Configuration;
 
@@ -114,6 +116,9 @@ namespace ClientLauncher
             InitializeComponent();
             DoubleBuffered = true;
 
+
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException1;
+
             config = Config.LoadConfig();
 
 
@@ -121,6 +126,11 @@ namespace ClientLauncher
                 config.Servers = new List<Server>();
 
             UpdateConfig(config);
+        }
+
+        private void CurrentDomain_UnhandledException1(object sender, UnhandledExceptionEventArgs e)
+        {
+
         }
 
         public void UpdateConfig(Configuration config)
@@ -247,6 +257,7 @@ namespace ClientLauncher
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             CheckAdmin();
 
@@ -264,8 +275,11 @@ namespace ClientLauncher
             }
 
             GetRemoteConfig();
-
         }
+
+        public static bool Checked = false;
+
+        public static Stack<string> Updates = new Stack<string>();
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
@@ -275,6 +289,7 @@ namespace ClientLauncher
 
         private void GetRemoteConfig()
         {
+
             var daPath = @"..\7.18\Darkages.exe";
 
             if (config != null)
@@ -291,10 +306,119 @@ namespace ClientLauncher
 
                 using (var client = new WebClient())
                 {
-                    client.DownloadDataCompleted += Client_DownloadDataCompleted;
+                    client.DownloadDataCompleted   += Client_DownloadDataCompleted;
                     client.DownloadProgressChanged += Client_DownloadProgressChanged;
                     client.DownloadDataAsync(new Uri("http://lorule-da.com/CLIENT_DATA/plugins/EtDA.dll"), "lor");
                 }
+
+                Task.Run(() => CheckForUpdates(daPath)).ContinueWith((ct) =>
+                {
+
+                    if (Updates.Count > 0)
+                    {
+
+                        var activeupdates = 0;
+                        var total = ((int)(object)Updates.Count);
+
+                        KillClients();
+
+
+                        while (Updates.Count > 0)
+                        {
+                            var update = Updates.Pop();
+
+
+                            using (var client = new WebClient())
+                            {
+
+                                var daRelativePath = Path.GetDirectoryName(Path.GetFullPath(daPath));
+                                var datPath = Path.Combine(daRelativePath, update);
+
+                                client.DownloadDataCompleted += Client_DownloadDataCompleted;
+                                client.DownloadProgressChanged += Client_DownloadProgressChanged;
+
+                                Invoke((MethodInvoker)delegate ()
+                                {
+                                    progressBarControl1.EditValue = (int)(activeupdates * 100 / total);
+                                    labelControl2.Text = string.Format("Downloading Updated Data: {0} Please Wait. {1}/{2}", update, activeupdates, total);
+                                    marqueeProgressBarControl1.Visible = true;
+                                    progressBarControl1.Visible = false;
+                                });
+
+
+                                var data = client.DownloadData(new Uri("http://lorule-da.com/CLIENT_DATA/data/" + update));
+
+                                try
+                                {
+                                    KillClients();
+                                    File.WriteAllBytes(datPath, data);
+                                }
+                                catch
+                                {
+                                    MessageBox.Show("Could not Update. Service may be unavailable.\nPlease check the Discord for server status.");
+                                }
+
+
+
+                            }
+
+                            Invoke((MethodInvoker)delegate ()
+                            {
+                                marqueeProgressBarControl1.Visible = false;
+                                progressBarControl1.Visible = true;
+
+                                progressBarControl1.EditValue = (int)(activeupdates * 100 / total);
+                                labelControl2.Text = string.Format("Downloading Updated Data: {0} Please Wait. {1}/{2}", update, activeupdates, total);
+                            });
+
+
+                            activeupdates++;
+                        }
+                    }
+
+                    Checked = true;
+                });
+
+
+ 
+
+
+
+            }
+        }
+
+        private static void CheckForUpdates(string daPath)
+        {
+            using (var client = new WebClient())
+            {
+                var datInfo = client.DownloadString("http://lorule-da.com/datidx.txt");
+                var datInfoLines = datInfo.Split(new char[] { '\n' });
+
+
+                foreach (var line in datInfoLines)
+                {
+                    var path = line.TrimEnd('\r').Split(new char[] { '%' }, StringSplitOptions.RemoveEmptyEntries);
+                    var daRelativePath = Path.GetDirectoryName(Path.GetFullPath(daPath));
+                    var dat = Path.Combine(daRelativePath, path[0]);
+                    var remotecrc = path[1];
+
+                    var datbin = File.Exists(dat) ? File.ReadAllBytes(dat) : new byte[2] { 0x7F, 0x91 };
+                    var crc = MD5.Create();
+
+                    crc.ComputeHash(datbin);
+
+                    var localcrc = Convert.ToBase64String(crc.Hash);
+
+
+                    if (localcrc != remotecrc)
+                    {
+                        Updates.Push(path[0]);
+                    }
+                }
+
+
+
+
             }
         }
 
@@ -341,30 +465,51 @@ namespace ClientLauncher
                                 MessageBox.Show("Error: Client modification detected. Please try again.");
                                 Environment.Exit(0);
                             }
-
-                            Console.Beep();
-                            pictureEdit1.Enabled = true;
-                            labelControl2.Text = "Ready!";
-                            progressBarControl1.EditValue = 100;
-                            comboBox1.Enabled = true;
-                            this.pictureEdit1.Focus();
-                            Application.DoEvents();
                         }
                     });
                 }
                 else if ((string)e.UserState == "lor")
                 {
                     LOR_DLL = Path.Combine(Environment.CurrentDirectory, "lor.dll");
-                    if (!File.Exists(LOR_DLL))
+                    if (File.Exists(LOR_DLL))
                     {
-                        File.WriteAllBytes(LOR_DLL, e.Result);
+
+                        try
+                        {
+                            var crc = MD5.Create();
+
+                            var a = crc.ComputeHash(e.Result);
+                            var b = crc.ComputeHash(File.ReadAllBytes(LOR_DLL));
+
+                            if (!a.SequenceEqual(b))
+                            {
+                                KillClients();
+
+                                File.WriteAllBytes(LOR_DLL, e.Result);
+                            }
+                        }
+                        catch 
+                        {
+                            MessageBox.Show("Could not Update. Service may be unavailable.\nPlease check the Discord for server status.");
+                        }
                     }
                 }
+
             }
             catch 
             {
                 MessageBox.Show("Error 12. Please try again.");
                 Application.Exit();
+            }
+
+        }
+
+        private static void KillClients()
+        {
+            var clients = Process.GetProcessesByName("Darkages");
+            foreach (var client in clients)
+            {
+                client.Kill();
             }
         }
 
@@ -373,7 +518,7 @@ namespace ClientLauncher
             Invoke((MethodInvoker)delegate ()
             {
                 progressBarControl1.EditValue = e.ProgressPercentage;
-                labelControl2.Text = string.Format("Updating... Please Wait. {0}/{1}  ({2}%)", e.BytesReceived, e.TotalBytesToReceive, e.ProgressPercentage);
+                labelControl2.Text = string.Format("Downloading Data... Please Wait. {0}/{1}  ({2}%)", e.BytesReceived, e.TotalBytesToReceive, e.ProgressPercentage);
             });
         }
 
@@ -451,17 +596,26 @@ namespace ClientLauncher
             IntPtr ThreadHandle = pi.hThread;
             NativeMethods.ResumeThread(ThreadHandle);
 
-            var Memory = new MemorySharp((int)pi.dwProcessId);
-            {
-                var injection = Memory.Modules.Inject(LOR_DLL);
+            CheckAdmin();
 
-                if (injection.IsValid)
+            try
+            {
+                var Memory = new MemorySharp((int)pi.dwProcessId);
                 {
-                    Console.Beep();
+
+                    var injection = Memory.Modules.Inject(LOR_DLL);
+
+                    if (injection.IsValid)
+                    {
+                        Console.Beep();
+                    }
+
                 }
             }
+            catch
+            {
 
-            Application.Exit();
+            }
         }
 
         private void pictureEdit2_EditValueChanged(object sender, EventArgs e)
@@ -477,6 +631,28 @@ namespace ClientLauncher
         private void hyperlinkLabelControl1_Click(object sender, EventArgs e)
         {
             Process.Start("http://lorule-da.com");
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (Checked)
+            {
+                Checked = false;
+                Console.Beep();
+
+                Invoke((MethodInvoker)delegate ()
+                {
+                    if (!pictureEdit1.Enabled)
+                    {
+                        pictureEdit1.Enabled = true;
+                        labelControl2.Text = "Ready 2 Play!";
+                        progressBarControl1.EditValue = 100;
+                        comboBox1.Enabled = true;
+                        this.pictureEdit1.Focus();
+                        Application.DoEvents();
+                    }
+                });
+            }
         }
     }
 }

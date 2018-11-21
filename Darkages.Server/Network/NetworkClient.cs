@@ -155,24 +155,6 @@ namespace Darkages.Network
             }
         }
 
-
-        public class PacketCache
-        {
-            public uint Hash;
-            public byte[] Data { get; set; }
-
-        }
-
-        public Cache<PacketCache> Packets = new Cache<PacketCache>();
-
-        private void CachePacket(byte[] data)
-        {
-            var crc = IO.Crc32Provider.ComputeChecksum(data);
-            var key = crc.ToString();
-
-            Packets.AddOrUpdate(key, new PacketCache() { Hash = crc, Data = data });
-        }
-
         private void SendFormat(NetworkFormat format)
         {
             try

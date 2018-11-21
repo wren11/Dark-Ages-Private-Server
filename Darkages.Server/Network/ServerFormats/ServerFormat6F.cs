@@ -37,6 +37,10 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
+            if (string.IsNullOrWhiteSpace(Name))
+                return;
+
+
             writer.Write(Type);
 
             if (Type == 0x00)

@@ -49,18 +49,21 @@ namespace ClientLauncher
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
+            this.progressBarControl1 = new DevExpress.XtraEditors.ProgressBarControl();
             this.hyperlinkLabelControl1 = new DevExpress.XtraEditors.HyperlinkLabelControl();
             this.pictureEdit2 = new DevExpress.XtraEditors.PictureEdit();
             this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
-            this.progressBarControl1 = new DevExpress.XtraEditors.ProgressBarControl();
             this.defaultLookAndFeel1 = new DevExpress.LookAndFeel.DefaultLookAndFeel(this.components);
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.marqueeProgressBarControl1 = new DevExpress.XtraEditors.MarqueeProgressBarControl();
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
             this.groupControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.progressBarControl1.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit2.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.progressBarControl1.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.marqueeProgressBarControl1.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // comboBox1
@@ -89,6 +92,7 @@ namespace ClientLauncher
             this.groupControl1.CaptionImageOptions.Image = global::ClientLauncher.Properties.Resources.c67a1fc59f74bce762697d2978c7cffc;
             this.groupControl1.ContentImage = global::ClientLauncher.Properties.Resources.c67a1fc59f74bce762697d2978c7cffc;
             this.groupControl1.ContentImageAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.groupControl1.Controls.Add(this.marqueeProgressBarControl1);
             this.groupControl1.Controls.Add(this.progressBarControl1);
             this.groupControl1.Controls.Add(this.hyperlinkLabelControl1);
             this.groupControl1.Controls.Add(this.pictureEdit2);
@@ -98,9 +102,20 @@ namespace ClientLauncher
             this.groupControl1.LookAndFeel.SkinName = "Visual Studio 2013 Dark";
             this.groupControl1.LookAndFeel.UseDefaultLookAndFeel = false;
             this.groupControl1.Name = "groupControl1";
-            this.groupControl1.Size = new System.Drawing.Size(554, 68);
+            this.groupControl1.Size = new System.Drawing.Size(560, 68);
             this.groupControl1.TabIndex = 3;
             this.groupControl1.Text = "Server Profiles";
+            // 
+            // progressBarControl1
+            // 
+            this.progressBarControl1.Location = new System.Drawing.Point(18, 10);
+            this.progressBarControl1.Name = "progressBarControl1";
+            this.progressBarControl1.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.progressBarControl1.Properties.Appearance.BackColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.progressBarControl1.Properties.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.progressBarControl1.Properties.Appearance.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
+            this.progressBarControl1.Size = new System.Drawing.Size(524, 10);
+            this.progressBarControl1.TabIndex = 4;
             // 
             // hyperlinkLabelControl1
             // 
@@ -155,17 +170,6 @@ namespace ClientLauncher
             this.labelControl1.TabIndex = 5;
             this.labelControl1.Text = "Lorule";
             // 
-            // progressBarControl1
-            // 
-            this.progressBarControl1.Location = new System.Drawing.Point(18, 10);
-            this.progressBarControl1.Name = "progressBarControl1";
-            this.progressBarControl1.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.progressBarControl1.Properties.Appearance.BackColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.progressBarControl1.Properties.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.progressBarControl1.Properties.Appearance.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
-            this.progressBarControl1.Size = new System.Drawing.Size(524, 10);
-            this.progressBarControl1.TabIndex = 4;
-            // 
             // defaultLookAndFeel1
             // 
             this.defaultLookAndFeel1.LookAndFeel.SkinName = "Office 2016 Colorful";
@@ -182,6 +186,20 @@ namespace ClientLauncher
             this.labelControl2.TabIndex = 6;
             this.labelControl2.Text = "Updating...";
             // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // marqueeProgressBarControl1
+            // 
+            this.marqueeProgressBarControl1.Location = new System.Drawing.Point(17, 10);
+            this.marqueeProgressBarControl1.Name = "marqueeProgressBarControl1";
+            this.marqueeProgressBarControl1.Size = new System.Drawing.Size(538, 10);
+            this.marqueeProgressBarControl1.TabIndex = 5;
+            this.marqueeProgressBarControl1.Visible = false;
+            // 
             // frmMain
             // 
             this.Appearance.BackColor = System.Drawing.Color.White;
@@ -191,7 +209,7 @@ namespace ClientLauncher
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayoutStore = System.Windows.Forms.ImageLayout.Stretch;
             this.BackgroundImageStore = global::ClientLauncher.Properties.Resources.c67a1fc59f74bce762697d2978c7cffc;
-            this.ClientSize = new System.Drawing.Size(554, 389);
+            this.ClientSize = new System.Drawing.Size(560, 389);
             this.Controls.Add(this.labelControl2);
             this.Controls.Add(this.labelControl1);
             this.Controls.Add(this.pictureEdit1);
@@ -213,9 +231,10 @@ namespace ClientLauncher
             ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
             this.groupControl1.ResumeLayout(false);
             this.groupControl1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.progressBarControl1.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit2.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.progressBarControl1.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.marqueeProgressBarControl1.Properties)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -231,6 +250,8 @@ namespace ClientLauncher
         private DevExpress.XtraEditors.ProgressBarControl progressBarControl1;
         private DevExpress.LookAndFeel.DefaultLookAndFeel defaultLookAndFeel1;
         private DevExpress.XtraEditors.LabelControl labelControl2;
+        private System.Windows.Forms.Timer timer1;
+        private DevExpress.XtraEditors.MarqueeProgressBarControl marqueeProgressBarControl1;
     }
 }
 
