@@ -54,7 +54,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 client.TrainSpell(Spell);
 
-
                 var debuff = new debuff_poison("ard puinsein", 700, 35, 25, 0.02);
                 var curses = target.Debuffs.Values.OfType<debuff_poison>().ToList();
 
@@ -64,38 +63,13 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     {
                         debuff.OnApplied(target, debuff);
 
-                        if (target is Aisling)
-                            (target as Aisling).Client
-                                .SendMessage(0x02,
-                                    string.Format("{0} Attacks you with {1}.", client.Aisling.Username,
-                                        Spell.Template.Name));
+                        SendCastSpellOrder(sprite, target, client);
 
-                        client.SendMessage(0x02, string.Format("you cast {0}", Spell.Template.Name));
-                        client.SendAnimation(Spell.Template.Animation, target, sprite);
-
-                        var action = new ServerFormat1A
-                        {
-                            Serial = sprite.Serial,
-                            Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
-                            Speed = 30
-                        };
-
-                        var hpbar = new ServerFormat13
-                        {
-                            Serial = sprite.Serial,
-                            Health = 255,
-                            Sound = Spell.Template.Sound
-                        };
-
-                        client.Aisling.Show(Scope.NearbyAislings, action);
-                        client.Aisling.Show(Scope.NearbyAislings, hpbar);
                     }
                 }
                 else
                 {
-                    var c = curses.FirstOrDefault();
-                    if (c != null)
-                        client.SendMessage(0x02, string.Format("Another poison is already applied. [{0}].", c.Name));
+                    AlreadyCursed(client, curses);
                 }
             }
             else
@@ -108,37 +82,79 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     {
                         debuff.OnApplied(target, debuff);
 
-                        if (target is Aisling)
-                        {
-                            (target as Aisling).Client
-                                .SendMessage(0x02,
-                                    string.Format("{0} Attacks you with {1}.",
-                                        (sprite is Monster
-                                            ? (sprite as Monster).Template.Name
-                                            : (sprite as Mundane).Template.Name) ?? "Monster",
-                                        Spell.Template.Name));
-                        }
-
-                        target.SendAnimation(Spell.Template.Animation, target, sprite);
-
-                        var action = new ServerFormat1A
-                        {
-                            Serial = sprite.Serial,
-                            Number = 1,
-                            Speed = 30
-                        };
-
-                        var hpbar = new ServerFormat13
-                        {
-                            Serial = target.Serial,
-                            Health = 255,
-                            Sound = Spell.Template.Sound
-                        };
-
-                        sprite.Show(Scope.NearbyAislings, action);
-                        target.Show(Scope.NearbyAislings, hpbar);
+                        SpriteSpellCastOrder(sprite, target);
                     }
             }
+        }
+
+        public void SpriteSpellCastOrder(Sprite sprite, Sprite target)
+        {
+            var action = new ServerFormat1A
+            {
+                Serial = sprite.Serial,
+                Number = 1,
+                Speed = 30
+            };
+
+            var hpbar = new ServerFormat13
+            {
+                Serial = target.Serial,
+                Health = 255,
+                Sound = Spell.Template.Sound
+            };
+
+            target.Show(Scope.NearbyAislings, hpbar);
+            target.SendAnimation(Spell.Template.Animation, target, sprite);
+
+            if (target is Aisling)
+            {
+                (target as Aisling).Client
+                    .SendMessage(0x02,
+                        string.Format("{0} Attacks you with {1}.",
+                            (sprite is Monster
+                                ? (sprite as Monster).Template.Name
+                                : (sprite as Mundane).Template.Name) ?? "Monster",
+                            Spell.Template.Name));
+            }
+
+            sprite.Show(Scope.NearbyAislings, action);
+        }
+
+        public void AlreadyCursed(Network.Game.GameClient client, System.Collections.Generic.List<debuff_poison> curses)
+        {
+            var c = curses.FirstOrDefault();
+            if (c != null)
+                client.SendMessage(0x02, string.Format("Another poison is already applied. [{0}].", c.Name));
+        }
+
+        private void SendCastSpellOrder(Sprite sprite, Sprite target, Network.Game.GameClient client, bool IsAttack = false)
+        {
+            var hpbar = new ServerFormat13
+            {
+                Serial = sprite.Serial,
+                Health = 255,
+                Sound = Spell.Template.Sound
+            };
+
+            var action = new ServerFormat1A
+            {
+                Serial = sprite.Serial,
+                Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
+                Speed = 30
+            };
+
+            client.SendStats(StatusFlags.StructB | StatusFlags.StructD);
+            client.Aisling.Show(Scope.NearbyAislings, hpbar);
+            client.SendAnimation(Spell.Template.Animation, target, sprite);
+            client.SendMessage(0x02, string.Format("you cast {0}", Spell.Template.Name));
+
+            if (IsAttack)
+            {
+                if (target is Aisling)
+                    (target as Aisling).Client.SendMessage(0x02, string.Format("{0} Attacks you with {1}.", client.Aisling.Username, Spell.Template.Name));
+            }
+
+            client.Aisling.Show(Scope.NearbyAislings, action);
         }
 
         public override void OnUse(Sprite sprite, Sprite target)

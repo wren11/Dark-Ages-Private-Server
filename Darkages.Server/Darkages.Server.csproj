@@ -278,6 +278,7 @@
     <Compile Include="Storage\IStorage.cs" />
     <Compile Include="Storage\locales\buffs\buff_aite.cs" />
     <Compile Include="Storage\locales\buffs\buff_armachd.cs" />
+    <Compile Include="Storage\locales\buffs\buff_clawfist.cs" />
     <Compile Include="Storage\locales\buffs\buff_dion.cs" />
     <Compile Include="Storage\locales\buffs\buff_mordion.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_ardcradh.cs" />
@@ -298,6 +299,7 @@
     <Compile Include="Storage\locales\Scripts\Global\Reactors.cs" />
     <Compile Include="Storage\locales\Scripts\Global\TowerDefenders.cs" />
     <Compile Include="Storage\locales\Scripts\Global\Tutorial.cs" />
+    <Compile Include="Storage\locales\Scripts\Global\WishingWell.cs" />
     <Compile Include="Storage\locales\Scripts\Items\Armor.cs" />
     <Compile Include="Storage\locales\Scripts\Items\Belt.cs" />
     <Compile Include="Storage\locales\Scripts\Items\Boot.cs" />
@@ -361,6 +363,7 @@
     <Compile Include="Storage\locales\Scripts\Spells\affilictions\puinsein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\attributes\aite.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\attributes\armachd.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\clawfist.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\attributes\dion.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\attributes\fasnadur.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\attributes\mordion.cs" />

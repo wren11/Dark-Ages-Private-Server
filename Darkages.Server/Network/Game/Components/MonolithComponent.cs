@@ -54,7 +54,7 @@ namespace Darkages.Network.Game.Components
             }
         }
 
-        private async void ConsumeSpawns()
+        private void ConsumeSpawns()
         {
             if (ServerContext.Paused)
                 return;
@@ -70,7 +70,7 @@ namespace Darkages.Network.Game.Components
 
                 if (spawn != null)
                 {
-                    await SpawnOn(spawn.Template, spawn.Map);
+                    SpawnOn(spawn.Template, spawn.Map);
                 }
             }
             catch (Exception)
@@ -124,25 +124,22 @@ namespace Darkages.Network.Game.Components
             }
         }
 
-        public Task<bool> SpawnOn(MonsterTemplate template, Area map)
+        public bool SpawnOn(MonsterTemplate template, Area map)
         {
-            var tcs = new TaskCompletionSource<bool>();
             var count = GetObjects<Monster>(i => i.Template.Name == template.Name && i.CurrentMapId == map.ID).Count();
 
             if (count < Math.Abs(template.SpawnMax))
             {
-                tcs.SetResult(CreateFromTemplate(template, map, template.SpawnSize));
-            }
-            else
-            {
-                tcs.SetResult(false);
+                CreateFromTemplate(template, map, template.SpawnSize);
+                return true;
+                     
             }
 
-            return tcs.Task;
+            return false;
         }
 
 
-        public bool CreateFromTemplate(MonsterTemplate template, Area map, int count)
+        public async void CreateFromTemplate(MonsterTemplate template, Area map, int count)
         {
             var objectsAdded = 0;
 
@@ -151,7 +148,7 @@ namespace Darkages.Network.Game.Components
 
                 for (int i = 0; i < count; i++)
                 {
-                    var newObj = Monster.Create(template, map);
+                    var newObj = await Monster.Create(template, map);
 
                     if (newObj != null)
                     {
@@ -163,10 +160,7 @@ namespace Darkages.Network.Game.Components
             catch (Exception)
             {
                 //ignore
-                return false;
             }
-
-            return objectsAdded > 0;
         }
 
         public class Spawn

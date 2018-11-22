@@ -41,7 +41,8 @@
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 21,
-        "Y": 21
+        "Y": 21,
+        "AreaID": 0
       }
     ]
   },

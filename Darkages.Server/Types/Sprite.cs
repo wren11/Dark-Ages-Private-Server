@@ -329,6 +329,8 @@ namespace Darkages.Types
 
         public bool CanCast => !(IsFrozen || IsSleeping);
 
+        public bool EmpoweredAssail { get; set; }
+
         public bool TrapsAreNearby()
         {
             return Trap.Traps.Select(i => i.Value).Any(i => i.CurrentMapId == this.CurrentMapId);
@@ -1364,7 +1366,10 @@ namespace Darkages.Types
             var response = new ServerFormat0E(Serial);
 
             foreach (var o in nearby)
+            {
                 o?.Client?.Send(response);
+
+            }
 
             if (this is Monster)
                 DelObject(this as Monster);
@@ -1722,6 +1727,10 @@ namespace Darkages.Types
             if (ServerContext.GlobalBuffCache.ContainsKey(buff))
             {
                 var Buff = Clone<Buff>(ServerContext.GlobalBuffCache[buff]);
+
+                if (Buff == null || string.IsNullOrEmpty(Buff.Name))
+                    return;
+
                 if (!HasBuff(Buff.Name))
                 {
                     Buff.OnApplied(this, Buff);

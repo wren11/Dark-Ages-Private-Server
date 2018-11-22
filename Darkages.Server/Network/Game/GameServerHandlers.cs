@@ -497,7 +497,18 @@ namespace Darkages.Network.Game
                 return;
             }
 
+
             var item_position = new Position(format.X, format.Y);
+
+            if (item_position.OnAlter(client))
+            {
+                item.X = item_position.X;
+                item.Y = item_position.Y;
+
+                client.LastItemDropped = item;
+                return;
+            }
+
 
             if (client.Aisling.Position.DistanceFrom(item_position) > 2)
             {

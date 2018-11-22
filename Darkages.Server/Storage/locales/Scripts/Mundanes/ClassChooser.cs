@@ -96,11 +96,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 if (client.Aisling.Path == Class.Priest)
                 {
-                    Spell.GiveTo(client.Aisling, "beag ia saighead");
-                    Spell.GiveTo(client.Aisling, "beag ioc");
-                    Spell.GiveTo(client.Aisling, "beag cradh");
-                    Spell.GiveTo(client.Aisling, "ao beag cradh");
-                    Spell.GiveTo(client.Aisling, "armachd");
+                    Spell.GiveTo(client.Aisling, "beag ia saighead", 1);
+                    Spell.GiveTo(client.Aisling, "beag ioc", 1);
+                    Spell.GiveTo(client.Aisling, "beag cradh", 1);
+                    Spell.GiveTo(client.Aisling, "ao beag cradh", 1);
+                    Spell.GiveTo(client.Aisling, "armachd", 1);
                 }
 
                 if (client.Aisling.Path == Class.Wizard)
@@ -115,9 +115,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 if (client.Aisling.Path == Class.Warrior)
                 {
                     Skill.GiveTo(client.Aisling, "Wind Blade", 1);
-                    Skill.GiveTo(client.Aisling, "Crasher", 1);
+                    Skill.GiveTo(client.Aisling, "Charge", 1);
                     Skill.GiveTo(client.Aisling, "Clobber", 1);
-                    Skill.GiveTo(client.Aisling, "Two-Handed Attack", 1);
                 }
 
                 if (client.Aisling.Path == Class.Monk)
@@ -152,7 +151,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 client.Aisling.GoHome();
 
-                Task.Delay(250).ContinueWith((ct) => {
+                Task.Delay(350).ContinueWith((ct) => {
                     client.Aisling.Animate(5);
                 });
             }

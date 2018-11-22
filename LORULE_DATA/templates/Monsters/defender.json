@@ -39,67 +39,80 @@
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 0,
-        "Y": 0
+        "Y": 0,
+        "AreaID": 0
       },
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 0,
-        "Y": 2
+        "Y": 2,
+        "AreaID": 0
       },
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 12,
-        "Y": 2
+        "Y": 2,
+        "AreaID": 0
       },
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 12,
-        "Y": 4
+        "Y": 4,
+        "AreaID": 0
       },
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 0,
-        "Y": 4
+        "Y": 4,
+        "AreaID": 0
       },
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 0,
-        "Y": 6
+        "Y": 6,
+        "AreaID": 0
       },
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 12,
-        "Y": 6
+        "Y": 6,
+        "AreaID": 0
       },
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 12,
-        "Y": 8
+        "Y": 8,
+        "AreaID": 0
       },
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 0,
-        "Y": 8
+        "Y": 8,
+        "AreaID": 0
       },
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 0,
-        "Y": 10
+        "Y": 10,
+        "AreaID": 0
       },
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 12,
-        "Y": 10
+        "Y": 10,
+        "AreaID": 0
       },
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 12,
-        "Y": 12
+        "Y": 12,
+        "AreaID": 0
       },
       {
         "$type": "Darkages.Types.Position, Darkages.Server",
         "X": 0,
-        "Y": 12
+        "Y": 12,
+        "AreaID": 0
       }
     ]
   },

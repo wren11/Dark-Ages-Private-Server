@@ -271,6 +271,7 @@ namespace Darkages.Types
                     Client.SendStats(StatusFlags.StructA);
                 }
 
+                Client.LastItemDropped = item;
                 return true;
             }
 

@@ -175,7 +175,7 @@ namespace Darkages.Types
             if (Skill_Required != null)
             {
                 var skill = ServerContext.GlobalSkillTemplateCache[Skill_Required];
-                var skill_retainer = player.SkillBook.Get(i => i.Template.Name.Equals(skill.Name)).FirstOrDefault();
+                var skill_retainer = player.SkillBook.Get(i => i.Template?.Name.Equals(skill.Name) ?? false).FirstOrDefault();
 
                 if (skill_retainer == null)
                 {
@@ -249,6 +249,16 @@ namespace Darkages.Types
             {
                 foreach (var ir in Items_Required)
                 {
+
+                    if (!ServerContext.GlobalItemTemplateCache.ContainsKey(ir.Item))
+                    {
+                        result[n] = new Tuple<bool, object>(false,
+                                                          string.Format("You don't have the items i need ({0}).",ir.Item));
+
+                        break;
+                    }
+
+
                     var item = ServerContext.GlobalItemTemplateCache[ir.Item];
 
                     if (item == null)
@@ -259,6 +269,7 @@ namespace Darkages.Types
 
                         break;
                     }
+
 
                     var item_obtained = player.Inventory.Get(i => i.Template.Name.Equals(item.Name));
                     if (ir.AmountRequired <= 1)

@@ -28,7 +28,7 @@
   "SpawnSize": 24,
   "AttackSpeed": 500,
   "IgnoreCollision": false,
-  "ImageVarience": 40,
+  "ImageVarience": 4,
   "SpawnOnlyOnActiveMaps": false,
   "Grow": false,
   "SpellScripts": {

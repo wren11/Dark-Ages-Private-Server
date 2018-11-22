@@ -15,8 +15,10 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Network.Game;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Darkages.Types
 {
@@ -24,10 +26,19 @@ namespace Darkages.Types
     {
         public ushort X, Y;
 
+        public ushort AreaID;
+
+        public static Position Null => new Position(0, 0);
+
         public Position(ushort x, ushort y)
         {
             X = x;
             Y = y;
+        }
+
+        public Position(ushort x, ushort y, ushort areaid) : this(x, y)
+        {
+            AreaID = areaid;
         }
 
         public Position(byte x, byte y) : this(x, (ushort)y)
@@ -72,6 +83,13 @@ namespace Darkages.Types
         public bool WithinSquare(Position loc, int num)
         {
             return Math.Abs(X - loc.X) <= num && Math.Abs(Y - loc.Y) <= num;
+        }
+
+        public bool OnAlter(GameClient client)
+        {
+            var locations = ServerContext.Config.Alters;
+
+            return locations.Any(location => (location.X == X && location.Y == Y) && client.Aisling.AreaID == location.AreaID);
         }
 
         public static Position operator +(Position a, Direction b)

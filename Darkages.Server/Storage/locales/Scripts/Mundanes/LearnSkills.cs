@@ -81,7 +81,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     break;
                 case 0x0002:
                     {
-                        client.SendSkillForgetDialog(Mundane, "What must you vanish from your mind?\nMake sure you understand, This cannot be un-done.", 0x9000);
+                        client.SendSkillForgetDialog(Mundane, "What must you vanish from your mind?\nMake sure you understand, It will be gone.", 0x9000);
                     }
                     break;
                 case 0x9000:
@@ -98,7 +98,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         client.Aisling.SkillBook.Remove((byte)idx);
                         client.Send(new ServerFormat2D((byte)idx));
 
-                        client.SendSkillForgetDialog(Mundane, "It is gone, Shall we clease more?\nRemember, This cannot be und-one.", 0x9000);
+                        client.SendSkillForgetDialog(Mundane, "It is gone, Shall we cleanse more?\nRemember, This cannot be undone.", 0x9000);
 
                     }
                     break;

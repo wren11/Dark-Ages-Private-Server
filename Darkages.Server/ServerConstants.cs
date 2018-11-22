@@ -320,6 +320,12 @@ namespace Darkages
 
         [JsonProperty] public int PlayerLevelCap = 99;
 
+        [JsonProperty]
+        public Position[] Alters = new Position[]
+        {
+            new Position(31, 52, 1001),
+            new Position(31, 53, 1001),
+        };
 
         [JsonProperty]
         public string[] GlobalScripts = new string[]
@@ -328,6 +334,7 @@ namespace Darkages
             "Tutorial",
             "Tower Defender Player Reaper",
             "Reactors",
+            "WishingWell"
         };
 
         [JsonProperty]

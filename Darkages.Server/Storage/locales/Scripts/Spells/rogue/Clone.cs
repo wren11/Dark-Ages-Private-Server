@@ -44,7 +44,7 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
 
                 sprite.Client.SendStats(StatusFlags.StructB);
 
-                Task.Run(() =>
+                Task.Run(async () =>
                 {
                     var obj = Clone<Monster>(target as Monster);
 
@@ -75,7 +75,7 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
                         obj.Y = posD.Y;
                     }
 
-                    var monster = Monster.Create(obj.Template, obj.Map);
+                    var monster = await Monster.Create(obj.Template, obj.Map);
                     {
                         if (monster != null)
                         {

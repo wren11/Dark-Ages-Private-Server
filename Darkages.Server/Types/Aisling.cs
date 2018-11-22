@@ -354,42 +354,9 @@ namespace Darkages
                 Nation = (byte)randomFraction,
             };
 
-            int idx = 1;
-            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Keys)
-            {
-                if (ServerContext.GlobalSkillTemplateCache[skill].Pane == Pane.Tools)
-                    continue;
+            Skill.GiveTo(result, "Claw Fist", 1);
 
-                Skill.GiveTo(result, skill, 100);
-            }
-            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Keys)
-            {
-                if (ServerContext.GlobalSkillTemplateCache[skill].Pane == Pane.Tools)
-                {
-                    Skill.GiveTo(result, skill, (byte)(72 + idx));
-                    idx++;
-                }
-            }
-            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Keys)
-            {
-                if (ServerContext.GlobalSpellTemplateCache[spell].Pane == Pane.Tools)
-                    continue;
-
-                Spell.GiveTo(result, spell, 100);
-            }
-            idx = 1;
-            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Keys)
-            {
-                if (ServerContext.GlobalSpellTemplateCache[spell].Pane == Pane.Tools)
-                {
-                    Spell.GiveTo(result, spell, (byte)(72 + idx));
-                    idx++;
-                }
-            }
-
-            Spell.GiveTo(result, "Needle Trap", 100);
-
-            if (DateTime.UtcNow.Year <= 2019)
+            if (DateTime.UtcNow.Year <= 2020)
             {
                 result.LegendBook.AddLegend(new Legend.LegendItem
                 {

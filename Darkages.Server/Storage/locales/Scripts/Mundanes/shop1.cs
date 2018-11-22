@@ -134,14 +134,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     {
                         var gear = client.Aisling.EquipmentManager.Equipment.Where(i => i.Value != null).Select(i => i.Value.Item);
 
-
-                        foreach (var item in client.Aisling.Inventory.Items
-                            .Where(i => i.Value != null).Select(i => i.Value)
-                            .Concat(gear).Where(i => i != null && i.Template.Flags.HasFlag(ItemFlags.Repairable)))
-                        {
-                            item.Durability = item.Template.MaxDurability;                            
-                            client.Aisling.Inventory.UpdateSlot(client, item);
-                        }
+                        client.RepairEquipment(gear);
 
                         client.SendOptionsDialog(Mundane, "All done, now go away.");
                     }
@@ -198,5 +191,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     #endregion Buy
             }
         }
+
     }
 }

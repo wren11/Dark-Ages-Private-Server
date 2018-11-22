@@ -26,6 +26,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using static Darkages.Common.Generator;
 using static Darkages.ServerContext;
 
@@ -353,195 +354,199 @@ namespace Darkages.Types
         }
 
 
-        public static Monster Create(MonsterTemplate template, Area map)
+        public async static Task<Monster> Create(MonsterTemplate template, Area map)
         {
-
-            if (template.CastSpeed == 0)
-                template.CastSpeed = 2000;
-
-            if (template.AttackSpeed == 0)
-                template.AttackSpeed = 1000;
-
-            if (template.MovementSpeed == 0)
-                template.MovementSpeed = 2000;
-
-            if (template.Level <= 0)
-                template.Level = 1;
-
-            var obj = new Monster();
-            obj.Template = template;
-            obj.CastTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.CastSpeed));
-            obj.BashTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.AttackSpeed));
-            obj.WalkTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.MovementSpeed));
-            obj.CastEnabled = template.MaximumMP > 0;
-            obj.TaggedAislings = new ConcurrentDictionary<int, Sprite>();
-
-            if (obj.Template.Grow)
-                obj.Template.Level++;
-
-
-            obj.Template.MaximumHP = Config.MONSTER_HP_TABLE[obj.Template.Level];
-            obj.Template.MaximumMP = Config.MONSTER_HP_TABLE[obj.Template.Level] / 3;
-
-
-            var stat = RandomEnumValue<PrimaryStat>();
-
-            obj._Str = 3;
-            obj._Int = 3;
-            obj._Wis = 3;
-            obj._Con = 3;
-            obj._Dex = 3;
-
-            switch (stat)
+            return await Task.Run(() =>
             {
-                case PrimaryStat.STR:
-                    obj._Str += (byte)(obj.Template.Level * 0.5 * 2);
-                    break;
-                case PrimaryStat.INT:
-                    obj._Int += (byte)(obj.Template.Level * 0.5 * 2);
-                    break;
-                case PrimaryStat.WIS:
-                    obj._Wis += (byte)(obj.Template.Level * 0.5 * 2);
-                    break;
-                case PrimaryStat.CON:
-                    obj._Con += (byte)(obj.Template.Level * 0.5 * 2);
-                    break;
-                case PrimaryStat.DEX:
-                    obj._Dex += (byte)(obj.Template.Level * 0.5 * 2);
-                    break;
+                if (template.CastSpeed == 0)
+                    template.CastSpeed = 2000;
 
-            }
+                if (template.AttackSpeed == 0)
+                    template.AttackSpeed = 1000;
 
-            obj.MajorAttribute = stat;
+                if (template.MovementSpeed == 0)
+                    template.MovementSpeed = 2000;
 
-            //=ROUND(5 + H1-40  / 100 * H1, 0)
-            obj.BonusAc = (int)((5 + template.Level - 40 / 100 * template.Level));
+                if (template.Level <= 0)
+                    template.Level = 1;
 
-            if (obj.BonusAc < 0 || obj.BonusAc >= 100)
-                obj.BonusAc = 100;
+                var obj = new Monster();
+                obj.Template = template;
+                obj.CastTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.CastSpeed));
+                obj.BashTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.AttackSpeed));
+                obj.WalkTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.MovementSpeed));
+                obj.CastEnabled = template.MaximumMP > 0;
+                obj.TaggedAislings = new ConcurrentDictionary<int, Sprite>();
 
-            obj.DefenseElement = ElementManager.Element.None;
-            obj.OffenseElement = ElementManager.Element.None;
+                if (obj.Template.Grow)
+                    obj.Template.Level++;
 
-            if (obj.Template.ElementType == ElementQualifer.Random)
-            {
-                obj.DefenseElement = RandomEnumValue<ElementManager.Element>();
-                obj.OffenseElement = RandomEnumValue<ElementManager.Element>();
-            }
-            else if (obj.Template.ElementType == ElementQualifer.Defined)
-            {
-                obj.DefenseElement = template?.DefenseElement == ElementManager.Element.None
-                    ? RandomEnumValue<ElementManager.Element>()
-                    : template.DefenseElement;
-                obj.OffenseElement = template?.OffenseElement == ElementManager.Element.None
-                    ? RandomEnumValue<ElementManager.Element>()
-                    : template.OffenseElement;
-            }
 
-            obj.BonusMr = (byte)(10 * (template.Level / 20));
+                obj.Template.MaximumHP = Config.MONSTER_HP_TABLE[obj.Template.Level];
+                obj.Template.MaximumMP = Config.MONSTER_HP_TABLE[obj.Template.Level] / 3;
 
-            if (obj.BonusMr > Config.BaseMR)
-                obj.BonusMr = Config.BaseMR;
 
-            if ((template.PathQualifer & PathQualifer.Wander) == PathQualifer.Wander)
-                obj.WalkEnabled = true;
-            else if ((template.PathQualifer & PathQualifer.Fixed) == PathQualifer.Fixed)
-                obj.WalkEnabled = false;
-            else if ((template.PathQualifer & PathQualifer.Patrol) == PathQualifer.Patrol)
-                obj.WalkEnabled = true;
+                var stat = RandomEnumValue<PrimaryStat>();
 
-            if (template.MoodType.HasFlag(MoodQualifer.Aggressive))
-                obj.Aggressive = true;
-            else if (template.MoodType.HasFlag(MoodQualifer.Unpredicable))
+                obj._Str = 3;
+                obj._Int = 3;
+                obj._Wis = 3;
+                obj._Con = 3;
+                obj._Dex = 3;
+
+                switch (stat)
+                {
+                    case PrimaryStat.STR:
+                        obj._Str += (byte)(obj.Template.Level * 0.5 * 2);
+                        break;
+                    case PrimaryStat.INT:
+                        obj._Int += (byte)(obj.Template.Level * 0.5 * 2);
+                        break;
+                    case PrimaryStat.WIS:
+                        obj._Wis += (byte)(obj.Template.Level * 0.5 * 2);
+                        break;
+                    case PrimaryStat.CON:
+                        obj._Con += (byte)(obj.Template.Level * 0.5 * 2);
+                        break;
+                    case PrimaryStat.DEX:
+                        obj._Dex += (byte)(obj.Template.Level * 0.5 * 2);
+                        break;
+
+                }
+
+                obj.MajorAttribute = stat;
+
+                //=ROUND(5 + H1-40  / 100 * H1, 0)
+                obj.BonusAc = (int)((5 + template.Level - 40 / 100 * template.Level));
+
+                if (obj.BonusAc < 0 || obj.BonusAc >= 100)
+                    obj.BonusAc = 100;
+
+                obj.DefenseElement = ElementManager.Element.None;
+                obj.OffenseElement = ElementManager.Element.None;
+
+                if (obj.Template.ElementType == ElementQualifer.Random)
+                {
+                    obj.DefenseElement = RandomEnumValue<ElementManager.Element>();
+                    obj.OffenseElement = RandomEnumValue<ElementManager.Element>();
+                }
+                else if (obj.Template.ElementType == ElementQualifer.Defined)
+                {
+                    obj.DefenseElement = template?.DefenseElement == ElementManager.Element.None
+                        ? RandomEnumValue<ElementManager.Element>()
+                        : template.DefenseElement;
+                    obj.OffenseElement = template?.OffenseElement == ElementManager.Element.None
+                        ? RandomEnumValue<ElementManager.Element>()
+                        : template.OffenseElement;
+                }
+
+                obj.BonusMr = (byte)(10 * (template.Level / 20));
+
+                if (obj.BonusMr > Config.BaseMR)
+                    obj.BonusMr = Config.BaseMR;
+
+                if ((template.PathQualifer & PathQualifer.Wander) == PathQualifer.Wander)
+                    obj.WalkEnabled = true;
+                else if ((template.PathQualifer & PathQualifer.Fixed) == PathQualifer.Fixed)
+                    obj.WalkEnabled = false;
+                else if ((template.PathQualifer & PathQualifer.Patrol) == PathQualifer.Patrol)
+                    obj.WalkEnabled = true;
+
+                if (template.MoodType.HasFlag(MoodQualifer.Aggressive))
+                    obj.Aggressive = true;
+                else if (template.MoodType.HasFlag(MoodQualifer.Unpredicable))
+                    lock (Generator.Random)
+                    {
+                        //this monster has a 50% chance of being aggressive.
+                        obj.Aggressive = Generator.Random.Next(1, 101) > 50;
+                    }
+                else
+                {
+                    obj.Aggressive = false;
+                }
+
+                if (template.SpawnType == SpawnQualifer.Random)
+                {
+                    var x = Generator.Random.Next(1, map.Cols);
+                    var y = Generator.Random.Next(1, map.Rows);
+
+                    obj.X = x;
+                    obj.Y = y;
+
+                    if (map.IsWall(x, y))
+                        return null;
+                }
+                else if (template.SpawnType == SpawnQualifer.Defined)
+                {
+                    obj.X = template.DefinedX;
+                    obj.Y = template.DefinedY;
+                }
+
                 lock (Generator.Random)
                 {
-                    //this monster has a 50% chance of being aggressive.
-                    obj.Aggressive = Generator.Random.Next(1, 101) > 50;
+                    obj.Serial = Generator.GenerateNumber();
                 }
-            else
-            {
-                obj.Aggressive = false;
-            }
 
-            if (template.SpawnType == SpawnQualifer.Random)
-            {
-                var x = Generator.Random.Next(1, map.Cols);
-                var y = Generator.Random.Next(1, map.Rows);
+                obj.CurrentMapId = map.ID;
+                obj.CurrentHp = template.MaximumHP;
+                obj.CurrentMp = template.MaximumMP;
+                obj._MaximumHp = template.MaximumHP;
+                obj._MaximumMp = template.MaximumMP;
+                obj.AbandonedDate = DateTime.UtcNow;
 
-                obj.X = x;
-                obj.Y = y;
-
-                if (map.IsWall(x, y))
-                    return null;
-            }
-            else if (template.SpawnType == SpawnQualifer.Defined)
-            {
-                obj.X = template.DefinedX;
-                obj.Y = template.DefinedY;
-            }
-
-            lock (Generator.Random)
-            {
-                obj.Serial = Generator.GenerateNumber();
-            }
-
-            obj.CurrentMapId = map.ID;
-            obj.CurrentHp = template.MaximumHP;
-            obj.CurrentMp = template.MaximumMP;
-            obj._MaximumHp = template.MaximumHP;
-            obj._MaximumMp = template.MaximumMP;
-            obj.AbandonedDate = DateTime.UtcNow;
-
-            lock (Generator.Random)
-            {
-                obj.Image = template.ImageVarience
-                            > 0
-                    ? (ushort)Generator.Random.Next(template.Image, template.Image + template.ImageVarience)
-                    : template.Image;
-            }
-
-            obj.Script = ScriptManager.Load<MonsterScript>(template.ScriptName, obj, map);
-
-            if (obj.Template.LootType.HasFlag(LootQualifer.Table))
-            {
-                obj.LootManager = new LootDropper();
-                obj.LootTable = new LootTable(template.Name);
-                obj.UpgradeTable = new LootTable("Probabilities");
-
-                foreach (var drop in obj.Template.Drops)
+                lock (Generator.Random)
                 {
-                    if (drop.Equals("random", StringComparison.OrdinalIgnoreCase))
+                    obj.Image = template.ImageVarience
+                                > 0
+                        ? (ushort)Generator.Random.Next(template.Image, template.Image + template.ImageVarience)
+                        : template.Image;
+
+
+                }
+
+                obj.Script = ScriptManager.Load<MonsterScript>(template.ScriptName, obj, map);
+
+                if (obj.Template.LootType.HasFlag(LootQualifer.Table))
+                {
+                    obj.LootManager = new LootDropper();
+                    obj.LootTable = new LootTable(template.Name);
+                    obj.UpgradeTable = new LootTable("Probabilities");
+
+                    foreach (var drop in obj.Template.Drops)
                     {
-                        lock (Generator.Random)
+                        if (drop.Equals("random", StringComparison.OrdinalIgnoreCase))
                         {
-                            var available = GlobalItemTemplateCache.Select(i => i.Value)
-                                .Where(i => Math.Abs(i.LevelRequired - obj.Template.Level) <= 10).ToList();
-                            if (available.Count > 0)
+                            lock (Generator.Random)
                             {
-                                obj.LootTable.Add(available[GenerateNumber() % available.Count]);
+                                var available = GlobalItemTemplateCache.Select(i => i.Value)
+                                    .Where(i => Math.Abs(i.LevelRequired - obj.Template.Level) <= 10).ToList();
+                                if (available.Count > 0)
+                                {
+                                    obj.LootTable.Add(available[GenerateNumber() % available.Count]);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (GlobalItemTemplateCache.ContainsKey(drop))
+                            {
+                                obj.LootTable.Add(GlobalItemTemplateCache[drop]);
                             }
                         }
                     }
-                    else
-                    {
-                        if (GlobalItemTemplateCache.ContainsKey(drop))
-                        {
-                            obj.LootTable.Add(GlobalItemTemplateCache[drop]);
-                        }
-                    }
+
+                    obj.UpgradeTable.Add(new Common());
+                    obj.UpgradeTable.Add(new Uncommon());
+                    obj.UpgradeTable.Add(new Rare());
+                    obj.UpgradeTable.Add(new Epic());
+                    obj.UpgradeTable.Add(new Legendary());
+                    obj.UpgradeTable.Add(new Mythical());
+                    obj.UpgradeTable.Add(new Godly());
+                    obj.UpgradeTable.Add(new Forsaken());
                 }
 
-                obj.UpgradeTable.Add(new Common());
-                obj.UpgradeTable.Add(new Uncommon());
-                obj.UpgradeTable.Add(new Rare());
-                obj.UpgradeTable.Add(new Epic());
-                obj.UpgradeTable.Add(new Legendary());
-                obj.UpgradeTable.Add(new Mythical());
-                obj.UpgradeTable.Add(new Godly());
-                obj.UpgradeTable.Add(new Forsaken());
-            }
-
-            return obj;
+                return obj;
+            });
         }
 
         public void Patrol(bool ignoreWalls = false)

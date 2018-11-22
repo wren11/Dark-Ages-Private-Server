@@ -178,13 +178,7 @@ namespace Darkages.Network
                         var buffer = packet.ToArray();
                         SocketError errorcode = SocketError.Success;
 
-                        for (int i = 0; i < buffer.Length; i += 1024)
-                        {
-                            if (i + 1024 <= buffer.Length)
-                                Socket.Send(buffer, i, 1024, SocketFlags.None, out errorcode);
-                            else
-                                Socket.Send(buffer, i, buffer.Length - i, SocketFlags.None, out errorcode);
-                        }
+                        Socket.Send(buffer, 0, buffer.Length, SocketFlags.None, out errorcode);
 
                         if (errorcode != SocketError.Success)
                             Console.WriteLine(string.Format("[Network] Packet Error: {0} for Action {1}", errorcode, packet.Command));

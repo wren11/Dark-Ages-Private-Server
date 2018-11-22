@@ -23,11 +23,11 @@ namespace Darkages.Scripting
 {
     public abstract class GlobalScript : ObjectManager
     {
-        private GameClient client;
+        private GameClient Client;
 
         public GlobalScript(GameClient client)
         {
-            this.client = client;
+            this.Client = client;
         }
 
         public abstract void OnDeath(GameClient client, TimeSpan elapsedTime);

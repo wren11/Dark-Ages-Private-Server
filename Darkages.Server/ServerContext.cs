@@ -21,6 +21,7 @@ using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Script.Context;
 using Darkages.Storage;
+using Darkages.Storage.locales.Buffs;
 using Darkages.Types;
 using Mono.CSharp;
 using System;
@@ -339,7 +340,58 @@ namespace Darkages
                 LoadExtensions();
             }
 
-            SyncStorage();
+           
+
+            var c = new SkillTemplate();
+
+            c.Name = "Claw Fist";
+            c.Icon = 59;
+            c.Pane = Pane.Spells;
+            c.NpcKey = "Kung-Fu Master";
+            c.LevelRate = 0.03;
+            c.Group = "Attack Bonus";
+            c.MaxLevel = 100;
+            c.MissAnimation = 33;
+            c.Name = "Claw Fist";
+            c.PostQualifers = PostQualifer.BreakInvisible;
+            c.ScriptName = "Claw Fist";
+            c.Sound = 21;
+            c.TargetAnimation = 0;
+            c.TierLevel = Tier.Tier1;
+            c.FailMessage = "failed.";
+            c.Description = "Doubles all unarmed assail damage for it's duration.";
+            c.Type = SkillScope.Ability;
+            c.Buff = new buff_clawfist();
+            c.Cooldown = 10;
+            c.Prerequisites = new LearningPredicate()
+            {
+                Class_Required = Class.Monk,
+                Con_Required = 30,
+                Dex_Required = 32,
+                Gold_Required = 50000,
+                ExpLevel_Required = 29,
+                Skill_Required = "Double Punch",
+                Skill_Level_Required = 70,
+                Items_Required = new List<ItemPredicate>()
+                {
+                    new ItemPredicate()
+                    {
+                         AmountRequired = 1,
+                         Item = "Gargoyle Fiend's Skull"
+                    },
+                    new ItemPredicate()
+                    {
+                         AmountRequired = 1,
+                         Item = "Frog's Leg"
+                    },
+                },
+            };
+
+            GlobalSkillTemplateCache["Claw Fist"] = c;
+
+            GlobalBuffCache["Claw Fist"] = new buff_clawfist();
+
+
 
             Paused = false;
         }

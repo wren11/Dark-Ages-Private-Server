@@ -19,6 +19,7 @@ using Darkages.Common;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage;
+using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
@@ -68,6 +69,8 @@ namespace Darkages.Network.Game
         public DateTime LastWhisperMessageSent { get; set; }
 
         public ushort LastBoardActivated { get; set; }
+
+        public Item LastItemDropped { get; set; }
 
         public void BuildSettings()
         {
@@ -1008,6 +1011,22 @@ namespace Darkages.Network.Game
             SendLocation();
         }
 
+        public void RepairEquipment(IEnumerable<Item> gear)
+        {
+            foreach (var item in Aisling.Inventory.Items
+                .Where(i => i.Value != null).Select(i => i.Value)
+                .Concat(gear).Where(i => i != null && i.Template.Flags.HasFlag(ItemFlags.Repairable)))
+            {
+                item.Durability = item.Template.MaxDurability;
+
+                if (item.Equipped)
+                    continue;
+
+                Aisling.Inventory.UpdateSlot(this, item);
+            }
+        }
+        
+
         public bool Revive()
         {
             Aisling.CurrentHp = Aisling.MaximumHp / 6;
@@ -1089,5 +1108,6 @@ namespace Darkages.Network.Game
             client.SendMessage(0x02, ServerContext.Config.CantEquipThatMessage);
             return false;
         }
+
     }
 }
