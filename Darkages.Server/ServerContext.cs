@@ -33,7 +33,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using Class = Darkages.Types.Class;
-using Console = Colorful.Console;
+
 
 namespace Darkages
 {
@@ -392,6 +392,27 @@ namespace Darkages
             GlobalBuffCache["Claw Fist"] = new buff_clawfist();
 
 
+            GlobalItemTemplateCache["Iron Gauntlet"] = new ItemTemplate()
+            {
+                Name = "Iron Gauntlet",
+                AcModifer = new StatusOperator(StatusOperator.Operator.Add, 2),
+                ManaModifer = new StatusOperator(StatusOperator.Operator.Remove, 200),
+                LevelRequired = 33,
+                Class = Class.Peasant,
+                CanStack = false,
+                MaxDurability = 10000,
+                Value = 6000,
+                DropRate = 0.19,
+                ScriptName = "Gauntlet",
+                EquipmentSlot = (ItemSlots.LArm),
+                CarryWeight = 3,
+                Description = "Sturdy Iron Gauntlets, However heavy, Reduces -1000 mana to the bearer.",
+                DisplayImage = 0x80F9,
+                Image = 0x80F9,
+                NpcKey = "Alf Stewert"
+            };
+
+            //SyncStorage();
 
             Paused = false;
         }

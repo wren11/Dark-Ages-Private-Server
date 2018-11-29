@@ -92,7 +92,7 @@ namespace Darkages.Network.Game.Components
 
         public void UpdateOutOfRangeObjects(Sprite obj)
         {
-            var distantObjs = obj.GetObjects(i => !i.WithinRangeOf(obj)
+            var distantObjs = obj.GetObjects(i => i != null && !i.WithinRangeOf(obj)
                                                   && obj.CurrentMapId == i.CurrentMapId,
                 Get.Aislings | Get.Monsters | Get.Mundanes | Get.Items | Get.Money);
 
