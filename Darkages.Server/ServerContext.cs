@@ -406,10 +406,95 @@ namespace Darkages
                 ScriptName = "Gauntlet",
                 EquipmentSlot = (ItemSlots.LArm),
                 CarryWeight = 3,
-                Description = "Sturdy Iron Gauntlets, However heavy, Reduces -1000 mana to the bearer.",
+                Description = "Sturdy Iron Gauntlets, However heavy, Reduces -200 mana to the bearer.",
                 DisplayImage = 0x80F9,
                 Image = 0x80F9,
-                NpcKey = "Alf Stewert"
+                NpcKey = "Alf Stewert",
+                Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.Equipable | ItemFlags.Repairable | ItemFlags.Upgradeable,
+            };
+
+            GlobalItemTemplateCache["Mithril Gauntlet"] = new ItemTemplate()
+            {
+                Name = "Mithril Gauntlet",
+                AcModifer = new StatusOperator(StatusOperator.Operator.Add, 4),
+                ManaModifer = new StatusOperator(StatusOperator.Operator.Remove, 400),
+                LevelRequired = 67,
+                Class = Class.Peasant,
+                CanStack = false,
+                MaxDurability = 10000,
+                Value = 6000,
+                DropRate = 0.19,
+                ScriptName = "Gauntlet",
+                EquipmentSlot = (ItemSlots.LArm),
+                CarryWeight = 3,
+                Description = "Very Sturdy Mithril Gauntlets, However heavy, Reduces -400 mana to the bearer.",
+                DisplayImage = 0x80E4,
+                Image = 0x80E4,
+                NpcKey = "Alf Stewert",
+                Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.Equipable | ItemFlags.Repairable | ItemFlags.Upgradeable,
+            };
+
+
+            GlobalItemTemplateCache["Hy-brasyl Gauntlet"] = new ItemTemplate()
+            {
+                Name = "Hy-brasyl Gauntlet",
+                AcModifer = new StatusOperator(StatusOperator.Operator.Add, 7),
+                ManaModifer = new StatusOperator(StatusOperator.Operator.Remove, 1000),
+                LevelRequired = 97,
+                Class = Class.Peasant,
+                CanStack = false,
+                MaxDurability = 10000,
+                Value = 6000,
+                DropRate = 0.19,
+                ScriptName = "Gauntlet",
+                EquipmentSlot = (ItemSlots.LArm),
+                CarryWeight = 3,
+                Description = "Hy-brasyl Gauntlet, Reduces -1000 mana to the bearer.",
+                DisplayImage = 0x80E5,
+                Image = 0x80E5,
+                NpcKey = "Alf Stewert",
+                Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.Equipable | ItemFlags.Repairable | ItemFlags.Upgradeable,
+            };
+
+
+            GlobalItemTemplateCache["Mithril Bracer"] = new ItemTemplate()
+            {
+                Name = "Mithril Bracer",
+                AcModifer = new StatusOperator(StatusOperator.Operator.Add, 5),
+                LevelRequired = 60,
+                Class = Class.Monk,
+                CanStack = false,
+                MaxDurability = 10000,
+                Value = 6000,
+                DropRate = 0.19,
+                ScriptName = "Gauntlet",
+                EquipmentSlot = (ItemSlots.LArm),
+                CarryWeight = 3,
+                Description = "A Bracer only suitable for the Monk.",
+                DisplayImage = 0x80E1,
+                Image = 0x80E1,
+                NpcKey = "Alf Stewert",
+                Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.Equipable | ItemFlags.Repairable | ItemFlags.Upgradeable,
+            };
+
+            GlobalItemTemplateCache["Hy-brasyl Bracer"] = new ItemTemplate()
+            {
+                Name = "Hy-brasyl Bracer",
+                AcModifer = new StatusOperator(StatusOperator.Operator.Add, 8),
+                LevelRequired = 97,
+                Class = Class.Monk,
+                CanStack = false,
+                MaxDurability = 10000,
+                Value = 16000,
+                DropRate = 0.19,
+                ScriptName = "Gauntlet",
+                EquipmentSlot = (ItemSlots.LArm),
+                CarryWeight = 3,
+                Description = "A Heavy Bracer only suitable for the Monk.",
+                DisplayImage = 0x80E2,
+                Image = 0x80E2,
+                NpcKey = "Alf Stewert",
+                Flags = ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.Equipable | ItemFlags.Repairable | ItemFlags.Upgradeable,
             };
 
             //SyncStorage();
