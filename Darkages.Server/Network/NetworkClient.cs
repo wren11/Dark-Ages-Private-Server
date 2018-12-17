@@ -23,6 +23,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using static System.Threading.Tasks.Parallel;
 
 namespace Darkages.Network
@@ -43,12 +44,16 @@ namespace Darkages.Network
         }
 
         public NetworkPacketReader Reader { get; set; }
+
         public NetworkPacketWriter Writer { get; set; }
-        public NetworkSocket Socket { get; set; }
+
+        public NetworkSocket Network { get; set; }
+
         public SecurityProvider Encryption { get; set; }
+
         public byte Ordinal { get; set; }
+
         public int Serial { get; set; }
-        public bool IsProxy { get; set; }
 
         private static byte P(NetworkPacket value)
         {
@@ -64,8 +69,6 @@ namespace Darkages.Network
 
             For(0, value.Data.Length - 6, i => value.Data[6 + i] ^= (byte)(((byte)(P(value) + 0x28) + i + 2) % 256));
         }
-
-        public ManualResetEvent ReadEvent = new ManualResetEvent(true);
 
         public virtual void Read(NetworkPacket packet, NetworkFormat format)
         {
@@ -99,7 +102,7 @@ namespace Darkages.Network
             format.Serialize(Reader);
         }
 
-        public void SendAsync(NetworkFormat format)
+        public async void SendAsync(NetworkFormat format)
         {
             lock (_sendBuffers)
             {
@@ -109,12 +112,14 @@ namespace Darkages.Network
                     return;
 
                 _sending = true;
-                ThreadPool.QueueUserWorkItem(SendBuffers, this);
+
             }
+
+            await Task.Run(() => FlushPackets());
         }
 
-        private void SendBuffers(object state)
-        {           
+        private void FlushPackets()
+        {
             while (_sending)
             {
                 lock (_sendBuffers)
@@ -128,7 +133,7 @@ namespace Darkages.Network
                     if (_sendBuffers.TryDequeue(out var format))
                     {
                         SendFormat(format);
-                    } 
+                    }
                 }
             }
         }
@@ -145,7 +150,7 @@ namespace Darkages.Network
                     var packet = Writer.ToPacket();
                     {
                         Encryption.Transform(packet);
-                        Socket.Send(packet.ToArray());
+                        Network.ConnectedSocket.Send(packet.ToArray());
                     }
                 }
             }
@@ -178,7 +183,7 @@ namespace Darkages.Network
                         var buffer = packet.ToArray();
                         SocketError errorcode = SocketError.Success;
 
-                        Socket.Send(buffer, 0, buffer.Length, SocketFlags.None, out errorcode);
+                        Network.ConnectedSocket.Send(buffer, 0, buffer.Length, SocketFlags.None, out errorcode);
 
                         if (errorcode != SocketError.Success)
                             Console.WriteLine(string.Format("[Network] Packet Error: {0} for Action {1}", errorcode, packet.Command));
@@ -188,7 +193,7 @@ namespace Darkages.Network
             catch (Exception)
             {
                 //ignore
-            }           
+            }
         }
 
         private void PreparePacketWriter(NetworkFormat format)
@@ -219,7 +224,7 @@ namespace Darkages.Network
                 var packet = npw.ToPacket();
                 {
                     Encryption.Transform(packet);
-                    Socket.Send(packet.ToArray());
+                    Network.ConnectedSocket.Send(packet.ToArray());
                 }
             }
             catch (Exception)

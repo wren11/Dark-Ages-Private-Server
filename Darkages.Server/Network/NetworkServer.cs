@@ -69,11 +69,11 @@ namespace Darkages.Network
 
                 var client = new TClient
                 {
-                    Socket = new NetworkSocket(socket),
+                    Network = new NetworkSocket(socket),
                 };
 
 
-                if (client.Socket.Connected)
+                if (client.Network.ConnectedSocket.Connected)
                     if (AddClient(client))
                     {
                         ClientConnected(client);
@@ -83,7 +83,7 @@ namespace Darkages.Network
                             client.Serial = Generator.GenerateNumber();
                         }
 
-                        client.Socket.BeginReceiveHeader(EndReceiveHeader, out var error, client);
+                        client.Network.BeginReceiveHeader(EndReceiveHeader, out var error, client);
 
                         if (error != SocketError.Success)
                             ClientDisconnected(client);
@@ -95,7 +95,7 @@ namespace Darkages.Network
 
 
                 if (_listening)
-                    _listener.BeginAccept(EndConnectClient, null);
+                    _listener.BeginAccept(EndConnectClient, result.AsyncState);
             }
             catch
             {
@@ -109,7 +109,7 @@ namespace Darkages.Network
             {
                 if (result.AsyncState is TClient client)
                 {
-                    var bytes = client.Socket.EndReceiveHeader(result, out var error);
+                    var bytes = client.Network.EndReceiveHeader(result, out var error);
 
                     if (bytes == 0 ||
                         error != SocketError.Success)
@@ -118,10 +118,10 @@ namespace Darkages.Network
                         return;
                     }
 
-                    if (client.Socket.HeaderComplete)
-                        client.Socket.BeginReceivePacket(EndReceivePacket, out error, client);
+                    if (client.Network.HeaderComplete)
+                        client.Network.BeginReceivePacket(EndReceivePacket, out error, client);
                     else
-                        client.Socket.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                        client.Network.BeginReceiveHeader(EndReceiveHeader, out error, client);
                 }
             }
             catch (Exception)
@@ -136,7 +136,7 @@ namespace Darkages.Network
             {
                 if (result.AsyncState is TClient client)
                 {
-                    var bytes = client.Socket.EndReceivePacket(result, out var error);
+                    var bytes = client.Network.EndReceivePacket(result, out var error);
 
                     if (bytes == 0 ||
                         error != SocketError.Success)
@@ -145,14 +145,14 @@ namespace Darkages.Network
                         return;
                     }
 
-                    if (client.Socket.PacketComplete)
+                    if (client.Network.PacketComplete)
                     {
-                        ClientDataReceived(client, client.Socket.ToPacket());
-                        client.Socket.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                        ClientDataReceived(client, client.Network.ToPacket());
+                        client.Network.BeginReceiveHeader(EndReceiveHeader, out error, client);
                     }
                     else
                     {
-                        client.Socket.BeginReceivePacket(EndReceivePacket, out error, client);
+                        client.Network.BeginReceivePacket(EndReceivePacket, out error, client);
                     }
                 }
             }
@@ -221,7 +221,7 @@ namespace Darkages.Network
             _listener  = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             _listener.Bind(new IPEndPoint(IPAddress.Any, port));
             _listener.Listen(ServerContext.Config?.ConnectionCapacity ?? 1000);
-            _listener.BeginAccept(EndConnectClient, null);
+            _listener.BeginAccept(EndConnectClient, _listener);
         }
 
         public virtual void ClientConnected(TClient client)
@@ -229,7 +229,7 @@ namespace Darkages.Network
             if (ServerContext.Game == null)
                 return;
 
-            Console.WriteLine("Connection From {0} Established.", client.Socket.RemoteEndPoint.ToString());
+            Console.WriteLine("Connection From {0} Established.", client.Network.ConnectedSocket.RemoteEndPoint.ToString());
         }
 
         public static Cache<byte, NetworkFormat> FormatCache = new Cache<byte, NetworkFormat>();
@@ -284,9 +284,9 @@ namespace Darkages.Network
                 RemoveAisling(client);
 
 
-            if (client.Socket != null &&
-                client.Socket.Connected)
-                client.Socket.Disconnect(false);
+            if (client.Network != null &&
+                client.Network.ConnectedSocket.Connected)
+                client.Network.ConnectedSocket.Disconnect(false);
 
 
             RemoveClient(client);

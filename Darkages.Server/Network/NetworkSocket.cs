@@ -21,9 +21,8 @@ using System.Net.Sockets;
 
 namespace Darkages.Network
 {
-    public class NetworkSocket : Socket
+    public class NetworkSocket
     {
-        private static readonly int processId = Process.GetCurrentProcess().Id;
         private static readonly int headerLength = 3;
 
         private readonly byte[] header = new byte[0x0003];
@@ -33,9 +32,11 @@ namespace Darkages.Network
         private int packetLength;
         private int packetOffset;
 
-        public NetworkSocket(Socket socket)
-            : base(socket.DuplicateAndClose(processId))
+        public Socket ConnectedSocket { get; private set; }
+
+        public NetworkSocket(Socket socket)            
         {
+            ConnectedSocket = socket;
         }
 
         public bool HeaderComplete => headerOffset == headerLength;
@@ -44,7 +45,7 @@ namespace Darkages.Network
 
         public virtual IAsyncResult BeginReceiveHeader(AsyncCallback callback, out SocketError error, object state)
         {
-            return BeginReceive(
+            return ConnectedSocket.BeginReceive(
                 header,
                 headerOffset,
                 headerLength - headerOffset,
@@ -56,7 +57,7 @@ namespace Darkages.Network
 
         public virtual IAsyncResult BeginReceivePacket(AsyncCallback callback, out SocketError error, object state)
         {
-            return BeginReceive(
+            return ConnectedSocket.BeginReceive(
                 packet,
                 packetOffset,
                 packetLength - packetOffset,
@@ -68,7 +69,7 @@ namespace Darkages.Network
 
         public virtual int EndReceiveHeader(IAsyncResult result, out SocketError error)
         {
-            var bytes = EndReceive(result, out error);
+            var bytes = ConnectedSocket.EndReceive(result, out error);
 
             if (bytes == 0 ||
                 error != SocketError.Success)
@@ -87,7 +88,7 @@ namespace Darkages.Network
 
         public virtual int EndReceivePacket(IAsyncResult result, out SocketError error)
         {
-            var bytes = EndReceive(result, out error);
+            var bytes = ConnectedSocket.EndReceive(result, out error);
 
             if (bytes == 0 ||
                 error != SocketError.Success)
