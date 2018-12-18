@@ -1,0 +1,16 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "Image": 0x407F,
+  "Level": 99,
+  "ScriptKey": "shop2",
+  "EnableWalking": false,
+  "EnableTurning": false,
+  "EnableAttacking": false,
+  "X": 37,
+  "Y": 17,
+  "AreaID": 150,
+  "Direction": 2,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "Name": "Suse"
+}

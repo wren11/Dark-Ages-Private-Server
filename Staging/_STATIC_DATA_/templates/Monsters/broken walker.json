@@ -1,0 +1,43 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Sunup's Lost Sachel"
+    ]
+  },
+  "Image": 16728,
+  "ScriptName": "Common Monster",
+  "DefinedX": 18,
+  "DefinedY": 28,
+  "LootType": 36,
+  "MoodType": 0,
+  "SpawnType": 2,
+  "ElementType": 0,
+  "PathQualifer": 1,
+  "Level": 6,
+  "MaximumHP": 200,
+  "MaximumMP": 200,
+  "AreaID": 82,
+  "MovementSpeed": 1000,
+  "CastSpeed": 3000,
+  "SpawnMax": 35,
+  "SpawnRate": 15,
+  "SpawnSize": 4,
+  "AttackSpeed": 1600,
+  "IgnoreCollision": false,
+  "ImageVarience": 0,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "SpellScripts": null,
+  "SkillScripts": null,
+  "DefenseElement": 0,
+  "OffenseElement": 0,
+  "Waypoints": null,
+  "UpdateMapWide": false,
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Broken Walker",
+  "Description": null,
+  "Group": null
+}

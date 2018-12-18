@@ -1,0 +1,43 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Secret Canal's Key"
+    ]
+  },
+  "Image": 16572,
+  "ScriptName": "Common Monster",
+  "DefinedX": 18,
+  "DefinedY": 28,
+  "LootType": 0,
+  "MoodType": 0,
+  "SpawnType": 4,
+  "ElementType": 0,
+  "PathQualifer": 1,
+  "Level": 1,
+  "MaximumHP": 200,
+  "MaximumMP": 200,
+  "AreaID": 81,
+  "MovementSpeed": 1000,
+  "CastSpeed": 3000,
+  "SpawnMax": 7,
+  "SpawnRate": 15,
+  "SpawnSize": 1,
+  "AttackSpeed": 1600,
+  "IgnoreCollision": false,
+  "ImageVarience": 0,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "SpellScripts": null,
+  "SkillScripts": null,
+  "DefenseElement": 0,
+  "OffenseElement": 0,
+  "Waypoints": null,
+  "UpdateMapWide": false,
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Broken",
+  "Description": null,
+  "Group": null
+}

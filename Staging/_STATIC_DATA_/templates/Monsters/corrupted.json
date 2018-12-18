@@ -1,0 +1,60 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Dirk",
+      "Wooden Shield",
+      "Eppe",
+      "Gold Earrings",
+      "Silver Earrings",
+      "Leather Gauntlet",
+      "Leather Greaves",
+      "Leather Bracer",
+      "Holy Diana",
+      "Magus Diana",
+      "Human Remains"
+    ]
+  },
+  "Image": 16548,
+  "ScriptName": "Common Monster",
+  "DefinedX": 33,
+  "DefinedY": 13,
+  "LootType": 36,
+  "MoodType": 2,
+  "SpawnType": 2,
+  "ElementType": 3,
+  "PathQualifer": 1,
+  "Level": 2,
+  "MaximumHP": 0,
+  "MaximumMP": 0,
+  "AreaID": 99,
+  "MovementSpeed": 1000,
+  "CastSpeed": 800,
+  "SpawnMax": 350,
+  "SpawnRate": 5,
+  "SpawnSize": 35,
+  "AttackSpeed": 750,
+  "IgnoreCollision": false,
+  "ImageVarience": 4,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "SpellScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "armachd",
+      "beag cradh",
+      "ao sith"
+    ]
+  },
+  "SkillScripts": null,
+  "DefenseElement": 1,
+  "OffenseElement": 0,
+  "Waypoints": null,
+  "UpdateMapWide": false,
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Corrupted",
+  "Description": null,
+  "Group": null
+}

@@ -1,0 +1,39 @@
+{
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 1,
+        "Y": 1
+      },
+      "AreaID": 1015,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 2,
+        "Y": 2
+      },
+      "AreaID": 1015,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 0,
+        "Y": 0
+      },
+      "AreaID": 1015,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": null,
+    "AreaID": 0,
+    "PortalKey": 1
+  },
+  "WarpType": 1,
+  "ActivationMapId": 1015,
+  "Name": "Warp from 1015 to World Map.",
+  "Description": null
+}

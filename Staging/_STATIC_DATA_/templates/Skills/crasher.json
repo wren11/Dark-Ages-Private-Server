@@ -1,0 +1,59 @@
+{
+  "$type": "Darkages.Types.SkillTemplate, Darkages.Server",
+  "ID": 7,
+  "Icon": 21,
+  "ScriptName": "Crasher",
+  "LevelRate": 0.07,
+  "Cooldown": 30,
+  "MaxLevel": 100,
+  "MissAnimation": 0,
+  "TargetAnimation": 299,
+  "FailMessage": "Crasher has failed.",
+  "Type": 1,
+  "Pane": 1,
+  "PostQualifers": 0,
+  "Sound": 44,
+  "Debuff": null,
+  "Buff": null,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Fairy's Wing",
+          "AmountRequired": 1
+        }
+      ]
+    },
+    "Stage_Required": 0,
+    "Class_Required": 1,
+    "ExpLevel_Required": 35,
+    "Str_Required": 70,
+    "Int_Required": 0,
+    "Wis_Required": 0,
+    "Dex_Required": 0,
+    "Con_Required": 0,
+    "Gold_Required": 15000000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": null,
+    "Spell_Level_Required": 0,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": "Combat Trainer",
+  "TierLevel": 0,
+  "Name": "Crasher",
+  "Description": "Strike using your Vita. But be careful; you might not survive to talk about it.",
+  "Group": null
+}

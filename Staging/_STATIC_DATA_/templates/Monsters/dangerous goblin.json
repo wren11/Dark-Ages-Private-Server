@@ -1,0 +1,54 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "random",
+      "Timber",
+      "Goblin's Skull"
+    ]
+  },
+  "Image": 16398,
+  "ScriptName": "Common Monster",
+  "DefinedX": 0,
+  "DefinedY": 0,
+  "LootType": 36,
+  "MoodType": 2,
+  "SpawnType": 2,
+  "ElementType": 1,
+  "PathQualifer": 1,
+  "Level": 74,
+  "MaximumHP": 0,
+  "MaximumMP": 0,
+  "AreaID": 314,
+  "MovementSpeed": 1000,
+  "CastSpeed": 1500,
+  "SpawnMax": 100,
+  "SpawnRate": 5,
+  "SpawnSize": 3,
+  "AttackSpeed": 1250,
+  "IgnoreCollision": false,
+  "ImageVarience": 4,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "SpellScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "mor cradh",
+      "mor sal",
+      "mor dion",
+      "beag puinsein",
+      "deo saighead"
+    ]
+  },
+  "SkillScripts": null,
+  "DefenseElement": 1,
+  "OffenseElement": 0,
+  "Waypoints": null,
+  "UpdateMapWide": false,
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Dangerous Goblin",
+  "Description": null,
+  "Group": null
+}

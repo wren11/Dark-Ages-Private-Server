@@ -1,0 +1,38 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+    ]
+  },
+  "ID": 0,
+  "Image": 0x4085,
+  "ScriptName": "Training Dummy",
+  "DefinedX": 93,
+  "DefinedY": 1,
+  "LootType": 36,
+  "MoodType": 2,
+  "SpawnType": 4,
+  "ElementType": 2,
+  "PathQualifer": 1,
+  "Level": 1,
+  "MaximumHP": 200,
+  "MaximumMP": 200,
+  "SpawnerID": 0,
+  "AreaID": 1,
+  "MovementSpeed": 2000,
+  "CastSpeed": 3000,
+  "IsBoss": false,
+  "SpawnMax": 1,
+  "SpawnRate": 15,
+  "SpawnSize": 1,
+  "AttackSpeed": 2000,
+  "IgnoreCollision": false,
+  "ImageVarience": 0,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "DefenseElement": 4,
+  "OffenseElement": 4,
+  "UpdateMapWide": false,
+  "Name": "Dummy Level 1"
+}

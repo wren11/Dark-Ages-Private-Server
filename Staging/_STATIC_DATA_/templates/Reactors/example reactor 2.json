@@ -1,0 +1,98 @@
+{
+  "$type": "Darkages.Types.Reactor, Darkages.Server",
+  "Steps": {
+    "$type": "System.Collections.Generic.List`1[[Darkages.Types.DialogSequence, Darkages.Server]], mscorlib",
+    "$values": [
+      {
+        "$type": "Darkages.Types.DialogSequence, Darkages.Server",
+        "CallbackKey": null,
+        "Title": "test reactor chain",
+        "DisplayText": "reactor called me!",
+        "HasOptions": false,
+        "Id": 0,
+        "CanMoveNext": true,
+        "CanMoveBack": false,
+        "DisplayImage": 16464
+      },
+      {
+        "$type": "Darkages.Types.DialogSequence, Darkages.Server",
+        "CallbackKey": "OncbResponse",
+        "Title": "test reactor chain 2",
+        "DisplayText": "reactor called me dgfsdfds 2",
+        "HasOptions": false,
+        "Id": 0,
+        "CanMoveNext": true,
+        "CanMoveBack": true,
+        "DisplayImage": 16464
+      },
+      {
+        "$type": "Darkages.Types.DialogSequence, Darkages.Server",
+        "CallbackKey": "OncbResponse",
+        "Title": "test reactor chain 3",
+        "DisplayText": "reactor called me dgfsdfds 3",
+        "HasOptions": true,
+        "Id": 0,
+        "CanMoveNext": true,
+        "CanMoveBack": true,
+        "DisplayImage": 16464
+      }
+    ]
+  },
+  "ScriptKey": "Example Reactor 2",
+  "CallBackScriptKey": null,
+  "CallerType": 6,
+  "MapId": 0,
+  "CallingReactor": "example reactor",
+  "Location": null,
+  "QuestReward": {
+    "$type": "Darkages.Types.Quest, Darkages.Server",
+    "ItemRewards": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": [
+        "Dark Belt",
+        "Dark Bone Necklace"
+      ]
+    },
+    "LegendRewards": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.Legend+LegendItem, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.Legend+LegendItem, Darkages.Server",
+          "Icon": 0,
+          "Color": 88,
+          "Category": "Quest",
+          "Value": "Completed Reactor."
+        }
+      ]
+    },
+    "QuestStages": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.QuestStep`1[[Darkages.Types.Template, Darkages.Server]], Darkages.Server]], mscorlib",
+      "$values": []
+    },
+    "SkillRewards": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "SpellRewards": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "ExpRewards": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt32, mscorlib]], mscorlib",
+      "$values": [
+        1000,
+        1000,
+        1000
+      ]
+    },
+    "Name": null,
+    "Started": false,
+    "Completed": true,
+    "TimeStarted": "0001-01-01T00:00:00",
+    "TimeCompleted": "0001-01-01T00:00:00",
+    "GoldReward": 50000,
+    "StageIndex": 0,
+    "Rewarded": false
+  },
+  "Name": "Example Reactor 2"
+}

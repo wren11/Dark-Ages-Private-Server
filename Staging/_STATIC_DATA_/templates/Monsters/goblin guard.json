@@ -1,0 +1,50 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Goblin's Skull"
+    ]
+  },
+  "Image": 16400,
+  "ScriptName": "Common Monster",
+  "DefinedX": 0,
+  "DefinedY": 0,
+  "LootType": 8,
+  "MoodType": 2,
+  "SpawnType": 2,
+  "ElementType": 2,
+  "PathQualifer": 1,
+  "Level": 8,
+  "MaximumHP": 0,
+  "MaximumMP": 0,
+  "AreaID": 151,
+  "MovementSpeed": 650,
+  "CastSpeed": 2000,
+  "SpawnMax": 1000,
+  "SpawnRate": 21,
+  "SpawnSize": 16,
+  "AttackSpeed": 1650,
+  "IgnoreCollision": false,
+  "ImageVarience": 0,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "SpellScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "beag cradh",
+      "beag ioc fein",
+      "dion"
+    ]
+  },
+  "SkillScripts": null,
+  "DefenseElement": 0,
+  "OffenseElement": 0,
+  "Waypoints": null,
+  "UpdateMapWide": false,
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Goblin Guard",
+  "Description": null,
+  "Group": null
+}

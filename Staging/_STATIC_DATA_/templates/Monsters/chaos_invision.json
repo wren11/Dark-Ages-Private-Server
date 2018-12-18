@@ -1,0 +1,63 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+    ]
+  },
+  "ID": 152,
+  "Image": 0x42EE,
+  "ScriptName": "Common Monster",
+  "DefinedX": 33,
+  "DefinedY": 13,
+  "LootType": 0,
+  "MoodType": 2,
+  "SpawnType": 2,
+  "ElementType": 2,
+  "PathQualifer": 1,
+  "Level": 2000,
+  "MaximumHP": 0,
+  "MaximumMP": 0,
+  "SpawnerID": 0,
+  "AreaID": 85,
+  "MovementSpeed": 450,
+  "CastSpeed": 1000,
+  "IsBoss": false,
+  "SpawnMax": 350,
+  "SpawnRate": 3,
+  "SpawnSize": 24,
+  "AttackSpeed": 500,
+  "IgnoreCollision": false,
+  "ImageVarience": 4,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "SpellScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "ard cradh",
+      "dia deo saighead",
+      "ard puinsein",
+      "pramh",
+      "ard sal",
+      "mor dion",
+      "mor fas nadur",
+      "mor strioch pian gar",
+      "armachd"
+    ]
+  },
+  "SkillScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Crasher",
+      "Wind Blade",
+      "Wolf Fang Fist",
+      "Kelberoth Strike",
+      "Krane Kick",
+      "Hurricane Kick"
+    ]
+  },
+  "DefenseElement": 6,
+  "OffenseElement": 6,
+  "UpdateMapWide": false,
+  "Name": "Vision of Chaos"
+}

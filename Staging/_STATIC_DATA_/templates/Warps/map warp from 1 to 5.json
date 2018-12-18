@@ -1,0 +1,33 @@
+{
+  "LevelRequired": 3,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 51,
+        "Y": 75
+      },
+      "AreaID": 1,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 52,
+        "Y": 75
+      },
+      "AreaID": 1,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": {
+      "X": 7,
+      "Y": 11
+    },
+    "AreaID": 5,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 1,
+  "Name": "Map Warp from 1 to 5"
+}

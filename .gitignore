@@ -10,8 +10,6 @@ DarkagesLauncher\bin
 Darkages\obj
 Darkages.Server\obj
 DarkagesLauncher\obj
-Staging
-Staging\*
 *.vs
 *.vs\*
 .vs
@@ -20,8 +18,9 @@ aislings
 aislings\*
 .git
 git\*
-Staging
-Staging\*
+Staging\Release
+Staging\Debug
+
 
 
 

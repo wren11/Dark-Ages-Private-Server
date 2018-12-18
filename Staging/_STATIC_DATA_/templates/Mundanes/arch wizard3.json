@@ -1,0 +1,34 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "EnableCasting": true,
+  "Spells": {
+    "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "ard sal",
+      "ard srad",
+      "deo saighead",
+      "mor strioch pian gar",
+    ]
+  },
+  "Image": 16738,
+  "Level": 99,
+  "ScriptKey": "",
+  "EnableWalking": false,
+  "EnableTurning": true,
+  "EnableAttacking": true,
+  "EnableSpeech": true,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Hm.",
+    ]
+  },
+  "X": 57,
+  "Y": 40,
+  "AreaID": 99,
+  "Direction": 1,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "QuestKey": "",
+  "Name": "Curious Arch Wizard"
+}

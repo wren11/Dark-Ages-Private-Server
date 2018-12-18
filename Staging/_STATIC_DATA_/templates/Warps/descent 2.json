@@ -1,0 +1,33 @@
+{
+  "$type": "Darkages.Types.WarpTemplate, Darkages.Server",
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": {
+    "$type": "System.Collections.Generic.List`1[[Darkages.Types.Warp, Darkages.Server]], mscorlib",
+    "$values": [
+      {
+        "$type": "Darkages.Types.Warp, Darkages.Server",
+        "Location": {
+          "$type": "Darkages.Types.Position, Darkages.Server",
+          "X": 36,
+          "Y": 7
+        },
+        "AreaID": 150,
+        "PortalKey": 0
+      }
+    ]
+  },
+  "To": {
+    "$type": "Darkages.Types.Warp, Darkages.Server",
+    "Location": {
+      "$type": "Darkages.Types.Position, Darkages.Server",
+      "X": 25,
+      "Y": 70
+    },
+    "AreaID": 151,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 150,
+  "Name": "Descent 2"
+}

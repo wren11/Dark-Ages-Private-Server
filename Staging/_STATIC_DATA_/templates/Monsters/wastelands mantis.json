@@ -1,0 +1,50 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "random",
+      "Mantis Eye"
+    ]
+  },
+  "Image": 16471,
+  "ScriptName": "Common Monster",
+  "DefinedX": 0,
+  "DefinedY": 0,
+  "LootType": 36,
+  "MoodType": 2,
+  "SpawnType": 2,
+  "ElementType": 1,
+  "PathQualifer": 1,
+  "Level": 2,
+  "MaximumHP": 0,
+  "MaximumMP": 0,
+  "AreaID": 320,
+  "MovementSpeed": 2000,
+  "CastSpeed": 6500,
+  "SpawnMax": 100,
+  "SpawnRate": 5,
+  "SpawnSize": 12,
+  "AttackSpeed": 1250,
+  "IgnoreCollision": false,
+  "ImageVarience": 0,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "SpellScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": []
+  },
+  "SkillScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": []
+  },
+  "DefenseElement": 1,
+  "OffenseElement": 0,
+  "Waypoints": null,
+  "UpdateMapWide": false,
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Wastelands Mantis",
+  "Description": null,
+  "Group": null
+}

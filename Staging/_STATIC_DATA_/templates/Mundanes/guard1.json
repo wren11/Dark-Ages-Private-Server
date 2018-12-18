@@ -1,0 +1,18 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "Image": 0x42EB,
+  "Level": 99,
+  "ScriptKey": "",
+  "EnableWalking": false,
+  "EnableTurning": false,
+  "EnableAttacking": false,
+  "EnableSpeech": false,
+  "X": 0,
+  "Y": 3,
+  "AreaID": 300,
+  "Direction": 1,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "QuestKey": "",
+  "Name": "Woodlands Guard"
+}

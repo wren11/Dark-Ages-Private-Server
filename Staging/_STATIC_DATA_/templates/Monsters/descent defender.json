@@ -1,0 +1,50 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "random"
+    ]
+  },
+  "Image": 16393,
+  "ScriptName": "Common Monster",
+  "DefinedX": 0,
+  "DefinedY": 0,
+  "LootType": 36,
+  "MoodType": 0,
+  "SpawnType": 2,
+  "ElementType": 2,
+  "PathQualifer": 1,
+  "Level": 7,
+  "MaximumHP": 0,
+  "MaximumMP": 0,
+  "AreaID": 151,
+  "MovementSpeed": 1000,
+  "CastSpeed": 4000,
+  "SpawnMax": 80,
+  "SpawnRate": 30,
+  "SpawnSize": 32,
+  "AttackSpeed": 2650,
+  "IgnoreCollision": false,
+  "ImageVarience": 0,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "SpellScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "beag cradh",
+      "beag ioc fein",
+      "dion"
+    ]
+  },
+  "SkillScripts": null,
+  "DefenseElement": 0,
+  "OffenseElement": 0,
+  "Waypoints": null,
+  "UpdateMapWide": false,
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Descent Defender",
+  "Description": null,
+  "Group": null
+}

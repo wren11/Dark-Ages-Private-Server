@@ -1,0 +1,52 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+	"random"
+    ]
+  },
+  "SkillScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+    ]
+  },
+  "ID": 152,
+  "Image": 0x4032,
+  "ScriptName": "Common Monster",
+  "DefinedX": 0,
+  "DefinedY": 0,
+  "LootType": 36,
+  "MoodType": 2,
+  "SpawnType": 2,
+  "ElementType": 1,
+  "PathQualifer": 1,
+  "Level": 16,
+  "MaximumHP": 0,
+  "MaximumMP": 0,
+  "SpawnerID": 0,
+  "AreaID": 304,
+  "MovementSpeed": 800,
+  "CastSpeed": 2500,
+  "IsBoss": false,
+  "SpawnMax": 25,
+  "SpawnRate": 2,
+  "SpawnSize": 7,
+  "AttackSpeed": 1000,
+  "IgnoreCollision": false,
+  "ImageVarience": 0,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "SpellScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "beag cradh",
+      "beag ioc fein",
+      "beag ioc",
+    ]
+  },
+  "DefenseElement": 1,
+  "OffenseElement": 0,
+  "UpdateMapWide": false,
+  "Name": "Kobold"
+}

@@ -1,0 +1,125 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "random"
+    ]
+  },
+  "Image": 16385,
+  "ScriptName": "Tower Defense",
+  "DefinedX": 12,
+  "DefinedY": 0,
+  "LootType": 36,
+  "MoodType": 0,
+  "SpawnType": 4,
+  "ElementType": 1,
+  "PathQualifer": 3,
+  "Level": 1,
+  "MaximumHP": 0,
+  "MaximumMP": 0,
+  "AreaID": 510,
+  "MovementSpeed": 1000,
+  "CastSpeed": 0,
+  "SpawnMax": 1,
+  "SpawnRate": 3,
+  "SpawnSize": 1,
+  "AttackSpeed": 1200,
+  "IgnoreCollision": true,
+  "ImageVarience": 0,
+  "SpawnOnlyOnActiveMaps": true,
+  "Grow": true,
+  "SpellScripts": null,
+  "SkillScripts": null,
+  "DefenseElement": 0,
+  "OffenseElement": 0,
+  "Waypoints": {
+    "$type": "System.Collections.Generic.List`1[[Darkages.Types.Position, Darkages.Server]], mscorlib",
+    "$values": [
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 0,
+        "Y": 0,
+        "AreaID": 0
+      },
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 0,
+        "Y": 2,
+        "AreaID": 0
+      },
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 12,
+        "Y": 2,
+        "AreaID": 0
+      },
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 12,
+        "Y": 4,
+        "AreaID": 0
+      },
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 0,
+        "Y": 4,
+        "AreaID": 0
+      },
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 0,
+        "Y": 6,
+        "AreaID": 0
+      },
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 12,
+        "Y": 6,
+        "AreaID": 0
+      },
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 12,
+        "Y": 8,
+        "AreaID": 0
+      },
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 0,
+        "Y": 8,
+        "AreaID": 0
+      },
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 0,
+        "Y": 10,
+        "AreaID": 0
+      },
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 12,
+        "Y": 10,
+        "AreaID": 0
+      },
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 12,
+        "Y": 12,
+        "AreaID": 0
+      },
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 0,
+        "Y": 12,
+        "AreaID": 0
+      }
+    ]
+  },
+  "UpdateMapWide": true,
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Defender",
+  "Description": null,
+  "Group": null
+}

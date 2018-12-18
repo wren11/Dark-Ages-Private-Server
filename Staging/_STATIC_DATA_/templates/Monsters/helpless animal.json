@@ -1,0 +1,43 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "random"
+    ]
+  },
+  "Image": 16893,
+  "ScriptName": "Common Monster",
+  "DefinedX": 21,
+  "DefinedY": 15,
+  "LootType": 0,
+  "MoodType": 0,
+  "SpawnType": 4,
+  "ElementType": 0,
+  "PathQualifer": 1,
+  "Level": 5,
+  "MaximumHP": 200,
+  "MaximumMP": 200,
+  "AreaID": 83,
+  "MovementSpeed": 1000,
+  "CastSpeed": 3000,
+  "SpawnMax": 3,
+  "SpawnRate": 15,
+  "SpawnSize": 2,
+  "AttackSpeed": 1600,
+  "IgnoreCollision": false,
+  "ImageVarience": 1,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "SpellScripts": null,
+  "SkillScripts": null,
+  "DefenseElement": 0,
+  "OffenseElement": 0,
+  "Waypoints": null,
+  "UpdateMapWide": false,
+  "FamilyKey": null,
+  "BaseName": null,
+  "Name": "Helpless Animal",
+  "Description": null,
+  "Group": null
+}
