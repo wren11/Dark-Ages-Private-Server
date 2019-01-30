@@ -38,6 +38,9 @@ using Log = System.Console;
 using Class = Darkages.Types.Class;
 using Console = Colorful.Console;
 <<<<<<< HEAD:Server/ServerContext.cs
+<<<<<<< HEAD:Server/ServerContext.cs
+>>>>>>> parent of fc6f92e... Updates:Darkages.Server/ServerContext.cs
+=======
 >>>>>>> parent of fc6f92e... Updates:Darkages.Server/ServerContext.cs
 =======
 >>>>>>> parent of fc6f92e... Updates:Darkages.Server/ServerContext.cs
