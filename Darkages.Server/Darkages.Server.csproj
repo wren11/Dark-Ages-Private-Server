@@ -44,9 +44,6 @@
     <RootNamespace>Darkages</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Colorful.Console, Version=1.2.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Colorful.Console.1.2.9\lib\net461\Colorful.Console.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -124,6 +121,7 @@
     <Compile Include="Common\Reflection.cs" />
     <Compile Include="Compression\CompressableObject.cs" />
     <Compile Include="Compression\CompressionProvider.cs" />
+    <Compile Include="Database\LorDatabase.cs" />
     <Compile Include="IO\BufferReader.cs" />
     <Compile Include="IO\BufferWriter.cs" />
     <Compile Include="IO\Crc16Provider.cs" />
