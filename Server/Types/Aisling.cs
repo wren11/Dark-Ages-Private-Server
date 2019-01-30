@@ -355,7 +355,6 @@ namespace Darkages
             };
 
             Skill.GiveTo(result, "Claw Fist", 1);
-            Spell.GiveTo(result, "Create Item", 1);
 
             if (DateTime.UtcNow.Year <= 2020)
             {
