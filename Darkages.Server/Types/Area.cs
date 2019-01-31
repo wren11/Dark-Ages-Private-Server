@@ -45,7 +45,7 @@ namespace Darkages
         [JsonIgnore]
         [Browsable(false)]
         private readonly GameServerTimer UpdateTimer =
-            new GameServerTimer(TimeSpan.FromMilliseconds(100));
+            new GameServerTimer(TimeSpan.FromMilliseconds(10));
 
 
         [JsonIgnore] [Browsable(false)] public byte[] Data { get; set; }
@@ -204,13 +204,16 @@ namespace Darkages
 
         public async void ObjectUpdate(TimeSpan elapsedTime)
         {
+            var users = ServerContext.Game.Clients.Where(i => i != null &&
+                i.Aisling != null && i.Aisling.CurrentMapId == ID).Select(i => i.Aisling).ToArray();
+
             Sprite[] ObjectCache = null;
 
             if (!AreaObjectCache.Exists(Name))
             {
                 ObjectCache = (await GetAreaObjects()).ToArray();
                 {
-                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 3, false);
+                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 1, false);
                 }
             }
             else
@@ -218,22 +221,19 @@ namespace Darkages
                 ObjectCache = AreaObjectCache.Get(Name);
             }
 
-           
-
             if (ObjectCache != null && ObjectCache.Length > 0)
             {
-                UpdateMonsters(elapsedTime, ObjectCache.OfType<Monster>());
+                UpdateMonsters(users, elapsedTime, ObjectCache.OfType<Monster>());
 
-                UpdateMundanes(elapsedTime, ObjectCache.OfType<Mundane>());
+                UpdateMundanes(users, elapsedTime, ObjectCache.OfType<Mundane>());
 
-                UpdateItems(elapsedTime,
+                UpdateItems(users, elapsedTime,
                     ObjectCache.OfType<Money>().Concat<Sprite>(ObjectCache.OfType<Item>()));
             }
         }
 
         public void Update(TimeSpan elapsedTime)
         {
-
             UpdateTimer.Update(elapsedTime);
 
             if (UpdateTimer.Elapsed)
@@ -276,12 +276,54 @@ namespace Darkages
             }
         }
 
-        public void UpdateMonsters(TimeSpan elapsedTime, IEnumerable<Monster> objects)
+        public void UpdateMonsters(Aisling[] users, TimeSpan elapsedTime, IEnumerable<Monster> objects)
         {
             foreach (var obj in objects)
             {
                 if (obj != null && obj.Map != null && obj.Script != null)
                 {
+                    if (users.Length > 0)
+                    {
+                        foreach (var user in users)
+                        {
+                            //Don't process one-self.
+                            if (user.Serial == obj.Serial)
+                                continue;
+
+                            if (user.LoggedIn && user.Map.Ready)
+                            {
+
+                                if (user.InsideViewOf(obj) && obj.CurrentHp > 0)
+                                {
+                                    if (!user.ViewMatrix.Exists(obj.Serial))
+                                    {
+                                        obj.ShowTo(user);
+                                        user.ViewMatrix.AddOrUpdate(obj.Serial, true);
+                                    }
+                                }
+                                else
+                                {
+                                    if (user.ViewMatrix.Exists(obj.Serial))
+                                    {
+                                        if (user.ViewMatrix[obj.Serial])
+                                        {
+                                            obj.HideFrom(user);
+                                            user.ViewMatrix.AddOrUpdate(obj.Serial, false);
+                                        }
+                                    }
+
+                                    if (obj.CurrentHp <= 0)
+                                    {
+                                        if (obj.Target != null)
+                                        {
+                                            obj.Script?.OnDeath(obj.Target.Client);
+                                        }
+                                        obj.Remove();
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     obj.Script.Update(elapsedTime);
                     obj.UpdateBuffs(elapsedTime);
@@ -292,7 +334,7 @@ namespace Darkages
             }
         }
 
-        public void UpdateItems(TimeSpan elapsedTime, IEnumerable<Sprite> objects)
+        public void UpdateItems(Aisling[] users, TimeSpan elapsedTime, IEnumerable<Sprite> objects)
         {
             foreach (var obj in objects)
             {
@@ -320,7 +362,7 @@ namespace Darkages
             }
         }
 
-        public void UpdateMundanes(TimeSpan elapsedTime, IEnumerable<Mundane> objects)
+        public void UpdateMundanes(Aisling[] users, TimeSpan elapsedTime, IEnumerable<Mundane> objects)
         {
             foreach (var obj in objects)
             {

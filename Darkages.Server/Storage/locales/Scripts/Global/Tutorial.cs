@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
@@ -142,7 +143,14 @@ namespace Darkages.Storage.locales.Scripts.Global
                     if (!quest.Completed && client.Aisling.Y >= 11)
                     {
                         quest.Started = true;
-                        client.Aisling.Y = 10;
+
+                        //we must set location before we update our position!
+                        client.Aisling.Map.Update(client.Aisling.X, client.Aisling.Y, client.Aisling, true);
+
+                        lock (Generator.Random)
+                        {
+                            client.Aisling.Y = Generator.Random.Next(10, 12);
+                        }
                         client.SendMessage(0x02, "You can't go outside without gear, It's dangerous!");
                         client.SendAnimation(94, client.Aisling, client.Aisling);
                         client.Refresh();

@@ -58,11 +58,13 @@ namespace Darkages.Network
 
         public NetworkServer() { }
 
+
+        Socket _listener;
+
         private void EndConnectClient(IAsyncResult result)
         {
-            _lock.Set();
 
-            var _listener = (Socket)result.AsyncState;
+            //_listener = (Socket)result.AsyncState;
 
             var _handler = _listener.EndAccept(result);
 
@@ -100,9 +102,8 @@ namespace Darkages.Network
                     }
                 }
 
-                _lock.Reset();
-                _listener.BeginAccept(new AsyncCallback(EndConnectClient), _listener);
-                _lock.WaitOne();
+
+                _listener.BeginAccept(new AsyncCallback(EndConnectClient), null);
             }
         }
 
@@ -212,24 +213,17 @@ namespace Darkages.Network
             }
         }
 
-        public ManualResetEvent _lock = new ManualResetEvent(false);
-
         public virtual void Start(int port)
         {
             if (_listening)
                 return;
 
             _listening = true;
+            _listener  = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            var _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            {
-                _listener.Bind(new IPEndPoint(IPAddress.Any, port));
-                _listener.Listen(ServerContext.Config?.ConnectionCapacity ?? 1000);
-            }
-
-            _lock.Reset();
-            _listener.BeginAccept(new AsyncCallback(EndConnectClient), _listener);
-            _lock.WaitOne();
+            _listener.Bind(new IPEndPoint(IPAddress.Any, port));
+            _listener.Listen(ServerContext.Config?.ConnectionCapacity ?? 1000);
+            _listener.BeginAccept(new AsyncCallback(EndConnectClient), null);
         }
 
         public virtual void ClientConnected(TClient client)

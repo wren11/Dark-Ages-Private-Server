@@ -20,13 +20,11 @@ using Darkages.Network.Object;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
     public partial class GameServer
     {
-        bool isRunning;
 
         DateTime lastServerUpdate = DateTime.UtcNow;
         DateTime lastClientUpdate = DateTime.UtcNow;
@@ -41,8 +39,6 @@ namespace Darkages.Network.Game
         public ObjectService ObjectFactory { get; set; }
 
         public Dictionary<Type, GameServerComponent> Components;
-
-        public ObjectComponent ObjectPulseController => Components[typeof(ObjectComponent)] as ObjectComponent;
 
         public GameServer(int capacity) : base(capacity)
         {
@@ -67,10 +63,9 @@ namespace Darkages.Network.Game
 
         private void DoClientWork()
         {
-            isRunning = true;
             lastClientUpdate = DateTime.UtcNow;
 
-            while (isRunning)
+            while (true)
             {
                 if (ServerContext.Paused)
                     continue;
@@ -112,9 +107,9 @@ namespace Darkages.Network.Game
         {
             lastHeavyUpdate = DateTime.UtcNow;
 
-            while (isRunning)
+            while (true)
             {
-                if (ServerContext.Paused)
+                if (ServerContext.Paused || !ServerContext.Running)
                     continue;
 
                 try
@@ -137,10 +132,9 @@ namespace Darkages.Network.Game
 
         private void DoServerWork()
         {
-            isRunning = true;
             lastServerUpdate = DateTime.UtcNow;
 
-            while (isRunning)
+            while (true)
             {
                 try
                 {
@@ -171,17 +165,16 @@ namespace Darkages.Network.Game
 
         private void InitComponentCache()
         {
-            Components = new Dictionary<Type, GameServerComponent>();
-
-
-
-            Components[typeof(MonolithComponent)]    = new MonolithComponent(this);
-            Components[typeof(DaytimeComponent)]     = new DaytimeComponent(this);
-            Components[typeof(MundaneComponent)]     = new MundaneComponent(this);
-            Components[typeof(MessageComponent)]     = new MessageComponent(this);
-            Components[typeof(ObjectComponent)]      = new ObjectComponent(this);
-            Components[typeof(PingComponent)]        = new PingComponent(this);
-            Components[typeof(ServerCacheComponent)] = new ServerCacheComponent(this);
+            Components = new Dictionary<Type, GameServerComponent>
+            {
+                [typeof(MonolithComponent)] = new MonolithComponent(this),
+                [typeof(DaytimeComponent)] = new DaytimeComponent(this),
+                [typeof(MundaneComponent)] = new MundaneComponent(this),
+                [typeof(MessageComponent)] = new MessageComponent(this),
+                [typeof(PingComponent)] = new PingComponent(this),
+                [typeof(Save)] = new Save(this),
+                [typeof(BotComponent)] = new BotComponent(this),
+            };
         }
 
         public void ExecuteClientWork(TimeSpan elapsedTime)
@@ -201,21 +194,18 @@ namespace Darkages.Network.Game
 
         private void UpdateComponents(TimeSpan elapsedTime)
         {
-            if (ServerContext.Paused)
+            if (ServerContext.Paused || !ServerContext.Running)
                 return;
 
-            lock (Components)
+            foreach (var component in Components.Values)
             {
-                foreach (var component in Components.Values)
-                {
-                    component.Update(elapsedTime);
-                }
+                component.Update(elapsedTime);
             }
         }
 
         private static void UpdateAreas(TimeSpan elapsedTime)
         {
-            if (ServerContext.Paused)
+            if (ServerContext.Paused || !ServerContext.Running)
                 return;
 
             foreach (var area in ServerContext.GlobalMapCache.Values)
@@ -226,7 +216,7 @@ namespace Darkages.Network.Game
 
         private void UpdateClients(TimeSpan elapsedTime)
         {
-            if (ServerContext.Paused)
+            if (ServerContext.Paused || !ServerContext.Running)
                 return;
 
             foreach (var client in Clients)
@@ -263,17 +253,11 @@ namespace Darkages.Network.Game
         public override void Abort()
         {
             base.Abort();
-
-            isRunning = false;
         }
 
         public override void Start(int port)
         {
             base.Start(port);
-
-            if (isRunning)
-                return;
-
 
             ServerThread = new Thread(new ThreadStart(DoServerWork));
             ServerThread.IsBackground = true;
@@ -286,8 +270,6 @@ namespace Darkages.Network.Game
             HeavyThread = new Thread(new ThreadStart(DoHeavyWork));
             HeavyThread.IsBackground = true;
             HeavyThread.Start();
-
-            isRunning = true;
         }
     }
 }

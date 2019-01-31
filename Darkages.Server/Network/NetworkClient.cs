@@ -216,8 +216,8 @@ namespace Darkages.Network
                 Thread.Sleep(format.Delay);
 
 
-            SendFormat(format);
-            //SendAsync(format);
+           
+            SendAsync(format);
         }
 
         public void Send(NetworkPacketWriter npw)

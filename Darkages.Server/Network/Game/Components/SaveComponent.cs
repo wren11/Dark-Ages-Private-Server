@@ -16,16 +16,15 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using System;
-using System.Diagnostics;
 
 namespace Darkages.Network.Game.Components
 {
-    public class ServerCacheComponent : GameServerComponent
+    public class Save : GameServerComponent
     {
 
         GameServerTimer Timer;
 
-        public ServerCacheComponent(GameServer server) : base(server)
+        public Save(GameServer server) : base(server)
         {
             Timer = new GameServerTimer(TimeSpan.FromSeconds(45));
         }

@@ -251,7 +251,6 @@ namespace Darkages.Network.Game
         public void Update(TimeSpan elapsedTime)
         {
             #region Sanity Checks
-
             if (Aisling == null)
                 return;
 
@@ -260,30 +259,56 @@ namespace Darkages.Network.Game
 
             if ((DateTime.UtcNow - Aisling.LastLogged).TotalMilliseconds < ServerContext.Config.LingerState)
                 return;
-
-            //if ((DateTime.UtcNow - LastPingResponse).TotalSeconds > ServerContext.Config.TimeOutValue)
-            //{
-            //    Server.ClientDisconnected(this);
-            //    return;
-            //}
-
             #endregion
 
+            HandleTimeOuts();
+            StatusCheck();
+            DisplayNearbyUsers();
             Regeneration(elapsedTime);
             UpdateStatusBar(elapsedTime);
             UpdateGlobalScripts(elapsedTime);
+
         }
 
-        public void ClientLoop()
+        private void DisplayNearbyUsers()
         {
-            while (true)
+            var users = ServerContext.Game.Clients.Where
+                (
+                    i =>
+                    i != null && i.Aisling != null &&
+                    i.Aisling.CurrentMapId == Aisling.CurrentMapId &&
+                    i.Serial != Serial
+                ).ToArray();
+
+            if (users.Length > 0)
             {
-                StatusCheck();
-                HandleTimeOuts();
-                RefreshObjects();
-                Thread.Sleep(50);
+                foreach (var user in from v in users
+                                     select v.Aisling)
+                {
+                    if (user.LoggedIn && user.Map.Ready)
+                    {
+
+                        if (Aisling.InsideViewOf(user))
+                        {
+                            if (!user.ViewMatrix.Exists(Serial))
+                            {
+                                Aisling.ShowTo(user);
+                                user.ViewMatrix.AddOrUpdate(Serial, true);
+                            }
+                        }
+                        else
+                        {
+                            if (user.ViewMatrix[Serial])
+                            {
+                                Aisling.HideFrom(user);
+                                user.ViewMatrix.AddOrUpdate(Serial, false);
+                            }
+                        }
+                    }
+                }
             }
         }
+
 
         private void StatusCheck()
         {
@@ -457,8 +482,6 @@ namespace Darkages.Network.Game
                 Aisling.LastMapId  = short.MaxValue;
             }
             BuildSettings();
-
-            Task.Run(() => ClientLoop());
         }
 
         private void LoadGlobalScripts()
@@ -727,6 +750,9 @@ namespace Darkages.Network.Game
 
         public void Refresh(bool delete = false)
         {
+            if (IsRefreshing)
+                return;
+
             LeaveArea(delete);
             EnterArea();
         }
@@ -752,7 +778,6 @@ namespace Darkages.Network.Game
             RefreshMap();
             SendLocation();
             UpdateDisplay();
-            RefreshObjects();
         }
 
         public void SendMusic()
@@ -798,6 +823,8 @@ namespace Darkages.Network.Game
 
         public void RefreshMap()
         {
+            ShouldUpdateMap = false;
+
             if (Aisling.CurrentMapId != Aisling.LastMapId)
             {
                 ShouldUpdateMap = true;
@@ -807,32 +834,8 @@ namespace Darkages.Network.Game
 
             if (ShouldUpdateMap)
             {
-                Aisling.ViewFrustrum.Clear();
+                Aisling.ViewMatrix.Clear();
                 Send(new ServerFormat15(Aisling.Map));
-            }
-        }
-
-        public void RefreshObjects()
-        {
-            var nearbyobjs = GetObjects(Aisling.Map, i => i.WithinRangeOf(Aisling), Get.All);
-            foreach (var obj in nearbyobjs)
-            {
-                if (obj is Aisling)
-                {
-                    var o = obj as Aisling;
-
-                    if (o.View(Aisling))
-                    {
-                        ServerContext.Game.ObjectPulseController?.OnObjectUpdate(Aisling);
-                    }
-                }
-                else
-                {
-                    if (Aisling.View(obj))
-                    {
-                        obj.ShowTo(Aisling);
-                    }
-                }
             }
         }
 
@@ -848,6 +851,9 @@ namespace Darkages.Network.Game
 
         public void Save()
         {
+            if (Aisling.IsBot)
+                return;
+
             ThreadPool.QueueUserWorkItem((state) =>
             {
                 StorageManager.AislingBucket.Save(Aisling);

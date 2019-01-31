@@ -322,8 +322,13 @@ namespace Darkages.Types
             LastUpdated   = DateTime.UtcNow;
             LastPosition  = new Position(0, 0);
             LastDirection = 0;
+
+            Hash = string.Format("{0:X}", _identity.GetId(this, out var newobj));
         }
         #endregion
+
+        [JsonIgnore]
+        public string Hash { get; }
 
         public bool CanMove => !(IsFrozen || IsSleeping || IsParalyzed);
 
@@ -1113,13 +1118,7 @@ namespace Darkages.Types
 
         public List<Sprite> GetInfront(int tileCount = 1, bool intersect = false)
         {
-            if (this is Aisling && intersect)
-                return _GetInfront(tileCount).Intersect(
-                    (this as Aisling).ViewableObjects).ToList();
-            else
-            {
-                return _GetInfront(tileCount).ToList();
-            }
+            return _GetInfront(tileCount).ToList();
         }
 
 
@@ -1198,6 +1197,11 @@ namespace Darkages.Types
             return true;
         }
 
+        public void HideFrom(Aisling nearbyAisling)
+        {
+            nearbyAisling.Show(Scope.Self, new ServerFormat0E(Serial));
+        }
+
         public void ShowTo(Aisling nearbyAisling)
         {
             if (nearbyAisling != null)
@@ -1208,20 +1212,9 @@ namespace Darkages.Types
                 }
                 else
                 {
-                    nearbyAisling.Show(Scope.Self, new ServerFormat07(new[] { this }));
+                    nearbyAisling.Show(Scope.Self, new ServerFormat07(new Sprite[] { this }));
                 }
             }
-        }
-
-        public bool WithinRangeOf(int x, int y, int distance)
-        {
-            var other = new Aisling
-            {
-                X = x,
-                Y = y,
-                CurrentMapId = CurrentMapId
-            };
-            return WithinRangeOf(other, distance);
         }
 
         public bool WithinRangeOf(Sprite other)
@@ -1233,11 +1226,6 @@ namespace Darkages.Types
                 return false;
 
             return WithinRangeOf(other, ServerContext.Config.WithinRangeProximity);
-        }
-
-        public int DistanceFrom(Sprite other)
-        {
-            return (Math.Abs(this.X - other.X) + Math.Abs(this.Y - other.Y));
         }
 
         public bool WithinRangeOf(Sprite other, int distance)
@@ -1259,21 +1247,6 @@ namespace Darkages.Types
             return dist <= distance;
         }
 
-        public bool WithinArea(Sprite other, int distance)
-        {
-            if (other == null)
-                return false;
-
-            var xDist = Math.Abs(X - other.X);
-            var yDist = Math.Abs(Y - other.Y);
-
-            if (xDist > distance ||
-                yDist > distance)
-                return false;
-
-            var dist = Math.Sqrt((float)(Math.Pow(xDist, 2) + Math.Pow(yDist, 2)));
-            return dist <= distance;
-        }
 
         public bool WithinRangeOf(int x, int y)
         {
@@ -1288,6 +1261,10 @@ namespace Darkages.Types
             return dist <= ServerContext.Config.WithinRangeProximity;
         }
 
+        public bool InsideViewOf(Sprite other)
+        {
+            return WithinRangeOf(other, 15);
+        }
 
         public bool Facing(int x, int y)
         {
@@ -1449,7 +1426,6 @@ namespace Darkages.Types
                     Serial = Serial
                 });
 
-            ServerContext.Game.ObjectPulseController?.OnObjectUpdate(this);
         }
 
         public void WalkTo(int x, int y, bool ignoreWalls = false)
@@ -1611,7 +1587,6 @@ namespace Darkages.Types
             LastPosition = new Position(savedX, savedY);
             {
                 CompleteWalk(savedX, savedY);
-                ServerContext.Game.ObjectPulseController?.OnObjectUpdate(this);
             }
             return true;
         }
@@ -1649,17 +1624,7 @@ namespace Darkages.Types
                 Y = (short)savedY
             };
 
-            if (this is Aisling)
-            {
-                Client.Aisling.Show(Scope.NearbyAislingsExludingSelf, response);
-            }
-            else
-            {
-                var nearby = GetObjects<Aisling>(Map, i => i.WithinRangeOf(this) && i.InsideView(this));
-                if (nearby != null)
-                    foreach (var obj in nearby)
-                        obj.Show(Scope.Self, response, nearby);
-            }
+            Show(Scope.NearbyAislingsExludingSelf, response);
         }
 
         public void SendAnimation(ushort Animation, Sprite To, Sprite From, byte speed = 100)

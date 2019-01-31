@@ -176,13 +176,13 @@
     <Compile Include="Network\ClientFormats\ClientFormat7B.cs" />
     <Compile Include="Network\ClientFormats\ClientFormat89.cs" />
     <Compile Include="Network\ClientFormats\Undefined.cs" />
+    <Compile Include="Network\Game\Components\BotComponent.cs" />
     <Compile Include="Network\Game\Components\DaytimeComponent.cs" />
     <Compile Include="Network\Game\Components\MessageComponent.cs" />
     <Compile Include="Network\Game\Components\MonolithComponent.cs" />
     <Compile Include="Network\Game\Components\MundaneComponent.cs" />
-    <Compile Include="Network\Game\Components\ObjectComponent.cs" />
     <Compile Include="Network\Game\Components\PingComponent.cs" />
-    <Compile Include="Network\Game\Components\ServerCacheComponent.cs" />
+    <Compile Include="Network\Game\Components\SaveComponent.cs" />
     <Compile Include="Network\Game\GameClient.cs" />
     <Compile Include="Network\Game\GameServer.cs" />
     <Compile Include="Network\Game\GameServerComponent.cs" />

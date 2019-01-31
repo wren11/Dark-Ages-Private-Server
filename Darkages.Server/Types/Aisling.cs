@@ -17,6 +17,7 @@
 //*************************************************************************/
 using Darkages.Common;
 using Darkages.Network;
+using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using Newtonsoft.Json;
@@ -53,6 +54,14 @@ namespace Darkages
             Remains = new CursedSachel(this);
             ActiveReactor = null;
             LookupTime = DateTime.UtcNow;
+        }
+
+        public void Assail()
+        {
+            if (Client != null)
+            {
+                GameServer.ActivateAssails(Client);
+            }
         }
 
         public override string ToString()
@@ -155,8 +164,6 @@ namespace Darkages
 
         [JsonIgnore] public bool Invisible => Flags.HasFlag(AislingFlags.Invisible);
 
-        [JsonIgnore] public ConcurrentDictionary<int, Sprite> ViewFrustrum = new ConcurrentDictionary<int, Sprite>();
-
         [JsonIgnore] public CursedSachel Remains { get; set; }
 
         [JsonIgnore] public ExchangeSession Exchange { get; set; }
@@ -173,17 +180,14 @@ namespace Darkages
         }
 
         [JsonIgnore]
-        public List<Sprite> ViewableObjects
-        {
-            get
-            {
-                return ViewFrustrum.Select(i => i.Value).ToList();
-            }
-        }
-
-        [JsonIgnore]
         public bool ReactorActive { get; set; }
         public bool IsBot { get; internal set; }
+
+        [JsonIgnore]
+        public DateTime LastBotUpdate { get; internal set; }
+
+        [JsonIgnore]
+        public Cache<int, bool> ViewMatrix = new Cache<int, bool>();
 
         public void Recover()
         {
@@ -193,18 +197,7 @@ namespace Darkages
             Client?.SendStats(StatusFlags.All);
         }
 
-        public bool InsideView(Sprite obj)
-        {
-            if (ViewFrustrum.Count == 0)
-                return false;
-
-            return ViewFrustrum.ContainsKey(obj.Serial);
-        }
-
-        public bool RemoveFromView(Sprite obj)
-        {
-            return ViewFrustrum.TryRemove(obj.Serial, out var removed);
-        }
+       
 
         public void GoHome()
         {
@@ -224,26 +217,7 @@ namespace Darkages
             Client.CloseDialog();
         }
 
-        public bool View(Sprite obj)
-        {
-            if (!InsideView(obj))
-            {
-                if (ViewFrustrum.TryAdd(obj.Serial, obj))
-                {
-                    obj.Map.Update(obj.X, obj.Y, obj, true);
-                    obj.Map.Update(obj.X, obj.Y, obj);
-
-                    if (obj is Monster)
-                        (obj as Monster).Script
-                            ?.OnApproach(Client);
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
+      
         public void CastSpell(Spell spell)
         {
             if (!spell.CanUse())

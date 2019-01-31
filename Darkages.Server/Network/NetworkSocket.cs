@@ -36,6 +36,7 @@ namespace Darkages.Network
         public NetworkSocket(Socket socket)
             : base(socket.DuplicateAndClose(processId))
         {
+
         }
 
         public bool HeaderComplete => headerOffset == headerLength;
