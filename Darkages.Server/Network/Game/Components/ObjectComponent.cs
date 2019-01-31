@@ -62,7 +62,7 @@ namespace Darkages.Network.Game.Components
 
             if (obj is Monster || obj is Mundane)
             {
-                var nearByAislings = obj.GetObjects<Aisling>(i => i.WithinRangeOf(obj));
+                var nearByAislings = obj.GetObjects<Aisling>(obj.Map, i => i.WithinRangeOf(obj));
                 foreach (var nearbyAisling in nearByAislings)
                 {
                     if (obj is Monster)
@@ -92,7 +92,7 @@ namespace Darkages.Network.Game.Components
 
         public void UpdateOutOfRangeObjects(Sprite obj)
         {
-            var distantObjs = obj.GetObjects(i => i != null && !i.WithinRangeOf(obj)
+            var distantObjs = obj.GetObjects(obj.Map, i => i != null && !i.WithinRangeOf(obj)
                                                   && obj.CurrentMapId == i.CurrentMapId,
                 Get.Aislings | Get.Monsters | Get.Mundanes | Get.Items | Get.Money);
 
@@ -112,7 +112,7 @@ namespace Darkages.Network.Game.Components
         public void UpdateMonsterViewFrustrum(Sprite obj)
         {
             //get aislings in range of this object that is not already.
-            var nearByAislings = obj.GetObjects<Aisling>(i => i.WithinRangeOf(obj));
+            var nearByAislings = obj.GetObjects<Aisling>(obj.Map, i => i.WithinRangeOf(obj));
 
             foreach (var nearbyAisling in nearByAislings)
             {
@@ -209,8 +209,8 @@ namespace Darkages.Network.Game.Components
         private void MonsterMediator(Area area = null)
         {
             var objects = area != null
-                ? GetObjects(n => n != null && n.CurrentMapId == area.ID && n.CurrentHp == 0, Get.Monsters)
-                : GetObjects(n => n != null, Get.Monsters);
+                ? GetObjects(area, n => n != null && n.CurrentMapId == area.ID && n.CurrentHp == 0, Get.Monsters)
+                : GetObjects(null, n => n != null, Get.Monsters);
 
             if (objects != null)
             {
@@ -231,8 +231,8 @@ namespace Darkages.Network.Game.Components
         private void ItemMediator(Area area = null)
         {
             var objects = area != null
-                ? GetObjects(n => n != null && n.CurrentMapId == area.ID, Get.Money | Get.Items)
-                : GetObjects(n => n != null, Get.Money | Get.Items);
+                ? GetObjects(area, n => n != null && n.CurrentMapId == area.ID, Get.Money | Get.Items)
+                : GetObjects(null, n => n != null, Get.Money | Get.Items);
 
             var removes = 0;
             foreach (var obj in objects)

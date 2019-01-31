@@ -172,7 +172,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
             Monster.Target = null;
 
-            if (GetObject<Monster>(i => i.Serial == Monster.Serial) != null)
+            if (GetObject<Monster>(Monster.Map, i => i.Serial == Monster.Serial) != null)
                 DelObject(Monster);
         }
 
@@ -269,7 +269,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     if (Monster.Target == null)
                     {
 
-                        Monster.Target = GetObjects(i => i.Serial != Monster.Serial
+                        Monster.Target = GetObjects(Monster.Map, i => i.Serial != Monster.Serial
                         && i.WithinRangeOf(Monster) && i.CurrentHp > 0,
                         Monster.Template.MoodType == MoodQualifer.VeryAggressive ? Get.Aislings | Get.Monsters : Get.Aislings)
                                           .OrderBy(v => v.Position.DistanceFrom(Monster.Position)).FirstOrDefault();

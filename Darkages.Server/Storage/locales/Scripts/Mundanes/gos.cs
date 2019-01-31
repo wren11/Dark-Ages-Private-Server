@@ -83,7 +83,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             if (message == "benson called you a pussy")
             {
-                var benson = GetObject<Mundane>(i => i.Template.Name == "Benson");
+                var benson = GetObject<Mundane>(client.Aisling.Map, i => i.Template.Name == "Benson");
 
                 Mundane.Target = benson ?? client.Aisling as Sprite;
                 Mundane.Template.EnableAttacking = true;

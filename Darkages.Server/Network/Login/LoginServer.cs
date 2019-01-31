@@ -38,6 +38,70 @@ namespace Darkages.Network.Login
         public static MServerTable MServerTable { get; set; }
         public static Notification Notification { get; set; }
 
+        public static int BotIncrement = 1;
+
+        public Aisling CreateBot()
+        {
+
+            var gender = 1;
+
+            //create aisling from default template.
+            var template = Aisling.Create();
+            unchecked
+            {
+                template.Display = (BodySprite)(gender * 16);
+            }
+            template.Username = "bot_" + BotIncrement;
+            template.Password = "bot";
+            template.Gender = Gender.Male;
+            template.HairColor = (byte)Common.Generator.Random.Next(1, 6);
+            template.HairStyle = (byte)Common.Generator.Random.Next(1, 8);
+
+            var items = new ItemTemplate[] {
+                ServerContext.GlobalItemTemplateCache["Loures Signet Ring"],
+                ServerContext.GlobalItemTemplateCache["Black Stone Ring"],
+                ServerContext.GlobalItemTemplateCache["Hy-Brasyl Battle Axe"],
+                ServerContext.GlobalItemTemplateCache["Hy-Brasyl Plated Helmet"],
+                ServerContext.GlobalItemTemplateCache["Leather Gauntlet"],
+                ServerContext.GlobalItemTemplateCache["Leather Gauntlet"],
+
+                ServerContext.GlobalItemTemplateCache["Leather Greaves"],
+                ServerContext.GlobalItemTemplateCache["Gold Earrings"],
+                ServerContext.GlobalItemTemplateCache["Dark Bone Necklace"],
+                ServerContext.GlobalItemTemplateCache["Dark Belt"],
+
+                ServerContext.GlobalItemTemplateCache["Hy-Brasyl Plate"],
+            };
+
+            template._Str = 200;
+            template.ExpLevel = 99;
+            template.X = 5;
+            template.Y = 5;
+
+            template.Map.Update(template.X, template.Y, template);
+
+            foreach (var item in items)
+            {
+                var i = Item.Create(template, item);
+
+                if (i.GiveTo(template))
+                {
+
+                }
+            }
+
+            template.IsBot = true;
+
+            Skill.GiveTo(template, "Assail", 1);
+
+            Console.WriteLine("Bot Created: " + template.Username);
+
+            BotIncrement++;
+
+            return template;
+
+        }
+
         /// <summary>
         ///     Send Encryption Parameters.
         /// </summary>
@@ -94,54 +158,74 @@ namespace Darkages.Network.Login
         /// </summary>
         protected override void Format03Handler(LoginClient client, ClientFormat03 format)
         {
-            try
-            {
-                var _aisling = StorageManager.AislingBucket.Load(format.Username);
+            Aisling _aisling = null;
+            var IsBot = format.Username == "bot";
 
-                if (_aisling != null)
+            if (!IsBot)
+            {
+
+                try
                 {
-                    if (_aisling.Password != format.Password)
+                    _aisling = StorageManager.AislingBucket.Load(format.Username);
+
+                    if (_aisling != null)
                     {
-                        client.SendMessageBox(0x02, "Incorrect Password.");
+                        if (_aisling.Password != format.Password)
+                        {
+                            client.SendMessageBox(0x02, "Sorry, Incorrect Password.");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        client.SendMessageBox(0x02, string.Format("{0} does not exist in this world. You can make this hero by clicking on 'Create'.", format.Username));
                         return;
                     }
                 }
-                else
+                catch
                 {
-                    client.SendMessageBox(0x02, string.Format("{0} does not exist in the world of lorule.", format.Username));
+                    client.SendMessageBox(0x02, string.Format("{0} is not supported by the new server. Please remake your character. This will not happen when the server goes to beta.", format.Username));
                     return;
                 }
             }
-            catch
+
+            if (IsBot)
             {
-                client.SendMessageBox(0x02, string.Format("{0} is not supported by the new server. Please remake your character. This will not happen when the server goes to beta.", format.Username));
-                return;
+                _aisling = CreateBot();
+                ServerContext.ConnectedBots[_aisling.Username] = _aisling;
             }
 
-            var aislings = GetObjects<Aisling>(i => i.Username == format.Username && format.Password == i.Password);
-            foreach (var aisling in aislings)
+            if (!IsBot)
             {
-                aisling.Client.SendMessage(0x02, "You have been replaced by someone else.");
-                aisling.Client.Server.ClientDisconnected(aisling.Client);
+                var aislings = GetObjects<Aisling>(_aisling.Map, i => i.Username == format.Username && format.Password == i.Password);
+                foreach (var aisling in aislings)
+                {
+                    aisling.Client.SendMessage(0x02, "You have been replaced by someone else.");
+                    aisling.Client.Server.ClientDisconnected(aisling.Client);
+                }
             }
 
-            var redirect = new Redirect
+            if (_aisling != null)
             {
-                Serial = client.Serial,
-                Salt = client.Encryption.Parameters.Salt,
-                Seed = client.Encryption.Parameters.Seed,
-                Name = format.Username
-            };
 
-            ServerContext.GlobalRedirects.Add(redirect);
+                var redirect = new Redirect
+                {
+                    Serial = client.Serial,
+                    Salt = client.Encryption.Parameters.Salt,
+                    Seed = client.Encryption.Parameters.Seed,
+                    Name = _aisling.Username
+                };
 
-            client.SendMessageBox(0x00, "\0");
+                ServerContext.GlobalRedirects.Add(redirect);
 
-            client.Send(new ServerFormat03
-            {
-                EndPoint = new IPEndPoint(Address, ServerContext.DefaultPort),
-                Redirect = redirect
-            });
+                client.SendMessageBox(0x00, "\0");
+
+                client.Send(new ServerFormat03
+                {
+                    EndPoint = new IPEndPoint(Address, ServerContext.DefaultPort),
+                    Redirect = redirect
+                });
+            }
         }
 
         /// <summary>

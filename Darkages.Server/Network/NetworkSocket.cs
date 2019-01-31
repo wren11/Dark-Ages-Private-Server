@@ -95,7 +95,8 @@ namespace Darkages.Network
 
             packetOffset += bytes;
 
-            if (PacketComplete) headerOffset = 0;
+            if (PacketComplete)
+                headerOffset = 0;
 
             return bytes;
         }

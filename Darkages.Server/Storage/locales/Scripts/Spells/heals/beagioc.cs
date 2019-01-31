@@ -103,7 +103,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 if (sprite is Mundane)
                 {
-                    var nearby = target.GetObjects(i => i.CurrentMapId == sprite.CurrentMapId &&
+                    var nearby = target.GetObjects(sprite.Map, i => i.CurrentMapId == sprite.CurrentMapId &&
                                     i.CurrentHp != i.MaximumHp, Get.Aislings);
 
                     if (nearby.Count() > 0)

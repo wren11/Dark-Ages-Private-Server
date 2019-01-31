@@ -87,32 +87,79 @@ namespace Darkages.Network.Object
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
-    public sealed class ObjectService 
+    public sealed class ObjectService
     {
-        private readonly IDictionary<Type, object> _spriteCollections = new Dictionary<Type, object>
-        {
-            [typeof(Aisling)]  = new SpriteCollection<Aisling>(Enumerable.Empty<Aisling>()),
-            [typeof(Monster)]  = new SpriteCollection<Monster>(Enumerable.Empty<Monster>()),
-            [typeof(Mundane)]  = new SpriteCollection<Mundane>(Enumerable.Empty<Mundane>()),
-            [typeof(Money)]    = new SpriteCollection<Money>(Enumerable.Empty<Money>()),
-            [typeof(Item)]     = new SpriteCollection<Item>(Enumerable.Empty<Item>()),
-        };
+        private readonly Dictionary<int, IDictionary<Type, object>> _spriteCollections =
+            new Dictionary<int, IDictionary<Type, object>>();
 
-        public T Query<T>(Predicate<T> predicate) where T: Sprite
+        public ObjectService()
         {
-            var obj = (SpriteCollection<T>)_spriteCollections[typeof(T)];
-            var queryResult = obj.Query(predicate);
+
+            foreach (var map in ServerContext.GlobalMapCache.Values)
             {
-                return queryResult;
+                _spriteCollections.Add(map.ID, new Dictionary<Type, object>()
+                {  
+                    {  typeof(Monster), new SpriteCollection<Monster>(Enumerable.Empty<Monster>()) },
+                    {  typeof(Aisling), new SpriteCollection<Aisling>(Enumerable.Empty<Aisling>()) },
+                    {  typeof(Mundane), new SpriteCollection<Mundane>(Enumerable.Empty<Mundane>()) },
+                    {  typeof(Item),    new SpriteCollection<Item>(Enumerable.Empty<Item>()) },
+                    {  typeof(Money),   new SpriteCollection<Money>(Enumerable.Empty<Money>()) },
+                });
             }
         }
+    
 
-        public IEnumerable<T> QueryAll<T>(Predicate<T> predicate) where T: Sprite
+
+        public T Query<T>(Area map, Predicate<T> predicate) where T: Sprite
         {
-            var obj = (SpriteCollection<T>)_spriteCollections[typeof(T)];
-            var queryResult = obj.QueryAll(predicate);
+            if (map == null)
             {
-                return queryResult;
+                var values = _spriteCollections.Select(i => (SpriteCollection<T>)i.Value[typeof(T)]);
+
+                foreach (var obj in values)
+                {
+                    if (obj.Any())
+                    {
+                        return obj.Query(predicate);
+                    }
+                }
+            }
+            else
+            {
+                var obj = (SpriteCollection<T>)_spriteCollections[map.ID][typeof(T)];
+                var queryResult = obj.Query(predicate);
+                {
+                    return queryResult;
+                }
+            }
+
+            return null;
+        }
+
+        public IEnumerable<T> QueryAll<T>(Area map, Predicate<T> predicate) where T: Sprite
+        {
+            if (map == null)
+            {
+                var values = _spriteCollections.Select(i => (SpriteCollection<T>)i.Value[typeof(T)]);
+                var stack = new List<T>();
+
+                foreach (var obj in values)
+                {
+                    if (obj.Any())
+                    {
+                        stack.AddRange(obj.QueryAll(predicate));
+                    }
+                }
+
+                return stack;
+            }
+            else
+            {
+                var obj = (SpriteCollection<T>)_spriteCollections[map.ID][typeof(T)];
+                var queryResult = obj.QueryAll(predicate);
+                {
+                    return queryResult;
+                }
             }
         }
 
@@ -127,13 +174,13 @@ namespace Darkages.Network.Object
 
         public void AddGameObject<T>(T obj) where T : Sprite
         {
-            var objCollection = (SpriteCollection<T>)_spriteCollections[typeof(T)];
+            var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
             objCollection.Add(obj);
         }
 
         public void RemoveGameObject<T>(T obj) where T : Sprite
         {
-            var objCollection = (SpriteCollection<T>)_spriteCollections[typeof(T)];
+            var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
             objCollection.Delete(obj);
         }
     }

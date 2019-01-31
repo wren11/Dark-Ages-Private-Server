@@ -56,7 +56,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void OnDeath(GameClient client)
         {
-            var remaining = GetObjects<Monster>(i => i.CurrentMapId == client.Aisling.AreaID
+            var remaining = GetObjects<Monster>(client.Aisling.Map, i => i.CurrentMapId == client.Aisling.AreaID
                 && i.Template.Name == Monster.Template.Name).Count();
 
             if (remaining <= 1)
@@ -78,7 +78,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 client.SendMessage(0x02, string.Format("[Difficulty: {0}] Creeps get stronger ...", temp.Level));
             }
 
-            if (GetObject<Monster>(i => i.Serial == Monster.Serial) != null)
+            if (GetObject<Monster>(client.Aisling.Map, i => i.Serial == Monster.Serial) != null)
                 DelObject(Monster);
         }
 

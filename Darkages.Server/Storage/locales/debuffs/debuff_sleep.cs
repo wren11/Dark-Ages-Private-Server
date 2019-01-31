@@ -46,7 +46,7 @@ namespace Darkages.Storage.locales.debuffs
             }
             else
             {
-                var nearby = Affected.GetObjects<Aisling>(i => i.WithinRangeOf(Affected));
+                var nearby = Affected.GetObjects<Aisling>(Affected.Map, i => i.WithinRangeOf(Affected));
 
                 foreach (var near in nearby)
                     near.Client.SendAnimation(32, Affected, Affected);
@@ -81,7 +81,7 @@ namespace Darkages.Storage.locales.debuffs
             }
             else
             {
-                var nearby = Affected.GetObjects<Aisling>(i => Affected.WithinRangeOf(i));
+                var nearby = Affected.GetObjects<Aisling>(Affected.Map, i => Affected.WithinRangeOf(i));
 
                 foreach (var near in nearby)
                 {

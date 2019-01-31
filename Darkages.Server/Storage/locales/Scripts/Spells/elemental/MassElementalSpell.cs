@@ -112,7 +112,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 {
                     sprite.CurrentMp = 0;
                 }
-                var targets = GetObjects(i => i.WithinRangeOf(sprite), Get.Aislings | Get.Monsters | Get.Mundanes);
+                var targets = GetObjects(sprite.Map, i => i.WithinRangeOf(sprite), Get.Aislings | Get.Monsters | Get.Mundanes);
                 var client = (sprite as Aisling).Client;
                 client.TrainSpell(Spell);
 
@@ -165,7 +165,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                var targets = GetObjects(i => i.WithinRangeOf(sprite), Get.Monsters);
+                var targets = GetObjects(sprite.Map, i => i.WithinRangeOf(sprite), Get.Monsters);
 
                 foreach (var t in targets)
                 {

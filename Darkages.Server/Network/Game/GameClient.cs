@@ -19,7 +19,6 @@ using Darkages.Common;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage;
-using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
@@ -273,12 +272,17 @@ namespace Darkages.Network.Game
             Regeneration(elapsedTime);
             UpdateStatusBar(elapsedTime);
             UpdateGlobalScripts(elapsedTime);
+        }
 
-            StatusCheck();
-            HandleTimeOuts();
-            RefreshObjects();
-
-            ServerContext.Game.ObjectPulseController?.OnObjectUpdate(Aisling);
+        public void ClientLoop()
+        {
+            while (true)
+            {
+                StatusCheck();
+                HandleTimeOuts();
+                RefreshObjects();
+                Thread.Sleep(50);
+            }
         }
 
         private void StatusCheck()
@@ -453,6 +457,8 @@ namespace Darkages.Network.Game
                 Aisling.LastMapId  = short.MaxValue;
             }
             BuildSettings();
+
+            Task.Run(() => ClientLoop());
         }
 
         private void LoadGlobalScripts()
@@ -710,7 +716,7 @@ namespace Darkages.Network.Game
             if (Aisling.Flags.HasFlag(AislingFlags.Dead))
             {
                 //only show to clients who can see ghosts.
-                var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(Aisling) && i.Client.CanSeeGhosts());
+                var nearby = GetObjects<Aisling>(Aisling.Map, i => i.WithinRangeOf(Aisling) && i.Client.CanSeeGhosts());
                 Aisling.Show(Scope.NearbyAislingsExludingSelf, response, nearby);
             }
             else
@@ -784,7 +790,7 @@ namespace Darkages.Network.Game
             if (!Aisling.Map.Ready)
                 return;
 
-            if (GetObject<Aisling>(i => i.Serial == Aisling.Serial) == null)
+            if (GetObject<Aisling>(Aisling.Map, i => i.Serial == Aisling.Serial) == null)
                 AddObject(Aisling);
 
             Aisling.Map.Update(Aisling.X, Aisling.Y, Aisling);
@@ -808,17 +814,25 @@ namespace Darkages.Network.Game
 
         public void RefreshObjects()
         {
-            var nearbyobjs = GetObjects(i => i.WithinRangeOf(Aisling), Get.All);
+            var nearbyobjs = GetObjects(Aisling.Map, i => i.WithinRangeOf(Aisling), Get.All);
             foreach (var obj in nearbyobjs)
             {
                 if (obj is Aisling)
-                    continue;
-
-                if (Aisling.View(obj))
                 {
-                    obj.ShowTo(Aisling);
-                }
+                    var o = obj as Aisling;
 
+                    if (o.View(Aisling))
+                    {
+                        ServerContext.Game.ObjectPulseController?.OnObjectUpdate(Aisling);
+                    }
+                }
+                else
+                {
+                    if (Aisling.View(obj))
+                    {
+                        obj.ShowTo(Aisling);
+                    }
+                }
             }
         }
 
@@ -858,7 +872,7 @@ namespace Darkages.Network.Game
                     break;
                 case Scope.NearbyAislings:
                     {
-                        var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(Aisling));
+                        var nearby = GetObjects<Aisling>(Aisling.Map, i => i.WithinRangeOf(Aisling));
 
                         foreach (var obj in nearby)
                             obj.Client.SendMessage(type, text);
@@ -866,7 +880,7 @@ namespace Darkages.Network.Game
                     break;
                 case Scope.NearbyAislingsExludingSelf:
                     {
-                        var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(Aisling));
+                        var nearby = GetObjects<Aisling>(Aisling.Map, i => i.WithinRangeOf(Aisling));
 
                         foreach (var obj in nearby)
                         {
@@ -879,7 +893,7 @@ namespace Darkages.Network.Game
                     break;
                 case Scope.AislingsOnSameMap:
                     {
-                        var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(Aisling)
+                        var nearby = GetObjects<Aisling>(Aisling.Map, i => i.WithinRangeOf(Aisling)
                                                               && i.CurrentMapId == Aisling.CurrentMapId);
 
                         foreach (var obj in nearby)
@@ -888,7 +902,7 @@ namespace Darkages.Network.Game
                     break;
                 case Scope.All:
                     {
-                        var nearby = GetObjects<Aisling>(i => i.LoggedIn);
+                        var nearby = GetObjects<Aisling>(Aisling.Map, i => i.LoggedIn);
                         foreach (var obj in nearby)
                             obj.Client.SendMessage(type, text);
                     }

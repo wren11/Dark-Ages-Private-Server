@@ -33,10 +33,8 @@ namespace Darkages.Network
         where TClient : NetworkClient<TClient>, new()
     {
         private readonly MethodInfo[] _handlers;
-        private Socket _listener;
-        private bool _listening;
 
-        public EventHandler<NetworkFormat>[] ClientPacketHandlers = new EventHandler<NetworkFormat>[256];
+        private bool _listening;
 
         public IPAddress Address { get; }
 
@@ -55,25 +53,33 @@ namespace Darkages.Network
                 _handlers[i] = type.GetMethod(
                     $"Format{i:X2}Handler",
                     BindingFlags.NonPublic | BindingFlags.Instance);
+
         }
 
         public NetworkServer() { }
 
         private void EndConnectClient(IAsyncResult result)
         {
-            try
-            {
-                if (_listener == null || !_listening) return;
+            _lock.Set();
 
-                var socket = _listener.EndAccept(result);
+            var _listener = (Socket)result.AsyncState;
+
+            var _handler = _listener.EndAccept(result);
+
+            if (_listener == null || !_listening)
+                return;
+
+            if (_listening)
+            {
 
                 var client = new TClient
                 {
-                    Socket = new NetworkSocket(socket),
+                    WorkSocket = new NetworkSocket(_handler),
+                    ClientThread = new Thread(new ParameterizedThreadStart(ClientHandler)),
                 };
 
-
-                if (client.Socket.Connected)
+                if (client.WorkSocket.Connected)
+                {
                     if (AddClient(client))
                     {
                         ClientConnected(client);
@@ -83,7 +89,7 @@ namespace Darkages.Network
                             client.Serial = Generator.GenerateNumber();
                         }
 
-                        client.Socket.BeginReceiveHeader(EndReceiveHeader, out var error, client);
+                        client.WorkSocket.BeginReceiveHeader(EndReceiveHeader, out var error, client);
 
                         if (error != SocketError.Success)
                             ClientDisconnected(client);
@@ -92,14 +98,11 @@ namespace Darkages.Network
                     {
                         ClientDisconnected(client);
                     }
+                }
 
-
-                if (_listening)
-                    _listener.BeginAccept(EndConnectClient, null);
-            }
-            catch
-            {
-                // ignored
+                _lock.Reset();
+                _listener.BeginAccept(new AsyncCallback(EndConnectClient), _listener);
+                _lock.WaitOne();
             }
         }
 
@@ -109,7 +112,7 @@ namespace Darkages.Network
             {
                 if (result.AsyncState is TClient client)
                 {
-                    var bytes = client.Socket.EndReceiveHeader(result, out var error);
+                    var bytes = client.WorkSocket.EndReceiveHeader(result, out var error);
 
                     if (bytes == 0 ||
                         error != SocketError.Success)
@@ -118,15 +121,18 @@ namespace Darkages.Network
                         return;
                     }
 
-                    if (client.Socket.HeaderComplete)
-                        client.Socket.BeginReceivePacket(EndReceivePacket, out error, client);
+                    if (client.WorkSocket.HeaderComplete)
+                    {
+                        client.WorkSocket.BeginReceivePacket(EndReceivePacket, out error, client);
+                    }
                     else
-                        client.Socket.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                    {
+                        client.WorkSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                    }
                 }
             }
             catch (Exception)
             {
-                Console.WriteLine("Error: EndReceiveHeader");
             }
         }
 
@@ -136,7 +142,7 @@ namespace Darkages.Network
             {
                 if (result.AsyncState is TClient client)
                 {
-                    var bytes = client.Socket.EndReceivePacket(result, out var error);
+                    var bytes = client.WorkSocket.EndReceivePacket(result, out var error);
 
                     if (bytes == 0 ||
                         error != SocketError.Success)
@@ -145,20 +151,20 @@ namespace Darkages.Network
                         return;
                     }
 
-                    if (client.Socket.PacketComplete)
+                    if (client.WorkSocket.PacketComplete)
                     {
-                        ClientDataReceived(client, client.Socket.ToPacket());
-                        client.Socket.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                        ClientDataReceived(client, client.WorkSocket.ToPacket());
+                        client.WorkSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
                     }
                     else
                     {
-                        client.Socket.BeginReceivePacket(EndReceivePacket, out error, client);
+                        client.WorkSocket.BeginReceivePacket(EndReceivePacket, out error, client);
                     }
                 }
             }
             catch (Exception)
             {
-                Console.WriteLine("Error: EndReceivePacket");
+
             }
         }
 
@@ -198,12 +204,6 @@ namespace Darkages.Network
         {
             _listening = false;
 
-            if (_listener != null)
-            {
-                _listener.Close();
-                _listener = null;
-            }
-
             lock (Clients)
             {
                 foreach (var client in Clients)
@@ -212,16 +212,24 @@ namespace Darkages.Network
             }
         }
 
+        public ManualResetEvent _lock = new ManualResetEvent(false);
+
         public virtual void Start(int port)
         {
             if (_listening)
                 return;
 
             _listening = true;
-            _listener  = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _listener.Bind(new IPEndPoint(IPAddress.Any, port));
-            _listener.Listen(ServerContext.Config?.ConnectionCapacity ?? 1000);
-            _listener.BeginAccept(EndConnectClient, null);
+
+            var _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            {
+                _listener.Bind(new IPEndPoint(IPAddress.Any, port));
+                _listener.Listen(ServerContext.Config?.ConnectionCapacity ?? 1000);
+            }
+
+            _lock.Reset();
+            _listener.BeginAccept(new AsyncCallback(EndConnectClient), _listener);
+            _lock.WaitOne();
         }
 
         public virtual void ClientConnected(TClient client)
@@ -229,7 +237,26 @@ namespace Darkages.Network
             if (ServerContext.Game == null)
                 return;
 
-            Console.WriteLine("Connection From {0} Established.", client.Socket.RemoteEndPoint.ToString());
+            if (client.ClientThread != null)
+            {
+                if (client.ClientThread.ThreadState == ThreadState.Running)
+                {
+                    Console.WriteLine("Client ID: {0} Thread Aborted.", client.Serial);
+
+                    client.ClientThread.Abort();
+                    client.ClientThread.Join();
+
+                    client.ClientThread.Start(client);
+
+                    Console.WriteLine("Client ID: {0} Thread Started.", client.Serial);
+                }
+                else
+                {
+                    client.ClientThread.Start(client);
+                    Console.WriteLine("Client ID: {0} Thread Started.", client.Serial);
+                }
+            }
+            Console.WriteLine("Connection From {0} Established.", client.WorkSocket.RemoteEndPoint.ToString());
         }
 
         public static Cache<byte, NetworkFormat> FormatCache = new Cache<byte, NetworkFormat>();
@@ -280,14 +307,28 @@ namespace Darkages.Network
             if (client == null)
                 return;
 
+            if (client.ClientThread != null)
+            {
+                if (client.ClientThread.ThreadState == ThreadState.Running)
+                {
+                    client.ClientThread.Join();
+                    client.ClientThread.Abort();
+                }
+            }
+
+            Console.WriteLine("Client ID: {0} Thread Aborted.", client.Serial);
+
+
             if (client is GameClient)
                 RemoveAisling(client);
 
 
-            if (client.Socket != null &&
-                client.Socket.Connected)
-                client.Socket.Disconnect(false);
-
+            if (client.WorkSocket != null &&
+                client.WorkSocket.Connected)
+            {
+                client.WorkSocket.Shutdown(SocketShutdown.Both);
+                client.WorkSocket.Close();
+            }
 
             RemoveClient(client);
         }
@@ -297,7 +338,7 @@ namespace Darkages.Network
             if (ServerContext.Game == null)
                 return;
 
-            var nearby = GetObjects<Aisling>(i => i.WithinRangeOf((client as GameClient).Aisling));
+            var nearby = GetObjects<Aisling>((client as GameClient).Aisling.Map, i => i.WithinRangeOf((client as GameClient).Aisling));
             foreach (var near in nearby)
             {
                 if (near.Serial == (client as GameClient).Aisling.Serial)
@@ -313,6 +354,12 @@ namespace Darkages.Network
                     near.Show(Scope.Self, new ServerFormat0E((client as GameClient).Aisling.Serial));
                 }
             }
+        }
+
+
+        public virtual void ClientHandler(object obj)
+        {
+
         }
 
         #region Format Handlers

@@ -448,6 +448,7 @@
     <Compile Include="Types\LootQualifer.cs" />
     <Compile Include="Types\MapFlags.cs" />
     <Compile Include="Types\MapKeyPair.cs" />
+    <Compile Include="Types\MapTile.cs" />
     <Compile Include="Types\Metafile.cs" />
     <Compile Include="Types\MetafileCollection.cs" />
     <Compile Include="Types\MetafileManager.cs" />

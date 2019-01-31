@@ -216,7 +216,7 @@ namespace Darkages.Types
                     if (CheckWeight)
                     {
                         (sprite as Aisling).CurrentWeight += Template.CarryWeight;
-                        (sprite as Aisling).Client.SendStats(StatusFlags.StructA);
+                        (sprite as Aisling).Client?.SendStats(StatusFlags.StructA);
                     }
 
                     return true;
@@ -846,7 +846,7 @@ namespace Darkages.Types
 
                 }
             }
-            catch (Exception err)
+            catch (Exception)
             {
                 Console.WriteLine("Error: ItemAddQuality. Fatal Exception Raised.");
             }

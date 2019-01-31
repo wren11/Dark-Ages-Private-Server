@@ -93,6 +93,21 @@ namespace Darkages.Network.Game
             }
         }
 
+        public override void ClientHandler(object obj)
+        {
+            if (obj is GameClient)
+            {
+                var client = (GameClient)obj;
+
+                while (client.WorkSocket.Connected)
+                {
+                    Thread.Sleep(100);
+                }
+                Console.WriteLine("ClientHandler: {0} Ended.", client.Serial);
+                ClientDisconnected(client);
+            }
+        }
+
         private void DoHeavyWork()
         {
             lastHeavyUpdate = DateTime.UtcNow;

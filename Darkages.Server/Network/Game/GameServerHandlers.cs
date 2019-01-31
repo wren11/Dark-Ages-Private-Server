@@ -123,7 +123,18 @@ namespace Darkages.Network.Game
 
             ServerContext.GlobalRedirects.Remove(redirect);
 
-            var aisling = Clone<Aisling>(StorageManager.AislingBucket.Load(redirect.Name));
+            Aisling aisling = null;
+
+            if (ServerContext.ConnectedBots.ContainsKey(format.Name))
+            {
+                aisling = ServerContext.ConnectedBots[format.Name];
+            }
+            else
+            {
+                aisling = StorageManager.AislingBucket.Load(redirect.Name);
+            }
+
+
             if (aisling != null)
                 client.Aisling = aisling;
 
@@ -400,7 +411,7 @@ namespace Darkages.Network.Game
             #endregion
 
 
-            var objs = GetObjects(i => i.X == format.Position.X && i.Y == format.Position.Y, Get.Items | Get.Money);
+            var objs = GetObjects(client.Aisling.Map, i => i.X == format.Position.X && i.Y == format.Position.Y, Get.Items | Get.Money);
 
             if (objs == null)
                 return;
@@ -438,7 +449,7 @@ namespace Darkages.Network.Game
                             {
                                 obj.X = client.Aisling.X;
                                 obj.Y = client.Aisling.Y;
-                                obj.Show(Scope.NearbyAislings, new ServerFormat07(new[] { obj }));
+                                obj.Show(Scope.NearbyAislings, new ServerFormat07(new Sprite[] { obj }));
                                 break;
                             }
                         }
@@ -454,7 +465,7 @@ namespace Darkages.Network.Game
                         {
                             obj.X = client.Aisling.X;
                             obj.Y = client.Aisling.Y;
-                            obj.Show(Scope.NearbyAislings, new ServerFormat07(new[] { obj }));
+                            obj.Show(Scope.NearbyAislings, new ServerFormat07(new Sprite[] { obj }));
                             break;
                         }
                     }
@@ -609,15 +620,15 @@ namespace Darkages.Network.Game
             {
                 case 0x00:
                     response.Text = $"{client.Aisling.Username}: {format.Text}";
-                    audience = client.GetObjects<Aisling>(n => client.Aisling.WithinRangeOf(n));
+                    audience = client.GetObjects<Aisling>(client.Aisling.Map, n => client.Aisling.WithinRangeOf(n));
                     break;
                 case 0x01:
                     response.Text = $"{client.Aisling.Username}! {format.Text}";
-                    audience = client.GetObjects<Aisling>(n => client.Aisling.CurrentMapId == n.CurrentMapId);
+                    audience = client.GetObjects<Aisling>(client.Aisling.Map, n => client.Aisling.CurrentMapId == n.CurrentMapId);
                     break;
                 case 0x02:
                     response.Text = format.Text;
-                    audience = client.GetObjects<Aisling>(n => client.Aisling.WithinRangeOf(n));
+                    audience = client.GetObjects<Aisling>(client.Aisling.Map, n => client.Aisling.WithinRangeOf(n));
                     break;
                 default:
                     ClientDisconnected(client);
@@ -821,7 +832,7 @@ namespace Darkages.Network.Game
 
             client.LastWhisperMessageSent = DateTime.UtcNow;
 
-            var user = GetObject<Aisling>(i => i.Username.Equals(format.Name, StringComparison.CurrentCultureIgnoreCase));
+            var user = GetObject<Aisling>(client.Aisling.Map, i => i.Username.Equals(format.Name, StringComparison.CurrentCultureIgnoreCase));
             if (user == null || !user.LoggedIn)
                 client.SendMessage(0x02, string.Format("{0} is nowhere to be found.", format.Name));
 
@@ -1046,7 +1057,7 @@ namespace Darkages.Network.Game
                 return;
 
             //get aisling who i want to group, check if they are nearby.
-            var player = GetObject<Aisling>(i => i.Username.ToLower() == format.Name
+            var player = GetObject<Aisling>(client.Aisling.Map, i => i.Username.ToLower() == format.Name
                                                  && i.WithinRangeOf(client.Aisling));
 
             if (player == null)
@@ -1303,7 +1314,7 @@ namespace Darkages.Network.Game
 
             if (format.Serial != ServerContext.Config.HelperMenuId)
             {
-                var mundane = GetObject<Mundane>(i => i.Serial == format.Serial);
+                var mundane = GetObject<Mundane>(client.Aisling.Map, i => i.Serial == format.Serial);
                 mundane?.Script?.OnResponse(this, client, format.Step, format.Args);
             }
             else
@@ -1632,7 +1643,7 @@ namespace Darkages.Network.Game
 
             if (format.Type == 1)
             {
-                var obj = GetObject(i => i.Serial == format.Serial, Get.All);
+                var obj = GetObject(client.Aisling.Map, i => i.Serial == format.Serial, Get.All);
 
                 switch (obj)
                 {
@@ -1798,7 +1809,7 @@ namespace Darkages.Network.Game
             if (client == null || !client.Aisling.LoggedIn)
                 return;
 
-            var trader = GetObject<Aisling>(i => i.Serial == format.Id);
+            var trader = GetObject<Aisling>(client.Aisling.Map, i => i.Serial == format.Id);
             var player = client.Aisling;
 
 

@@ -26,7 +26,6 @@ namespace Darkages.Network.ServerFormats
 
         public ServerFormat07()
         {
-            Sprites = new List<Sprite>(GetObjects(i => true, Get.Monsters | Get.Mundanes | Get.Items));
         }
 
         public ServerFormat07(Sprite[] objectsToAdd)

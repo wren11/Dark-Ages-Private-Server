@@ -94,6 +94,9 @@ namespace Darkages
         public static Dictionary<string, Debuff> GlobalDeBuffCache
             = new Dictionary<string, Debuff>();
 
+        public static Dictionary<string, Aisling> ConnectedBots
+            = new Dictionary<string, Aisling>();
+
         public static Board[] Community = new Board[7];
 
         static readonly int g = 255;
@@ -222,8 +225,8 @@ namespace Darkages
                 {
                     LoadConstants();
                     LoadAndCacheStorage();
-                    StartServers();
                     InitScriptEvaluators();
+                    StartServers();
                 }
                 catch (Exception)
                 {

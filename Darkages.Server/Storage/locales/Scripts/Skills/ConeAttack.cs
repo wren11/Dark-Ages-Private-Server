@@ -48,7 +48,7 @@ namespace Darkages.Scripting.Scripts.Skills
         public List<Sprite> GetInCone(Sprite sprite, int distance)
         {
             var result = new List<Sprite>();
-            var objects = GetObjects(i => i.WithinRangeOf(sprite, distance), Get.Aislings | Get.Monsters | Get.Mundanes);
+            var objects = GetObjects(sprite.Map, i => i.WithinRangeOf(sprite, distance), Get.Aislings | Get.Monsters | Get.Mundanes);
             foreach (var obj in objects)
             {
                 if (sprite.Position.DistanceSquared(obj.Position) <= distance)

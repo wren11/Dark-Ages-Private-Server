@@ -292,7 +292,7 @@ namespace Darkages.Types
             : (Content == TileContent.Mundane) ? (this as Mundane).Template.Level
             : (Content == TileContent.Item) ? ((this as Item).Template.LevelRequired) : 0;
 
-        public bool Exists => GetObject(i => i.Serial == this.Serial, Get.All) != null;
+        public bool Exists => GetObject(Map, i => i.Serial == this.Serial, Get.All) != null;
 
         #region Sprite Constructor
         public Sprite()
@@ -932,7 +932,7 @@ namespace Darkages.Types
                     Client?.Send(format);
                     break;
                 case Scope.NearbyAislingsExludingSelf:
-                    foreach (var gc in GetObjects<Aisling>(that => WithinRangeOf(that)))
+                    foreach (var gc in GetObjects<Aisling>(Map, that => WithinRangeOf(that)))
                         if (gc.Serial != Serial)
                         {
                             if (this is Aisling)
@@ -951,7 +951,7 @@ namespace Darkages.Types
 
                     break;
                 case Scope.NearbyAislings:
-                    foreach (var gc in GetObjects<Aisling>(that => WithinRangeOf(that)))
+                    foreach (var gc in GetObjects<Aisling>(Map, that => WithinRangeOf(that)))
                     {
                         if (this is Aisling)
                         {
@@ -969,7 +969,7 @@ namespace Darkages.Types
 
                     break;
                 case Scope.VeryNearbyAislings:
-                    foreach (var gc in GetObjects<Aisling>(that =>
+                    foreach (var gc in GetObjects<Aisling>(Map, that =>
                         WithinRangeOf(that, ServerContext.Config.VeryNearByProximity)))
                     {
                         if (this is Aisling)
@@ -988,7 +988,7 @@ namespace Darkages.Types
 
                     break;
                 case Scope.AislingsOnSameMap:
-                    foreach (var gc in GetObjects<Aisling>(that => CurrentMapId == that.CurrentMapId))
+                    foreach (var gc in GetObjects<Aisling>(Map, that => CurrentMapId == that.CurrentMapId))
                     {
                         if (this is Aisling)
                         {
@@ -1008,7 +1008,7 @@ namespace Darkages.Types
                 case Scope.GroupMembers:
                     {
                         if (this is Aisling)
-                            foreach (var gc in GetObjects<Aisling>(that => (this as Aisling).GroupParty.Has(that)))
+                            foreach (var gc in GetObjects<Aisling>(Map, that => (this as Aisling).GroupParty.Has(that)))
                             {
                                 if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
                                     if (format is ServerFormat33)
@@ -1025,7 +1025,7 @@ namespace Darkages.Types
                 case Scope.NearbyGroupMembersExcludingSelf:
                     {
                         if (this is Aisling)
-                            foreach (var gc in GetObjects<Aisling>(that =>
+                            foreach (var gc in GetObjects<Aisling>(Map, that =>
                                 that.WithinRangeOf(this) && (this as Aisling).GroupParty.Has(that)))
                             {
                                 if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
@@ -1043,7 +1043,7 @@ namespace Darkages.Types
                 case Scope.NearbyGroupMembers:
                     {
                         if (this is Aisling)
-                            foreach (var gc in GetObjects<Aisling>(that =>
+                            foreach (var gc in GetObjects<Aisling>(Map, that =>
                                 that.WithinRangeOf(this) && (this as Aisling).GroupParty.Has(that, true)))
                             {
                                 if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
@@ -1097,12 +1097,12 @@ namespace Darkages.Types
 
         public Sprite GetSprite(int x, int y)
         {
-            return GetObject(i => i.X == x && i.Y == y, Get.All);
+            return GetObject(Map, i => i.X == x && i.Y == y, Get.All);
         }
 
         public IEnumerable<Sprite> GetSprites(int x, int y)
         {
-            return GetObjects(i => i.X == x && i.Y == y, Get.All);
+            return GetObjects(Map, i => i.X == x && i.Y == y, Get.All);
         }
 
 
@@ -1341,17 +1341,17 @@ namespace Darkages.Types
 
         public Aisling[] AislingsNearby()
         {
-            return GetObjects<Aisling>(i => i != null && i.WithinRangeOf(this)).ToArray();
+            return GetObjects<Aisling>(Map, i => i != null && i.WithinRangeOf(this)).ToArray();
         }
 
         public Monster[] MonstersNearby()
         {
-            return GetObjects<Monster>(i => i != null && i.WithinRangeOf(this)).ToArray();
+            return GetObjects<Monster>(Map, i => i != null && i.WithinRangeOf(this)).ToArray();
         }
 
         public Mundane[] MundanesNearby()
         {
-            return GetObjects<Mundane>(i => i != null && i.WithinRangeOf(this)).ToArray();
+            return GetObjects<Mundane>(Map, i => i != null && i.WithinRangeOf(this)).ToArray();
         }
 
 
@@ -1362,7 +1362,7 @@ namespace Darkages.Types
         /// </summary>
         public void Remove<T>() where T : Sprite, new()
         {
-            var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(this));
+            var nearby = GetObjects<Aisling>(Map, i => i.WithinRangeOf(this));
             var response = new ServerFormat0E(Serial);
 
             foreach (var o in nearby)
@@ -1437,7 +1437,7 @@ namespace Darkages.Types
             if (!CanUpdate())
                 return;
 
-            var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(this));
+            var nearby = GetObjects<Aisling>(Map, i => i.WithinRangeOf(this));
 
             if (LastDirection != Direction)
                 LastDirection = Direction;
@@ -1655,7 +1655,7 @@ namespace Darkages.Types
             }
             else
             {
-                var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(this) && i.InsideView(this));
+                var nearby = GetObjects<Aisling>(Map, i => i.WithinRangeOf(this) && i.InsideView(this));
                 if (nearby != null)
                     foreach (var obj in nearby)
                         obj.Show(Scope.Self, response, nearby);

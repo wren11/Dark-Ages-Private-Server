@@ -78,7 +78,8 @@ namespace Darkages.Types
             if (template == null)
                 return;
 
-            var existing = template.GetObject<Mundane>(p => p != null && p.Template != null && p.Template.Name == template.Name);
+            var map = ServerContext.GlobalMapCache[template.AreaID];
+            var existing = template.GetObject<Mundane>(map, p => p != null && p.Template != null && p.Template.Name == template.Name);
 
             //this npc was already created?
             if (existing != null)
@@ -186,7 +187,7 @@ namespace Darkages.Types
 
         private void RemoveActiveTargets()
         {
-            var nearbyMonsters = GetObjects<Monster>(i => WithinRangeOf(this));
+            var nearbyMonsters = GetObjects<Monster>(Map, i => WithinRangeOf(this));
             foreach (var nearby in nearbyMonsters)
                 if (nearby.Target != null && nearby.Target.Serial == Serial)
                 {
@@ -208,7 +209,7 @@ namespace Darkages.Types
 
                 if (Template.ChatTimer.Elapsed)
                 {
-                    var nearby = GetObjects<Aisling>(i => i.WithinRangeOf(this));
+                    var nearby = GetObjects<Aisling>(Map, i => i.WithinRangeOf(this));
                     foreach (var obj in nearby)
                     {
                         if (Template.Speech.Count > 0)
@@ -266,7 +267,7 @@ namespace Darkages.Types
                     if (Target == null || Target.CurrentHp == 0 || !Target.WithinRangeOf(this))
                     {
 
-                        var targets = GetObjects<Monster>(i => i.WithinRangeOf(this))
+                        var targets = GetObjects<Monster>(Map, i => i.WithinRangeOf(this))
                                .OrderBy(i => i.Position.DistanceFrom(Position));
 
                         foreach (var t in targets) t.Target = this;
@@ -303,7 +304,7 @@ namespace Darkages.Types
                 Template.AttackTimer.Update(update);
                 if (Template.AttackTimer.Elapsed)
                 {
-                    var targets = GetObjects<Monster>(i => i.WithinRangeOf(this))
+                    var targets = GetObjects<Monster>(Map, i => i.WithinRangeOf(this))
                         .OrderBy(i => i.Position.DistanceFrom(Position));
 
                     foreach (var t in targets) t.Target = this;

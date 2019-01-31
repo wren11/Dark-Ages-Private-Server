@@ -64,10 +64,20 @@ namespace Darkages.Network.ServerFormats
                 writer.WriteStringA(mark.Value + string.Format(" - {0}", DateTime.UtcNow.ToShortDateString()));
             }
 
-            writer.Write((ushort)(Aisling.PictureData.Length + Aisling.ProfileMessage.Length + 4));
-            writer.Write((ushort)Aisling.PictureData.Length);
-            writer.Write(Aisling.PictureData ?? new byte[] { 0x00 });
-            writer.WriteStringB(Aisling.ProfileMessage ?? string.Empty);
+            if (Aisling.PictureData != null)
+            {
+                writer.Write((ushort)(Aisling.PictureData.Length + Aisling.ProfileMessage.Length + 4));
+                writer.Write((ushort)Aisling.PictureData.Length);
+                writer.Write(Aisling.PictureData ?? new byte[] { 0x00 });
+                writer.WriteStringB(Aisling.ProfileMessage ?? string.Empty);
+            }
+            else
+            {
+                writer.Write((ushort)(4));
+                writer.Write((ushort)0);
+                writer.Write(new byte[] { 0x00 });
+                writer.WriteStringB(string.Empty);
+            }
         }
 
         private void BuildEquipment(NetworkPacketWriter writer)

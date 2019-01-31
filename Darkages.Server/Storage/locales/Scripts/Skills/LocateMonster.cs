@@ -30,7 +30,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public override void OnUse(Sprite sprite)
         {
-            var nearest = GetObjects<Monster>(i => (i.CurrentMapId == sprite.CurrentMapId) && i.IsAlive)
+            var nearest = GetObjects<Monster>(sprite.Map, i => (i.CurrentMapId == sprite.CurrentMapId) && i.IsAlive)
                 .OrderBy(i => i.Position.DistanceFrom(sprite.Position)).FirstOrDefault();
 
             if (sprite is Aisling)

@@ -38,7 +38,7 @@ namespace Lorule
                     lock (ServerContext.Game.Clients)
                     {
 
-                        var objects = ServerContext.Game.GetObjects(i => true, Darkages.Network.Object.ObjectManager.Get.All);
+                        var objects = ServerContext.Game.GetObjects(null, i => true, Darkages.Network.Object.ObjectManager.Get.All);
 
                         foreach (var obj in objects)
                         {

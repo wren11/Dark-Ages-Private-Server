@@ -183,6 +183,7 @@ namespace Darkages
 
         [JsonIgnore]
         public bool ReactorActive { get; set; }
+        public bool IsBot { get; internal set; }
 
         public void Recover()
         {
@@ -262,7 +263,7 @@ namespace Darkages
                 if (!string.IsNullOrEmpty(info.Data))
                     spell.Script.Arguments = info.Data;
 
-                var target = GetObject(i => i.Serial == info.Target, Get.Monsters | Get.Aislings | Get.Mundanes);
+                var target = GetObject(Map, i => i.Serial == info.Target, Get.Monsters | Get.Aislings | Get.Mundanes);
                 spell.InUse = true;
 
 
@@ -354,6 +355,8 @@ namespace Darkages
                 Nation = (byte)randomFraction,
             };
 
+            Skill.GiveTo(result, "Assail", 1);
+            Skill.GiveTo(result, "Double Punch", 1);
             Skill.GiveTo(result, "Claw Fist", 1);
             Spell.GiveTo(result, "Create Item", 1);
 
@@ -420,7 +423,7 @@ namespace Darkages
             {
                 if (delete)
                 {
-                    var objs = GetObjects(i => i.WithinRangeOf(this) && i.Target != null && i.Target.Serial == Serial, Get.Monsters | Get.Mundanes);
+                    var objs = GetObjects(Map, i => i.WithinRangeOf(this) && i.Target != null && i.Target.Serial == Serial, Get.Monsters | Get.Mundanes);
                     if (objs != null)
                     {
                         foreach (var obj in objs)

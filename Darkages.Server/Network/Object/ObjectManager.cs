@@ -42,9 +42,9 @@ namespace Darkages.Network.Object
 
         public void DelObjects<T>(T[] obj) where T : Sprite => ServerContext.Game?.ObjectFactory.RemoveAllGameObjects(obj);
 
-        public T GetObject<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.Query(p);
+        public T GetObject<T>(Area map, Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.Query(map, p);
 
-        public IEnumerable<T> GetObjects<T>(Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.QueryAll(p);
+        public IEnumerable<T> GetObjects<T>(Area map, Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.QueryAll(map, p);
 
         public static T Clone<T>(object source)
         {
@@ -89,7 +89,7 @@ namespace Darkages.Network.Object
             }
         }
 
-        public IEnumerable<Sprite> GetObjects(Predicate<Sprite> p, Get selections)
+        public IEnumerable<Sprite> GetObjects(Area map, Predicate<Sprite> p, Get selections)
         {
             var bucket = new List<Sprite>();
 
@@ -97,22 +97,22 @@ namespace Darkages.Network.Object
                 selections = Get.Items | Get.Money | Get.Monsters | Get.Mundanes | Get.Aislings;
 
             if ((selections & Get.Aislings) == Get.Aislings)
-                bucket.AddRange(GetObjects<Aisling>(p));
+                bucket.AddRange(GetObjects<Aisling>(map, p));
             if ((selections & Get.Monsters) == Get.Monsters)
-                bucket.AddRange(GetObjects<Monster>(p));
+                bucket.AddRange(GetObjects<Monster>(map, p));
             if ((selections & Get.Mundanes) == Get.Mundanes)
-                bucket.AddRange(GetObjects<Mundane>(p));
+                bucket.AddRange(GetObjects<Mundane>(map, p));
             if ((selections & Get.Money) == Get.Money)
-                bucket.AddRange(GetObjects<Money>(p));
+                bucket.AddRange(GetObjects<Money>(map, p));
             if ((selections & Get.Items) == Get.Items)
-                bucket.AddRange(GetObjects<Item>(p));
+                bucket.AddRange(GetObjects<Item>(map, p));
 
             return bucket;
         }
 
-        public Sprite GetObject(Predicate<Sprite> p, Get selections)
+        public Sprite GetObject(Area Map, Predicate<Sprite> p, Get selections)
         {
-            return GetObjects(p, selections).FirstOrDefault();
+            return GetObjects(Map, p, selections).FirstOrDefault();
         }
     }
 }
