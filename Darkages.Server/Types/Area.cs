@@ -213,7 +213,7 @@ namespace Darkages
             {
                 ObjectCache = (await GetAreaObjects()).ToArray();
                 {
-                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 1, false);
+                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 10, false);
                 }
             }
             else
@@ -338,10 +338,40 @@ namespace Darkages
         {
             foreach (var obj in objects)
             {
-                var nearby = GetObjects<Aisling>(this, i => i.WithinRangeOf(obj) && i.CurrentMapId == ID);
+                if (users.Length > 0 && obj != null)
+                {
+                    foreach (var user in users)
+                    {
+                        //Don't process one-self.
+                        if (user.Serial == obj.Serial)
+                            continue;
 
-                if (!nearby.Any())
-                    continue;
+                        if (user.LoggedIn && user.Map.Ready)
+                        {
+
+                            if (user.InsideViewOf(obj))
+                            {
+                                if (!user.ViewMatrix.Exists(obj.Serial))
+                                {
+                                    obj.ShowTo(user);
+                                    user.ViewMatrix.AddOrUpdate(obj.Serial, true);
+                                }
+                            }
+                            else
+                            {
+                                if (user.ViewMatrix.Exists(obj.Serial))
+                                {
+                                    if (user.ViewMatrix[obj.Serial])
+                                    {
+                                        obj.HideFrom(user);
+                                        user.ViewMatrix.AddOrUpdate(obj.Serial, false);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
 
                 if (obj != null)
                 {
@@ -368,6 +398,45 @@ namespace Darkages
             {
                 if (obj == null)
                     continue;
+
+                if (users.Length > 0)
+                {
+                    foreach (var user in users)
+                    {
+                        //Don't process one-self.
+                        if (user.Serial == obj.Serial)
+                            continue;
+
+                        if (user.LoggedIn && user.Map.Ready)
+                        {
+
+                            if (user.InsideViewOf(obj) && obj.CurrentHp > 0)
+                            {
+                                if (!user.ViewMatrix.Exists(obj.Serial))
+                                {
+                                    obj.ShowTo(user);
+                                    user.ViewMatrix.AddOrUpdate(obj.Serial, true);
+                                }
+                            }
+                            else
+                            {
+                                if (user.ViewMatrix.Exists(obj.Serial))
+                                {
+                                    if (user.ViewMatrix[obj.Serial])
+                                    {
+                                        obj.HideFrom(user);
+                                        user.ViewMatrix.AddOrUpdate(obj.Serial, false);
+                                    }
+                                }
+
+                                if (obj.CurrentHp <= 0)
+                                {
+                                    obj.Remove();
+                                }
+                            }
+                        }
+                    }
+                }
 
                 obj.UpdateBuffs(elapsedTime);
                 obj.UpdateDebuffs(elapsedTime);
