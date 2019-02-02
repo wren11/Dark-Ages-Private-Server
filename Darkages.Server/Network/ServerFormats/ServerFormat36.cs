@@ -77,7 +77,7 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            var users = GetObjects<Aisling>(null, i => true).ToArray();
+            var users = Client.Server.Clients.Where(i => i != null && i.Aisling != null && i.Aisling.LoggedIn).Select(i => i.Aisling).ToArray();
             users = users.OrderByDescending(i => i.MaximumHp + i.MaximumMp * 2).ToArray();
 
             var count = (ushort)users.Length;

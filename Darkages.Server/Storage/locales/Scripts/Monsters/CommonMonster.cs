@@ -170,6 +170,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     Monster.GenerateRewards(Monster.Target as Aisling);
 
 
+            Monster.Remove();
             Monster.Target = null;
 
             if (GetObject<Monster>(Monster.Map, i => i.Serial == Monster.Serial) != null)

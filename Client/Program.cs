@@ -10,10 +10,10 @@ namespace DAClient
         static void Main(string[] args)
         {
 
-            for (int i = 0; i < 999; i++)
+            for (int i = 0; i < 6; i++)
             { 
                 var _client = new Client("bot", "bot");
-                _client.Connect("127.0.0.1", 2610);
+                _client.Connect("54.213.128.251", 2610);
 
                 Thread.Sleep(2000);
             }

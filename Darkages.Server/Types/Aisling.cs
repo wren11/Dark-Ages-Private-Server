@@ -187,7 +187,7 @@ namespace Darkages
         public DateTime LastBotUpdate { get; internal set; }
 
         [JsonIgnore]
-        public Cache<int, bool> ViewMatrix = new Cache<int, bool>();
+        public HashSet<Sprite> View = new HashSet<Sprite>();
 
         public void Recover()
         {
@@ -263,7 +263,8 @@ namespace Darkages
             spell.InUse = false;
         }
 
-        public bool hasKilled(string value, int number)
+
+        public bool HasKilled(string value, int number)
         {
             if (MonsterKillCounters.ContainsKey(value))
             {
@@ -329,10 +330,11 @@ namespace Darkages
                 Nation = (byte)randomFraction,
             };
 
-            Skill.GiveTo(result, "Assail", 1);
-            Skill.GiveTo(result, "Double Punch", 1);
-            Skill.GiveTo(result, "Claw Fist", 1);
-            Spell.GiveTo(result, "Create Item", 1);
+            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Keys)
+                Skill.GiveTo(result, skill);
+
+            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Keys)
+                Spell.GiveTo(result, spell);
 
             if (DateTime.UtcNow.Year <= 2020)
             {

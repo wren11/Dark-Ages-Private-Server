@@ -50,14 +50,21 @@ namespace Darkages.Network.Game
             InitializeGameServer();
         }
 
+        ReaderWriterLock _writerLock = new ReaderWriterLock();
+
         private void AutoSave(GameClient client)
         {
             if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContext.Config.SaveRate)
             {
-                ThreadPool.QueueUserWorkItem((state) =>
+                _writerLock.AcquireWriterLock(Timeout.Infinite);
                 {
                     client.Save();
-                });
+                }
+
+                if (_writerLock.IsWriterLockHeld)
+                {
+                    _writerLock.ReleaseWriterLock();
+                }
             }
         }
 
@@ -174,6 +181,7 @@ namespace Darkages.Network.Game
                 [typeof(PingComponent)] = new PingComponent(this),
                 [typeof(Save)] = new Save(this),
                 [typeof(BotComponent)] = new BotComponent(this),
+                [typeof(ObjectComponent)] = new ObjectComponent(this),
             };
         }
 

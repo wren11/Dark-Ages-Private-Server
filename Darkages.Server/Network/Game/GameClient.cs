@@ -263,52 +263,11 @@ namespace Darkages.Network.Game
 
             HandleTimeOuts();
             StatusCheck();
-            DisplayNearbyUsers();
             Regeneration(elapsedTime);
             UpdateStatusBar(elapsedTime);
             UpdateGlobalScripts(elapsedTime);
 
         }
-
-        private void DisplayNearbyUsers()
-        {
-            var users = ServerContext.Game.Clients.Where
-                (
-                    i =>
-                    i != null && i.Aisling != null &&
-                    i.Aisling.CurrentMapId == Aisling.CurrentMapId &&
-                    i.Serial != Serial
-                ).ToArray();
-
-            if (users.Length > 0)
-            {
-                foreach (var user in from v in users
-                                     select v.Aisling)
-                {
-                    if (user.LoggedIn && user.Map.Ready)
-                    {
-
-                        if (Aisling.InsideViewOf(user))
-                        {
-                            if (!user.ViewMatrix.Exists(Serial))
-                            {
-                                Aisling.ShowTo(user);
-                                user.ViewMatrix.AddOrUpdate(Serial, true);
-                            }
-                        }
-                        else
-                        {
-                            if (user.ViewMatrix[Serial])
-                            {
-                                Aisling.HideFrom(user);
-                                user.ViewMatrix.AddOrUpdate(Serial, false);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
 
         private void StatusCheck()
         {
@@ -821,6 +780,8 @@ namespace Darkages.Network.Game
             Aisling.Map.Update(Aisling.X, Aisling.Y, Aisling);
         }
 
+        public bool MapUpdating;
+
         public void RefreshMap()
         {
             ShouldUpdateMap = false;
@@ -832,10 +793,16 @@ namespace Darkages.Network.Game
                 SendMusic();
             }
 
+
             if (ShouldUpdateMap)
             {
-                Aisling.ViewMatrix.Clear();
+                MapUpdating = true;
+                Aisling.View.Clear();
                 Send(new ServerFormat15(Aisling.Map));
+            }
+            else
+            {
+                Aisling.View.Clear();
             }
         }
 
@@ -852,7 +819,9 @@ namespace Darkages.Network.Game
         public void Save()
         {
             if (Aisling.IsBot)
+            {
                 return;
+            }
 
             ThreadPool.QueueUserWorkItem((state) =>
             {

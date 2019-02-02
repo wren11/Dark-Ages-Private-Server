@@ -272,8 +272,6 @@ namespace Darkages
 
         [JsonProperty] public string ToWeakToLift = "You are to weak to even lift it.";
 
-        [JsonProperty] public bool TransFormAsParallel = true;
-
         [JsonProperty] public short TransitionPointX = 3;
 
         [JsonProperty] public short TransitionPointY = 3;

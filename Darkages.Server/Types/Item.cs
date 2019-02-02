@@ -857,6 +857,7 @@ namespace Darkages.Types
             X = position.X;
             Y = position.Y;
 
+
             lock (Generator.Random)
             {
                 Serial = Generator.GenerateNumber();

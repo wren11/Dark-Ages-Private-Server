@@ -66,12 +66,12 @@
   "StartingPosition": {
     "$type": "Darkages.Types.Position, Darkages.Server",
     "X": 5,
-    "Y": 5
+    "Y": 5,
+    "AreaID": 0
   },
   "StatCap": 255,
   "StrAddedMessage": "You become stronger.",
   "ToWeakToLift": "You are to weak to even lift it.",
-  "TransFormAsParallel": true,
   "TransitionPointX": 3,
   "TransitionPointY": 3,
   "TransitionZone": 9999,
@@ -95,6 +95,23 @@
   "SkullLength": 10,
   "GroupExpBonus": 5.0,
   "PlayerLevelCap": 99,
+  "Alters": {
+    "$type": "Darkages.Types.Position[], Darkages.Server",
+    "$values": [
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 31,
+        "Y": 52,
+        "AreaID": 1001
+      },
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 31,
+        "Y": 53,
+        "AreaID": 1001
+      }
+    ]
+  },
   "GlobalScripts": {
     "$type": "System.String[], mscorlib",
     "$values": [

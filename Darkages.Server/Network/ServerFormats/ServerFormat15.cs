@@ -40,9 +40,9 @@ namespace Darkages.Network.ServerFormats
             writer.Write((byte)Area.Cols); // W
             writer.Write((byte)Area.Rows); // H
             writer.Write((byte)Area.Flags);
-            writer.Write((byte)0x00);
-            writer.Write((byte)0x00);
-            writer.Write(Area.Hash);
+            writer.Write(ushort.MinValue);
+            writer.Write((byte)(Area.Hash % 256));
+            writer.Write((byte)(Area.Hash / 256));
             writer.WriteStringA(Area.Name);
         }
     }

@@ -181,6 +181,7 @@
     <Compile Include="Network\Game\Components\MessageComponent.cs" />
     <Compile Include="Network\Game\Components\MonolithComponent.cs" />
     <Compile Include="Network\Game\Components\MundaneComponent.cs" />
+    <Compile Include="Network\Game\Components\ObjectComponent.cs" />
     <Compile Include="Network\Game\Components\PingComponent.cs" />
     <Compile Include="Network\Game\Components\SaveComponent.cs" />
     <Compile Include="Network\Game\GameClient.cs" />

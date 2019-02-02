@@ -45,7 +45,7 @@ namespace Darkages
         [JsonIgnore]
         [Browsable(false)]
         private readonly GameServerTimer UpdateTimer =
-            new GameServerTimer(TimeSpan.FromMilliseconds(10));
+            new GameServerTimer(TimeSpan.FromMilliseconds(30));
 
 
         [JsonIgnore] [Browsable(false)] public byte[] Data { get; set; }
@@ -213,7 +213,7 @@ namespace Darkages
             {
                 ObjectCache = (await GetAreaObjects()).ToArray();
                 {
-                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 10, false);
+                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 1, false);
                 }
             }
             else
@@ -282,53 +282,16 @@ namespace Darkages
             {
                 if (obj != null && obj.Map != null && obj.Script != null)
                 {
-                    if (users.Length > 0)
+                    if (obj.CurrentHp <= 0)
                     {
-                        foreach (var user in users)
+                        if (obj.Target != null)
                         {
-                            //Don't process one-self.
-                            if (user.Serial == obj.Serial)
-                                continue;
-
-                            if (user.LoggedIn && user.Map.Ready)
-                            {
-
-                                if (user.InsideViewOf(obj) && obj.CurrentHp > 0)
-                                {
-                                    if (!user.ViewMatrix.Exists(obj.Serial))
-                                    {
-                                        obj.ShowTo(user);
-                                        user.ViewMatrix.AddOrUpdate(obj.Serial, true);
-                                    }
-                                }
-                                else
-                                {
-                                    if (user.ViewMatrix.Exists(obj.Serial))
-                                    {
-                                        if (user.ViewMatrix[obj.Serial])
-                                        {
-                                            obj.HideFrom(user);
-                                            user.ViewMatrix.AddOrUpdate(obj.Serial, false);
-                                        }
-                                    }
-
-                                    if (obj.CurrentHp <= 0)
-                                    {
-                                        if (obj.Target != null)
-                                        {
-                                            obj.Script?.OnDeath(obj.Target.Client);
-                                        }
-                                        obj.Remove();
-                                    }
-                                }
-                            }
+                            obj.Script?.OnDeath(obj.Target.Client);
                         }
                     }
-
                     obj.Script.Update(elapsedTime);
                     obj.UpdateBuffs(elapsedTime);
                     obj.UpdateDebuffs(elapsedTime);
-
                     obj.LastUpdated = DateTime.UtcNow;
                 }
             }
@@ -338,41 +301,6 @@ namespace Darkages
         {
             foreach (var obj in objects)
             {
-                if (users.Length > 0 && obj != null)
-                {
-                    foreach (var user in users)
-                    {
-                        //Don't process one-self.
-                        if (user.Serial == obj.Serial)
-                            continue;
-
-                        if (user.LoggedIn && user.Map.Ready)
-                        {
-
-                            if (user.InsideViewOf(obj))
-                            {
-                                if (!user.ViewMatrix.Exists(obj.Serial))
-                                {
-                                    obj.ShowTo(user);
-                                    user.ViewMatrix.AddOrUpdate(obj.Serial, true);
-                                }
-                            }
-                            else
-                            {
-                                if (user.ViewMatrix.Exists(obj.Serial))
-                                {
-                                    if (user.ViewMatrix[obj.Serial])
-                                    {
-                                        obj.HideFrom(user);
-                                        user.ViewMatrix.AddOrUpdate(obj.Serial, false);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-
                 if (obj != null)
                 {
                     obj.LastUpdated = DateTime.UtcNow;
@@ -399,43 +327,9 @@ namespace Darkages
                 if (obj == null)
                     continue;
 
-                if (users.Length > 0)
+                if (obj.CurrentHp <= 0)
                 {
-                    foreach (var user in users)
-                    {
-                        //Don't process one-self.
-                        if (user.Serial == obj.Serial)
-                            continue;
-
-                        if (user.LoggedIn && user.Map.Ready)
-                        {
-
-                            if (user.InsideViewOf(obj) && obj.CurrentHp > 0)
-                            {
-                                if (!user.ViewMatrix.Exists(obj.Serial))
-                                {
-                                    obj.ShowTo(user);
-                                    user.ViewMatrix.AddOrUpdate(obj.Serial, true);
-                                }
-                            }
-                            else
-                            {
-                                if (user.ViewMatrix.Exists(obj.Serial))
-                                {
-                                    if (user.ViewMatrix[obj.Serial])
-                                    {
-                                        obj.HideFrom(user);
-                                        user.ViewMatrix.AddOrUpdate(obj.Serial, false);
-                                    }
-                                }
-
-                                if (obj.CurrentHp <= 0)
-                                {
-                                    obj.Remove();
-                                }
-                            }
-                        }
-                    }
+                    obj.Remove();
                 }
 
                 obj.UpdateBuffs(elapsedTime);

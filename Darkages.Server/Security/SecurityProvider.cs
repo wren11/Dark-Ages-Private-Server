@@ -234,15 +234,6 @@ namespace Darkages.Security
 
         public void Transform(NetworkPacket packet)
         {
-            var UsingParallel = ServerContext.Config?.TransFormAsParallel ?? true;
-
-            if (UsingParallel)
-            {
-                Parallel.For(0, packet.Data.Length, Id => { Xor(packet, Id); });
-
-                return;
-            }
-
             for (var i = 0; i < packet.Data.Length; i++)
                 Xor(packet, i);
         }

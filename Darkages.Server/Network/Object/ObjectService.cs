@@ -54,11 +54,14 @@ namespace Darkages.Network.Object
         {
             for (int i = Values.Count - 1; i >= 0; i--)
             {
-                var subject = predicate(Values[i]);
-
-                if (subject)
+                if (i < Values.Count)
                 {
-                    yield return Values[i];
+                    var subject = predicate(Values[i % Math.Max(i, Values.Count)]);
+
+                    if (subject)
+                    {
+                        yield return Values[i];
+                    }
                 }
             }
         }
@@ -141,7 +144,7 @@ namespace Darkages.Network.Object
             if (map == null)
             {
                 var values = _spriteCollections.Select(i => (SpriteCollection<T>)i.Value[typeof(T)]);
-                var stack = new List<T>();
+                var stack  = new List<T>();
 
                 foreach (var obj in values)
                 {

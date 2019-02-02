@@ -45,11 +45,11 @@ namespace Darkages.Network
             buffer[3] = Command;
             buffer[4] = Ordinal;
 
-            fixed (byte* pA = Data, pB = buffer)
+            for (int i = 0; i < Data.Length; i++)
             {
-                for (int i = 0; i < Data.Length; i++)
-                    pB[i + 5] = pA[i];
+                buffer[i + 5] = Data[i];
             }
+
 
             return buffer;
         }

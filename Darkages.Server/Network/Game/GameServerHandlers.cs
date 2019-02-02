@@ -181,9 +181,9 @@ namespace Darkages.Network.Game
                 client.SendMessage(0x02, ServerContext.Config.ServerWelcomeMessage);
                 client.Aisling.LastLogged = DateTime.UtcNow;
                 client.SendStats(StatusFlags.All);
-                Thread.Sleep(250);
+                Thread.Sleep(650);
                 client.EnterArea();
-                Thread.Sleep(500);
+                Thread.Sleep(400);
                 client.Aisling.LoggedIn = true;
             }
             else
@@ -265,10 +265,11 @@ namespace Darkages.Network.Game
             if (client?.Aisling?.Map == null)
                 return;
 
-            if (client.ShouldUpdateMap || client.Aisling.CurrentMapId == ServerContext.Config.TransitionZone)
+            if (client.MapUpdating || client.Aisling.CurrentMapId == ServerContext.Config.TransitionZone)
+            {
                 SendMapData(client);
-
-            client.ShouldUpdateMap = false;
+                client.MapUpdating = false;
+            }
         }
 
         /// <summary>
@@ -2122,21 +2123,20 @@ namespace Darkages.Network.Game
         /// </summary>
         protected override void Format7BHandler(GameClient client, ClientFormat7B format)
         {
-            ThreadPool.QueueUserWorkItem((state) =>
-            {
-                if (format.Type == 0x00)
-                    client.Send(new ServerFormat6F
-                    {
-                        Type = 0x00,
-                        Name = format.Name
-                    });
 
-                if (format.Type == 0x01)
-                    client.Send(new ServerFormat6F
-                    {
-                        Type = 0x01
-                    });
-            });
+            //if (format.Type == 0x00)
+            //    client.Send(new ServerFormat6F
+            //    {
+            //        Type = 0x00,
+            //        Name = format.Name
+            //    });
+
+            //if (format.Type == 0x01)
+            //    client.Send(new ServerFormat6F
+            //    {
+            //        Type = 0x01
+            //    });
+
         }
 
         /// <summary>

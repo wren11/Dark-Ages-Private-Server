@@ -247,7 +247,7 @@ namespace Darkages.Types
             if (Type == QuestType.ItemHandIn)
                 return predicate(i => user.Inventory.Has(TemplateContext) >= Amount);
             if (Type == QuestType.KillCount)
-                return predicate(i => user.hasKilled(Value, Amount));
+                return predicate(i => user.HasKilled(Value, Amount));
             if (Type == QuestType.HasItem)
                 return predicate(i => user.Inventory.HasCount(TemplateContext) >= Amount);
             if (Type == QuestType.SingleItemHandIn)

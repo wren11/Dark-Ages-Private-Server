@@ -23,7 +23,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Threading;
-using static System.Threading.Tasks.Parallel;
 
 namespace Darkages.Network
 {
@@ -63,7 +62,10 @@ namespace Darkages.Network
             value.Data[4] ^= (byte)(P(value) + 0x28);
             value.Data[5] ^= (byte)(P(value) + 0x29);
 
-            For(0, value.Data.Length - 6, i => value.Data[6 + i] ^= (byte)(((byte)(P(value) + 0x28) + i + 2) % 256));
+            for (int i = 0; i < value.Data.Length - 6; i++)
+            {
+                value.Data[6 + i] ^= (byte)(((byte)(P(value) + 0x28) + i + 2) % 256);
+            }
         }
 
         public virtual void Read(NetworkPacket packet, NetworkFormat format)
@@ -175,7 +177,7 @@ namespace Darkages.Network
                     var packet = Writer.ToPacket();
                     {
                         if (ServerContext.Config.LogSentPackets)
-                            if (this is GameClient)
+                           if (this is GameClient)
                                 Console.WriteLine("{0}: {1}", (this as GameClient)?.Aisling?.Username, packet);
 
                         if (format.Secured)
@@ -184,7 +186,7 @@ namespace Darkages.Network
                         var buffer = packet.ToArray();
                         SocketError errorcode = SocketError.Success;
 
-                        WorkSocket.Send(buffer, 0, buffer.Length, SocketFlags.None, out errorcode);
+                        WorkSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, out errorcode, null, null);
 
                         if (errorcode != SocketError.Success)
                             Console.WriteLine(string.Format("[Network] Packet Error: {0} for Action {1}", errorcode, packet.Command));
@@ -216,8 +218,8 @@ namespace Darkages.Network
                 Thread.Sleep(format.Delay);
 
 
-           
-            SendAsync(format);
+            SendFormat(format);
+            //SendAsync(format);
         }
 
         public void Send(NetworkPacketWriter npw)

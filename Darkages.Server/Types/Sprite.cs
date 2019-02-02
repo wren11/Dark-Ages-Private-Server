@@ -34,7 +34,6 @@ namespace Darkages.Types
     public abstract class Sprite : ObjectManager
     {
         public readonly Random rnd = new Random();
-        private static readonly ObjectIDGenerator _identity = new ObjectIDGenerator();
 
         [JsonIgnore]
         private readonly int[][] directions =
@@ -322,13 +321,9 @@ namespace Darkages.Types
             LastUpdated   = DateTime.UtcNow;
             LastPosition  = new Position(0, 0);
             LastDirection = 0;
-
-            Hash = string.Format("{0:X}", _identity.GetId(this, out var newobj));
         }
         #endregion
 
-        [JsonIgnore]
-        public string Hash { get; }
 
         public bool CanMove => !(IsFrozen || IsSleeping || IsParalyzed);
 
@@ -563,6 +558,9 @@ namespace Darkages.Types
                     Target = Source;
             }
 
+            if (Target == null)
+                return;
+
             if (this is Monster)
             {
                 (this as Monster)?.AppendTags(Source);
@@ -663,6 +661,9 @@ namespace Darkages.Types
 
         private double GetElementalModifier(Sprite Source)
         {
+            if (Source == null)
+                return 1;
+
             var amplifier = 1.00;
 
             if (Source.OffenseElement != Element.None)
@@ -1680,6 +1681,11 @@ namespace Darkages.Types
                     client.TransitionToMap(map.Value, new Position(x, y));
                 }
             }
+        }
+
+        public void SendAnimation(ushort v, Position position)
+        {
+            Show(Scope.NearbyAislings, new ServerFormat29(v, position.X, position.Y));
         }
 
         public void Animate(ushort animation)

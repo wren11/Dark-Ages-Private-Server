@@ -320,6 +320,8 @@ namespace Darkages.Types
             }
         }
 
+
+
         private Sprite[] GetTaggedAislings()
         {
             var tagged = TaggedAislings.Select(i => i.Value).ToArray();
