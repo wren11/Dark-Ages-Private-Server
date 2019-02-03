@@ -193,6 +193,9 @@ namespace Darkages.Storage
 
         public void Save(T obj, bool replace = false)
         {
+            if (ServerContext.Paused)
+                return;
+
             if (replace)
             {
                 var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Name.ToLower()));

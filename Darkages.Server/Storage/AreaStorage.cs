@@ -68,6 +68,10 @@ namespace Darkages.Storage
 
         public void Save(Area obj)
         {
+            if (ServerContext.Paused)
+                return;
+
+
             var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Name.ToLower()));
             var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
             File.WriteAllText(path, objString);

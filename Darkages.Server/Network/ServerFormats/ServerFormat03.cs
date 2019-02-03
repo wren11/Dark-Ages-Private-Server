@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages.Types;
+using System;
 using System.Net;
 
 namespace Darkages.Network.ServerFormats
@@ -40,13 +41,13 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write(EndPoint);
             writer.Write(Remaining);
-            writer.Write(
-                Redirect.Seed);
+            writer.Write((byte)
+                Convert.ToByte(Redirect.Seed));
             writer.Write(
                 (byte)Redirect.Salt.Length);
-            writer.Write(Redirect.Salt);
+            writer.Write((byte[])System.Text.Encoding.UTF8.GetBytes(Redirect.Salt));
             writer.WriteStringA(Redirect.Name);
-            writer.Write(Redirect.Serial);
+            writer.Write((int)Convert.ToInt32(Redirect.Serial));
         }
     }
 }

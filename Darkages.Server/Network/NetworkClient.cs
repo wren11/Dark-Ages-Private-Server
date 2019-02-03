@@ -21,6 +21,7 @@ using Darkages.Network.ServerFormats;
 using Darkages.Security;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -29,11 +30,8 @@ namespace Darkages.Network
     public abstract class NetworkClient<TClient>
         : ObjectManager
     {
-        private readonly ConcurrentQueue<NetworkFormat> _sendBuffers = new ConcurrentQueue<NetworkFormat>();
+        private readonly Queue<byte[]> _sendBuffers = new Queue<byte[]>();
         private bool _sending;
-        public int Errors;
-
-        public Thread ClientThread;
 
         protected NetworkClient()
         {
@@ -68,8 +66,11 @@ namespace Darkages.Network
             }
         }
 
+        public ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+
         public virtual void Read(NetworkPacket packet, NetworkFormat format)
         {
+            _lock.TryEnterReadLock(Timeout.Infinite);
 
             if (format.Secured)
             {
@@ -98,25 +99,27 @@ namespace Darkages.Network
 
             Reader.Packet = packet;
             format.Serialize(Reader);
+
+            _lock.ExitReadLock();
         }
 
-        public void SendAsync(NetworkFormat format)
+        public void AddBuffer(byte[] data)
         {
             lock (_sendBuffers)
             {
-                _sendBuffers.Enqueue(format);
+                _sendBuffers.Enqueue(data);
 
                 if (_sending)
                     return;
 
                 _sending = true;
-                ThreadPool.QueueUserWorkItem(SendBuffers, this);
+                ThreadPool.QueueUserWorkItem(FlushBuffers, this);
             }
         }
 
-        private void SendBuffers(object state)
+        private void FlushBuffers(object state)
         {           
-            while (_sending)
+            while (true)
             {
                 lock (_sendBuffers)
                 {
@@ -126,10 +129,18 @@ namespace Darkages.Network
                         return;
                     }
 
-                    if (_sendBuffers.TryDequeue(out var format))
+                    var buffer = _sendBuffers.Dequeue();
+
+                    if (WorkSocket.Connected)
                     {
-                        SendFormat(format);
-                    } 
+                        WorkSocket.Send(buffer, 0, buffer.Length, SocketFlags.None, out var error);
+
+                        if (error != SocketError.Success)
+                        {
+                            AddBuffer(buffer);
+                            return;
+                        }
+                    }
                 }
             }
         }
@@ -149,7 +160,7 @@ namespace Darkages.Network
                     var packet = Writer.ToPacket();
                     {
                         Encryption.Transform(packet);
-                        WorkSocket.Send(packet.ToArray());
+                        AddBuffer(packet.ToArray());
                     }
                 }
             }
@@ -161,55 +172,68 @@ namespace Darkages.Network
 
         private void SendFormat(NetworkFormat format)
         {
-
             if (!WorkSocket.Connected)
+            {
                 return;
+            }
 
             try
             {
                 if (format == null)
-                    return;
-
-                lock (Writer)
                 {
-                    PreparePacketWriter(format);
-
-                    var packet = Writer.ToPacket();
-                    {
-                        if (ServerContext.Config.LogSentPackets)
-                           if (this is GameClient)
-                                Console.WriteLine("{0}: {1}", (this as GameClient)?.Aisling?.Username, packet);
-
-                        if (format.Secured)
-                            Encryption.Transform(packet);
-
-                        var buffer = packet.ToArray();
-                        SocketError errorcode = SocketError.Success;
-
-                        WorkSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, out errorcode, null, null);
-
-                        if (errorcode != SocketError.Success)
-                            Console.WriteLine(string.Format("[Network] Packet Error: {0} for Action {1}", errorcode, packet.Command));
-                    }
+                    return;
                 }
+
+                var packet = GetPacket(format);
+
+                Enqueue(format, packet);
+
             }
             catch (Exception)
             {
                 //ignore
-            }           
+            }
         }
 
-        private void PreparePacketWriter(NetworkFormat format)
+        private void Enqueue(NetworkFormat format, NetworkPacket packet)
         {
-            Writer.Position = 0;
-            Writer.Write(format.Command);
-
             if (format.Secured)
+                Encryption.Transform(packet);
+
+            var buffer = packet.ToArray();
+
+            AddBuffer(buffer);
+        }
+
+        private void OnSendCompleted(IAsyncResult ar)
+        {
+            var buffer = (byte[])ar.AsyncState;
+            var bytes  = WorkSocket.EndSend(ar);
+
+            if (bytes <= 0 || buffer.Length != bytes)
             {
-                Writer.Write(Ordinal++);
+                var remaining = Math.Abs(buffer.Length - bytes);
+
+                Console.WriteLine("Error: Packet out of order.");
+            }
+        }
+
+        private NetworkPacket GetPacket(NetworkFormat format)
+        {
+            NetworkPacket packet;
+
+            lock (Writer)
+            {
+                Writer.Position = 0;
+                Writer.Write(format.Command);
+                if (format.Secured)
+                    Writer.Write(Ordinal++);
+
+                format.Serialize(Writer);
+                packet = Writer.ToPacket();
             }
 
-            format.Serialize(Writer);
+            return packet;
         }
 
         public void Send(NetworkFormat format)
@@ -217,9 +241,7 @@ namespace Darkages.Network
             if (format.Delay != 0)
                 Thread.Sleep(format.Delay);
 
-
             SendFormat(format);
-            //SendAsync(format);
         }
 
         public void Send(NetworkPacketWriter npw)

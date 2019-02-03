@@ -42,10 +42,10 @@ namespace Darkages.Network
 
         protected NetworkServer(int capacity)
         {
-            var type = typeof(NetworkServer<TClient>);
+            var type  = typeof(NetworkServer<TClient>);
 
-            Address = ServerContext.Ipaddress;
-            Clients = new TClient[capacity];
+            Address   = ServerContext.Ipaddress;
+            Clients   = new TClient[capacity];
 
             _handlers = new MethodInfo[256];
 
@@ -74,7 +74,6 @@ namespace Darkages.Network
                 var client = new TClient
                 {
                     WorkSocket   = new NetworkSocket(_handler),
-                    ClientThread = new Thread(new ParameterizedThreadStart(ClientHandler)),
                 };
 
                 if (client.WorkSocket.Connected)
@@ -88,7 +87,7 @@ namespace Darkages.Network
                             client.Serial = Generator.GenerateNumber();
                         }
 
-                        client.WorkSocket.BeginReceiveHeader(EndReceiveHeader, out var error, client);
+                        client.WorkSocket.BeginReceiveHeader(new AsyncCallback(EndReceiveHeader), out var error, client);
 
                         if (error != SocketError.Success)
                             ClientDisconnected(client);
@@ -121,11 +120,11 @@ namespace Darkages.Network
 
                     if (client.WorkSocket.HeaderComplete)
                     {
-                        client.WorkSocket.BeginReceivePacket(EndReceivePacket, out error, client);
+                        client.WorkSocket.BeginReceivePacket(new AsyncCallback(EndReceivePacket), out error, client);
                     }
                     else
                     {
-                        client.WorkSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                        client.WorkSocket.BeginReceiveHeader(new AsyncCallback(EndReceiveHeader), out error, client);
                     }
                 }
             }
@@ -151,12 +150,15 @@ namespace Darkages.Network
 
                     if (client.WorkSocket.PacketComplete)
                     {
-                        ClientDataReceived(client, client.WorkSocket.ToPacket());
-                        client.WorkSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                        lock (ServerContext.SyncObj)
+                        {
+                            ClientDataReceived(client, client.WorkSocket.ToPacket());
+                        }
+                        client.WorkSocket.BeginReceiveHeader(new AsyncCallback(EndReceiveHeader), out error, client);
                     }
                     else
                     {
-                        client.WorkSocket.BeginReceivePacket(EndReceivePacket, out error, client);
+                        client.WorkSocket.BeginReceivePacket(new AsyncCallback(EndReceivePacket), out error, client);
                     }
                 }
             }
@@ -184,13 +186,13 @@ namespace Darkages.Network
             return true;
         }
 
-        public void RemoveClient(TClient client)
+        public void RemoveClient(int Serial)
         {
             lock (Clients)
             {
                 for (var i = Clients.Length - 1; i >= 0; i--)
                     if (Clients[i] != null &&
-                        Clients[i].Serial == client.Serial)
+                        Clients[i].Serial == Serial)
                     {
                         Clients[i] = null;
                         break;
@@ -216,37 +218,17 @@ namespace Darkages.Network
                 return;
 
             _listening = true;
-            var _listener  = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            _listener.Bind(new IPEndPoint(IPAddress.Any, port));
-            _listener.Listen(ServerContext.Config?.ConnectionCapacity ?? 1000);
-            _listener.BeginAccept(new AsyncCallback(EndConnectClient), _listener);
+            var _listener  = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            {
+                _listener.Bind(new IPEndPoint(IPAddress.Any, port));
+                _listener.Listen(Clients.Length);
+                _listener.BeginAccept(new AsyncCallback(EndConnectClient), _listener);
+            }
         }
 
         public virtual void ClientConnected(TClient client)
-        {
-            if (ServerContext.Game == null)
-                return;
-
-            if (client.ClientThread != null)
-            {
-                if (client.ClientThread.ThreadState == ThreadState.Running)
-                {
-                    Console.WriteLine("Client ID: {0} Thread Aborted.", client.Serial);
-
-                    client.ClientThread.Abort();
-                    client.ClientThread.Join();
-
-                    client.ClientThread.Start(client);
-
-                    Console.WriteLine("Client ID: {0} Thread Started.", client.Serial);
-                }
-                else
-                {
-                    client.ClientThread.Start(client);
-                    Console.WriteLine("Client ID: {0} Thread Started.", client.Serial);
-                }
-            }
+        {          
             Console.WriteLine("Connection From {0} Established.", client.WorkSocket.RemoteEndPoint.ToString());
         }
 
@@ -254,9 +236,6 @@ namespace Darkages.Network
 
         public virtual void ClientDataReceived(TClient client, NetworkPacket packet)
         {
-            if (ServerContext.Game == null)
-                return;
-
             NetworkFormat format;
 
             if (FormatCache.Exists(packet.Command))
@@ -292,27 +271,8 @@ namespace Darkages.Network
 
         public virtual void ClientDisconnected(TClient client)
         {
-            if (ServerContext.Game == null)
-                return;
-
             if (client == null)
                 return;
-
-            if (client.ClientThread != null)
-            {
-                if (client.ClientThread.ThreadState == ThreadState.Running)
-                {
-                    client.ClientThread.Join();
-                    client.ClientThread.Abort();
-                }
-            }
-
-            Console.WriteLine("Client ID: {0} Thread Aborted.", client.Serial);
-
-
-            if (client is GameClient)
-                RemoveAisling(client);
-
 
             if (client.WorkSocket != null &&
                 client.WorkSocket.Connected)
@@ -321,7 +281,7 @@ namespace Darkages.Network
                 client.WorkSocket.Close();
             }
 
-            RemoveClient(client);
+            RemoveClient(client.Serial);
         }
 
         private void RemoveAisling(TClient client)

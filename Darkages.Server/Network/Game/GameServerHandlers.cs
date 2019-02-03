@@ -17,9 +17,9 @@
 //*************************************************************************/
 using Darkages.Common;
 using Darkages.Network.ClientFormats;
+using Darkages.Network.Game.Components;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
-using Darkages.Security;
 using Darkages.Storage;
 using Darkages.Storage.locales.Scripts.Mundanes;
 using Darkages.Types;
@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
@@ -109,20 +108,14 @@ namespace Darkages.Network.Game
         /// </summary>
         private void EnterGame(GameClient client, ClientFormat10 format)
         {
-            new TaskFactory().StartNew(() => LoadPlayer(client, format));
+            lock (client)
+            {
+                LoadPlayer(client, format);
+            }
         }
 
         private void LoadPlayer(GameClient client, ClientFormat10 format)
         {
-            var redirect = ServerContext.GlobalRedirects.FirstOrDefault(o => o.Serial == format.Id);
-            if (redirect == null)
-            {
-                ClientDisconnected(client);
-                return;
-            }
-
-            ServerContext.GlobalRedirects.Remove(redirect);
-
             Aisling aisling = null;
 
             if (ServerContext.ConnectedBots.ContainsKey(format.Name))
@@ -131,7 +124,7 @@ namespace Darkages.Network.Game
             }
             else
             {
-                aisling = StorageManager.AislingBucket.Load(redirect.Name);
+                aisling = StorageManager.AislingBucket.Load(format.Name);
             }
 
 
@@ -156,7 +149,7 @@ namespace Darkages.Network.Game
             if (ServerContext.Config.DebugMode)
                 Console.WriteLine("[{0}] Connection Established to Game Server", client.Aisling.Username);
 
-            client.Encryption.Parameters = new SecurityParameters(redirect.Seed, redirect.Salt);
+            client.Encryption.Parameters = format.Parameters;
             client.Server = this;
 
             lock (Generator.Random)
@@ -208,17 +201,15 @@ namespace Darkages.Network.Game
             {
                 var redirect = new Redirect
                 {
-                    Serial = client.Serial,
-                    Salt = client.Encryption.Parameters.Salt,
-                    Seed = client.Encryption.Parameters.Seed,
-                    Name = client.Aisling.Username,
-                    Client = client,
-                    Type = 2
+                    Serial = Convert.ToString(client.Serial),
+                    Salt   = System.Text.Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
+                    Seed   = Convert.ToString(client.Encryption.Parameters.Seed),
+                    Name   = client.Aisling.Username,
+                    Type   = "2"
                 };
 
                 client.Aisling.LoggedIn = false;
 
-                ServerContext.GlobalRedirects.Add(redirect);
                 client.Save();
                 client.Aisling.Remove(true);
 
@@ -352,6 +343,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Walk())
             {
+                ObjectComponent.UpdateClientObjects(client.Aisling);
                 if (client.Aisling.AreaID == ServerContext.Config.TransitionZone)
                 {
                     client.Aisling.PortalSession = new PortalSession { FieldNumber = 1, IsMapOpen = false };
@@ -589,7 +581,10 @@ namespace Darkages.Network.Game
         /// </summary>
         protected override void Format0BHandler(GameClient client, ClientFormat0B format)
         {
-            LeaveGame(client, format);
+            lock (client)
+            {
+                LeaveGame(client, format);
+            }
         }
 
         /// <summary>
@@ -2123,20 +2118,21 @@ namespace Darkages.Network.Game
         /// </summary>
         protected override void Format7BHandler(GameClient client, ClientFormat7B format)
         {
+            if (client != null && client.Aisling != null)
+            {
+                if (format.Type == 0x00)
+                    client.Send(new ServerFormat6F
+                    {
+                        Type = 0x00,
+                        Name = format.Name
+                    });
 
-            //if (format.Type == 0x00)
-            //    client.Send(new ServerFormat6F
-            //    {
-            //        Type = 0x00,
-            //        Name = format.Name
-            //    });
-
-            //if (format.Type == 0x01)
-            //    client.Send(new ServerFormat6F
-            //    {
-            //        Type = 0x01
-            //    });
-
+                if (format.Type == 0x01)
+                    client.Send(new ServerFormat6F
+                    {
+                        Type = 0x01
+                    });
+            }
         }
 
         /// <summary>

@@ -17,11 +17,8 @@
 //*************************************************************************/
 using Darkages;
 using Darkages.Storage;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -65,8 +62,7 @@ namespace Lorule
                     }
                 });
 
-                Application.Run(new Controller());
-
+                Thread.CurrentThread.Join();
             }
 
             public void Reboot(Instance instance)

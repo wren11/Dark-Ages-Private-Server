@@ -26,8 +26,8 @@ namespace Darkages.Network
         private static readonly int processId = Process.GetCurrentProcess().Id;
         private static readonly int headerLength = 3;
 
-        private readonly byte[] header = new byte[0x0003];
-        private readonly byte[] packet = new byte[0x10000];
+        public readonly byte[] header = new byte[0x0003];
+        public readonly byte[] packet = new byte[0x10000];
 
         private int headerOffset;
         private int packetLength;

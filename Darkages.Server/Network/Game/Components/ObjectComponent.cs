@@ -29,47 +29,48 @@
 
         private void UpdateObjects()
         {
-            lock (Server.Clients)
+            var connected_users = Server.Clients.Where(i =>
+                i != null &&
+                i.Aisling != null &&
+                i.Aisling.Map != null &&
+                i.Aisling.Map.Ready).Select(i => i.Aisling).ToArray();
+
+            for (int i = 0; i < connected_users.Length; i++)
             {
-                var connected_users = Server.Clients.Where(i =>
-                    i != null &&
-                    i.Aisling != null &&
-                    i.Aisling.Map != null &&
-                    i.Aisling.Map.Ready).Select(i => i.Aisling).ToArray();
-              
-                for (int i = 0; i < connected_users.Length; i++)
+                var user = connected_users[i];
+
+                UpdateClientObjects(user);
+            }
+        }
+
+        public static void UpdateClientObjects(Aisling user)
+        {
+            var payload = new List<Sprite>();
+
+            if (user.LoggedIn && user.Map.Ready)
+            {
+                var objects           = user.GetObjects(user.Map, selector => selector != null && selector.Serial != user.Serial, Get.All);
+                var objectsInView     = objects.Where(s => s.WithinRangeOf(user));
+                var objectsNotInView  = objects.Where(s => !s.WithinRangeOf(user));
+                var ObjectsToRemove   = objectsNotInView.Except(objectsInView).ToArray();
+                var ObjectsToAdd      = objectsInView.Except(objectsNotInView).ToArray();
+
+                RemoveObjects(
+                    user,
+                    ObjectsToRemove);
+
+                AddObjects(payload,
+                    user,
+                    ObjectsToAdd);
+
+                if (payload.Count > 0)
                 {
-                    var payload = new List<Sprite>();
-                    var client  = connected_users[i];
-
-                    if (client.LoggedIn && client.Map.Ready)
-                    {
-                        var objects = GetObjects(client.Map, selector => selector != null, Get.All);
-
-                        var objectsInView = objects.Where(s => s.WithinRangeOf(client));
-                        var objectsNotInView = objects.Where(s => !s.WithinRangeOf(client));
-
-                        var ObjectsToRemove = objectsNotInView.Except(objectsInView).ToArray();
-                        var ObjectsToAdd = objectsInView.Except(objectsNotInView).ToArray();
-
-                        RemoveObjects(
-                            client,
-                            ObjectsToRemove);
-
-                        AddObjects(payload,
-                            client,
-                            ObjectsToAdd);
-
-                        if (payload.Count > 0)
-                        {
-                            client.Show(Scope.Self, new ServerFormat07(payload.ToArray()));
-                        }
-                    }
+                    user.Show(Scope.Self, new ServerFormat07(payload.ToArray()));
                 }
             }
         }
 
-        private static void AddObjects(List<Sprite> payload, Aisling client, Sprite[] ObjectsToAdd)
+        public static void AddObjects(List<Sprite> payload, Aisling client, Sprite[] ObjectsToAdd)
         {
             foreach (var obj in ObjectsToAdd)
             {
@@ -96,7 +97,7 @@
             }
         }
 
-        private static void RemoveObjects(Aisling client, Sprite[] ObjectsToRemove)
+        public static void RemoveObjects(Aisling client, Sprite[] ObjectsToRemove)
         {
             foreach (var obj in ObjectsToRemove)
             {

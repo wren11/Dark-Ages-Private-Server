@@ -192,8 +192,12 @@ namespace Darkages.Types
                 {
                     Aisling.SpellBook.Assign(spell);
                     Aisling.SpellBook.Set(spell, false);
-                    Aisling.Show(Scope.Self, new ServerFormat17(spell));
-                    Aisling.SendAnimation(22, Aisling, Aisling);
+
+                    if (Aisling.LoggedIn)
+                    {
+                        Aisling.Show(Scope.Self, new ServerFormat17(spell));
+                        Aisling.SendAnimation(22, Aisling, Aisling);
+                    }
                 }
             }
             return true;

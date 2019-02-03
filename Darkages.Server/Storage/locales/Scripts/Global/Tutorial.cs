@@ -66,7 +66,7 @@ namespace Darkages.Storage.locales.Scripts.Global
             {
                 if (client.Aisling.CurrentMapId == 100 && !Flags[client.Aisling.Serial]["t0"])
                 {
-                    if (client.Aisling.WithinRangeOf(5, 5))
+                    if (client.Aisling.WithinRangeOf(5, 5, 1))
                     {
                         client.SendMessage(0x02, "Huh.. What was that screaming?!, I better see what's going on.");
                         client.SendAnimation(94, client.Aisling, client.Aisling);
@@ -75,7 +75,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                 }
                 if (client.Aisling.CurrentMapId == 84 && !Flags[client.Aisling.Serial]["t1"])
                 {
-                    if (client.Aisling.WithinRangeOf(12, 22))
+                    if (client.Aisling.WithinRangeOf(12, 22, 1))
                     {
                         client.SendMessage(0x02, "Where is this place?...");
                         client.SendAnimation(94, client.Aisling, client.Aisling);
@@ -84,7 +84,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                 }
                 else if (client.Aisling.CurrentMapId == 85 && !Flags[client.Aisling.Serial]["t2"])
                 {
-                    if (client.Aisling.WithinRangeOf(34, 24))
+                    if (client.Aisling.WithinRangeOf(34, 24, 1))
                     {
                         client.SendMessage(0x02, "These guys all look serious. I Wonder what they will say...");
                         client.SendAnimation(94, client.Aisling, client.Aisling);
@@ -94,7 +94,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                 }
                 else if (client.Aisling.CurrentMapId == 99 && !Flags[client.Aisling.Serial]["t8"])
                 {
-                    if (client.Aisling.WithinRangeOf(42, 93))
+                    if (client.Aisling.WithinRangeOf(42, 93, 1))
                     {
                         client.SendMessage(0x02, "Zombies... Is this one of those games???....");
                         client.SendAnimation(94, client.Aisling, client.Aisling);
@@ -104,7 +104,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                 }
                 else if (client.Aisling.CurrentMapId == 101 && !Flags[client.Aisling.Serial]["t4"])
                 {
-                    if (client.Aisling.WithinRangeOf(40, 23))
+                    if (client.Aisling.WithinRangeOf(40, 23, 1))
                     {
                         client.SendMessage(0x02, "Where did all these barron creatures come from?!...");
                         client.SendAnimation(94, client.Aisling, client.Aisling);

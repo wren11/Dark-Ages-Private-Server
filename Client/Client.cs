@@ -229,7 +229,6 @@ namespace DAClient
                     {
                         if (State == ServerState.Login)
                         {
-
                             Send(new Login(User, Pass));
                             State = ServerState.World;
                         }
@@ -242,8 +241,6 @@ namespace DAClient
                         _reader = new NetworkPacketReader();
                         _reader.Packet = packet;
 
-                        var code    = _reader.ReadByte();
-                        var message = _reader.ReadStringA();
                     } break;
                 #endregion
                 case 0x05:

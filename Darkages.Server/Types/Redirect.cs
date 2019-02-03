@@ -1,5 +1,4 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+﻿//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -14,20 +13,16 @@
 //
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
-using Darkages.Network.Game;
+//*************************************************************************/]
 
 namespace Darkages.Types
 {
     public class Redirect
     {
-        public int ID;
-        public string Name;
-        public byte[] Salt;
-        public byte Seed;
-        public int Serial;
-
-        public int Type { get; internal set; }
-        public GameClient Client { get; internal set; }
+        public string Name { get; set; }
+        public string Salt { get; set; }
+        public string Seed { get; set; }
+        public string Serial { get; set; }
+        public string Type { get; set; }
     }
 }

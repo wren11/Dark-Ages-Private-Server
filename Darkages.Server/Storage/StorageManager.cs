@@ -49,6 +49,8 @@ namespace Darkages.Storage
 
         public void SaveSorageContainers()
         {
+            if (ServerContext.Paused)
+                return;
             foreach (var item in ServerContext.GlobalItemTemplateCache.Values)
             {
                 if (ItemBucket.IsStored(item))

@@ -147,8 +147,13 @@ namespace Darkages.Types
             skill.Script = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
             aisling.SkillBook.Assign(skill);
             aisling.SkillBook.Set(skill, false);
-            aisling.Show(Scope.Self, new ServerFormat2C(skill.Slot, skill.Icon, skill.Name));
-            aisling.SendAnimation(22, aisling, aisling);
+
+            if (aisling.LoggedIn)
+            {
+                aisling.Show(Scope.Self, new ServerFormat2C(skill.Slot, skill.Icon, skill.Name));
+                aisling.SendAnimation(22, aisling, aisling);
+            }
+
             return true;
         }
     }

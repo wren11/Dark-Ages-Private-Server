@@ -61,12 +61,7 @@ namespace Darkages.Network.Game.Components
 
             try
             {
-                Spawn spawn;
-
-                lock (SpawnQueue)
-                {
-                    spawn = SpawnQueue.Dequeue();
-                }
+                Spawn spawn = SpawnQueue.Dequeue();
 
                 if (spawn != null)
                 {
@@ -100,24 +95,21 @@ namespace Darkages.Network.Game.Components
                     if (map == null || map.Rows == 0 || map.Cols == 0)
                         return;
 
-                    lock (templates)
-                    {
-                        var temps = templates.Where(i => i.AreaID == map.ID);
-                        foreach (var template in temps)
-                        {
-                            if (template.ReadyToSpawn())
-                            {
-                                var spawn = new Spawn
-                                {
-                                    Template = template,
-                                    Map = map
-                                };
 
-                                lock (SpawnQueue)
-                                {
-                                    SpawnQueue.Enqueue(spawn);
-                                }
-                            }
+                    var temps = templates.Where(i => i.AreaID == map.ID);
+                    foreach (var template in temps)
+                    {
+                        if (template.ReadyToSpawn())
+                        {
+                            var spawn = new Spawn
+                            {
+                                Template = template,
+                                Map = map
+                            };
+
+
+                            SpawnQueue.Enqueue(spawn);
+
                         }
                     }
                 }

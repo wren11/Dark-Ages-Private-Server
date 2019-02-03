@@ -181,10 +181,10 @@ namespace Darkages
 
         [JsonIgnore]
         public bool ReactorActive { get; set; }
-        public bool IsBot { get; internal set; }
+        public bool IsBot { get; set; }
 
         [JsonIgnore]
-        public DateTime LastBotUpdate { get; internal set; }
+        public DateTime LastBotUpdate { get; set; }
 
         [JsonIgnore]
         public HashSet<Sprite> View = new HashSet<Sprite>();

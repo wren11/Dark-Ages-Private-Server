@@ -43,70 +43,68 @@ namespace Darkages.Storage.locales.Scripts.Global
                 return;
 
             if (!client.Aisling.Dead)
-                lock (client.Aisling)
+                if (client.Aisling.CurrentHp > 0)
                 {
-                    if (client.Aisling.CurrentHp > 0)
-                    {
-                        client.SendStats(StatusFlags.All);
-                        return;
-                    }
-
-                    if (client.Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill))
-                    {
-                        CastDeath(client);
-
-                        var target = client.Aisling.Target;
-
-                        if (target != null)
-                        {
-                            if (target is Aisling)
-                                client.SendMessage(Scope.NearbyAislings, 0x02,
-                                    client.Aisling.Username + " has been killed by " + (target as Aisling).Username);
-                        }
-                        else
-                        {
-                            client.SendMessage(Scope.NearbyAislings, 0x02,
-                                client.Aisling.Username + " has been killed.");
-                        }
-
-                        return;
-                    }
-
-
-                    if (client.Aisling.Path != Class.Peasant)
-                    {
-                        if (!client.Aisling.HasDebuff("skulled"))
-                        {
-                            var debuff = new debuff_reeping();
-                            {
-                                debuff.OnApplied(client.Aisling, debuff);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (client.Aisling.AreaID != 85)
-                        {
-                            client.SendAnimation(78, client.Aisling, client.Aisling);
-                            client.SendMessage(0x02, "You can't die if you have no soul.");
-                            client.Aisling.Recover();
-                        }
-                        else
-                        {
-                            for (int i = 0; i < 2; i++)
-                                client.Aisling.RemoveBuffsAndDebuffs();
-
-                            client.TransitionToMap(1006, new Position(2, 4));
-                            client.Aisling.TutorialCompleted = true;
-                            client.SendMessage(0x02, "You awake from a bad dream... or was it??");
-                            client.SendAnimation(94, client.Aisling, client.Aisling);
-                            client.Aisling.Recover();
-                        }
-                    }
-
-                    client.Send(new ServerFormat08(client.Aisling,
-                        StatusFlags.All));
+                    client.SendStats(StatusFlags.All);
+                    return;
                 }
+
+            if (client.Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill))
+            {
+                CastDeath(client);
+
+                var target = client.Aisling.Target;
+
+                if (target != null)
+                {
+                    if (target is Aisling)
+                        client.SendMessage(Scope.NearbyAislings, 0x02,
+                            client.Aisling.Username + " has been killed by " + (target as Aisling).Username);
+                }
+                else
+                {
+                    client.SendMessage(Scope.NearbyAislings, 0x02,
+                        client.Aisling.Username + " has been killed.");
+                }
+
+                return;
+            }
+
+
+            if (client.Aisling.Path != Class.Peasant)
+            {
+                if (!client.Aisling.HasDebuff("skulled"))
+                {
+                    var debuff = new debuff_reeping();
+                    {
+                        debuff.OnApplied(client.Aisling, debuff);
+                    }
+                }
+            }
+            else
+            {
+                if (client.Aisling.AreaID != 85)
+                {
+                    client.SendAnimation(78, client.Aisling, client.Aisling);
+                    client.SendMessage(0x02, "You can't die if you have no soul.");
+                    client.Aisling.Recover();
+                }
+                else
+                {
+                    for (int i = 0; i < 2; i++)
+                        client.Aisling.RemoveBuffsAndDebuffs();
+
+                    client.TransitionToMap(1006, new Position(2, 4));
+                    client.Aisling.TutorialCompleted = true;
+                    client.SendMessage(0x02, "You awake from a bad dream... or was it??");
+                    client.SendAnimation(94, client.Aisling, client.Aisling);
+                    client.Aisling.Recover();
+                }
+            }
+
+            client.Send(new ServerFormat08(client.Aisling,
+                StatusFlags.All));
+
         }
 
         public static void CastDeath(GameClient client)

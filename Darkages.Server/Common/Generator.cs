@@ -24,7 +24,7 @@ namespace Darkages.Common
 {
     public static class Generator
     {
-        internal static Random Random { get; }
+        public static Random Random { get; }
 
         public static volatile int SERIAL;
 

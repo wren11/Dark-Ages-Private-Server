@@ -17,7 +17,6 @@
 //*************************************************************************/
 using Darkages.Common;
 using Darkages.Network.Game;
-using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Script.Context;
 using Darkages.Storage;
@@ -34,7 +33,6 @@ using System.Net;
 using System.Reflection;
 using Class = Darkages.Types.Class;
 
-
 namespace Darkages
 {
     public class ServerContext : ObjectManager
@@ -47,8 +45,6 @@ namespace Darkages
 
         public static GameServer Game;
 
-        public static LoginServer Lobby;
-
         public static ServerConstants Config;
 
         public static IPAddress Ipaddress => IPAddress.Parse(File.ReadAllText("server.tbl"));
@@ -56,8 +52,6 @@ namespace Darkages
         public static string GlobalMessage { get; internal set; }
 
         public static string StoragePath = @"..\..\..\LORULE_DATA";
-
-        public static List<Redirect> GlobalRedirects = new List<Redirect>();
 
         public static List<Metafile> GlobalMetaCache = new List<Metafile>();
 
@@ -99,21 +93,9 @@ namespace Darkages
 
         public static Board[] Community = new Board[7];
 
-        static readonly int g = 255;
-        static int r = 223;
-        static int b = 250;
-
         public static void Log(string message, params object[] args)
         {
-            Console.WriteLine(string.Format(message, args), Color.FromArgb(r % 255, g % 255, b % 255));
-
-            r -= 18;
-            b -= 9;
-
-            if (r <= 0)
-                r = 255;
-            if (b <= 0)
-                b = 255;
+            Console.WriteLine(string.Format(message, args));
         }
 
 
@@ -178,8 +160,6 @@ namespace Darkages
 
                 try
                 {
-                    Lobby = new LoginServer(Config.ConnectionCapacity);
-                    Lobby.Start(Config.LOGIN_PORT);
 
                     Game = new GameServer(Config.ConnectionCapacity);
                     Game.Start(DefaultPort);
@@ -208,18 +188,15 @@ namespace Darkages
             Running = false;
             {
                 EmptyCacheCollectors();
-
                 Game?.Abort();
-                Lobby?.Abort();
-
                 Game = null;
-                Lobby = null;
             }
         }
 
         public static void Startup()
         {
-            Log(Config.SERVER_TITLE);
+            Log(Config.SERVER_TITLE + " Server: Starting up...");
+            Log("----------------------------------------------");
             {
                 try
                 {
@@ -233,8 +210,10 @@ namespace Darkages
                     Log("Startup Error.");
                 }
             }
-            Log("{0} Online.", Config.SERVER_TITLE);
-        }        
+            Log("----------------------------------------------");
+            Log("{0} World Server: Online.", Config.SERVER_TITLE);
+        }
+
 
         private static void EmptyCacheCollectors()
         {
@@ -243,7 +222,6 @@ namespace Darkages
             GlobalMetaCache = new List<Metafile>();
             GlobalMonsterTemplateCache = new List<MonsterTemplate>();
             GlobalMundaneTemplateCache = new Dictionary<string, MundaneTemplate>();
-            GlobalRedirects = new List<Redirect>();
             GlobalSkillTemplateCache = new Dictionary<string, SkillTemplate>();
             GlobalSpellTemplateCache = new Dictionary<string, SpellTemplate>();
             GlobalWarpTemplateCache = new List<WarpTemplate>();
@@ -468,9 +446,7 @@ namespace Darkages
             Evaluator.ReferenceAssembly(assembly);
 
             @"  using Darkages.Common;
-                using Darkages.Common;
                 using Darkages.Network.Game;
-                using Darkages.Network.Login;
                 using Darkages.Network.Object;
                 using Darkages.Script.Context;
                 using Darkages.Storage;

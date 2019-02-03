@@ -52,6 +52,8 @@ namespace Darkages.Storage
         }
         public void Save(Aisling obj)
         {
+            if (ServerContext.Paused)
+                return;
 
             try
             {
