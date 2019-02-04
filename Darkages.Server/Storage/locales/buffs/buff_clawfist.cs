@@ -36,14 +36,14 @@ namespace Darkages.Storage.locales.Buffs
         {
             get
             {
-                return 27;
+                return 9;
             }
         }
         public override byte Icon
         {
             get
             {
-                return 59;
+                return 13;
             }
         }
 

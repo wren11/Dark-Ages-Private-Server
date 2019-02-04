@@ -69,6 +69,7 @@ namespace Darkages.Network.Game
                 });
             }
 
+            var lastTemplate = string.Empty;
             foreach (var skill in client.Aisling.GetAssails(SkillScope.Assail))
             {
                 if (skill == null)
@@ -86,7 +87,11 @@ namespace Darkages.Network.Game
                 if (skill.InUse)
                     continue;
 
-                ExecuteAbility(client, skill);
+                if (lastTemplate != skill.Template.Name)
+                {
+                    ExecuteAbility(client, skill);
+                    lastTemplate = skill.Template.Name;
+                }
             }
         }
 

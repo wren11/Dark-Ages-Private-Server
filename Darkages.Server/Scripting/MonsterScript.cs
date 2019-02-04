@@ -42,5 +42,7 @@ namespace Darkages.Scripting
         public abstract void Update(TimeSpan elapsedTime);
 
         public virtual void OnDamaged(GameClient client, int dmg) { }
+
+        public abstract void OnSkulled(GameClient client);
     }
 }

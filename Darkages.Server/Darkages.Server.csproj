@@ -120,10 +120,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Cache.cs" />
-    <Compile Include="Common\ConcurrentList.cs" />
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\Generator.cs" />
-    <Compile Include="Common\Reflection.cs" />
     <Compile Include="Compression\CompressableObject.cs" />
     <Compile Include="Compression\CompressionProvider.cs" />
     <Compile Include="IO\BufferReader.cs" />
@@ -415,7 +413,6 @@
     <Compile Include="Types\Area.cs" />
     <Compile Include="Types\AttackModifier.cs" />
     <Compile Include="Types\Bank.cs" />
-    <Compile Include="Types\BarColors.cs" />
     <Compile Include="Types\Board.cs" />
     <Compile Include="Types\BoardDescriptors.cs" />
     <Compile Include="Types\BodySprite.cs" />

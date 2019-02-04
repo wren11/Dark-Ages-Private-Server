@@ -90,7 +90,24 @@
                             obj.ShowTo(client);
                         else
                         {
-                            payload.Add(obj);
+                            bool skip = false;
+
+                            if (obj is Money)
+                            {
+                                var gold_setting = client.GameSettings.Find(i => i.EnabledSettingStr.Contains("AUTO LOOT GOLD"));
+
+                                if (gold_setting != null)
+                                {
+                                    if (gold_setting.Enabled)
+                                    {
+                                        (obj as Money).GiveTo((obj as Money).Amount, client);
+                                        skip = true;
+                                    }
+                                }
+                            }
+
+                            if (!skip)
+                                payload.Add(obj);
                         }
                     }
                 }

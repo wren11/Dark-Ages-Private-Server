@@ -34,6 +34,12 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void OnApproach(GameClient client)
         {
+
+        }
+
+        public override void OnSkulled(GameClient client)
+        {
+            Monster.Animate(24);
         }
 
         public override void OnAttacked(GameClient client)

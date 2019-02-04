@@ -40,7 +40,7 @@ namespace Darkages
         [JsonIgnore]
         [Browsable(false)]
         private readonly GameServerTimer WarpTimer =
-            new GameServerTimer(TimeSpan.FromSeconds(ServerContext.Config.WarpUpdateTimer));
+            new GameServerTimer(TimeSpan.FromSeconds(1.7));
 
         [JsonIgnore]
         [Browsable(false)]
@@ -270,14 +270,38 @@ namespace Darkages
                     foreach (var obj in nearby)
                         if (obj.Position.WithinSquare(warpObj.Location, 10))
                             obj.Show(Scope.Self, new ServerFormat29(
-                                 ServerContext.Config.WarpAnimationNumber,
+                                295,
                                 warpObj.Location.X, warpObj.Location.Y));
 
             }
         }
 
+        public GameServerTimer _Reaper = new GameServerTimer(TimeSpan.FromSeconds(2));
+
         public void UpdateMonsters(Aisling[] users, TimeSpan elapsedTime, IEnumerable<Monster> objects)
         {
+            _Reaper.Update(elapsedTime);
+
+            if (_Reaper.Elapsed)
+            {
+                _Reaper.Reset();
+
+                foreach (var obj in objects)
+                {
+                    if (obj != null && obj.Map != null && obj.Script != null)
+                    {
+                        if (obj.CurrentHp <= 0)
+                        {
+                            if (obj.Target != null)
+                            {
+                                obj.Script?.OnDeath(obj.Target.Client);
+                            }
+                        }
+                    }
+                }
+            }
+
+
             foreach (var obj in objects)
             {
                 if (obj != null && obj.Map != null && obj.Script != null)
@@ -286,9 +310,14 @@ namespace Darkages
                     {
                         if (obj.Target != null)
                         {
-                            obj.Script?.OnDeath(obj.Target.Client);
+                            if (!obj.Skulled)
+                            {
+                                obj.Script?.OnSkulled(obj.Target.Client);
+                                obj.Skulled = true;
+                            }
                         }
                     }
+
                     obj.Script.Update(elapsedTime);
                     obj.UpdateBuffs(elapsedTime);
                     obj.UpdateDebuffs(elapsedTime);

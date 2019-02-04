@@ -286,7 +286,7 @@ namespace Darkages
 
         [JsonProperty] public ushort WarpAnimationNumber = 214;
 
-        [JsonProperty] public double WarpUpdateTimer = 1.5;
+        [JsonProperty] public double WarpUpdateTimer = 1;
 
         [JsonProperty] public double WeightIncreaseModifer = 3.5;
 
@@ -340,7 +340,7 @@ namespace Darkages
         {
             new GameSetting("Loot Mode  :Single", "Loot Mode  :Multi", true),
             new GameSetting("PVP  :ON", "PVP  :OFF", true),
-            new GameSetting("AUTO LOOT GOLD  :OFF", "AUTO LOOT GOLD  :ON", false)
+            new GameSetting("AUTO LOOT GOLD  :ON", "AUTO LOOT GOLD  :OFF", false)
         };
 
         public struct GameSetting

@@ -33,6 +33,9 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             Monster.Template.SpawnMax   = 100;
             Monster.Template.SpawnRate  = 1;
         }
+        public override void OnSkulled(GameClient client)
+        {
+        }
 
         public override void OnApproach(GameClient client)
         {

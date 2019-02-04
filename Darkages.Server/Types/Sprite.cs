@@ -89,10 +89,6 @@ namespace Darkages.Types
             : (EntityType == TileContent.Mundane) ? (this as Mundane).Template.Level
             : (EntityType == TileContent.Item) ? ((this as Item).Template.LevelRequired) : 0;
 
-        public AttackModifier AttackType { get; set; }
-
-        public DamageModifier DamageType { get; set; }
-
         public ConcurrentDictionary<string, Debuff> Debuffs { get; set; }
 
         public ConcurrentDictionary<string, Buff> Buffs { get; set; }

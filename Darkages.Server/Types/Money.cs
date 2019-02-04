@@ -38,6 +38,7 @@ namespace Darkages.Types
                 if (aisling.GoldPoints > ServerContext.Config.MaxCarryGold)
                     aisling.GoldPoints = int.MaxValue;
 
+                aisling.Client.SendMessage(0x03, string.Format("You've Received {0} coins.", amount));
                 aisling.Client.Send(new ServerFormat08(aisling, StatusFlags.StructC));
 
                 Remove<Money>();

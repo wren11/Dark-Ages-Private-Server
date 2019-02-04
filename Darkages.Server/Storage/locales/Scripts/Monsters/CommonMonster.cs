@@ -21,6 +21,7 @@ using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Darkages.Storage.locales.Scripts.Monsters
 {
@@ -169,12 +170,20 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 if (Monster.Target is Aisling)
                     Monster.GenerateRewards(Monster.Target as Aisling);
 
+            Monster.Template.SpawnCount--;
+
+            if (Monster.Template.SpawnCount < 0)
+                Monster.Template.SpawnCount = 0;
 
             Monster.Remove();
             Monster.Target = null;
 
-            if (GetObject<Monster>(Monster.Map, i => i.Serial == Monster.Serial) != null)
-                DelObject(Monster);
+            DelObject(Monster);
+        }
+
+        public override void OnSkulled(GameClient client)
+        {
+            Monster.Animate(163);
         }
 
         public override void OnLeave(GameClient client)

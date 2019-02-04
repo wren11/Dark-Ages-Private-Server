@@ -20,8 +20,6 @@ using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Darkages.Network.Game.Components
 {
@@ -29,57 +27,14 @@ namespace Darkages.Network.Game.Components
     {
         private readonly GameServerTimer _timer;
 
-        public readonly Queue<Spawn> SpawnQueue = new Queue<Spawn>();
-
         public MonolithComponent(GameServer server)
             : base(server)
         {
             _timer = new GameServerTimer(TimeSpan.FromMilliseconds(ServerContext.Config.GlobalSpawnTimer));
-
-            var spawnThread = new Thread(SpawnEmitter) { IsBackground = true };
-            spawnThread.Start();
-        }
-
-        private void SpawnEmitter()
-        {
-            while (true)
-            {
-                if (!ServerContext.Paused)
-                {
-                    if (SpawnQueue.Count > 0)
-                        ConsumeSpawns();
-                }
-
-                Thread.Sleep(50);
-            }
-        }
-
-        private void ConsumeSpawns()
-        {
-            if (ServerContext.Paused)
-                return;
-
-            try
-            {
-                Spawn spawn = SpawnQueue.Dequeue();
-
-                if (spawn != null)
-                {
-                    SpawnOn(spawn.Template, spawn.Map);
-                }
-            }
-            catch (Exception)
-            {
-                //ignore
-            }
         }
 
         public override void Update(TimeSpan elapsedTime)
         {
-            if (ServerContext.Paused)
-                return;
-
-
             _timer.Update(elapsedTime);
 
             if (_timer.Elapsed)
@@ -95,71 +50,49 @@ namespace Darkages.Network.Game.Components
                     if (map == null || map.Rows == 0 || map.Cols == 0)
                         return;
 
-
                     var temps = templates.Where(i => i.AreaID == map.ID);
+
                     foreach (var template in temps)
                     {
                         if (template.ReadyToSpawn())
                         {
                             var spawn = new Spawn
                             {
-                                Template = template,
-                                Map = map
+                                 Capacity = template.SpawnMax,
+                                 TotalSpawned = 0,
+                                 LastSpawned = DateTime.UtcNow,
                             };
 
-
-                            SpawnQueue.Enqueue(spawn);
-
+                            if (template.SpawnCount < template.SpawnMax)
+                            {
+                                CreateFromTemplate(template, map);
+                                template.SpawnCount++;
+                            }
                         }
                     }
                 }
             }
         }
 
-        public bool SpawnOn(MonsterTemplate template, Area map)
+        public void CreateFromTemplate(MonsterTemplate template, Area map)
         {
-            var count = GetObjects<Monster>(map, i => i.Template.Name == template.Name && i.CurrentMapId == map.ID).Count();
+            var newObj = Monster.Create(template, map);
 
-            if (count < Math.Abs(template.SpawnMax))
+            if (newObj != null)
             {
-                CreateFromTemplate(template, map, template.SpawnSize);
-                return true;
-                     
+                AddObject(newObj);
             }
-
-            return false;
         }
 
-
-        public async void CreateFromTemplate(MonsterTemplate template, Area map, int count)
-        {
-            var objectsAdded = 0;
-
-            try
-            {
-
-                for (int i = 0; i < count; i++)
-                {
-                    var newObj = await Monster.Create(template, map);
-
-                    if (newObj != null)
-                    {
-                        AddObject(newObj);
-                        objectsAdded++;
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                //ignore
-            }
-        }
+        public Dictionary<int, Spawn> _spawns = new Dictionary<int, Spawn>();
 
         public class Spawn
         {
             public DateTime LastSpawned { get; set; }
-            public MonsterTemplate Template { get; set; }
-            public Area Map { get; set; }
+
+
+            public int Capacity { get; set; }
+            public int TotalSpawned { get; set; }          
         }
     }
 }

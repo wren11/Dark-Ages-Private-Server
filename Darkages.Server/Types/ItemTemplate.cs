@@ -60,7 +60,7 @@ namespace Darkages.Types
     public class Legendary : ItemUpgrade
     {
         public override string Name => "Legendary";
-        public override double Weight => 0.05;
+        public override double Weight => 0.08;
         public override int Upgrade => 5;
     }
     public class Mythical : ItemUpgrade

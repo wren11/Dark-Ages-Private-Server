@@ -18,6 +18,8 @@
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Darkages.Storage
 {
@@ -50,6 +52,33 @@ namespace Darkages.Storage
                 });
             }
         }
+
+        public bool IsFileLocked(string filePath, int secondsToWait)
+        {
+            bool isLocked = true;
+            int i = 0;
+
+            while (isLocked && ((i < secondsToWait) || (secondsToWait == 0)))
+            {
+                try
+                {
+                    using (File.Open(filePath, FileMode.Open)) { }
+                    return false;
+                }
+                catch (IOException e)
+                {
+                    var errorCode = Marshal.GetHRForException(e) & ((1 << 16) - 1);
+                    isLocked = errorCode == 32 || errorCode == 33;
+                    i++;
+
+                    if (secondsToWait != 0)
+                        new System.Threading.ManualResetEvent(false).WaitOne(1000);
+                }
+            }
+
+            return isLocked;
+        }
+
         public void Save(Aisling obj)
         {
             if (ServerContext.Paused)
@@ -57,15 +86,23 @@ namespace Darkages.Storage
 
             try
             {
-                var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Username.ToLower()));
-                var objString = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
+
+                Task.Run(() =>
                 {
-                    TypeNameHandling = TypeNameHandling.All
+                    var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Username.ToLower()));
+
+                    if (!IsFileLocked(path, 1))
+                    {
+                        var objString = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
+                        {
+                            TypeNameHandling = TypeNameHandling.All
+                        });
+
+                        Saving = true;
+
+                        File.WriteAllText(path, objString);
+                    }
                 });
-
-                Saving = true;
-
-                File.WriteAllText(path, objString);
             }
             catch (Exception)
             {

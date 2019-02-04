@@ -203,6 +203,11 @@ namespace Darkages.Types
             if (IsConfused || IsFrozen || IsParalyzed || IsSleeping)
                 return;
 
+            if (Target != null && !WithinRangeOf(Target))
+            {
+                Target = null;
+            }
+
             if (Template.ChatTimer != null)
             {
                 Template.ChatTimer.Update(update);

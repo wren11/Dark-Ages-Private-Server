@@ -82,7 +82,7 @@ namespace Darkages.Network.Game
 
                 foreach (var settings in ServerContext.Config.Settings)
                 {
-                    Aisling.GameSettings.Add(new ClientGameSettings(settings.SettingOn, settings.SettingOff, settings.Enabled));
+                    Aisling.GameSettings.Add(new ClientGameSettings(settings.SettingOff, settings.SettingOn, settings.Enabled));
                 }
             }
         }

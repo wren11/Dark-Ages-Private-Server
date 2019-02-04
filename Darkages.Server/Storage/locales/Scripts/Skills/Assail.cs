@@ -64,6 +64,14 @@ namespace Darkages.Scripting.Scripts.Skills
                 var success = false;
                 if (enemy != null)
                 {
+                    var imp = (Skill.Level * sprite.Level + 1 / 70);
+                    var dmg = ((client.Aisling.Str * 4) + client.Aisling.Dex * 2);
+                    var s   = (int)(imp * 0.01);
+
+
+                    dmg = dmg * s;
+
+
                     foreach (var i in enemy)
                     {
                         if (i == null)
@@ -71,6 +79,7 @@ namespace Darkages.Scripting.Scripts.Skills
 
                         if (client.Aisling.Serial == i.Serial)
                             continue;
+
                         if (i is Money)
                             continue;
 
@@ -82,14 +91,20 @@ namespace Darkages.Scripting.Scripts.Skills
 
                         Target = i;
 
+                        if (sprite.EmpoweredAssail)
+                        {
+                            if (sprite is Aisling)
+                            {
+                                if ((sprite as Aisling).Weapon == 0)
+                                    dmg *= 3;
+                            }
+                            else
+                            {
+                                dmg *= 2;
+                            }
+                        }
 
-
-                        var imp = (Skill.Level * sprite.Level + 1 / 70);
-                        var dmg = ((client.Aisling.Str * 4) + client.Aisling.Dex * 2);
-
-                        var s = (int)(imp * 0.01);
-
-                        dmg *= s;
+                        Console.WriteLine("Dealing: {0}", dmg);
 
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
                         success = true;

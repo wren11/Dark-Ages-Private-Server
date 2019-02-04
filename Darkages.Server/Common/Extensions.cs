@@ -57,23 +57,5 @@ namespace Darkages.Common
 
             return value;
         }
-
-        public class DisposableStopwatch : IDisposable
-        {
-            private readonly Action<TimeSpan> f;
-            private readonly Stopwatch sw;
-
-            public DisposableStopwatch(Action<TimeSpan> f)
-            {
-                this.f = f;
-                sw = Stopwatch.StartNew();
-            }
-
-            public void Dispose()
-            {
-                sw.Stop();
-                f(sw.Elapsed);
-            }
-        }
     }
 }
