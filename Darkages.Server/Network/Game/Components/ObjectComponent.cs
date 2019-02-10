@@ -92,16 +92,51 @@
                         {
                             bool skip = false;
 
-                            if (obj is Money)
+                            if (obj is Mundane)
                             {
-                                var gold_setting = client.GameSettings.Find(i => i.EnabledSettingStr.Contains("AUTO LOOT GOLD"));
+                                var mundane = obj as Mundane;
 
-                                if (gold_setting != null)
+                                if (mundane != null)
                                 {
-                                    if (gold_setting.Enabled)
+                                    var template = mundane.Template;
+
+                                    if (!template.ViewingQualifer.HasFlag(ViewQualifer.None))
                                     {
-                                        (obj as Money).GiveTo((obj as Money).Amount, client);
-                                        skip = true;
+                                        //hide user if they are not a monk.
+                                        if (template.ViewingQualifer.HasFlag(ViewQualifer.Monks))
+                                        {
+                                            if (client.ClassID != 5)
+                                            {
+                                                skip = true;
+                                            }
+                                        }
+
+                                        //hide user if they are not a warrior.
+                                        if (template.ViewingQualifer.HasFlag(ViewQualifer.Warriors))
+                                        {
+                                            if (client.ClassID != 1)
+                                            {
+                                                skip = true;
+                                            }
+                                        }
+
+                                        //TODO add more classes.
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (obj is Money)
+                                {
+                                    var gold_setting = client.GameSettings.Find(i => i.EnabledSettingStr.Contains("AUTO LOOT GOLD"));
+
+                                    if (gold_setting != null)
+                                    {
+                                        if (gold_setting.Enabled)
+                                        {
+                                            (obj as Money).GiveTo((obj as Money).Amount, client);
+                                            skip = true;
+                                        }
                                     }
                                 }
                             }

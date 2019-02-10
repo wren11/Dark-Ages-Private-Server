@@ -422,6 +422,42 @@ namespace Darkages
                 NpcKey = "Alf Stewert"
             };
 
+            var monk = new MundaneTemplate()
+            {
+                AreaID = 1001,
+                AttackPlayers = false,
+                AttackTimer = null,
+                CastRate = 5000,
+                ChatTimer = new GameServerTimer(TimeSpan.FromSeconds(10)),
+                Direction = 1,
+                Description = "Monk Helper, Will provide new monks some quests to improve their gear",
+                EnableCasting = false,
+                EnableSpeech = true,
+                Speech = new System.Collections.ObjectModel.Collection<string>()
+                 {
+                       "You look like you could use some help, new monk.",
+                       "Over here, Monk!",
+                       "Come see me when you have a chance.",
+                       "I'm here to help.",
+                       "You Lost?",
+                       "You must be new %"
+                   },
+                EnableTurning = true,
+                EnableWalking = false,
+                Group = "Monk Helpers",
+                Level = 99,
+                Name = "Erlung",
+                QuestKey = "Monk: Beginner Equipment",
+                PathQualifer = PathQualifer.Fixed,
+                X = 88,
+                Y = 17,
+
+                Image = (16384 + 365),
+                ViewingQualifer = ViewQualifer.Monks,
+            };
+
+
+            GlobalMundaneTemplateCache.Add(monk.Name, monk);
             //SyncStorage();
 
             Paused = false;

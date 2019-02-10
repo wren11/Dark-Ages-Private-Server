@@ -78,7 +78,7 @@ namespace Darkages.Types
             if (template == null)
                 return;
 
-            var map = ServerContext.GlobalMapCache[template.AreaID];
+            var map      = ServerContext.GlobalMapCache[template.AreaID];
             var existing = template.GetObject<Mundane>(map, p => p != null && p.Template != null && p.Template.Name == template.Name);
 
             //this npc was already created?

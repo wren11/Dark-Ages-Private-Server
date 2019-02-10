@@ -17,6 +17,7 @@
 //*************************************************************************/
 using Darkages.Network.Game;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -78,5 +79,21 @@ namespace Darkages.Types
         [JsonProperty]
         public PathQualifer PathQualifer { get; set; }
 
+        [JsonProperty]
+        public ViewQualifer ViewingQualifer { get; set; }
+
+    }
+
+    [Flags]
+    public enum ViewQualifer
+    {
+        None     = 0,
+        Peasents = 1 << 1,
+        Warriors = 1 << 2,
+        Wizards  = 1 << 3,
+        Monks    = 1 << 4,
+        Rogues   = 1 << 5,
+        Priests  = 1 << 6,
+        All = Peasents | Warriors | Wizards | Monks | Rogues | Priests,
     }
 }
