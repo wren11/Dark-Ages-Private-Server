@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages.Common;
+using Darkages.Interops;
 using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Script.Context;
@@ -23,6 +24,7 @@ using Darkages.Storage;
 using Darkages.Storage.locales.Buffs;
 using Darkages.Types;
 using Mono.CSharp;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -37,7 +39,7 @@ namespace Darkages
 {
     public class ServerContext : ObjectManager
     {
-        internal static volatile object SyncObj = new object();
+        internal static object SyncObj = new object();
 
         public static int Errors, DefaultPort;
 
@@ -52,6 +54,26 @@ namespace Darkages
         public static string GlobalMessage { get; internal set; }
 
         public static string StoragePath = @"..\..\..\LORULE_DATA";
+
+        [JsonIgnore]
+        private static ServerInformation _info = new ServerInformation();
+
+        public static ServerInformation Info
+        {
+            get { return _info; }
+            set { _info = value; }
+        }
+
+        static ServerContext()
+        {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception error = (Exception)e.ExceptionObject;
+            Info?.Error("Unhandled Exception", error);
+        }
 
         public static List<Metafile> GlobalMetaCache = new List<Metafile>();
 
@@ -95,56 +117,63 @@ namespace Darkages
 
         public static void Log(string message, params object[] args)
         {
-            Console.WriteLine(string.Format(message, args));
+            if (Info != null)
+            {
+                Info.Info(message, args);
+            }
+            else
+            {
+                Console.WriteLine(message, args);
+            }
         }
 
 
         public static void LoadSkillTemplates()
         {
             StorageManager.SkillBucket.CacheFromStorage();
-            Log("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
+            Info?.Debug("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
         }
 
         public static void LoadSpellTemplates()
         {
             StorageManager.SpellBucket.CacheFromStorage();
-            Log("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
+            Info?.Debug("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
         }
 
         public static void LoadItemTemplates()
         {
             StorageManager.ItemBucket.CacheFromStorage();
-            Log("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
+            Info?.Debug("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
         }
 
         public static void LoadMonsterTemplates()
         {
             StorageManager.MonsterBucket.CacheFromStorage();
-            Log("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
+            Info?.Debug("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
         }
 
         public static void LoadMundaneTemplates()
         {
             StorageManager.MundaneBucket.CacheFromStorage();
-            Log("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
+            Info?.Debug("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
         }
 
         public static void LoadWarpTemplates()
         {
             StorageManager.WarpBucket.CacheFromStorage();
-            Log("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
+            Info?.Debug("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
         }
 
         public static void LoadWorldMapTemplates()
         {
             StorageManager.WorldMapBucket.CacheFromStorage();
-            Log("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
+            Info?.Debug("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
         }
 
         public static void LoadMaps()
         {
             StorageManager.AreaBucket.CacheFromStorage();
-            Log("Map Templates Loaded: {0}", GlobalMapCache.Count);
+            Info?.Debug("Map Templates Loaded: {0}", GlobalMapCache.Count);
         }
 
         private static void StartServers()

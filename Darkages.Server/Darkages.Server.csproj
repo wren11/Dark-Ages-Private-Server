@@ -6,7 +6,7 @@
     <OutputType>Library</OutputType>
     <NoStandardLibraries>false</NoStandardLibraries>
     <AssemblyName>Darkages.Server</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
@@ -51,8 +51,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependacies\Mono.CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RelativeTime, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\relativetime.1.1.0\lib\NET40\RelativeTime.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -124,6 +127,9 @@
     <Compile Include="Common\Generator.cs" />
     <Compile Include="Compression\CompressableObject.cs" />
     <Compile Include="Compression\CompressionProvider.cs" />
+    <Compile Include="Interops\MemoryMappedDataReceivedEventArgs.cs" />
+    <Compile Include="Interops\MemoryMappedFileCommunicator.cs" />
+    <Compile Include="Interops\ServerInformation.cs" />
     <Compile Include="IO\BufferReader.cs" />
     <Compile Include="IO\BufferWriter.cs" />
     <Compile Include="IO\Crc16Provider.cs" />
@@ -499,6 +505,9 @@
     <Compile Include="Types\Warp.cs" />
     <Compile Include="Types\WarpTemplate.cs" />
     <Compile Include="Types\WorldMapTemplate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extensions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>

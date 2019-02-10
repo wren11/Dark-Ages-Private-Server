@@ -15,9 +15,9 @@ namespace LoginServer
 
             if (ServerContext.Config != null)
             {
-                Console.WriteLine("Lorule - Login Server: Online");
-                Console.WriteLine("---------------------------------------");
-                Console.WriteLine("Listening...");
+                ServerContext.Info?.Info("Lorule - Login Server: Online");
+                ServerContext.Info?.Info("---------------------------------------");
+                ServerContext.Info?.Info("Listening...");
 
                 _server = new LoginServer(1000);
                 _server.Start(2610);

@@ -36,7 +36,7 @@ namespace Darkages.Network.Game
         private Thread ClientThread = null;
         private Thread HeavyThread = null;
 
-        public ObjectService ObjectFactory { get; set; }
+        public ObjectService ObjectFactory = new ObjectService();
 
         public Dictionary<Type, GameServerComponent> Components;
 
@@ -54,16 +54,19 @@ namespace Darkages.Network.Game
 
         private void AutoSave(GameClient client)
         {
-            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContext.Config.SaveRate)
+            lock (Clients)
             {
-                _writerLock.AcquireWriterLock(Timeout.Infinite);
+                if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContext.Config.SaveRate)
                 {
-                    client.Save();
-                }
+                    _writerLock.AcquireWriterLock(Timeout.Infinite);
+                    {
+                        client.Save();
+                    }
 
-                if (_writerLock.IsWriterLockHeld)
-                {
-                    _writerLock.ReleaseWriterLock();
+                    if (_writerLock.IsWriterLockHeld)
+                    {
+                        _writerLock.ReleaseWriterLock();
+                    }
                 }
             }
         }
@@ -87,26 +90,11 @@ namespace Darkages.Network.Game
                 }
                 catch (Exception error)
                 {
-                    Console.WriteLine(error.Message + "\n" + error.StackTrace);
+                    ServerContext.Info?.Error("Error In Client Worker", error);
                 }
 
                 lastClientUpdate = DateTime.UtcNow;
                 Thread.Sleep(ClientUpdateSpan);
-            }
-        }
-
-        public override void ClientHandler(object obj)
-        {
-            if (obj is GameClient)
-            {
-                var client = (GameClient)obj;
-
-                while (client.WorkSocket.Connected)
-                {
-                    Thread.Sleep(100);
-                }
-                Console.WriteLine("ClientHandler: {0} Ended.", client.Serial);
-                ClientDisconnected(client);
             }
         }
 
@@ -129,7 +117,7 @@ namespace Darkages.Network.Game
                 }
                 catch (Exception error)
                 {
-                    Console.WriteLine(error.Message + "\n" + error.StackTrace);
+                    ServerContext.Info?.Error("Error In Heavy Worker", error);
                 }
 
                 lastHeavyUpdate = DateTime.UtcNow;
@@ -153,7 +141,7 @@ namespace Darkages.Network.Game
                 }
                 catch (Exception error)
                 {
-                    Console.WriteLine(error.Message + "\n" + error.StackTrace);
+                    ServerContext.Info?.Error("Error In Server Worker", error);
                 }
 
                 lastServerUpdate = DateTime.UtcNow;
@@ -163,11 +151,9 @@ namespace Darkages.Network.Game
 
         public void InitializeGameServer()
         {
-            ObjectFactory = new ObjectService();
-
             InitComponentCache();
 
-            Console.WriteLine(string.Format("[Lorule] {0} Server Components loaded.", Components.Count));
+            ServerContext.Info?.Info(string.Format("[Lorule] {0} Server Components loaded.", Components.Count));
         }
 
         private void InitComponentCache()
@@ -205,20 +191,26 @@ namespace Darkages.Network.Game
             if (ServerContext.Paused || !ServerContext.Running)
                 return;
 
-            foreach (var component in Components.Values)
+            lock (Components)
             {
-                component.Update(elapsedTime);
+                foreach (var component in Components.Values)
+                {
+                    component.Update(elapsedTime);
+                }
             }
         }
 
-        private static void UpdateAreas(TimeSpan elapsedTime)
+        private void UpdateAreas(TimeSpan elapsedTime)
         {
             if (ServerContext.Paused || !ServerContext.Running)
                 return;
 
-            foreach (var area in ServerContext.GlobalMapCache.Values)
+            lock (Clients)
             {
-                area.Update(elapsedTime);
+                foreach (var area in ServerContext.GlobalMapCache.Values)
+                {
+                    area.Update(elapsedTime);
+                }
             }
         }
 
@@ -227,34 +219,44 @@ namespace Darkages.Network.Game
             if (ServerContext.Paused || !ServerContext.Running)
                 return;
 
-            foreach (var client in Clients)
+            lock (Clients)
             {
-                if (client != null && client.Aisling != null)
+                foreach (var client in Clients)
                 {
-                    client.Update(elapsedTime);
+                    if (client != null && client.Aisling != null)
+                    {
+                        client.Update(elapsedTime);
+                    }
                 }
             }
         }
 
         public override void ClientDisconnected(GameClient client)
         {
-            if (client == null || client.Aisling == null)
-                return;
+            lock (Clients)
+            {
+                if (client == null || client.Aisling == null)
+                    return;
 
-            try
-            {
-                AutoSave(client);
+                try
+                {
+                    AutoSave(client);
 
-                client.Aisling.LoggedIn = false;
-                client.Aisling.Remove(true);
-            }
-            catch (Exception)
-            {
-                //Ignore
-            }
-            finally
-            {
-                base.ClientDisconnected(client);
+                    
+
+                    ServerContext.Info.Debug("{0}'s gameplay elapsed: {1}", client.Aisling.Username, RelativeTime.TimeSpanExtensions.ToHumanString((DateTime.UtcNow - client.Aisling.LastLogged)));
+                    ServerContext.Info.Warning("{0} has disconnected from server.", client.Aisling.Username);
+                    client.Aisling.LoggedIn = false;
+                    client.Aisling.Remove(true);
+                }
+                catch (Exception)
+                {
+                    //Ignore
+                }
+                finally
+                {
+                    base.ClientDisconnected(client);
+                }
             }
         }
 

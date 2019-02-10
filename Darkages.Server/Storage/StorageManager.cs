@@ -28,6 +28,7 @@ namespace Darkages.Storage
         public static JsonSerializerSettings Settings = new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.All,
+            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
             Formatting = Formatting.Indented,
         };
 

@@ -151,9 +151,6 @@ namespace Darkages.Network.Game
             }
 
 
-            if (ServerContext.Config.DebugMode)
-                Console.WriteLine("[{0}] Connection Established to Game Server", client.Aisling.Username);
-
             client.Encryption.Parameters = format.Parameters;
             client.Server = this;
 

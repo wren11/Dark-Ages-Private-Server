@@ -93,9 +93,6 @@ namespace Darkages.Network
                 Reader.Position = -1;
             }
 
-            if (ServerContext.Config?.LogRecvPackets ?? false)
-                Console.WriteLine("r: {0}", packet);
-
 
             Reader.Packet = packet;
             format.Serialize(Reader);
@@ -203,19 +200,6 @@ namespace Darkages.Network
             var buffer = packet.ToArray();
 
             AddBuffer(buffer);
-        }
-
-        private void OnSendCompleted(IAsyncResult ar)
-        {
-            var buffer = (byte[])ar.AsyncState;
-            var bytes  = WorkSocket.EndSend(ar);
-
-            if (bytes <= 0 || buffer.Length != bytes)
-            {
-                var remaining = Math.Abs(buffer.Length - bytes);
-
-                Console.WriteLine("Error: Packet out of order.");
-            }
         }
 
         private NetworkPacket GetPacket(NetworkFormat format)

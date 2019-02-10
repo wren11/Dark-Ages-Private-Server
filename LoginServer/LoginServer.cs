@@ -111,7 +111,7 @@ namespace LoginServer
             template.HairColor = format.HairColor;
             template.HairStyle = format.HairStyle;
 
-            Console.WriteLine  ("New character Created: " + template.Username);
+            ServerContext.Info?.Info("New character Created: " + template.Username);
 
             StorageManager.AislingBucket.Save(template);
             client.SendMessageBox(0x00, "\0");
@@ -161,7 +161,7 @@ namespace LoginServer
 
             if (_aisling != null)
             {
-                Console.WriteLine("Player Entering Game: {0}" , _aisling.Username);
+                ServerContext.Info?.Info("Player Entering Game: {0}" , _aisling.Username);
 
                 var redirect = new Redirect
                 {

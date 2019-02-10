@@ -23,6 +23,7 @@ using System;
 
 namespace Darkages.Types
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class Debuff
     {
         public Debuff()
@@ -30,12 +31,19 @@ namespace Darkages.Types
             Timer = new GameServerTimer(TimeSpan.FromSeconds(1));
         }
 
+        [JsonProperty]
         public virtual string Name { get; set; }
+
+        [JsonProperty]
         public virtual int Length { get; set; }
+
+        [JsonProperty]
         public virtual byte Icon { get; set; }
 
+        [JsonProperty]
         public virtual bool Cancelled { get; set; }
 
+        [JsonIgnore]
         public GameServerTimer Timer { get; set; }
 
         public bool Has(string name)

@@ -104,7 +104,6 @@ namespace Darkages.Scripting.Scripts.Skills
                             }
                         }
 
-                        Console.WriteLine("Dealing: {0}", dmg);
 
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
                         success = true;

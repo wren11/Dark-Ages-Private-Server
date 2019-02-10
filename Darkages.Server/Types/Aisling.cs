@@ -22,7 +22,6 @@ using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;

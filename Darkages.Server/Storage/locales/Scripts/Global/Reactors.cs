@@ -76,7 +76,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                 }
             }
 
-            Console.WriteLine("[{0}] Reactor Scripts Loaded: {1}", Client.Aisling.Username, Scripts.Count);
+            ServerContext.Info?.Info("[{0}] Reactor Scripts Loaded: {1}", Client.Aisling.Username, Scripts.Count);
         }
 
         public override void OnDeath(GameClient client, TimeSpan elapsedTime)

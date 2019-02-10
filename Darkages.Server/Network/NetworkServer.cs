@@ -228,8 +228,8 @@ namespace Darkages.Network
         }
 
         public virtual void ClientConnected(TClient client)
-        {          
-            Console.WriteLine("Connection From {0} Established.", client.WorkSocket.RemoteEndPoint.ToString());
+        {
+            ServerContext.Info?.Warning("Connection From {0} Established.", client.WorkSocket.RemoteEndPoint.ToString());
         }
 
         public static Cache<byte, NetworkFormat> FormatCache = new Cache<byte, NetworkFormat>();

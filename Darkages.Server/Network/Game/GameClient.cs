@@ -304,14 +304,20 @@ namespace Darkages.Network.Game
 
         public void UpdateStatusBar(TimeSpan elapsedTime)
         {
-            Aisling.UpdateBuffs(elapsedTime);
-            Aisling.UpdateDebuffs(elapsedTime);
+            lock (Aisling)
+            {
+                Aisling.UpdateBuffs(elapsedTime);
+                Aisling.UpdateDebuffs(elapsedTime);
+            }
         }
 
         public void UpdateGlobalScripts(TimeSpan elapsedTime)
         {
-            foreach (var globalscript in GlobalScripts)
-                globalscript?.Update(elapsedTime);
+            lock (GlobalScripts)
+            {
+                foreach (var globalscript in GlobalScripts)
+                    globalscript?.Update(elapsedTime);
+            }
         }
 
         private void Regeneration(TimeSpan elapsedTime)
