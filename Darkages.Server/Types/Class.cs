@@ -17,7 +17,7 @@
 //*************************************************************************/
 namespace Darkages.Types
 {
-    public enum Class
+    public enum Class : int 
     {
         Peasant,
         Warrior,

@@ -21,6 +21,17 @@ namespace Darkages.Types
 
     public class Reactor : Template
     {
+        [JsonIgnore]
+        public readonly int Id;
+
+        public Reactor()
+        {
+            lock (Generator.Random)
+            {
+                Id = Generator.GenerateNumber();
+            }
+        }
+
         public string ScriptKey { get; set; }
 
         public string CallBackScriptKey { get; set; }
@@ -33,7 +44,7 @@ namespace Darkages.Types
 
         public Position Location { get; set; }
 
-        public Quest QuestReward { get; set; }
+        public Quest Quest { get; set; }
 
         [JsonIgnore]
         public int Index { get; set; }

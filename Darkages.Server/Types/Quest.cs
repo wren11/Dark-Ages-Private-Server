@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Newtonsoft.Json;
@@ -38,6 +39,17 @@ namespace Darkages.Types
 
     public class Quest
     {
+        [JsonIgnore]
+        public readonly int Id;
+
+        public Quest()
+        {
+            lock (Generator.Random)
+            {
+                Id = Generator.GenerateNumber();
+            }
+        }
+
         public List<string> ItemRewards = new List<string>();
         public List<Legend.LegendItem> LegendRewards = new List<Legend.LegendItem>();
 
@@ -76,33 +88,47 @@ namespace Darkages.Types
 
             user.SendAnimation(22, user, user);
 
-            var completeStages = QuestStages.Where(i => i.StepComplete).SelectMany(i => i.Prerequisites);
-
-            foreach (var step in completeStages)
+            lock (QuestStages)
             {
-                if (step.Type == QuestType.ItemHandIn)
-                {
-                    var obj = user.Inventory.Get(o => o.Template.Name == step.TemplateContext.Name)
-                        .FirstOrDefault();
+                var completeStages = QuestStages.Where(i => i.StepComplete).SelectMany(i => i.Prerequisites).ToArray();
 
-                    if (obj != null && obj.Template.Flags.HasFlag(ItemFlags.QuestRelated))
-                        if (step.IsMet(user, b => b(obj.Template)))
-                            user.Inventory.RemoveRange(user.Client, obj, step.Amount);
+                foreach (var step in completeStages)
+                {
+                    if (step.Type == QuestType.ItemHandIn)
+                    {
+                        var objs = user.Inventory.Get(o => o.Template.Name == step.TemplateContext.Name);
+
+                        foreach (var obj in objs)
+                        {
+                            if (obj != null && obj.Template.Flags.HasFlag(ItemFlags.QuestRelated))
+                            {
+                                if (step.IsMet(user, b => b(obj.Template)))
+                                    user.Inventory.RemoveRange(user.Client, obj, step.Amount);
+                            }
+                            else if (obj != null)
+                            {
+                                if (step.IsMet(user, b => b(obj.Template)))
+                                {
+                                    user.Inventory.Remove(user.Client, obj);
+                                }
+                            }
+                        }
+                    }
+
+                    if (step.Type == QuestType.SingleItemHandIn)
+                    {
+                        var obj = user.Inventory.Get(o => o.Template.Name == step.TemplateContext.Name)
+                            .FirstOrDefault();
+
+                        if (obj != null && obj.Template.Flags.HasFlag(ItemFlags.QuestRelated))
+                            if (step.IsMet(user, b => b(obj.Template)))
+                                user.EquipmentManager.RemoveFromInventory(obj, true);
+
+                    }
                 }
 
-                if (step.Type == QuestType.SingleItemHandIn)
-                {
-                    var obj = user.Inventory.Get(o => o.Template.Name == step.TemplateContext.Name)
-                        .FirstOrDefault();
-
-                    if (obj != null && obj.Template.Flags.HasFlag(ItemFlags.QuestRelated))
-                        if (step.IsMet(user, b => b(obj.Template)))
-                            user.EquipmentManager.RemoveFromInventory(obj, true);
-
-                }
+                Rewards(user, equipLoot);
             }
-
-            Rewards(user, equipLoot);
         }
 
         public void Rewards(Aisling user, bool equipLoot)
@@ -203,19 +229,30 @@ namespace Darkages.Types
         }
 
 
-        public void HandleQuest(GameClient client, Dialog menu = null)
+        public void HandleQuest(GameClient client, Dialog menu = null, Action<bool> cb = null)
         {
             var valid = false;
 
             foreach (var stage in QuestStages)
+            {
+                var results = new List<bool>();
                 foreach (var reqs in stage.Prerequisites)
                 {
-                    valid = reqs.IsMet(client.Aisling, i => i(reqs.TemplateContext));
-                    stage.StepComplete = valid;
+                    results.Add(reqs.IsMet(client.Aisling, i => i(reqs.TemplateContext)));
                 }
+
+                valid = results.TrueForAll(i => i != false);
+                stage.StepComplete = valid;
+            }
 
             if (menu == null)
             {
+                if (cb != null)
+                {
+                    cb.Invoke(valid);
+                    return;
+                }
+
                 if (valid && !Rewarded)
                 {
                     OnCompleted(client.Aisling);

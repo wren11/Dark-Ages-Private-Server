@@ -74,8 +74,8 @@ namespace Darkages.Assets.locales.Scripts.Reactors
                 aisling.ActiveReactor = null;
                 aisling.Client.CloseDialog();
 
-                if (Reactor.QuestReward != null)
-                    Reactor.QuestReward.Rewards(aisling, false);
+                if (Reactor.Quest != null)
+                    Reactor.Quest.Rewards(aisling, false);
 
                 if (Reactor.PostScript != null)
                 {

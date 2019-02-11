@@ -330,12 +330,14 @@
     <Compile Include="Storage\locales\Scripts\Mundanes\GrandMaster01.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\LearnSkills.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\Macronator.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\Mileth_Erin.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\MunedaneReactorExample.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\shop1.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\shop2.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\sunup.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\TowerDefenseHandler.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\UserHelper.cs" />
+    <Compile Include="Storage\locales\Scripts\Reactors\DefaultResponseHandler.cs" />
     <Compile Include="Storage\locales\Scripts\Reactors\ExampleReactor.cs" />
     <Compile Include="Storage\locales\Scripts\Reactors\ExampleReactor2.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Ambush.cs" />

@@ -40,6 +40,7 @@ namespace Darkages
     public class ServerContext : ObjectManager
     {
         internal static object SyncObj = new object();
+        internal static Exception UnhandledException = new Exception();
 
         public static int Errors, DefaultPort;
 
@@ -446,13 +447,14 @@ namespace Darkages
                 EnableWalking = false,
                 Group = "Monk Helpers",
                 Level = 99,
-                Name = "Erlung",
+                Name = "Erln",
                 QuestKey = "Monk: Beginner Equipment",
+                ScriptKey = "Erin's Script",
                 PathQualifer = PathQualifer.Fixed,
                 X = 88,
                 Y = 17,
 
-                Image = (16384 + 365),
+                Image = (16384 + 126),
                 ViewingQualifer = ViewQualifer.Monks,
             };
 

@@ -106,7 +106,17 @@ namespace Darkages.Types
             var items = Items.Where(i => i.Value != null && i.Value.Template.Name == templateContext.Name)
                 .Select(i => i.Value).ToList();
 
-            return items.Sum(i => i.Stacks);
+            var anyItem = items.FirstOrDefault();
+
+            if (anyItem == null)
+                return 0;
+
+            if (anyItem.Template == null)
+                return 0;
+
+            var result = anyItem.Template.CanStack ? items.Sum(i => i.Stacks) : items.Count;
+
+            return result;
         }
 
 

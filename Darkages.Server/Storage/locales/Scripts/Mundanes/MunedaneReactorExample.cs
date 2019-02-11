@@ -82,7 +82,7 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
                             Title = "Wren"
                         },
                     },
-                QuestReward = new Quest()
+                Quest = new Quest()
                 {
                     Name = "Wren's Quest",
                     ExpRewards = new List<uint>()

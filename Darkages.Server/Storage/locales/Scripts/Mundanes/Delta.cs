@@ -141,7 +141,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             q2.Prerequisites.Add(new QuestRequirement
             {
                 Type = QuestType.KillCount,
-                Amount = 10,
+                Amount = 5,
                 Value = "Undead",
             });
 
@@ -196,7 +196,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         }
                         break;
                     case 0x0010:
-                        client.SendOptionsDialog(Mundane, "I need you to kill some zombies for me. {=u(10)");
+                        client.SendOptionsDialog(Mundane, "I need you to kill some zombies for me. {=u(5)");
 
                         if (quest != null)
                         {

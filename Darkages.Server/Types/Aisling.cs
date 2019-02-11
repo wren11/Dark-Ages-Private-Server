@@ -167,6 +167,22 @@ namespace Darkages
 
         [JsonIgnore] public ExchangeSession Exchange { get; set; }
 
+        public bool AcceptQuest(Quest quest)
+        {
+            lock (Quests)
+            {
+                if (!Quests.Any(i => i.Name == quest.Name))
+                {
+                    Quests.Add(quest);
+
+                    return true;
+                }
+                    
+            }
+
+            return false;
+        }
+
         [JsonIgnore]
         public Reactor ActiveReactor { get; set; }
 
@@ -262,6 +278,15 @@ namespace Darkages
             spell.InUse = false;
         }
 
+        public void DestroyReactor(Reactor Actor)
+        {
+            if (Reactions.ContainsKey(Actor.Name))
+                Reactions.Remove(Actor.Name);
+
+            ActiveReactor = null;
+            ReactorActive = false;
+            Actor = null;
+        }
 
         public bool HasKilled(string value, int number)
         {

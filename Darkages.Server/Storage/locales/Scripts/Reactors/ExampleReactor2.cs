@@ -90,8 +90,8 @@ namespace Darkages.Assets.locales.Scripts.Reactors
                 foreach (var sequences in Reactor.Steps.Where(i => i.Callback != null))
                     sequences.Callback.Invoke(aisling, sequences);
 
-                if (Reactor.QuestReward != null)
-                    Reactor.QuestReward.Rewards(aisling, false);
+                if (Reactor.Quest != null)
+                    Reactor.Quest.Rewards(aisling, false);
                 
                 if (Reactor.PostScript != null)
                     Reactor.PostScript.OnTriggered(aisling);

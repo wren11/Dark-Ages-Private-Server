@@ -1370,6 +1370,9 @@ namespace Darkages.Network.Game
                     case 255:
                         client.Aisling.ActiveReactor.Script.OnBack(client.Aisling);
                         break;
+                    case 0xFFFF:
+                        client.Aisling.ActiveReactor.Script.OnBack(client.Aisling);
+                        break;
                     case 2:
                         client.Aisling.ActiveReactor.Script.OnClose(client.Aisling);
                         break;
