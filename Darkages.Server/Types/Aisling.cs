@@ -466,6 +466,66 @@ namespace Darkages
             Client?.SendStats(StatusFlags.All);
         }
 
+
+        public bool CastDeath()
+        {
+            if (!Client.Aisling.Flags.HasFlag(AislingFlags.Dead))
+            {
+                LastMapId    = CurrentMapId;
+                LastPosition = Position;
+
+                Client.CloseDialog();
+                Client.Aisling.Flags = AislingFlags.Dead;
+                Client.HpRegenTimer.Disabled = true;
+                Client.MpRegenTimer.Disabled = true;
+
+                Client.LeaveArea(true, false);
+                Client.EnterArea();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public void SendToHell()
+        {
+            if (!ServerContext.GlobalMapCache.ContainsKey(ServerContext.Config.DeathMap))
+                return;
+
+            if (Client.Aisling.CurrentMapId == ServerContext.Config.DeathMap)
+                return;
+
+
+            Remains.Owner = this;
+
+            var reepStack = Remains;
+            var items = reepStack.Items;
+
+            if (items.Count > 0)
+            {
+                Remains.ReepItems(items.ToList());
+            }
+            else
+            {
+                if (Inventory.Length > 0 || EquipmentManager.Length > 0)
+                {
+                    Remains.ReepItems();
+                }
+            }
+
+            RemoveBuffsAndDebuffs();
+            Client.LeaveArea(true, true);
+            Client.Aisling.X = 21;
+            Client.Aisling.Y = 21;
+            Client.Aisling.Direction = 0;
+            Client.Aisling.CurrentMapId = ServerContext.Config.DeathMap;
+            Client.EnterArea();
+
+            UpdateStats();
+        }
+        
+
         /// <summary>
         /// This entire exchange routine was shamelessly copy pasted from Kojasou's Server Project.
         /// (Yes I'm way to lazy to write this myself when it's already been done correctly.)

@@ -19,6 +19,7 @@ using Darkages.Common;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage;
+using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
@@ -70,6 +71,15 @@ namespace Darkages.Network.Game
         public ushort LastBoardActivated { get; set; }
 
         public Item LastItemDropped { get; set; }
+
+        public GameClient()
+        {
+            HpRegenTimer = new GameServerTimer(
+                TimeSpan.FromSeconds(ServerContext.Config.RegenRate));
+
+            MpRegenTimer = new GameServerTimer(
+                TimeSpan.FromSeconds(ServerContext.Config.RegenRate / 2));
+        }
 
         public void BuildSettings()
         {
@@ -263,7 +273,7 @@ namespace Darkages.Network.Game
 
             HandleTimeOuts();
             StatusCheck();
-            Regeneration(elapsedTime);
+            Regen(elapsedTime);
             UpdateStatusBar(elapsedTime);
             UpdateGlobalScripts(elapsedTime);
 
@@ -271,10 +281,83 @@ namespace Darkages.Network.Game
 
         private void StatusCheck()
         {
-            if (Aisling.Flags.HasFlag(AislingFlags.Dead)
-                && (Aisling.Debuffs.Count > 0 || Aisling.Buffs.Count > 0))
+            bool proceed = false;
+
+            if (Aisling.CurrentHp <= 0)
             {
-                Aisling.RemoveBuffsAndDebuffs();
+                Aisling.CurrentHp = -1;
+                proceed = true;
+            }
+
+
+            if (proceed)
+            {
+                Aisling.CurrentHp = 1;
+                SendStats(StatusFlags.StructB);
+
+
+                if (Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill))
+                {
+                    Aisling.CastDeath();
+
+                    var target = Aisling.Target;
+
+                    if (target != null)
+                    {
+                        if (target is Aisling)
+                            SendMessage(Scope.NearbyAislings, 0x02,
+                                Aisling.Username + " has been killed by " + (target as Aisling).Username);
+                    }
+                    else
+                    {
+                        SendMessage(Scope.NearbyAislings, 0x02,
+                            Aisling.Username + " has been killed.");
+                    }
+
+                    return;
+                }
+
+
+                if (Aisling.Path != Class.Peasant)
+                {
+                    if (!Aisling.Skulled)
+                    {
+                        if (Aisling.CurrentMapId == ServerContext.Config.DeathMap)
+                        {
+                            return;
+                        }
+
+                        var debuff = new debuff_reeping();
+                        {
+                            debuff.OnApplied(Aisling, debuff);
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    if (Aisling.AreaID != 85)
+                    {
+                        SendAnimation(78, Aisling, Aisling);
+                        SendMessage(0x02, "You can't die if you have no soul.");
+                        Aisling.Recover();
+                        return;
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 2; i++)
+                            Aisling.RemoveBuffsAndDebuffs();
+
+                        TransitionToMap(1006, new Position(2, 4));
+                        Aisling.TutorialCompleted = true;
+                        {
+                            SendMessage(0x02, "You awake from a bad dream... or was it??");
+                            SendAnimation(94, Aisling, Aisling);
+                            Aisling.Recover();
+                            return;
+                        }
+                    }
+                }
             }
         }
 
@@ -320,82 +403,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        private void Regeneration(TimeSpan elapsedTime)
-        {
-
-            if (HpRegenTimer == null)
-                return;
-
-            if (MpRegenTimer == null)
-                return;
-
-            var hpChanged = false;
-            var mpChanged = false;
-
-            if (Aisling.CurrentHp <= 0)
-            {
-                Aisling.CurrentHp = 0;
-                hpChanged = true;
-            }
-
-
-            HpRegenTimer.Update(elapsedTime);
-            MpRegenTimer.Update(elapsedTime);
-
-            #region Hp Regen
-
-            if (HpRegenTimer.Elapsed)
-            {
-                HpRegenTimer.Reset();
-
-                if (!HpRegenTimer.Disabled && Aisling.LoggedIn)
-                {
-                    if (Aisling.CurrentHp < Aisling.MaximumHp)
-                    {
-                        hpChanged = true;
-
-                        var hpRegenSeed = (Math.Abs(Aisling.Con - Aisling.ExpLevel)).Clamp(0, 10) * 0.01;
-                        var hpRegenAmount = Aisling.MaximumHp * (hpRegenSeed + 0.10);
-
-
-                        Aisling.CurrentHp = (Aisling.CurrentHp + (int)hpRegenAmount).Clamp(0, Aisling.MaximumHp);
-                    }
-                }
-            }
-
-            #endregion
-
-            #region Mp Regen
-
-            if (MpRegenTimer.Elapsed)
-            {
-                MpRegenTimer.Reset();
-                if (!MpRegenTimer.Disabled && Aisling.LoggedIn)
-                {
-                    if (Aisling.CurrentMp < Aisling.MaximumMp)
-                    {
-                        mpChanged = true;
-
-                        var mpRegenSeed = (Math.Abs(Aisling.Wis - Aisling.ExpLevel)).Clamp(0, 10) * 0.01;
-                        var mpRegenAmount = Aisling.MaximumMp * (mpRegenSeed + 0.10);
-
-                        Aisling.CurrentMp = (Aisling.CurrentMp + (int)mpRegenAmount).Clamp(0, Aisling.MaximumMp);
-                    }
-                }
-            }
-
-            #endregion
-
-            if (!IsDead())
-            {
-                if (!Aisling.LoggedIn)
-                    return;
-
-                if (hpChanged || mpChanged)
-                    Send(new ServerFormat08(Aisling, StatusFlags.StructB));
-            }
-        }
-
         public bool Load()
         {
             if (Aisling == null || Aisling.AreaID == 0)
@@ -410,8 +417,6 @@ namespace Darkages.Network.Game
                 LoadGlobalScripts();
                 Thread.Sleep(50);
                 InitSpellBar();
-                Thread.Sleep(50);
-                SetupRegenTimers();
                 Thread.Sleep(50);
                 LoadInventory();
                 Thread.Sleep(50);
@@ -455,15 +460,38 @@ namespace Darkages.Network.Game
                 GlobalScripts.Add(ScriptManager.Load<GlobalScript>(script, this));
         }
 
-        private void SetupRegenTimers()
+        private void Regen(TimeSpan elapsedTime)
         {
-            var HpregenRate = ServerContext.Config.RegenRate;
-            var MpregenRate = ServerContext.Config.RegenRate / 2;
+            if (Aisling.Con > (Aisling.ExpLevel + 10))
+                HpRegenTimer.Delay = TimeSpan.FromSeconds(10.0);
 
-            HpRegenTimer = new GameServerTimer(
-                TimeSpan.FromMilliseconds(HpregenRate));
-            MpRegenTimer = new GameServerTimer(
-                TimeSpan.FromMilliseconds(MpregenRate));
+            if (Aisling.Wis > (Aisling.ExpLevel + 10))
+                MpRegenTimer.Delay = TimeSpan.FromSeconds(10.0);
+
+            HpRegenTimer.Update(elapsedTime);
+            MpRegenTimer.Update(elapsedTime);
+
+            if (HpRegenTimer.Elapsed)
+            {
+                HpRegenTimer.Reset();
+
+                var hpRegenSeed = (Aisling.Con - Aisling.ExpLevel).Clamp(0, 10) * 0.01;
+                var hpRegenAmount = (Aisling.MaximumHp * (hpRegenSeed + 0.10));
+
+                Aisling.CurrentHp = (Aisling.CurrentHp + (int)hpRegenAmount).Clamp(0, Aisling.MaximumHp);
+                SendStats(StatusFlags.StructB);
+            }
+
+            if (MpRegenTimer.Elapsed)
+            {
+                MpRegenTimer.Reset();
+                var mpRegenSeed = (Aisling.Wis - Aisling.ExpLevel).Clamp(0, 10) * 0.01;
+                var mpRegenAmount = (Aisling.MaximumMp * (mpRegenSeed + 0.10));
+
+                Aisling.CurrentMp = (Aisling.CurrentMp + (int)mpRegenAmount).Clamp(0, Aisling.MaximumMp);
+                SendStats(StatusFlags.StructB);
+            }
+
         }
 
         private void InitSpellBar()
@@ -1024,8 +1052,7 @@ namespace Darkages.Network.Game
             Aisling.Flags = AislingFlags.Normal;
             HpRegenTimer.Disabled = false;
             MpRegenTimer.Disabled = false;
-
-            SendStats(StatusFlags.All);
+            Aisling.Recover();
 
             return true;
         }

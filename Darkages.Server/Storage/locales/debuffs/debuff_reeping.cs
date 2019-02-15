@@ -31,6 +31,12 @@ namespace Darkages.Storage.locales.debuffs
         {
             base.OnApplied(Affected, debuff);
 
+            if (Affected.CurrentMapId == ServerContext.Config.DeathMap)
+            {
+                base.OnEnded(Affected, debuff);
+                return;
+            }
+
             if (Affected is Aisling)
             {
                 (Affected as Aisling)
@@ -60,6 +66,12 @@ namespace Darkages.Storage.locales.debuffs
 
         public override void OnDurationUpdate(Sprite Affected, Debuff debuff)
         {
+            if (Affected.CurrentMapId == ServerContext.Config.DeathMap)
+            {
+                base.OnEnded(Affected, debuff);
+                return;
+            }
+
             if (Affected is Aisling)
             {
                 (Affected as Aisling)
@@ -103,6 +115,12 @@ namespace Darkages.Storage.locales.debuffs
 
         public override void OnEnded(Sprite Affected, Debuff debuff)
         {
+            if (Affected.CurrentMapId == ServerContext.Config.DeathMap)
+            {
+                base.OnEnded(Affected, debuff);
+                return;
+            }
+
             if (Affected is Aisling && !debuff.Cancelled)
             {
                 (Affected as Aisling)
@@ -118,11 +136,10 @@ namespace Darkages.Storage.locales.debuffs
 
                 (Affected as Aisling).Show(Scope.Self, hpbar);
                 (Affected as Aisling).Flags = AislingFlags.Dead;
-
-                GrimReaper.CastDeath((Affected as Aisling).Client);
-                GrimReaper.SendToHell((Affected as Aisling).Client);
-
+                (Affected as Aisling).CastDeath();
+                (Affected as Aisling).SendToHell();
             }
+
             base.OnEnded(Affected, debuff);
         }
     }

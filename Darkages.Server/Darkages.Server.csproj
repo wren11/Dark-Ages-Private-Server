@@ -299,7 +299,6 @@
     <Compile Include="Storage\locales\debuffs\debuff_poison.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_reeping.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_sleep.cs" />
-    <Compile Include="Storage\locales\Scripts\Global\GrimReaper.cs" />
     <Compile Include="Storage\locales\Scripts\Global\Reactors.cs" />
     <Compile Include="Storage\locales\Scripts\Global\TowerDefenders.cs" />
     <Compile Include="Storage\locales\Scripts\Global\Tutorial.cs" />

@@ -38,7 +38,7 @@ namespace Darkages
         [JsonIgnore]
         [Browsable(false)]
         private readonly GameServerTimer WarpTimer =
-            new GameServerTimer(TimeSpan.FromSeconds(1.7));
+            new GameServerTimer(TimeSpan.FromSeconds(1.1));
 
         [JsonIgnore]
         [Browsable(false)]
