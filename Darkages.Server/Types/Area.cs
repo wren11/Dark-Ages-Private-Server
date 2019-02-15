@@ -142,6 +142,11 @@ namespace Darkages
             return !isEmpty;
         }
 
+        public void OnEntered(Aisling aisling)
+        {
+
+        }
+
         public bool IsWall(Sprite obj, int x, int y)
         {
             if (obj is Monster)
@@ -265,13 +270,25 @@ namespace Darkages
                     continue;
 
                 foreach (var warpObj in warp.Activations)
+                {
                     foreach (var obj in nearby)
-                        if (obj.Position.WithinSquare(warpObj.Location, 10))
-                            obj.Show(Scope.Self, new ServerFormat29(
-                                295,
-                                warpObj.Location.X, warpObj.Location.Y));
+                    {
+                        if (obj.WithinRangeOf(warpObj.Location.X, warpObj.Location.Y, 16))
+                        {
+                            DisplayWarpTo(warpObj, obj);
+                        }
+                    }
+                }
 
             }
+        }
+
+        public void DisplayWarpTo(Warp warpObj, Aisling obj)
+        {
+            if (obj.Position.WithinSquare(warpObj.Location, 10))
+                obj.Show(Scope.Self, new ServerFormat29(
+                    295,
+                    warpObj.Location.X, warpObj.Location.Y));
         }
 
         public GameServerTimer _Reaper = new GameServerTimer(TimeSpan.FromSeconds(2));
