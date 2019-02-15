@@ -24,6 +24,8 @@ namespace Darkages
 {
     public partial class Area
     {
+        public Sprite Owner { get; set; }
+
         public class MapTile
         {
             public ushort X, Y;

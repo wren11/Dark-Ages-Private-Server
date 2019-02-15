@@ -162,6 +162,15 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 },
             };
 
+            //Check for the presence of the Mundanes quest
+            var lpsubject = client.Aisling.Quests.Find(i => i.Name == Mundane.Template.QuestKey);
+
+            if (lpsubject != null && lpsubject.Completed)
+            {
+                client.SendOptionsDialog(Mundane, "Thanks again. I hope you enjoy those Wolf Earrings.");
+                return;
+            }
+
             Actor.Script = ScriptManager.Load<ReactorScript>(Actor.ScriptKey, Actor);
             if (Actor != null && Actor.Script != null)
                 Actor.Script.OnTriggered(client.Aisling);

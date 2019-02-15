@@ -78,6 +78,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         client.Aisling.TutorialCompleted = true;
                     }
                     break;
+                
             }
         }
 

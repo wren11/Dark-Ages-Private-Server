@@ -161,13 +161,12 @@ namespace Darkages.Network.Game
             Components = new Dictionary<Type, GameServerComponent>
             {
                 [typeof(MonolithComponent)] = new MonolithComponent(this),
-                [typeof(DaytimeComponent)] = new DaytimeComponent(this),
-                [typeof(MundaneComponent)] = new MundaneComponent(this),
-                [typeof(MessageComponent)] = new MessageComponent(this),
-                [typeof(PingComponent)] = new PingComponent(this),
-                [typeof(Save)] = new Save(this),
-                [typeof(BotComponent)] = new BotComponent(this),
-                [typeof(ObjectComponent)] = new ObjectComponent(this),
+                [typeof(DaytimeComponent)]  = new DaytimeComponent(this),
+                [typeof(MundaneComponent)]  = new MundaneComponent(this),
+                [typeof(MessageComponent)]  = new MessageComponent(this),
+                [typeof(PingComponent)]     = new PingComponent(this),
+                [typeof(Save)]              = new Save(this),
+                [typeof(ObjectComponent)]   = new ObjectComponent(this),
             };
         }
 

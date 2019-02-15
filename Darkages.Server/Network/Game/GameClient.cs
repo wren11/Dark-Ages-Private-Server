@@ -824,10 +824,6 @@ namespace Darkages.Network.Game
 
         public void Save()
         {
-            if (Aisling.IsBot)
-            {
-                return;
-            }
 
             ThreadPool.QueueUserWorkItem((state) =>
             {

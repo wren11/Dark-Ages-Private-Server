@@ -184,7 +184,6 @@
     <Compile Include="Network\ClientFormats\ClientFormat7B.cs" />
     <Compile Include="Network\ClientFormats\ClientFormat89.cs" />
     <Compile Include="Network\ClientFormats\Undefined.cs" />
-    <Compile Include="Network\Game\Components\BotComponent.cs" />
     <Compile Include="Network\Game\Components\DaytimeComponent.cs" />
     <Compile Include="Network\Game\Components\MessageComponent.cs" />
     <Compile Include="Network\Game\Components\MonolithComponent.cs" />

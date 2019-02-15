@@ -100,28 +100,55 @@
                                 {
                                     var template = mundane.Template;
 
-                                    if (!template.ViewingQualifer.HasFlag(ViewQualifer.None))
+
+                                    //hide user if they are not a monk.
+                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Monks))
                                     {
-                                        //hide user if they are not a monk.
-                                        if (template.ViewingQualifer.HasFlag(ViewQualifer.Monks))
+                                        if (client.ClassID != 5)
                                         {
-                                            if (client.ClassID != 5)
-                                            {
-                                                skip = true;
-                                            }
+                                            skip = true;
                                         }
-
-                                        //hide user if they are not a warrior.
-                                        if (template.ViewingQualifer.HasFlag(ViewQualifer.Warriors))
-                                        {
-                                            if (client.ClassID != 1)
-                                            {
-                                                skip = true;
-                                            }
-                                        }
-
-                                        //TODO add more classes.
                                     }
+
+                                    //hide user if they are not a warrior.
+                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Warriors))
+                                    {
+                                        if (client.ClassID != 1)
+                                        {
+                                            skip = true;
+                                        }
+                                    }
+
+                                    //hide user if they are not a rogue.
+                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Rogues))
+                                    {
+                                        if (client.ClassID != 2)
+                                        {
+                                            skip = true;
+                                        }
+                                    }
+
+                                    //hide user if they are not a wizard.
+                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Wizards))
+                                    {
+                                        if (client.ClassID != 3)
+                                        {
+                                            skip = true;
+                                        }
+                                    }
+
+                                    //hide user if they are not a priest.
+                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Priests))
+                                    {
+                                        if (client.ClassID != 4)
+                                        {
+                                            skip = true;
+                                        }
+                                    }
+
+
+                                    //TODO add more classes.
+
                                 }
                             }
                             else

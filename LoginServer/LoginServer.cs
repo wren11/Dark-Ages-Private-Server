@@ -38,33 +38,6 @@ namespace LoginServer
         public static MServerTable MServerTable { get; set; }
         public static Notification Notification { get; set; }
 
-        public static int BotIncrement = 1;
-
-        public Aisling CreateBot()
-        {
-            var gender = 1;
-            var template = Aisling.Create();
-
-            unchecked
-            {
-                template.Display = (BodySprite)(gender * 16);
-            }
-            template.Username = "bot_" + BotIncrement;
-            template.Password = "bot";
-            template.Gender = Gender.Male;
-            template.HairColor = (byte)Darkages.Common.Generator.Random.Next(1, 6);
-            template.HairStyle = (byte)Darkages.Common.Generator.Random.Next(1, 8);
-            template._Str = 200;
-            template.ExpLevel = 99;
-            template.X = 5;
-            template.Y = 5;
-            template.IsBot = true;
-
-            BotIncrement++;
-
-            return template;
-
-        }
 
         /// <summary>
         ///     Send Encryption Parameters.
@@ -123,52 +96,42 @@ namespace LoginServer
         protected override void Format03Handler(LoginClient client, ClientFormat03 format)
         {
             Aisling _aisling = null;
-            var IsBot = format.Username == "bot";
 
-            if (!IsBot)
+            try
             {
+                _aisling = StorageManager.AislingBucket.Load(format.Username);
 
-                try
+                if (_aisling != null)
                 {
-                    _aisling = StorageManager.AislingBucket.Load(format.Username);
-
-                    if (_aisling != null)
+                    if (_aisling.Password != format.Password)
                     {
-                        if (_aisling.Password != format.Password)
-                        {
-                            client.SendMessageBox(0x02, "Sorry, Incorrect Password.");
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        client.SendMessageBox(0x02, string.Format("{0} does not exist in this world. You can make this hero by clicking on 'Create'.", format.Username));
+                        client.SendMessageBox(0x02, "Sorry, Incorrect Password.");
                         return;
                     }
                 }
-                catch
+                else
                 {
-                    client.SendMessageBox(0x02, string.Format("{0} is not supported by the new server. Please remake your character. This will not happen when the server goes to beta.", format.Username));
+                    client.SendMessageBox(0x02, string.Format("{0} does not exist in this world. You can make this hero by clicking on 'Create'.", format.Username));
                     return;
                 }
             }
-
-            if (IsBot)
+            catch
             {
-                _aisling = CreateBot();
-                ServerContext.ConnectedBots[_aisling.Username] = _aisling;
+                client.SendMessageBox(0x02, string.Format("{0} is not supported by the new server. Please remake your character. This will not happen when the server goes to beta.", format.Username));
+                return;
             }
+
 
             if (_aisling != null)
             {
-                ServerContext.Info?.Info("Player Entering Game: {0}" , _aisling.Username);
+                ServerContext.Info?.Info("Player Entering Game: {0}", _aisling.Username);
 
                 var redirect = new Redirect
                 {
                     Serial = Convert.ToString(client.Serial),
-                    Salt   = System.Text.Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
-                    Seed   = Convert.ToString(client.Encryption.Parameters.Seed),
-                    Name   = _aisling.Username
+                    Salt = System.Text.Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
+                    Seed = Convert.ToString(client.Encryption.Parameters.Seed),
+                    Name = _aisling.Username
                 };
 
                 client.SendMessageBox(0x00, "\0");

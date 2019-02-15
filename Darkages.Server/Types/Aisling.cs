@@ -167,6 +167,7 @@ namespace Darkages
 
         [JsonIgnore] public ExchangeSession Exchange { get; set; }
 
+
         public bool AcceptQuest(Quest quest)
         {
             lock (Quests)
@@ -196,10 +197,7 @@ namespace Darkages
 
         [JsonIgnore]
         public bool ReactorActive { get; set; }
-        public bool IsBot { get; set; }
 
-        [JsonIgnore]
-        public DateTime LastBotUpdate { get; set; }
 
         [JsonIgnore]
         public HashSet<Sprite> View = new HashSet<Sprite>();
