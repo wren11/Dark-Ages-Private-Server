@@ -87,51 +87,13 @@ namespace Darkages.Storage
 
                     return result;
                 }
-
-                if (obj is GameServer)
-                {
-                    var StoragePath = $@"{ServerContext.StoragePath}\context";
-                    var path = Path.Combine(StoragePath, string.Format("{0}.json", "context"));
-
-                    if (!File.Exists(path))
-                        return null;
-
-                    T result;
-
-                    using (var s = File.OpenRead(path))
-                    using (var f = new StreamReader(s))
-                    {
-                        result = JsonConvert.DeserializeObject<GameServer>(f.ReadToEnd(), Settings) as T;
-                    }
-
-                    return result;
-                }
-
-                if (obj is ObjectService)
-                {
-                    var StoragePath = $@"{ServerContext.StoragePath}\states";
-                    var path = Path.Combine(StoragePath, string.Format("{0}.json", "state_objcache"));
-
-                    if (!File.Exists(path))
-                        return null;
-
-                    T result;
-
-                    using (var s = File.OpenRead(path))
-                    using (var f = new StreamReader(s))
-                    {
-                        result = JsonConvert.DeserializeObject<GameServer>(f.ReadToEnd(), Settings) as T;
-                    }
-
-                    return result;
-                }
-
-                return null;
             }
             catch
             {
                 return null;
             }
+
+            return null;
         }
 
         public static string Save<T>(T obj)
@@ -154,42 +116,7 @@ namespace Darkages.Storage
                     File.WriteAllText(path, objString);
                     return objString;
                 }
-
-                if (obj is ObjectService)
-                {
-                    var StoragePath = $@"{ServerContext.StoragePath}\states";
-
-                    if (!Directory.Exists(StoragePath))
-                        Directory.CreateDirectory(StoragePath);
-
-                    var path = Path.Combine(StoragePath, string.Format("{0}.json", "state_objcache"));
-                    var objString = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
-                    {
-                        TypeNameHandling = TypeNameHandling.All
-                    });
-
-                    File.WriteAllText(path, objString);
-                    return objString;
-                }
-
-                if (obj is GameServer)
-                {
-                    var StoragePath = $@"{ServerContext.StoragePath}\context";
-
-                    if (!Directory.Exists(StoragePath))
-                        Directory.CreateDirectory(StoragePath);
-
-                    var path = Path.Combine(StoragePath, string.Format("{0}.json", "context"));
-                    var objString = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
-                    {
-                        TypeNameHandling = TypeNameHandling.All
-                    });
-
-                    File.WriteAllText(path, objString);
-                    return objString;
-                }
-
-
+                
                 return string.Empty;
             }
             catch

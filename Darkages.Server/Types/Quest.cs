@@ -182,6 +182,7 @@ namespace Darkages.Types
             if (equipLoot)
             {
                 EquipRewards(user);
+                user.Client.Refresh();
             }
 
             user.Client.SendStats(StatusFlags.All);
@@ -289,6 +290,8 @@ namespace Darkages.Types
                 return predicate(i => user.Inventory.HasCount(TemplateContext) >= Amount);
             if (Type == QuestType.SingleItemHandIn)
                 return predicate(i => user.Inventory.HasCount(TemplateContext) >= Amount);
+            if (Type == QuestType.Gossip)
+                return true;
 
             return false;
         }

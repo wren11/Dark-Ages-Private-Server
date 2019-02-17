@@ -2,7 +2,6 @@
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System.Collections.Generic;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -10,9 +9,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
     public class Erin : MundaneScript
     {
         public Reactor Actor;
-
-        public Dictionary<int, Dictionary<string, bool>>
-            Flags = new Dictionary<int, Dictionary<string, bool>>();
 
         public Erin(GameServer server, Mundane mundane) : base(server, mundane)
         {
@@ -25,13 +21,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnClick(GameServer server, GameClient client)
         {
-            if (!Flags.ContainsKey(client.Aisling.Serial))
-            {
-                Flags[client.Aisling.Serial] = new Dictionary<string, bool>();
-                Flags[client.Aisling.Serial]["checkpoint a"] = false;
-                Flags[client.Aisling.Serial]["checkpoint b"] = false;
-            }
-
             bool proceed = client != null && client.Aisling != null && client.Aisling.WithinRangeOf(Mundane);
 
             //Sanity Check
@@ -126,8 +115,12 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     DisplayImage  = (ushort)Mundane.Template.Image,
                     Title         = "Erin",
                     DisplayText   = "I can help you make something a little more violent, but i will need a few things.",
-                    Callback      = new functionCallback((lpAisling, lpSequence) =>
+                    Callback      = ((lpAisling, lpSequence) =>
                     {
+
+                        //callback for when quest was completed at this sequence.
+                        lpSequence.Callback = QuestCompleted;
+
                         //Sanity Check
                         if (lpSequence.HasOptions)
                         {
@@ -146,13 +139,13 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                             else if (subject != null && !subject.Completed)
                             {
                                 //check if the aisling has finished the quest:
-                                Actor.Quest.HandleQuest(lpAisling.Client, null, quest_completed_ok =>
+                                Actor.Quest.HandleQuest(lpAisling.Client, null, quest_completed_ok => 
                                 {
                                     if (quest_completed_ok)
                                     {
-                                         //lpAisling.Client.SendOptionsDialog(Mundane, "I see you have everything. Let me get to work on this.",
-                                         //       new OptionsDataItem(0x004A, "Put a hole here... put the silk through like so...")
-                                         //   );
+                                         lpAisling.Client.SendOptionsDialog(Mundane, "I see you have everything. Let me get to work on this.",
+                                                new OptionsDataItem(0x004A, "Put a hole here... put the silk through like so...")
+                                            );
                                     }
                                     else
                                     {
@@ -167,25 +160,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         }
                     }),
                 },
-                new DialogSequence()
-                {
-                    HasOptions    = true,
-                    CanMoveBack   = true,
-                    CanMoveNext   = true,
-                    DisplayImage  = (ushort)Mundane.Template.Image,
-                    Title         = "Erin",
-                    DisplayText  = "I see you have everything. Let me get to work on this.",
-                    Callback     = new functionCallback((EverythingReady)),
-                },
-                new DialogSequence()
-                {
-                CanMoveBack = false,
-                CanMoveNext = true,
-                DisplayImage = (ushort)Mundane.Template.Image,
-                DisplayText = "Put a hole here... put the silk through like so...",
-                Callback = new functionCallback(QuestCompleted),
-                HasOptions = false,
-                }
             };
 
             //Check for the presence of the Mundanes quest
@@ -202,16 +176,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 Actor.Script.OnTriggered(client.Aisling);
         }
 
-        private void EverythingReady(Aisling a, DialogSequence b)
-        {
-            Actor.Script.OnTriggered(a);
-            Flags[a.Serial]["checkpoint a"] = true;
-        }
-
         private void QuestCompleted(Aisling aisling, DialogSequence b)
         {
-            Flags[aisling.Serial]["checkpoint b"] = true;
-
             aisling.Client.SendOptionsDialog(Mundane, "Ah there we go, splendid! this should be useful to you for a while. Come back again another time, i might be able to make you something even better.");
 
             var subject = aisling.Quests.Find(i => i.Name == Mundane.Template.QuestKey);

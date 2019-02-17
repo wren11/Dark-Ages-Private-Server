@@ -3,17 +3,17 @@
     using global::Darkages.Scripting;
     using global::Darkages.Types;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     namespace Darkages.Assets.locales.Scripts.Reactors
     {
         [Script("Default Response Handler")]
-        public class ExampleReactor2 : ReactorScript
+        public class DefaultReactor : ReactorScript
         {
-            public ExampleReactor2(Reactor reactor) : base(reactor)
+            public DefaultReactor(Reactor reactor) : base(reactor)
             {
-                Reactor
-                     = reactor;
+                Reactor = reactor;
             }
 
             public override void OnBack(Aisling aisling)
@@ -65,14 +65,23 @@
             {
                 if (aisling.ReactedWith(Reactor.Name))
                 {
-                    foreach (var sequences in Reactor.Steps.Where(i => i.Callback != null))
+                    foreach (var sequences in Reactor.Steps.Where(i => i.Callback != null && !i.Processed))
+                    {
                         sequences.Callback.Invoke(aisling, sequences);
+                    }
+
+                    if (Reactor.CanActAgain)
+                    {
+                        aisling.Reactions.Remove(Reactor.Name);
+                    }
                 }
                 else
                 {
-                    aisling.ReactorActive = true;
-                    aisling.ActiveReactor = Reactor;
-                    aisling.ActiveReactor.Next(aisling.Client);
+                    if (aisling.ActiveReactor != null)
+                    {
+                        aisling.ReactorActive = true;
+                        aisling.ActiveReactor.Next(aisling.Client);
+                    }
                 }
             }
 
@@ -88,11 +97,28 @@
                     aisling.ActiveReactor = null;
                     aisling.Client.CloseDialog();
 
-                    foreach (var sequences in Reactor.Steps.Where(i => i.Callback != null))
-                        sequences.Callback.Invoke(aisling, sequences);
+                    if (Reactor.Quest != null && !Reactor.Quest.Completed)
+                    {
+                        var aisling_quest = aisling.Quests.Find(i => i.Name == Reactor.Quest.Name);
 
-                    if (Reactor.Quest != null && Reactor.Quest.Completed)
-                        Reactor.Quest.Rewards(aisling, false);
+                        if (aisling_quest == null)
+                        {
+                            aisling.AcceptQuest(Reactor.Quest);
+                            aisling_quest = aisling.Quests.Find(i => i.Name == Reactor.Quest.Name);
+                        }
+
+                        if (!aisling_quest.Completed)
+                        {
+                            aisling_quest.HandleQuest(aisling.Client, null, quest_completed_ok =>
+                            {
+                                if (quest_completed_ok)
+                                {
+                                    aisling_quest.Completed = true;
+                                    aisling_quest.OnCompleted(aisling, true);
+                                }
+                            });
+                        }
+                    }
 
                     if (Reactor.PostScript != null)
                         Reactor.PostScript.OnTriggered(aisling);

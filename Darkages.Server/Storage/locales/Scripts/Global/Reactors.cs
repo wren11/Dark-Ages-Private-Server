@@ -27,13 +27,11 @@ namespace Darkages.Storage.locales.Scripts.Global
     [Script("Reactors",  author: "Dean")]
     public class Reactors : GlobalScript
     {
-        GameClient Client;
         public List<ReactorScript> Scripts = new List<ReactorScript>();
 
         public Reactors(GameClient client) : base(client)
         {
-            Client = client;
-
+            Timer = new GameServerTimer(TimeSpan.FromMilliseconds(100));
             LoadReactorScripts();
         }
 
@@ -79,19 +77,14 @@ namespace Darkages.Storage.locales.Scripts.Global
             ServerContext.Info?.Info("[{0}] Reactor Scripts Loaded: {1}", Client.Aisling.Username, Scripts.Count);
         }
 
-        public override void OnDeath(GameClient client, TimeSpan elapsedTime)
-        {
-
-        }
-
-        public override void Update(TimeSpan elapsedTime)
+        public override void Run(GameClient client)
         {
             if (Client == null)
                 return;
 
             if (Client.IsRefreshing)
                 return;
-                   
+
             if (Client.Aisling != null && Client.Aisling.LoggedIn)
             {
                 if (Client.Aisling.Map == null)
@@ -135,6 +128,20 @@ namespace Darkages.Storage.locales.Scripts.Global
                         }
                         #endregion
                     }
+                }
+            }
+        }
+
+        public override void Update(TimeSpan elapsedTime)
+        {
+            if (Timer != null)
+            {
+                Timer.Update(elapsedTime);
+
+                if (Timer.Elapsed)
+                {
+                    Run(Client);
+                    Timer.Reset();
                 }
             }
         }

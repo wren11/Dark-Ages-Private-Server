@@ -58,7 +58,7 @@ namespace Darkages.Types
             return Items.Values.Where(i => i != null && prediate(i)).ToArray();
         }
 
-        public Item Return(Predicate<Item> prediate)
+        public Item Has(Predicate<Item> prediate)
         {
             return Items.Values.Where(i => i != null && prediate(i)).FirstOrDefault();
         }

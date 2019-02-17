@@ -116,6 +116,8 @@ namespace Darkages.Types
 
         public string BaseName { get; set; }
 
+        public int EngagedWalkingSpeed { get;set; }
+
         public bool ReadyToSpawn()
         {
             if (Ready)

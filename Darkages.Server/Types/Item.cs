@@ -639,6 +639,15 @@ namespace Darkages.Types
             }
         }
 
+        public static Item Create(Sprite owner, string item, bool curse = false)
+        {
+            if (!ServerContext.GlobalItemTemplateCache.ContainsKey(item))
+                return null;
+
+            var template = ServerContext.GlobalItemTemplateCache[item];
+            return Create(owner, template, curse);
+        }
+
         public static Item Create(Sprite Owner, ItemTemplate itemtemplate, bool curse = false)
         {
             if (Owner == null)

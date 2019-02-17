@@ -69,7 +69,7 @@ namespace Darkages
 
         [JsonProperty] public string ConAddedMessage = "You become more fit.";
 
-        [JsonProperty] public int ConnectionCapacity = 200;
+        [JsonProperty] public int ConnectionCapacity = 300;
 
         [JsonProperty]
         /// <summary>
@@ -109,15 +109,13 @@ namespace Darkages
 
         [JsonProperty] public bool DontTurnDuringRefresh;
 
-        [JsonProperty] public double DropDecayInSeconds = 120;
-
         [JsonProperty] public int ERRORCAP = 5;
 
         [JsonProperty]
         /// <summary>
         /// Ms between 0 cooldown based skills.
         /// </summary>
-        public double GlobalBaseSkillDelay = 650;
+        public double GlobalBaseSkillDelay = 750;
 
         [JsonProperty]
         /// <summary>
@@ -126,7 +124,7 @@ namespace Darkages
         /// But this controls how often we spin up the templates.
         /// By default,and to keep things lowcpu usage, i would not go below 1000ms.
         /// </summary>
-        public double GlobalSpawnTimer = 1000.0f;
+        public double GlobalSpawnTimer = 2000.0f;
 
         [JsonProperty] public string GroupRequestDeclinedMsg = "noname does not wish to join your group.";
 
@@ -136,15 +134,6 @@ namespace Darkages
         /// This can be anything stating with C, and ending with \n.
         /// </summary>
         public string HandShakeMessage = "CAN WE ALL GET ALONG\n";
-
-        [JsonProperty]
-        /// <summary>
-        /// In milliseconds, what is the tolerance allowed to a chance to heal-out?
-        /// using heals, items, skills that grant +HP?
-        /// by default this is 300ms, You should increase this to increase the chances of healing out.
-        /// i would not recommend a value higher then 750ms, as healing out will become to likely.
-        /// </summary>
-        public double HealoutTolerance = 200;
 
         [JsonProperty] public int HelperMenuId = -1;
 
@@ -159,20 +148,6 @@ namespace Darkages
         /// How long should an aisling linger around, before we declare them as logged-in?
         /// </summary>
         public double LingerState = 1000;
-
-        [JsonProperty] public int LOGIN_PORT = 2610;
-
-        [JsonProperty]
-        /// <summary>
-        /// Log Gameserver Recv Packets?
-        /// </summary>
-        public bool LogRecvPackets;
-
-        [JsonProperty]
-        /// <summary>
-        /// Log Gameserver Sent Packets?
-        /// </summary>
-        public bool LogSentPackets;
 
         [JsonProperty] public int MaxCarryGold = 100000000;
 
@@ -190,9 +165,6 @@ namespace Darkages
         /// </summary>
         public int MinimumHp = 50;
 
-
-        [JsonProperty] public ushort MonsterDeathAnimationNumber = 350;
-
         [JsonProperty] public int MonsterSpellSuccessRate = 30;
 
         [JsonProperty]
@@ -206,16 +178,6 @@ namespace Darkages
         public double MundaneRespawnInterval = 10.0;
 
         [JsonProperty] public string NotEnoughGoldToDropMsg = "You wish you had that much.";
-
-        [JsonProperty] public double ObjectGarbageCollectorInterval = 1200;
-
-        [JsonProperty]
-        /// <summary>
-        /// In Seconds, How often should we check for new objects around aislings
-        /// and remove out of view objects, add inview objects?
-        /// This value is in seconds, And to keep usage low, I would not recommend going below 1.
-        /// </summary>
-        public double ObjectHandlerInterval = 2;
 
         [JsonProperty]
         /// <summary>
@@ -254,12 +216,9 @@ namespace Darkages
         [JsonProperty]
         public string ServerWelcomeMessage = "Welcome to Lorule, If you need help, Please use The [F1] menu.";
 
-        [JsonProperty] public bool ShowMonsterDeathAnimation;
+        [JsonProperty] public int StartingMap = 888;
 
-
-        [JsonProperty] public int StartingMap = 100;
-
-        [JsonProperty] public Position StartingPosition = new Position(5, 5);
+        [JsonProperty] public Position StartingPosition = new Position(26, 48);
 
         [JsonProperty]
         /// <summary>
@@ -280,19 +239,13 @@ namespace Darkages
 
         [JsonProperty] public string UserDroppedGoldMsg = "noname has dropped some money nearby.";
 
-        [JsonProperty] public int Version = 718;
-
-        [JsonProperty] public int VeryNearByProximity = 4;
-
-        [JsonProperty] public ushort WarpAnimationNumber = 214;
-
-        [JsonProperty] public double WarpUpdateTimer = 1;
+        [JsonProperty] public int VeryNearByProximity = 6;
 
         [JsonProperty] public double WeightIncreaseModifer = 3.5;
 
         [JsonProperty] public string WisAddedMessage = "Your will increases.";
 
-        [JsonProperty] public int WithinRangeProximity = 10;
+        [JsonProperty] public int WithinRangeProximity = 12;
 
         [JsonProperty] public string YouDroppedGoldMsg = "you dropped some gold.";
 
@@ -328,9 +281,7 @@ namespace Darkages
         [JsonProperty]
         public string[] GlobalScripts = new string[]
         {
-            "Grim Reaper",
-            "Tutorial",
-            "Tower Defender Player Reaper",
+            "Tut",
             "Reactors",
             "WishingWell"
         };

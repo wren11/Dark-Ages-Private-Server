@@ -58,14 +58,20 @@ namespace Darkages.Types
         [JsonIgnore]
         public ReactorScript PostScript { get; set; }
 
+        public bool CanActAgain { get; set; }
+
         public List<DialogSequence> Steps = new List<DialogSequence>();
 
         public void Update(GameClient client)
         {
-            if (client.Aisling.ActiveReactor == null)
+            if (client.Aisling.CanReact)
             {
+                client.Aisling.CanReact = false;
+
                 if (Script != null)
+                {
                     Script.OnTriggered(client.Aisling);
+                }
             }
         }
 
@@ -78,12 +84,19 @@ namespace Darkages.Types
             {
                 client.Send(new ReactorSequence(client, Steps[Index]));
 
+                if (Steps[Index].Callback != null)
+                {
+                    Steps[Index].Callback.Invoke(client.Aisling, Steps[Index]);
+                }
+
                 return;
             }
 
             var first = Steps[Index = 0];
             if (first != null)
+            {
                 client.Send(new ReactorSequence(client, first));
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace Darkages.Services.www
 {
@@ -56,40 +57,43 @@ namespace Darkages.Services.www
 
         public void Run()
         {
-
-            Console.WriteLine($"[Lorule] Webserver running... (Online)");
-            try
+            ThreadPool.QueueUserWorkItem((o) =>
             {
-                while (_listener.IsListening)
+                Console.WriteLine($"[Lorule] Webserver running... (0)");
+                try
                 {
-
-                    var ctx = _listener.GetContext();
-                    try
+                    while (_listener.IsListening)
                     {
-                        var rstr = _responderMethod(ctx.Request);
-                        var matches = Regex.Match(ctx.Request.RawUrl, "/[?=].+?[&]/g");
-                        var file = ctx.Request.RawUrl.Contains(".html") ? ctx.Request.RawUrl.Split(new string[] { ".html" }, StringSplitOptions.RemoveEmptyEntries)[0] + ".html" : ctx.Request.RawUrl;
-                        var args = ctx.Request.RawUrl.Split(new char[] { '?', '=', '&' }, StringSplitOptions.RemoveEmptyEntries);
-                        var valid = Path.GetFullPath($"{Environment.CurrentDirectory}\\services\\www\\http\\{file}");
+                        ThreadPool.QueueUserWorkItem((c) =>
+                        {
+                            var ctx = c as HttpListenerContext;
+                            try
+                            {
+                                var rstr = _responderMethod(ctx.Request);
+                                var matches = Regex.Match(ctx.Request.RawUrl, "/[?=].+?[&]/g");
+                                var file = ctx.Request.RawUrl.Contains(".html") ? ctx.Request.RawUrl.Split(new string[] { ".html" }, StringSplitOptions.RemoveEmptyEntries)[0] + ".html" : ctx.Request.RawUrl;
+                                var args = ctx.Request.RawUrl.Split(new char[] { '?', '=', '&' }, StringSplitOptions.RemoveEmptyEntries);
+                                var valid = Path.GetFullPath($"{Environment.CurrentDirectory}\\services\\www\\http\\{file}");
 
-                        if (File.Exists(valid))
-                            rstr = File.ReadAllText(valid);
+                                if (File.Exists(valid))
+                                    rstr = File.ReadAllText(valid);
 
-                        rstr = GlobalProxySwitch(rstr, args);
+                                rstr = GlobalProxySwitch(rstr, args);
 
-                        var buf = Encoding.UTF8.GetBytes(rstr);
-                        ctx.Response.ContentLength64 = buf.Length;
-                        ctx.Response.OutputStream.Write(buf, 0, buf.Length);
+                                var buf = Encoding.UTF8.GetBytes(rstr);
+                                ctx.Response.ContentLength64 = buf.Length;
+                                ctx.Response.OutputStream.Write(buf, 0, buf.Length);
+                            }
+                            catch { }
+                            finally
+                            {                               
+                                ctx.Response.OutputStream.Close();
+                            }
+                        }, _listener.GetContext());
                     }
-                    catch { }
-                    finally
-                    {
-                        ctx.Response.OutputStream.Close();
-                    }
-
                 }
-            }
-            catch { }
+                catch { }
+            });
         }
 
         public void Stop()
@@ -98,7 +102,7 @@ namespace Darkages.Services.www
             _listener.Close();
         }
 
-        internal string GlobalProxySwitch(string input, params string[] args)
+        public string GlobalProxySwitch(string input, params string[] args)
         {
             var match = Regex.Match(input, "%api/(.*)%");
             if (match.Success)
@@ -118,7 +122,25 @@ namespace Darkages.Services.www
             }
             else
             {
-                input = input.Replace("%user_count%", Info.PlayersOnline.Count.ToString());
+
+                if (Info != null)
+                {
+                    //turn the page on.
+                    input = input.Replace("<div class=\"uk-container\" style=\"display: none \">", "<div class=\"uk-container\">");
+                    input = input.Replace("<div class=\"notice\">Sorry the server appears offline.</div>", "<div class=\"notice\" style=\"display: none\"></div>");
+
+                    input = input.Replace("%user_count%", string.Join(", ", Info.PlayersOnline.Select(i => i.Username)));
+                    input = input.Replace("%Server_Status%", Info.GameServerStatus);
+
+                }
+                else
+                {
+                    //turn the page off.
+                    input = input.Replace("<div class=\"uk-container\">", "<div class=\"uk-container\" style=\"display: none \">");
+                    input = input.Replace("<div class=\"notice\" style=\"display: none\"></div>", "<div class=\"notice\">Sorry the server appears offline.</div>");
+                }
+
+
                 input = input.Replace("%base_dir%", ".");
             }
 
@@ -139,7 +161,6 @@ namespace Darkages.Services.www
             public string[] data { get; set; }
         }
 
-
         public static string DeleteItem(string id)
         {
             var result = new api_result
@@ -151,7 +172,16 @@ namespace Darkages.Services.www
             return JsonConvert.SerializeObject(result);
         }
 
-      
+        public static string Reboot(string id)
+        {
+            var result = new api_result
+            {
+                message = id,
+                code = "200",
+                data = new[] { "1", "2", "3", id },
+            };
+            return JsonConvert.SerializeObject(result);
+        }
 
         public class ConsoleWriterEventArgs : EventArgs
         {

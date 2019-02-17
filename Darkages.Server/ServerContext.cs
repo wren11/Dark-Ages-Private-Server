@@ -462,6 +462,49 @@ namespace Darkages
             GlobalMundaneTemplateCache.Add(monk.Name, monk);
             //SyncStorage();
 
+
+            GlobalMundaneTemplateCache["Ragnhall"] = new MundaneTemplate()
+            {
+                AreaID = 888,
+                AttackPlayers = false,
+                Description = "The Combat Tutorial Trainer.",
+                Direction = 2,
+                Level = 99,
+                X = 21,
+                Y = 40,
+                ScriptKey = "tut/Raghnall",
+                Image = 0x401C,
+                Name = "Ragnhall"
+            };
+
+            GlobalMonsterTemplateCache.Add(new MonsterTemplate()
+            {
+                Name = "Gnarl",
+                BaseName = "Gnarl",
+                MovementSpeed = 1000,
+                EngagedWalkingSpeed = 300,
+                MoodType = MoodQualifer.Neutral,
+                Level = 1,
+                PathQualifer = PathQualifer.Wander,
+                ElementType = ElementQualifer.None,
+                AttackSpeed = 600,
+                CastSpeed = 9000,
+                AreaID = 888,
+                Description = "A weak but filthly creature. Attacking a gnarl should be avoided, They offer nothing rewarding.",
+                Grow = false,
+                UpdateMapWide = false,
+                IgnoreCollision = false,
+                ScriptName = "Common Monster",
+                Image = 0x4005,
+                ImageVarience = 0,
+                Group = "Trash",
+                LootType    = LootQualifer.None,
+                SpawnMax    = 100,
+                SpawnType   = SpawnQualifer.Random,
+                SpawnSize   = 10,
+                SpawnRate   = 3,                
+            });
+
             Paused = false;
         }
 

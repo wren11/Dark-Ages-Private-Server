@@ -331,6 +331,8 @@ namespace Darkages.Network.Game
                 return;
             }
 
+            client.Aisling.CanReact = true;
+
             if (client.Aisling.Map == null)
                 return;
 

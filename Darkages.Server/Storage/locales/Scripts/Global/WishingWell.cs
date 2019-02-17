@@ -4,28 +4,18 @@ using Darkages.Scripting;
 using Darkages.Types;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Darkages.Storage.locales.Scripts.Global
 {
     [Script("WishingWell", "Dean")]
     public class WishingWell : GlobalScript
     {
-        private readonly GameClient Client;
-        private readonly GameServerTimer GrimTimer;
-
         public WishingWell(GameClient client) : base(client)
         {
-            GrimTimer = new GameServerTimer(TimeSpan.FromMilliseconds(ServerContext.Config.HealoutTolerance));
-            Client    = client;
+            Timer = new GameServerTimer(TimeSpan.FromMilliseconds(200));
         }
 
-        public override void OnDeath(GameClient client, TimeSpan elapsedTime)
-        {
-
-        }
-
-        public override void Update(TimeSpan elapsedTime)
+        public override void Run(GameClient client)
         {
             if (Client.Aisling.AreaID == 1001)
             {
@@ -54,6 +44,20 @@ namespace Darkages.Storage.locales.Scripts.Global
                             Client.LastItemDropped = null;
                         }
                     }
+                }
+            }
+        }
+
+        public override void Update(TimeSpan elapsedTime)
+        {
+            if (Timer != null)
+            {
+                Timer.Update(elapsedTime);
+
+                if (Timer.Elapsed)
+                {
+                    Run(Client);
+                    Timer.Reset();
                 }
             }
         }

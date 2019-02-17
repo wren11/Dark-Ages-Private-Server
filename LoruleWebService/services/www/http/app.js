@@ -43,7 +43,15 @@ sampleApp.controller('ServerController', function ($scope, $routeParams, $http) 
 		}).then(function mySucces(response) {
 			$scope.OnlineUsers = response.data;
 		});
-	};
+    };
+    $scope.getServerStatus = function () {
+        $http({
+            method: "GET",
+            url: "api/status.html",
+        }).then(function mySucces(response) {
+            $scope.ServerStatus = response.data;
+        });
+    };
 });
 
 sampleApp.controller('InvokeController', function ($scope, $routeParams, $http) {

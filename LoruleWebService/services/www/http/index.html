@@ -1,18 +1,47 @@
-﻿<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
-	<title>Lorule : Online Dark Ages Server</title>
+    <title>Lorule : A Dark Ages Roleplaying Server</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/css/uikit.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js"></script>
 </head>
 
 <body ng-app="sampleApp">
-	<div ng-view></div>
+    <div class="notice">Sorry the server appears offline.</div>
 
-	<div ng-controller="ServerController">
-		Users Online: {{OnlineUsers}} | <a href="/#user" ng-click="getUsers()">Update</a><hr />
-		<a href="#" ng-click="go()">Reboot Server</a> | {{server_status}}
-	</div>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-	<script src="app.js"></script>
+    <div class="uk-container">
+        <div ng-view></div>
+        <div ng-controller="ServerController" class="uk-animation-slide-top">
+            <span class="uk-label uk-label-success">
+                {{ServerStatus}}
+            </span>
+        </div>
+
+        <div class="uk-flex uk-flex-center@m uk-flex-right@l">
+            <div class="uk-card uk-card-default uk-card-body">DOWNLOAD</div>
+            <div class="uk-card uk-card-default uk-card-body uk-margin-left">DISCORD</div>
+            <div class="uk-card uk-card-default uk-card-body uk-margin-left">GITHUB</div>
+        </div>
+    </div>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        var lorTimer = setInterval(loruleUpdate, 1000);
+        function loruleUpdate() {
+            var scope = angular.element(document.querySelector('[ng-controller="ServerController"]')).scope();
+
+            scope.getUsers();
+            scope.getServerStatus();
+        }
+
+    </script>
 </body>
 </html>

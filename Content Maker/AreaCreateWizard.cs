@@ -104,7 +104,7 @@ namespace Content_Maker
 
                 map.Flags = radioButton2.Checked ? Darkages.Types.MapFlags.Default : Darkages.Types.MapFlags.PlayerKill;
                 {
-                    var path = ServerContext.StoragePath + string.Format(@"\maps\lod{0}.map", map.Number);
+                    var path = Path.GetFullPath(ServerContext.StoragePath + string.Format(@"\maps\lod{0}.map", map.Number));
 
                     if (!File.Exists(path))
                     {
@@ -115,7 +115,7 @@ namespace Content_Maker
                     ServerContext.LoadAndCacheStorage();
                 }
             }
-            catch (Exception)
+            catch (Exception eer)
             {
                 MessageBox.Show("Error, Please check your information.");
             }

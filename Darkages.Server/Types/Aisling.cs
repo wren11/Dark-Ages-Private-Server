@@ -198,6 +198,8 @@ namespace Darkages
         [JsonIgnore]
         public bool ReactorActive { get; set; }
 
+        [JsonIgnore]
+        public bool CanReact { get; set; }
 
         [JsonIgnore]
         public HashSet<Sprite> View = new HashSet<Sprite>();

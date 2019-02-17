@@ -300,8 +300,7 @@
     <Compile Include="Storage\locales\debuffs\debuff_reeping.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_sleep.cs" />
     <Compile Include="Storage\locales\Scripts\Global\Reactors.cs" />
-    <Compile Include="Storage\locales\Scripts\Global\TowerDefenders.cs" />
-    <Compile Include="Storage\locales\Scripts\Global\Tutorial.cs" />
+    <Compile Include="Storage\locales\Scripts\Global\Tut.cs" />
     <Compile Include="Storage\locales\Scripts\Global\WishingWell.cs" />
     <Compile Include="Storage\locales\Scripts\Items\Armor.cs" />
     <Compile Include="Storage\locales\Scripts\Items\Belt.cs" />
@@ -330,6 +329,7 @@
     <Compile Include="Storage\locales\Scripts\Mundanes\Macronator.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\Mileth_Erin.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\MunedaneReactorExample.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\Raghnall.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\shop1.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\shop2.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\sunup.cs" />

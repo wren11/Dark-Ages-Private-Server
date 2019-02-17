@@ -1,0 +1,19 @@
+{
+  "AreaObjectCache": {},
+  "_Reaper": {
+    "Timer": "00:00:00",
+    "Delay": "00:00:02",
+    "Elapsed": false,
+    "Disabled": false,
+    "Interval": 0,
+    "Tick": 0
+  },
+  "Music": 1,
+  "Rows": 50,
+  "Cols": 50,
+  "Number": 888,
+  "ID": 888,
+  "Name": "Tutorial - 1",
+  "Flags": 106240,
+  "Owner": null
+}

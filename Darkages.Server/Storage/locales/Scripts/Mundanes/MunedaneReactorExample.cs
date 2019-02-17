@@ -73,12 +73,12 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
                         },
                         new DialogSequence()
                         {
-                            HasOptions = true,
-                            CanMoveBack = true,
-                            CanMoveNext = true,
-                            DisplayText = "Let me know what you find out. I'll stay here and warn other who may come along...",
+                            HasOptions   = true,
+                            CanMoveBack  = true,
+                            CanMoveNext  = true,
+                            DisplayText  = "Let me know what you find out. I'll stay here and warn other who may come along...",
                             DisplayImage = (ushort)Mundane.Template.Image,
-                            Callback = new functionCallback(SequenceCompletedCallback),
+                            Callback     = SequenceCompletedCallback,
                             Title = "Wren"
                         },
                     },

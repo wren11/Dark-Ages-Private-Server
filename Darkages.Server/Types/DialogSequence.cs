@@ -20,11 +20,10 @@ using System;
 
 namespace Darkages.Types
 {
-    public delegate void functionCallback(Aisling a, DialogSequence b);
     public class DialogSequence
     {
         [JsonIgnore]
-        public functionCallback Callback = null;
+        public Action<Aisling, DialogSequence> Callback { get; set; }
 
         public string CallbackKey { get; set; }
 
@@ -35,5 +34,6 @@ namespace Darkages.Types
         public bool CanMoveNext { get; set; }
         public bool CanMoveBack { get; set; }
         public ushort DisplayImage { get; set; }
+        public bool Processed { get; internal set; }
     }
 }
