@@ -201,9 +201,9 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (Monster.IsConfused || Monster.IsFrozen || Monster.IsParalyzed || Monster.IsSleeping)
                 return;
 
-            if (Monster.Target != null && Monster.TaggedAislings.Count > 0)
+            if (Monster.Target != null && Monster.TaggedAislings.Count > 0 && Monster.Template.EngagedWalkingSpeed > 0)
             {
-                Monster.WalkTimer.Delay = TimeSpan.FromMilliseconds(Monster.Template.EngagedWalkingSpeed);
+                Monster.WalkTimer.Delay = TimeSpan.FromMilliseconds(Monster.Template.EngagedWalkingSpeed); 
             }
 
             Monster.BashTimer.Update(elapsedTime);
