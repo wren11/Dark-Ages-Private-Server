@@ -1155,21 +1155,25 @@ namespace Darkages.Types
             }
         }
 
-        public bool WithinRangeOf(Sprite other)
+        public bool WithinRangeOf(Sprite other, bool checkMap = true)
         {
             if (other == null)
                 return false;
 
-            return WithinRangeOf(other, ServerContext.Config.WithinRangeProximity);
+            return WithinRangeOf(other, ServerContext.Config.WithinRangeProximity, checkMap);
         }
 
-        public bool WithinRangeOf(Sprite other, int distance)
+        public bool WithinRangeOf(Sprite other, int distance, bool checkMap = true)
         {
             if (other == null)
                 return false;
 
-            if (CurrentMapId != other.CurrentMapId)
-                return false;
+            if (checkMap)
+            {
+                if (CurrentMapId != other.CurrentMapId)
+                    return false;
+            }
+
 
             return WithinRangeOf(other.X, other.Y, distance);
         }

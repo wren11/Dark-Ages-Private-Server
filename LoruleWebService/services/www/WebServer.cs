@@ -33,7 +33,7 @@ namespace Darkages.Services.www
         private readonly HttpListener _listener = new HttpListener();
         private readonly Func<HttpListenerRequest, string> _responderMethod;
 
-        public ServerInformation Info { get; set; }
+        public static ServerInformation Info { get; set; }
 
         public WebServer() { }
 
@@ -112,37 +112,40 @@ namespace Darkages.Services.www
 
                 object returnObj = null;
 
-                Invoke(typeof(WebServer), api_parts[1], cb => {
+                Invoke(typeof(WebServer), api_parts[1], cb =>
+                {
 
                     returnObj = cb;
-                }, 
+                },
 
                 args.Skip(2).Where((x, i) => i % 2 == 0).ToArray());
-                return (returnObj).ToString();
+                var result = (returnObj).ToString();
+
+                if (!string.IsNullOrEmpty(result))
+                    input = input.Replace(match.Value, result);
+            }
+
+
+
+            if (Info != null)
+            {
+                //turn the page on.
+                input = input.Replace("<div class=\"uk-container\" style=\"display: none \">", "<div class=\"uk-container\">");
+                input = input.Replace("<div class=\"notice\">Sorry the server appears offline.</div>", "<div class=\"notice\" style=\"display: none\"></div>");
+
+                input = input.Replace("%user_count%", string.Join(", ", Info.PlayersOnline.Select(i => i.Username)));
+                input = input.Replace("%Server_Status%", Info.GameServerStatus);
             }
             else
             {
-
-                if (Info != null)
-                {
-                    //turn the page on.
-                    input = input.Replace("<div class=\"uk-container\" style=\"display: none \">", "<div class=\"uk-container\">");
-                    input = input.Replace("<div class=\"notice\">Sorry the server appears offline.</div>", "<div class=\"notice\" style=\"display: none\"></div>");
-
-                    input = input.Replace("%user_count%", string.Join(", ", Info.PlayersOnline.Select(i => i.Username)));
-                    input = input.Replace("%Server_Status%", Info.GameServerStatus);
-
-                }
-                else
-                {
-                    //turn the page off.
-                    input = input.Replace("<div class=\"uk-container\">", "<div class=\"uk-container\" style=\"display: none \">");
-                    input = input.Replace("<div class=\"notice\" style=\"display: none\"></div>", "<div class=\"notice\">Sorry the server appears offline.</div>");
-                }
-
-
-                input = input.Replace("%base_dir%", ".");
+                //turn the page off.
+                input = input.Replace("<div class=\"uk-container\">", "<div class=\"uk-container\" style=\"display: none \">");
+                input = input.Replace("<div class=\"notice\" style=\"display: none\"></div>", "<div class=\"notice\">Sorry the server appears offline.</div>");
             }
+
+
+            input = input.Replace("%base_dir%", ".");
+
 
             return input;
         }
@@ -154,31 +157,37 @@ namespace Darkages.Services.www
             cb?.Invoke(method.Invoke(instance, args));
         }
 
-        public class api_result
+        public class Api_result
         {
-            public string message { get; set; }
-            public string code { get; set; }
-            public string[] data { get; set; }
+            public string Message { get; set; }
+            public string Code { get; set; }
+            public string[] Data { get; set; }
         }
 
         public static string DeleteItem(string id)
         {
-            var result = new api_result
+            var result = new Api_result
             {
-                message = id,
-                code = "200",
-                data = new[] { "1", "2", "3", id },
+                Message = id,
+                Code = "200",
+                Data = new[] { "1", "2", "3", id },
             };
             return JsonConvert.SerializeObject(result);
         }
 
+        public string Logs()
+        {
+            return JsonConvert.SerializeObject(
+                Info.Logs.Select(i => new[] { i.Why.ToString(), string.Format("{0}", i.What) }).ToArray());
+        }
+
         public static string Reboot(string id)
         {
-            var result = new api_result
+            var result = new Api_result
             {
-                message = id,
-                code = "200",
-                data = new[] { "1", "2", "3", id },
+                Message = id,
+                Code = "200",
+                Data = new[] { "1", "2", "3", id },
             };
             return JsonConvert.SerializeObject(result);
         }

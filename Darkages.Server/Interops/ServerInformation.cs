@@ -8,11 +8,6 @@ namespace Darkages.Interops
 {
     public class ServerInformation
     {
-        public ServerInformation()
-        {
-            Logs = new List<ServerLog>();
-        }
-
         public IReadOnlyCollection<Aisling> PlayersOnline { get; set; }
 
         public List<ItemTemplate> ItemTemplates { get; set; }
@@ -93,6 +88,9 @@ namespace Darkages.Interops
 
             lock (ServerContext.SyncObj)
             {
+                if (Logs == null)
+                    Logs = new List<ServerLog>();
+
                 Logs.Add(new ServerLog()
                 {
                     When = DateTime.UtcNow,

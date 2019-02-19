@@ -610,8 +610,8 @@ namespace Darkages.Network.Game
             var response = new ServerFormat0D
             {
                 Serial = client.Aisling.Serial,
-                Type = format.Type,
-                Text = string.Empty
+                Type   = format.Type,
+                Text   = string.Empty
             };
 
             IEnumerable<Aisling> audience;
@@ -620,7 +620,7 @@ namespace Darkages.Network.Game
             {
                 case 0x00:
                     response.Text = $"{client.Aisling.Username}: {format.Text}";
-                    audience = client.GetObjects<Aisling>(client.Aisling.Map, n => client.Aisling.WithinRangeOf(n));
+                    audience = client.GetObjects<Aisling>(client.Aisling.Map, n => client.Aisling.WithinRangeOf(n, false));
                     break;
                 case 0x01:
                     response.Text = $"{client.Aisling.Username}! {format.Text}";
@@ -628,7 +628,7 @@ namespace Darkages.Network.Game
                     break;
                 case 0x02:
                     response.Text = format.Text;
-                    audience = client.GetObjects<Aisling>(client.Aisling.Map, n => client.Aisling.WithinRangeOf(n));
+                    audience = client.GetObjects<Aisling>(client.Aisling.Map, n => client.Aisling.WithinRangeOf(n, false));
                     break;
                 default:
                     ClientDisconnected(client);

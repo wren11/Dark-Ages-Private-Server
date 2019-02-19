@@ -85,24 +85,27 @@ namespace Lorule
 
             private void SendServerInfo(MemoryMappedFileCommunicator communicator)
             {
-                Info = new ServerInformation
+                if (Info == null)
                 {
-                    ServerConfig        = Config,
-                    MonsterTemplates    = new List<MonsterTemplate>(GlobalMonsterTemplateCache),
-                    ItemTemplates       = new List<ItemTemplate>(GlobalItemTemplateCache.Select(i => i.Value)),
-                    SkillTemplates      = new List<SkillTemplate>(GlobalSkillTemplateCache.Select(i => i.Value)),
-                    SpellTemplates      = new List<SpellTemplate>(GlobalSpellTemplateCache.Select(i => i.Value)),
-                    MundaneTemplates    = new List<MundaneTemplate>(GlobalMundaneTemplateCache.Select(i => i.Value)),
-                    WarpTemplates       = new List<WarpTemplate>(GlobalWarpTemplateCache),
-                    Areas               = new List<Area>(GlobalMapCache.Select(i => i.Value)),
-                    Buffs               = new List<Buff>(GlobalBuffCache.Select(i => i.Value)),
-                    Debuffs             = new List<Debuff>(GlobalDeBuffCache.Select(i => i.Value)),
+                    Info = new ServerInformation
+                    {
+                        ServerConfig = Config,
+                        MonsterTemplates = new List<MonsterTemplate>(GlobalMonsterTemplateCache),
+                        ItemTemplates = new List<ItemTemplate>(GlobalItemTemplateCache.Select(i => i.Value)),
+                        SkillTemplates = new List<SkillTemplate>(GlobalSkillTemplateCache.Select(i => i.Value)),
+                        SpellTemplates = new List<SpellTemplate>(GlobalSpellTemplateCache.Select(i => i.Value)),
+                        MundaneTemplates = new List<MundaneTemplate>(GlobalMundaneTemplateCache.Select(i => i.Value)),
+                        WarpTemplates = new List<WarpTemplate>(GlobalWarpTemplateCache),
+                        Areas = new List<Area>(GlobalMapCache.Select(i => i.Value)),
+                        Buffs = new List<Buff>(GlobalBuffCache.Select(i => i.Value)),
+                        Debuffs = new List<Debuff>(GlobalDeBuffCache.Select(i => i.Value)),
+                    };
+                }
 
-                    GameServerOnline    = true,
-                    LoginServerOnline   = true
-                };
+                Info.GameServerOnline   = true;
+                Info.LoginServerOnline  = true;
 
-                var players_online    = Game?.Clients.Where(i => i != null && i.Aisling != null && i.Aisling.LoggedIn);
+                var players_online      = Game?.Clients.Where(i => i != null && i.Aisling != null && i.Aisling.LoggedIn);
 
                 if (players_online != null)
                 {

@@ -87,7 +87,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="services\www\http\api\logs.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="services\www\http\images\bg.png" />
+    <None Include="services\www\http\views\items.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
