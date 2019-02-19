@@ -202,6 +202,9 @@ namespace Darkages
         public bool CanReact { get; set; }
 
         [JsonIgnore]
+        public DialogSequence ActiveSequence { get; set; }
+
+        [JsonIgnore]
         public HashSet<Sprite> View = new HashSet<Sprite>();
 
         public void Recover()

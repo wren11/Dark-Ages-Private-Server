@@ -3,8 +3,6 @@
     using global::Darkages.Scripting;
     using global::Darkages.Types;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
 
     namespace Darkages.Assets.locales.Scripts.Reactors
     {
@@ -20,7 +18,8 @@
             {
                 if (aisling.ActiveReactor == null)
                 {
-                    aisling.ReactorActive = false;
+                    aisling.ReactorActive  = false;
+                    aisling.ActiveSequence = null;
                     aisling.Client.CloseDialog();
                     return;
                 }
@@ -28,14 +27,19 @@
                 if (aisling.ActiveReactor.Index - 1 >= 0)
                 {
                     aisling.ActiveReactor.Index--;
-                    aisling.ActiveReactor.Next(aisling.Client, true);
+                    aisling.ActiveReactor.Goto(aisling.Client, aisling.ActiveReactor.Index);
                 }
             }
 
             public override void OnClose(Aisling aisling)
             {
-                aisling.ReactorActive = false;
-                aisling.ActiveReactor = null;
+                aisling.ReactorActive  = false;
+                aisling.ActiveSequence = null;
+
+                if (aisling.ActiveReactor.Completed)
+                {
+                    aisling.ActiveReactor  = null;
+                }
             }
 
             public override void OnNext(Aisling aisling)
@@ -65,14 +69,12 @@
             {
                 if (aisling.ReactedWith(Reactor.Name))
                 {
-                    foreach (var sequences in Reactor.Steps.Where(i => i.Callback != null && !i.Processed))
-                    {
-                        sequences.Callback.Invoke(aisling, sequences);
-                    }
-
                     if (Reactor.CanActAgain)
                     {
                         aisling.Reactions.Remove(Reactor.Name);
+
+                        aisling.ReactorActive = true;
+                        aisling.ActiveReactor.Next(aisling.Client, true);
                     }
                 }
                 else
@@ -94,7 +96,8 @@
                 {
                     aisling.Reactions[Reactor.Name] = DateTime.UtcNow;
                     aisling.ReactorActive = false;
-                    aisling.ActiveReactor = null;
+                    aisling.ActiveReactor.Completed = true;
+
                     aisling.Client.CloseDialog();
 
                     if (Reactor.Quest != null && !Reactor.Quest.Completed)
@@ -119,10 +122,6 @@
                             });
                         }
                     }
-
-                    if (Reactor.PostScript != null)
-                        Reactor.PostScript.OnTriggered(aisling);
-
                 }
             }
         }

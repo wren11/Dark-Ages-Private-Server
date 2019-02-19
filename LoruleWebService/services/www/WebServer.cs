@@ -135,6 +135,8 @@ namespace Darkages.Services.www
 
                 input = input.Replace("%user_count%", string.Join(", ", Info.PlayersOnline.Select(i => i.Username)));
                 input = input.Replace("%Server_Status%", Info.GameServerStatus);
+
+                input = input.Replace("%items%", "Item data here");
             }
             else
             {

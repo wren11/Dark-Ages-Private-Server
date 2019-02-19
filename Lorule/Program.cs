@@ -110,14 +110,14 @@ namespace Lorule
                 if (players_online != null)
                 {
                     Info.PlayersOnline    = new List<Aisling>(players_online.Select(i => i.Aisling));
-                    Info.GameServerStatus = $"Lorule - Server Uptime {Math.Round(Uptime.TotalDays, 2)}:{Math.Round(Uptime.TotalHours, 2)} - { players_online.Count() } Players Online | Total Characters ({ StorageManager.AislingBucket.Count })";
+                    Info.GameServerStatus = $"Up time {Math.Round(Uptime.TotalDays, 2)}:{Math.Round(Uptime.TotalHours, 2)} | Online Users ({ players_online.Count() }) | Total Characters ({ StorageManager.AislingBucket.Count })";
                     Info.GameServerOnline = true;
                 }
                 else
                 {
                     Info.PlayersOnline    = new List<Aisling>();
                     Info.GameServerOnline = false;
-                    Info.GameServerStatus = "Lorule - Server is Offline.";
+                    Info.GameServerStatus = "Offline.";
                 }
 
                 lock (communicator)

@@ -30,10 +30,16 @@ namespace Darkages.Types
         public string Title { get; set; }
         public string DisplayText { get; set; }
         public bool HasOptions { get; set; }
+        public short ContinueOn { get; set; }
         public int Id { get; set; }
         public bool CanMoveNext { get; set; }
         public bool CanMoveBack { get; set; }
         public ushort DisplayImage { get; set; }
-        public bool Processed { get; internal set; }
+
+        public bool Processed { get; set; }
+
+        public int ContinueAt { get; set; }
+
+        public int RollBackTo { get; set; }
     }
 }

@@ -24,6 +24,8 @@ namespace Darkages.Types
         [JsonIgnore]
         public readonly int Id;
 
+        public Reactor NextReactor { get; set; }
+
         public Reactor()
         {
             lock (Generator.Random)
@@ -60,6 +62,8 @@ namespace Darkages.Types
 
         public bool CanActAgain { get; set; }
 
+        public bool Completed { get; set; }
+
         public List<DialogSequence> Steps = new List<DialogSequence>();
 
         public void Update(GameClient client)
@@ -75,10 +79,26 @@ namespace Darkages.Types
             }
         }
 
+        public void Goto(GameClient client, int Idx)
+        {
+            client.Aisling.ActiveReactor.Index = Idx;
+            client.Aisling.ActiveSequence      = client.Aisling.ActiveReactor.Steps[Idx];
+
+            client.Send(new ReactorSequence(client, client.Aisling.ActiveSequence));
+
+            if (Steps[Idx].Callback != null)
+            {
+                Steps[Idx].Callback.Invoke(client.Aisling, Steps[Idx]);
+            }
+        }
+
         public void Next(GameClient client, bool start = false)
         {
             if (Steps.Count == 0)
                 return;
+
+            if (Index < 0)
+                Index = 0;
 
             if (!start)
             {

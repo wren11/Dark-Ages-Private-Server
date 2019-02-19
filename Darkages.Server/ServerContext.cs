@@ -478,6 +478,20 @@ namespace Darkages
                 Name = "Ragnhall"
             };
 
+            GlobalMundaneTemplateCache["Bartley"] = new MundaneTemplate()
+            {
+                AreaID = 888,
+                AttackPlayers = false,
+                Description = "Some random old man from the tutorial. He sounds like he know's a bit.",
+                Direction = 2,
+                Level = 99,
+                X = 29,
+                Y = 20,
+                ScriptKey = "tut/OldMan",
+                Image = 0x4018,
+                Name = "Bartley"
+            };
+
             GlobalMonsterTemplateCache.Add(new MonsterTemplate()
             {
                 Name = "Kardi",

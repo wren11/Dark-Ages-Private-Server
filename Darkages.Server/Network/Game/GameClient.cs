@@ -75,10 +75,10 @@ namespace Darkages.Network.Game
         public GameClient()
         {
             HpRegenTimer = new GameServerTimer(
-                TimeSpan.FromSeconds(ServerContext.Config.RegenRate));
+                TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate));
 
             MpRegenTimer = new GameServerTimer(
-                TimeSpan.FromSeconds(ServerContext.Config.RegenRate / 2));
+                TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate / 2));
         }
 
         public void BuildSettings()
@@ -462,11 +462,11 @@ namespace Darkages.Network.Game
 
         private void Regen(TimeSpan elapsedTime)
         {
-            if (Aisling.Con > (Aisling.ExpLevel + 10))
-                HpRegenTimer.Delay = TimeSpan.FromSeconds(10.0);
+            if (Aisling.Con > Aisling.ExpLevel + 1)
+                HpRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate / 3);
 
-            if (Aisling.Wis > (Aisling.ExpLevel + 10))
-                MpRegenTimer.Delay = TimeSpan.FromSeconds(10.0);
+            if (Aisling.Wis > Aisling.ExpLevel + 1)
+                MpRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate / 3);
 
             HpRegenTimer.Update(elapsedTime);
             MpRegenTimer.Update(elapsedTime);
