@@ -28,7 +28,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
     public class ao_puinsein : SpellScript
     {
         private readonly Random rand = new Random();
-        private debuff_poison Debuff = new debuff_poison("poison", 10, 10, 0);
+        private Debuff_poison Debuff = new Debuff_poison("poison", 10, 10, 0);
 
         public ao_puinsein(Spell spell) : base(spell)
         {
@@ -52,8 +52,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 client.TrainSpell(Spell);
 
-                var debuff = Clone<debuff_poison>(Debuff);
-                var curses = target.Debuffs.Values.OfType<debuff_poison>().ToList();
+                var debuff = Clone<Debuff_poison>(Debuff);
+                var curses = target.Debuffs.Values.OfType<Debuff_poison>().ToList();
 
                 client.SendMessage(0x02, string.Format("you cast {0}", Spell.Template.Name));
                 client.SendAnimation(Spell.Template.Animation, target, sprite);
@@ -97,8 +97,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                var debuff = Clone<debuff_poison>(Debuff);
-                var curses = target.Debuffs.Values.OfType<debuff_poison>().ToList();
+                var debuff = Clone<Debuff_poison>(Debuff);
+                var curses = target.Debuffs.Values.OfType<Debuff_poison>().ToList();
 
                 if (curses.Count > 0)
                 {

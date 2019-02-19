@@ -54,8 +54,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 client.TrainSpell(Spell);
 
-                var debuff = new debuff_poison("ard puinsein", 700, 35, 25, 0.02);
-                var curses = target.Debuffs.Values.OfType<debuff_poison>().ToList();
+                var debuff = new Debuff_poison("ard puinsein", 700, 35, 25, 0.02);
+                var curses = target.Debuffs.Values.OfType<Debuff_poison>().ToList();
 
                 if (curses.Count == 0)
                 {
@@ -74,8 +74,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                var debuff = new debuff_poison("ard puinsein", 700, 35, 25, 0.02);
-                var curses = target.Debuffs.Values.OfType<debuff_poison>().ToList();
+                var debuff = new Debuff_poison("ard puinsein", 700, 35, 25, 0.02);
+                var curses = target.Debuffs.Values.OfType<Debuff_poison>().ToList();
 
                 if (curses.Count == 0)
                     if (!target.HasDebuff(debuff.Name))
@@ -120,7 +120,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             sprite.Show(Scope.NearbyAislings, action);
         }
 
-        public void AlreadyCursed(Network.Game.GameClient client, System.Collections.Generic.List<debuff_poison> curses)
+        public void AlreadyCursed(Network.Game.GameClient client, System.Collections.Generic.List<Debuff_poison> curses)
         {
             var c = curses.FirstOrDefault();
             if (c != null)

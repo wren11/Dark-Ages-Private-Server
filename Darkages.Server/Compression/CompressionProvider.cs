@@ -35,20 +35,19 @@ namespace Darkages.Compression
         public static byte[] Deflate(byte[] buffer)
         {
             using (var iStream = new MemoryStream(buffer))
-            using (var oStream = new MemoryStream())
-            using (var zStream = new ZOutputStream(oStream, -1))
             {
-                try
+                using (var oStream = new MemoryStream())
                 {
-                    CopyStream(iStream, zStream);
+                    using (var zStream = new ZOutputStream(oStream, -1))
+                    {
 
-                    zStream.finish();
+                        CopyStream(iStream, zStream);
 
-                    return oStream.ToArray();
-                }
-                catch
-                {
-                    return null;
+                        zStream.finish();
+
+                        return oStream.ToArray();
+
+                    }
                 }
             }
         }

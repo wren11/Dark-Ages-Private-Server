@@ -34,12 +34,12 @@ namespace Content_Maker
             InitializeComponent();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void Button2_Click(object sender, EventArgs e)
         {
             new WarpManager(textBox3.Text).ShowDialog();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             using (var ofd = new OpenFileDialog())
             {
@@ -63,13 +63,13 @@ namespace Content_Maker
         }
 
 
-        private void radioButton4_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton4_CheckedChanged(object sender, EventArgs e)
         {
             button2.Enabled = false;
             button4.Enabled = true;
         }
 
-        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton3_CheckedChanged(object sender, EventArgs e)
         {
             button2.Enabled = true;
             button4.Enabled = false;
@@ -81,7 +81,7 @@ namespace Content_Maker
             button4.Enabled = false;
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void Button3_Click(object sender, EventArgs e)
         {
             if (ServerContext.GlobalMapCache.Count(i => i.Value.Name.Equals(textBox4.Text, StringComparison.OrdinalIgnoreCase)
                 || i.Value.Number == Convert.ToInt32(textBox3.Text)) > 0)
@@ -93,12 +93,14 @@ namespace Content_Maker
 
             try
             {
-                var map = new Area();
-                map.Name = textBox4.Text;
-                map.Rows = Convert.ToUInt16(textBox2.Text);
-                map.Cols = Convert.ToUInt16(textBox1.Text);
-                map.ID = Convert.ToInt32(textBox3.Text);
-                map.Music = Convert.ToInt32(textBox5.Text);
+                var map = new Area
+                {
+                    Name = textBox4.Text,
+                    Rows = Convert.ToUInt16(textBox2.Text),
+                    Cols = Convert.ToUInt16(textBox1.Text),
+                    ID = Convert.ToInt32(textBox3.Text),
+                    Music = Convert.ToInt32(textBox5.Text)
+                };
                 map.Number = map.ID;
                 map.Ready = false;
 
@@ -115,13 +117,13 @@ namespace Content_Maker
                     ServerContext.LoadAndCacheStorage();
                 }
             }
-            catch (Exception eer)
+            catch (Exception error)
             {
-                MessageBox.Show("Error, Please check your information.");
+                ServerContext.Info?.Error("Error creating area", error);
             }
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void Button4_Click(object sender, EventArgs e)
         {
             new WorldManager().ShowDialog();
         }

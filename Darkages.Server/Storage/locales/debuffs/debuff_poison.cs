@@ -20,18 +20,18 @@ using System.Linq;
 
 namespace Darkages.Storage.locales.debuffs
 {
-    public class debuff_poison : Debuff
+    public class Debuff_poison : Debuff
     {
         public ushort Animation { get; set; }
         public double Modifier  { get; set; }
         public bool IsSpreading { get; set;  }
 
-        public debuff_poison()
+        public Debuff_poison()
         {
 
         }
 
-        public debuff_poison(string name, int length, byte icon, ushort animation, double mod = 0.05, bool spread = false)
+        public Debuff_poison(string name, int length, byte icon, ushort animation, double mod = 0.05, bool spread = false)
         {
             Animation = animation;
             Name = name;
@@ -124,7 +124,7 @@ namespace Darkages.Storage.locales.debuffs
                             near.Target = Affected.Target;
                         }
 
-                        OnApplied(near, new debuff_poison("Poison Trap", Length, Icon, Animation, 0.35, false));
+                        OnApplied(near, new Debuff_poison("Poison Trap", Length, Icon, Animation, 0.35, false));
                     }
                 }
             }

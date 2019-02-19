@@ -41,22 +41,23 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             }
 
             //build reactor
-            Actor = new Reactor();
-            Actor.CallBackScriptKey = Mundane.Template.ScriptKey;
-            Actor.CallerType        = ReactorQualifer.Reactor;
-            Actor.ScriptKey         = "Default Response Handler";
-            Actor.CallingReactor    = "Default Response Handler";
-            Actor.Name              = "Erin Part 1";
-
-            Actor.Quest = new Quest()
+            Actor = new Reactor
             {
-                Name = Mundane.Template.QuestKey,
-                Completed = false,
-                ItemRewards = new System.Collections.Generic.List<string>()
+                CallBackScriptKey = Mundane.Template.ScriptKey,
+                CallerType = ReactorQualifer.Reactor,
+                ScriptKey = "Default Response Handler",
+                CallingReactor = "Default Response Handler",
+                Name = "Erin Part 1",
+
+                Quest = new Quest()
+                {
+                    Name = Mundane.Template.QuestKey,
+                    Completed = false,
+                    ItemRewards = new System.Collections.Generic.List<string>()
                 {
                      "Wolf Earrings",
                 },
-                LegendRewards = new System.Collections.Generic.List<Legend.LegendItem>()
+                    LegendRewards = new System.Collections.Generic.List<Legend.LegendItem>()
                 {
                     new Legend.LegendItem()
                     {
@@ -66,12 +67,12 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                          Value   = "Met Erin and Became Friends."
                     }
                 },
-                ExpRewards= new System.Collections.Generic.List<uint>()
+                    ExpRewards = new System.Collections.Generic.List<uint>()
                 {
                     1000, 2000, 3000, 4000, 6000 // 16k EXP
                 },
-                GoldReward = 5000,
-                QuestStages = new System.Collections.Generic.List<QuestStep<Template>>()
+                    GoldReward = 5000,
+                    QuestStages = new System.Collections.Generic.List<QuestStep<Template>>()
                 {
                     new QuestStep<Template>()
                     {
@@ -94,6 +95,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                          }
                     },
                 },
+                }
             };
 
             Actor.Steps = new System.Collections.Generic.List<DialogSequence>()

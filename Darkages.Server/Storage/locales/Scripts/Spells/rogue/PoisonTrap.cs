@@ -46,7 +46,7 @@ namespace Darkages.Assets.locales.Scripts.Traps
 
         public override void OnTriggeredBy(Sprite sprite, Sprite target)
         {
-            var debuff = new debuff_poison("Poison Trap", 5000, 35, 25, 0.35, true);
+            var debuff = new Debuff_poison("Poison Trap", 5000, 35, 25, 0.35, true);
 
             if (!target.HasBuff(debuff.Name))
             {

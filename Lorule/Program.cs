@@ -43,7 +43,7 @@ namespace Lorule
 
         public class Instance : ServerContext
         {
-            DateTime SystemStartTime = DateTime.Now;
+            readonly DateTime SystemStartTime = DateTime.Now;
 
             TimeSpan Uptime => (DateTime.Now - SystemStartTime);
 
@@ -58,7 +58,7 @@ namespace Lorule
                     communicator.ReadPosition = 0;
                     communicator.WritePosition = 0;
 
-                    communicator.DataReceived += new EventHandler<MemoryMappedDataReceivedEventArgs>(communicator_DataReceived);
+                    communicator.DataReceived += new EventHandler<MemoryMappedDataReceivedEventArgs>(Communicator_DataReceived);
                     communicator.StartReader();
                 }
 
@@ -124,7 +124,7 @@ namespace Lorule
                 }
             }
 
-            private void communicator_DataReceived(object sender, MemoryMappedDataReceivedEventArgs e)
+            private void Communicator_DataReceived(object sender, MemoryMappedDataReceivedEventArgs e)
             {
 
             }

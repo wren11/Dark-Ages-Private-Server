@@ -97,7 +97,7 @@ namespace Content_Maker
             this.button1.TabIndex = 0;
             this.button1.Text = "Browse for .map";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // groupBox2
             // 
@@ -242,7 +242,7 @@ namespace Content_Maker
             this.radioButton4.TabIndex = 7;
             this.radioButton4.Text = "World Map";
             this.radioButton4.UseVisualStyleBackColor = true;
-            this.radioButton4.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
+            this.radioButton4.CheckedChanged += new System.EventHandler(this.RadioButton4_CheckedChanged);
             // 
             // radioButton3
             // 
@@ -256,7 +256,7 @@ namespace Content_Maker
             this.radioButton3.TabStop = true;
             this.radioButton3.Text = "Map Warp";
             this.radioButton3.UseVisualStyleBackColor = true;
-            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
+            this.radioButton3.CheckedChanged += new System.EventHandler(this.RadioButton3_CheckedChanged);
             // 
             // label3
             // 
@@ -291,7 +291,7 @@ namespace Content_Maker
             this.button4.TabIndex = 1;
             this.button4.Text = "Open World Manager";
             this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.button4.Click += new System.EventHandler(this.Button4_Click);
             // 
             // button2
             // 
@@ -303,7 +303,7 @@ namespace Content_Maker
             this.button2.TabIndex = 0;
             this.button2.Text = "Open Warp Manager";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.Button2_Click);
             // 
             // button3
             // 
@@ -314,7 +314,7 @@ namespace Content_Maker
             this.button3.TabIndex = 1;
             this.button3.Text = "Compile New Map";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.Button3_Click);
             // 
             // groupBox5
             // 

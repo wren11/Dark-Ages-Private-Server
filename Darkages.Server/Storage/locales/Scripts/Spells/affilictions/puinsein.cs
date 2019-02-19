@@ -56,8 +56,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 client.TrainSpell(Spell);
 
 
-                var debuff = new debuff_poison("puinsein", 200, 35, 25, 0.08);
-                var curses = target.Debuffs.Values.OfType<debuff_poison>().ToList();
+                var debuff = new Debuff_poison("puinsein", 200, 35, 25, 0.08);
+                var curses = target.Debuffs.Values.OfType<Debuff_poison>().ToList();
 
                 if (curses.Count == 0)
                 {
@@ -101,8 +101,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                var debuff = new debuff_poison("puinsein", 200, 35, 25, 0.08);
-                var curses = target.Debuffs.Values.OfType<debuff_poison>().ToList();
+                var debuff = new Debuff_poison("puinsein", 200, 35, 25, 0.08);
+                var curses = target.Debuffs.Values.OfType<Debuff_poison>().ToList();
 
                 if (curses.Count == 0)
                     if (!target.HasDebuff(debuff.Name))

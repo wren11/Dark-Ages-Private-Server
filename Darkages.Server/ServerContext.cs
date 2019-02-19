@@ -351,18 +351,19 @@ namespace Darkages
                 LoadExtensions();
             }
 
-           
 
-            var c = new SkillTemplate();
 
-            c.Name = "Claw Fist";
-            c.Icon = 59;
-            c.Pane = Pane.Spells;
-            c.NpcKey = "Kung-Fu Master";
-            c.LevelRate = 0.03;
-            c.Group = "Attack Bonus";
-            c.MaxLevel = 100;
-            c.MissAnimation = 33;
+            var c = new SkillTemplate
+            {
+                Name = "Claw Fist",
+                Icon = 59,
+                Pane = Pane.Spells,
+                NpcKey = "Kung-Fu Master",
+                LevelRate = 0.03,
+                Group = "Attack Bonus",
+                MaxLevel = 100,
+                MissAnimation = 33
+            };
             c.Name = "Claw Fist";
             c.PostQualifers = PostQualifer.BreakInvisible;
             c.ScriptName = "Claw Fist";

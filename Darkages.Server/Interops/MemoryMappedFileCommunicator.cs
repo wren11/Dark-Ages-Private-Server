@@ -60,7 +60,7 @@ namespace MemoryMappedFileManager
 
         private MemoryMappedViewAccessor view;
         private AsyncOperation operation;
-        private SendOrPostCallback callback;
+        private readonly SendOrPostCallback callback;
         private bool started;
         private bool disposed;
 
@@ -109,8 +109,10 @@ namespace MemoryMappedFileManager
             if (ReadPosition < 0 || writePosition < 0)
                 throw new ArgumentException();
 
-            Thread t = new Thread(ReaderThread);
-            t.IsBackground = true;
+            Thread t = new Thread(ReaderThread)
+            {
+                IsBackground = true
+            };
             t.Start();
             started = true;
         }
@@ -132,8 +134,10 @@ namespace MemoryMappedFileManager
             if (!writerThreadRunning)
             {
                 writerThreadRunning = true;
-                writerThread = new Thread(WriterThread);
-                writerThread.IsBackground = true;
+                writerThread = new Thread(WriterThread)
+                {
+                    IsBackground = true
+                };
                 writerThread.Start();
             }
         }
