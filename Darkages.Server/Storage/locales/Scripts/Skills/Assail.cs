@@ -180,7 +180,7 @@ namespace Darkages.Scripting.Scripts.Skills
 
                         Target = i;
 
-                        var dmg = sprite.GetBaseDamage(Target);
+                        var dmg = sprite.GetBaseDamage(Target, MonsterDamageType.Physical);
                         {
                             i.ApplyDamage(sprite, dmg);
                         }

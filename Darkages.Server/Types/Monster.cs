@@ -385,9 +385,15 @@ namespace Darkages.Types
             if (obj.Template.Grow)
                 obj.Template.Level++;
 
+            var mod  = (obj.Template.Level + 1) * 0.01;
+            var rate = mod * 250 * obj.Template.Level;
+            var exp  = obj.Template.Level * rate / 1;
+            var hp   = mod + 50 + obj.Template.Level * (obj.Template.Level + 40);
+            var mp   = hp / 3;
+            var dmg  = hp / 1 * mod * 1;
 
-            obj.Template.MaximumHP = Config.MONSTER_HP_TABLE[obj.Template.Level % Config.MONSTER_HP_TABLE.Length];
-            obj.Template.MaximumMP = Config.MONSTER_HP_TABLE[obj.Template.Level % Config.MONSTER_HP_TABLE.Length] / 3;
+            obj.Template.MaximumHP = (int)hp; //;Config.MONSTER_HP_TABLE[obj.Template.Level % Config.MONSTER_HP_TABLE.Length];
+            obj.Template.MaximumMP = (int)mp; //;Config.MONSTER_HP_TABLE[obj.Template.Level % Config.MONSTER_HP_TABLE.Length] / 3;
 
 
             var stat = RandomEnumValue<PrimaryStat>();

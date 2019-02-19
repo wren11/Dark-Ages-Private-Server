@@ -69,7 +69,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 var client = (target as Aisling).Client;
 
-                var dmg = sprite.GetBaseDamage(target);
+                var dmg = sprite.GetBaseDamage(target, MonsterDamageType.Elemental);
                 target.ApplyDamage(sprite, dmg, Spell.Template.ElementalProperty, Spell.Template.Sound);
 
                 (target as Aisling).Client
@@ -176,7 +176,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                         continue;
 
 
-                    var dmg = sprite.GetBaseDamage(t);
+                    var dmg = sprite.GetBaseDamage(t, MonsterDamageType.Elemental);
 
                     t.ApplyDamage(sprite, dmg, Spell.Template.ElementalProperty, Spell.Template.Sound);
                     t.SendAnimation(Spell.Template.Animation, t, sprite);
