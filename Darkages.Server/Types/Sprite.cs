@@ -442,23 +442,19 @@ namespace Darkages.Types
             return false;
         }
 
-        public int GetBaseDamage(Sprite target)
+        public int GetBaseDamage(Sprite target, MonsterDamageType type)
         {
             if (this is Monster)
             {
-                var mon = this as Monster;
-                var dmg = ServerContext.Config.MONSTER_DMG_TABLE[mon.Template.Level % ServerContext.Config.MONSTER_DMG_TABLE.Length];
-                {
-                    return (int)Math.Abs(dmg);
-                }
+                var monster = this as Monster;
+                var mod     = (monster.Template.Level + 1) * 0.01;
+
+                var dmg     = (int)(MaximumHp / 1 * mod) * 1;
+
+                
             }
 
-            if (target != null)
-            {
-                return ServerContext.Config.MONSTER_DMG_TABLE[target.Level % ServerContext.Config.MONSTER_DMG_TABLE.Length];
-            }
-
-            return 1;
+            return 0;
         }
 
         public void RemoveAllBuffs()

@@ -57,7 +57,7 @@
   "StartingPosition": {
     "$type": "Darkages.Types.Position, Darkages.Server",
     "X": 26,
-    "Y": 49,
+    "Y": 48,
     "AreaID": 0
   },
   "StatCap": 255,

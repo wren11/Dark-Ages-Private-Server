@@ -480,15 +480,15 @@ namespace Darkages
 
             GlobalMonsterTemplateCache.Add(new MonsterTemplate()
             {
-                Name = "Gnarl",
-                BaseName = "Gnarl",
+                Name = "Kardi",
+                BaseName = "Kardi",
                 MovementSpeed = 1000,
                 EngagedWalkingSpeed = 300,
                 MoodType = MoodQualifer.Neutral,
                 Level = 1,
                 PathQualifer = PathQualifer.Wander,
                 ElementType = ElementQualifer.None,
-                AttackSpeed = 600,
+                AttackSpeed = 1500,
                 CastSpeed = 9000,
                 AreaID = 888,
                 Description = "A weak but filthly creature. Attacking a gnarl should be avoided, They offer nothing rewarding.",

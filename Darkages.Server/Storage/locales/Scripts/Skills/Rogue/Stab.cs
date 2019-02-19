@@ -141,7 +141,7 @@ namespace Darkages.Scripting.Scripts.Skills
                          new ServerFormat29((uint)target.Serial, (uint)target.Serial,
                              Skill.Template.TargetAnimation, 0, 100));
 
-                    var dmg = sprite.GetBaseDamage(target);
+                    var dmg = sprite.GetBaseDamage(target, MonsterDamageType.Physical);
                     target.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
 
                     var action = new ServerFormat1A

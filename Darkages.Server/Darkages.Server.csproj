@@ -462,6 +462,7 @@
     <Compile Include="Types\Money.cs" />
     <Compile Include="Types\MoneySprites.cs" />
     <Compile Include="Types\Monster.cs" />
+    <Compile Include="Types\MonsterDamageType.cs" />
     <Compile Include="Types\MonsterTemplate.cs" />
     <Compile Include="Types\MoodQualifer.cs" />
     <Compile Include="Types\MServer.cs" />
