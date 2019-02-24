@@ -216,7 +216,7 @@ namespace Darkages
             {
                 ObjectCache = (await GetAreaObjects()).ToArray();
                 {
-                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 1, false);
+                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 2, false);
                 }
             }
             else

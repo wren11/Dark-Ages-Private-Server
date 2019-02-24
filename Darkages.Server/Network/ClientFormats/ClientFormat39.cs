@@ -37,7 +37,7 @@ namespace Darkages.Network.ClientFormats
             Serial = reader.ReadInt32();
             Step = reader.ReadUInt16();
 
-            if (reader.CanRead)
+            if (reader.GetCanRead())
             {
                 var length = reader.ReadByte();
 

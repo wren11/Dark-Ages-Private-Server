@@ -25,16 +25,16 @@ namespace Darkages.Network.ClientFormats
 
         public override void Serialize(NetworkPacketReader reader)
         {
-            if (reader.CanRead)
+            if (reader.GetCanRead())
             {
                 Type = reader.ReadByte();
 
-                if (reader.CanRead)
+                if (reader.GetCanRead())
                 {
                     BoardIndex = reader.ReadUInt16();
                 }
 
-                if (reader.CanRead)
+                if (reader.GetCanRead())
                 {
                     TopicIndex = reader.ReadUInt16();
                 }

@@ -24,9 +24,13 @@ namespace Darkages.Network
     {
         private readonly Encoding _encoding = Encoding.GetEncoding(0x3B5);
 
-        public NetworkPacket Packet { get; set; }
-        public int Position { get; set; }
-        public bool CanRead => Position + 1 < Packet.Data.Length;
+        public NetworkPacket Packet;
+        public int Position;
+
+        public bool GetCanRead()
+        {
+            return Position + 1 < Packet.Data.Length;
+        }
 
         public T ReadObject<T>()
             where T : IFormattable, new()

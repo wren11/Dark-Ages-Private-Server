@@ -63,9 +63,29 @@ namespace Content_Maker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap bot_F1 {
+            get {
+                object obj = ResourceManager.GetObject("bot_F1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap fieldmap_F1 {
             get {
                 object obj = ResourceManager.GetObject("fieldmap_F1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap top_F1 {
+            get {
+                object obj = ResourceManager.GetObject("top_F1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

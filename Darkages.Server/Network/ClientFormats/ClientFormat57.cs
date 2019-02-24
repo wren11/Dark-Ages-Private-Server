@@ -29,7 +29,7 @@ namespace Darkages.Network.ClientFormats
         public override void Serialize(NetworkPacketReader reader)
         {
             Type = reader.ReadByte();
-            if (reader.CanRead)
+            if (reader.GetCanRead())
                 Slot = reader.ReadByte();
         }
 

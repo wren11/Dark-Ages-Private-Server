@@ -33,10 +33,10 @@ namespace Darkages.Network.ClientFormats
             Type = reader.ReadByte();
             Id = reader.ReadUInt32();
 
-            if (Type == 0x01 && reader.CanRead)
+            if (Type == 0x01 && reader.GetCanRead())
                 ItemSlot = reader.ReadByte();
 
-            if (Type == 0x03 && reader.CanRead)
+            if (Type == 0x03 && reader.GetCanRead())
             {
                 Gold = reader.ReadInt32();
             }

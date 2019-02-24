@@ -36,7 +36,7 @@ namespace Darkages.Network.ClientFormats
             Y = reader.ReadInt16();
             ItemAmount = reader.ReadInt32();
 
-            if (reader.CanRead)
+            if (reader.GetCanRead())
                 Unknown = reader.ReadInt16();
         }
 

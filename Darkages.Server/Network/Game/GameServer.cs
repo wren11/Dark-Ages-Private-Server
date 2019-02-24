@@ -44,7 +44,7 @@ namespace Darkages.Network.Game
         {
 
             ServerUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
-            ClientUpdateSpan = TimeSpan.FromSeconds(1.0 / 60);
+            ClientUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
             HeavyUpdateSpan  = TimeSpan.FromSeconds(1.0 / 30);
 
             InitializeGameServer();

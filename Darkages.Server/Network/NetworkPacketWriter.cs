@@ -26,8 +26,12 @@ namespace Darkages.Network
         private readonly byte[] buffer = new byte[0x10000];
         private readonly Encoding encoding = Encoding.GetEncoding(949);
 
-        public int Position { get; set; }
-        public bool CanWrite => Position + 1 < buffer.Length;
+        public int Position;
+
+        public bool GetCanWrite()
+        {
+            return Position + 1 < buffer.Length;
+        }
 
         public void Write(bool value)
         {

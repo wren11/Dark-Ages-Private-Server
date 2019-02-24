@@ -34,6 +34,8 @@ namespace Darkages.Network
     {
         private readonly MethodInfo[] _handlers;
 
+        private Cache<byte, NetworkFormat> FormatCache = new Cache<byte, NetworkFormat>();
+
         private bool _listening;
 
         public IPAddress Address { get; }
@@ -55,9 +57,6 @@ namespace Darkages.Network
                     BindingFlags.NonPublic | BindingFlags.Instance);
 
         }
-
-        public NetworkServer() { }
-
 
         private void EndConnectClient(IAsyncResult result)
         {
@@ -150,10 +149,8 @@ namespace Darkages.Network
 
                     if (client.WorkSocket.PacketComplete)
                     {
-                        lock (ServerContext.SyncObj)
-                        {
-                            ClientDataReceived(client, client.WorkSocket.ToPacket());
-                        }
+                        ClientDataReceived(client, client.WorkSocket.ToPacket());
+
                         client.WorkSocket.BeginReceiveHeader(new AsyncCallback(EndReceiveHeader), out error, client);
                     }
                     else
@@ -232,10 +229,17 @@ namespace Darkages.Network
             ServerContext.Info?.Warning("Connection From {0} Established.", client.WorkSocket.RemoteEndPoint.ToString());
         }
 
-        public static Cache<byte, NetworkFormat> FormatCache = new Cache<byte, NetworkFormat>();
-
         public virtual void ClientDataReceived(TClient client, NetworkPacket packet)
         {
+            if (client == null)
+                return;
+
+            if (!client.WorkSocket.Connected)
+                return;
+
+            if (packet == null)
+                return;
+
             NetworkFormat format;
 
             if (FormatCache.Exists(packet.Command))
@@ -254,13 +258,12 @@ namespace Darkages.Network
                 {
                     client.Read(packet, format);
 
-                    if (_handlers[format.Command] != null)
-                        _handlers[format.Command].Invoke(this,
-                            new object[]
-                            {
+                    _handlers[format.Command]?.Invoke(this,
+                        new object[]
+                        {
                                 client,
                                 format
-                            });
+                        });
                 }
                 catch (Exception)
                 {

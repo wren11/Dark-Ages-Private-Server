@@ -41,14 +41,18 @@ namespace Darkages
 
         public void ShowFieldMap(GameClient client)
         {
-            client.Send(new ServerFormat2E(client.Aisling));
-            client.Aisling.PortalSession
-                = new PortalSession
-                {
-                    FieldNumber = 1,
-                    IsMapOpen = true,
-                    DateOpened = DateTime.UtcNow
-                };
+            lock (client)
+            {
+                client.Send(new ServerFormat2E(client.Aisling));
+
+                client.Aisling.PortalSession
+                    = new PortalSession
+                    {
+                        FieldNumber = 1,
+                        IsMapOpen = true,
+                        DateOpened = DateTime.UtcNow
+                    };
+            }
         }
 
         public void TransitionToMap(GameClient client,

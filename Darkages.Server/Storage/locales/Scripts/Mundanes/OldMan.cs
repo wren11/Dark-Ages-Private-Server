@@ -9,7 +9,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
     [Script("tut/OldMan")]
     public class OldMan : MundaneScript
     {
-        Reactor reactor, classes_reactor, general_reactor;
+        Reactor reactor, classes_reactor;
 
         public OldMan(GameServer server, Mundane mundane) : base(server, mundane)
         {
@@ -154,7 +154,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                  CanMoveNext = true,
                                  DisplayImage = (ushort)mundane.Template.Image,
                                  Title = mundane.Template.Name,
-                                 DisplayText = "I'm a new reactor.",
+                                 DisplayText = "I'm a new reactor.", 
                             },
                 },
             };
@@ -174,10 +174,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 client.Aisling.ActiveReactor.NextReactor = Clone<Reactor>(classes_reactor);
                 client.Aisling.ActiveReactor.NextReactor.Steps = new List<DialogSequence>(classes_reactor.Steps);
                 client.Aisling.ActiveReactor.NextReactor.Script = ScriptManager.Load<ReactorScript>("Default Response Handler", classes_reactor);
-
-                client.Aisling.ActiveReactor.NextReactor.NextReactor        = Clone<Reactor>(general_reactor);
-                client.Aisling.ActiveReactor.NextReactor.NextReactor.Steps  = new List<DialogSequence>(general_reactor.Steps);
-                client.Aisling.ActiveReactor.NextReactor.NextReactor.Script = ScriptManager.Load<ReactorScript>("Default Response Handler", general_reactor);
             }
 
             client.Aisling.ActiveReactor.Update(client);

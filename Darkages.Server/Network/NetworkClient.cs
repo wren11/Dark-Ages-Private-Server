@@ -22,6 +22,7 @@ using Darkages.Security;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -110,12 +111,14 @@ namespace Darkages.Network
                     return;
 
                 _sending = true;
+
                 ThreadPool.QueueUserWorkItem(FlushBuffers, this);
             }
         }
 
-        private void FlushBuffers(object state)
-        {           
+        public void FlushBuffers(object state)
+        {
+            _lock.TryEnterWriteLock(Timeout.Infinite);
             while (true)
             {
                 lock (_sendBuffers)
@@ -123,22 +126,40 @@ namespace Darkages.Network
                     if (_sendBuffers.Count == 0)
                     {
                         _sending = false;
+                        _lock.ExitWriteLock();
+
                         return;
                     }
 
                     var buffer = _sendBuffers.Dequeue();
-
                     if (WorkSocket.Connected)
                     {
-                        WorkSocket.Send(buffer, 0, buffer.Length, SocketFlags.None, out var error);
+                        WorkSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, out var error, OnFormatSent, buffer);
 
                         if (error != SocketError.Success)
                         {
-                            AddBuffer(buffer);
+                            _lock.ExitWriteLock();
                             return;
                         }
                     }
                 }
+            }
+        }
+
+        private void OnFormatSent(IAsyncResult ar)
+        {
+            SocketError error;
+
+            var socket = (Socket)WorkSocket;
+            var bytes  = socket.EndSend(ar, out error);
+            var buffer = (byte[])ar.AsyncState;
+
+            if (bytes < buffer.Length)
+            {
+                ServerContext.Info.Warning("Packet Overflow Error. Packet: {0} was invalid. Expected Length: {1}, Attempting to send missing bytes.", buffer.ToString(), bytes);
+                var _newbuffer = new List<byte>(buffer.Skip(bytes)).ToArray();
+
+                socket.BeginSend(_newbuffer, 0, _newbuffer.Length, SocketFlags.None, out error, OnFormatSent, _newbuffer);
             }
         }
 
@@ -170,21 +191,17 @@ namespace Darkages.Network
         private void SendFormat(NetworkFormat format)
         {
             if (!WorkSocket.Connected)
-            {
                 return;
-            }
 
             try
             {
                 if (format == null)
-                {
                     return;
-                }
 
                 var packet = GetPacket(format);
-
-                Enqueue(format, packet);
-
+                {
+                    Enqueue(format, packet);
+                }
             }
             catch (Exception)
             {
@@ -204,20 +221,17 @@ namespace Darkages.Network
 
         private NetworkPacket GetPacket(NetworkFormat format)
         {
-            NetworkPacket packet;
-
             lock (Writer)
             {
                 Writer.Position = 0;
                 Writer.Write(format.Command);
+
                 if (format.Secured)
                     Writer.Write(Ordinal++);
 
                 format.Serialize(Writer);
-                packet = Writer.ToPacket();
+                return Writer.ToPacket();
             }
-
-            return packet;
         }
 
         public void Send(NetworkFormat format)

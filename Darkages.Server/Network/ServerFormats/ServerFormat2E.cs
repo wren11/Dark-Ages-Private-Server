@@ -17,6 +17,27 @@
 //*************************************************************************/
 namespace Darkages.Network.ServerFormats
 {
+
+    public class EmptyMap : NetworkFormat
+    {
+        public override byte Command => 0x2E;
+        public override bool Secured => true;
+
+        public override void Serialize(NetworkPacketReader reader)
+        {
+
+        }
+
+        public override void Serialize(NetworkPacketWriter writer)
+        {
+            var name = "rain01";
+
+            writer.WriteStringA(name);
+            writer.Write(byte.MinValue);
+            writer.Write(byte.MinValue);
+        }
+    }
+
     public class ServerFormat2E : NetworkFormat
     {
         public ServerFormat2E(Aisling user)
@@ -26,6 +47,7 @@ namespace Darkages.Network.ServerFormats
 
         public override bool Secured => true;
         public override byte Command => 0x2E;
+
         private Aisling User { get; }
 
         public override void Serialize(NetworkPacketReader reader)
@@ -37,12 +59,12 @@ namespace Darkages.Network.ServerFormats
             if (User == null || User.PortalSession == null)
                 return;
 
-            var portal = ServerContext.GlobalWorldMapTemplateCache[User.PortalSession.FieldNumber];
+            var portal = ServerContext.GlobalWorldMapTemplateCache[User.PortalSession?.FieldNumber ?? 1];
             var name = string.Format("field{0:000}", portal.FieldNumber);
 
             writer.WriteStringA(name);
             writer.Write((byte)portal.Portals.Count);
-            writer.Write((byte)0x09);
+            writer.Write((byte)portal.FieldNumber);
 
             foreach (var warps in portal.Portals)
             {
@@ -58,6 +80,8 @@ namespace Darkages.Network.ServerFormats
                 writer.Write((short)warps.Destination.Location.X);
                 writer.Write((short)warps.Destination.Location.Y);
             }
+
+            ServerContext.Info.Debug("World Map Length : {0}", writer.Position);
         }
     }
 }

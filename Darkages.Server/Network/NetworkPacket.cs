@@ -21,6 +21,10 @@ namespace Darkages.Network
 {
     public sealed class NetworkPacket
     {
+        public byte Command;
+        public byte Ordinal;
+        public byte[] Data;
+
         public NetworkPacket(byte[] array, int count)
         {
             Command = array[0];
@@ -31,13 +35,12 @@ namespace Darkages.Network
                 Array.Copy(array, 2, Data, 0, Data.Length);
         }
 
-        public byte Command { get; set; }
-        public byte Ordinal { get; set; }
-        public byte[] Data { get; set; }
+        public int ExpectedLength;
 
-        public unsafe byte[] ToArray()
+        public byte[] ToArray()
         {
             var buffer = new byte[Data.Length + 5];
+            ExpectedLength = buffer.Length;
 
             buffer[0] = 0xAA;
             buffer[1] = (byte)((Data.Length + 2) >> 8);
@@ -49,7 +52,6 @@ namespace Darkages.Network
             {
                 buffer[i + 5] = Data[i];
             }
-
 
             return buffer;
         }

@@ -40,7 +40,7 @@ namespace Darkages.Network.ClientFormats
 
             try
             {
-                if (reader.CanRead)
+                if (reader.GetCanRead())
                     Serial = reader.ReadUInt32();
 
                 if (reader.Position + 4 < reader.Packet.Data.Length)
