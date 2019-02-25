@@ -56,7 +56,7 @@ namespace Content_Maker
 
         private void button4_Click(object sender, System.EventArgs e)
         {
-
+            new NewItemWizard().ShowDialog();
         }
 
         private void button5_Click(object sender, System.EventArgs e)
@@ -66,7 +66,7 @@ namespace Content_Maker
 
         private void frmMain_Load(object sender, System.EventArgs e)
         {
-            button5_Click(sender, e);
+            button4_Click(sender, e);
         }
     }
 }
