@@ -12,9 +12,7 @@
       "Recipient": null,
       "Subject": "me too",
       "Command": 49,
-      "Secured": true,
-      "Delay": 0,
-      "Throttle": false
+      "Secured": true
     }
   ],
   "Secured": true,
@@ -22,7 +20,5 @@
   "Index": 4,
   "IsMail": false,
   "Subject": "Market (Buying)",
-  "LetterId": 3,
-  "Delay": 0,
-  "Throttle": false
+  "LetterId": 3
 }

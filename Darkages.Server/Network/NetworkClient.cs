@@ -15,14 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.IO;
 using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -41,13 +40,14 @@ namespace Darkages.Network
             Encryption = new SecurityProvider();
         }
 
-        public NetworkPacketReader Reader { get; set; }
-        public NetworkPacketWriter Writer { get; set; }
-        public NetworkSocket WorkSocket { get; set; }
-        public SecurityProvider Encryption { get; set; }
-        public byte Ordinal { get; set; }
-        public int Serial { get; set; }
-        public bool IsProxy { get; set; }
+        public NetworkPacketReader Reader;
+        public NetworkPacketWriter Writer;
+        public NetworkSocket WorkSocket;
+        public SecurityProvider Encryption;
+
+        public byte Ordinal;
+        public int Serial;
+        public bool IsProxy;
 
         private static byte P(NetworkPacket value)
         {
@@ -69,35 +69,35 @@ namespace Darkages.Network
 
         public ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
+
+
         public virtual void Read(NetworkPacket packet, NetworkFormat format)
         {
             _lock.TryEnterReadLock(Timeout.Infinite);
-
-            if (format.Secured)
             {
-                Encryption.Transform(packet);
-
-                switch (format.Command)
+                if (format.Secured)
                 {
-                    case 0x39:
-                    case 0x3A:
-                        TransFormDialog(packet);
-                        Reader.Position = 6;
-                        break;
-                    default:
-                        Reader.Position = 0;
-                        break;
+                    Encryption.Transform(packet);
+
+                    switch (format.Command)
+                    {
+                        case 0x39:
+                        case 0x3A:
+                            TransFormDialog(packet);
+                            Reader.Position = 6;
+                            break;
+                        default:
+                            Reader.Position = 0;
+                            break;
+                    }
                 }
+                else
+                {
+                    Reader.Position = -1;
+                }
+                Reader.Packet = packet;
+                format.Serialize(Reader);
             }
-            else
-            {
-                Reader.Position = -1;
-            }
-
-
-            Reader.Packet = packet;
-            format.Serialize(Reader);
-
             _lock.ExitReadLock();
         }
 
@@ -127,39 +127,39 @@ namespace Darkages.Network
                     {
                         _sending = false;
                         _lock.ExitWriteLock();
-
                         return;
                     }
 
                     var buffer = _sendBuffers.Dequeue();
-                    if (WorkSocket.Connected)
-                    {
-                        WorkSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, out var error, OnFormatSent, buffer);
 
-                        if (error != SocketError.Success)
-                        {
-                            _lock.ExitWriteLock();
-                            return;
-                        }
+                    if (SendPayload(buffer) != SocketError.Success)
+                    {
+                        _lock.ExitWriteLock();
+                        return;
                     }
-                }
+                }               
             }
         }
 
-        private void OnFormatSent(IAsyncResult ar)
+        private SocketError SendPayload(byte[] buffer)
         {
-            SocketError error;
+            if (WorkSocket != null && WorkSocket.Connected)
+            {
+                WorkSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, out var error, EndSend, buffer);
+                return error;
+            }
 
-            var socket = (Socket)WorkSocket;
-            var bytes  = socket.EndSend(ar, out error);
+            return SocketError.SocketError;
+        }
+
+        private void EndSend(IAsyncResult ar)
+        {
+            var bytes  = WorkSocket.EndSend(ar);
             var buffer = (byte[])ar.AsyncState;
 
-            if (bytes < buffer.Length)
+            if (buffer.Length > 0)
             {
-                ServerContext.Info.Warning("Packet Overflow Error. Packet: {0} was invalid. Expected Length: {1}, Attempting to send missing bytes.", buffer.ToString(), bytes);
-                var _newbuffer = new List<byte>(buffer.Skip(bytes)).ToArray();
-
-                socket.BeginSend(_newbuffer, 0, _newbuffer.Length, SocketFlags.None, out error, OnFormatSent, _newbuffer);
+                BufferPool.Return(buffer);
             }
         }
 
@@ -193,30 +193,63 @@ namespace Darkages.Network
             if (!WorkSocket.Connected)
                 return;
 
-            try
-            {
-                if (format == null)
-                    return;
+            if (format == null)
+                return;
 
-                var packet = GetPacket(format);
-                {
-                    Enqueue(format, packet);
-                }
-            }
-            catch (Exception)
+            var packet = GetPacket(format);
             {
-                //ignore
+                Enqueue(format, packet);
             }
         }
 
         private void Enqueue(NetworkFormat format, NetworkPacket packet)
         {
-            if (format.Secured)
-                Encryption.Transform(packet);
+            lock (packet)
+            {
+                if (format.Secured)
+                    Encryption.Transform(packet);
 
-            var buffer = packet.ToArray();
+                var data = packet.ToArray();
 
-            AddBuffer(buffer);
+                if (format is ServerFormat3C)
+                {
+                //    AddBuffer(data);
+                }
+                //else
+                {
+                    CreateBuffers(data);
+                }
+            }
+        }
+
+        private void CreateBuffers(byte[] data)
+        {
+            if (this is GameClient)
+            {
+                var client = this as GameClient;
+
+                if (client.Aisling != null && client.Aisling.LoggedIn)
+                {
+                    if (client.Buffer == null)
+                    {
+                        client.Buffer = new NetworkPacketWriter();
+                    }
+
+                    lock (client.Buffer)
+                    {
+                        client.Buffer.Write(data);
+                        BufferPool.Return(data);
+                    }
+                }
+                else
+                {
+                    AddBuffer(data);
+                }
+            }
+            else
+            {
+                AddBuffer(data);
+            }
         }
 
         private NetworkPacket GetPacket(NetworkFormat format)
@@ -236,9 +269,6 @@ namespace Darkages.Network
 
         public void Send(NetworkFormat format)
         {
-            if (format.Delay != 0)
-                Thread.Sleep(format.Delay);
-
             SendFormat(format);
         }
 

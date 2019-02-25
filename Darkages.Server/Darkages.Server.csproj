@@ -46,7 +46,6 @@
     <RootNamespace>Darkages</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependacies\Mono.CSharp.dll</HintPath>
@@ -130,6 +129,7 @@
     <Compile Include="Interops\MemoryMappedDataReceivedEventArgs.cs" />
     <Compile Include="Interops\MemoryMappedFileCommunicator.cs" />
     <Compile Include="Interops\ServerInformation.cs" />
+    <Compile Include="IO\BufferPool.cs" />
     <Compile Include="IO\BufferReader.cs" />
     <Compile Include="IO\BufferWriter.cs" />
     <Compile Include="IO\Crc16Provider.cs" />

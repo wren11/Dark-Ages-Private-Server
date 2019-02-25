@@ -48,8 +48,6 @@ namespace Darkages.Network.ServerFormats
 
         public override byte Command => 0x13;
 
-        public override bool Throttle => true;
-
         public int Source { get; set; }
         public int Serial { get; set; }
         public ushort Health { get; set; }

@@ -18,13 +18,12 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Text;
-using System.Threading;
 
 namespace Darkages.Common
 {
     public static class Generator
     {
-        public static Random Random { get; }
+        public static Random Random;
 
         public static volatile int SERIAL;
 
@@ -35,8 +34,8 @@ namespace Darkages.Common
             GeneratedStrings = new Collection<string>();
         }
 
-        public static Collection<int> GeneratedNumbers { get; }
-        public static Collection<string> GeneratedStrings { get; }
+        public static Collection<int> GeneratedNumbers;
+        public static Collection<string> GeneratedStrings;
 
         public static T RandomEnumValue<T>()
         {

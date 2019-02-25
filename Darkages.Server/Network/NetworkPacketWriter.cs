@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.IO;
 using System;
 using System.Net;
 using System.Text;
@@ -23,10 +24,15 @@ namespace Darkages.Network
 {
     public class NetworkPacketWriter
     {
-        private readonly byte[] buffer = new byte[0x10000];
+        private readonly byte[] buffer;
         private readonly Encoding encoding = Encoding.GetEncoding(949);
 
         public int Position;
+
+        public NetworkPacketWriter()
+        {
+             buffer = BufferPool.Take(0x10000);
+        }
 
         public bool GetCanWrite()
         {
@@ -128,6 +134,14 @@ namespace Darkages.Network
             Write(
                 (ushort)endPoint.Port);
         }
+
+        public byte[] ToBuffer()
+        {
+            var nbuffer = BufferPool.Take(Position);
+            Array.Copy(buffer, 0, nbuffer, 0, Position);
+            return nbuffer;
+        }
+
 
         public NetworkPacket ToPacket()
         {

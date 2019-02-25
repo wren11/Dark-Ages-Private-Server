@@ -1187,23 +1187,6 @@ namespace Darkages.Types
             return ((int) Dst <= subjectLength);
         }
 
-        public bool Facing(int x, int y)
-        {
-            switch ((Direction)Direction)
-            {
-                case Types.Direction.North:
-                    return X == x && Y - 1 == y;
-                case Types.Direction.South:
-                    return X == x && Y + 1 == y;
-                case Types.Direction.East:
-                    return X + 1 == x && Y == y;
-                case Types.Direction.West:
-                    return X - 1 == x && Y == y;
-            }
-
-            return false;
-        }
-
         public bool Facing(Sprite other, out int direction)
         {
             return Facing(other.X, other.Y, out direction);

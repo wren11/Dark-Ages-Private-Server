@@ -12,9 +12,7 @@
       "Recipient": null,
       "Subject": "some event.",
       "Command": 49,
-      "Secured": true,
-      "Delay": 0,
-      "Throttle": false
+      "Secured": true
     },
     {
       "Owner": "lol",
@@ -28,9 +26,7 @@
       "Recipient": null,
       "Subject": "test",
       "Command": 49,
-      "Secured": true,
-      "Delay": 0,
-      "Throttle": false
+      "Secured": true
     }
   ],
   "Secured": true,
@@ -38,7 +34,5 @@
   "Index": 2,
   "IsMail": false,
   "Subject": "Events and Events",
-  "LetterId": 2,
-  "Delay": 0,
-  "Throttle": false
+  "LetterId": 2
 }

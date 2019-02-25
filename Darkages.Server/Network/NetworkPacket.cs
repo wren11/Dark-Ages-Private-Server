@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.IO;
 using System;
 
 namespace Darkages.Network
@@ -35,12 +36,9 @@ namespace Darkages.Network
                 Array.Copy(array, 2, Data, 0, Data.Length);
         }
 
-        public int ExpectedLength;
-
         public byte[] ToArray()
         {
-            var buffer = new byte[Data.Length + 5];
-            ExpectedLength = buffer.Length;
+            var buffer     = BufferPool.Take(Data.Length + 5);
 
             buffer[0] = 0xAA;
             buffer[1] = (byte)((Data.Length + 2) >> 8);

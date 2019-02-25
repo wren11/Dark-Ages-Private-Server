@@ -115,7 +115,7 @@ namespace Darkages
         /// <summary>
         /// Ms between 0 cooldown based skills.
         /// </summary>
-        public double GlobalBaseSkillDelay = 750;
+        public double GlobalBaseSkillDelay = 450;
 
         [JsonProperty]
         /// <summary>
@@ -287,11 +287,14 @@ namespace Darkages
         };
 
         [JsonProperty]
+        public string CursedItemMessage = "You reach for it, But something holds you back.";
+
+        [JsonProperty]
         public GameSetting[] Settings = new GameSetting[]
         {
             new GameSetting("Loot Mode  :Single", "Loot Mode  :Multi", true),
             new GameSetting("PVP  :ON", "PVP  :OFF", true),
-            new GameSetting("AUTO LOOT GOLD  :ON", "AUTO LOOT GOLD  :OFF", false)
+            new GameSetting("AUTO LOOT GOLD  :Toggle", "AUTO LOOT GOLD  :Toggled", false)
         };
 
         public struct GameSetting

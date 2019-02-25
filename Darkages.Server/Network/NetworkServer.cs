@@ -38,9 +38,9 @@ namespace Darkages.Network
 
         private bool _listening;
 
-        public IPAddress Address { get; }
+        public IPAddress Address;
 
-        public TClient[] Clients { get; }
+        public TClient[] Clients;
 
         protected NetworkServer(int capacity)
         {

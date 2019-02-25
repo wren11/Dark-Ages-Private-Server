@@ -65,8 +65,14 @@ namespace Darkages.Network.Game
             {
                 itemScript.OnUse(client.Aisling, (targets) =>
                 {
-                   client.LastScriptExecuted = DateTime.UtcNow.AddMilliseconds(450);
+                   client.LastScriptExecuted = DateTime.UtcNow.AddMilliseconds(500);
                 });
+            }
+
+
+            if ((client.LastAssail - DateTime.UtcNow).TotalMilliseconds > 450)
+            {
+                return;
             }
 
             var lastTemplate = string.Empty;
@@ -93,6 +99,8 @@ namespace Darkages.Network.Game
                     lastTemplate = skill.Template.Name;
                 }
             }
+
+            client.LastAssail = DateTime.UtcNow;
         }
 
         private static void ExecuteAbility(GameClient client, Skill skill)
@@ -121,17 +129,7 @@ namespace Darkages.Network.Game
 
         private void LoadPlayer(GameClient client, ClientFormat10 format)
         {
-            Aisling aisling = null;
-
-            if (ServerContext.ConnectedBots.ContainsKey(format.Name))
-            {
-                aisling = ServerContext.ConnectedBots[format.Name];
-            }
-            else
-            {
-                aisling = StorageManager.AislingBucket.Load(format.Name);
-            }
-
+            Aisling aisling = StorageManager.AislingBucket.Load(format.Name);
 
             if (aisling != null)
                 client.Aisling = aisling;
@@ -175,10 +173,8 @@ namespace Darkages.Network.Game
             {
                 client.SendMessage(0x02, ServerContext.Config.ServerWelcomeMessage);
                 client.Aisling.LastLogged = DateTime.UtcNow;
-                client.SendStats(StatusFlags.All);
-                Thread.Sleep(650);
+                client.SendStats(StatusFlags.All);;
                 client.EnterArea();
-                Thread.Sleep(400);
                 client.Aisling.LoggedIn = true;
             }
             else
@@ -432,7 +428,7 @@ namespace Darkages.Network.Game
                     {
                         if ((obj as Item).AuthenticatedAislings.FirstOrDefault(i => i.Serial == client.Aisling.Serial) == null)
                         {
-                            client.SendMessage(0x02, "You reach for it, But something holds you back.");
+                            client.SendMessage(0x02, ServerContext.Config.CursedItemMessage);
                             break;
                         }
                         else
@@ -1525,24 +1521,9 @@ namespace Darkages.Network.Game
                 return;
             }
 
-
             var skill = client.Aisling.SkillBook.Get(i => i.Slot == format.Index).FirstOrDefault();
             if (skill?.Template == null || skill.Script == null)
                 return;
-
-            if (skill.Template.Type == SkillScope.Assail)
-            {
-                foreach (var assail in client.Aisling.GetAssails(SkillScope.Assail))
-                {
-                    if (assail == null || assail.Template == null)
-                        continue;
-
-                    if (assail.Template.Name == skill.Template.Name)
-                        continue;
-
-                    assail.NextAvailableUse = DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
-                }
-            }
 
             if (!skill.CanUse())
                 return;

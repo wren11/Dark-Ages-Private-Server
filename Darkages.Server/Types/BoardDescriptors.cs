@@ -98,7 +98,6 @@ namespace Darkages.Types
     public class BoardList : BoardDescriptors
     {
         public List<Board> CommunityBoards { get; set; }
-        public override int Delay => 650;
 
         public BoardList(Board[] community)
         {

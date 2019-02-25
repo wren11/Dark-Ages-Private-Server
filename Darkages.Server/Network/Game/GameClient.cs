@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages.Common;
+using Darkages.IO;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage;
@@ -71,6 +72,10 @@ namespace Darkages.Network.Game
         public ushort LastBoardActivated { get; set; }
 
         public Item LastItemDropped { get; set; }
+
+        public DateTime LastAssail;
+
+        public NetworkPacketWriter Buffer;
 
         public GameClient()
         {
@@ -258,6 +263,7 @@ namespace Darkages.Network.Game
             SendPacket(new byte[] { 0x30, 0x00, 0x0A, 0x00 });
         }
 
+
         public void Update(TimeSpan elapsedTime)
         {
             #region Sanity Checks
@@ -271,12 +277,39 @@ namespace Darkages.Network.Game
                 return;
             #endregion
 
+            ProcessBuffers();
             HandleTimeOuts();
             StatusCheck();
             Regen(elapsedTime);
             UpdateStatusBar(elapsedTime);
             UpdateGlobalScripts(elapsedTime);
 
+        }
+
+        private void ProcessBuffers()
+        {
+            if (!WorkSocket.Connected)
+            {
+                Buffer = null;
+                return;
+            }
+
+            if (Buffer != null)
+            {
+                lock (Buffer)
+                {
+                    if (Buffer.Position > 0)
+                    {
+                        var payload = Buffer.ToBuffer();
+
+                        WorkSocket.Send(payload, 0, payload.Length, System.Net.Sockets.SocketFlags.None, out var error);
+                        {
+                            if (error != System.Net.Sockets.SocketError.SocketError)
+                                Buffer.Position = 0;
+                        }
+                    }
+                }
+            }
         }
 
         private void StatusCheck()
@@ -583,8 +616,6 @@ namespace Darkages.Network.Game
             var spells_Available = Aisling.SpellBook.Spells.Values
                 .Where(i => i != null && i.Template != null).ToArray();
 
-            var formats = new List<NetworkFormat>();
-
             for (var i = 0; i < spells_Available.Length; i++)
             {
                 var spell = spells_Available[i];
@@ -609,11 +640,8 @@ namespace Darkages.Network.Game
                     Aisling.SpellBook.Set(spell, false);
                 }
 
-                formats.Add(new ServerFormat17(spell));
+                Send(new ServerFormat17(spell));
             }
-
-            foreach (var format in formats)
-                Aisling.Client.Send(format);
         }
 
         private void LoadSkillBook()
@@ -646,7 +674,7 @@ namespace Darkages.Network.Game
 
                 }
 
-                formats.Add(new ServerFormat2C(skill.Slot,
+                Send(new ServerFormat2C(skill.Slot,
                     skill.Icon,
                     skill.Name));
 
@@ -654,17 +682,12 @@ namespace Darkages.Network.Game
                 skill.Script = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
                 Aisling.SkillBook.Set(skill, false);
             }
-
-            foreach (var format in formats)
-                Aisling.Client.Send(format);
         }
 
         private void LoadInventory()
         {
             var items_Available = Aisling.Inventory.Items.Values
                 .Where(i => i != null && i.Template != null).ToArray();
-
-            var formats = new List<NetworkFormat>();
 
             for (var i = 0; i < items_Available.Length; i++)
             {
@@ -697,7 +720,8 @@ namespace Darkages.Network.Game
                     if (Aisling.CurrentWeight + item.Template.CarryWeight < Aisling.MaximumWeight)
                     {
                         var format = new ServerFormat0F(item);
-                        formats.Add(format);
+                        Send(format);
+
                         Aisling.Inventory.Set(item, false);
                         Aisling.CurrentWeight += item.Template.CarryWeight;
                     }
@@ -715,9 +739,6 @@ namespace Darkages.Network.Game
                     }
                 }
             }
-
-            if (formats.Count > 0)
-                formats.ForEach(i => Send(i));
         }
 
         public void UpdateDisplay()

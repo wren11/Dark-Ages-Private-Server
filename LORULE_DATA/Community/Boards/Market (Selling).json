@@ -12,9 +12,7 @@
       "Recipient": null,
       "Subject": "well shit",
       "Command": 49,
-      "Secured": true,
-      "Delay": 0,
-      "Throttle": false
+      "Secured": true
     },
     {
       "Owner": "hi",
@@ -28,9 +26,7 @@
       "Recipient": null,
       "Subject": "selling poop.",
       "Command": 49,
-      "Secured": true,
-      "Delay": 0,
-      "Throttle": false
+      "Secured": true
     }
   ],
   "Secured": true,
@@ -38,7 +34,5 @@
   "Index": 5,
   "IsMail": false,
   "Subject": "Market (Selling)",
-  "LetterId": 4,
-  "Delay": 0,
-  "Throttle": false
+  "LetterId": 4
 }

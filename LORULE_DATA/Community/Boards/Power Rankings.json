@@ -12,9 +12,7 @@
       "Recipient": null,
       "Subject": "some testing",
       "Command": 49,
-      "Secured": true,
-      "Delay": 0,
-      "Throttle": false
+      "Secured": true
     }
   ],
   "Secured": true,
@@ -22,7 +20,5 @@
   "Index": 1,
   "IsMail": false,
   "Subject": "Power Rankings",
-  "LetterId": 1,
-  "Delay": 0,
-  "Throttle": false
+  "LetterId": 1
 }

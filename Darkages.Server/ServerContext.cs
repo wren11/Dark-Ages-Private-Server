@@ -17,6 +17,7 @@
 //*************************************************************************/
 using Darkages.Common;
 using Darkages.Interops;
+using Darkages.IO;
 using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Script.Context;
@@ -67,6 +68,8 @@ namespace Darkages
 
         static ServerContext()
         {
+            //BufferPool.SetBufferManagerBufferPool(1000, 0x10000);
+
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
 
@@ -566,7 +569,8 @@ namespace Darkages
 
         public static void InitScriptEvaluator()
         {
-            Evaluator.Init(new string[0]);
+            Evaluator.Init(new string[] { "Darkages.Server" });
+
             var assembly = Assembly.Load("Darkages.Server");
             Evaluator.ReferenceAssembly(assembly);
 
