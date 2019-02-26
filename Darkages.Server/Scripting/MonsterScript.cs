@@ -30,8 +30,8 @@ namespace Darkages.Scripting
             Map = map;
         }
 
-        public Monster Monster { get; set; }
-        public Area Map { get; set; }
+        public Monster Monster;
+        public Area Map;
 
         public abstract void OnApproach(GameClient client);
         public abstract void OnAttacked(GameClient client);

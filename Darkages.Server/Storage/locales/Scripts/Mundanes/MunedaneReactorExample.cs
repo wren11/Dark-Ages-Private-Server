@@ -42,7 +42,7 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
                 CallingReactor = "Example Reactor 2",
                 ScriptKey = "Example Reactor 2",
                 Name = "Example Reactor 2",
-                Steps = new List<DialogSequence>()
+                Sequences = new List<DialogSequence>()
                     {
                         new DialogSequence()
                         {
@@ -78,7 +78,7 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
                             CanMoveNext  = true,
                             DisplayText  = "Let me know what you find out. I'll stay here and warn other who may come along...",
                             DisplayImage = (ushort)Mundane.Template.Image,
-                            Callback     = SequenceCompletedCallback,
+                            OnSequenceStep     = SequenceCompletedCallback,
                             Title = "Wren"
                         },
                     },
@@ -108,9 +108,9 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
                 }
             };
 
-            reactor.Script = ScriptManager.Load<ReactorScript>(reactor.ScriptKey, reactor);
-            if (reactor != null && reactor.Script != null)
-                reactor.Script.OnTriggered(client.Aisling);
+            reactor.Decorator = ScriptManager.Load<ReactorScript>(reactor.ScriptKey, reactor);
+            if (reactor != null && reactor.Decorator != null)
+                reactor.Decorator.OnTriggered(client.Aisling);
         }
 
         public override void OnGossip(GameServer server, GameClient client, string message)

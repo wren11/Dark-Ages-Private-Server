@@ -30,9 +30,9 @@ namespace Darkages.Types
 
     public class ForumCallback : BoardDescriptors
     {
-        public string Message { get; set; }
-        public bool Close { get; set; }
-        public byte ActionType { get; set; }
+        public string Message;
+        public bool Close;
+        public byte ActionType;
 
         public ForumCallback(string message, byte type, bool close = false)
         {

@@ -45,7 +45,7 @@ namespace Darkages.Assets.locales.Scripts.Reactors
                 return;
             }
             
-            if (aisling.ActiveReactor.Index + 1 < aisling.ActiveReactor.Steps.Count)
+            if (aisling.ActiveReactor.Index + 1 < aisling.ActiveReactor.Sequences.Count)
             {
                 aisling.ActiveReactor.Index++;
                 aisling.ActiveReactor.Next(aisling.Client);

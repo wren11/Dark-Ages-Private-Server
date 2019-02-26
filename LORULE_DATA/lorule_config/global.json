@@ -108,6 +108,7 @@
       "WishingWell"
     ]
   },
+  "CursedItemMessage": "You reach for it, But something holds you back.",
   "Settings": {
     "$type": "Darkages.ServerConstants+GameSetting[], Darkages.Server",
     "$values": [

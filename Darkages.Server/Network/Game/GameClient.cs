@@ -284,6 +284,11 @@ namespace Darkages.Network.Game
 
         }
 
+        public static void SequenceNext(Aisling user, DialogSequence sequence)
+        {
+
+        }
+
         private void ProcessBuffers()
         {
             if (!WorkSocket.Connected)

@@ -28,8 +28,8 @@ namespace Darkages.Storage.locales.Scripts.Global
                 if (client.Aisling.ActiveReactor == null)
                 {
                     client.Aisling.ActiveReactor = Clone<Reactor>(reactor);
-                    client.Aisling.ActiveReactor.Steps = new List<DialogSequence>(reactor.Steps);
-                    client.Aisling.ActiveReactor.Script = ScriptManager.Load<ReactorScript>("Default Response Handler", reactor);
+                    client.Aisling.ActiveReactor.Sequences = new List<DialogSequence>(reactor.Sequences);
+                    client.Aisling.ActiveReactor.Decorator = ScriptManager.Load<ReactorScript>("Default Response Handler", reactor);
                     client.Aisling.ActiveReactor.Location = new Position(reactor.Location.X, reactor.Location.Y);
                 }
 
@@ -44,7 +44,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                 Name = "Welcome",
                 Location = new Position(26, 47),
                 CanActAgain = false,
-                Steps = new List<DialogSequence>()
+                Sequences = new List<DialogSequence>()
                         {
                             new DialogSequence()
                             {

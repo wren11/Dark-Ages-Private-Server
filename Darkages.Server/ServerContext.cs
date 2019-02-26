@@ -489,9 +489,9 @@ namespace Darkages
                 Direction = 2,
                 Level = 99,
                 X = 29,
-                Y = 20,
+                Y = 21,
                 ScriptKey = "tut/OldMan",
-                Image = 0x4018,
+                Image = 0x4021,
                 Name = "Bartley"
             };
 
@@ -499,7 +499,7 @@ namespace Darkages
             {
                 Name = "Kardi",
                 BaseName = "Kardi",
-                MovementSpeed = 1000,
+                MovementSpeed = 800,
                 EngagedWalkingSpeed = 300,
                 MoodType = MoodQualifer.Neutral,
                 Level = 1,

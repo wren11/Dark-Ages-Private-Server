@@ -47,7 +47,7 @@ namespace Darkages.Types
         {
             client.Send(new ServerFormat30(client, this));
             {
-                Current?.Callback?.Invoke(client.Aisling, Current);
+                Current?.OnSequenceStep?.Invoke(client.Aisling, Current);
                 return Current;
             }
         }

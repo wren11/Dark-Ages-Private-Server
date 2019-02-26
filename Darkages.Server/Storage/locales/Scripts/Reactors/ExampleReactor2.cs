@@ -47,7 +47,7 @@ namespace Darkages.Assets.locales.Scripts.Reactors
                 return;
             }
 
-            if (aisling.ActiveReactor.Index + 1 < aisling.ActiveReactor.Steps.Count)
+            if (aisling.ActiveReactor.Index + 1 < aisling.ActiveReactor.Sequences.Count)
             {
                 aisling.ActiveReactor.Index++;
                 aisling.ActiveReactor.Next(aisling.Client);
@@ -64,8 +64,8 @@ namespace Darkages.Assets.locales.Scripts.Reactors
         {
             if (aisling.ReactedWith(Reactor.Name))
             {
-                foreach (var sequences in Reactor.Steps.Where(i => i.Callback != null))
-                    sequences.Callback.Invoke(aisling, sequences);
+                foreach (var sequences in Reactor.Sequences.Where(i => i.OnSequenceStep != null))
+                    sequences.OnSequenceStep.Invoke(aisling, sequences);
             }
             else
             {
@@ -87,8 +87,8 @@ namespace Darkages.Assets.locales.Scripts.Reactors
                 aisling.ActiveReactor = null;
                 aisling.Client.CloseDialog();
 
-                foreach (var sequences in Reactor.Steps.Where(i => i.Callback != null))
-                    sequences.Callback.Invoke(aisling, sequences);
+                foreach (var sequences in Reactor.Sequences.Where(i => i.OnSequenceStep != null))
+                    sequences.OnSequenceStep.Invoke(aisling, sequences);
 
                 if (Reactor.Quest != null)
                     Reactor.Quest.Rewards(aisling, false);

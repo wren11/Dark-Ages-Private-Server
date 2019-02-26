@@ -226,14 +226,7 @@ namespace Darkages.Types
                             obj.Show(Scope.Self,
                                 new ServerFormat0D
                                 {
-                                    Serial = int.MaxValue,
-                                    Text = Template.Name + ": " + msg,
-                                    Type = 0
-                                });
-                            obj.Show(Scope.Self,
-                                new ServerFormat0D
-                                {
-                                    Serial = this.Serial,
+                                    Serial = Serial,
                                     Text = msg,
                                     Type = 0
                                 });

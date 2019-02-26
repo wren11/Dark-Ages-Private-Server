@@ -5,6 +5,8 @@ using Darkages.Scripting;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Darkages.Types
 {
@@ -19,12 +21,12 @@ namespace Darkages.Types
         Quest = 7
     }
 
+    [Serializable]
     public class Reactor : Template
     {
         [JsonIgnore]
         public readonly int Id;
 
-        public Reactor NextReactor { get; set; }
 
         public Reactor()
         {
@@ -52,10 +54,12 @@ namespace Darkages.Types
         public int Index { get; set; }
 
         [JsonIgnore]
-        public DialogSequence Current => Steps[Index] ?? null;
+        public DialogSequence Current => Sequences[Index] ?? null;
 
         [JsonIgnore]
-        public ReactorScript Script { get; set; }
+        public ReactorScript Decorator { get; set; }
+
+        public string DecoratorScript { get; set; }
 
         [JsonIgnore]
         public ReactorScript PostScript { get; set; }
@@ -64,7 +68,11 @@ namespace Darkages.Types
 
         public bool Completed { get; set; }
 
-        public List<DialogSequence> Steps = new List<DialogSequence>();
+        public GameServerTimer WhenCanActAgain { get; set; }
+
+        public List<DialogSequence> Sequences = new List<DialogSequence>();
+
+        public string CallingNpc { get; set; }
 
         public void Update(GameClient client)
         {
@@ -72,29 +80,29 @@ namespace Darkages.Types
             {
                 client.Aisling.CanReact = false;
 
-                if (Script != null)
+                if (Decorator != null)
                 {
-                    Script.OnTriggered(client.Aisling);
+                    Decorator.OnTriggered(client.Aisling);
                 }
             }
         }
 
         public void Goto(GameClient client, int Idx)
         {
-            client.Aisling.ActiveReactor.Index = Idx;
-            client.Aisling.ActiveSequence      = client.Aisling.ActiveReactor.Steps[Idx];
+            client.Aisling.ActiveReactor.Index  = Idx;
+            client.Aisling.ActiveSequence       = client.Aisling.ActiveReactor.Sequences[Idx];
 
             client.Send(new ReactorSequence(client, client.Aisling.ActiveSequence));
 
-            if (Steps[Idx].Callback != null)
+            if (Sequences[Idx].OnSequenceStep != null)
             {
-                Steps[Idx].Callback.Invoke(client.Aisling, Steps[Idx]);
+                Sequences[Idx].OnSequenceStep.Invoke(client.Aisling, Sequences[Idx]);
             }
         }
 
         public void Next(GameClient client, bool start = false)
         {
-            if (Steps.Count == 0)
+            if (Sequences.Count == 0)
                 return;
 
             if (Index < 0)
@@ -102,17 +110,64 @@ namespace Darkages.Types
 
             if (!start)
             {
-                client.Send(new ReactorSequence(client, Steps[Index]));
-
-                if (Steps[Index].Callback != null)
+                if (client.Aisling.ActiveSequence != null)
                 {
-                    Steps[Index].Callback.Invoke(client.Aisling, Steps[Index]);
+
+                    var mundane = GetObject<Mundane>(client.Aisling.Map, i => i.WithinRangeOf(client.Aisling) && i.Alive);
+
+                    if (client.Aisling.ActiveSequence.HasOptions && client.Aisling.ActiveSequence.Options.Length > 0)
+                    {
+                        if (mundane != null)
+                        {
+                            client.SendOptionsDialog(mundane,
+                                client.Aisling.ActiveSequence.DisplayText,
+                                client.Aisling.ActiveSequence.Options);
+                        }
+                    }
+                    else if (client.Aisling.ActiveSequence.IsCheckPoint)
+                    {
+                        var results = new List<bool>();
+                        var valid   = false;
+
+                        if (client.Aisling.ActiveSequence.Conditions != null)
+                        {
+
+                            foreach (var reqs in client.Aisling.ActiveSequence.Conditions)
+                            {
+                                results.Add(reqs.IsMet(client.Aisling, i => i(reqs.TemplateContext)));
+                            }
+
+                            valid = results.TrueForAll(i => i != false);
+                        }
+                        else
+                        {
+                            valid = true;
+                        }
+
+                        if (valid)
+                        {
+                            Goto(client, Index); //send the next dialog.
+                        }
+                        else
+                        {
+                            client.SendOptionsDialog(mundane, client.Aisling.ActiveSequence.ConditionFailMessage, "failed");
+                        }
+                    }
+                    else
+                    {
+                        Goto(client, Index); //send the next dialog.
+                    }
+
+                    if (Sequences[Index].OnSequenceStep != null)
+                    {
+                        Sequences[Index].OnSequenceStep.Invoke(client.Aisling, Sequences[Index]);
+                    }
                 }
 
                 return;
             }
 
-            var first = Steps[Index = 0];
+            var first = Sequences[Index = 0];
             if (first != null)
             {
                 client.Send(new ReactorSequence(client, first));

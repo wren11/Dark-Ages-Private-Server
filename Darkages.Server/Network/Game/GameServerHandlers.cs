@@ -1357,25 +1357,25 @@ namespace Darkages.Network.Game
 
             if (format.ScriptId == ushort.MaxValue)
             {
-                if (client.Aisling.ActiveReactor == null || client.Aisling.ActiveReactor.Script == null)
+                if (client.Aisling.ActiveReactor == null || client.Aisling.ActiveReactor.Decorator == null)
                     return;
 
                 switch (format.Step)
                 {
                     case 0:
-                        client.Aisling.ActiveReactor.Script.OnClose(client.Aisling);
+                        client.Aisling.ActiveReactor.Decorator.OnClose(client.Aisling);
                         break;
                     case 255:
-                        client.Aisling.ActiveReactor.Script.OnBack(client.Aisling);
+                        client.Aisling.ActiveReactor.Decorator.OnBack(client.Aisling);
                         break;
                     case 0xFFFF:
-                        client.Aisling.ActiveReactor.Script.OnBack(client.Aisling);
+                        client.Aisling.ActiveReactor.Decorator.OnBack(client.Aisling);
                         break;
                     case 2:
-                        client.Aisling.ActiveReactor.Script.OnClose(client.Aisling);
+                        client.Aisling.ActiveReactor.Decorator.OnClose(client.Aisling);
                         break;
                     case 1:
-                        client.Aisling.ActiveReactor.Script.OnNext(client.Aisling);
+                        client.Aisling.ActiveReactor.Decorator.OnNext(client.Aisling);
                         break;
                 }
             }

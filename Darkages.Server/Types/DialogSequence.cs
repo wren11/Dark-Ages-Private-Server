@@ -15,31 +15,46 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Network.ServerFormats;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace Darkages.Types
 {
     public class DialogSequence
     {
         [JsonIgnore]
-        public Action<Aisling, DialogSequence> Callback { get; set; }
+        public Action<Aisling, DialogSequence> OnSequenceStep { get; set; }
 
         public string CallbackKey { get; set; }
 
         public string Title { get; set; }
-        public string DisplayText { get; set; }
-        public bool HasOptions { get; set; }
-        public short ContinueOn { get; set; }
-        public int Id { get; set; }
-        public bool CanMoveNext { get; set; }
-        public bool CanMoveBack { get; set; }
-        public ushort DisplayImage { get; set; }
 
-        public bool Processed { get; set; }
+        public string DisplayText { get; set; }
+
+        public bool HasOptions { get; set; }
+
+        public short ContinueOn { get; set; }
+
+        public int Id { get; set; }
+
+        public bool CanMoveNext { get; set; }
+
+        public bool CanMoveBack { get; set; }
+
+        public ushort DisplayImage { get; set; }
 
         public int ContinueAt { get; set; }
 
         public int RollBackTo { get; set; }
+
+        public OptionsDataItem[] Options { get; set; }
+
+        public bool IsCheckPoint { get; set; }
+
+        public List<QuestRequirement> Conditions { get; set; }
+
+        public string ConditionFailMessage { get; set; }
     }
 }

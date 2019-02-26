@@ -50,7 +50,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 Title = Mundane.Template.Name,
                 DisplayText = "?",
                 HasOptions = true,
-                Callback = (sender, args) =>
+                OnSequenceStep = (sender, args) =>
                 {
                     if (args.HasOptions)
                         sender.Client.SendOptionsDialog(Mundane, "So, what's it gonna be mate?",
@@ -65,7 +65,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 Title = Mundane.Template.Name,
                 DisplayText = string.Empty,
                 HasOptions = true,
-                Callback = (sender, args) =>
+                OnSequenceStep = (sender, args) =>
                 {
                     if (args.HasOptions)
                         sender.Client.SendOptionsDialog(Mundane,

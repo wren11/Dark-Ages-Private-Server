@@ -17,7 +17,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 Name = "Tutorial : Combat",
                 CallerType = ReactorQualifer.Object,                 
                 CanActAgain = false,
-                Steps = new List<DialogSequence>()
+                Sequences = new List<DialogSequence>()
                         {
                             new DialogSequence()
                             {
@@ -82,7 +82,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                  DisplayImage = (ushort)mundane.Template.Image,
                                  Title = mundane.Template.Name,
                                  DisplayText = "Here is a stick if you don't already have one. it's not much but its better then nothing. Make sure to equip it.",
-                                 Callback = ((cbAisling, cbSequence) => 
+                                 OnSequenceStep = ((cbAisling, cbSequence) => 
                                  {        
                                      if (cbAisling.Inventory.Has(i => i.Template.Name == "Stick") == null)
                                      {
@@ -111,8 +111,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
 
             client.Aisling.ActiveReactor        = Clone<Reactor>(reactor);
-            client.Aisling.ActiveReactor.Steps  = new List<DialogSequence>(reactor.Steps);
-            client.Aisling.ActiveReactor.Script = ScriptManager.Load<ReactorScript>("Default Response Handler", reactor);
+            client.Aisling.ActiveReactor.Sequences  = new List<DialogSequence>(reactor.Sequences);
+            client.Aisling.ActiveReactor.Decorator = ScriptManager.Load<ReactorScript>("Default Response Handler", reactor);
 
             client.Aisling.ActiveReactor.Update(client);
 

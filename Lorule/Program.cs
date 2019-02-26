@@ -47,22 +47,10 @@ namespace Lorule
 
             TimeSpan Uptime => (DateTime.Now - SystemStartTime);
 
-            MemoryMappedFileCommunicator communicator;
-
+           
             public Instance()
             {
                 LoadConstants();
-
-                communicator = new MemoryMappedFileCommunicator("lorule", 10485760);
-                {
-                    communicator.ReadPosition = 0;
-                    communicator.WritePosition = 0;
-
-                    communicator.DataReceived += new EventHandler<MemoryMappedDataReceivedEventArgs>(Communicator_DataReceived);
-                    communicator.StartReader();
-                }
-
-                SendServerInfo(communicator);
             }
 
             public bool IsRunning => Running;
@@ -74,8 +62,6 @@ namespace Lorule
                 {
                     while (Running)
                     {
-                        SendServerInfo(communicator);
-
                         Thread.Sleep(15000);
                     }
                 });
@@ -127,10 +113,6 @@ namespace Lorule
                 }
             }
 
-            private void Communicator_DataReceived(object sender, MemoryMappedDataReceivedEventArgs e)
-            {
-
-            }
 
             public void Reboot(Instance instance)
             {

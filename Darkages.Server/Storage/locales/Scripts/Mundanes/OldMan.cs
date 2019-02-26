@@ -2,32 +2,46 @@
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
     [Script("tut/OldMan")]
     public class OldMan : MundaneScript
     {
-        Reactor reactor, classes_reactor;
+        public void Serialize()
+        {
+            var json = JsonConvert.SerializeObject(reactor, new JsonSerializerSettings() { Formatting = Formatting.Indented });
+            var obj = JsonConvert.DeserializeObject<Reactor>(json, new JsonSerializerSettings() { Formatting = Formatting.Indented });
+        }
+
+
+        Reactor reactor;
+
+
+
 
         public OldMan(GameServer server, Mundane mundane) : base(server, mundane)
         {
             reactor = new Reactor()
             {
                 Name = "Tutorial : Magic",
-                CallerType = ReactorQualifer.Object,
                 CanActAgain = false,
-                Steps = new List<DialogSequence>()
+                CallingNpc = mundane.Template.Name,
+                WhenCanActAgain = new GameServerTimer(TimeSpan.FromMinutes(10)),
+                Sequences = new List<DialogSequence>()
                         {
                             new DialogSequence()
                             {
                                  Id = 0,
-                                 CanMoveBack = false,
-                                 CanMoveNext = true,
+                                 CanMoveBack  = false,
+                                 CanMoveNext  = true,
                                  DisplayImage = (ushort)mundane.Template.Image,
-                                 DisplayText = "Hey.",
-                                 Title = mundane.Template.Name,
+                                 DisplayText  = "Hey.",
+                                 Title        = mundane.Template.Name,
                             },
                             new DialogSequence()
                             {
@@ -46,22 +60,18 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                  DisplayImage = (ushort)mundane.Template.Image,
                                  Title = mundane.Template.Name,
                                  DisplayText = "Let me tell you what?",
-                                 HasOptions = true,
                                  ContinueOn = 0x0003,
                                  ContinueAt = 3,
-                                 RollBackTo = 2,
-                                 Callback   = (a, b) => {
-
-                                     a.ActiveSequence = b;
-                                     a.Client.SendOptionsDialog(mundane, "what?", new OptionsDataItem[]
-                                     {                                          
+                                 RollBackTo = 1,
+                                 HasOptions = true,
+                                 Options = new OptionsDataItem[]
+                                     {
                                          new OptionsDataItem(0x0001, "Tutorial : Interface"),
                                          new OptionsDataItem(0x0002, "Tutorial : Interaction"),
                                          new OptionsDataItem(0x0003, "Tutorial : Bulletins"),
                                          new OptionsDataItem(0x0004, "Tutorial : Classes"),
                                          new OptionsDataItem(0x0005, "Tutorial : General Info"),
-                                     });
-                                 },
+                                     },
                             },
                             new DialogSequence()
                             {
@@ -102,78 +112,111 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                             new DialogSequence()
                             {
                                  Id = 7,
-                                 CanMoveBack = false,
-                                 CanMoveNext = true,
+                                 CanMoveBack  = false,
+                                 CanMoveNext  = true,
                                  DisplayImage = (ushort)mundane.Template.Image,
                                  Title = mundane.Template.Name,
-                                 DisplayText = "Here is a stick if you don't already have one. it's not much but its better then nothing. Make sure to equip it.",
-                                 Callback = ((cbAisling, cbSequence) =>
+                                 DisplayText = "There are some small creatures here you can practice on. go and kill 5 for me using what I've taught you, Come back here once you're done for your next challenge.",
+                                 IsCheckPoint = true,
+                                 Conditions  = new List<QuestRequirement>()
                                  {
-                                     if (cbAisling.Inventory.Has(i => i.Template.Name == "Stick") == null)
+                                     new QuestRequirement()
                                      {
-                                         if (Item.Create(cbAisling, "Stick")?.GiveTo(cbAisling) ?? false)
-                                         {
-                                             ServerContext.Info.Debug("{0} received Stick from {1}", cbAisling.Username, cbSequence.Title);
-                                         }
+                                        Type   = QuestType.KillCount,
+                                        Value  = "Kardi",
+                                        Amount = 5,
                                      }
-                                 }),
+                                 },
+                                 ContinueAt = 8,
+                                 ContinueOn = 8,
+                                 ConditionFailMessage = "You have not done what i have asked of you yet. Please return when you have."
                             },
                             new DialogSequence()
                             {
                                  Id = 8,
-                                 CanMoveBack = true,
-                                 CanMoveNext = true,
-                                 DisplayImage = (ushort)mundane.Template.Image,
-                                 Title = mundane.Template.Name,
-                                 DisplayText = "There are some small creatures here you can practice on. When you are ready walk up the path and you should see an Old Man. Double-Click him to learn more.",
-                                 Callback = ((cbAisling, cbSequence) =>
-                                 {
-                                     if (cbAisling.ActiveReactor.NextReactor != null)
-                                     {
-                                        cbAisling.ActiveReactor = cbAisling.ActiveReactor.NextReactor;
-                                        cbAisling.ActiveReactor.Next(cbAisling.Client, true);
-                                     }
-                                 }),
-                            },
-                        },
-            };
-
-
-            classes_reactor = new Reactor()
-            {
-                Name = "Tutorial : Magic - part 2",
-                CallerType = ReactorQualifer.Reactor,
-                CanActAgain = true,
-                CallingReactor = reactor.Name,
-                Steps = new List<DialogSequence>()
-                {
-                            new DialogSequence()
-                            {
-                                 Id = 0,
                                  CanMoveBack = false,
                                  CanMoveNext = true,
                                  DisplayImage = (ushort)mundane.Template.Image,
                                  Title = mundane.Template.Name,
-                                 DisplayText = "I'm a new reactor.", 
+                                 ContinueOn = 0x0006,
+                                 ContinueAt = 9,
+                                 RollBackTo = 7,
+                                 HasOptions = true,
+                                 DisplayText = "Great, Here you go. Now, Ready for the next challenge?",
+                                 Options = new OptionsDataItem[]
+                                     {
+                                         new OptionsDataItem(0x0006, "Bring it On."),
+                                         new OptionsDataItem(0x0007, "No I've had enough."),
+                                     },
+                            },
+                            new DialogSequence()
+                            {
+                                 Id = 9,
+                                 CanMoveBack = true,
+                                 CanMoveNext = true,
+                                 DisplayImage = (ushort)mundane.Template.Image,
+                                 Title = mundane.Template.Name,
+                                 IsCheckPoint = true,
+                                 DisplayText = "I'm a new reactor. I'm the next dialog.",
+                            },
+                            new DialogSequence()
+                            {
+                                 Id = 10,
+                                 CanMoveBack = true,
+                                 CanMoveNext = true,
+                                 DisplayImage = (ushort)mundane.Template.Image,
+                                 Title = mundane.Template.Name,
+                                 DisplayText = "bye bye bye",
+                            },
+                            new DialogSequence()
+                            {
+                                 Id = 11,
+                                 CanMoveBack = false,
+                                 CanMoveNext = true,
+                                 DisplayImage = (ushort)mundane.Template.Image,
+                                 Title = mundane.Template.Name,
+                                 DisplayText = "a",
+                            },
+                            new DialogSequence()
+                            {
+                                 Id = 12,
+                                 CanMoveBack = false,
+                                 CanMoveNext = true,
+                                 DisplayImage = (ushort)mundane.Template.Image,
+                                 Title = mundane.Template.Name,
+                                 DisplayText = "b",
                             },
                 },
             };
+
+            Serialize();
+
         }
+
 
         public override void OnClick(GameServer server, GameClient client)
         {
+            if (client.Aisling.ActiveSequence == null)
+            {
+                client.Aisling.ActiveReactor = null;
+                client.Aisling.ActiveSequence = reactor.Sequences[0];
+            }
+
+            if (client.Aisling.ActiveSequence.DisplayImage != Mundane.Template.Image)
+            {
+                client.Aisling.ActiveReactor  = null;
+                client.Aisling.ActiveSequence = null;
+                return;
+            }
+
             client.Aisling.CanReact = true;
 
             if (client.Aisling.ActiveReactor == null)
             {
                 client.Aisling.ActiveReactor = Clone<Reactor>(reactor);
-                client.Aisling.ActiveReactor.Steps = new List<DialogSequence>(reactor.Steps);
-                client.Aisling.ActiveReactor.Script = ScriptManager.Load<ReactorScript>("Default Response Handler", reactor);
+                client.Aisling.ActiveReactor.Sequences = new List<DialogSequence>(reactor.Sequences);
+                client.Aisling.ActiveReactor.Decorator = ScriptManager.Load<ReactorScript>("Default Response Handler", reactor);
 
-
-                client.Aisling.ActiveReactor.NextReactor = Clone<Reactor>(classes_reactor);
-                client.Aisling.ActiveReactor.NextReactor.Steps = new List<DialogSequence>(classes_reactor.Steps);
-                client.Aisling.ActiveReactor.NextReactor.Script = ScriptManager.Load<ReactorScript>("Default Response Handler", classes_reactor);
             }
 
             client.Aisling.ActiveReactor.Update(client);
@@ -192,13 +235,16 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 if (!client.Aisling.WithinRangeOf(Mundane))
                     return;
 
-                if (client.Aisling.ActiveSequence != null && responseID == client.Aisling.ActiveSequence.ContinueOn)
+                if (client.Aisling.ActiveSequence != null)
                 {
-                    reactor.Goto(client, client.Aisling.ActiveSequence.ContinueAt);
-                }
-                else
-                {
-                    reactor.Goto(client, client.Aisling.ActiveSequence.RollBackTo);
+                    if (responseID == client.Aisling.ActiveSequence.ContinueOn)
+                    {
+                        reactor.Goto(client, client.Aisling.ActiveSequence.ContinueAt);
+                    }
+                    else
+                    {
+                        reactor.Goto(client, client.Aisling.ActiveSequence.RollBackTo);
+                    }
                 }
             }
         }

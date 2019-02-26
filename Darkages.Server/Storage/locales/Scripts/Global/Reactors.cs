@@ -49,7 +49,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                     if (LastKey != scripttemplate.ScriptKey && scripttemplate.CallerType != ReactorQualifer.Reactor)
                     {
                         LastKey = scripttemplate.ScriptKey;
-                        scp.Reactor.Script = scp;
+                        scp.Reactor.Decorator = scp;
                         Scripts.Add(scp);
                     }
                     else
@@ -64,7 +64,7 @@ namespace Darkages.Storage.locales.Scripts.Global
 
                             if (parent != null)
                             {
-                                scp.Reactor.Script = scp;
+                                scp.Reactor.Decorator = scp;
 
                                 parent.Reactor.PostScript = ps;
                                 Scripts.Add(scp);

@@ -31,7 +31,7 @@ namespace Darkages
     public class Aisling : Sprite
     {
         [JsonIgnore]
-        public DateTime LookupTime { get; set; }
+        public DateTime LookupTime;
 
         public Aisling()
         {

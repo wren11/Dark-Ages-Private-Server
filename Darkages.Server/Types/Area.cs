@@ -46,11 +46,11 @@ namespace Darkages
             new GameServerTimer(TimeSpan.FromMilliseconds(30));
 
 
-        [JsonIgnore] [Browsable(false)] public byte[] Data { get; set; }
+        [JsonIgnore] [Browsable(false)] public byte[] Data;
 
         public int Music { get; set; }
 
-        [JsonIgnore] [Browsable(false)] public bool Ready { get; set; }
+        [JsonIgnore] [Browsable(false)] public bool Ready;
 
         public ushort Rows { get; set; }
 
@@ -66,10 +66,6 @@ namespace Darkages
 
         [JsonIgnore]
         public MapTile[,] MapNodes;
-
-
-        [JsonIgnore]
-        public int Active { get; set; }
 
         public void Update(int x, int y, Sprite obj)
         {

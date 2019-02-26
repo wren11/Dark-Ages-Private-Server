@@ -98,7 +98,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 }
             };
 
-            Actor.Steps = new System.Collections.Generic.List<DialogSequence>()
+            Actor.Sequences = new System.Collections.Generic.List<DialogSequence>()
             {
                 new DialogSequence()
                 {
@@ -117,11 +117,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     DisplayImage  = (ushort)Mundane.Template.Image,
                     Title         = "Erin",
                     DisplayText   = "I can help you make something a little more violent, but i will need a few things.",
-                    Callback      = ((lpAisling, lpSequence) =>
+                    OnSequenceStep      = ((lpAisling, lpSequence) =>
                     {
 
                         //callback for when quest was completed at this sequence.
-                        lpSequence.Callback = QuestCompleted;
+                        lpSequence.OnSequenceStep = QuestCompleted;
 
                         //Sanity Check
                         if (lpSequence.HasOptions)
@@ -173,9 +173,9 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 return;
             }
 
-            Actor.Script = ScriptManager.Load<ReactorScript>(Actor.ScriptKey, Actor);
-            if (Actor != null && Actor.Script != null)
-                Actor.Script.OnTriggered(client.Aisling);
+            Actor.Decorator = ScriptManager.Load<ReactorScript>(Actor.ScriptKey, Actor);
+            if (Actor != null && Actor.Decorator != null)
+                Actor.Decorator.OnTriggered(client.Aisling);
         }
 
         private void QuestCompleted(Aisling aisling, DialogSequence b)
@@ -227,7 +227,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 case 0x004A:
                     {
-                        Actor.Script.OnTriggered(client.Aisling);
+                        Actor.Decorator.OnTriggered(client.Aisling);
                     }
                     break;
             }

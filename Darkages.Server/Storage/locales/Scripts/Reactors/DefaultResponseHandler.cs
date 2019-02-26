@@ -33,13 +33,8 @@
 
             public override void OnClose(Aisling aisling)
             {
-                aisling.ReactorActive  = false;
-                aisling.ActiveSequence = null;
-
-                if (aisling.ActiveReactor.Completed)
-                {
-                    aisling.ActiveReactor  = null;
-                }
+                aisling.ActiveReactor = null;
+                aisling.ReactorActive = false;
             }
 
             public override void OnNext(Aisling aisling)
@@ -52,8 +47,9 @@
                     return;
                 }
 
-                if (aisling.ActiveReactor.Index + 1 < aisling.ActiveReactor.Steps.Count)
+                if (aisling.ActiveReactor.Index + 1 < aisling.ActiveReactor.Sequences.Count)
                 {
+                    aisling.ActiveSequence = aisling.ActiveReactor.Sequences[aisling.ActiveReactor.Index];
                     aisling.ActiveReactor.Index++;
                     aisling.ActiveReactor.Next(aisling.Client);
                 }
@@ -81,7 +77,8 @@
                 {
                     if (aisling.ActiveReactor != null)
                     {
-                        aisling.ReactorActive = true;
+                        aisling.ReactorActive  = true;
+                        aisling.ActiveSequence = aisling.ActiveReactor.Sequences[0];
                         aisling.ActiveReactor.Next(aisling.Client);
                     }
                 }
@@ -89,6 +86,11 @@
 
             void SequenceComplete(Aisling aisling, DialogSequence sequence)
             {
+                if (aisling.ActiveSequence != null && !aisling.ActiveSequence.CanMoveNext)
+                {
+                    return;
+                }
+
                 if (aisling.ReactedWith(Reactor.Name))
                     return;
 
@@ -96,6 +98,7 @@
                 {
                     aisling.Reactions[Reactor.Name] = DateTime.UtcNow;
                     aisling.ReactorActive = false;
+                    aisling.ActiveSequence = null;
                     aisling.ActiveReactor.Completed = true;
 
                     aisling.Client.CloseDialog();
