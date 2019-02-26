@@ -71,11 +71,12 @@ namespace Darkages.Types
 
                 for (var i = 0; i < count; i++)
                 {
-                    var server = new MServer();
-
-                    server.Guid = reader.ReadByte();
-                    server.Address = reader.ReadIPAddress();
-                    server.Port = reader.ReadUInt16();
+                    var server = new MServer
+                    {
+                        Guid = reader.ReadByte(),
+                        Address = reader.ReadIPAddress(),
+                        Port = reader.ReadUInt16()
+                    };
 
                     var text = reader.ReadString().Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 

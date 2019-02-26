@@ -19,20 +19,14 @@ namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat43 : NetworkFormat
     {
-        public override bool Secured => true;
+        public byte Type;
+        public int Serial;
 
-        public override byte Command => 0x43;
-
-        public byte Type { get; private set; }
-
-        #region Type 1 Variables
-
-        /// <summary>
-        ///     The serial number of the sprite that the client clicked. (Type 1 Variable)
-        /// </summary>
-        public int Serial { get; private set; }
-
-        #endregion
+        public ClientFormat43()
+        {
+            Secured = true;
+            Command = 0x43;
+        }
 
         public override void Serialize(NetworkPacketReader reader)
         {

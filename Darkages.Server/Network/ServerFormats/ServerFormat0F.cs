@@ -21,14 +21,16 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat0F : NetworkFormat
     {
-        public ServerFormat0F(Item item)
+        public ServerFormat0F(Item item) : this()
         {
             Item = item;
         }
 
-        public override bool Secured => true;
-
-        public override byte Command => 0x0F;
+        public ServerFormat0F()
+        {
+            Secured = true;
+            Command = 0x0F;
+        }
 
         public Item Item { get; set; }
 

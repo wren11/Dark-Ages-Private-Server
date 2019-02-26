@@ -19,15 +19,17 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat4B : NetworkFormat
     {
-        public override bool Secured => true;
-
-        public override byte Command => 0x4B;
+        public ServerFormat4B()
+        {
+            Secured = true;
+            Command = 0x4B;
+        }
 
         public byte Type { get; set; }
         public uint Serial { get; set; }
         public byte ItemSlot { get; set; }
 
-        public ServerFormat4B(uint serial, byte type, byte itemSlot = 0)
+        public ServerFormat4B(uint serial, byte type, byte itemSlot = 0) : this()
         {
             Type = type;
             Serial = serial;

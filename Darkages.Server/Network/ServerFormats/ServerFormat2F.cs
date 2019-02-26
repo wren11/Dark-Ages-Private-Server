@@ -23,16 +23,18 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat2F : NetworkFormat
     {
-        public ServerFormat2F(Mundane mundane, string text, IDialogData data)
+        public ServerFormat2F(Mundane mundane, string text, IDialogData data) : this()
         {
             Mundane = mundane;
-            Text = text;
-            Data = data;
+            Text    = text;
+            Data    = data;
         }
 
-        public override bool Secured => true;
-
-        public override byte Command => 0x2F;
+        public ServerFormat2F()
+        {
+            Command = 0x2F;
+            Secured = true;
+        }
 
         public IDialogData Data { get; set; }
         public Mundane Mundane { get; set; }

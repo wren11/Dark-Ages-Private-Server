@@ -24,15 +24,16 @@ namespace Darkages.Network.ServerFormats
     {
         public static int x = 0;
 
-        public ServerFormat33(GameClient client, Aisling aisling)
+        public ServerFormat33()
+        {
+            Secured = true;
+            Command = 0x33;
+        }
+        public ServerFormat33(GameClient client, Aisling aisling) : this()
         {
             Client = client;
             Aisling = aisling;
         }
-
-        public override bool Secured => true;
-
-        public override byte Command => 0x33;
 
         public Aisling Aisling { get; set; }
         public GameClient Client { get; set; }

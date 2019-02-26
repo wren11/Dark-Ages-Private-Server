@@ -24,20 +24,13 @@ namespace Darkages.Network.ServerFormats
     {
         private readonly List<Sprite> Sprites;
 
-        public ServerFormat07()
-        {
-        }
 
         public ServerFormat07(Sprite[] objectsToAdd)
         {
+            Secured = true;
+            Command = 0x07;
             Sprites = new List<Sprite>(objectsToAdd);
         }
-
-        public override bool Secured => true;
-
-        public override byte Command => 0x07;
-
-        public ushort Count => 0;
 
         public override void Serialize(NetworkPacketReader reader)
         {

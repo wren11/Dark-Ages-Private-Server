@@ -19,9 +19,11 @@ namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat03 : NetworkFormat
     {
-        public override bool Secured => true;
-
-        public override byte Command => 0x03;
+        public ClientFormat03()
+        {
+            Secured = true;
+            Command = 0x03;
+        }
 
         public string Username { get; set; }
         public string Password { get; set; }

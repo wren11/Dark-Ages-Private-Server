@@ -1,6 +1,8 @@
 {
   "Posts": [
     {
+      "Secured": true,
+      "Command": 49,
       "Owner": "lol",
       "TopicId": 2423,
       "PostId": 1,
@@ -10,11 +12,11 @@
       "Sender": "lol",
       "Message": "lol",
       "Recipient": null,
-      "Subject": "well shit",
-      "Command": 49,
-      "Secured": true
+      "Subject": "well shit"
     },
     {
+      "Secured": true,
+      "Command": 49,
       "Owner": "hi",
       "TopicId": 3443,
       "PostId": 2,
@@ -24,9 +26,7 @@
       "Sender": "hi",
       "Message": "",
       "Recipient": null,
-      "Subject": "selling poop.",
-      "Command": 49,
-      "Secured": true
+      "Subject": "selling poop."
     }
   ],
   "Secured": true,

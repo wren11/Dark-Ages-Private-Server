@@ -21,15 +21,17 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat37 : NetworkFormat
     {
-        public ServerFormat37(Item item, byte slot)
+        public ServerFormat37(Item item, byte slot) : this()
         {
             Item = item;
             EquipmentSlot = slot;
         }
 
-        public override bool Secured => true;
-
-        public override byte Command => 0x37;
+        public ServerFormat37()
+        {
+            Secured = true;
+            Command = 0x37;
+        }
 
         public Item Item { get; set; }
         public byte EquipmentSlot { get; set; }

@@ -21,9 +21,12 @@ namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat07 : NetworkFormat
     {
-        public override bool Secured => true;
 
-        public override byte Command => 0x07;
+        public ClientFormat07()
+        {
+            Secured = true;
+            Command = 0x07;
+        }
 
 
         public Position Position { get; set; }

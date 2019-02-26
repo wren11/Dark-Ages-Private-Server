@@ -16,7 +16,6 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages.Common;
-using Darkages.IO;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage;
@@ -27,7 +26,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
@@ -35,43 +33,43 @@ namespace Darkages.Network.Game
     {
         public Collection<GlobalScript> GlobalScripts = new Collection<GlobalScript>();
 
-        public GameServer Server { get; set; }
+        public GameServer Server;
 
-        public DateTime LastPing { get; set; }
+        public DateTime LastPing;
 
-        public DateTime LastSave { get; set; }
+        public DateTime LastSave;
 
-        public DateTime LastClientRefresh { get; set; }
+        public DateTime LastClientRefresh;
 
         public bool IsRefreshing =>
             DateTime.Now - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContext.Config.RefreshRate);
 
 
-        public DateTime LastScriptExecuted { get; set; }
+        public DateTime LastScriptExecuted;
 
-        public GameServerTimer HpRegenTimer { get; set; }
+        public GameServerTimer HpRegenTimer;
 
-        public GameServerTimer MpRegenTimer { get; set; }
+        public GameServerTimer MpRegenTimer;
 
-        public Aisling Aisling { get; set; }
+        public Aisling Aisling;
 
-        public bool ShouldUpdateMap { get; set; }
+        public bool ShouldUpdateMap;
 
-        public DateTime LastMessageSent { get; set; }
+        public DateTime LastMessageSent;
 
-        public DateTime LastPingResponse { get; set; }
+        public DateTime LastPingResponse;
 
-        public byte LastActivatedLost { get; set; }
+        public byte LastActivatedLost;
 
-        public DialogSession DlgSession { get; set; }
+        public DialogSession DlgSession;
 
-        public DateTime BoardOpened { get; set; }
+        public DateTime BoardOpened;
 
-        public DateTime LastWhisperMessageSent { get; set; }
+        public DateTime LastWhisperMessageSent;
 
-        public ushort LastBoardActivated { get; set; }
+        public ushort LastBoardActivated;
 
-        public Item LastItemDropped { get; set; }
+        public Item LastItemDropped;
 
         public DateTime LastAssail;
 

@@ -27,8 +27,12 @@ namespace Darkages.Types
 {
     public class Board : NetworkFormat
     {
-        public override bool Secured => true;
-        public override byte Command => 0x31;
+        public Board()
+        {
+            Secured = true;
+            Command = 0x31;
+        }
+
         public ushort Index { get; set; }
         public bool IsMail { get; set; }
 

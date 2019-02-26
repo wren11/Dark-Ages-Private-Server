@@ -19,14 +19,15 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat7E : NetworkFormat
     {
-        public override bool Secured => false;
+        public byte  Type  = 0x1B;
 
-        public override byte Command => 0x7E;
+        public string Text = ServerContext.Config?.HandShakeMessage ?? "CUNTS\n";
 
-        public byte Type => 0x1B;
-
-        public string Text => ServerContext.Config?.HandShakeMessage ?? "CUNTS\n";
-
+        public ServerFormat7E()
+        {
+            Secured = false;
+            Command = 0x7E;
+        }
 
         public override void Serialize(NetworkPacketReader reader)
         {

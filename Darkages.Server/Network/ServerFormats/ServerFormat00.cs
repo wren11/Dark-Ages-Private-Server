@@ -21,9 +21,12 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat00 : NetworkFormat
     {
-        public override bool Secured => false;
 
-        public override byte Command => 0x00;
+        public ServerFormat00()
+        {
+            Secured = false;
+            Command = 0x00;
+        }
 
         public SecurityParameters Parameters { get; set; }
         public byte Type { get; set; }

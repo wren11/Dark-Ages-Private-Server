@@ -19,11 +19,11 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat4C : NetworkFormat
     {
-        public override bool Secured => true;
-
-        public override byte Command => 0x4C;
-
-        public byte Data => 0x01;
+        public ServerFormat4C()
+        {
+            Secured = true;
+            Command = 0x4C;
+        }
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -31,7 +31,7 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write(Data);
+            writer.Write((byte)0x01);
             writer.Write(byte.MinValue);
             writer.Write(byte.MinValue);
         }

@@ -33,8 +33,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnClick(GameServer server, GameClient client)
         {
-            var options = new List<OptionsDataItem>();
-            options.Add(new OptionsDataItem(0x0001, "Return Home."));
+            var options = new List<OptionsDataItem>
+            {
+                new OptionsDataItem(0x0001, "Return Home.")
+            };
             if (!client.Aisling.TutorialCompleted)
             {
                 options.Add(new OptionsDataItem(0x0002, "Skip Tutorial."));

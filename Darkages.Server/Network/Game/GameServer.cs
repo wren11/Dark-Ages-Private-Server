@@ -268,16 +268,22 @@ namespace Darkages.Network.Game
         {
             base.Start(port);
 
-            ServerThread = new Thread(new ThreadStart(DoServerWork));
-            ServerThread.IsBackground = true;
+            ServerThread = new Thread(new ThreadStart(DoServerWork))
+            {
+                IsBackground = true
+            };
             ServerThread.Start();
 
-            ClientThread = new Thread(new ThreadStart(DoClientWork));
-            ClientThread.IsBackground = true;
+            ClientThread = new Thread(new ThreadStart(DoClientWork))
+            {
+                IsBackground = true
+            };
             ClientThread.Start();
 
-            HeavyThread = new Thread(new ThreadStart(DoHeavyWork));
-            HeavyThread.IsBackground = true;
+            HeavyThread = new Thread(new ThreadStart(DoHeavyWork))
+            {
+                IsBackground = true
+            };
             HeavyThread.Start();
         }
     }

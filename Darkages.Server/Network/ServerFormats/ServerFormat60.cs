@@ -19,18 +19,16 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat60 : NetworkFormat
     {
-        public override bool Secured => true;
+        public ServerFormat60()
+        {
+            Secured = true;
+            Command = 0x60;
+        }
 
-        public override byte Command => 0x60;
-
-        public byte Type { get; set; }
-
-
-        public uint Hash { get; set; }
-
-
-        public byte[] Data { get; set; }
-        public ushort Size { get; set; }
+        public byte Type;
+        public uint Hash;
+        public byte[] Data;
+        public ushort Size;
 
 
         public override void Serialize(NetworkPacketReader reader)

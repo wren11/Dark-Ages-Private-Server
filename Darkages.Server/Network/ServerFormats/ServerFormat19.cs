@@ -19,16 +19,13 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat19 : NetworkFormat
     {
-        public ServerFormat19(int number)
+        public ServerFormat19()
         {
-            Number = (short)number;
+            Secured = true;
+            Command = 0x19;
         }
 
-        public override bool Secured => true;
-
-        public override byte Command => 0x19;
-
-        public short Number { get; set; }
+        public short Number;
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -37,7 +34,7 @@ namespace Darkages.Network.ServerFormats
         public override void Serialize(NetworkPacketWriter writer)
         {
             writer.Write((byte)0x00);
-            writer.Write((ushort)22);
+            writer.Write((ushort)Number);
         }
     }
 }

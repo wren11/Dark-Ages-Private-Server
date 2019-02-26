@@ -62,14 +62,12 @@ namespace Darkages.Network.ServerFormats
 
         public ServerFormat36(GameClient client)
         {
-            Client = client;
+            Secured = true;
+            Command = 0x36;
+            Client  = client;
         }
 
-        public override bool Secured => true;
-
-        public override byte Command => 0x36;
-
-        private GameClient Client { get; }
+        private GameClient Client;
 
         public override void Serialize(NetworkPacketReader reader)
         {

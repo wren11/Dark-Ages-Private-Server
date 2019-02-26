@@ -19,12 +19,14 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat29 : NetworkFormat
     {
+
         public ServerFormat29()
         {
-            Speed = 0x64;
+            Secured = true;
+            Command = 0x29;
         }
 
-        public ServerFormat29(ushort animation, ushort x, ushort y)
+        public ServerFormat29(ushort animation, ushort x, ushort y) : this()
         {
             CasterSerial = 0;
             CasterEffect = animation;
@@ -34,7 +36,7 @@ namespace Darkages.Network.ServerFormats
         }
 
         public ServerFormat29(uint casterSerial, uint targetSerial, ushort casterEffect, ushort targetEffet,
-            ushort speed)
+            ushort speed): this()
         {
             CasterSerial = casterSerial;
             TargetSerial = targetSerial;
@@ -43,18 +45,14 @@ namespace Darkages.Network.ServerFormats
             Speed = speed;
         }
 
-        public override bool Secured => true;
+        public uint CasterSerial;
+        public uint TargetSerial;
+        public ushort CasterEffect;
+        public ushort TargetEffect;
+        public ushort Speed;
 
-        public override byte Command => 0x29;
-
-        public uint CasterSerial { get; set; }
-        public uint TargetSerial { get; set; }
-        public ushort CasterEffect { get; set; }
-        public ushort TargetEffect { get; set; }
-        public ushort Speed { get; set; }
-
-        public ushort X { get; set; }
-        public ushort Y { get; set; }
+        public ushort X;
+        public ushort Y;
 
 
         //29 [00 00 00 00] [00 60] [00 64] [00 03] [00 01]

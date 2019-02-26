@@ -23,14 +23,12 @@ namespace Darkages.Network.ServerFormats
     {
         public ServerFormat34(Aisling aisling)
         {
+            Secured = true;
+            Command = 0x34;
             Aisling = aisling;
         }
 
-        public override bool Secured => true;
-
-        public override byte Command => 0x34;
-
-        public Aisling Aisling { get; set; }
+        public Aisling Aisling;
 
         public override void Serialize(NetworkPacketReader reader)
         {

@@ -18,37 +18,21 @@
 namespace Darkages.Network.ServerFormats
 {
 
-    public class EmptyMap : NetworkFormat
-    {
-        public override byte Command => 0x2E;
-        public override bool Secured => true;
-
-        public override void Serialize(NetworkPacketReader reader)
-        {
-
-        }
-
-        public override void Serialize(NetworkPacketWriter writer)
-        {
-            var name = "rain01";
-
-            writer.WriteStringA(name);
-            writer.Write(byte.MinValue);
-            writer.Write(byte.MinValue);
-        }
-    }
 
     public class ServerFormat2E : NetworkFormat
     {
-        public ServerFormat2E(Aisling user)
+        public ServerFormat2E()
+        {
+            Command = 0x2E;
+            Secured = true;
+        }
+
+        public ServerFormat2E(Aisling user) : this()
         {
             User = user;
         }
 
-        public override bool Secured => true;
-        public override byte Command => 0x2E;
-
-        private Aisling User { get; }
+        private Aisling User;
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -60,7 +44,7 @@ namespace Darkages.Network.ServerFormats
                 return;
 
             var portal = ServerContext.GlobalWorldMapTemplateCache[User.PortalSession?.FieldNumber ?? 1];
-            var name = string.Format("field{0:000}", portal.FieldNumber);
+            var name   = string.Format("field{0:000}", portal.FieldNumber);
 
             writer.WriteStringA(name);
             writer.Write((byte)portal.Portals.Count);

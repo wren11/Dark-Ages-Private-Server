@@ -21,19 +21,21 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat42 : NetworkFormat
     {
-        public override bool Secured => true;
+        public ServerFormat42()
+        {
+            Secured = true;
+            Command = 0x42;
+        }
 
-        public override byte Command => 0x42;
+        public Aisling Player;
 
-        public Aisling Player { get; set; }
+        public Item ExchangedItem;
 
-        public Item ExchangedItem { get; set; }
+        public byte Stage;
 
-        public byte Stage { get; set; }
+        public byte Type;
 
-        public byte Type { get; set; }
-
-        public string Message { get; set; }
+        public string Message;
 
         public ServerFormat42(Aisling user, byte type = 0x00, byte method = 0x00, string lpMsg = "", Item lpItem = null)
         {

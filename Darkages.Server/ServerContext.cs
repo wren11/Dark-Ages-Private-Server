@@ -569,12 +569,17 @@ namespace Darkages
 
         public static void InitScriptEvaluator()
         {
-            Evaluator.Init(new string[] { "Darkages.Server" });
+            try
+            {
+                Evaluator.Init(new[] { "verbose=1;" });
+                Evaluator.GetVars();
 
-            var assembly = Assembly.Load("Darkages.Server");
-            Evaluator.ReferenceAssembly(assembly);
+                var assembly = Assembly.Load("Darkages.Server");
 
-            @"  using Darkages.Common;
+                Evaluator.ReferenceAssembly(assembly);
+
+
+                @"  using Darkages.Common;
                 using Darkages.Network.Game;
                 using Darkages.Network.Object;
                 using Darkages.Script.Context;
@@ -589,7 +594,11 @@ namespace Darkages
                 using System.Reflection;
                 using System.Threading.Tasks;".Run();
 
-            Context.Items["game"] = Game;
+                Context.Items["game"] = Game;
+            }
+            catch
+            {
+            }
         }
 
         private static void CacheDebuffs()

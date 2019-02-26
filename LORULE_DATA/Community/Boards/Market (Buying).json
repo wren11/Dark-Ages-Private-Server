@@ -1,6 +1,8 @@
 {
   "Posts": [
     {
+      "Secured": true,
+      "Command": 49,
       "Owner": "lol",
       "TopicId": 1645,
       "PostId": 1,
@@ -10,9 +12,7 @@
       "Sender": "lol",
       "Message": "yeah",
       "Recipient": null,
-      "Subject": "me too",
-      "Command": 49,
-      "Secured": true
+      "Subject": "me too"
     }
   ],
   "Secured": true,

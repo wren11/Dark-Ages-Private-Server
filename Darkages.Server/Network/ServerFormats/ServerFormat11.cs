@@ -19,12 +19,15 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat11 : NetworkFormat
     {
-        public override bool Secured => true;
+        public ServerFormat11()
+        {
+            Secured = true;
+            Command = 0x11;
+        }
 
-        public override byte Command => 0x11;
+        public byte Direction;
 
-        public byte Direction { get; set; }
-        public int Serial { get; set; }
+        public int Serial;
 
         public override void Serialize(NetworkPacketReader reader)
         {

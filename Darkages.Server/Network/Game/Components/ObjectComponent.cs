@@ -94,9 +94,8 @@
 
                             if (obj is Mundane)
                             {
-                                var mundane = obj as Mundane;
 
-                                if (mundane != null)
+                                if (obj is Mundane mundane)
                                 {
                                     var template = mundane.Template;
 

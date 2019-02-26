@@ -58,6 +58,13 @@
     <Compile Include="AreaCreateWizard.Designer.cs">
       <DependentUpon>AreaCreateWizard.cs</DependentUpon>
     </Compile>
+    <Compile Include="ArmorTemplate.cs" />
+    <Compile Include="frmBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBrowser.Designer.cs">
+      <DependentUpon>frmBrowser.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -98,6 +105,9 @@
     </Compile>
     <EmbeddedResource Include="AreaCreateWizard.resx">
       <DependentUpon>AreaCreateWizard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBrowser.resx">
+      <DependentUpon>frmBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>

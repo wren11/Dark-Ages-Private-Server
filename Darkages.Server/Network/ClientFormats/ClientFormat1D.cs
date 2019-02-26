@@ -19,11 +19,13 @@ namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat1D : NetworkFormat
     {
-        public override bool Secured => true;
+        public ClientFormat1D()
+        {
+            Secured = true;
+            Command = 0x1D;
+        }
 
-        public override byte Command => 0x1D;
-
-        public byte Number { get; set; }
+        public byte Number;
 
         public override void Serialize(NetworkPacketReader reader)
         {

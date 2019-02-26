@@ -26,13 +26,15 @@ namespace Darkages.Network.ServerFormats
             Shout = 1
         }
 
-        public override bool Secured => true;
+        public ServerFormat0D()
+        {
+            Secured = true;
+            Command = 0x0D;
+        }
 
-        public override byte Command => 0x0D;
-
-        public byte Type { get; set; }
-        public int Serial { get; set; }
-        public string Text { get; set; }
+        public byte Type;
+        public int Serial;
+        public string Text;
 
         public override void Serialize(NetworkPacketReader reader)
         {

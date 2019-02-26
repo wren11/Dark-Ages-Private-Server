@@ -22,14 +22,16 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat39 : NetworkFormat
     {
-        public ServerFormat39(Aisling aisling)
+        public ServerFormat39(Aisling aisling) : this()
         {
             Aisling = aisling;
         }
 
-        public override bool Secured => true;
-
-        public override byte Command => 0x39;
+        public ServerFormat39()
+        {
+            Secured = true;
+            Command = 0x39;
+        }
 
         public Aisling Aisling { get; set; }
 

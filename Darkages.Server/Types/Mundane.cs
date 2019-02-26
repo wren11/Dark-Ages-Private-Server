@@ -89,8 +89,10 @@ namespace Darkages.Types
                     return;
 
 
-            var npc = new Mundane();
-            npc.Template = template;
+            var npc = new Mundane
+            {
+                Template = template
+            };
 
             if (npc.Template.TurnRate == 0)
                 npc.Template.TurnRate = 5;
@@ -277,7 +279,7 @@ namespace Darkages.Types
 
                         foreach (var t in targets) t.Target = this;
 
-                        var target = Target == null ? targets.FirstOrDefault() : Target;
+                        var target = Target ?? targets.FirstOrDefault();
 
                         if (target?.CurrentHp == 0)
                             target = null;
@@ -314,7 +316,7 @@ namespace Darkages.Types
 
                     foreach (var t in targets) t.Target = this;
 
-                    var target = Target == null ? targets.FirstOrDefault() : Target;
+                    var target = Target ?? targets.FirstOrDefault();
 
                     if (target?.CurrentHp == 0)
                         target = null;

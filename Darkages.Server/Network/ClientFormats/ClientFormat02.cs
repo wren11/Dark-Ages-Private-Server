@@ -19,12 +19,16 @@ namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat02 : NetworkFormat
     {
-        public override bool Secured => true;
+        public ClientFormat02()
+        {
+            Secured = true;
+            Command = 0x02;
+        }
 
-        public override byte Command => 0x02;
+        public string AislingUsername;
 
-        public string AislingUsername { get; set; }
-        public string AislingPassword { get; set; }
+        public string AislingPassword;
+
 
         public override void Serialize(NetworkPacketReader reader)
         {

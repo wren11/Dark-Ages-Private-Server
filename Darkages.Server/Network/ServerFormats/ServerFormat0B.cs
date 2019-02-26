@@ -19,9 +19,11 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat0B : NetworkFormat
     {
-        public override bool Secured => true;
-
-        public override byte Command => 0x0B;
+        public ServerFormat0B()
+        {
+            Secured = true;
+            Command = 0x0B;
+        }
 
         public byte Direction { get; set; }
         public ushort LastX { get; set; }

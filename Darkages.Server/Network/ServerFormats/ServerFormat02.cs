@@ -21,13 +21,11 @@ namespace Darkages.Network.ServerFormats
     {
         public ServerFormat02(byte code, string text)
         {
+            Secured = true;
+            Command = 0x02;
             Code = code;
             Text = text;
         }
-
-        public override bool Secured => true;
-
-        public override byte Command => 0x2;
 
         public byte Code { get; set; }
         public string Text { get; set; }

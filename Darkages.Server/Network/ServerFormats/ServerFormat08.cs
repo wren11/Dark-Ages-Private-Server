@@ -21,15 +21,17 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat08 : NetworkFormat
     {
-        public ServerFormat08(Aisling aisling, StatusFlags flags)
+        public ServerFormat08(Aisling aisling, StatusFlags flags) : this()
         {
             Aisling = aisling;
             Flags = (byte)flags;
         }
 
-        public override bool Secured => true;
-
-        public override byte Command => 0x08;
+        public ServerFormat08()
+        {
+            Secured = true;
+            Command = 0x08;
+        }
 
         public Aisling Aisling { get; set; }
         public byte Flags { get; set; }

@@ -19,14 +19,16 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat15 : NetworkFormat
     {
-        public ServerFormat15(Area area)
+        public ServerFormat15(Area area) : this()
         {
             Area = area;
         }
 
-        public override bool Secured => true;
-
-        public override byte Command => 0x15;
+        public ServerFormat15()
+        {
+            Secured = true;
+            Command = 0x15;
+        }
 
         public Area Area { get; set; }
 

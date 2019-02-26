@@ -21,14 +21,16 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat17 : NetworkFormat
     {
-        public ServerFormat17(Spell spell)
+        public ServerFormat17(Spell spell) : this()
         {
             Spell = spell;
         }
 
-        public override bool Secured => true;
-
-        public override byte Command => 0x17;
+        public ServerFormat17()
+        {
+            Secured = true;
+            Command = 0x17;
+        }
 
         public Spell Spell { get; set; }
 

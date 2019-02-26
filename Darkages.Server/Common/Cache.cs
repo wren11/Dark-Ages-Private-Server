@@ -83,9 +83,8 @@ public class Cache<K, T> : IDisposable
     // Checks whether a specific timer already exists and adds a new one, if not 
     private void CheckTimer(K key, int cacheTimeout, bool restartTimerIfExists)
     {
-        Timer timer;
 
-        if (timers.TryGetValue(key, out timer))
+        if (timers.TryGetValue(key, out Timer timer))
         {
             if (restartTimerIfExists)
             {
@@ -169,8 +168,7 @@ public class Cache<K, T> : IDisposable
         locker.EnterReadLock();
         try
         {
-            T rv;
-            return (cache.TryGetValue(key, out rv) ? rv : default(T));
+            return (cache.TryGetValue(key, out T rv) ? rv : default(T));
         }
         finally { locker.ExitReadLock(); }
     }

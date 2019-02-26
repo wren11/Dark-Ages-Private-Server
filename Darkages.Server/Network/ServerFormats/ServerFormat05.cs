@@ -19,16 +19,18 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat05 : NetworkFormat
     {
-        public ServerFormat05(Aisling aisling)
+        public ServerFormat05()
+        {
+            Secured = true;
+            Command = 0x05;
+        }
+
+        public ServerFormat05(Aisling aisling) : this()
         {
             Aisling = aisling;
         }
 
-        public override bool Secured => true;
-
-        public override byte Command => 0x05;
-
-        public Aisling Aisling { get; set; }
+        public Aisling Aisling;
 
         //05 A2 [03 95 C1 2D] [02 00 01 00] [00 00]
         public override void Serialize(NetworkPacketReader reader)

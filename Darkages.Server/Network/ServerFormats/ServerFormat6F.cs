@@ -21,14 +21,14 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat6F : NetworkFormat
     {
-        public override bool Secured => true;
+        public ServerFormat6F()
+        {
+            Secured = true;
+            Command = 0x6F;
+        }
 
-        public override byte Command => 0x6F;
-
-        public byte Type { get; set; }
-
-
-        public string Name { get; set; }
+        public byte Type;
+        public string Name;
 
 
         public override void Serialize(NetworkPacketReader reader)

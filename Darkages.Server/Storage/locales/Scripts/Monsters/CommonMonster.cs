@@ -348,10 +348,9 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
             if (Target != null)
             {
-                int direction;
                 if (Monster.NextTo(Target.X, Target.Y))
                 {
-                    if (Monster.Facing(Target.X, Target.Y, out direction))
+                    if (Monster.Facing(Target.X, Target.Y, out int direction))
                     {
                         Bash();
                         Monster.BashEnabled = true;
@@ -407,10 +406,9 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (obj == null)
                 return;
 
-            int direction;
 
             if (Monster.Target != null)
-                if (!Monster.Facing(Target.X, Target.Y, out direction))
+                if (!Monster.Facing(Target.X, Target.Y, out int direction))
                 {
                     Monster.Direction = (byte)direction;
                     Monster.Turn();

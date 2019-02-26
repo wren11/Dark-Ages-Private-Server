@@ -26,8 +26,11 @@ namespace Darkages.Network.ClientFormats
             Chant = 2
         }
 
-        public override bool Secured => true;
-        public override byte Command => 0x0E;
+        public ClientFormat0E()
+        {
+            Secured = true;
+            Command = 0x0E;
+        }
 
         public byte Type { get; set; }
         public string Text { get; set; }

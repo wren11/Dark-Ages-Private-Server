@@ -24,7 +24,13 @@ namespace Darkages.Network.ServerFormats
     {
         private readonly GameClient _client;
 
-        public ServerFormat30(GameClient gameClient)
+        public ServerFormat30()
+        {
+            Secured = true;
+            Command = 0x30;
+        }
+
+        public ServerFormat30(GameClient gameClient) : this()
         {
             _client = gameClient;
         }
@@ -34,9 +40,6 @@ namespace Darkages.Network.ServerFormats
         {
             Sequence = sequenceMenu;
         }
-
-        public override bool Secured => true;
-        public override byte Command => 0x30;
 
         public Dialog Sequence { get; set; }
 

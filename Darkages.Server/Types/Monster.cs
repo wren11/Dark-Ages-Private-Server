@@ -374,13 +374,15 @@ namespace Darkages.Types
             if (template.Level <= 0)
                 template.Level = 1;
 
-            var obj = new Monster();
-            obj.Template = template;
-            obj.CastTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.CastSpeed));
-            obj.BashTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.AttackSpeed));
-            obj.WalkTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.MovementSpeed));
-            obj.CastEnabled = template.MaximumMP > 0;
-            obj.TaggedAislings = new ConcurrentDictionary<int, Sprite>();
+            var obj = new Monster
+            {
+                Template = template,
+                CastTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.CastSpeed)),
+                BashTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.AttackSpeed)),
+                WalkTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.MovementSpeed)),
+                CastEnabled = template.MaximumMP > 0,
+                TaggedAislings = new ConcurrentDictionary<int, Sprite>()
+            };
 
             if (obj.Template.Grow)
                 obj.Template.Level++;

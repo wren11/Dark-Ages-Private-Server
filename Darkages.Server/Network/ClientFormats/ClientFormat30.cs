@@ -21,12 +21,15 @@ namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat30 : NetworkFormat
     {
-        public override bool Secured => true;
-        public override byte Command => 0x30;
+        public Pane PaneType;
+        public byte MovingFrom;
+        public byte MovingTo;
 
-        public Pane PaneType { get; set; }
-        public byte MovingFrom { get; set; }
-        public byte MovingTo { get; set; }
+        public ClientFormat30()
+        {
+            Secured = true;
+            Command = 0x30;
+        }
 
         public override void Serialize(NetworkPacketReader reader)
         {

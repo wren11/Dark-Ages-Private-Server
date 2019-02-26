@@ -19,20 +19,26 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat2C : NetworkFormat
     {
-        public ServerFormat2C(byte slot, short icon, string text)
+
+        public ServerFormat2C()
         {
+            Command = 0x2C;
+            Secured = true;
+        }
+
+        public ServerFormat2C(byte slot, short icon, string text) : this()
+        {
+            
             Slot = slot;
             Icon = icon;
             Text = text;
         }
 
-        public override bool Secured => true;
 
-        public override byte Command => 0x2C;
 
-        public byte Slot { get; set; }
-        public short Icon { get; set; }
-        public string Text { get; set; }
+        public byte Slot;
+        public short Icon;
+        public string Text;
 
         public override void Serialize(NetworkPacketReader reader)
         {

@@ -1,6 +1,8 @@
 {
   "Posts": [
     {
+      "Secured": true,
+      "Command": 49,
       "Owner": "lol",
       "TopicId": 2931,
       "PostId": 1,
@@ -10,11 +12,11 @@
       "Sender": "lol",
       "Message": "events.",
       "Recipient": null,
-      "Subject": "some event.",
-      "Command": 49,
-      "Secured": true
+      "Subject": "some event."
     },
     {
+      "Secured": true,
+      "Command": 49,
       "Owner": "lol",
       "TopicId": 1140,
       "PostId": 2,
@@ -24,9 +26,7 @@
       "Sender": "lol",
       "Message": "test",
       "Recipient": null,
-      "Subject": "test",
-      "Command": 49,
-      "Secured": true
+      "Subject": "test"
     }
   ],
   "Secured": true,

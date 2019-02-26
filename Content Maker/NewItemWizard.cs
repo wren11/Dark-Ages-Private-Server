@@ -199,9 +199,12 @@ namespace Content_Maker
 
         private async void NewItemWizard_Load(object sender, EventArgs e)
         {
-            SuspendLayout();
+
+            new FrmBrowser().Show();
+
+            WindowState = FormWindowState.Normal;
+            propertyGrid2.SelectedObject = new ArmorTemplate();
             await LoadArmors();
-            ResumeLayout();
         }
 
         private async Task LoadArmors()
@@ -220,31 +223,51 @@ namespace Content_Maker
                 else
                 {
                     var jsonData = File.ReadAllText(armorPATH);
-                    var json = JsonConvert.DeserializeObject<SearchArmors>(jsonData, settings);
+                    var json     = JsonConvert.DeserializeObject<SearchArmors>(jsonData, settings);
 
                     if (json != null)
                     {
+                        if (Armors == null || Armors.Count == 0)
+                        {
+                            Armors = new List<SearchArmors>(json.Results);
+                        }
 
-                        Armors = new List<SearchArmors>(json.Results.Where(i => i.Gender == Gender.Male));
-
-                        Invoke((MethodInvoker)delegate () {
-                            BuildUIListView(json);
-                        });
+                        GetArmors();
                     }
                 }
             });
         }
 
-        private void BuildUIListView(SearchArmors json)
+        bool Male = true;
+
+        private void GetArmors()
+        {
+            Invoke((MethodInvoker)delegate ()
+            {
+                BuildUIListView();
+            });
+        }
+
+        private void BuildUIListView()
         {
             ImageList imagelist = new ImageList();
 
             listView1.LargeImageList = imagelist;
             listView1.SmallImageList = imagelist;
-            listView1.StateImageList = imagelist;
 
             int idx = 0;
-            foreach (var node in json.Results.Where(i => i.Gender == Gender.Male))
+
+            listView1.Items.Clear();
+
+
+            var subject = Armors.Where(i => i.Path != Class.Peasant && i.Gender == (Male ? Gender.Male : Gender.Female));
+
+            if (checkBox1.Checked)
+            {
+                subject = Armors.Where(i => i.Gender == (Male ? Gender.Male : Gender.Female));
+            }
+
+            foreach (var node in subject)
             {
                 var image = Image.FromFile(node.FileLocation);
                 imagelist.Images.Add(node.SpriteID.ToString(), image);
@@ -255,19 +278,52 @@ namespace Content_Maker
             }
         }
 
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+
+
+        private void propertyGrid1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listView1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
             if (listView1.SelectedIndices.Count == 0)
                 return;
 
-            var selected      = listView1.SelectedIndices[0];
-            var selected_obj  = Armors[selected];
+            var selected = listView1.SelectedIndices[0];
+            var selected_obj = Armors[selected];
 
             if (selected_obj != null)
             {
                 propertyGrid1.SelectedObject = null;
                 propertyGrid1.SelectedObject = selected_obj;
-                pictureBox1.Image = Image.FromFile(selected_obj.FileLocation);                                                                    
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (button1.Text != "Show Male")
+            {
+                button1.Text = "Show Male";
+                Male = false;
+            }
+            else
+            {
+                button1.Text = "Show Female";
+                Male = true;
+            }
+
+            GetArmors();
+
+        }
+
+        private void compileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var obj = (ArmorTemplate)propertyGrid2.SelectedObject;
+
+            if (obj != null)
+            {
+                var template = obj.Compile();
             }
         }
     }

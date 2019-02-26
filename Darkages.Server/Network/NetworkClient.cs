@@ -198,6 +198,7 @@ namespace Darkages.Network
 
             var packet = GetPacket(format);
             {
+                ServerContext.Info.Info(packet.ToString());
                 Enqueue(format, packet);
             }
         }

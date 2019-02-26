@@ -19,13 +19,15 @@ namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat2E : NetworkFormat
     {
-        public override bool Secured => true;
-
-        public override byte Command => 0x2E;
-
         public byte Type { get; set; }
         public string Name { get; set; }
         public bool ShowOnMap { get; set; }
+
+        public ClientFormat2E()
+        {
+            Secured = true;
+            Command = 0x2E;
+        }
 
         public override void Serialize(NetworkPacketReader reader)
         {

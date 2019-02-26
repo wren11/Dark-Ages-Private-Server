@@ -21,22 +21,21 @@ namespace Darkages.Network.ServerFormats
     {
         public ServerFormat1A()
         {
+            Secured = true;
+            Command = 0x1A;
         }
 
-        public ServerFormat1A(int serial, byte number, short speed)
+
+        public ServerFormat1A(int serial, byte number, short speed) : this()
         {
             Serial = serial;
             Number = number;
-            Speed = speed;
+            Speed  = speed;
         }
 
-        public override bool Secured => true;
-
-        public override byte Command => 0x1A;
-
-        public int Serial { get; set; }
-        public byte Number { get; set; }
-        public short Speed { get; set; }
+        public int Serial;
+        public byte Number;
+        public short Speed;
 
         public override void Serialize(NetworkPacketReader reader)
         {

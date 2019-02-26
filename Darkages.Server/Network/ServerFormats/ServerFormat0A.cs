@@ -31,15 +31,17 @@ namespace Darkages.Network.ServerFormats
             Whisper = 0
         }
 
-        public ServerFormat0A(byte type, string text)
+        public ServerFormat0A(byte type, string text) : this()
         {
             Type = type;
             Text = text;
         }
 
-        public override bool Secured => true;
-
-        public override byte Command => 0x0A;
+        public ServerFormat0A()
+        {
+            Secured = true;
+            Command = 0x0A;
+        }
 
         public byte Type { get; set; }
         public string Text { get; set; }

@@ -21,37 +21,21 @@ namespace Darkages.Network.ServerFormats
     {
         public ServerFormat13()
         {
+            Secured = true;
+            Command = 0x13;
         }
 
-        public ServerFormat13(int serial, byte health)
+        public ServerFormat13(int serial, byte health, byte sound) : this()
         {
             Serial = serial;
             Health = health;
-            Sound = 0xFF;
+            Sound  = sound;
         }
 
-        public ServerFormat13(int serial, byte health, byte sound)
-        {
-            Serial = serial;
-            Health = health;
-            Sound = sound;
-        }
-
-        public ServerFormat13(int source, int serial, byte health, byte sound)
-        {
-            Serial = serial;
-            Health = health;
-            Sound = sound;
-        }
-
-        public override bool Secured => true;
-
-        public override byte Command => 0x13;
-
-        public int Source { get; set; }
-        public int Serial { get; set; }
-        public ushort Health { get; set; }
-        public byte Sound { get; set; }
+        public int Source;
+        public int Serial;
+        public ushort Health;
+        public byte Sound;
 
         public override void Serialize(NetworkPacketReader reader)
         {

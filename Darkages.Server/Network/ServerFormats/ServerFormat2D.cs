@@ -19,16 +19,18 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat2D : NetworkFormat
     {
-        public ServerFormat2D(byte slot)
+        public ServerFormat2D(byte slot) : this()
         {
             Slot = slot;
         }
 
-        public override bool Secured => true;
+        public ServerFormat2D()
+        {
+            Command = 0x2D;
+            Secured = true;
+        }
 
-        public override byte Command => 0x2D;
-
-        public byte Slot { get; set; }
+        public byte Slot;
 
         public override void Serialize(NetworkPacketReader reader)
         {

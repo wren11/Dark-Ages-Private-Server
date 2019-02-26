@@ -19,16 +19,18 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat0E : NetworkFormat
     {
-        public ServerFormat0E(int serial)
+        public ServerFormat0E(int serial) : this()
         {
             Serial = serial;
         }
 
-        public override bool Secured => true;
+        public ServerFormat0E()
+        {
+            Secured = true;
+            Command = 0x0E;
+        }
 
-        public override byte Command => 0x0E;
-
-        public int Serial { get; set; }
+        public int Serial;
 
         public override void Serialize(NetworkPacketReader reader)
         {

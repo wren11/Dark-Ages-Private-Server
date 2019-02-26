@@ -47,17 +47,20 @@ namespace Darkages.Types
 
                         if (mf.Name.StartsWith("NationDesc"))
                         {
-                            mf.Nodes = new System.Collections.ObjectModel.Collection<MetafileNode>();
-                            mf.Nodes.Add(new MetafileNode("nation_1", "Lorule"));
-                            mf.Nodes.Add(new MetafileNode("nation_2", "Lividia"));
-                            mf.Nodes.Add(new MetafileNode("nation_3", "Exiles"));
+                            mf.Nodes = new System.Collections.ObjectModel.Collection<MetafileNode>
+                            {
+                                new MetafileNode("nation_1", "Lorule"),
+                                new MetafileNode("nation_2", "Lividia"),
+                                new MetafileNode("nation_3", "Exiles")
+                            };
                         }
 
                         if (mf.Name.StartsWith("SClass"))
                         {
-                            mf.Nodes = new System.Collections.ObjectModel.Collection<MetafileNode>();
-
-                            mf.Nodes.Add(new MetafileNode("Skill"));
+                            mf.Nodes = new System.Collections.ObjectModel.Collection<MetafileNode>
+                            {
+                                new MetafileNode("Skill")
+                            };
 
                             foreach (var skill in ServerContext.GlobalSkillTemplateCache)
                             {

@@ -19,9 +19,11 @@ namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat1B : NetworkFormat
     {
-        public override bool Secured => true;
-
-        public override byte Command => 0x1B;
+        public ClientFormat1B()
+        {
+            Secured = true;
+            Command = 0x1B;
+        }
 
         public int Index;
 

@@ -19,9 +19,11 @@ namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat89 : NetworkFormat
     {
-        public override bool Secured => false;
-
-        public override byte Command => 0x00;
+        public ClientFormat89()
+        {
+            Secured = true;
+            Command = 0x89;
+        }
 
         public ushort DisplayMask { get; set; }
 

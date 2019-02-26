@@ -19,11 +19,13 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat66 : NetworkFormat
     {
-        public override bool Secured => true;
+        public ServerFormat66()
+        {
+            Secured = true;
+            Command = 0x66;
+        }
 
-        public override byte Command => 0x66;
-
-        public byte Type => 0x03;
+        public byte Type = 0x03;
 
         public string Text =>
             "https://classicrpgcharacter.nexon.com/service/ConfirmGameUser.aspx?id=%s&pw=%s&mainCode=2&subCode=0";

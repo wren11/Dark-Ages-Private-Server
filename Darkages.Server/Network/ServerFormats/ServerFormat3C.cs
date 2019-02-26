@@ -19,12 +19,14 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat3C : NetworkFormat
     {
-        public override bool Secured => true;
+        public ServerFormat3C()
+        {
+            Secured = true;
+            Command = 0x3C;
+        }
 
-        public override byte Command => 0x3C;
-
-        public ushort Line { get; set; }
-        public byte[] Data { get; set; }
+        public ushort Line;
+        public byte[] Data;
 
         public override void Serialize(NetworkPacketReader reader)
         {

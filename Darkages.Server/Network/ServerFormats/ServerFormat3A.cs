@@ -21,25 +21,18 @@ namespace Darkages.Network.ServerFormats
     {
         public ServerFormat3A()
         {
-            Icon = (ushort)IconStatus.Available;
+            Secured = true;
+            Command = 0x3A;
         }
 
-        public ServerFormat3A(ushort icon, byte length)
+        public ServerFormat3A(ushort icon, byte length) : this()
         {
-            Icon = icon;
+            Icon   = icon;
             Length = length;
         }
 
-        public ServerFormat3A(ushort icon, byte length, byte status)
-        {
-            //            Icon = IconStatus.status + icon;
-        }
-
-        public override bool Secured => true;
-        public override byte Command => 0x3A;
-
-        public ushort Icon { get; set; }
-        public byte Length { get; set; }
+        public ushort Icon;
+        public byte Length;
 
         public override void Serialize(NetworkPacketReader reader)
         {

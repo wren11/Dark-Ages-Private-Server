@@ -23,9 +23,9 @@ using System.Linq;
 namespace Darkages.Storage.locales.Scripts.Spells
 {
     [Script("beag ioc", "Dean")]
-    public class beagioc : SpellScript
+    public class Beagioc : SpellScript
     {
-        public beagioc(Spell spell) : base(spell)
+        public Beagioc(Spell spell) : base(spell)
         {
         }
 

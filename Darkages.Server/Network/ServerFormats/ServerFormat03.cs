@@ -23,9 +23,11 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat03 : NetworkFormat
     {
-        public override bool Secured => false;
-
-        public override byte Command => 0x03;
+        public ServerFormat03()
+        {
+            Secured = false;
+            Command = 0x03;
+        }
 
         public IPEndPoint EndPoint { get; set; }
 

@@ -19,9 +19,11 @@ namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat4F : NetworkFormat
     {
-        public override bool Secured => true;
-
-        public override byte Command => 0x4F;
+        public ClientFormat4F()
+        {
+            Secured = true;
+            Command = 0x4F;
+        }
 
         public ushort Count { get; set; }
         public byte[] Image { get; set; }

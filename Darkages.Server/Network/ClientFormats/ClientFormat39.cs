@@ -22,9 +22,11 @@ namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat39 : NetworkFormat
     {
-        public override bool Secured => true;
-
-        public override byte Command => 0x39;
+        public ClientFormat39()
+        {
+            Secured = true;
+            Command = 0x39;
+        }
 
         public byte Type { get; set; }
         public int Serial { get; set; }

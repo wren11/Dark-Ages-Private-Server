@@ -125,7 +125,10 @@ namespace Darkages.Types
 
     public abstract class BoardDescriptors : NetworkFormat
     {
-        public override byte Command => 0x31;
-        public override bool Secured => true;
+        public BoardDescriptors()
+        {
+            Command = 0x31;
+            Secured = true;
+        }
     }
 }

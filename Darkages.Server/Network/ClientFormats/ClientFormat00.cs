@@ -19,14 +19,15 @@ namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat00 : NetworkFormat
     {
-        public override bool Secured => false;
+        public int Version;
+        public byte UnknownA;
+        public byte UnknownB;
 
-        public override byte Command => 0x00;
-
-        public int Version { get; set; }
-        public byte UnknownA { get; set; }
-        public byte UnknownB { get; set; }
-
+        public ClientFormat00()
+        {
+            Secured = false;
+            Command = 0x00;
+        }
 
         public override void Serialize(NetworkPacketReader reader)
         {

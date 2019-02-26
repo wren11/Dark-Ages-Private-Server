@@ -21,9 +21,11 @@ namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat45 : NetworkFormat
     {
-        public override bool Secured => true;
-
-        public override byte Command => 0x45;
+        public ClientFormat45()
+        {
+            Secured = true;
+            Command = 0x45;
+        }
 
         public DateTime Ping { get; set; }
 
