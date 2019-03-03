@@ -79,6 +79,7 @@ namespace Darkages.Network
                 {
                     Encryption.Transform(packet);
 
+                    Console.WriteLine("Send: 0x{0:X2}", format.Command);
                     switch (format.Command)
                     {
                         case 0x39:
@@ -198,7 +199,6 @@ namespace Darkages.Network
 
             var packet = GetPacket(format);
             {
-                ServerContext.Info.Info(packet.ToString());
                 Enqueue(format, packet);
             }
         }

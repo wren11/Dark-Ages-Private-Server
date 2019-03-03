@@ -195,6 +195,7 @@ namespace Darkages
             return MyTraps.OrderBy(i => this.Position.DistanceFrom(i.Location)).FirstOrDefault();
         }
 
+        #region Reactor Stuff
         [JsonIgnore]
         public bool ReactorActive { get; set; }
 
@@ -203,6 +204,7 @@ namespace Darkages
 
         [JsonIgnore]
         public DialogSequence ActiveSequence { get; set; }
+        #endregion
 
         [JsonIgnore]
         public HashSet<Sprite> View = new HashSet<Sprite>();

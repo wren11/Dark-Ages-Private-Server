@@ -39,6 +39,13 @@ namespace Darkages.Network.ClientFormats
             Serial = reader.ReadInt32();
             Step = reader.ReadUInt16();
 
+            Console.WriteLine("----------------------------");
+            Console.WriteLine("0x39 : Type {0}", Type);
+            Console.WriteLine("0x39 : Serial {0}", Serial);
+            Console.WriteLine("0x39 : Step {0}", Step);
+            Console.WriteLine("----------------------------");
+
+
             if (reader.GetCanRead())
             {
                 var length = reader.ReadByte();

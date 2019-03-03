@@ -414,6 +414,9 @@
     <Compile Include="Systems\Loot\Modifiers\BaseModifier.cs" />
     <Compile Include="Systems\Loot\Modifiers\NumericModifier.cs" />
     <Compile Include="Systems\Loot\Modifiers\StringModifier.cs" />
+    <Compile Include="Systems\MenuSystem\ActionType.cs" />
+    <Compile Include="Systems\MenuSystem\Menu.cs" />
+    <Compile Include="Systems\MenuSystem\MenuManager.cs" />
     <Compile Include="Types\ActivityStatus.cs" />
     <Compile Include="Types\Aisling.cs" />
     <Compile Include="Types\AislingFlags.cs" />

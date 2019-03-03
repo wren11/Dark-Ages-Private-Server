@@ -40,6 +40,8 @@ namespace Darkages.Network.ClientFormats
                 // ???
             }
 
+
+
             if (Type == 0x03)
             {
                 // 43 4A 03 00 1A 00 2D 00 00

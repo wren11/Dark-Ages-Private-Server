@@ -1,5 +1,4 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+﻿//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -15,6 +14,8 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using System;
+///************************************************************************
 namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat3A : NetworkFormat
@@ -36,6 +37,13 @@ namespace Darkages.Network.ClientFormats
             var id = reader.ReadUInt32();
             var scriptid = reader.ReadUInt16();
             var step = reader.ReadUInt16();
+
+            Console.WriteLine("----------------------------");
+            Console.WriteLine("0x3A : type {0}", type);
+            Console.WriteLine("0x3A : id  {0}", id);
+            Console.WriteLine("0x3A : scriptid {0}", scriptid);
+            Console.WriteLine("0x3A : step {0}", step);
+            Console.WriteLine("----------------------------");
 
 
             ScriptId = scriptid;
