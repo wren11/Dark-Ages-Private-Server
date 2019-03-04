@@ -93,8 +93,6 @@ namespace Darkages.Storage.locales.Scripts.Global
                 if (!Client.Aisling.Map.Ready)
                     return;
 
-                EastWoodlands();
-
                 if (Scripts == null)
                     return;
 

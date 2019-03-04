@@ -233,13 +233,12 @@ namespace Darkages.Network
                 {
                     if (client.Buffer == null)
                     {
-                        client.Buffer = new NetworkPacketWriter();
+                        client.Buffer = new NetworkBufferWriter();
                     }
 
-                    lock (client.Buffer)
+                    lock (data)
                     {
                         client.Buffer.Write(data);
-                        BufferPool.Return(data);
                     }
                 }
                 else

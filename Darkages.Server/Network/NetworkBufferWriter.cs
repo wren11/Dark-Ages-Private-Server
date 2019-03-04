@@ -17,47 +17,40 @@
 //*************************************************************************/
 using Darkages.IO;
 using System;
+using System.Net;
+using System.Text;
 
 namespace Darkages.Network
 {
-    public sealed class NetworkPacket
+    public class NetworkBufferWriter
     {
-        public byte Command;
-        public byte Ordinal;
-        public byte[] Data;
+        private readonly byte[] buffer;
 
-        public NetworkPacket(byte[] array, int count)
+        public int Position;
+
+        public NetworkBufferWriter()
         {
-            Command = array[0];
-            Ordinal = array[1];
-            Data    = BufferPool.Take(count - 2);
-
-            if (Data.Length != 0)
-                Array.Copy(array, 2, Data, 0, Data.Length);
+            buffer = BufferPool.Take(0x35000);
         }
 
-        public byte[] ToArray()
+        public void Write(byte[] value)
         {
-            var buffer     = BufferPool.Take(Data.Length + 5);
+            Array.Copy(value, 0, buffer, Position, value.Length);
+            Position += value.Length;
+        }      
 
-            buffer[0] = 0xAA;
-            buffer[1] = (byte)((Data.Length + 2) >> 8);
-            buffer[2] = (byte)((Data.Length + 2) >> 0);
-            buffer[3] = Command;
-            buffer[4] = Ordinal;
-
-            for (int i = 0; i < Data.Length; i++)
+        public byte[] ToBuffer()
+        {
+            var nbuffer = BufferPool.Take(Position);
             {
-                buffer[i + 5] = Data[i];
+                Array.Copy(buffer, 0, nbuffer, 0, Position);
             }
-
-            return buffer;
+            return nbuffer;
         }
 
-        public override string ToString()
+        public NetworkPacket ToPacket()
         {
-            return string.Format("{0}",
-                BitConverter.ToString(this.ToArray()).Replace('-', ' '));
+            return new NetworkPacket(buffer, Position);
         }
     }
 }

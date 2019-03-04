@@ -4,26 +4,26 @@
   "Activations": [
     {
       "Location": {
-        "X": 30,
-        "Y": 44,
+        "X": 21,
+        "Y": 18,
         "AreaID": 0
       },
-      "AreaID": 427,
+      "AreaID": 431,
       "PortalKey": 0
     }
   ],
   "To": {
     "Location": {
-      "X": 4,
-      "Y": 2,
+      "X": 8,
+      "Y": 20,
       "AreaID": 0
     },
-    "AreaID": 429,
+    "AreaID": 432,
     "PortalKey": 0
   },
   "WarpType": 0,
-  "ActivationMapId": 427,
-  "Name": "Map Warp from 427 to 429",
+  "ActivationMapId": 431,
+  "Name": "Map Warp from 431 to 432",
   "Description": null,
   "Group": null
 }

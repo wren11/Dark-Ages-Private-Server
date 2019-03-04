@@ -73,7 +73,8 @@ namespace Darkages.Network.Game
 
         public DateTime LastAssail;
 
-        public NetworkPacketWriter Buffer;
+        
+        public NetworkBufferWriter Buffer;
 
         public GameClient()
         {

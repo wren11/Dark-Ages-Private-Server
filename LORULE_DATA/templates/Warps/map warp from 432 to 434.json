@@ -1,29 +1,29 @@
 {
-  "LevelRequired": 3,
+  "LevelRequired": 11,
   "WarpRadius": 0,
   "Activations": [
     {
       "Location": {
-        "X": 4,
-        "Y": 0,
+        "X": 42,
+        "Y": 30,
         "AreaID": 0
       },
-      "AreaID": 429,
+      "AreaID": 432,
       "PortalKey": 0
     }
   ],
   "To": {
     "Location": {
-      "X": 29,
-      "Y": 42,
+      "X": 5,
+      "Y": 41,
       "AreaID": 0
     },
-    "AreaID": 427,
+    "AreaID": 434,
     "PortalKey": 0
   },
   "WarpType": 0,
-  "ActivationMapId": 429,
-  "Name": "Map Warp from 429 to 427",
+  "ActivationMapId": 432,
+  "Name": "Map Warp from 432 to 434",
   "Description": null,
   "Group": null
 }

@@ -1,0 +1,29 @@
+{
+  "LevelRequired": 3,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 12,
+        "Y": 22,
+        "AreaID": 0
+      },
+      "AreaID": 427,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": {
+      "X": 2,
+      "Y": 30,
+      "AreaID": 0
+    },
+    "AreaID": 428,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 427,
+  "Name": "Map Warp from 427 to 428",
+  "Description": null,
+  "Group": null
+}

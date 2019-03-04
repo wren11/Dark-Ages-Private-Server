@@ -31,7 +31,7 @@ namespace Darkages.Network
 
         public NetworkPacketWriter()
         {
-             buffer = BufferPool.Take(0x10000);
+             buffer = BufferPool.Take(0x8192);
         }
 
         public bool GetCanWrite()
@@ -134,14 +134,6 @@ namespace Darkages.Network
             Write(
                 (ushort)endPoint.Port);
         }
-
-        public byte[] ToBuffer()
-        {
-            var nbuffer = BufferPool.Take(Position);
-            Array.Copy(buffer, 0, nbuffer, 0, Position);
-            return nbuffer;
-        }
-
 
         public NetworkPacket ToPacket()
         {
