@@ -17,7 +17,6 @@
 //*************************************************************************/
 using Darkages.Common;
 using Darkages.Interops;
-using Darkages.IO;
 using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Script.Context;
@@ -29,7 +28,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -508,7 +506,7 @@ namespace Darkages
                 AttackSpeed = 1500,
                 CastSpeed = 9000,
                 AreaID = 888,
-                Description = "A weak but filthly creature. Attacking a gnarl should be avoided, They offer nothing rewarding.",
+                Description = "A weak but filthly creature. Attacking a Kardi should be avoided, They offer nothing rewarding.",
                 Grow = false,
                 UpdateMapWide = false,
                 IgnoreCollision = false,
