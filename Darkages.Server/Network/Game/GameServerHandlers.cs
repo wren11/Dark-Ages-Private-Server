@@ -1308,6 +1308,31 @@ namespace Darkages.Network.Game
             }
 
 
+            var objId = format.Serial;
+
+            if (objId > 0 && objId < int.MaxValue)
+            {
+                var obj = GetObject<Mundane>(client.Aisling.Map, i => i.Serial == objId);
+
+                if (obj != null)
+                {
+                    var menu = client.MenuInterpter;
+
+                    if (menu != null)
+                    {
+                        var selected_answer = menu.GetCurrentStep().Answers.ElementAt(format.Step - 1);
+
+                        if (selected_answer != null)
+                        {
+                            ServerContext.Info.Debug("User Answer: {0}", selected_answer.Text);
+
+                            obj.MenuScript.On_Menu_Answer_Clicked(client, obj, selected_answer);
+                        }
+                    }
+                }
+            }
+
+
             if (format.Serial != ServerContext.Config.HelperMenuId)
             {
                 var mundane = GetObject<Mundane>(client.Aisling.Map, i => i.Serial == format.Serial);
@@ -1353,6 +1378,36 @@ namespace Darkages.Network.Game
                 client.Interupt();
                 return;
             }
+
+
+            var objId = format.Serial;
+
+            if (objId > 0 && objId < int.MaxValue)
+            {
+                var obj = GetObject<Mundane>(client.Aisling.Map, i => i.Serial == objId);
+
+                if (obj != null)
+                {
+                    if (client.MenuInterpter == null)
+                        return;
+
+                    if (format.Step > 2)
+                    {
+                        obj.MenuScript?.On_Step_Answer_Back(client, obj);
+                    }
+                    if (format.Step == 1)
+                    {
+                        obj.MenuScript?.On_Step_Answer_Next(client, obj);
+                    }
+                    if (format.Step < 1 || format.Step == 2)
+                    {
+                        obj.MenuScript?.On_Step_Answer_Closed(client, obj);
+                    }
+                }
+
+                return;
+            }
+
 
 
             if (format.ScriptId == ushort.MaxValue)
@@ -1640,7 +1695,10 @@ namespace Darkages.Network.Game
                         (obj as Monster)?.Script?.OnClick(client);
                         break;
                     case Mundane _:
-                        (obj as Mundane)?.Script?.OnClick(this, client);
+                        {
+                            (obj as Mundane)?.Script?.OnClick(this, client);
+                            (obj as Mundane)?.MenuScript?.On_NPC_Clicked(client, obj);
+                        }
                         break;
                 }
             }

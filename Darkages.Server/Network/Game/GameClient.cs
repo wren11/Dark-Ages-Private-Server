@@ -21,6 +21,7 @@ using Darkages.Scripting;
 using Darkages.Storage;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
+using MenuInterpreter;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -52,6 +53,8 @@ namespace Darkages.Network.Game
         public GameServerTimer MpRegenTimer;
 
         public Aisling Aisling;
+
+        public Interpreter MenuInterpter;
 
         public bool ShouldUpdateMap;
 

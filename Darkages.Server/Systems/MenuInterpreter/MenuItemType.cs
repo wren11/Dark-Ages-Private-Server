@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Darkages.Systems.MenuSystem
+namespace MenuInterpreter
 {
-    public class Menu
-    {
-
-        public byte MenuType;
-
-    }
+	public enum MenuItemType
+	{
+		Step = 1,
+		Menu = 2,
+		Checkpoint = 3
+	}
 }

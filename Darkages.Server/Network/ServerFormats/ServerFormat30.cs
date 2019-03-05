@@ -90,8 +90,7 @@ namespace Darkages.Network.ServerFormats
         {
             if (!client.Aisling.LoggedIn)
                 return;
-            if (client.Aisling.ActiveReactor == null)
-                return;
+
 
             writer.Write((byte)0x00); // type!
             writer.Write((byte)0x01); // ??

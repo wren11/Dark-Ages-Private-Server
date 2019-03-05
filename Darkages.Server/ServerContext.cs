@@ -474,7 +474,7 @@ namespace Darkages
                 Level = 99,
                 X = 21,
                 Y = 40,
-                ScriptKey = "tut/Raghnall",
+                ScriptKey = "Test Menu Script",
                 Image = 0x401C,
                 Name = "Ragnhall"
             };

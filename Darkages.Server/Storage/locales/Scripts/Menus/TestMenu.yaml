@@ -1,0 +1,158 @@
+﻿start:
+  sequence: 1
+  step: 1
+  
+  
+sequences:
+  - id: 1
+    name: "My sequence 1"
+    steps:    
+    - id: 1
+      text: "I'm a sequence"
+      answers:
+      - id: 1
+        text: next
+        step: 2
+          
+    - id: 2
+      text: "Im also a sequence"
+      answers:
+      - id: 1
+        text: back
+        step: 1          
+      - id: 2
+        text: next
+        menu: 1
+        
+    - id: 3
+      text: "You'd only get to me if you clicked option 1 from menu 1"
+      answers:
+        - id: 1
+          text: back
+          step: 2
+        - id: 2
+          text: next
+          sequence: 2
+          step: 1
+    - id: 4
+      text: "if you got here you went from menu 1 to menu 2 and then back here"
+      answers:
+        - id: 1
+          text: back
+          menu: 2
+        - id: 2
+          text: next
+          step: 5
+    
+    - id: 5
+      text: "the final part."
+      answers:
+        - id: 1
+          checkpoint: 1
+      
+  - id: 2
+    steps:
+      - id: 1
+        text: "I'm sequence 2"
+        answers:
+          - id: 1
+            text: next
+            step: 2
+            
+      - id: 2
+        text: "Im also part of sequence 2"
+        answers:
+          - id: 1
+            text: back
+            step: 1
+          - id: 2
+            text: next
+            sequence: 3
+            step: 1
+  - id: 3
+    steps:
+      - id: 1
+        text: "I'm the final part"
+        answers:
+          - id: 1
+            text: next
+            step: 2
+      - id: 2
+        text: "one last sequence to finish up"
+        answers: 
+          - id: 1
+            text: back
+            step: 1
+          - id: 2
+            text: complete
+
+  - id: 4
+    steps:
+      - id: 1
+        text: "you have not finished my quest."
+        answers:
+          - id: 1
+            text: close
+            step: -2
+      - id: 2
+        text: "thank you, quest completed."
+        answers: 
+          - id: 1
+            text: close
+            step: -2    
+
+menus:
+  - id: 1
+    text: "I'm an option menu 1"
+    options:
+      - id: 1
+        text: "option 1"
+        step: 3
+        sequence: 1
+      - id: 2
+        text: "option 2"
+        menu: 2
+
+  - id: 2
+    text: "I'm a menu discovered by menu 1"
+    options:
+      - id: 1
+        text: "I'm option 1 of menu 2"
+        sequence: 1
+        step: 4
+      - id: 2
+        text: "I'm option 2 of menu 2"
+        menu: 3
+
+  - id: 3
+    text: "I'm a menu discovered by menu 2, option 2"
+    options:
+      - id: 1
+        text: "Accept a quest"
+        sequence: 4
+        step: 1
+      - id: 2
+        text: "Decline"
+        sequence: 3
+        step: 1        
+        
+checkpoints:
+  - id: 1
+    type: HasItem
+    value: Stick
+    amount: 2
+    success:
+    fail:
+
+
+
+
+
+
+
+
+
+
+
+
+
