@@ -58,6 +58,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Vision of Chaos",
   "Description": null,
   "Group": null

@@ -29,6 +29,7 @@
   "QuestKey": "TowerDefense",
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Tower Defense Master",
   "Description": null,
   "Group": null

@@ -24,18 +24,18 @@ namespace Darkages.Network
 {
     public class NetworkBufferWriter
     {
-        private readonly byte[] buffer;
+        public byte[] rawData;
 
         public int Position;
 
         public NetworkBufferWriter()
         {
-            buffer = BufferPool.Take(0x35000);
+            rawData = BufferPool.Take(0x35000);
         }
 
         public void Write(byte[] value)
         {
-            Array.Copy(value, 0, buffer, Position, value.Length);
+            Array.Copy(value, 0, rawData, Position, value.Length);
             Position += value.Length;
         }      
 
@@ -43,14 +43,14 @@ namespace Darkages.Network
         {
             var nbuffer = BufferPool.Take(Position);
             {
-                Array.Copy(buffer, 0, nbuffer, 0, Position);
+                Array.Copy(rawData, 0, nbuffer, 0, Position);
             }
             return nbuffer;
         }
 
         public NetworkPacket ToPacket()
         {
-            return new NetworkPacket(buffer, Position);
+            return new NetworkPacket(rawData, Position);
         }
     }
 }

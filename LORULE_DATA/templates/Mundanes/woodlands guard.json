@@ -27,6 +27,7 @@
   "QuestKey": "",
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Woodlands Guard",
   "Description": null,
   "Group": null

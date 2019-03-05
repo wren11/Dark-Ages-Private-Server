@@ -42,6 +42,7 @@
   "QuestKey": "",
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Hag",
   "Description": null,
   "Group": null

@@ -33,6 +33,7 @@
   "QuestKey": "",
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Lost Hag",
   "Description": null,
   "Group": null

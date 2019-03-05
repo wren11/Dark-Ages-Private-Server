@@ -30,6 +30,7 @@
   "QuestKey": null,
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Suits VIP Shop",
   "Description": null,
   "Group": null

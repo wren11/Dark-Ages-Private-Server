@@ -36,6 +36,7 @@
   "QuestKey": "",
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Angry Arch Wizard",
   "Description": null,
   "Group": null

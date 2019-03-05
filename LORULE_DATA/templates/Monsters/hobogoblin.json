@@ -48,6 +48,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Hobogoblin",
   "Description": null,
   "Group": null

@@ -119,6 +119,7 @@
   "UpdateMapWide": true,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Defender",
   "Description": null,
   "Group": null

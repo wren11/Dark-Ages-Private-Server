@@ -1,5 +1,4 @@
-﻿using System;
-using Darkages.Network.Game;
+﻿using Darkages.Network.Game;
 using Darkages.Types;
 using MenuInterpreter;
 

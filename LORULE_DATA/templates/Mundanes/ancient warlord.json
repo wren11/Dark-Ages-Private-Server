@@ -27,6 +27,7 @@
   "QuestKey": null,
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Ancient Warlord",
   "Description": null,
   "Group": null

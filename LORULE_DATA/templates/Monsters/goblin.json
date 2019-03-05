@@ -53,6 +53,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Goblin",
   "Description": null,
   "Group": null

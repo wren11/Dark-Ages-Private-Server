@@ -55,6 +55,8 @@ namespace Darkages.Network.Game
             }
 
 
+            client.MenuInterpter = null;
+
             if (ServerContext.Config.AssailsCancelSpells)
                 CancelIfCasting(client);
 
@@ -1668,6 +1670,9 @@ namespace Darkages.Network.Game
                 ServerContext.GlobalMundaneTemplateCache.ContainsKey(ServerContext.Config.HelperMenuTemplateKey))
             {
                 if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
+                    return;
+
+                if (format.Type != 0x01)
                     return;
 
                 var helper = new UserHelper(this, new Mundane

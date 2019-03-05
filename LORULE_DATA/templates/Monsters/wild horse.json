@@ -52,6 +52,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Wild Horse",
   "Description": null,
   "Group": null

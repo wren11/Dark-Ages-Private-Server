@@ -44,6 +44,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Crypt Walker",
   "Description": null,
   "Group": null

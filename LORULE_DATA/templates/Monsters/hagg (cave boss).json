@@ -49,6 +49,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Hagg (Cave Boss)",
   "Description": null,
   "Group": null

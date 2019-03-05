@@ -35,6 +35,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Dark Training Dummy",
   "Description": null,
   "Group": null

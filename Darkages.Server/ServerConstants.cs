@@ -135,7 +135,7 @@ namespace Darkages
         /// </summary>
         public string HandShakeMessage = "CAN WE ALL GET ALONG\n";
 
-        [JsonProperty] public int HelperMenuId = 0x7FFFF1;
+        [JsonProperty] public int HelperMenuId = -1;
 
         [JsonProperty] public string HelperMenuTemplateKey = "Lorule Helper";
 

@@ -49,6 +49,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Goblin Captain",
   "Description": null,
   "Group": null

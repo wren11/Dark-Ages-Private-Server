@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginServer", "LoginServer\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lorule", "Lorule\Lorule.csproj", "{E79A7BDE-F6FA-4D33-B97E-17F30202EEB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoruleWebService", "LoruleWebService\LoruleWebService.csproj", "{D20BAA7D-000F-4036-99B4-CD899F99FB3A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,18 +69,6 @@ Global
 		{E79A7BDE-F6FA-4D33-B97E-17F30202EEB3}.Release|x64.Build.0 = Release|Any CPU
 		{E79A7BDE-F6FA-4D33-B97E-17F30202EEB3}.Release|x86.ActiveCfg = Release|Any CPU
 		{E79A7BDE-F6FA-4D33-B97E-17F30202EEB3}.Release|x86.Build.0 = Release|Any CPU
-		{D20BAA7D-000F-4036-99B4-CD899F99FB3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D20BAA7D-000F-4036-99B4-CD899F99FB3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D20BAA7D-000F-4036-99B4-CD899F99FB3A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D20BAA7D-000F-4036-99B4-CD899F99FB3A}.Debug|x64.Build.0 = Debug|Any CPU
-		{D20BAA7D-000F-4036-99B4-CD899F99FB3A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D20BAA7D-000F-4036-99B4-CD899F99FB3A}.Debug|x86.Build.0 = Debug|Any CPU
-		{D20BAA7D-000F-4036-99B4-CD899F99FB3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D20BAA7D-000F-4036-99B4-CD899F99FB3A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D20BAA7D-000F-4036-99B4-CD899F99FB3A}.Release|x64.ActiveCfg = Release|Any CPU
-		{D20BAA7D-000F-4036-99B4-CD899F99FB3A}.Release|x64.Build.0 = Release|Any CPU
-		{D20BAA7D-000F-4036-99B4-CD899F99FB3A}.Release|x86.ActiveCfg = Release|Any CPU
-		{D20BAA7D-000F-4036-99B4-CD899F99FB3A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

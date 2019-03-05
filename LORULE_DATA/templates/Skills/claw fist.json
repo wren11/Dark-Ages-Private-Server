@@ -17,19 +17,10 @@
   "Buff": {
     "$type": "Darkages.Storage.locales.Buffs.buff_clawfist, Darkages.Server",
     "Name": "Claw Fist",
-    "Length": 27,
-    "Icon": 59,
+    "Length": 9,
+    "Icon": 13,
     "value": 0,
-    "Cancelled": false,
-    "Timer": {
-      "$type": "Darkages.Network.Game.GameServerTimer, Darkages.Server",
-      "Timer": "00:00:00",
-      "Delay": "00:00:01",
-      "Elapsed": false,
-      "Disabled": false,
-      "Interval": 0,
-      "Tick": 0
-    }
+    "Cancelled": false
   },
   "Prerequisites": {
     "$type": "Darkages.Types.LearningPredicate, Darkages.Server",

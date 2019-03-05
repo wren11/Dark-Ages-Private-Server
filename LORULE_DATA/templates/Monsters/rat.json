@@ -37,6 +37,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Rat",
   "Description": null,
   "Group": null

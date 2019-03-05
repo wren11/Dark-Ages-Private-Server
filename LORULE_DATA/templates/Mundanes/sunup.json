@@ -27,6 +27,7 @@
   "QuestKey": "sunup",
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Sunup",
   "Description": null,
   "Group": null

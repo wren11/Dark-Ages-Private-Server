@@ -47,6 +47,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Upset Kobold",
   "Description": null,
   "Group": null

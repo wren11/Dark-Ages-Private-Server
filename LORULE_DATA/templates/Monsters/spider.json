@@ -41,6 +41,7 @@
   "UpdateMapWide": false,
   "FamilyKey": "Insect",
   "BaseName": "Spider",
+  "EngagedWalkingSpeed": 0,
   "Name": "Spider",
   "Description": "Small creature that dwells in dark places, such as crypts. Not very Aggressive, Unless Attacked.",
   "Group": null

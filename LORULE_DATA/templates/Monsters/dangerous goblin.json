@@ -48,6 +48,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Dangerous Goblin",
   "Description": null,
   "Group": null

@@ -21,7 +21,7 @@
   "DayTimeInterval": 30.0,
   "DeathHPPenalty": 50,
   "DeathMap": 88888,
-  "DebugMode": true,
+  "DebugMode": false,
   "DefaultItemColor": 13,
   "DefaultItemDurability": 1000,
   "DefaultItemValue": 500,
@@ -30,7 +30,7 @@
   "DoesNotFitMessage": "That does not fit you.",
   "DontTurnDuringRefresh": false,
   "ERRORCAP": 5,
-  "GlobalBaseSkillDelay": 750.0,
+  "GlobalBaseSkillDelay": 450.0,
   "GlobalSpawnTimer": 2000.0,
   "GroupRequestDeclinedMsg": "noname does not wish to join your group.",
   "HandShakeMessage": "CAN WE ALL GET ALONG\n",
@@ -126,8 +126,8 @@
       },
       {
         "$type": "Darkages.ServerConstants+GameSetting, Darkages.Server",
-        "SettingOn": "AUTO LOOT GOLD  :ON",
-        "SettingOff": "AUTO LOOT GOLD  :OFF",
+        "SettingOn": "AUTO LOOT GOLD  :Toggle",
+        "SettingOff": "AUTO LOOT GOLD  :Toggled",
         "Enabled": false
       }
     ]

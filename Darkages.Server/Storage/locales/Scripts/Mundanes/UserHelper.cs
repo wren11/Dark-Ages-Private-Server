@@ -35,11 +35,12 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             var options = new List<OptionsDataItem>
             {
-                new OptionsDataItem(0x0001, "Return Home.")
+                new OptionsDataItem(0x0001, "Return Home."),
+                new OptionsDataItem(0x0002, "Become A Master."),
             };
             if (!client.Aisling.TutorialCompleted)
             {
-                options.Add(new OptionsDataItem(0x0002, "Skip Tutorial."));
+                options.Add(new OptionsDataItem(0x0003, "Skip Tutorial."));
             }
             client.SendOptionsDialog(Mundane, "What do you need?", options.ToArray());
         }
@@ -61,6 +62,35 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     }
                     break;
                 case 0x0002:
+                    {
+                        if (client.Aisling.Stage == ClassStage.Master)
+                        {
+                            client.SendOptionsDialog(Mundane, "You are a master already.");
+                            return;
+                        }
+
+                        client.Aisling.Path = Class.Warrior;
+                        client.Aisling.Stage = ClassStage.Master;
+                        client.Aisling.ExpLevel = 99;
+                        client.Aisling._Str = 215;
+                        client.Aisling._Wis = 100;
+                        client.Aisling._Int = 100;
+                        client.Aisling._Con = 180;
+                        client.Aisling._Dex = 150;
+                        client.Aisling._MaximumHp = 20000;
+                        client.Aisling._MaximumMp = 10000;
+
+                        Item.Create(client.Aisling, "War Mantle", false).GiveTo(client.Aisling, true);
+                        Item.Create(client.Aisling, "War Helmet", false).GiveTo(client.Aisling, true);
+                        Item.Create(client.Aisling, "Lorule Escalon", false).GiveTo(client.Aisling, true);
+
+
+                        client.SendStats(StatusFlags.All);
+                        client.CloseDialog();
+
+
+                    } break;
+                case 0x0003:
                     {
                         client.Aisling.TutorialCompleted = true;
                         client.Aisling.ExpLevel = 11;

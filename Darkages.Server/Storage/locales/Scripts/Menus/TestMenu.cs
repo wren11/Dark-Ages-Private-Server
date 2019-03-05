@@ -28,14 +28,14 @@ namespace Darkages.Storage.locales.Scripts.Menus
             //if so, give them a new interpreter.        
             if (client.MenuInterpter == null || client.MenuInterpter.IsFinished)
             {
-                client.MenuInterpter = parser.CreateInterpreterFromFile(@"C:\Users\dm882\Documents\GitHub\DarkAges-Lorule-Server\Staging\bin\Release\Storage\locales\Scripts\Menus\TestMenu.yaml");
+                var yamlPath = ServerContext.StoragePath + @"\Scripts\Menus\TestMenu.yaml";
+                client.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
             }
 
             //register checkpoint function
-            client.MenuInterpter.RegisterCheckpointHandler("HasItem", (sender, a) =>
+            client.MenuInterpter.RegisterCheckpointHandler("HasKilled", (sender, a) =>
             {
-                ServerContext.Info.Debug($"Here we can check if player has {a.Amount} {a.Value} in his inventory.");
-                a.Result = true;
+                a.Result = client.Aisling.HasKilled(a.Value, a.Amount);
             });
         }
 
@@ -58,7 +58,7 @@ namespace Darkages.Storage.locales.Scripts.Menus
                     DisplayText = nextitem.Text,
                     HasOptions = false,
                     DisplayImage = (ushort)(obj as Mundane).Template.Image,
-                    Title = nextitem.Text,
+                    Title = (obj as Mundane).Template.Name,
                     CanMoveNext = nextitem.Answers.Length > 0,
                     CanMoveBack = nextitem.Answers.Any(i => i.Text == "back"),
                     Id = obj.Serial,
@@ -72,8 +72,8 @@ namespace Darkages.Storage.locales.Scripts.Menus
                 foreach (var ans in nextitem.Answers)
                 {
                     //dont include close in client display.
-                    //if (ans.Text == "close")
-                    //   continue;
+                    if (ans.Text == "close")
+                       continue;
 
                     options.Add(new OptionsDataItem((short)ans.Id, ans.Text));
                     ServerContext.Info.Debug($"{ans.Id}. {ans.Text}");
@@ -84,7 +84,8 @@ namespace Darkages.Storage.locales.Scripts.Menus
             else if (nextitem.Type == MenuItemType.Checkpoint)
             {
                 //hm?
-                client.MenuInterpter.Move(0);
+                client.MenuInterpter.PassCheckpoint(nextitem as CheckpointMenuItem);
+                //client.MenuInterpter.Move(0);
             }
         }
 
@@ -146,7 +147,7 @@ namespace Darkages.Storage.locales.Scripts.Menus
                 }
                 else
                 {
-                    var last = interpreter.GetCurrentStep().Answers.FirstOrDefault(i => i.Text == "completed");
+                    var last = interpreter.GetCurrentStep().Answers.FirstOrDefault(i => i.Text == "complete");
                     if (last != null)
                     {
                         ShowCurrentMenu(client, obj, null, interpreter.Move(last.Id));
@@ -176,7 +177,6 @@ namespace Darkages.Storage.locales.Scripts.Menus
 
             if (close != null)
             {
-                ShowCurrentMenu(client, obj, interpreter.GetCurrentStep(), interpreter.Move(close.Id));
                 client.CloseDialog();
             }
         }

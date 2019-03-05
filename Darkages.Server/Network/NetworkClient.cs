@@ -138,7 +138,7 @@ namespace Darkages.Network
                         _lock.ExitWriteLock();
                         return;
                     }
-                }               
+                }
             }
         }
 
@@ -155,7 +155,7 @@ namespace Darkages.Network
 
         private void EndSend(IAsyncResult ar)
         {
-            var bytes  = WorkSocket.EndSend(ar);
+            var bytes = WorkSocket.EndSend(ar);
             var buffer = (byte[])ar.AsyncState;
 
             if (buffer.Length > 0)
@@ -212,14 +212,8 @@ namespace Darkages.Network
 
                 var data = packet.ToArray();
 
-                if (format is ServerFormat3C)
-                {
-                //    AddBuffer(data);
-                }
-                //else
-                {
-                    CreateBuffers(data);
-                }
+
+                CreateBuffers(data);
             }
         }
 
@@ -231,15 +225,15 @@ namespace Darkages.Network
 
                 if (client.Aisling != null && client.Aisling.LoggedIn)
                 {
-                    if (client.Buffer == null)
+                    if (client.Buffer != null)
+                    {
+                        BufferPool.Return(client.Buffer.rawData);
+                    }
+                    else
                     {
                         client.Buffer = new NetworkBufferWriter();
                     }
-
-                    lock (data)
-                    {
-                        client.Buffer.Write(data);
-                    }
+                    client.Buffer.Write(data);
                 }
                 else
                 {
@@ -250,7 +244,7 @@ namespace Darkages.Network
             {
                 AddBuffer(data);
             }
-        }
+        } 
 
         private NetworkPacket GetPacket(NetworkFormat format)
         {

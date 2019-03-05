@@ -43,6 +43,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Enchanted Garden Bee",
   "Description": null,
   "Group": null

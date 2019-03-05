@@ -46,6 +46,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Wastelands Bee",
   "Description": null,
   "Group": null

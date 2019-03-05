@@ -12,16 +12,7 @@
     "Name": "fas spiorad",
     "Length": 2,
     "Icon": 26,
-    "Cancelled": false,
-    "Timer": {
-      "$type": "Darkages.Network.Game.GameServerTimer, Darkages.Server",
-      "Timer": "00:00:00",
-      "Delay": "00:00:01",
-      "Elapsed": false,
-      "Disabled": false,
-      "Interval": 0,
-      "Tick": 0
-    }
+    "Cancelled": false
   },
   "Buff": null,
   "TargetType": 5,

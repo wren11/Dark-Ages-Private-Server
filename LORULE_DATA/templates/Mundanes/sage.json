@@ -42,6 +42,7 @@
   "QuestKey": "welcome trials 1",
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Sage",
   "Description": null,
   "Group": null

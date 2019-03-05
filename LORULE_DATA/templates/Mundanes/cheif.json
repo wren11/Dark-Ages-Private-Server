@@ -27,6 +27,7 @@
   "QuestKey": "",
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "cheif",
   "Description": null,
   "Group": null

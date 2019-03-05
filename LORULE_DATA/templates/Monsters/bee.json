@@ -50,6 +50,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Bee",
   "Description": null,
   "Group": null

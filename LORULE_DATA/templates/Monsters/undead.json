@@ -16,8 +16,7 @@
       "Human Remains"
     ]
   },
-  "ID": 152,
-  "Image": 0x40A4,
+  "Image": 16548,
   "ScriptName": "Common Monster",
   "DefinedX": 33,
   "DefinedY": 13,
@@ -29,11 +28,9 @@
   "Level": 2,
   "MaximumHP": 0,
   "MaximumMP": 0,
-  "SpawnerID": 0,
   "AreaID": 99,
   "MovementSpeed": 1000,
   "CastSpeed": 800,
-  "IsBoss": false,
   "SpawnMax": 350,
   "SpawnRate": 5,
   "SpawnSize": 35,
@@ -47,11 +44,18 @@
     "$values": [
       "armachd",
       "beag cradh",
-      "ao sith",
+      "ao sith"
     ]
   },
+  "SkillScripts": null,
   "DefenseElement": 1,
   "OffenseElement": 0,
+  "Waypoints": null,
   "UpdateMapWide": false,
-  "Name": "Undead"
+  "FamilyKey": null,
+  "BaseName": null,
+  "EngagedWalkingSpeed": 0,
+  "Name": "Undead",
+  "Description": null,
+  "Group": null
 }

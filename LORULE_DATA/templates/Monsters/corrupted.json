@@ -54,6 +54,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Corrupted",
   "Description": null,
   "Group": null

@@ -41,6 +41,7 @@
   "UpdateMapWide": false,
   "FamilyKey": "Insect",
   "BaseName": "Slime",
+  "EngagedWalkingSpeed": 0,
   "Name": "Slime",
   "Description": "Small creature that dwells in dark places, such as crypts. Not very Aggressive, Unless Attacked.",
   "Group": null

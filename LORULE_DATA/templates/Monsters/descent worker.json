@@ -42,6 +42,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Descent Worker",
   "Description": null,
   "Group": null

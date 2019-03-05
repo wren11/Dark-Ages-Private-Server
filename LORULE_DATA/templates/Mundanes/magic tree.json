@@ -35,6 +35,7 @@
   "QuestKey": "welcome trials 3",
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Magic Tree",
   "Description": null,
   "Group": null

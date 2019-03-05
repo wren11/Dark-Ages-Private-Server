@@ -27,6 +27,7 @@
   "QuestKey": "Benson_quest",
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Benson",
   "Description": null,
   "Group": null

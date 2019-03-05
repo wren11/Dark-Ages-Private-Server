@@ -27,6 +27,7 @@
   "QuestKey": null,
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Lorule Helper",
   "Description": null,
   "Group": null

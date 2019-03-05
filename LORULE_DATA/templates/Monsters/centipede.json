@@ -41,6 +41,7 @@
   "UpdateMapWide": false,
   "FamilyKey": "Insect",
   "BaseName": "Centipede",
+  "EngagedWalkingSpeed": 0,
   "Name": "Centipede",
   "Description": "Small creature that dwells in dark places, such as crypts. Known to be aggresive.",
   "Group": null

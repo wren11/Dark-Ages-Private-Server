@@ -44,6 +44,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Goblin Guard",
   "Description": null,
   "Group": null

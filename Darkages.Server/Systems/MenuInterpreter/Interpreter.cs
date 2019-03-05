@@ -179,7 +179,7 @@ namespace MenuInterpreter
 		/// </summary>
 		/// <param name="checkpoint">Checkpoint item</param>
 		/// <returns>Success or fail code based on handler result</returns>
-		private int PassCheckpoint(CheckpointMenuItem checkpoint)
+		public int PassCheckpoint(CheckpointMenuItem checkpoint)
 		{
 			// find handler
 			if (_checkpointHandlers.ContainsKey(checkpoint.Text) == false)

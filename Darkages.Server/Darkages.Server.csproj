@@ -112,9 +112,6 @@
     <None Include="Storage\locales\metafile\SEvent7" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Storage\locales\Scripts\Menus\TestMenu.yaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="zlib.net.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

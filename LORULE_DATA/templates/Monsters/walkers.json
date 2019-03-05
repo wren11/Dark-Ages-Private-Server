@@ -49,6 +49,7 @@
   "UpdateMapWide": false,
   "FamilyKey": null,
   "BaseName": null,
+  "EngagedWalkingSpeed": 0,
   "Name": "Walkers",
   "Description": null,
   "Group": null

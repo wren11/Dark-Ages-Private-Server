@@ -27,6 +27,7 @@
   "QuestKey": null,
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Precious Jewels",
   "Description": null,
   "Group": null

@@ -1089,7 +1089,7 @@ namespace Darkages.Network.Game
         {
             var message = string.Empty;
 
-            if (client.Aisling.ExpLevel <= item.Template.LevelRequired)
+            if (client.Aisling.ExpLevel < item.Template.LevelRequired)
             {
                 message = "You can't wear this yet.";
                 if (message != string.Empty)

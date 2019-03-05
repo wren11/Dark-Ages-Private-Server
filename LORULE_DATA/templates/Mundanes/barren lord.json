@@ -37,6 +37,7 @@
   "QuestKey": null,
   "Waypoints": null,
   "PathQualifer": 0,
+  "ViewingQualifer": 0,
   "Name": "Barren Lord",
   "Description": null,
   "Group": null
