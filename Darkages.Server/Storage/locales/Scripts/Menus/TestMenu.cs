@@ -72,8 +72,8 @@ namespace Darkages.Storage.locales.Scripts.Menus
                 foreach (var ans in nextitem.Answers)
                 {
                     //dont include close in client display.
-                    if (ans.Text == "close")
-                        continue;
+                    //if (ans.Text == "close")
+                    //   continue;
 
                     options.Add(new OptionsDataItem((short)ans.Id, ans.Text));
                     ServerContext.Info.Debug($"{ans.Id}. {ans.Text}");
@@ -144,6 +144,14 @@ namespace Darkages.Storage.locales.Scripts.Menus
                 {
                     ShowCurrentMenu(client, obj, null, interpreter.Move(complete.Id));
                 }
+                else
+                {
+                    var last = interpreter.GetCurrentStep().Answers.FirstOrDefault(i => i.Text == "completed");
+                    if (last != null)
+                    {
+                        ShowCurrentMenu(client, obj, null, interpreter.Move(last.Id));
+                    }
+                }                
             }
         }
 
@@ -182,11 +190,6 @@ namespace Darkages.Storage.locales.Scripts.Menus
         public override void On_Menu_Answer_Clicked(GameClient client, Sprite obj, MenuInterpreter.Answer selected_answer)
         {
             var interpreter = client.MenuInterpter;
-
-            if (selected_answer.Id > 100)
-            {
-                client.MenuInterpter = null;
-            }
 
             ShowCurrentMenu(client, obj, null, interpreter.Move(selected_answer.Id));
         }
