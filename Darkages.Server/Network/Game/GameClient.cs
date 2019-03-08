@@ -1155,5 +1155,41 @@ namespace Darkages.Network.Game
             return false;
         }
 
+        public void ShowCurrentMenu(Sprite obj, MenuItem currentitem, MenuItem nextitem)
+        {
+            if (nextitem == null)
+            {
+                MenuInterpter = null;
+                return;
+            }
+            if (nextitem.Type == MenuItemType.Step)
+            {
+                Send(new ReactorSequence(this, new DialogSequence()
+                {
+                    DisplayText = nextitem.Text,
+                    HasOptions = false,
+                    DisplayImage = (ushort)(obj as Mundane).Template.Image,
+                    Title = (obj as Mundane).Template.Name,
+                    CanMoveNext = nextitem.Answers.Length > 0,
+                    CanMoveBack = nextitem.Answers.Any(i => i.Text == "back"),
+                    Id = obj.Serial,
+                }));
+            }
+            else if (nextitem.Type == MenuItemType.Menu)
+            {
+                var options = new List<OptionsDataItem>();
+
+                foreach (var ans in nextitem.Answers)
+                {
+                    if (ans.Text == "close")
+                        continue;
+
+                    options.Add(new OptionsDataItem((short)ans.Id, ans.Text));
+                    ServerContext.Info.Debug($"{ans.Id}. {ans.Text}");
+                }
+
+                SendOptionsDialog(obj as Mundane, nextitem.Text, options.ToArray());
+            }
+        }
     }
 }

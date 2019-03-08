@@ -338,6 +338,7 @@
     <Compile Include="Storage\locales\Scripts\Mundanes\Raghnall.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\shop1.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\shop2.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\StateExample.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\sunup.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\TowerDefenseHandler.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\UserHelper.cs" />

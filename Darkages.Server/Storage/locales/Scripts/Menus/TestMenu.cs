@@ -12,8 +12,6 @@ namespace Darkages.Storage.locales.Scripts.Menus
     [Script("Test Menu Script")]
     public class TestMenu : MenuScript
     {
-        YamlMenuParser parser = new YamlMenuParser();
-
         #region Constructor
         public TestMenu(GameServer server, Sprite lpsprite) : base(server, lpsprite)
         {
@@ -24,9 +22,11 @@ namespace Darkages.Storage.locales.Scripts.Menus
 
         private void SetupInterpreter(GameClient client)
         {
+            YamlMenuParser parser = new YamlMenuParser();
+
             //Client should only be interacting with one menu at a time, so let's check if it's null or finished.
             //if so, give them a new interpreter.        
-            if (client.MenuInterpter == null || client.MenuInterpter.IsFinished)
+            if (client.MenuInterpter == null)
             {
                 var yamlPath = ServerContext.StoragePath + @"\Scripts\Menus\TestMenu.yaml";
                 client.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
@@ -36,6 +36,12 @@ namespace Darkages.Storage.locales.Scripts.Menus
             client.MenuInterpter.RegisterCheckpointHandler("HasKilled", (sender, a) =>
             {
                 a.Result = client.Aisling.HasKilled(a.Value, a.Amount);
+            });
+
+
+            client.MenuInterpter.RegisterCheckpointHandler("Completed", (sender, a) =>
+            {
+                a.Result = true;
             });
         }
 
@@ -83,8 +89,6 @@ namespace Darkages.Storage.locales.Scripts.Menus
             }
             else if (nextitem.Type == MenuItemType.Checkpoint)
             {
-                //hm?
-                client.MenuInterpter.PassCheckpoint(nextitem as CheckpointMenuItem);
                 //client.MenuInterpter.Move(0);
             }
         }

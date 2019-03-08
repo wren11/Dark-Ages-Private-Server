@@ -17,12 +17,18 @@
 //*************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Darkages.Types
 {
     public class Legend
     {
         public List<LegendItem> LegendMarks = new List<LegendItem>();
+
+        public bool Has(string lpVal)
+        {
+            return LegendMarks.Any(i => i.Value.Equals(lpVal));
+        }
 
         public void AddLegend(LegendItem legend)
         {

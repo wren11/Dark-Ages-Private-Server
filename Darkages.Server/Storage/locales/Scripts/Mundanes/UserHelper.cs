@@ -21,6 +21,7 @@ using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -63,11 +64,14 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     break;
                 case 0x0002:
                     {
+
+
                         if (client.Aisling.Stage == ClassStage.Master)
                         {
                             client.SendOptionsDialog(Mundane, "You are a master already.");
                             return;
                         }
+
 
                         client.Aisling.Path = Class.Warrior;
                         client.Aisling.Stage = ClassStage.Master;

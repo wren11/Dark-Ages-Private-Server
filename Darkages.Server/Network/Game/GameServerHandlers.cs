@@ -23,8 +23,10 @@ using Darkages.Scripting;
 using Darkages.Storage;
 using Darkages.Storage.locales.Scripts.Mundanes;
 using Darkages.Types;
+using MenuInterpreter.Parser;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -1319,7 +1321,6 @@ namespace Darkages.Network.Game
                 if (obj != null)
                 {
                     var menu = client.MenuInterpter;
-
                     if (menu != null)
                     {
                         var selected_answer = menu.GetCurrentStep().Answers.ElementAt(format.Step - 1);
@@ -1327,8 +1328,7 @@ namespace Darkages.Network.Game
                         if (selected_answer != null)
                         {
                             ServerContext.Info.Debug("User Answer: {0}", selected_answer.Text);
-
-                            obj.MenuScript.On_Menu_Answer_Clicked(client, obj, selected_answer);
+                            client.ShowCurrentMenu(obj, null, menu.Move(selected_answer.Id));
                         }
                     }
                 }
@@ -1393,17 +1393,61 @@ namespace Darkages.Network.Game
                     if (client.MenuInterpter == null)
                         return;
 
+                    var interpreter = client.MenuInterpter;
+
                     if (format.Step > 2)
                     {
-                        obj.MenuScript?.On_Step_Answer_Back(client, obj);
+                        var back = interpreter.GetCurrentStep().Answers.FirstOrDefault(i => i.Text == "back");
+
+                        if (back != null)
+                        {
+                            client.ShowCurrentMenu(obj, interpreter.GetCurrentStep(), interpreter.Move(back.Id));
+                        }
+                        else
+                        {
+                            client.CloseDialog();
+                        }
                     }
                     if (format.Step == 1)
                     {
-                        obj.MenuScript?.On_Step_Answer_Next(client, obj);
+                        var next = interpreter.GetCurrentStep().Answers.FirstOrDefault(i => i.Text == "next");
+
+                        if (next != null)
+                            client.ShowCurrentMenu(obj, interpreter.GetCurrentStep(), interpreter.Move(next.Id));
+                        else
+                        {
+                            var complete = interpreter.GetCurrentStep().Answers.FirstOrDefault(i => i.Text == null);
+
+                            if (complete != null)
+                            {
+                                client.ShowCurrentMenu(obj, null, interpreter.Move(complete.Id));
+                            }
+                            else
+                            {
+                                var last = interpreter.GetCurrentStep().Answers.FirstOrDefault(i => i.Text == "complete");
+                                if (last != null)
+                                {
+                                    client.ShowCurrentMenu(obj, null, interpreter.Move(last.Id));
+                                }
+                            }
+                        }
                     }
                     if (format.Step < 1 || format.Step == 2)
                     {
-                        obj.MenuScript?.On_Step_Answer_Closed(client, obj);
+                        var step = interpreter.GetCurrentStep();
+
+                        if (step == null)
+                        {
+                            client.MenuInterpter = null;
+                            return;
+                        }
+
+                        var close = step.Answers.FirstOrDefault(i => i.Text == "close");
+
+                        if (close != null)
+                        {
+                            client.CloseDialog();
+                        }
                     }
                 }
 
@@ -1702,8 +1746,48 @@ namespace Darkages.Network.Game
                     case Mundane _:
                         {
                             (obj as Mundane)?.Script?.OnClick(this, client);
-                            (obj as Mundane)?.MenuScript?.On_NPC_Clicked(client, obj);
+
+
+                            if (client.MenuInterpter != null && client.MenuInterpter.Serial != obj.Serial)
+                            {
+                                client.MenuInterpter = null;
+                            }
+
+
+                            var parser = new YamlMenuParser();
+
+                            if (client.MenuInterpter == null)
+                            {
+                                var yamlPath = ServerContext.StoragePath + string.Format(@"\Scripts\Menus\{0}.yaml",
+                                    (obj as Mundane).Template.Name);
+
+                                if (File.Exists(yamlPath))
+                                {
+                                    client.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
+
+                                    client.MenuInterpter.RegisterCheckpointHandler("HasKilled", (sender, a) =>
+                                    {
+                                        a.Result = client.Aisling.HasKilled(a.Value, a.Amount);
+                                    });
+
+                                    client.MenuInterpter.RegisterCheckpointHandler("Completed", (sender, a) =>
+                                    {
+                                        a.Result = true;
+                                    });
+                                }
+                            }
+
+                            if (client.MenuInterpter != null)
+                            {
+                                client.MenuInterpter.Serial = obj.Serial;
+
+                                var interpreter = client.MenuInterpter;
+                                var currentStep = interpreter.GetCurrentStep();
+
+                                client.ShowCurrentMenu(obj, null, currentStep);
+                            }
                         }
+
                         break;
                 }
             }

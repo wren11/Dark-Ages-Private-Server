@@ -37,14 +37,15 @@ namespace MenuInterpreter
 		/// Sequence is finished
 		/// </summary>
 		public bool IsFinished { get; private set; } = false;
+        public int Serial { get; internal set; }
 
-		/// <summary>
-		/// Moved to next step event handler
-		/// </summary>
-		/// <param name="sender">Interpreter object</param>
-		/// <param name="previous">Previous step</param>
-		/// <param name="current">Current step</param>
-		public delegate void MovedToNextStepHandler(object sender, MenuItem previous, MenuItem current);
+        /// <summary>
+        /// Moved to next step event handler
+        /// </summary>
+        /// <param name="sender">Interpreter object</param>
+        /// <param name="previous">Previous step</param>
+        /// <param name="current">Current step</param>
+        public delegate void MovedToNextStepHandler(object sender, MenuItem previous, MenuItem current);
 
 		/// <summary>
 		/// Invoked every time when Move call leads to current step changed
@@ -65,6 +66,8 @@ namespace MenuInterpreter
 
 		public Interpreter(List<MenuItem> items, MenuItem startItem)
 		{
+            _checkpointHandlers = new Dictionary<string, CheckpointHandler>();
+
 			_items = items;
 			if (!_items.Contains(startItem))
 				throw new ArgumentException($"There is no {nameof(startItem)} among {nameof(items)}.");
@@ -79,8 +82,11 @@ namespace MenuInterpreter
 			if (IsFinished)
 				return _currentItem;
 
-			// save answer to history
-			_history.Add(new HistoryItem(_currentItem.Id, answerId));
+			if (_currentItem.Type != MenuItemType.Checkpoint)
+			{
+				// save answer to history
+				_history.Add(new HistoryItem(_currentItem.Id, answerId));
+			}
 
 			// check if menu closed
 			if (answerId == Constants.MenuCloseLink &&
@@ -140,6 +146,12 @@ namespace MenuInterpreter
 			// invoke handler if it's set
 			OnMovedToNextStep?.Invoke(this, _previousItem, _currentItem);
 
+			if (_currentItem.Type == MenuItemType.Checkpoint)
+			{
+				// if we reach checkpoint, call handers automatically
+				_currentItem = Move(0);
+			}
+
 			return _currentItem;
 		}
 
@@ -179,7 +191,7 @@ namespace MenuInterpreter
 		/// </summary>
 		/// <param name="checkpoint">Checkpoint item</param>
 		/// <returns>Success or fail code based on handler result</returns>
-		public int PassCheckpoint(CheckpointMenuItem checkpoint)
+		private int PassCheckpoint(CheckpointMenuItem checkpoint)
 		{
 			// find handler
 			if (_checkpointHandlers.ContainsKey(checkpoint.Text) == false)
