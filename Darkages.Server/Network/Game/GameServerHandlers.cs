@@ -518,6 +518,7 @@ namespace Darkages.Network.Game
             }
 
 
+
             if (client.Aisling.Position.DistanceFrom(item_position) > 2)
             {
                 client.SendMessage(Scope.Self, 0x02, ServerContext.Config.CantDoThat);
@@ -1027,6 +1028,7 @@ namespace Darkages.Network.Game
 
             #endregion
 
+            client.Aisling.ProfileOpen = true;
             client.Send(new ServerFormat39(client.Aisling));
         }
 
@@ -1768,6 +1770,11 @@ namespace Darkages.Network.Game
                                     client.MenuInterpter.RegisterCheckpointHandler("HasKilled", (sender, a) =>
                                     {
                                         a.Result = client.Aisling.HasKilled(a.Value, a.Amount);
+                                    });
+
+                                    client.MenuInterpter.RegisterCheckpointHandler("HasItem", (sender, a) =>
+                                    {
+                                        a.Result = client.Aisling.Inventory.Has(i => i.Template.Name == a.Value) != null;
                                     });
 
                                     client.MenuInterpter.RegisterCheckpointHandler("Completed", (sender, a) =>

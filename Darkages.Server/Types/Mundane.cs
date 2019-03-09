@@ -34,8 +34,6 @@ namespace Darkages.Types
 
         [JsonIgnore] public MundaneScript Script { get; set; }
 
-        [JsonIgnore] public MenuScript MenuScript { get; set; }
-
         [JsonIgnore]
         public List<SkillScript> SkillScripts = new List<SkillScript>();
 
@@ -135,7 +133,6 @@ namespace Darkages.Types
             npc.OffenseElement = Generator.RandomEnumValue<ElementManager.Element>();
 
             npc.Script = ScriptManager.Load<MundaneScript>(template.ScriptKey, ServerContext.Game, npc);
-            npc.MenuScript = ScriptManager.Load<MenuScript>(template.ScriptKey, ServerContext.Game, npc);
 
             npc.Template.AttackTimer = new GameServerTimer(TimeSpan.FromMilliseconds(450));
             npc.Template.EnableTurning = false;

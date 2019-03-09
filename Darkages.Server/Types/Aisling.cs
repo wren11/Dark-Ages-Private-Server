@@ -128,7 +128,10 @@ namespace Darkages
         public Inventory Inventory { get; set; }
         public EquipmentManager EquipmentManager { get; set; }
         public ActivityStatus ActiveStatus { get; set; }
-
+        
+        [JsonIgnore]
+        public bool ProfileOpen { get; set; }
+            
         public Dictionary<string, int> MonsterKillCounters
             = new Dictionary<string, int>();
 

@@ -37,6 +37,21 @@ namespace Darkages.Types
         Accept = 255,
     }
 
+    public enum PlayerAttr : byte
+    {
+        STR,
+        INT,
+        WIS,
+        CON,
+        DEX
+    }
+
+    public class AttrReward
+    {
+        public PlayerAttr Attribute { get; set; }
+        public StatusOperator Operator { get; set; }
+    }
+
     public class Quest
     {
         [JsonIgnore]
@@ -57,6 +72,8 @@ namespace Darkages.Types
 
         public List<string> SkillRewards = new List<string>();
         public List<string> SpellRewards = new List<string>();
+
+        public List<AttrReward> StatRewards = new List<AttrReward>();
 
         public string Name { get; set; }
         public bool Started { get; set; }
@@ -91,6 +108,57 @@ namespace Darkages.Types
             lock (QuestStages)
             {
                 var completeStages = QuestStages.Where(i => i.StepComplete).SelectMany(i => i.Prerequisites).ToArray();
+
+
+                foreach (var attrs in StatRewards)
+                {
+                    if (attrs.Attribute == PlayerAttr.STR)
+                    {
+                        if (attrs.Operator.Option == StatusOperator.Operator.Add)
+                            user._Str += (byte)attrs.Operator.Value;
+
+                        if (attrs.Operator.Option == StatusOperator.Operator.Remove)
+                            user._Str -= (byte)attrs.Operator.Value;
+                    }
+
+                    if (attrs.Attribute == PlayerAttr.INT)
+                    {
+                        if (attrs.Operator.Option == StatusOperator.Operator.Add)
+                            user._Int += (byte)attrs.Operator.Value;
+
+                        if (attrs.Operator.Option == StatusOperator.Operator.Remove)
+                            user._Int -= (byte)attrs.Operator.Value;
+                    }
+
+                    if (attrs.Attribute == PlayerAttr.WIS)
+                    {
+                        if (attrs.Operator.Option == StatusOperator.Operator.Add)
+                            user._Wis += (byte)attrs.Operator.Value;
+
+                        if (attrs.Operator.Option == StatusOperator.Operator.Remove)
+                            user._Wis -= (byte)attrs.Operator.Value;
+                    }
+
+                    if (attrs.Attribute == PlayerAttr.CON)
+                    {
+                        if (attrs.Operator.Option == StatusOperator.Operator.Add)
+                            user._Con += (byte)attrs.Operator.Value;
+
+                        if (attrs.Operator.Option == StatusOperator.Operator.Remove)
+                            user._Con -= (byte)attrs.Operator.Value;
+                    }
+
+                    if (attrs.Attribute == PlayerAttr.DEX)
+                    {
+                        if (attrs.Operator.Option == StatusOperator.Operator.Add)
+                            user._Dex += (byte)attrs.Operator.Value;
+
+                        if (attrs.Operator.Option == StatusOperator.Operator.Remove)
+                            user._Dex -= (byte)attrs.Operator.Value;
+                    }
+
+
+                }
 
                 foreach (var step in completeStages)
                 {

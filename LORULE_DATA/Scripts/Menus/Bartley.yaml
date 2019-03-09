@@ -11,18 +11,18 @@ start:
 sequences:
 #Sequence 1 - START --------------------------------------------
   - id: 1                                  
-    name: "My sequence 1"                  
+    name: "My sequence 1"   
     steps:  
     # --> Step 1                            
     - id: 1                                
-      text: "Welcome new Aisling"          
+      text: "hows it going?"          
       answers:                            
       - id: 1                              
         text: next                        
         step: 2
     # --> Step 2                          
     - id: 2
-      text: "Can you do me a favor?"
+      text: "yeah so i was out on my morning stroll and guess wot happen?"
       answers:
       - id: 1
         text: back
@@ -30,35 +30,59 @@ sequences:
         sequence: 1          
       - id: 2
         text: next
-        menu: 1
+        step: 3
+        sequence: 1
     # --> Step 3 - User has accepted quest at this stage.
     - id: 3
-      text: "Great, Here is a stick, go bash some Kardis for me, Kill 3."
+      text: "you would'nt believe it, I busted my best pluggers"
       answers:
         - id: 1
           text: back
           step: 2
         - id: 2
           text: next
-          checkpoint: 1
+          step: 4
          
     # --> Step 4 - User has not yet completed the quest.
     - id: 4
-      text: "Ah, have you returned, you must be done!"
+      text: "Best bloodly thongs i ever had, Not they proper fucked!"
       answers:
         - id: 1
+          text: back
+          step: 3
+        - id: 2
           text: next
-          checkpoint: 1 
+          step: 5
  
-    # --> Step 5, User has completed the quest!
     - id: 5
-      text: "You did it!"
+      text: "You are a peseant so I'm gonna just gonna put it blunt mate. You gotta make me some new thongs or else you can fucking stay here with that vietname looking cunt over there."
+      answers:
+        - id: 1
+          text: back
+          step: 4
+        - id: 2
+          text: next
+          menu: 1
+
     - id: 6
-      text: "I know that you still have not killed 3 Kardis"
+      text: "You got my new  pluggers yet mate?"
       answers:
         - id: 1
           text: next
-          step: 4
+          checkpoint: 1    
+          
+    - id: 7
+      text: "Go look for some plastic, You can get some off those floppies in the next room."
+      answers:
+        - id: 1
+          text: next
+          sequence: 1
+          step: 6
+          
+    - id: 8
+      text: "Thank you"
+          
+          
 #Sequence 1 - END ----------------------------------------------      
  
  
@@ -69,38 +93,28 @@ sequences:
 #################################################################################################    
 menus:
   - id: 1
-    text: "Do you accept?"
+    text: "What's it gonna be bud, good news is making pluggers is a piece of piss. I'm just too do it. Plus i'm  pretty hammered from drinking all this jins piss, that you guys call Wine around here."
     options:
       - id: 1
-        text: "Sure will sir!"
-        step: 3
+        text: "I guess sooo.... Mate"
+        step: 6
         sequence: 1
       - id: 2
-        text: "Not right now sorry."
+        text: "Oh get fucked cunt"
         sequence: 1
-        step: 2  
+        step: 1
  
  
 # CHECKPOINTS
 #################################################################################################    
 checkpoints:
   - id: 1
-    type: HasKilled
-    value: Kardi
-    amount: 3
+    type: HasItem
+    value: Boots
+    amount: 1
     success:
-      step: 5
+      step: 8
       sequence: 1
     fail:
       step: 6
-      sequence: 1
-
-  - id: 2
-    type: Completed
-    value: Completed_Kardi_Quest
-    amount: 1
-    success:
-      menu: 1
-    fail:
-      step: 1
       sequence: 1

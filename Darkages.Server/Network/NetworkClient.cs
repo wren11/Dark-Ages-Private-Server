@@ -211,9 +211,15 @@ namespace Darkages.Network
                     Encryption.Transform(packet);
 
                 var data = packet.ToArray();
+                {
+                    if (format is ServerFormat3C)
+                    {
+                        AddBuffer(data);
+                        return;
+                    }
 
-
-                CreateBuffers(data);
+                    CreateBuffers(data);
+                }
             }
         }
 
@@ -233,6 +239,7 @@ namespace Darkages.Network
                     {
                         client.Buffer = new NetworkBufferWriter();
                     }
+
                     client.Buffer.Write(data);
                 }
                 else
