@@ -18,6 +18,9 @@
 using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Types;
+using MenuInterpreter;
+using MenuInterpreter.Parser;
+using System.IO;
 
 namespace Darkages.Scripting
 {
@@ -25,16 +28,20 @@ namespace Darkages.Scripting
     {
         public MundaneScript(GameServer server, Mundane mundane)
         {
-            Server = server;
+            Server  = server;
             Mundane = mundane;
         }
 
         public GameServer Server { get; set; }
+
         public Mundane Mundane { get; set; }
 
         public abstract void OnClick(GameServer server, GameClient client);
+
         public abstract void OnResponse(GameServer server, GameClient client, ushort responseID, string args);
+
         public abstract void OnGossip(GameServer server, GameClient client, string message);
+
         public abstract void TargetAcquired(Sprite Target);
     }
 }

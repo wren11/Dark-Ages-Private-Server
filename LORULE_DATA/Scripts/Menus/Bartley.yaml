@@ -1,9 +1,8 @@
 # NPC START #
 #################################################################################################
 start:
-  sequence: 1
-  step: 1
- 
+    checkpoint: 1
+
  
  
 # SEQUENCES START
@@ -69,7 +68,7 @@ sequences:
       answers:
         - id: 1
           text: next
-          checkpoint: 1    
+          checkpoint: 2    
           
     - id: 7
       text: "Go look for some plastic, You can get some off those floppies in the next room."
@@ -109,12 +108,21 @@ menus:
 #################################################################################################    
 checkpoints:
   - id: 1
-    type: HasItem
-    value: Boots
-    amount: 1
+    type: QuestCompleted
+    value: Bartley_tut1
+    success:
+      step: 8
+      sequence: 1
+    fail:
+      step: 1
+      sequence: 1
+  - id: 2
+    type: HasKilled
+    amount: 3
+    value: Kardi
     success:
       step: 8
       sequence: 1
     fail:
       step: 6
-      sequence: 1
+      sequence: 1      

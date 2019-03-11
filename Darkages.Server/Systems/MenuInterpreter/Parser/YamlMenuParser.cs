@@ -76,7 +76,7 @@ namespace MenuInterpreter.Parser
 						}
 
 						var newId = GetIdForStep(seq.id, step.id);
-						items.Add(new MenuItem(newId, MenuItemType.Step, step.text, answers.ToArray(), seq.id));
+						items.Add(new MenuItem(newId, MenuItemType.Step, step.text, answers.ToArray()));
 					}
 				}
 			}
@@ -119,7 +119,7 @@ namespace MenuInterpreter.Parser
 			}
 
 			// parse start point
-			var startId = GetIdForStep(parsed.start.sequence, parsed.start.step);
+			var startId = GetLinkedId(parsed.start);
 			var startItem = items.FirstOrDefault(i => i.Id == startId);
 			return new Interpreter(items, startItem);
 		}

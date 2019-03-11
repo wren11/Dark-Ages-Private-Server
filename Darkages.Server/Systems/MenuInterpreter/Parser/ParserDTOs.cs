@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace MenuInterpreter.Parser
 {
-	public class Start
-	{
-		public int sequence { get; set; }
-		public int step { get; set; }
+	public class Start: Link
+	{		
 	}
 
 	public class Link

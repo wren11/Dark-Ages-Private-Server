@@ -394,9 +394,8 @@ namespace Darkages.Types
             var mp   = hp / 3;
             var dmg  = hp / 1 * mod * 1;
 
-            obj.Template.MaximumHP = (int)hp; //;Config.MONSTER_HP_TABLE[obj.Template.Level % Config.MONSTER_HP_TABLE.Length];
-            obj.Template.MaximumMP = (int)mp; //;Config.MONSTER_HP_TABLE[obj.Template.Level % Config.MONSTER_HP_TABLE.Length] / 3;
-
+            obj.Template.MaximumHP = (int)hp;
+            obj.Template.MaximumMP = (int)mp;
 
             var stat = RandomEnumValue<PrimaryStat>();
 

@@ -224,7 +224,9 @@ namespace Darkages
             {
                 UpdateMonsters(users, elapsedTime, ObjectCache.OfType<Monster>());
 
-                UpdateMundanes(users, elapsedTime, ObjectCache.OfType<Mundane>());
+                //Mundanes shouldnt be updating if no user is on the map.
+                if (users.Length > 0)
+                    UpdateMundanes(users, elapsedTime, ObjectCache.OfType<Mundane>());
 
                 UpdateItems(users, elapsedTime,
                     ObjectCache.OfType<Money>().Concat<Sprite>(ObjectCache.OfType<Item>()));

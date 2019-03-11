@@ -307,7 +307,8 @@ namespace Darkages.Types
                     var targets = GetObjects<Monster>(Map, i => i.WithinRangeOf(this))
                         .OrderBy(i => i.Position.DistanceFrom(Position));
 
-                    foreach (var t in targets) t.Target = this;
+                    foreach (var t in targets)
+                        t.Target = this;
 
                     var target = Target ?? targets.FirstOrDefault();
 

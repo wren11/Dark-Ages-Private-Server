@@ -1,17 +1,24 @@
-﻿using System;
+﻿using Darkages.Network.Game;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MenuInterpreter
 {
-	public class Interpreter
+    public class Interpreter
 	{
-		/// <summary>
-		/// All items to navigate between
-		/// </summary>
-		private List<MenuItem> _items;
+        private GameClient _client;
+
+        public GameClient Client
+        {
+            get { return _client; }
+            set { _client = value; }
+        }
+
+        /// <summary>
+        /// All items to navigate between
+        /// </summary>
+        private List<MenuItem> _items;
 
 		/// <summary>
 		/// Current item
@@ -37,15 +44,14 @@ namespace MenuInterpreter
 		/// Sequence is finished
 		/// </summary>
 		public bool IsFinished { get; private set; } = false;
-        public int Serial { get; internal set; }
 
-        /// <summary>
-        /// Moved to next step event handler
-        /// </summary>
-        /// <param name="sender">Interpreter object</param>
-        /// <param name="previous">Previous step</param>
-        /// <param name="current">Current step</param>
-        public delegate void MovedToNextStepHandler(object sender, MenuItem previous, MenuItem current);
+		/// <summary>
+		/// Moved to next step event handler
+		/// </summary>
+		/// <param name="sender">Interpreter object</param>
+		/// <param name="previous">Previous step</param>
+		/// <param name="current">Current step</param>
+		public delegate void MovedToNextStepHandler(GameClient client, MenuItem previous, MenuItem current);
 
 		/// <summary>
 		/// Invoked every time when Move call leads to current step changed
@@ -57,27 +63,34 @@ namespace MenuInterpreter
 		/// </summary>
 		/// <param name="sender">Interpreter object</param>
 		/// <param name="args">Arguments</param>
-		public delegate void CheckpointHandler(object sender, CheckpointHandlerArgs args);
+		public delegate void CheckpointHandler(GameClient client, CheckpointHandlerArgs args);
 
 		/// <summary>
 		/// Handlers for different types of checkpoints
 		/// </summary>
 		private IDictionary<string, CheckpointHandler> _checkpointHandlers = new Dictionary<string, CheckpointHandler>();
 
-		public Interpreter(List<MenuItem> items, MenuItem startItem)
+        public Interpreter(List<MenuItem> items, MenuItem startItem)
 		{
-            _checkpointHandlers = new Dictionary<string, CheckpointHandler>();
-
 			_items = items;
 			if (!_items.Contains(startItem))
 				throw new ArgumentException($"There is no {nameof(startItem)} among {nameof(items)}.");
-
-			_previousItem = null;
-			_startItem = startItem;
-			_currentItem = startItem;
+			
+			_startItem = startItem;			
 		}
 
-		public MenuItem Move(int answerId)
+        public Interpreter(GameClient client, Interpreter menuInterpreter)
+        {
+            _client = client;
+            _items = new List<MenuItem>(menuInterpreter._items);
+            _checkpointHandlers = new Dictionary<string, CheckpointHandler>(menuInterpreter._checkpointHandlers);
+            _startItem = menuInterpreter._startItem;
+
+            OnMovedToNextStep = menuInterpreter.OnMovedToNextStep;
+            Start();
+        }
+
+        public MenuItem Move(int answerId)
 		{
 			if (IsFinished)
 				return _currentItem;
@@ -97,7 +110,7 @@ namespace MenuInterpreter
 					// if previous item not found, go to start item
 					_currentItem = _startItem;
 
-					OnMovedToNextStep?.Invoke(this, null, _currentItem);
+					OnMovedToNextStep?.Invoke(_client, null, _currentItem);
 					return _currentItem;
 				}
 				else
@@ -106,7 +119,7 @@ namespace MenuInterpreter
 					var prev = _previousItem;
 					_previousItem = _currentItem;
 					_currentItem = prev;
-					OnMovedToNextStep?.Invoke(this, _previousItem, _currentItem);
+					OnMovedToNextStep?.Invoke(_client, _previousItem, _currentItem);
 
 					return _currentItem;
 				}
@@ -123,7 +136,7 @@ namespace MenuInterpreter
 				_previousItem = _currentItem;
 				_currentItem = null;
 				
-				OnMovedToNextStep?.Invoke(this, _previousItem, _currentItem);
+				OnMovedToNextStep?.Invoke(_client, _previousItem, _currentItem);
 				return null;
 			}			
 
@@ -144,13 +157,10 @@ namespace MenuInterpreter
 			}
 
 			// invoke handler if it's set
-			OnMovedToNextStep?.Invoke(this, _previousItem, _currentItem);
+			OnMovedToNextStep?.Invoke(_client, _previousItem, _currentItem);
 
-			if (_currentItem.Type == MenuItemType.Checkpoint)
-			{
-				// if we reach checkpoint, call handers automatically
-				_currentItem = Move(0);
-			}
+			// auto pass checkpoint if necessary
+			AutoPassCheckpoint();
 
 			return _currentItem;
 		}
@@ -170,7 +180,34 @@ namespace MenuInterpreter
 			_checkpointHandlers[checkpointType] = handler;
 		}
 
+		public void Start()
+		{
+			// perform state cleanup
+			IsFinished = false;
+
+			_history.Clear();
+
+			_previousItem = null;
+			_currentItem = _startItem;
+
+			// auto pass checkpoint if necessary
+			AutoPassCheckpoint();
+		}
+
 		#region Private methods
+
+		/// <summary>
+		/// Automatically call Move if checkpoint reached
+		/// </summary>
+		private void AutoPassCheckpoint()
+		{
+			if (_currentItem != null &&
+				_currentItem.Type == MenuItemType.Checkpoint)
+			{
+				// if we reach checkpoint, call handers automatically
+				_currentItem = Move(0);
+			}
+		}
 
 		/// <summary>
 		/// If current step is checkpoint, call handler and return success or fail answer based on handler result
@@ -206,7 +243,7 @@ namespace MenuInterpreter
 			};
 
 			// call handler
-			handler(this, args);
+			handler(_client, args);
 
 			return args.Result == true
 				? Constants.CheckpointOnSuccess

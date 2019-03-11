@@ -37,7 +37,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             var options = new List<OptionsDataItem>
             {
                 new OptionsDataItem(0x0001, "Return Home."),
-                new OptionsDataItem(0x0002, "Become A Master."),
             };
             if (!client.Aisling.TutorialCompleted)
             {
@@ -86,7 +85,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                         Item.Create(client.Aisling, "War Mantle", false).GiveTo(client.Aisling, true);
                         Item.Create(client.Aisling, "War Helmet", false).GiveTo(client.Aisling, true);
-                        Item.Create(client.Aisling, "Lorule Escalon", false).GiveTo(client.Aisling, true);
+
 
 
                         client.SendStats(StatusFlags.All);

@@ -10,15 +10,13 @@ namespace MenuInterpreter
 	{
 		public int Id { get; private set; }
 		public MenuItemType Type { get; private set; }
-		public int SequenceId { get; private set; }
 		public string Text { get; private set; }
 		public Answer[] Answers { get; private set; }
 
-		public MenuItem(int id, MenuItemType type, string text, Answer[] answers, int sequenceId = Constants.NoSequence)
+		public MenuItem(int id, MenuItemType type, string text, Answer[] answers)
 		{
 			Id = id;
 			Type = type;
-			SequenceId = sequenceId;
 			Text = text;
 
 			if (answers == null)

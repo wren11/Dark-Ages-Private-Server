@@ -56,7 +56,6 @@ namespace Darkages.Network.Game
                 return;
             }
 
-
             client.MenuInterpter = null;
 
             if (ServerContext.Config.AssailsCancelSpells)
@@ -1440,7 +1439,6 @@ namespace Darkages.Network.Game
 
                         if (step == null)
                         {
-                            client.MenuInterpter = null;
                             return;
                         }
 
@@ -1748,53 +1746,7 @@ namespace Darkages.Network.Game
                     case Mundane _:
                         {
                             (obj as Mundane)?.Script?.OnClick(this, client);
-
-
-                            if (client.MenuInterpter != null && client.MenuInterpter.Serial != obj.Serial)
-                            {
-                                client.MenuInterpter = null;
-                            }
-
-
-                            var parser = new YamlMenuParser();
-
-                            if (client.MenuInterpter == null)
-                            {
-                                var yamlPath = ServerContext.StoragePath + string.Format(@"\Scripts\Menus\{0}.yaml",
-                                    (obj as Mundane).Template.Name);
-
-                                if (File.Exists(yamlPath))
-                                {
-                                    client.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
-
-                                    client.MenuInterpter.RegisterCheckpointHandler("HasKilled", (sender, a) =>
-                                    {
-                                        a.Result = client.Aisling.HasKilled(a.Value, a.Amount);
-                                    });
-
-                                    client.MenuInterpter.RegisterCheckpointHandler("HasItem", (sender, a) =>
-                                    {
-                                        a.Result = client.Aisling.Inventory.Has(i => i.Template.Name == a.Value) != null;
-                                    });
-
-                                    client.MenuInterpter.RegisterCheckpointHandler("Completed", (sender, a) =>
-                                    {
-                                        a.Result = true;
-                                    });
-                                }
-                            }
-
-                            if (client.MenuInterpter != null)
-                            {
-                                client.MenuInterpter.Serial = obj.Serial;
-
-                                var interpreter = client.MenuInterpter;
-                                var currentStep = interpreter.GetCurrentStep();
-
-                                client.ShowCurrentMenu(obj, null, currentStep);
-                            }
                         }
-
                         break;
                 }
             }

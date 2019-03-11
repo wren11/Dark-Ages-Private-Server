@@ -45,7 +45,6 @@ namespace Darkages.Types
         CON,
         DEX
     }
-
     public class AttrReward
     {
         public PlayerAttr Attribute { get; set; }

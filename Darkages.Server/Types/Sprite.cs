@@ -447,14 +447,13 @@ namespace Darkages.Types
             if (this is Monster)
             {
                 var monster = this as Monster;
-                var mod     = (monster.Template.Level + 1) * 0.01;
+                var mod     = monster.Template.Level * 0.02;
+                var dmg     = (int)(MaximumHp / 1 * mod);
 
-                var dmg     = (int)(MaximumHp / 1 * mod) * 1;
-
-                
+                return dmg;
             }
 
-            return 0;
+            return 1;
         }
 
         public void RemoveAllBuffs()
@@ -628,7 +627,7 @@ namespace Darkages.Types
 
                     double amplifier = GetElementalModifier(Target);
                     {
-                        dmg = ComputeDmgFromAc(dmg);
+                        dmg = ComputeDmgFromAc(dmg, Target);
                         dmg = CompleteDamageApplication(dmg, sound, dmgcb, amplifier);
                     }
                 }
@@ -1073,19 +1072,21 @@ namespace Darkages.Types
             }
         }
 
-        private int ComputeDmgFromAc(int dmg)
+        private int ComputeDmgFromAc(int dmg, Sprite target)
         {
             var armor = Ac;
-
 
             if (armor <= 0)
                 armor = 1;
 
-            //=D1 / (E1 * 10 / 99)
-            var val = dmg / ((armor * 5.0 / ServerContext.Config.MaxAC));
-            {
-                return (int)Math.Abs(val);
-            }
+            //always have a min advantage over one another.
+            var diff = Math.Abs(Level - target.Level) + 1;
+
+            var realDamage = dmg * diff / (diff + armor);
+
+            ServerContext.Info.Debug("Damage: ComputeDmgFromAc = in: {0}, out: {1}, advantage: {2}", dmg, realDamage, diff);
+
+            return realDamage;
         }
 
         public Sprite GetSprite(int x, int y)

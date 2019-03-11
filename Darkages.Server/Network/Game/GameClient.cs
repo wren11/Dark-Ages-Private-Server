@@ -1159,7 +1159,6 @@ namespace Darkages.Network.Game
         {
             if (nextitem == null)
             {
-                MenuInterpter = null;
                 return;
             }
             if (nextitem.Type == MenuItemType.Step)

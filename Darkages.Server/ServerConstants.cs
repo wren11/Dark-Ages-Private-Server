@@ -37,7 +37,7 @@ namespace Darkages
 
 
         [JsonProperty]
-        public byte MaxAC  = 99;
+        public byte MaxAC  = 200;
 
 
         [JsonProperty] public byte BaseMR = 70;
@@ -239,7 +239,7 @@ namespace Darkages
 
         [JsonProperty] public string UserDroppedGoldMsg = "noname has dropped some money nearby.";
 
-        [JsonProperty] public int VeryNearByProximity = 6;
+        [JsonProperty] public int VeryNearByProximity = 9;
 
         [JsonProperty] public double WeightIncreaseModifer = 3.5;
 

@@ -170,6 +170,21 @@ namespace Darkages
 
         [JsonIgnore] public ExchangeSession Exchange { get; set; }
 
+        public bool HasQuest(string name)
+        {
+            return Quests.Any(i => i.Name == name);
+        }
+
+        public bool HasCompletedQuest(string name)
+        {
+            return Quests.Any(i => i.Name == name && i.Completed);
+        }
+
+        public void CompleteQuest(string name)
+        {
+            var obj = Quests.Find(i => i.Name == name);
+            obj.Completed = true;
+        }
 
         public bool AcceptQuest(Quest quest)
         {

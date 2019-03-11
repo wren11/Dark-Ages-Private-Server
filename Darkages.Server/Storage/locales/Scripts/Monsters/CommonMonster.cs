@@ -206,6 +206,16 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 Monster.WalkTimer.Delay = TimeSpan.FromMilliseconds(Monster.Template.EngagedWalkingSpeed); 
             }
 
+            if (Monster.Target != null && Monster.Target is Aisling)
+            {
+                if ((Monster.Target as Aisling).Invisible)
+                {
+                    ClearTarget();
+                    Monster.WalkTimer.Update(elapsedTime);
+                    return;
+                }
+            }
+
             Monster.BashTimer.Update(elapsedTime);
             Monster.CastTimer.Update(elapsedTime);
             Monster.WalkTimer.Update(elapsedTime);
