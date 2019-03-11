@@ -24,87 +24,91 @@ namespace Darkages.Network
     public class NetworkSocket : Socket
     {
         private static readonly int processId = Process.GetCurrentProcess().Id;
-        private static readonly int headerLength = 3;
 
-        public readonly byte[] header = new byte[0x0003];
-        public readonly byte[] packet = new byte[0x10000];
+        private byte[] header = new byte[0x0003];
+        private byte[] packet = new byte[0x4000];
+        private int headerLength = 3;
+        private int headerOffset = 0;
+        private int packetLength = 0;
+        private int packetOffset = 0;
 
-        private int headerOffset;
-        private int packetLength;
-        private int packetOffset;
+        public bool HeaderComplete
+        {
+            get { return (this.headerOffset == this.headerLength); }
+        }
+        public bool PacketComplete
+        {
+            get { return (this.packetOffset == this.packetLength); }
+        }
 
         public NetworkSocket(Socket socket)
             : base(socket.DuplicateAndClose(processId))
         {
-
         }
 
-        public bool HeaderComplete => headerOffset == headerLength;
-
-        public bool PacketComplete => packetOffset == packetLength;
-
-        public virtual IAsyncResult BeginReceiveHeader(AsyncCallback callback, out SocketError error, object state)
+        public IAsyncResult BeginReceiveHeader(AsyncCallback callback, out SocketError error, object state)
         {
-            return BeginReceive(
-                header,
-                headerOffset,
-                headerLength - headerOffset,
+            return base.BeginReceive(
+                this.header,
+                this.headerOffset,
+                this.headerLength - this.headerOffset,
                 SocketFlags.None,
                 out error,
                 callback,
                 state);
         }
-
-        public virtual IAsyncResult BeginReceivePacket(AsyncCallback callback, out SocketError error, object state)
+        public IAsyncResult BeginReceivePacket(AsyncCallback callback, out SocketError error, object state)
         {
-            return BeginReceive(
-                packet,
-                packetOffset,
-                packetLength - packetOffset,
+            return base.BeginReceive(
+                this.packet,
+                this.packetOffset,
+                this.packetLength - this.packetOffset,
                 SocketFlags.None,
                 out error,
                 callback,
                 state);
         }
-
-        public virtual int EndReceiveHeader(IAsyncResult result, out SocketError error)
+        public int EndReceiveHeader(IAsyncResult result, out SocketError error)
         {
-            var bytes = EndReceive(result, out error);
+            var bytes = base.EndReceive(result, out error);
 
             if (bytes == 0 ||
                 error != SocketError.Success)
                 return 0;
 
-            headerOffset += bytes;
+            this.headerOffset += bytes;
 
-            if (HeaderComplete)
+            if (this.HeaderComplete)
             {
-                packetLength = (header[1] << 8) | header[2];
-                packetOffset = 0;
+                this.packetLength = (this.header[1] << 8) | this.header[2];
+                this.packetOffset = (0);
             }
 
             return bytes;
         }
-
-        public virtual int EndReceivePacket(IAsyncResult result, out SocketError error)
+        public int EndReceivePacket(IAsyncResult result, out SocketError error)
         {
-            var bytes = EndReceive(result, out error);
+            var bytes = base.EndReceive(result, out error);
 
             if (bytes == 0 ||
                 error != SocketError.Success)
                 return 0;
 
-            packetOffset += bytes;
+            this.packetOffset += bytes;
 
-            if (PacketComplete)
-                headerOffset = 0;
+            if (this.PacketComplete)
+            {
+                this.headerLength = (3);
+                this.headerOffset = (0);
+            }
 
             return bytes;
         }
 
         public NetworkPacket ToPacket()
         {
-            return PacketComplete ? new NetworkPacket(packet, packetLength) : null;
+            return (this.PacketComplete) ?
+                new NetworkPacket(this.packet, this.packetLength) : null;
         }
     }
 }

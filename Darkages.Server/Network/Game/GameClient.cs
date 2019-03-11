@@ -301,22 +301,7 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            if (Buffer != null)
-            {
-                lock (Buffer)
-                {
-                    if (Buffer.Position > 0)
-                    {
-                        var payload = Buffer.ToBuffer();
-
-                        WorkSocket.Send(payload, 0, payload.Length, System.Net.Sockets.SocketFlags.None, out var error);
-                        {
-                            if (error != System.Net.Sockets.SocketError.SocketError)
-                                Buffer.Position = 0;
-                        }
-                    }
-                }
-            }
+            FlushBuffers();
         }
 
         private void StatusCheck()

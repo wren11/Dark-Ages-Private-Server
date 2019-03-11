@@ -310,12 +310,6 @@ namespace Darkages.Network
             }
         }
 
-
-        public virtual void ClientHandler(object obj)
-        {
-
-        }
-
         #region Format Handlers
 
         protected virtual void Format00Handler(TClient client, ClientFormat00 format)

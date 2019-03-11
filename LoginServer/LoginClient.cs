@@ -23,5 +23,10 @@ namespace LoginServer
     public class LoginClient : NetworkClient<LoginClient>
     {
         public ClientFormat02 CreateInfo { get; set; }
+
+        public void Update()
+        {
+            FlushBuffers();
+        }
     }
 }

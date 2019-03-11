@@ -16,38 +16,137 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages.IO;
-using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 
 namespace Darkages.Network
 {
-    public abstract class NetworkClient<TClient>
-        : ObjectManager
-    {
-        private readonly Queue<byte[]> _sendBuffers = new Queue<byte[]>();
-        private bool _sending;
 
-        protected NetworkClient()
+    public abstract class NetworkClient<TClient> : ObjectManager
+    {
+        public NetworkPacketReader Reader { get; set; }
+
+        public NetworkPacketWriter Writer { get; set; }
+
+        public NetworkSocket WorkSocket { get; set; }
+
+        public SecurityProvider Encryption { get; set; }
+
+        public byte Ordinal { get; set; }
+
+        public int Serial { get; set; }
+
+        private Queue<byte[]> _sendBuffer { get; set; }
+
+        private ManualResetEvent SendReset;
+
+        public NetworkClient()
         {
-            Reader = new NetworkPacketReader();
-            Writer = new NetworkPacketWriter();
-            Encryption = new SecurityProvider();
+            this.Reader     = new NetworkPacketReader();
+            this.Writer     = new NetworkPacketWriter();
+            this.Encryption = new SecurityProvider();
+            this.SendReset  = new ManualResetEvent(true);
+
+            _sendBuffer     = new Queue<byte[]>();
         }
 
-        public NetworkPacketReader Reader;
-        public NetworkPacketWriter Writer;
-        public NetworkSocket WorkSocket;
-        public SecurityProvider Encryption;
+        public void Read(NetworkPacket packet, NetworkFormat format)
+        {
+            if (format.Secured)
+            {
+                Encryption.Transform(packet);
 
-        public byte Ordinal;
-        public int Serial;
-        public bool IsProxy;
+                switch (format.Command)
+                {
+                    case 0x39:
+                    case 0x3A:
+                        TransFormDialog(packet);
+                        Reader.Position = 6;
+                        break;
+                    default:
+                        Reader.Position = 0;
+                        break;
+                }
+            }
+            else
+            {
+                Reader.Position = -1;
+            }
+
+            Reader.Packet = packet;
+            format.Serialize(Reader);
+            this.Reader.Position = -1;
+        }
+
+        public void FlushBuffers()
+        {
+            if (!WorkSocket.Connected)
+            {
+                _sendBuffer = null;
+                return;
+            }
+
+            if (_sendBuffer != null)
+            {
+                var data = _sendBuffer.SelectMany(i => i).ToArray();
+
+                try
+                {
+                    this.SendReset.WaitOne();
+                    this.SendReset.Reset();
+
+                    for (int i = 0, rem = data.Length; i < data.Length; i += 1024, rem -= 1024)
+                    {
+                        WorkSocket.Send(data, i, rem < 1024 ? rem : 1024, SocketFlags.None);
+                    }
+                }
+                catch { }
+                finally
+                {
+                    _sendBuffer = new Queue<byte[]>();
+                    this.SendReset.Set();
+                }
+            }
+        }
+
+        public void Send(NetworkFormat format)
+        {
+            this.Writer.Position = 0;
+            this.Writer.Write(format.Command);
+
+            if (format.Secured)
+            {
+                this.Writer.Write(this.Ordinal++);
+            }
+
+            format.Serialize(this.Writer);
+
+            var packet = this.Writer.ToPacket();
+
+            if (format.Secured)
+            {
+                this.Encryption.Transform(packet);
+            }
+
+            lock (_sendBuffer)
+            {
+                var array = packet.ToArray();
+                _sendBuffer.Enqueue(array);
+            }
+
+            //FlushBuffers();
+        }
+
+        public void Send(NetworkPacketWriter packet)
+        {
+
+        }
 
         private static byte P(NetworkPacket value)
         {
@@ -67,107 +166,13 @@ namespace Darkages.Network
             }
         }
 
-        public ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-
-
-
-        public virtual void Read(NetworkPacket packet, NetworkFormat format)
+        public void SendMessageBox(byte code, string text)
         {
-            _lock.TryEnterReadLock(Timeout.Infinite);
-            {
-                if (format.Secured)
-                {
-                    Encryption.Transform(packet);
-
-                    Console.WriteLine("Send: 0x{0:X2}", format.Command);
-                    switch (format.Command)
-                    {
-                        case 0x39:
-                        case 0x3A:
-                            TransFormDialog(packet);
-                            Reader.Position = 6;
-                            break;
-                        default:
-                            Reader.Position = 0;
-                            break;
-                    }
-                }
-                else
-                {
-                    Reader.Position = -1;
-                }
-                Reader.Packet = packet;
-                format.Serialize(Reader);
-            }
-            _lock.ExitReadLock();
-        }
-
-        public void AddBuffer(byte[] data)
-        {
-            lock (_sendBuffers)
-            {
-                _sendBuffers.Enqueue(data);
-
-                if (_sending)
-                    return;
-
-                _sending = true;
-
-                ThreadPool.QueueUserWorkItem(FlushBuffers, this);
-            }
-        }
-
-        public void FlushBuffers(object state)
-        {
-            _lock.TryEnterWriteLock(Timeout.Infinite);
-            while (true)
-            {
-                lock (_sendBuffers)
-                {
-                    if (_sendBuffers.Count == 0)
-                    {
-                        _sending = false;
-                        _lock.ExitWriteLock();
-                        return;
-                    }
-
-                    var buffer = _sendBuffers.Dequeue();
-
-                    if (SendPayload(buffer) != SocketError.Success)
-                    {
-                        _lock.ExitWriteLock();
-                        return;
-                    }
-                }
-            }
-        }
-
-        private SocketError SendPayload(byte[] buffer)
-        {
-            if (WorkSocket != null && WorkSocket.Connected)
-            {
-                WorkSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, out var error, EndSend, buffer);
-                return error;
-            }
-
-            return SocketError.SocketError;
-        }
-
-        private void EndSend(IAsyncResult ar)
-        {
-            var bytes = WorkSocket.EndSend(ar);
-            var buffer = (byte[])ar.AsyncState;
-
-            if (buffer.Length > 0)
-            {
-                BufferPool.Return(buffer);
-            }
+            this.Send(new ServerFormat02(code, text));
         }
 
         public void SendPacket(byte[] data)
         {
-            if (!WorkSocket.Connected)
-                return;
 
             try
             {
@@ -179,7 +184,6 @@ namespace Darkages.Network
                     var packet = Writer.ToPacket();
                     {
                         Encryption.Transform(packet);
-                        AddBuffer(packet.ToArray());
                     }
                 }
             }
@@ -187,111 +191,6 @@ namespace Darkages.Network
             {
                 //ignore
             }
-        }
-
-        private void SendFormat(NetworkFormat format)
-        {
-            if (!WorkSocket.Connected)
-                return;
-
-            if (format == null)
-                return;
-
-            var packet = GetPacket(format);
-            {
-                Enqueue(format, packet);
-            }
-        }
-
-        private void Enqueue(NetworkFormat format, NetworkPacket packet)
-        {
-            lock (packet)
-            {
-                if (format.Secured)
-                    Encryption.Transform(packet);
-
-                var data = packet.ToArray();
-                {
-                    if (format is ServerFormat3C)
-                    {
-                        AddBuffer(data);
-                        return;
-                    }
-
-                    CreateBuffers(data);
-                }
-            }
-        }
-
-        private void CreateBuffers(byte[] data)
-        {
-            if (this is GameClient)
-            {
-                var client = this as GameClient;
-
-                if (client.Aisling != null && client.Aisling.LoggedIn)
-                {
-                    if (client.Buffer != null)
-                    {
-                        BufferPool.Return(client.Buffer.rawData);
-                    }
-                    else
-                    {
-                        client.Buffer = new NetworkBufferWriter();
-                    }
-
-                    client.Buffer.Write(data);
-                }
-                else
-                {
-                    AddBuffer(data);
-                }
-            }
-            else
-            {
-                AddBuffer(data);
-            }
-        } 
-
-        private NetworkPacket GetPacket(NetworkFormat format)
-        {
-            lock (Writer)
-            {
-                Writer.Position = 0;
-                Writer.Write(format.Command);
-
-                if (format.Secured)
-                    Writer.Write(Ordinal++);
-
-                format.Serialize(Writer);
-                return Writer.ToPacket();
-            }
-        }
-
-        public void Send(NetworkFormat format)
-        {
-            SendFormat(format);
-        }
-
-        public void Send(NetworkPacketWriter npw)
-        {
-            try
-            {
-                var packet = npw.ToPacket();
-                {
-                    Encryption.Transform(packet);
-                    WorkSocket.Send(packet.ToArray());
-                }
-            }
-            catch (Exception)
-            {
-                //ignore
-            }
-        }
-
-        public void SendMessageBox(byte code, string text)
-        {
-            Send(new ServerFormat02(code, text));
         }
 
         #region Server Formats 
