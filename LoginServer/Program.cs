@@ -1,51 +1,31 @@
 ﻿using Darkages;
+using Darkages.Network.Login;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LoginServer
+
+class Program
 {
-    class Program
+    static LoginServer _server;
+
+    static void Main(string[] args)
     {
-        static LoginServer _server;
+        ServerContext.LoadConstants();
 
-        static void Main(string[] args)
+
+        if (ServerContext.Config != null)
         {
-            ServerContext.LoadConstants();
+            ServerContext.Info?.Info("Lorule - Login Server: Online");
+            ServerContext.Info?.Info("---------------------------------------");
+            ServerContext.Info?.Info("Listening...");
 
-
-            if (ServerContext.Config != null)
-            {
-                ServerContext.Info?.Info("Lorule - Login Server: Online");
-                ServerContext.Info?.Info("---------------------------------------");
-                ServerContext.Info?.Info("Listening...");
-
-                _server = new LoginServer(1000);
-                _server.Start(2610);
-
-                Task.Run(() => UpdateClients());
-            }
-
-            ServerContext.LoadAndCacheStorage();
-            Thread.CurrentThread.Join();
+            _server = new LoginServer(1000);
+            _server.Start(2610);
         }
 
-        private static void UpdateClients()
-        {
-            while (_server != null)
-            {
-                lock (_server.Clients)
-                {
-                    foreach (var client in _server.Clients)
-                    {
-                        if (client != null && client.WorkSocket.Connected)
-                        {
-                            client.Update();
-                        }
-                    }
-                }
-                Thread.Sleep(100);
-            }
-        }
-    }
+        ServerContext.LoadAndCacheStorage();
+        Thread.CurrentThread.Join();
+    }   
 }
+

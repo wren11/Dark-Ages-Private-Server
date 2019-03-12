@@ -15,7 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.IO;
+using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
@@ -84,35 +84,61 @@ namespace Darkages.Network
             this.Reader.Position = -1;
         }
 
+
         public void FlushBuffers()
         {
             if (!WorkSocket.Connected)
             {
-                _sendBuffer = null;
                 return;
             }
 
-            if (_sendBuffer != null)
+            lock (_sendBuffer)
             {
-                var data = _sendBuffer.SelectMany(i => i).ToArray();
-
-                try
+                if (_sendBuffer != null)
                 {
-                    this.SendReset.WaitOne();
-                    this.SendReset.Reset();
+                    var data = _sendBuffer.SelectMany(i => i).ToArray();
 
-                    for (int i = 0, rem = data.Length; i < data.Length; i += 1024, rem -= 1024)
+                    try
                     {
-                        WorkSocket.Send(data, i, rem < 1024 ? rem : 1024, SocketFlags.None);
+                        this.SendReset.WaitOne();
+                        this.SendReset.Reset();
+
+                        for (int i = 0, rem = data.Length; i < data.Length; i += 1024, rem -= 1024)
+                        {
+                            WorkSocket.Send(data, i, rem < 1024 ? rem : 1024, SocketFlags.None);
+                        }
+                    }
+                    catch { }
+                    finally
+                    {
+                        _sendBuffer = new Queue<byte[]>();
+                        this.SendReset.Set();
                     }
                 }
-                catch { }
-                finally
-                {
-                    _sendBuffer = new Queue<byte[]>();
-                    this.SendReset.Set();
-                }
             }
+        }
+
+        public void FlushAndSend(NetworkFormat format)
+        {
+            this.Writer.Position = 0;
+            this.Writer.Write(format.Command);
+
+            if (format.Secured)
+            {
+                this.Writer.Write(this.Ordinal++);
+            }
+
+            format.Serialize(this.Writer);
+
+            var packet = this.Writer.ToPacket();
+
+            if (format.Secured)
+            {
+                this.Encryption.Transform(packet);
+            }
+
+            var array = packet.ToArray();
+            WorkSocket.Send(array, SocketFlags.None);
         }
 
         public void Send(NetworkFormat format)
@@ -134,18 +160,47 @@ namespace Darkages.Network
                 this.Encryption.Transform(packet);
             }
 
+            if (this is LoginClient)
+            {
+                FlushAndSend(format);
+                return;
+            }
+
             lock (_sendBuffer)
             {
                 var array = packet.ToArray();
                 _sendBuffer.Enqueue(array);
             }
-
-            //FlushBuffers();
+            
         }
 
-        public void Send(NetworkPacketWriter packet)
+        public void Send(NetworkPacketWriter lpData)
         {
+            var packet = lpData.ToPacket();
+            this.Encryption.Transform(packet);
 
+            lock (_sendBuffer)
+            {
+                var array = packet.ToArray();
+                _sendBuffer.Enqueue(array);
+            }
+        }
+
+        public void Send(byte[] data)
+        {
+            lock (Writer)
+            {
+                Writer.Position = 0;
+                Writer.Write(data);
+
+                var packet = Writer.ToPacket();
+                Encryption.Transform(packet);
+
+                lock (_sendBuffer)
+                {
+                    _sendBuffer.Enqueue(packet.ToArray());
+                }
+            }
         }
 
         private static byte P(NetworkPacket value)
@@ -169,28 +224,6 @@ namespace Darkages.Network
         public void SendMessageBox(byte code, string text)
         {
             this.Send(new ServerFormat02(code, text));
-        }
-
-        public void SendPacket(byte[] data)
-        {
-
-            try
-            {
-                lock (Writer)
-                {
-                    Writer.Position = 0;
-                    Writer.Write(data);
-
-                    var packet = Writer.ToPacket();
-                    {
-                        Encryption.Transform(packet);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                //ignore
-            }
         }
 
         #region Server Formats 

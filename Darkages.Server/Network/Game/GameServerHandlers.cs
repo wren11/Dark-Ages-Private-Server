@@ -214,18 +214,17 @@ namespace Darkages.Network.Game
                 client.Save();
                 client.Aisling.Remove(true);
 
-
-                client.Send(new ServerFormat03
+                client.FlushAndSend(new ServerFormat03
                 {
                     EndPoint = new IPEndPoint(Address, 2610),
                     Redirect = redirect
                 });
-                client.Send(new ServerFormat02(0x00, "\0"));
+                client.FlushAndSend(new ServerFormat02(0x00, "\0"));
             }
 
             if (format.Type == 1)
             {
-                client.Send(new ServerFormat4C());
+                client.FlushAndSend(new ServerFormat4C());
             }
             else if (format.Type == 3)
             {
@@ -262,6 +261,8 @@ namespace Darkages.Network.Game
                 SendMapData(client);
                 client.MapUpdating = false;
             }
+
+
         }
 
         /// <summary>

@@ -15,8 +15,6 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages;
-using Darkages.Network;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.ServerFormats;
 using Darkages.Storage;
@@ -24,7 +22,7 @@ using Darkages.Types;
 using System;
 using System.Net;
 
-namespace LoginServer
+namespace Darkages.Network.Login
 {
     public class LoginServer : NetworkServer<LoginClient>
     {
@@ -121,7 +119,11 @@ namespace LoginServer
                 return;
             }
 
+            LoginAsAisling(client, _aisling);
+        }
 
+        public void LoginAsAisling(LoginClient client, Aisling _aisling)
+        {
             if (_aisling != null)
             {
                 ServerContext.Info?.Info("Player Entering Game: {0}", _aisling.Username);
@@ -163,7 +165,6 @@ namespace LoginServer
                 Type = 0x00,
                 Hash = Notification.Hash
             });
-
         }
 
         /// <summary>

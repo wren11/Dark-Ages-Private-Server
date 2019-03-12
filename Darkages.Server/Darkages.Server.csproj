@@ -200,7 +200,8 @@
     <Compile Include="Network\Game\GameServerTimer.cs" />
     <Compile Include="Network\IFormattable.cs" />
     <Compile Include="Network\IPAttribute.cs" />
-    <Compile Include="Network\NetworkBufferWriter.cs" />
+    <Compile Include="Network\Login\LoginClient.cs" />
+    <Compile Include="Network\Login\LoginServer.cs" />
     <Compile Include="Network\NetworkClient.cs" />
     <Compile Include="Network\NetworkFormat.cs" />
     <Compile Include="Network\NetworkFormatManager.cs" />

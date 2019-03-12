@@ -15,42 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.IO;
-using System;
-using System.Net;
-using System.Text;
+using Darkages.Network.ClientFormats;
 
-namespace Darkages.Network
+namespace Darkages.Network.Login
 {
-    public class NetworkBufferWriter
+    public class LoginClient : NetworkClient<LoginClient>
     {
-        public byte[] rawData;
-
-        public int Position;
-
-        public NetworkBufferWriter()
-        {
-            rawData = BufferPool.Take(0x35000);
-        }
-
-        public void Write(byte[] value)
-        {
-            Array.Copy(value, 0, rawData, Position, value.Length);
-            Position += value.Length;
-        }      
-
-        public byte[] ToBuffer()
-        {
-            var nbuffer = BufferPool.Take(Position);
-            {
-                Array.Copy(rawData, 0, nbuffer, 0, Position);
-            }
-            return nbuffer;
-        }
-
-        public NetworkPacket ToPacket()
-        {
-            return new NetworkPacket(rawData, Position);
-        }
+        public ClientFormat02 CreateInfo { get; set; }
     }
 }

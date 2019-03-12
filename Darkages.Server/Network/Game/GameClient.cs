@@ -76,9 +76,6 @@ namespace Darkages.Network.Game
 
         public DateTime LastAssail;
 
-        
-        public NetworkBufferWriter Buffer;
-
         public GameClient()
         {
             HpRegenTimer = new GameServerTimer(
@@ -262,7 +259,7 @@ namespace Darkages.Network.Game
 
         public void CloseDialog()
         {
-            SendPacket(new byte[] { 0x30, 0x00, 0x0A, 0x00 });
+            Send(new byte[] { 0x30, 0x00, 0x0A, 0x00 });
         }
 
 
@@ -297,7 +294,6 @@ namespace Darkages.Network.Game
         {
             if (!WorkSocket.Connected)
             {
-                Buffer = null;
                 return;
             }
 
@@ -788,7 +784,7 @@ namespace Darkages.Network.Game
 
         public void SendMusic()
         {
-            Aisling.Client.SendPacket(new byte[]
+            Aisling.Client.Send(new byte[]
             {
                 0x19, 0x00, 0xFF,
                 (byte) Aisling.Map.Music
@@ -993,7 +989,7 @@ namespace Darkages.Network.Game
 
         public void SendProfileUpdate()
         {
-            SendPacket(new byte[] { 73, 0x00 });
+            Send(new byte[] { 73, 0x00 });
         }
 
         public void TrainSpell(Spell spell)
