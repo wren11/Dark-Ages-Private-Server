@@ -447,7 +447,7 @@ namespace Darkages.Types
             if (this is Monster)
             {
                 var monster = this as Monster;
-                var mod     = monster.Template.Level * 0.02;
+                var mod     = monster.Template.Level * (type == MonsterDamageType.Physical ? 0.02 : 0.04);
                 var dmg     = (int)(MaximumHp / 1 * mod);
 
                 return dmg;

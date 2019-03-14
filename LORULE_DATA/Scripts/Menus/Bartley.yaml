@@ -92,7 +92,7 @@ sequences:
 #################################################################################################    
 menus:
   - id: 1
-    text: "What's it gonna be bud, good news is making pluggers is a piece of piss. I'm just too do it. Plus i'm  pretty hammered from drinking all this jins piss, that you guys call Wine around here."
+    text: "What's it gonna be bud, good news is making pluggers is a piece of piss. I'm just way too old and i couldnt be fucked doing it. Plus i'm  pretty hammered from drinking all this jins piss, that you guys call Wine around here."
     options:
       - id: 1
         text: "I guess sooo.... Mate"

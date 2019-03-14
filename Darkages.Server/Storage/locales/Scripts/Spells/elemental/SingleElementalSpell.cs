@@ -86,10 +86,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             else
             {
 
-                var imp = (Spell.Level * 2 / 100);
-                var dmg = (int)(sprite.Int / 2 * Spell.Template.DamageExponent);
-
-                dmg *= imp;
+                var dmg = (int)sprite.GetBaseDamage(sprite.Target, MonsterDamageType.Elemental);
 
                 target.ApplyDamage(sprite, dmg, Spell.Template.ElementalProperty, Spell.Template.Sound);
 
