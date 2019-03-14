@@ -1076,17 +1076,14 @@ namespace Darkages.Types
         {
             var armor = Ac;
 
-            if (armor <= 0)
-                armor = 1;
+            //= IF(E5 < 0,$F$4 * ABS(E5 + 100) / 70, F$4 + F$4 * ABS(E5 + 1) * 0.01)
 
-            //always have a min advantage over one another.
-            var diff = Math.Abs(Level - target.Level) + 1;
+            var diff = armor < 0 ? dmg * (Math.Abs(armor + 100) / 70) : dmg * Math.Abs(armor + 1) * 0.01;
+            var realDamage = diff;
 
-            var realDamage = dmg * diff / (diff + armor);
+            ServerContext.Info.Debug("Damage: ComputeDmgFromAc = in: {0}, out: {1}, advantage: {2}", (int)dmg, (int)realDamage, (int)diff);
 
-            ServerContext.Info.Debug("Damage: ComputeDmgFromAc = in: {0}, out: {1}, advantage: {2}", dmg, realDamage, diff);
-
-            return realDamage;
+            return (int)realDamage;
         }
 
         public Sprite GetSprite(int x, int y)
