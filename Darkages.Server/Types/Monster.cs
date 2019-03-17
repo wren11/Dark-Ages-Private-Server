@@ -427,11 +427,12 @@ namespace Darkages.Types
 
             obj.MajorAttribute = stat;
 
-            //=ROUND(5 + H1-40  / 100 * H1, 0)
-            obj.BonusAc = (int)((5 + template.Level - 40 / 100 * template.Level));
+            obj.BonusAc = (int)(70 - obj.Template.Level * 0.5 / 1.0);
 
-            if (obj.BonusAc < 0 || obj.BonusAc >= 100)
-                obj.BonusAc = 100;
+            if (obj.BonusAc < -70)
+            {
+                obj.BonusAc = -70;
+            }
 
             obj.DefenseElement = ElementManager.Element.None;
             obj.OffenseElement = ElementManager.Element.None;

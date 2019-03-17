@@ -57,40 +57,65 @@ namespace Darkages.Storage.locales.Scripts.Spells
         {
             if (sprite is Aisling)
             {
-                var d = 15 + (sprite.Int * Spell.Level / 10);
-                var dmg = (int)((sprite.Int * d) * Spell.Template.DamageExponent);
+                var client = (sprite as Aisling).Client;
+                client.TrainSpell(Spell);
 
-                target.ApplyDamage(sprite, dmg, Spell.Template.ElementalProperty, Spell.Template.Sound);
-            }
-            else
-            {
-                if (!(target is Aisling))
-                    return;
+                if (target is Aisling)
+                    (target as Aisling).Client
+                        .SendMessage(0x02,
+                            string.Format("{0} Attacks you with {1}.", client.Aisling.Username,
+                                Spell.Template.Name));
 
-                var client = (target as Aisling).Client;
 
-                var dmg = sprite.GetBaseDamage(target, MonsterDamageType.Elemental);
-                target.ApplyDamage(sprite, dmg, Spell.Template.ElementalProperty, Spell.Template.Sound);
+                var dmg = rand.Next(20 * sprite.Level, 50 * sprite.Level);
+                var basePower = ((Spell.Level + sprite.Int) * dmg * 0.1);
 
-                (target as Aisling).Client
-                    .SendMessage(0x02, string.Format("{0} Attacks you with {1}.",
-                        (sprite is Monster
-                            ? (sprite as Monster).Template.Name
-                            : (sprite as Mundane).Template.Name) ?? "Monster",
-                        Spell.Template.Name));
 
+                target.ApplyDamage(sprite, (int)basePower, Spell.Template.ElementalProperty, Spell.Template.Sound);
+
+                client.SendMessage(0x02, string.Format("you cast {0}", Spell.Template.Name));
                 client.SendAnimation(Spell.Template.Animation, target, sprite);
 
                 var action = new ServerFormat1A
                 {
                     Serial = sprite.Serial,
-                    Number = 0x80,
+                    Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                     Speed = 30
                 };
 
                 client.Aisling.Show(Scope.NearbyAislings, action);
             }
+            else
+            {
+
+                var dmg = rand.Next(20 * sprite.Level, 50 * sprite.Level);
+                var basePower = (target.Level * dmg * 0.1);
+
+                target.ApplyDamage(sprite, (int)basePower, Spell.Template.ElementalProperty, Spell.Template.Sound);
+
+                if (target is Aisling)
+                {
+                    (target as Aisling).Client
+                        .SendMessage(0x02, string.Format("{0} Attacks you with {1}.",
+                            (sprite is Monster
+                                ? (sprite as Monster).Template.Name
+                                : (sprite as Mundane).Template.Name) ?? "Monster",
+                            Spell.Template.Name));
+                }
+
+                target.SendAnimation(Spell.Template.Animation, target, sprite);
+
+                var action = new ServerFormat1A
+                {
+                    Serial = sprite.Serial,
+                    Number = 1,
+                    Speed = 30
+                };
+
+                sprite.Show(Scope.NearbyAislings, action);
+            }
         }
+
 
         public override void OnUse(Sprite sprite, Sprite target)
         {

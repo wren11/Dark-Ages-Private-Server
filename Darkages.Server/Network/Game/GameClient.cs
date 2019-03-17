@@ -465,10 +465,11 @@ namespace Darkages.Network.Game
         {
             LastSave = DateTime.UtcNow;
             LastPingResponse = DateTime.UtcNow;
+            
 
             BoardOpened = DateTime.UtcNow;
             {
-                Aisling.BonusAc    = ServerContext.Config.BaseAC + (Aisling.ExpLevel / 3);
+                Aisling.BonusAc    = (int)(70 - Aisling.Level * 0.5 / 1.0);
                 Aisling.Exchange   = null;
                 Aisling.LastMapId  = short.MaxValue;
             }

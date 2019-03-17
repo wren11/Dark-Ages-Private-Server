@@ -113,18 +113,19 @@ namespace Darkages.Storage
 
         public void CacheFromStorage()
         {
+            var tmp = new T();
+
             var results = new List<T>();
             var asset_names = Directory.GetFiles(
                 StoragePath,
                 "*.json",
-                SearchOption.TopDirectoryOnly);
+                tmp is MonsterTemplate ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
 
             if (asset_names.Length == 0)
                 return;
 
             foreach (var asset in asset_names)
             {
-                var tmp = new T();
 
                 if (tmp is SkillTemplate)
                 {
@@ -146,11 +147,13 @@ namespace Darkages.Storage
                 }
                 else if (tmp is MonsterTemplate)
                 {
-                    var template =
-                        StorageManager.MonsterBucket.Load<MonsterTemplate>(Path.GetFileNameWithoutExtension(asset));
-                    ServerContext.GlobalMonsterTemplateCache.Add(template);
-                    template.NextAvailableSpawn = DateTime.UtcNow;
+                    var template = StorageManager.MonsterBucket.Load<MonsterTemplate>(Path.GetFileNameWithoutExtension(asset), asset);
 
+                    if (template != null)
+                    {
+                        ServerContext.GlobalMonsterTemplateCache.Add(template);
+                        template.NextAvailableSpawn = DateTime.UtcNow;
+                    }
                 }
                 else if (tmp is MundaneTemplate)
                 {
@@ -174,10 +177,10 @@ namespace Darkages.Storage
         }
 
 #pragma warning disable CS0693 
-        public T Load<T>(string Name) where T : class, new()
+        public T Load<T>(string Name, string fixedPath = null) where T : class, new()
 #pragma warning restore CS0693
         {
-            var path = Path.Combine(StoragePath, string.Format("{0}.json", Name.ToLower()));
+            var path = fixedPath ?? Path.Combine(StoragePath, string.Format("{0}.json", Name.ToLower()));
 
             if (!File.Exists(path))
                 return null;

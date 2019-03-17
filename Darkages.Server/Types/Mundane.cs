@@ -122,12 +122,13 @@ namespace Darkages.Types
             npc.Direction = npc.Template.Direction;
             npc.CurrentMapId = npc.Template.AreaID;
 
-            npc.BonusAc = (int)((5 + npc.Template.Level - 40 / 100 * npc.Template.Level));
+            npc.BonusAc = (int)(70 - npc.Template.Level * 0.5 / 1.0);
 
-            if (npc.BonusAc < 0 || npc.BonusAc >= 100)
+            if (npc.BonusAc < -70)
             {
-                npc.BonusAc = 100;
+                npc.BonusAc = -70;
             }
+
 
             npc.DefenseElement = Generator.RandomEnumValue<ElementManager.Element>();
             npc.OffenseElement = Generator.RandomEnumValue<ElementManager.Element>();
