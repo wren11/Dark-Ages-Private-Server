@@ -201,8 +201,8 @@ namespace Darkages.Types
         {
             get
             {
-                if (BonusAc <= 0)
-                    return 1;
+                if (BonusAc < -70)
+                    return -70;
 
                 return BonusAc;
             }

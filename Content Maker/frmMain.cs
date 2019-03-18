@@ -66,7 +66,7 @@ namespace Content_Maker
 
         private void frmMain_Load(object sender, System.EventArgs e)
         {
-            button4_Click(sender, e);
+            //button4_Click(sender, e);
         }
     }
 }

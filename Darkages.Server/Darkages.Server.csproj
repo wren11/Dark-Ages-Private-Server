@@ -333,6 +333,7 @@
     <Compile Include="Storage\locales\Scripts\Mundanes\Macronator.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\Mileth_Erin.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\MunedaneReactorExample.cs" />
+    <Compile Include="Storage\locales\Scripts\Mundanes\MonkForms.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\OldMan.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\Raghnall.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\shop1.cs" />

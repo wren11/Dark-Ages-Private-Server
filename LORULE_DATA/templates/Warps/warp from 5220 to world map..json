@@ -1,0 +1,88 @@
+{
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 15,
+        "Y": 8,
+        "AreaID": 0
+      },
+      "AreaID": 5220,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 15,
+        "Y": 7,
+        "AreaID": 0
+      },
+      "AreaID": 5220,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 15,
+        "Y": 6,
+        "AreaID": 0
+      },
+      "AreaID": 5220,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 15,
+        "Y": 5,
+        "AreaID": 0
+      },
+      "AreaID": 5220,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 15,
+        "Y": 4,
+        "AreaID": 0
+      },
+      "AreaID": 5220,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 15,
+        "Y": 3,
+        "AreaID": 0
+      },
+      "AreaID": 5220,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 15,
+        "Y": 2,
+        "AreaID": 0
+      },
+      "AreaID": 5220,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 15,
+        "Y": 1,
+        "AreaID": 0
+      },
+      "AreaID": 5220,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": null,
+    "AreaID": 0,
+    "PortalKey": 1
+  },
+  "WarpType": 1,
+  "ActivationMapId": 5220,
+  "Name": "Warp from 5220 to World Map.",
+  "Description": null,
+  "Group": null
+}

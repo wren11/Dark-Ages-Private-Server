@@ -13,7 +13,8 @@
           "Location": {
             "$type": "Darkages.Types.Position, Darkages.Server",
             "X": 7,
-            "Y": 13
+            "Y": 13,
+            "AreaID": 0
           },
           "AreaID": 508,
           "PortalKey": 0
@@ -29,7 +30,8 @@
           "Location": {
             "$type": "Darkages.Types.Position, Darkages.Server",
             "X": 43,
-            "Y": 18
+            "Y": 18,
+            "AreaID": 0
           },
           "AreaID": 150,
           "PortalKey": 0
@@ -45,7 +47,8 @@
           "Location": {
             "$type": "Darkages.Types.Position, Darkages.Server",
             "X": 27,
-            "Y": 39
+            "Y": 39,
+            "AreaID": 0
           },
           "AreaID": 200,
           "PortalKey": 0
@@ -61,7 +64,8 @@
           "Location": {
             "$type": "Darkages.Types.Position, Darkages.Server",
             "X": 103,
-            "Y": 17
+            "Y": 17,
+            "AreaID": 0
           },
           "AreaID": 1,
           "PortalKey": 1
@@ -77,7 +81,8 @@
           "Location": {
             "$type": "Darkages.Types.Position, Darkages.Server",
             "X": 2,
-            "Y": 1
+            "Y": 1,
+            "AreaID": 0
           },
           "AreaID": 300,
           "PortalKey": 1
@@ -93,7 +98,8 @@
           "Location": {
             "$type": "Darkages.Types.Position, Darkages.Server",
             "X": 11,
-            "Y": 8
+            "Y": 8,
+            "AreaID": 0
           },
           "AreaID": 1000,
           "PortalKey": 1
@@ -109,7 +115,8 @@
           "Location": {
             "$type": "Darkages.Types.Position, Darkages.Server",
             "X": 2,
-            "Y": 10
+            "Y": 10,
+            "AreaID": 0
           },
           "AreaID": 1008,
           "PortalKey": 1
@@ -125,7 +132,8 @@
           "Location": {
             "$type": "Darkages.Types.Position, Darkages.Server",
             "X": 8,
-            "Y": 15
+            "Y": 15,
+            "AreaID": 0
           },
           "AreaID": 1009,
           "PortalKey": 1
@@ -141,9 +149,61 @@
           "Location": {
             "$type": "Darkages.Types.Position, Darkages.Server",
             "X": 5,
-            "Y": 5
+            "Y": 5,
+            "AreaID": 0
           },
           "AreaID": 1015,
+          "PortalKey": 1
+        }
+      },
+      {
+        "$type": "Darkages.Types.WorldPortal, Darkages.Server",
+        "DisplayName": "Sapphire Stream",
+        "PointX": 151,
+        "PointY": 101,
+        "Destination": {
+          "$type": "Darkages.Types.Warp, Darkages.Server",
+          "Location": {
+            "$type": "Darkages.Types.Position, Darkages.Server",
+            "X": 12,
+            "Y": 5,
+            "AreaID": 0
+          },
+          "AreaID": 5220,
+          "PortalKey": 1
+        }
+      },
+      {
+        "$type": "Darkages.Types.WorldPortal, Darkages.Server",
+        "DisplayName": "Undine Fields",
+        "PointX": 70,
+        "PointY": 172,
+        "Destination": {
+          "$type": "Darkages.Types.Warp, Darkages.Server",
+          "Location": {
+            "$type": "Darkages.Types.Position, Darkages.Server",
+            "X": 47,
+            "Y": 47,
+            "AreaID": 0
+          },
+          "AreaID": 5205,
+          "PortalKey": 1
+        }
+      },
+      {
+        "$type": "Darkages.Types.WorldPortal, Darkages.Server",
+        "DisplayName": "Pravat Cave",
+        "PointX": 107,
+        "PointY": 317,
+        "Destination": {
+          "$type": "Darkages.Types.Warp, Darkages.Server",
+          "Location": {
+            "$type": "Darkages.Types.Position, Darkages.Server",
+            "X": 25,
+            "Y": 24,
+            "AreaID": 0
+          },
+          "AreaID": 5206,
           "PortalKey": 1
         }
       }
@@ -155,11 +215,13 @@
     "Location": {
       "$type": "Darkages.Types.Position, Darkages.Server",
       "X": 3,
-      "Y": 3
+      "Y": 3,
+      "AreaID": 0
     },
     "AreaID": 9999,
     "PortalKey": 0
   },
   "Name": "Temuair",
-  "Description": null
+  "Description": null,
+  "Group": null
 }
