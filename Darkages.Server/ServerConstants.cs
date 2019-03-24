@@ -216,9 +216,9 @@ namespace Darkages
         [JsonProperty]
         public string ServerWelcomeMessage = "Welcome to Lorule, If you need help, Please use The [F1] menu.";
 
-        [JsonProperty] public int StartingMap = 888;
+        [JsonProperty] public int StartingMap = 100;
 
-        [JsonProperty] public Position StartingPosition = new Position(26, 48);
+        [JsonProperty] public Position StartingPosition = new Position(6, 6);
 
         [JsonProperty]
         /// <summary>
@@ -239,7 +239,7 @@ namespace Darkages
 
         [JsonProperty] public string UserDroppedGoldMsg = "noname has dropped some money nearby.";
 
-        [JsonProperty] public int VeryNearByProximity = 9;
+        [JsonProperty] public int VeryNearByProximity = 7;
 
         [JsonProperty] public double WeightIncreaseModifer = 3.5;
 

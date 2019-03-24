@@ -39,12 +39,16 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             SequenceMenu.Sequences.Add(new DialogSequence
             {
                 Title = Mundane.Template.Name,
-                DisplayText = "This place is infested with walkers. if you help me, In return, I'll take care of you."
+                DisplayText = "This place is infested with walkers. if you help me, In return, I'll take care of you.",
+                CanMoveBack = false,
+                CanMoveNext = true
             });
             SequenceMenu.Sequences.Add(new DialogSequence
             {
                 Title = Mundane.Template.Name,
-                DisplayText = "So i'll do you, if you scratch mine. wait that does not sound right does it?"
+                DisplayText = "So i'll do you, if you scratch mine. wait that does not sound right does it?",
+                CanMoveBack = true,
+                CanMoveNext = true
             });
             SequenceMenu.Sequences.Add(new DialogSequence
             {

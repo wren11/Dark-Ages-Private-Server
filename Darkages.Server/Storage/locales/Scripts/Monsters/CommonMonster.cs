@@ -70,15 +70,21 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         {
             try
             {
-                var script = ScriptManager.Load<SkillScript>(skillscriptstr,
-                    Skill.Create(1, ServerContext.GlobalSkillTemplateCache[skillscriptstr]));
 
-
-                if (script != null)
+                if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skillscriptstr))
                 {
-                    script.Skill.NextAvailableUse = DateTime.UtcNow;
-                    script.IsScriptDefault = primary;
-                    SkillScripts.Add(script);
+
+
+                    var script = ScriptManager.Load<SkillScript>(skillscriptstr,
+                        Skill.Create(1, ServerContext.GlobalSkillTemplateCache[skillscriptstr]));
+
+
+                    if (script != null)
+                    {
+                        script.Skill.NextAvailableUse = DateTime.UtcNow;
+                        script.IsScriptDefault = primary;
+                        SkillScripts.Add(script);
+                    }
                 }
             }
             catch (Exception)
@@ -91,14 +97,17 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         {
             try
             {
-                var script = ScriptManager.Load<SpellScript>(spellscriptstr,
-                    Spell.Create(1, ServerContext.GlobalSpellTemplateCache[spellscriptstr]));
-
-
-                if (script != null)
+                if (ServerContext.GlobalSpellTemplateCache.ContainsKey(spellscriptstr))
                 {
-                    script.IsScriptDefault = primary;
-                    SpellScripts.Add(script);
+                    var script = ScriptManager.Load<SpellScript>(spellscriptstr,
+                        Spell.Create(1, ServerContext.GlobalSpellTemplateCache[spellscriptstr]));
+
+
+                    if (script != null)
+                    {
+                        script.IsScriptDefault = primary;
+                        SpellScripts.Add(script);
+                    }
                 }
             }
             catch (Exception)

@@ -53,11 +53,11 @@
   "SERVER_PORT": 2615,
   "SERVER_TITLE": "Lorule",
   "ServerWelcomeMessage": "Welcome to Lorule, If you need help, Please use The [F1] menu.",
-  "StartingMap": 888,
+  "StartingMap": 100,
   "StartingPosition": {
     "$type": "Darkages.Types.Position, Darkages.Server",
-    "X": 26,
-    "Y": 48,
+    "X": 6,
+    "Y": 6,
     "AreaID": 0
   },
   "StatCap": 255,
@@ -67,7 +67,7 @@
   "TransitionPointY": 3,
   "TransitionZone": 9999,
   "UserDroppedGoldMsg": "noname has dropped some money nearby.",
-  "VeryNearByProximity": 9,
+  "VeryNearByProximity": 7,
   "WeightIncreaseModifer": 3.5,
   "WisAddedMessage": "Your will increases.",
   "WithinRangeProximity": 12,

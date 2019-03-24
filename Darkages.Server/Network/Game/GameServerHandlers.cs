@@ -1450,9 +1450,9 @@ namespace Darkages.Network.Game
                             client.CloseDialog();
                         }
                     }
-                }
 
-                return;
+                    return;
+                }
             }
 
 
