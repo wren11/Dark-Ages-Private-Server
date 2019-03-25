@@ -16,7 +16,6 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Binarysharp.MemoryManagement;
-using DevExpress.XtraEditors;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -30,14 +29,13 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Principal;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static ClientLauncher.frmMain.Configuration;
 
 namespace ClientLauncher
 {
-    public partial class frmMain : XtraForm
+    public partial class frmMain : Form
     {
         public struct STARTUPINFO
         {
@@ -135,8 +133,6 @@ namespace ClientLauncher
 
         public void UpdateConfig(Configuration config)
         {
-            comboBox1.DataSource = null;
-            comboBox1.DataSource = config.Servers.Select(i => i.ServerName).ToList();
         }
 
         public class Config
@@ -257,23 +253,8 @@ namespace ClientLauncher
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             CheckAdmin();
-
-            try
-            {
-                if (comboBox1.SelectedIndex < 0)
-                    return;
-
-                comboBox1.SelectedIndex = config.SelectedIndex;
-            }
-            catch
-            {
-                config.SelectedIndex = 0;
-                Config.Save(config);
-            }
-
             GetRemoteConfig();
         }
 
@@ -337,14 +318,6 @@ namespace ClientLauncher
                                 client.DownloadDataCompleted += Client_DownloadDataCompleted;
                                 client.DownloadProgressChanged += Client_DownloadProgressChanged;
 
-                                Invoke((MethodInvoker)delegate ()
-                                {
-                                    progressBarControl1.EditValue = (int)(activeupdates * 100 / total);
-                                    labelControl2.Text = string.Format("Downloading Updated Data: {0} Please Wait. {1}/{2}", update, activeupdates, total);
-                                    marqueeProgressBarControl1.Visible = true;
-                                    progressBarControl1.Visible = false;
-                                });
-
 
                                 var data = client.DownloadData(new Uri("http://lorule-da.com/CLIENT_DATA/data/" + update));
 
@@ -361,15 +334,6 @@ namespace ClientLauncher
 
 
                             }
-
-                            Invoke((MethodInvoker)delegate ()
-                            {
-                                marqueeProgressBarControl1.Visible = false;
-                                progressBarControl1.Visible = true;
-
-                                progressBarControl1.EditValue = (int)(activeupdates * 100 / total);
-                                labelControl2.Text = string.Format("Downloading Updated Data: {0} Please Wait. {1}/{2}", update, activeupdates, total);
-                            });
 
 
                             activeupdates++;
@@ -515,11 +479,7 @@ namespace ClientLauncher
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            Invoke((MethodInvoker)delegate ()
-            {
-                progressBarControl1.EditValue = e.ProgressPercentage;
-                labelControl2.Text = string.Format("Downloading Data... Please Wait. {0}/{1}  ({2}%)", e.BytesReceived, e.TotalBytesToReceive, e.ProgressPercentage);
-            });
+
         }
 
         private void pictureEdit1_EditValueChanged(object sender, EventArgs e)
@@ -529,13 +489,38 @@ namespace ClientLauncher
 
         private void pictureEdit1_Click(object sender, EventArgs e)
         {
-            var daPath = @"..\7.18\Darkages.exe";
-            var server = config.Servers.Find(i => i.ServerName == comboBox1.Text);
-            if (server == null)
+           
+        }
+
+        private void pictureEdit2_EditValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureEdit2_Click(object sender, EventArgs e)
+        {
+            GetOps(config);
+        }
+
+        private void hyperlinkLabelControl1_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://lorule-da.com");
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (Checked)
             {
-                MessageBox.Show("Error, Check config.");
-                return;
+                Checked = false;
+                Console.Beep();
             }
+        }
+
+        private void frmMain_Load_1(object sender, EventArgs e)
+        {
+            var daPath = @"C:\ProgramData\Lorule\7.18\Darkages.exe";
+
+            var server = config.Servers[config.SelectedIndex];
 
             STARTUPINFO si = new STARTUPINFO();
             PROCESS_INFORMATION pi = new PROCESS_INFORMATION();
@@ -615,43 +600,6 @@ namespace ClientLauncher
             catch
             {
 
-            }
-        }
-
-        private void pictureEdit2_EditValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureEdit2_Click(object sender, EventArgs e)
-        {
-            GetOps(config);
-        }
-
-        private void hyperlinkLabelControl1_Click(object sender, EventArgs e)
-        {
-            Process.Start("http://lorule-da.com");
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            if (Checked)
-            {
-                Checked = false;
-                Console.Beep();
-
-                Invoke((MethodInvoker)delegate ()
-                {
-                    if (!pictureEdit1.Enabled)
-                    {
-                        pictureEdit1.Enabled = true;
-                        labelControl2.Text = "Ready 2 Play!";
-                        progressBarControl1.EditValue = 100;
-                        comboBox1.Enabled = true;
-                        this.pictureEdit1.Focus();
-                        Application.DoEvents();
-                    }
-                });
             }
         }
     }

@@ -434,6 +434,7 @@
     <Compile Include="Types\ActivityStatus.cs" />
     <Compile Include="Types\Aisling.cs" />
     <Compile Include="Types\AislingFlags.cs" />
+    <Compile Include="Types\AnimalForm.cs" />
     <Compile Include="Types\Area.cs" />
     <Compile Include="Types\AttackModifier.cs" />
     <Compile Include="Types\Bank.cs" />

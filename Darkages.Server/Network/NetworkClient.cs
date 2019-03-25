@@ -84,6 +84,20 @@ namespace Darkages.Network
             this.Reader.Position = -1;
         }
 
+        public static List<List<T>> Split<T>(IEnumerable<T> collection, int size)
+        {
+            var count      = collection.Count();
+            var chunks     = new List<List<T>>();
+            var chunkCount = count / size;
+
+            if (count % size > 0)
+                chunkCount++;
+
+            for (var i = 0; i < chunkCount; i++)
+                chunks.Add(collection.Skip(i * size).Take(size).ToList());
+
+            return chunks;
+        }
 
         public void FlushBuffers()
         {
@@ -96,16 +110,17 @@ namespace Darkages.Network
             {
                 if (_sendBuffer != null)
                 {
-                    var data = _sendBuffer.SelectMany(i => i).ToArray();
+                    var data = _sendBuffer.SelectMany(i => i);
 
                     try
                     {
                         this.SendReset.WaitOne();
                         this.SendReset.Reset();
 
-                        for (int i = 0, rem = data.Length; i < data.Length; i += 1024, rem -= 1024)
+                        var packet = data.ToArray();
+                        if (packet.Length > 0 && packet[0] == 0xAA)
                         {
-                            WorkSocket.Send(data, i, rem < 1024 ? rem : 1024, SocketFlags.None);
+                            WorkSocket.Send(packet, packet.Length, SocketFlags.None);
                         }
                     }
                     catch { }
@@ -120,58 +135,70 @@ namespace Darkages.Network
 
         public void FlushAndSend(NetworkFormat format)
         {
-            this.Writer.Position = 0;
-            this.Writer.Write(format.Command);
-
-            if (format.Secured)
+            lock (this.Writer)
             {
-                this.Writer.Write(this.Ordinal++);
+                this.Writer.Position = 0;
+                this.Writer.Write(format.Command);
+
+                if (format.Secured)
+                {
+                    this.Writer.Write(this.Ordinal++);
+                }
+
+                format.Serialize(this.Writer);
+
+                var packet = this.Writer.ToPacket();
+
+                if (format.Secured)
+                {
+                    this.Encryption.Transform(packet);
+                }
+
+                var array = packet.ToArray();
+                WorkSocket.Send(array, SocketFlags.None);
             }
-
-            format.Serialize(this.Writer);
-
-            var packet = this.Writer.ToPacket();
-
-            if (format.Secured)
-            {
-                this.Encryption.Transform(packet);
-            }
-
-            var array = packet.ToArray();
-            WorkSocket.Send(array, SocketFlags.None);
         }
 
         public void Send(NetworkFormat format)
         {
-            this.Writer.Position = 0;
-            this.Writer.Write(format.Command);
-
-            if (format.Secured)
+            try
             {
-                this.Writer.Write(this.Ordinal++);
+                lock (this.Writer)
+                {
+                    this.Writer.Position = 0;
+                    this.Writer.Write(format.Command);
+
+                    if (format.Secured)
+                    {
+                        this.Writer.Write(this.Ordinal++);
+                    }
+
+                    format.Serialize(this.Writer);
+
+                    var packet = this.Writer.ToPacket();
+
+                    if (format.Secured)
+                    {
+                        this.Encryption.Transform(packet);
+                    }
+
+                    if (this is LoginClient)
+                    {
+                        FlushAndSend(format);
+                        return;
+                    }
+
+                    lock (_sendBuffer)
+                    {
+                        var array = packet.ToArray();
+                        _sendBuffer.Enqueue(array);
+                    }
+                }
             }
-
-            format.Serialize(this.Writer);
-
-            var packet = this.Writer.ToPacket();
-
-            if (format.Secured)
+            catch
             {
-                this.Encryption.Transform(packet);
-            }
 
-            if (this is LoginClient)
-            {
-                FlushAndSend(format);
-                return;
-            }
-
-            lock (_sendBuffer)
-            {
-                var array = packet.ToArray();
-                _sendBuffer.Enqueue(array);
-            }
-            
+            }            
         }
 
         public void Send(NetworkPacketWriter lpData)

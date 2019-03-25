@@ -222,6 +222,8 @@ namespace Darkages
 
         [JsonIgnore]
         public DialogSequence ActiveSequence { get; set; }
+
+        public AnimalForm AnimalForm { get; set; }
         #endregion
 
         [JsonIgnore]
@@ -375,6 +377,7 @@ namespace Darkages
                 X = ServerContext.Config.StartingPosition.X,
                 Y = ServerContext.Config.StartingPosition.Y,
                 Nation = (byte)randomFraction,
+                AnimalForm = AnimalForm.None
             };
 
             foreach (var skill in ServerContext.GlobalSkillTemplateCache.Keys)

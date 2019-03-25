@@ -356,92 +356,19 @@ namespace Darkages
             Paused = false;
 
 
+            GlobalMundaneTemplateCache["Dubios"] = new MundaneTemplate()
+            {
+                Name = "Dubios",
+                ScriptKey = "monk/forms",
+                Image = 0x4013,
+                X = 3,
+                Y = 3,
+                AreaID = 5211,
+                Direction = (byte)Direction.West,
+                Level = 1000,
+            };
 
 
-            //How to make an "Earth Bodice" Monk level 1 Female Armor.
-            //--------------------------------------------------------------------------------------------------------------
-
-            var armor_template = new ItemTemplate();
-
-            armor_template.Name = "Earth's Bodice";
-
-            //armor_template.Image, you can find this number here: http://www.vorlof.com/general/searcharmors.html 
-            //on vorlof's site, You want to use the "Appearance ID" here.
-            //on the site it says that female monk level 1 armor has appearance id 3, so i will use this as my image id.
-            armor_template.Image = 3;
-
-            //armor_template.DisplayImage, This is the sprite id, It describes how the image looks on the ground, in the inventory, profile display ect.
-            //This starts at 32768 + The ID on column "On a Female" or "On a Male" on vorlofs site.
-            //For example, On vorlof's site it says trhe female male monk armor is 117
-            //so i would do 32768 + 117, resulting in 32885, so my DisplayImage would be 32885
-            armor_template.DisplayImage = 32885;
-
-
-
-            //set some item flags. self explainatory.
-            armor_template.Flags =  ItemFlags.Equipable  | ItemFlags.Repairable  | ItemFlags.Bankable | ItemFlags.Dropable | ItemFlags.Perishable;
-
-
-            //who can wear it? Male|Female|Both, the Earth Bodice is for Females, so apply that.
-            armor_template.Gender = Gender.Female;
-
-            //item attributes
-
-            //ac mod + 7
-            armor_template.AcModifer = new StatusOperator(StatusOperator.Operator.Add, 7);
-            
-            //you can use other mods to set other attributes, see below:
-            //armor_template.AcModifer
-            //armor_template.StrModifer
-            //armor_template.IntModifer
-            //armor_template.WisModifer
-            //armor_template.ConModifer
-            //armor_template.DexModifer
-            //armor_template.HealthModifer
-            //armor_template.ManaModifer
-            //armor_template.MrModifer
-            //armor_template.HitModifer
-            //armor_template.DmgModifer
-            
-            //level to equip
-            armor_template.LevelRequired = 1;
-
-            //value of the item, resell value ect.
-            armor_template.Value = 850;
-
-            //the item's max durability
-            armor_template.MaxDurability = 3000;
-
-            //how much weight will i need to carry it?
-            armor_template.CarryWeight = 4;
-
-            //monk armor, set the correct class.
-            armor_template.Class = Class.Monk;
-
-            //on equipped, where will it go?
-            armor_template.EquipmentSlot = ItemSlots.Armor;
-
-            //we are going to use the Armor Script to handle the rest.
-            armor_template.ScriptName = "Armor";
-
-            //what is the stage required? 
-            armor_template.StageRequired = ClassStage.Class;
-
-
-            //Drop rate related stuff:
-
-            //0.20 means that is has 0.20% to be added to the loot table.
-            armor_template.DropRate = 0.20;
-
-            //if on the loot table. what is the weighted chance that it will become an item of rarity?
-            armor_template.Weight = 40;
-
-
-            //this is all we need for an Earth Bodice.
-            //lets save it to the template database.
-            StorageManager.ItemBucket.SaveOrReplace(armor_template);
-
-            GlobalItemTemplateCache["Earth's Bodice"] = armor_template;
 
             //SyncStorage();
         }

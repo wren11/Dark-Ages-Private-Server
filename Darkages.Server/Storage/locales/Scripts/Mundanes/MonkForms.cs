@@ -48,7 +48,36 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         {
                             res.Result = _client.Aisling.HasCompletedQuest(res.Value);
                         }
+                    });
 
+                    client.MenuInterpter.RegisterCheckpointHandler("HasAForm", (_client, res) =>
+                    {
+                        res.Result = _client.Aisling.AnimalForm != AnimalForm.None;
+                        _client.CloseDialog();
+                    });
+
+                    client.MenuInterpter.RegisterCheckpointHandler("LearnForm1", (_client, res) =>
+                    {
+                        _client.Aisling.AnimalForm = AnimalForm.Draco;
+                        _client.CloseDialog();
+                    });
+
+                    client.MenuInterpter.RegisterCheckpointHandler("LearnForm2", (_client, res) =>
+                    {
+                        _client.Aisling.AnimalForm = AnimalForm.Kelberoth;
+                        _client.CloseDialog();
+                    });
+
+                    client.MenuInterpter.RegisterCheckpointHandler("LearnForm3", (_client, res) =>
+                    {
+                        _client.Aisling.AnimalForm = AnimalForm.WhiteBat;
+                        _client.CloseDialog();
+                    });
+
+                    client.MenuInterpter.RegisterCheckpointHandler("LearnForm4", (_client, res) =>
+                    {
+                        _client.Aisling.AnimalForm = AnimalForm.Scorpion;
+                        _client.CloseDialog();
                     });
 
                     client.MenuInterpter.RegisterCheckpointHandler("HasKilled", (_client, res) =>
@@ -76,6 +105,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public MonkForms(GameServer server, Mundane mundane) : base(server, mundane)
         {          
+
         }
 
         public void MenuInterpreter_OnMovedToNextStep(GameClient client, MenuItem previous, MenuItem current)
