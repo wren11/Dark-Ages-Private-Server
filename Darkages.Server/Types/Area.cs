@@ -15,9 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
+using Darkages.Storage;
 using Darkages.Types;
 using Newtonsoft.Json;
 using System;
@@ -415,6 +417,38 @@ namespace Darkages
             Ready = true;
         }
 
+        public static Dictionary<int, Area> Instances = new Dictionary<int, Area>();
+        
+        public static Area CreateUserInstance(Aisling User, Area lpArea)
+        {
+            var user_instance = $@"{ServerContext.StoragePath}\user_instances\{User.Username}";
+
+            if (!Directory.Exists(user_instance))
+            {
+                Directory.CreateDirectory(user_instance);
+            }
+            var area   = Clone<Area>(lpArea);
+            var map    = ServerContext.StoragePath + "\\maps\\" + string.Format("\\lod{0}.map", area.ID);
+
+            var tmp    = Generator.Random.Next() % ushort.MaxValue;
+            var tmpmap = user_instance + string.Format("\\lod{0}.map", tmp);
+
+            File.Copy(map, tmpmap);
+
+            area.Number = tmp;
+            area.ID     = tmp;
+            {
+                area.Owner = User;
+                AreaStorage.LoadMap(area, tmpmap);
+                ServerContext.GlobalMapCache[tmp] = area;
+            }
+
+            User.CurrentMapId = area.ID;
+            User.Client.Refresh(true);
+
+            return area;
+        }
+
         private void SetWarps()
         {
             var warps = ServerContext.GlobalWarpTemplateCache
@@ -443,6 +477,7 @@ namespace Darkages
         }
 
         internal void UpdateCollisions(Aisling obj)
+
         {
             SetWarps();
         }

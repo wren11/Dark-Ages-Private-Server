@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MenuInterpreter
 {
-	public class MenuItem
+    public class MenuItem
 	{
 		public int Id { get; private set; }
 		public MenuItemType Type { get; private set; }
-		public string Text { get; private set; }
+		public string Text { get;  set; }
 		public Answer[] Answers { get; private set; }
 
 		public MenuItem(int id, MenuItemType type, string text, Answer[] answers)

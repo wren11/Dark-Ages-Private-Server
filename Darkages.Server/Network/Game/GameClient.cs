@@ -1140,6 +1140,11 @@ namespace Darkages.Network.Game
         public void ShowCurrentMenu(Sprite obj, MenuItem currentitem, MenuItem nextitem)
         {
             if (nextitem == null)
+                return;
+
+            nextitem.Text    = nextitem.Text.Replace("%aisling%", Aisling.Username);
+
+            if (nextitem == null)
             {
                 return;
             }

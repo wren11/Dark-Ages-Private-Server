@@ -10,13 +10,13 @@ namespace DAClient
         static void Main(string[] args)
         {
 
-            for (int i = 0; i < 250; i++)
+            for (int i = 0; i < 2500; i++)
             { 
                 var _client = new Client("lol", "lol");
-              //  _client.Connect("127.0.0.1", 2610);
+                //_client.Connect("127.0.0.1", 2610);
                 _client.Connect("54.213.128.251", 2610);
 
-                Thread.Sleep(1000);
+                Thread.Sleep(300);
             }
 
             Thread.CurrentThread.Join();

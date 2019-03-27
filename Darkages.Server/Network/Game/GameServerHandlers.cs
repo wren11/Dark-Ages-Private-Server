@@ -35,6 +35,32 @@ namespace Darkages.Network.Game
 {
     public partial class GameServer : NetworkServer<GameClient>
     {
+        public void CreateInterpreterFromMenuFile(GameClient client, string Name)
+        {
+            var parser = new YamlMenuParser();
+            var yamlPath = ServerContext.StoragePath + string.Format(@"\Scripts\Menus\{0}.yaml", Name);
+
+            if (File.Exists(yamlPath))
+            {
+                if (client.MenuInterpter == null)
+                {
+                    client.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
+                    client.MenuInterpter.Client = client;
+                    client.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
+
+                    ServerContext.Info.Debug("Script Interpreter Created for Mundane: {0}", Name);
+                }
+            }
+        }
+
+        private void MenuInterpter_OnMovedToNextStep(GameClient client, MenuInterpreter.MenuItem previous, MenuInterpreter.MenuItem current)
+        {
+            if (client.MenuInterpter.IsFinished)
+            {
+                client.MenuInterpter = null;
+            }
+        }
+
         /// <summary>
         ///     Activate Assails
         /// </summary>
@@ -1746,7 +1772,39 @@ namespace Darkages.Network.Game
                         break;
                     case Mundane _:
                         {
-                            (obj as Mundane)?.Script?.OnClick(this, client);
+
+                            try
+                            {
+                                //try and call script first
+                                (obj as Mundane)?.Script?.OnClick(this, client);
+
+                                //if call does not produce it's own interpreter. Assume default role.
+                                if (client.MenuInterpter == null)
+                                {
+                                    CreateInterpreterFromMenuFile(client, (obj as Mundane).Template.Name);
+
+                                    if (client.MenuInterpter != null)
+                                    {
+                                        client.MenuInterpter.Start();
+                                    }
+
+                                    ServerContext.Info.Debug("Interpreter - Using Default Role: {0}", (obj as Mundane).Template.Name);
+                                }
+                                else
+                                {
+                                    ServerContext.Info.Debug("Interpreter - Using Defined Role: {0}", (obj as Mundane).Template.Name);
+                                    return;
+                                }
+
+                                if (client.MenuInterpter != null)
+                                {
+                                    client.ShowCurrentMenu((obj as Mundane), null, client.MenuInterpter.GetCurrentStep());
+                                }
+                            }
+                            catch (Exception err)
+                            {
+                                ServerContext.Info.Error(string.Format("Error in Menu Handler : {0}", obj.GetType().FullName), err);
+                            }
                         }
                         break;
                 }

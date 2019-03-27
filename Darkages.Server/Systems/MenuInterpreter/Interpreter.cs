@@ -1,4 +1,5 @@
-﻿using Darkages.Network.Game;
+﻿using Darkages;
+using Darkages.Network.Game;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -142,8 +143,11 @@ namespace MenuInterpreter
 
 			// find next item
 			var nextItem = _items.FirstOrDefault(i => i.Id == nextId);
-			if (nextItem == null)
-				throw new ArgumentException($"There is no item with id {nextId} (answer id {answerId}).");
+            if (nextItem == null)
+            {
+                ServerContext.Info.Warning($"There is no item with id {nextId} (answer id {answerId}).");
+                return null;
+            }
 
 			// save previous item
 			_previousItem = _currentItem;
@@ -232,7 +236,10 @@ namespace MenuInterpreter
 		{
 			// find handler
 			if (_checkpointHandlers.ContainsKey(checkpoint.Text) == false)
-				throw new Exception($"No handler found for checkpoints of type {checkpoint.Text}");
+            {
+                ServerContext.Info.Warning("No Callback for checkpoint: {0}", checkpoint.Text);
+                return Constants.CheckpointOnFail;
+            }
 
 			var handler = _checkpointHandlers[checkpoint.Text];
 			var args = new CheckpointHandlerArgs()

@@ -96,16 +96,24 @@ namespace Darkages.Storage
 
                 if (mapFile != null && File.Exists(mapFile))
                 {
-                    mapObj.Data = File.ReadAllBytes(mapFile);
-                    mapObj.Hash = Crc16Provider.ComputeChecksum(mapObj.Data);
-                    {
-                        StorageManager.AreaBucket.Save(mapObj);
-                    }
-
-                    mapObj.OnLoaded();
+                    LoadMap(mapObj, mapFile, true);
                     ServerContext.GlobalMapCache[mapObj.Number] = mapObj;
                 }
             }
+        }
+
+        public static void LoadMap(Area mapObj, string mapFile, bool save = false)
+        {
+            mapObj.Data = File.ReadAllBytes(mapFile);
+            mapObj.Hash = Crc16Provider.ComputeChecksum(mapObj.Data);
+            {
+                if (save)
+                {
+                    StorageManager.AreaBucket.Save(mapObj);
+                }
+            }
+
+            mapObj.OnLoaded();
         }
     }
 }

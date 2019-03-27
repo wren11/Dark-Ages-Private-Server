@@ -1595,9 +1595,9 @@ namespace Darkages.Types
             Show(Scope.NearbyAislings, new ServerFormat29(v, position.X, position.Y));
         }
 
-        public void Animate(ushort animation)
+        public void Animate(ushort animation, byte speed = 100)
         {
-            Show(Scope.NearbyAislings, new ServerFormat29((uint)Serial, (uint)Serial, animation, animation, 100));
+            Show(Scope.NearbyAislings, new ServerFormat29((uint)Serial, (uint)Serial, animation, animation, speed));
         }
 
         public void ApplyBuff(string buff)

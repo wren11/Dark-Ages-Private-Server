@@ -117,7 +117,7 @@ namespace DAClient
         private void Send(NetworkFormat format)
         {
             _writer.Position = 0;
-            _writer.Write(format.Command);
+            _writer.Write(format.Command);  
 
             if (format.Secured)
             {

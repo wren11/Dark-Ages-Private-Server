@@ -8,7 +8,7 @@
   "Skills": null,
   "Image": 17131,
   "Level": 99,
-  "ScriptKey": "Mundane Reactor Example",
+  "ScriptKey": "simple_generic",
   "EnableWalking": false,
   "EnableTurning": true,
   "EnableAttacking": false,

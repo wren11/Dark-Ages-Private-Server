@@ -283,28 +283,48 @@ namespace Darkages.Types
                 {
                     DetermineDrop().ForEach(i =>
                     {
-                        if (i != null)
+                    if (i != null)
+                    {
+                        if (GlobalItemTemplateCache.ContainsKey(i))
                         {
-                            if (GlobalItemTemplateCache.ContainsKey(i))
+
+                            var rolled_item = Item.Create(this, GlobalItemTemplateCache[i]);
+                            if (rolled_item != GlobalLastItemRoll)
                             {
+                                GlobalLastItemRoll = rolled_item;
+                                var upgrade = DetermineQuality();
 
-                                var rolled_item = Item.Create(this, GlobalItemTemplateCache[i]);
-                                if (rolled_item != GlobalLastItemRoll)
+                                if (rolled_item == null)
+                                    return;
+
+                                if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
+                                    upgrade = null;
+
+                                rolled_item.Upgrades = upgrade?.Upgrade ?? 0;
+
+                                if (rolled_item.Upgrades > 0)
                                 {
-                                    GlobalLastItemRoll = rolled_item;
-                                    var upgrade = DetermineQuality();
+                                    Item.ApplyQuality(rolled_item);
 
-                                    if (rolled_item == null)
-                                        return;
+                                        if (rolled_item.Upgrades > 2)
+                                        {
+                                            var user = Target ?? null;
 
-                                    if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
-                                        upgrade = null;
+                                            if (user is Aisling aisling)
+                                            {
+                                                var party = aisling.GroupParty.Members;
 
-                                    rolled_item.Upgrades = upgrade?.Upgrade ?? 0;
+                                                foreach (var player in party)
+                                                {
+                                                    player.Client.SendMessage(0x03, string.Format("Special Drop: {0}", rolled_item.DisplayName));
+                                                }
 
-                                    if (rolled_item.Upgrades > 0)
-                                    {
-                                        Item.ApplyQuality(rolled_item);
+                                                Task.Delay(500).ContinueWith((ct) =>
+                                                {
+                                                    rolled_item.Animate(160, 200);
+                                                });
+                                            }
+                                        }
                                     }
                                     rolled_item.Cursed = true;
                                     rolled_item.AuthenticatedAislings = GetTaggedAislings();

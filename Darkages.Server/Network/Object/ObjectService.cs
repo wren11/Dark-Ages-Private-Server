@@ -129,6 +129,18 @@ namespace Darkages.Network.Object
             }
             else
             {
+
+                if (!_spriteCollections.ContainsKey(map.ID))
+                {
+                    var _cachemap = ServerContext.GlobalMapCache.Select(i => i.Value)
+                        .Where(n => n.Name.Equals(map.Name) && n.Number != map.Number).FirstOrDefault();
+
+                    if (_cachemap != null)
+                    {
+                        map = _cachemap;
+                    }
+                }
+
                 var obj = (SpriteCollection<T>)_spriteCollections[map.ID][typeof(T)];
                 var queryResult = obj.Query(predicate);
                 {
@@ -158,6 +170,18 @@ namespace Darkages.Network.Object
             }
             else
             {
+                if (!_spriteCollections.ContainsKey(map.ID))
+                {
+                    var _cachemap = ServerContext.GlobalMapCache.Select(i => i.Value)
+                        .Where(n => n.Name.Equals(map.Name) && n.Number != map.Number).FirstOrDefault();
+
+                    if (_cachemap != null)
+                    {
+                        map = _cachemap;
+                    }
+                }
+
+
                 var obj = (SpriteCollection<T>)_spriteCollections[map.ID][typeof(T)];
                 var queryResult = obj.QueryAll(predicate);
                 {
@@ -177,14 +201,20 @@ namespace Darkages.Network.Object
 
         public void AddGameObject<T>(T obj) where T : Sprite
         {
-            var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
-            objCollection.Add(obj);
+            if (_spriteCollections.ContainsKey(obj.CurrentMapId))
+            {
+                var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
+                objCollection.Add(obj);
+            }
         }
 
         public void RemoveGameObject<T>(T obj) where T : Sprite
         {
-            var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
-            objCollection.Delete(obj);
+            if (_spriteCollections.ContainsKey(obj.CurrentMapId))
+            {
+                var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
+                objCollection.Delete(obj);
+            }
         }
     }
 }

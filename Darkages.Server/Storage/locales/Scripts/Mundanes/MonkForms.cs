@@ -53,31 +53,26 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     client.MenuInterpter.RegisterCheckpointHandler("HasAForm", (_client, res) =>
                     {
                         res.Result = _client.Aisling.AnimalForm != AnimalForm.None;
-                        _client.CloseDialog();
                     });
 
                     client.MenuInterpter.RegisterCheckpointHandler("LearnForm1", (_client, res) =>
                     {
                         _client.Aisling.AnimalForm = AnimalForm.Draco;
-                        _client.CloseDialog();
                     });
 
                     client.MenuInterpter.RegisterCheckpointHandler("LearnForm2", (_client, res) =>
                     {
                         _client.Aisling.AnimalForm = AnimalForm.Kelberoth;
-                        _client.CloseDialog();
                     });
 
                     client.MenuInterpter.RegisterCheckpointHandler("LearnForm3", (_client, res) =>
                     {
                         _client.Aisling.AnimalForm = AnimalForm.WhiteBat;
-                        _client.CloseDialog();
                     });
 
                     client.MenuInterpter.RegisterCheckpointHandler("LearnForm4", (_client, res) =>
                     {
                         _client.Aisling.AnimalForm = AnimalForm.Scorpion;
-                        _client.CloseDialog();
                     });
 
                     client.MenuInterpter.RegisterCheckpointHandler("HasKilled", (_client, res) =>
