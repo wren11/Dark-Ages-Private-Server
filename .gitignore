@@ -28,3 +28,4 @@ git\*
 *.lock
 *.ide
 *.ide-shm
+*.zip
