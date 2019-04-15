@@ -1,4 +1,4 @@
-# NPC START #
+﻿# NPC START #
 #################################################################################################
 start:
     checkpoint: 5
@@ -27,7 +27,7 @@ sequences:
     steps:  
     # --> Step 1                            
     - id: 1                                
-      text: "A beast form is an advanced path of your journey, You can only pick this form once."          
+      text: "A beast form is an crucial part of your journey, You can only choose this once."          
       answers:                            
       - id: 1                              
         text: next    
@@ -50,25 +50,25 @@ sequences:
     steps:  
     # --> Step 1                            
     - id: 1                                
-      text: "Draco Form - Engage your foes witrh the most devastating of attacks. Drawn from powers of the legendary Draco."          
+      text: "Draco Form - Engage your foes with the most devastating of attacks. Drawn from powers of the legendary Draco, You will be a reckoning force, invulnerable to most. Only the strongest of Monks prove worthy to carry the power of the Legendary Draco."          
       answers:                            
       - id: 1                              
         text: next    
         menu: 1        
     - id: 2                                
-      text: "Kelberoth Form - Destruction. The Kelberoth is the mystic Beast that of legends. You will scale with the power of the Kelberoth by your side. Engaging your opponents with unstoppable attacks."          
+      text: "Kelberoth Form - The Kelberoth is the mystic Beast of legends. You will inherit a kelberoth Pup who will scale in power by your side, Once you understand it's power. You're attacks will be unstoppable."          
       answers:                            
       - id: 1                              
         text: next    
         menu: 1        
     - id: 3                                
-      text: "White Bat Form - Learn to blend in the shadows and attack from a shadow, Not even a rogue can predict your next move. You will learn ranged attacks unavailable to other monks."          
+      text: "White Bat Form - Learn to blend in the shadows, Harness the Power of this deceptive creature, Not even a rogue can predict your next move. You will learn ranged attacks unavailable to other monks and unique abilities that allow you to manipulate other creatures."          
       answers:                            
       - id: 1                              
         text: next    
         menu: 1        
     - id: 4                                
-      text: "Scorpion Form - It’s one of the most enduring creatures in the world, and only people who are familiar with its power will be wise enough to give it a wide berth. The scorpion spirit animal is very influential, so make sure you know how you can harness the power of this dangerous but interesting creature!"          
+      text: "Scorpion Form - The Scorpion is one of the most enduring creatures in this world, The scorpion is very influential, so make sure you know how you can harness the power of this dangerous but interesting creature!, Those who fail to tame the Scorpion will never understand it's true power."          
       answers:                            
       - id: 1                              
         text: next    
