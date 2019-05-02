@@ -47,6 +47,10 @@ namespace Darkages.Network.ServerFormats
             var hp = Aisling.MaximumHp >= int.MaxValue || Aisling.MaximumHp <= 0 ? 1 : Aisling.MaximumHp;
             var mp = Aisling.MaximumMp >= int.MaxValue || Aisling.MaximumMp <= 0 ? 1 : Aisling.MaximumMp;
 
+            var chp = Aisling.CurrentHp >= int.MaxValue || Aisling.CurrentHp <= 0 ? 1 : Aisling.CurrentHp;
+            var cmp = Aisling.CurrentMp >= int.MaxValue || Aisling.CurrentMp <= 0 ? 1 : Aisling.CurrentMp;
+
+
             if ((Flags & 0x20) != 0)
             {
                 writer.Write((byte)1);
@@ -84,8 +88,8 @@ namespace Darkages.Network.ServerFormats
 
             if ((Flags & 0x10) != 0)
             {
-                writer.Write((uint)hp);
-                writer.Write((uint)mp);
+                writer.Write((uint)chp);
+                writer.Write((uint)cmp);
             }
 
             if ((Flags & 0x08) != 0)
