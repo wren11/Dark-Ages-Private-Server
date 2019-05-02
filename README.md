@@ -1,8 +1,8 @@
 ![#000000](https://raw.githubusercontent.com/wren11/DarkAges-Lorule-Server/master/GitStuff/pictures/darkages.gif)
 
-# Lorule-Dark-Ages-Server
-## Official Discord- https://discord.gg/PwbFH3T
-## Official Website: http://darkages.creatorlink.net/
+## Lorule-Dark-Ages-Server
+# Official Discord- https://discord.gg/QayQFJY
+# Official Website: http://darkages.creatorlink.net/
 
 out-of-the-box Sand box Private Dark Ages Server For the Dark Ages Client 7.18
 The goal of this project was to provide a platform for anyone to use, build and play on there own Dark Ages Worlds.
