@@ -84,21 +84,6 @@ namespace Darkages.Network
             this.Reader.Position = -1;
         }
 
-        public static List<List<T>> Split<T>(IEnumerable<T> collection, int size)
-        {
-            var count      = collection.Count();
-            var chunks     = new List<List<T>>();
-            var chunkCount = count / size;
-
-            if (count % size > 0)
-                chunkCount++;
-
-            for (var i = 0; i < chunkCount; i++)
-                chunks.Add(collection.Skip(i * size).Take(size).ToList());
-
-            return chunks;
-        }
-
         public void FlushBuffers()
         {
             if (!WorkSocket.Connected)

@@ -1351,7 +1351,7 @@ namespace Darkages.Network.Game
                     var menu = client.MenuInterpter;
                     if (menu != null)
                     {
-                        var selected_answer = menu.GetCurrentStep().Answers.ElementAt(format.Step - 1);
+                        var selected_answer = menu.GetCurrentStep()?.Answers.ElementAt(format.Step - 1);
 
                         if (selected_answer != null)
                         {

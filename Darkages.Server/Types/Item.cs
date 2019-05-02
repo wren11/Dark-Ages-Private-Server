@@ -314,8 +314,7 @@ namespace Darkages.Types
                 if (Template.ManaModifer.Option == StatusOperator.Operator.Remove)
                     client.Aisling.BonusMp += Template.ManaModifer.Value;
 
-                if (client.Aisling.BonusMp < 0)
-                    client.Aisling.BonusMp = ServerContext.Config.MinimumHp;
+               
             }
 
             #endregion
@@ -533,9 +532,6 @@ namespace Darkages.Types
                     client.Aisling.BonusMp += Template.ManaModifer.Value;
                 if (Template.ManaModifer.Option == StatusOperator.Operator.Remove)
                     client.Aisling.BonusMp -= Template.ManaModifer.Value;
-
-                if (client.Aisling.BonusMp < 0)
-                    client.Aisling.BonusMp = ServerContext.Config.MinimumHp;
             }
 
             #endregion

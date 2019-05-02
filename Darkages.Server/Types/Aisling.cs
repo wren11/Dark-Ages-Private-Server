@@ -224,6 +224,8 @@ namespace Darkages
         public DialogSequence ActiveSequence { get; set; }
 
         public AnimalForm AnimalForm { get; set; }
+
+        public int ReservedMp { get; set; }
         #endregion
 
         [JsonIgnore]

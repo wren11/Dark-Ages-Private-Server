@@ -44,6 +44,9 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write(Flags);
 
+            var hp = Aisling.MaximumHp >= int.MaxValue || Aisling.MaximumHp <= 0 ? 1 : Aisling.MaximumHp;
+            var mp = Aisling.MaximumMp >= int.MaxValue || Aisling.MaximumMp <= 0 ? 1 : Aisling.MaximumMp;
+
             if ((Flags & 0x20) != 0)
             {
                 writer.Write((byte)1);
@@ -53,8 +56,8 @@ namespace Darkages.Network.ServerFormats
                 writer.Write((byte)Aisling.ExpLevel);
                 writer.Write((byte)Aisling.AbpLevel);
 
-                writer.Write((uint)Aisling.MaximumHp);
-                writer.Write((uint)Aisling.MaximumMp);
+                writer.Write((uint)hp);
+                writer.Write((uint)mp);
 
                 writer.Write(Aisling.Str);
                 writer.Write(Aisling.Int);
@@ -81,14 +84,14 @@ namespace Darkages.Network.ServerFormats
 
             if ((Flags & 0x10) != 0)
             {
-                writer.Write((uint)Aisling.CurrentHp);
-                writer.Write((uint)Aisling.CurrentMp);
+                writer.Write((uint)hp);
+                writer.Write((uint)mp);
             }
 
             if ((Flags & 0x08) != 0)
             {
                 writer.Write((uint)Aisling.ExpTotal);
-                writer.Write((uint)Aisling.ExpNext);
+                writer.Write((uint)Aisling.ExpNext >= uint.MaxValue ? 1 : Aisling.ExpNext);
                 writer.Write((uint)Aisling.AbpTotal);
                 writer.Write((uint)Aisling.AbpNext);
                 writer.Write((uint)Aisling.GamePoints);

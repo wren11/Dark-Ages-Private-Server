@@ -214,7 +214,7 @@ namespace Darkages
             {
                 ObjectCache = (await GetAreaObjects()).ToArray();
                 {
-                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 2, false);
+                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 1, false);
                 }
             }
             else
@@ -224,14 +224,16 @@ namespace Darkages
 
             if (ObjectCache != null && ObjectCache.Length > 0)
             {
-                UpdateMonsters(users, elapsedTime, ObjectCache.OfType<Monster>());
-
-                //Mundanes shouldnt be updated if no user is on the map.
+                //only update objects if an area has aislings.
                 if (users.Length > 0)
+                {
+                    UpdateMonsters(users, elapsedTime, ObjectCache.OfType<Monster>());
+
                     UpdateMundanes(users, elapsedTime, ObjectCache.OfType<Mundane>());
 
-                UpdateItems(users, elapsedTime,
-                    ObjectCache.OfType<Money>().Concat<Sprite>(ObjectCache.OfType<Item>()));
+                    UpdateItems(users, elapsedTime,
+                        ObjectCache.OfType<Money>().Concat<Sprite>(ObjectCache.OfType<Item>()));
+                }
             }
         }
 
