@@ -859,14 +859,15 @@ namespace Darkages.Network.Game
 
             client.LastWhisperMessageSent = DateTime.UtcNow;
 
-            var user = GetObject<Aisling>(null, i => i.Username.ToLower() == format.Name.ToLower());
-            if (user == null || !user.LoggedIn)
+            var user = Clients.FirstOrDefault(i => i != null && i.Aisling != null && i.Aisling.LoggedIn && i.Aisling.Username.ToLower() == format.Name.ToLower());
+
+            if (user == null)
                 client.SendMessage(0x02, string.Format("{0} is nowhere to be found.", format.Name));
 
-            if (user != null && user.LoggedIn)
+            if (user != null)
             {
-                user.Client.SendMessage(0x00, string.Format("{0}\" {1}", client.Aisling.Username, format.Message));
-                client.SendMessage(0x00, string.Format("{0}> {1}", user.Username, format.Message));
+                user.SendMessage(0x00, string.Format("{0}\" {1}", client.Aisling.Username, format.Message));
+                client.SendMessage(0x00, string.Format("{0}> {1}", user.Aisling.Username, format.Message));
             }
         }
 
