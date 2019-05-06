@@ -20,6 +20,31 @@ namespace Darkages.Types
     /// <summary>
     /// CREDITS: Enum Borrowed from Project hybrasyl (hybrasyl.com)
     /// </summary>
+    /// 
+
+    public enum EquipSlot
+    {
+        None = 0,
+        Weapon = 1,
+        Armor = 2,
+        Shield = 3,
+        Helmet = 4,
+        Earring = 5,
+        Necklace = 6,
+        LHand = 7,
+        RHand = 8,
+        LArm = 9,
+        RArm = 10,
+        Waist = 11,
+        Leg = 12,
+        Foot = 13,
+        FirstAcc = 14,
+        Trousers = 15,
+        Coat = 16,
+        SecondAcc = 17,
+    }
+
+
     public static class ItemSlots
     {
         public const int None = 0;

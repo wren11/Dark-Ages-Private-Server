@@ -358,6 +358,7 @@ namespace Darkages.Network.Game
             }
 
             client.Aisling.CanReact = true;
+            client.MenuInterpter    = null;
 
             if (client.Aisling.Map == null)
                 return;

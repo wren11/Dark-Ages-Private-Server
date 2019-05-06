@@ -27,13 +27,13 @@ namespace Darkages.Storage.locales.debuffs
         public override int Length => 2;
 
         //going to make this debuff apply armor during it's duration. -50 AC!.
-        public StatusOperator AcModifer => new StatusOperator(StatusOperator.Operator.Remove, 50);
+        public StatusOperator AcModifer => new StatusOperator(Operator.Remove, 50);
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {
             base.OnApplied(Affected, debuff);
 
-            if (AcModifer.Option == StatusOperator.Operator.Add)
+            if (AcModifer.Option == Operator.Add)
                 Affected.BonusAc += AcModifer.Value;
         }
 
@@ -44,7 +44,7 @@ namespace Darkages.Storage.locales.debuffs
 
         public override void OnEnded(Sprite Affected, Debuff debuff)
         {
-            if (AcModifer.Option == StatusOperator.Operator.Add)
+            if (AcModifer.Option == Operator.Add)
                 Affected.BonusAc -= AcModifer.Value;
 
             base.OnEnded(Affected, debuff);

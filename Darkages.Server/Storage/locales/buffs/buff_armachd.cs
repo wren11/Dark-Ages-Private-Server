@@ -28,13 +28,13 @@ namespace Darkages.Storage.locales.Buffs
             Icon = 0;
         }
 
-        public StatusOperator AcModifer => new StatusOperator(StatusOperator.Operator.Remove, 25);
+        public StatusOperator AcModifer => new StatusOperator(Operator.Remove, 25);
 
         public override void OnApplied(Sprite Affected, Buff buff)
         {
-            if (AcModifer.Option == StatusOperator.Operator.Add)
+            if (AcModifer.Option == Operator.Add)
                 Affected.BonusAc += AcModifer.Value;
-            else if (AcModifer.Option == StatusOperator.Operator.Remove)
+            else if (AcModifer.Option == Operator.Remove)
                 Affected.BonusAc -= AcModifer.Value;
 
             if (Affected is Aisling)
@@ -55,9 +55,9 @@ namespace Darkages.Storage.locales.Buffs
 
         public override void OnEnded(Sprite Affected, Buff buff)
         {
-            if (AcModifer.Option == StatusOperator.Operator.Add)
+            if (AcModifer.Option == Operator.Add)
                 Affected.BonusAc -= AcModifer.Value;
-            else if (AcModifer.Option == StatusOperator.Operator.Remove)
+            else if (AcModifer.Option == Operator.Remove)
                 Affected.BonusAc += AcModifer.Value;
 
             if (Affected is Aisling)

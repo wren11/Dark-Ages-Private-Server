@@ -15,9 +15,9 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
-using System;
 using System.Linq;
 
 namespace Darkages.Scripting.Scripts.Skills

@@ -36,5 +36,13 @@ namespace Darkages.Types
         Upgradeable = 1 << 12,
         TwoHanded = 1 << 13,
         LongRanged = 1 << 14,
+
+        
+        NormalEquipment   = Equipable | Repairable | Tradeable | Sellable | Bankable | Dropable,
+        NormalEquipPerish = NormalEquipment | Perishable,
+        NormalEquipElementPerish = NormalEquipment | Perishable | Elemental,
+
+        NormalConsumable = Consumable | Stackable | Dropable | Sellable | Tradeable | Bankable,
+
     }
 }

@@ -26,13 +26,13 @@ namespace Darkages.Storage.locales.debuffs
         public override byte Icon => 116;
         public override int Length => 1;
 
-        public StatusOperator AcModifer => new StatusOperator(StatusOperator.Operator.Add, 30);
+        public StatusOperator AcModifer => new StatusOperator(Operator.Add, 30);
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {
             base.OnApplied(Affected, debuff);
 
-            if (AcModifer.Option == StatusOperator.Operator.Add)
+            if (AcModifer.Option == Operator.Add)
                 Affected.BonusAc += AcModifer.Value;
 
             if (Affected is Aisling)
@@ -108,7 +108,7 @@ namespace Darkages.Storage.locales.debuffs
                     .Client
                     .SendMessage(0x02, "The hurricane has passed.");
 
-            if (AcModifer.Option == StatusOperator.Operator.Add)
+            if (AcModifer.Option == Operator.Add)
                 Affected.BonusAc -= AcModifer.Value;
 
             base.OnEnded(Affected, debuff);

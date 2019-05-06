@@ -20,7 +20,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                   new AttrReward()
                   {
                        Attribute = PlayerAttr.STR,
-                       Operator = new StatusOperator(StatusOperator.Operator.Add, 3),
+                       Operator = new StatusOperator(Operator.Add, 3),
                   },
               }
 

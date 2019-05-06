@@ -113,46 +113,46 @@ namespace Darkages.Types
                 {
                     if (attrs.Attribute == PlayerAttr.STR)
                     {
-                        if (attrs.Operator.Option == StatusOperator.Operator.Add)
+                        if (attrs.Operator.Option == Operator.Add)
                             user._Str += (byte)attrs.Operator.Value;
 
-                        if (attrs.Operator.Option == StatusOperator.Operator.Remove)
+                        if (attrs.Operator.Option == Operator.Remove)
                             user._Str -= (byte)attrs.Operator.Value;
                     }
 
                     if (attrs.Attribute == PlayerAttr.INT)
                     {
-                        if (attrs.Operator.Option == StatusOperator.Operator.Add)
+                        if (attrs.Operator.Option == Operator.Add)
                             user._Int += (byte)attrs.Operator.Value;
 
-                        if (attrs.Operator.Option == StatusOperator.Operator.Remove)
+                        if (attrs.Operator.Option == Operator.Remove)
                             user._Int -= (byte)attrs.Operator.Value;
                     }
 
                     if (attrs.Attribute == PlayerAttr.WIS)
                     {
-                        if (attrs.Operator.Option == StatusOperator.Operator.Add)
+                        if (attrs.Operator.Option == Operator.Add)
                             user._Wis += (byte)attrs.Operator.Value;
 
-                        if (attrs.Operator.Option == StatusOperator.Operator.Remove)
+                        if (attrs.Operator.Option == Operator.Remove)
                             user._Wis -= (byte)attrs.Operator.Value;
                     }
 
                     if (attrs.Attribute == PlayerAttr.CON)
                     {
-                        if (attrs.Operator.Option == StatusOperator.Operator.Add)
+                        if (attrs.Operator.Option == Operator.Add)
                             user._Con += (byte)attrs.Operator.Value;
 
-                        if (attrs.Operator.Option == StatusOperator.Operator.Remove)
+                        if (attrs.Operator.Option == Operator.Remove)
                             user._Con -= (byte)attrs.Operator.Value;
                     }
 
                     if (attrs.Attribute == PlayerAttr.DEX)
                     {
-                        if (attrs.Operator.Option == StatusOperator.Operator.Add)
+                        if (attrs.Operator.Option == Operator.Add)
                             user._Dex += (byte)attrs.Operator.Value;
 
-                        if (attrs.Operator.Option == StatusOperator.Operator.Remove)
+                        if (attrs.Operator.Option == Operator.Remove)
                             user._Dex -= (byte)attrs.Operator.Value;
                     }
 

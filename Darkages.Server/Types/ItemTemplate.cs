@@ -21,7 +21,11 @@ using Darkages.Script.Context;
 using Darkages.Systems.Loot.Interfaces;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
 using static Darkages.Types.ElementManager;
+using System.ComponentModel.Design;
 
 namespace Darkages.Types
 {
@@ -82,84 +86,130 @@ namespace Darkages.Types
         public override int Upgrade => 8;
     }
 
+
+
+
     public class ItemTemplate : Template, ILootDefinition
     {
         [JsonProperty]
+        [Browsable(false)]
         public string MiniScript{ get; set; }
 
+        [Browsable(false)]
         public int ID { get; set; }
 
         public bool CanStack { get; set; }
 
         public byte MaxStack { get; set; }
 
+        [Browsable(false)]
         public ushort Image { get; set; }
 
+        [Browsable(false)]
         public ushort DisplayImage { get; set; }
 
+        [Browsable(false)]
         public string ScriptName { get; set; }
 
         public Gender Gender { get; set; }
 
+        [Category("Mods")]
         public StatusOperator HealthModifer { get; set; }
 
+        [Category("Mods")]
         public StatusOperator ManaModifer { get; set; }
 
+        [Category("Mods")]
         public StatusOperator StrModifer { get; set; }
 
+        [Category("Mods")]
         public StatusOperator IntModifer { get; set; }
 
+        [Category("Mods")]
         public StatusOperator WisModifer { get; set; }
 
+        [Category("Mods")]
         public StatusOperator ConModifer { get; set; }
 
+        [Category("Mods")]
         public StatusOperator DexModifer { get; set; }
 
+        [Category("Mods")]
         public StatusOperator AcModifer { get; set; }
 
+        [Category("Mods")]
         public StatusOperator MrModifer { get; set; }
 
+        [Category("Mods")]
         public StatusOperator HitModifer { get; set; }
 
+        [Category("Mods")]
         public StatusOperator DmgModifer { get; set; }
 
+        [Category("Mods")]
         public SpellOperator SpellOperator { get; set; }
 
+        [Category("Elements")]
         public Element OffenseElement { get; set; }
 
+        [Category("Elements")]
         public Element DefenseElement { get; set; }
 
+
+        [Category("Item Properties")]
         public byte CarryWeight { get; set; }
 
+        [Category("Item Properties")]
         public ItemFlags Flags { get; set; }
 
+        [Category("Item Properties")]
         public uint MaxDurability { get; set; }
 
+        [Category("Item Properties")]
         public uint Value { get; set; }
 
+
+        [Browsable(false)]
         public int EquipmentSlot { get; set; }
 
+        [Category("Item Properties")]
+        [JsonIgnore]
+        public EquipSlot EquipSlot { get; set; }
+
+        [Browsable(false)]
         public string NpcKey { get; set; }
 
+        [Category("Requirements")]
         public Class Class { get; set; }
 
+        [Category("Requirements")]
         public byte LevelRequired { get; set; }
 
+        [Category("Item Properties")]
         public int DmgMin { get; set; }
 
+        [Category("Item Properties")]
         public int DmgMax { get; set; }
 
+        [Category("Item Properties")]
         public double DropRate { get; set; }
 
+
+        [Category("Requirements")]
+        [Description("What state is required of the player to use the item?")]
         public ClassStage StageRequired { get; set; }
 
+        [Category("Item Properties")]
         public bool HasPants { get; set; }
 
+        [Category("Item Properties")]
         public ItemColor Color { get; set; }
 
+        [Browsable(false)]
         public string WeaponScript { get; set; }
 
         [JsonIgnore]
+        [Browsable(false)]
         public double Weight
         {
             get => DropRate; set { }

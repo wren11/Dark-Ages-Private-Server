@@ -236,10 +236,10 @@ namespace Darkages.Types
 
             if (Template.AcModifer != null)
             {
-                //Inverted Modifier
-                if (Template.AcModifer.Option == StatusOperator.Operator.Add)
+
+                if (Template.AcModifer.Option == Operator.Add)
                     client.Aisling.BonusAc -= Template.AcModifer.Value;
-                if (Template.AcModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.AcModifer.Option == Operator.Remove)
                     client.Aisling.BonusAc += Template.AcModifer.Value;
 
                 client.SendMessage(0x03, string.Format("E: {0}, AC: {1}", Template.Name, client.Aisling.Ac));
@@ -279,9 +279,9 @@ namespace Darkages.Types
 
             if (Template.MrModifer != null)
             {
-                if (Template.MrModifer.Option == StatusOperator.Operator.Add)
+                if (Template.MrModifer.Option == Operator.Add)
                     client.Aisling.BonusMr -= (byte)Template.MrModifer.Value;
-                if (Template.MrModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.MrModifer.Option == Operator.Remove)
                     client.Aisling.BonusMr += (byte)Template.MrModifer.Value;
 
                 if (client.Aisling.BonusMr < 0)
@@ -294,9 +294,9 @@ namespace Darkages.Types
 
             if (Template.HealthModifer != null)
             {
-                if (Template.HealthModifer.Option == StatusOperator.Operator.Add)
+                if (Template.HealthModifer.Option == Operator.Add)
                     client.Aisling.BonusHp -= Template.HealthModifer.Value;
-                if (Template.HealthModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.HealthModifer.Option == Operator.Remove)
                     client.Aisling.BonusHp += Template.HealthModifer.Value;
 
                 if (client.Aisling.BonusHp < 0)
@@ -309,9 +309,9 @@ namespace Darkages.Types
 
             if (Template.ManaModifer != null)
             {
-                if (Template.ManaModifer.Option == StatusOperator.Operator.Add)
+                if (Template.ManaModifer.Option == Operator.Add)
                     client.Aisling.BonusMp -= Template.ManaModifer.Value;
-                if (Template.ManaModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.ManaModifer.Option == Operator.Remove)
                     client.Aisling.BonusMp += Template.ManaModifer.Value;
 
                
@@ -323,9 +323,9 @@ namespace Darkages.Types
 
             if (Template.StrModifer != null)
             {
-                if (Template.StrModifer.Option == StatusOperator.Operator.Add)
+                if (Template.StrModifer.Option == Operator.Add)
                     client.Aisling.BonusStr -= (byte)Template.StrModifer.Value;
-                if (Template.StrModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.StrModifer.Option == Operator.Remove)
                     client.Aisling.BonusStr += (byte)Template.StrModifer.Value;
             }
 
@@ -335,9 +335,9 @@ namespace Darkages.Types
 
             if (Template.IntModifer != null)
             {
-                if (Template.IntModifer.Option == StatusOperator.Operator.Add)
+                if (Template.IntModifer.Option == Operator.Add)
                     client.Aisling.BonusInt -= (byte)Template.IntModifer.Value;
-                if (Template.IntModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.IntModifer.Option == Operator.Remove)
                     client.Aisling.BonusInt += (byte)Template.IntModifer.Value;
             }
 
@@ -347,9 +347,9 @@ namespace Darkages.Types
 
             if (Template.WisModifer != null)
             {
-                if (Template.WisModifer.Option == StatusOperator.Operator.Add)
+                if (Template.WisModifer.Option == Operator.Add)
                     client.Aisling.BonusWis -= (byte)Template.WisModifer.Value;
-                if (Template.WisModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.WisModifer.Option == Operator.Remove)
                     client.Aisling.BonusWis += (byte)Template.WisModifer.Value;
             }
 
@@ -359,9 +359,9 @@ namespace Darkages.Types
 
             if (Template.ConModifer != null)
             {
-                if (Template.ConModifer.Option == StatusOperator.Operator.Add)
+                if (Template.ConModifer.Option == Operator.Add)
                     client.Aisling.BonusCon -= (byte)Template.ConModifer.Value;
-                if (Template.ConModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.ConModifer.Option == Operator.Remove)
                     client.Aisling.BonusCon += (byte)Template.ConModifer.Value;
 
                 if (client.Aisling.BonusCon < 0)
@@ -376,9 +376,9 @@ namespace Darkages.Types
 
             if (Template.DexModifer != null)
             {
-                if (Template.DexModifer.Option == StatusOperator.Operator.Add)
+                if (Template.DexModifer.Option == Operator.Add)
                     client.Aisling.BonusDex -= (byte)Template.DexModifer.Value;
-                if (Template.DexModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.DexModifer.Option == Operator.Remove)
                     client.Aisling.BonusDex += (byte)Template.DexModifer.Value;
             }
 
@@ -388,9 +388,9 @@ namespace Darkages.Types
 
             if (Template.HitModifer != null)
             {
-                if (Template.HitModifer.Option == StatusOperator.Operator.Add)
+                if (Template.HitModifer.Option == Operator.Add)
                     client.Aisling.BonusHit -= (byte)Template.HitModifer.Value;
-                if (Template.HitModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.HitModifer.Option == Operator.Remove)
                     client.Aisling.BonusHit += (byte)Template.HitModifer.Value;
             }
 
@@ -400,9 +400,9 @@ namespace Darkages.Types
 
             if (Template.DmgModifer != null)
             {
-                if (Template.DmgModifer.Option == StatusOperator.Operator.Add)
+                if (Template.DmgModifer.Option == Operator.Add)
                     client.Aisling.BonusDmg -= (byte)Template.DmgModifer.Value;
-                if (Template.DmgModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.DmgModifer.Option == Operator.Remove)
                     client.Aisling.BonusDmg += (byte)Template.DmgModifer.Value;
             }
 
@@ -418,10 +418,9 @@ namespace Darkages.Types
 
             if (Template.AcModifer != null)
             {
-                //Inverted
-                if (Template.AcModifer.Option == StatusOperator.Operator.Add)
+                if (Template.AcModifer.Option == Operator.Add)
                     client.Aisling.BonusAc += Template.AcModifer.Value;
-                if (Template.AcModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.AcModifer.Option == Operator.Remove)
                     client.Aisling.BonusAc -= Template.AcModifer.Value;
 
                 client.SendMessage(0x03, string.Format("E: {0}, AC: {1}", Template.Name, client.Aisling.Ac));
@@ -496,9 +495,9 @@ namespace Darkages.Types
 
             if (Template.MrModifer != null)
             {
-                if (Template.MrModifer.Option == StatusOperator.Operator.Add)
+                if (Template.MrModifer.Option == Operator.Add)
                     client.Aisling.BonusMr += (byte)Template.MrModifer.Value;
-                if (Template.MrModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.MrModifer.Option == Operator.Remove)
                     client.Aisling.BonusMr -= (byte)Template.MrModifer.Value;
 
                 if (client.Aisling.BonusMr < 0)
@@ -513,9 +512,9 @@ namespace Darkages.Types
 
             if (Template.HealthModifer != null)
             {
-                if (Template.HealthModifer.Option == StatusOperator.Operator.Add)
+                if (Template.HealthModifer.Option == Operator.Add)
                     client.Aisling.BonusHp += Template.HealthModifer.Value;
-                if (Template.HealthModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.HealthModifer.Option == Operator.Remove)
                     client.Aisling.BonusHp -= Template.HealthModifer.Value;
 
                 if (client.Aisling.BonusHp < 0)
@@ -528,9 +527,9 @@ namespace Darkages.Types
 
             if (Template.ManaModifer != null)
             {
-                if (Template.ManaModifer.Option == StatusOperator.Operator.Add)
+                if (Template.ManaModifer.Option == Operator.Add)
                     client.Aisling.BonusMp += Template.ManaModifer.Value;
-                if (Template.ManaModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.ManaModifer.Option == Operator.Remove)
                     client.Aisling.BonusMp -= Template.ManaModifer.Value;
             }
 
@@ -540,9 +539,9 @@ namespace Darkages.Types
 
             if (Template.StrModifer != null)
             {
-                if (Template.StrModifer.Option == StatusOperator.Operator.Add)
+                if (Template.StrModifer.Option == Operator.Add)
                     client.Aisling.BonusStr += (byte)Template.StrModifer.Value;
-                if (Template.StrModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.StrModifer.Option == Operator.Remove)
                     client.Aisling.BonusStr -= (byte)Template.StrModifer.Value;
 
             }
@@ -553,9 +552,9 @@ namespace Darkages.Types
 
             if (Template.IntModifer != null)
             {
-                if (Template.IntModifer.Option == StatusOperator.Operator.Add)
+                if (Template.IntModifer.Option == Operator.Add)
                     client.Aisling.BonusInt += (byte)Template.IntModifer.Value;
-                if (Template.IntModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.IntModifer.Option == Operator.Remove)
                     client.Aisling.BonusInt -= (byte)Template.IntModifer.Value;
             }
 
@@ -565,9 +564,9 @@ namespace Darkages.Types
 
             if (Template.WisModifer != null)
             {
-                if (Template.WisModifer.Option == StatusOperator.Operator.Add)
+                if (Template.WisModifer.Option == Operator.Add)
                     client.Aisling.BonusWis += (byte)Template.WisModifer.Value;
-                if (Template.WisModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.WisModifer.Option == Operator.Remove)
                     client.Aisling.BonusWis -= (byte)Template.WisModifer.Value;
             }
 
@@ -577,9 +576,9 @@ namespace Darkages.Types
 
             if (Template.ConModifer != null)
             {
-                if (Template.ConModifer.Option == StatusOperator.Operator.Add)
+                if (Template.ConModifer.Option == Operator.Add)
                     client.Aisling.BonusCon += (byte)Template.ConModifer.Value;
-                if (Template.ConModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.ConModifer.Option == Operator.Remove)
                     client.Aisling.BonusCon -= (byte)Template.ConModifer.Value;
             }
 
@@ -589,9 +588,9 @@ namespace Darkages.Types
 
             if (Template.DexModifer != null)
             {
-                if (Template.DexModifer.Option == StatusOperator.Operator.Add)
+                if (Template.DexModifer.Option == Operator.Add)
                     client.Aisling.BonusDex += (byte)Template.DexModifer.Value;
-                if (Template.DexModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.DexModifer.Option == Operator.Remove)
                     client.Aisling.BonusDex -= (byte)Template.DexModifer.Value;
             }
 
@@ -601,9 +600,9 @@ namespace Darkages.Types
 
             if (Template.HitModifer != null)
             {
-                if (Template.HitModifer.Option == StatusOperator.Operator.Add)
+                if (Template.HitModifer.Option == Operator.Add)
                     client.Aisling.BonusHit += (byte)Template.HitModifer.Value;
-                if (Template.HitModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.HitModifer.Option == Operator.Remove)
                     client.Aisling.BonusHit -= (byte)Template.HitModifer.Value;
             }
 
@@ -613,9 +612,9 @@ namespace Darkages.Types
 
             if (Template.DmgModifer != null)
             {
-                if (Template.DmgModifer.Option == StatusOperator.Operator.Add)
+                if (Template.DmgModifer.Option == Operator.Add)
                     client.Aisling.BonusDmg += (byte)Template.DmgModifer.Value;
-                if (Template.DmgModifer.Option == StatusOperator.Operator.Remove)
+                if (Template.DmgModifer.Option == Operator.Remove)
                     client.Aisling.BonusDmg -= (byte)Template.DmgModifer.Value;
             }
 
@@ -772,7 +771,7 @@ namespace Darkages.Types
                 {
                     if (obj.Template.AcModifer != null)
                     {
-                        if (obj.Template.AcModifer.Option == StatusOperator.Operator.Remove)
+                        if (obj.Template.AcModifer.Option == Operator.Remove)
                         {
                             obj.Template.AcModifer.Value -= -(obj.Upgrades);
                         }
@@ -780,60 +779,60 @@ namespace Darkages.Types
 
                     if (obj.Template.MrModifer != null)
                     {
-                        if (obj.Template.MrModifer.Option == StatusOperator.Operator.Add)
+                        if (obj.Template.MrModifer.Option == Operator.Add)
                             obj.Template.MrModifer.Value += (obj.Upgrades * 10);
                     }
 
                     if (obj.Template.HealthModifer != null)
                     {
-                        if (obj.Template.HealthModifer.Option == StatusOperator.Operator.Add)
+                        if (obj.Template.HealthModifer.Option == Operator.Add)
                             obj.Template.HealthModifer.Value += (500 * obj.Upgrades);
                     }
 
                     if (obj.Template.ManaModifer != null)
                     {
-                        if (obj.Template.ManaModifer.Option == StatusOperator.Operator.Add)
+                        if (obj.Template.ManaModifer.Option == Operator.Add)
                             obj.Template.ManaModifer.Value += (300 * obj.Upgrades);
                     }
 
                     if (obj.Template.StrModifer != null)
                     {
-                        if (obj.Template.StrModifer.Option == StatusOperator.Operator.Add)
+                        if (obj.Template.StrModifer.Option == Operator.Add)
                             obj.Template.StrModifer.Value += obj.Upgrades;
                     }
 
                     if (obj.Template.IntModifer != null)
                     {
-                        if (obj.Template.IntModifer.Option == StatusOperator.Operator.Add)
+                        if (obj.Template.IntModifer.Option == Operator.Add)
                             obj.Template.IntModifer.Value += obj.Upgrades;
                     }
 
                     if (obj.Template.WisModifer != null)
                     {
-                        if (obj.Template.WisModifer.Option == StatusOperator.Operator.Add)
+                        if (obj.Template.WisModifer.Option == Operator.Add)
                             obj.Template.WisModifer.Value += obj.Upgrades;
                     }
                     if (obj.Template.ConModifer != null)
                     {
-                        if (obj.Template.ConModifer.Option == StatusOperator.Operator.Add)
+                        if (obj.Template.ConModifer.Option == Operator.Add)
                             obj.Template.ConModifer.Value += obj.Upgrades;
                     }
 
                     if (obj.Template.DexModifer != null)
                     {
-                        if (obj.Template.DexModifer.Option == StatusOperator.Operator.Add)
+                        if (obj.Template.DexModifer.Option == Operator.Add)
                             obj.Template.DexModifer.Value += obj.Upgrades;
                     }
 
                     if (obj.Template.DmgModifer != null)
                     {
-                        if (obj.Template.DmgModifer.Option == StatusOperator.Operator.Add)
+                        if (obj.Template.DmgModifer.Option == Operator.Add)
                             obj.Template.DmgModifer.Value += obj.Upgrades;
                     }
 
                     if (obj.Template.HitModifer != null)
                     {
-                        if (obj.Template.HitModifer.Option == StatusOperator.Operator.Add)
+                        if (obj.Template.HitModifer.Option == Operator.Add)
                             obj.Template.HitModifer.Value += obj.Upgrades;
                     }
 

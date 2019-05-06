@@ -60,6 +60,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -490,6 +491,7 @@
     <Compile Include="Types\Mundane.cs" />
     <Compile Include="Types\MundaneTemplate.cs" />
     <Compile Include="Types\Notification.cs" />
+    <Compile Include="Types\Operator.cs" />
     <Compile Include="Types\Party.cs" />
     <Compile Include="Types\PartyMember.cs" />
     <Compile Include="Types\PathQualifer.cs" />

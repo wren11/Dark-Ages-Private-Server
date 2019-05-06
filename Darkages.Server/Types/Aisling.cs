@@ -128,10 +128,10 @@ namespace Darkages
         public Inventory Inventory { get; set; }
         public EquipmentManager EquipmentManager { get; set; }
         public ActivityStatus ActiveStatus { get; set; }
-        
+
         [JsonIgnore]
         public bool ProfileOpen { get; set; }
-            
+
         public Dictionary<string, int> MonsterKillCounters
             = new Dictionary<string, int>();
 
@@ -196,7 +196,7 @@ namespace Darkages
 
                     return true;
                 }
-                    
+
             }
 
             return false;
@@ -239,7 +239,7 @@ namespace Darkages
             Client?.SendStats(StatusFlags.All);
         }
 
-       
+
 
         public void GoHome()
         {
@@ -259,7 +259,7 @@ namespace Darkages
             Client.CloseDialog();
         }
 
-      
+
         public void CastSpell(Spell spell)
         {
             if (!spell.CanUse())
@@ -501,7 +501,7 @@ namespace Darkages
         {
             if (!Client.Aisling.Flags.HasFlag(AislingFlags.Dead))
             {
-                LastMapId    = CurrentMapId;
+                LastMapId = CurrentMapId;
                 LastPosition = Position;
 
                 Client.CloseDialog();
@@ -554,7 +554,7 @@ namespace Darkages
 
             UpdateStats();
         }
-        
+
 
         /// <summary>
         /// This entire exchange routine was shamelessly copy pasted from Kojasou's Server Project.
@@ -670,5 +670,34 @@ namespace Darkages
 
         public bool ReactedWith(string str) => Reactions.ContainsKey(str);
 
+
+        public void ReviveInFront()
+        {
+            var infront = GetInfront(1).OfType<Aisling>();
+
+            var action = new ServerFormat1A
+            {
+                Serial = Serial,
+                Number = 0x01,
+                Speed = 30
+            };
+
+            foreach (var obj in infront)
+            {
+                if (obj.Serial == Serial)
+                    continue;
+
+                if (!obj.LoggedIn)
+                    continue;
+
+                obj.RemoveDebuff("skulled", true);
+                obj.Client.Revive();
+                obj.Animate(5);
+            }
+
+            ApplyDamage(this, 0, true, 8);
+            Show(Scope.NearbyAislings, action);
+
+        }
     }
 }
