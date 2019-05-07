@@ -23,6 +23,8 @@ namespace Darkages
 {
     public class ServerConstants
     {
+        [JsonProperty] public string GameMaster = "lol";
+
         [JsonProperty] public bool AssailsCancelSpells = true;
 
         [JsonProperty] public string BadRequestMessage = "(Invalid Request)";
@@ -55,6 +57,12 @@ namespace Darkages
         [JsonProperty] public string CantEquipThatMessage = "You can't wear that.";
 
         [JsonProperty] public string CantUseThat = "You can't use that.";
+
+        [JsonProperty] public bool CanMoveDuringReap = false;
+
+        [JsonProperty] public string ReapMessageDuringAction = "You can't do that, you are about to die!";
+        [JsonProperty] public string ReapMessage  = "You are dying|You better find some help|You are about to die!|You are skulled, Barron has taken your soul.";
+
 
         [JsonProperty]
         /// <summary>

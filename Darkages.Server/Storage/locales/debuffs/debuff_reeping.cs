@@ -18,6 +18,7 @@
 using Darkages.Network.ServerFormats;
 using Darkages.Storage.locales.Scripts.Global;
 using Darkages.Types;
+using System;
 
 namespace Darkages.Storage.locales.debuffs
 {
@@ -27,8 +28,23 @@ namespace Darkages.Storage.locales.debuffs
         public override byte Icon => 89;
         public override int Length => ServerContext.Config.SkullLength;
 
+        public string[] Messages => ServerContext.Config.ReapMessage.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+        public int Count => Messages.Length;
+
+        public readonly Random _rnd = new Random();
+
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {
+
+            #warning GM-TEST-CODE
+            /* GM Character's don't die. */
+            if (Affected is Aisling)
+            {
+                if ((Affected as Aisling).Flags.HasFlag(AislingFlags.GM))
+                    return;
+            }
+            #warning GM-TEST-CODE
+
             base.OnApplied(Affected, debuff);
 
             if (Affected.CurrentMapId == ServerContext.Config.DeathMap)
@@ -89,9 +105,11 @@ namespace Darkages.Storage.locales.debuffs
 
                 (Affected as Aisling).Show(Scope.Self, hpbar);
 
+
+
                 (Affected as Aisling)
                     .Client
-                    .SendMessage(0x02, "You are facing death... You are about to die.");
+                    .SendMessage(0x02, Messages[_rnd.Next(Count) % Messages.Length]);
             }
             else
             {

@@ -93,14 +93,18 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     if (exists != null)
                     {
                         var template = ServerContext.GlobalItemTemplateCache[exists];
-                        var offset = template.DisplayImage - 0x8000;
-                        var item = Item.Create(sprite, template, false);
+                        var offset   = template.DisplayImage - 0x8000;
+                        var item     = Item.Create(sprite, template, false);
                         {
                             item.Upgrades = Upgrades;
                         }
 
                         Item.ApplyQuality(item);
-                        item.Release(sprite, sprite.Position);
+
+                        item.Template = template;
+                        {
+                            item.Release(sprite, sprite.Position);
+                        }
                     }
                 }
             }

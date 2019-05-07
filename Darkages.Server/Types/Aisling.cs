@@ -225,7 +225,10 @@ namespace Darkages
 
         public AnimalForm AnimalForm { get; set; }
 
-        public int ReservedMp { get; set; }
+        /// <summary>
+        /// Used for Internal Server Authentication
+        /// </summary>
+        public Redirect Redirect { get;  set; }
         #endregion
 
         [JsonIgnore]
@@ -523,7 +526,7 @@ namespace Darkages
             if (!ServerContext.GlobalMapCache.ContainsKey(ServerContext.Config.DeathMap))
                 return;
 
-            if (Client.Aisling.CurrentMapId == ServerContext.Config.DeathMap)
+            if (CurrentMapId == ServerContext.Config.DeathMap)
                 return;
 
 
@@ -544,11 +547,14 @@ namespace Darkages
                 }
             }
 
-            RemoveBuffsAndDebuffs();
+            //dirty: one extra pass here, just to ENSURE all buffs are gone.
+            for (int i = 0; i < 2; i++)
+                RemoveBuffsAndDebuffs();
+
             Client.LeaveArea(true, true);
-            Client.Aisling.X = 21;
-            Client.Aisling.Y = 21;
-            Client.Aisling.Direction = 0;
+            X = 21;
+            Y = 21;
+            Direction = 0;
             Client.Aisling.CurrentMapId = ServerContext.Config.DeathMap;
             Client.EnterArea();
 

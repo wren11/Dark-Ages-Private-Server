@@ -126,8 +126,6 @@ namespace Darkages.Network.Login
         {
             if (_aisling != null)
             {
-                ServerContext.Info?.Info("Player Entering Game: {0}", _aisling.Username);
-
                 var redirect = new Redirect
                 {
                     Serial = Convert.ToString(client.Serial),
@@ -135,6 +133,21 @@ namespace Darkages.Network.Login
                     Seed = Convert.ToString(client.Encryption.Parameters.Seed),
                     Name = _aisling.Username
                 };
+
+                if (_aisling.Username.Equals(ServerContext.Config.GameMaster, StringComparison.OrdinalIgnoreCase))
+                {
+                    _aisling.Flags    = AislingFlags.GM | AislingFlags.SeeInvisible | AislingFlags.SeeGhosts;
+                    _aisling.Redirect = redirect;
+
+                    StorageManager.AislingBucket.Save(_aisling);
+                    {
+                        ServerContext.Info.Debug("GameMaster Entering Game: {0}", _aisling.Username);
+                    }
+                }
+                else
+                {
+                    ServerContext.Info?.Debug("Player Entering Game: {0}", _aisling.Username);
+                }
 
                 client.SendMessageBox(0x00, "\0");
 

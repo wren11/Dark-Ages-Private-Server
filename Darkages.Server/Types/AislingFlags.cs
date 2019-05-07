@@ -20,12 +20,13 @@ using System;
 namespace Darkages.Types
 {
     [Flags]
-    public enum AislingFlags : byte
+    public enum AislingFlags 
     {
-        Normal = 0,
-        SeeInvisible = 1,
-        GM = 2,
-        Dead = 4,
-        Invisible = 8
+        Normal        = 1,
+        SeeInvisible  = 1 << 1,
+        GM            = 1 << 2,
+        Dead          = 1 << 3,
+        Invisible     = 1 << 4,
+        SeeGhosts     = 1 << 5,
     }
 }

@@ -1,5 +1,6 @@
 {
   "$type": "Darkages.ServerConstants, Darkages.Server",
+  "GameMaster": "lol",
   "AssailsCancelSpells": true,
   "BadRequestMessage": "(Invalid Request)",
   "SomethingWentWrong": "Something went wrong.",
@@ -13,6 +14,9 @@
   "CantDropItemMsg": "You can't drop that.",
   "CantEquipThatMessage": "You can't wear that.",
   "CantUseThat": "You can't use that.",
+  "CanMoveDuringReap": false,
+  "ReapMessageDuringAction": "You can't do that, you are about to die!",
+  "ReapMessage": "You are dying|You better find some help|You are about to die!|You are skulled, Barron has taken your soul.",
   "ChantPrefix": "*",
   "ChantSuffix": "*",
   "ClickLootDistance": 3,

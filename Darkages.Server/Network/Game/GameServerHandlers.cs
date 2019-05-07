@@ -160,6 +160,12 @@ namespace Darkages.Network.Game
         {
             Aisling aisling = StorageManager.AislingBucket.Load(format.Name);
 
+            if (!(aisling.Redirect.Serial == Convert.ToString(format.Id)))
+            {
+                base.ClientDisconnected(client);
+                return;
+            }
+
             if (aisling != null)
                 client.Aisling = aisling;
 
@@ -365,6 +371,17 @@ namespace Darkages.Network.Game
 
             if (!client.Aisling.Map.Ready)
                 return;
+
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
+
 
             //if (client.IsRefreshing && ServerContext.Config.CancelWalkingIfRefreshing)
             //    return;
@@ -689,6 +706,16 @@ namespace Darkages.Network.Game
 
             #endregion
 
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
+
             try
             {
                 var spellReq = client.Aisling.
@@ -782,6 +809,16 @@ namespace Darkages.Network.Game
 
             #endregion
 
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
+
             if (client.Aisling.Direction != format.Direction)
             {
                 client.Aisling.Direction = format.Direction;
@@ -811,6 +848,16 @@ namespace Darkages.Network.Game
                 return;
 
             #endregion
+
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
 
             if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
             {
@@ -892,6 +939,16 @@ namespace Darkages.Network.Game
                 return;
 
             #endregion
+
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
 
             var slot = format.Index;
             var item = client.Aisling.Inventory.Get(i => i != null && i.Slot == slot).FirstOrDefault();
@@ -992,6 +1049,16 @@ namespace Darkages.Network.Game
 
             #endregion
 
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
+
             var id = format.Number;
 
             if (id > 35)
@@ -1011,6 +1078,16 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
                 return;
+
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
 
             if (client.Aisling.GoldPoints >= format.GoldAmount)
             {
@@ -1055,6 +1132,16 @@ namespace Darkages.Network.Game
                 return;
 
             #endregion
+
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
 
             client.Aisling.ProfileOpen = true;
             client.Send(new ServerFormat39(client.Aisling));
@@ -1162,6 +1249,16 @@ namespace Darkages.Network.Game
             {
                 client.Interupt();
                 return;
+            }
+
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
             }
 
             switch (format.PaneType)
@@ -1335,6 +1432,16 @@ namespace Darkages.Network.Game
 
             #endregion
 
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
+
             if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
             {
                 client.Interupt();
@@ -1404,6 +1511,16 @@ namespace Darkages.Network.Game
             CancelIfCasting(client);
 
             #endregion
+
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
 
             if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
             {
@@ -1521,6 +1638,16 @@ namespace Darkages.Network.Game
 
         protected override void Format3BHandler(GameClient client, ClientFormat3B format)
         {
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
+
             try
             {
                 if (format.Type == 0x01)
@@ -1645,6 +1772,16 @@ namespace Darkages.Network.Game
 
             #endregion
 
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
+
             if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
             {
                 client.Interupt();
@@ -1737,6 +1874,16 @@ namespace Darkages.Network.Game
             CancelIfCasting(client);
 
             #endregion
+
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
 
             //Menu Helper Handler!
             if (format.Serial == ServerContext.Config.HelperMenuId &&
@@ -1833,6 +1980,16 @@ namespace Darkages.Network.Game
 
             #endregion
 
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
+
             if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
                 return;
 
@@ -1872,11 +2029,15 @@ namespace Darkages.Network.Game
             if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
                 return;
 
-            //if (!client.Aisling.TutorialCompleted)
-            //{
-            //    client.SendMessage(0x02, "{=sYou are not ready. You must understand more first.");
-            //    return;
-            //}
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
 
             var attribute = (Stat)format.Stat;
 
@@ -1959,6 +2120,16 @@ namespace Darkages.Network.Game
 
             if (client == null || !client.Aisling.LoggedIn)
                 return;
+
+            /* This prevents actions during skulled. */
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (client.Aisling.Skulled)
+                {
+                    client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
 
             var trader = GetObject<Aisling>(client.Aisling.Map, i => i.Serial == format.Id);
             var player = client.Aisling;

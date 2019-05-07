@@ -103,7 +103,9 @@ namespace Darkages.Network.Game
 
         public bool IsDead()
         {
-            return Aisling != null && Aisling.Flags.HasFlag(AislingFlags.Dead);
+            var result = Aisling != null && Aisling.Flags.HasFlag(AislingFlags.Dead);
+
+            return result;
         }
 
         public bool CanSeeGhosts()
@@ -300,6 +302,11 @@ namespace Darkages.Network.Game
             FlushBuffers();
         }
 
+        public void SystemMessage(string lpmessage)
+        {
+            SendMessage(0x02, lpmessage);
+        }
+
         private void StatusCheck()
         {
             bool proceed = false;
@@ -319,6 +326,10 @@ namespace Darkages.Network.Game
 
                 if (Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill))
                 {
+                    //dirty: one extra pass here, just to ENSURE all buffs are gone.
+                    for (int i = 0; i < 2; i++)
+                        Aisling.RemoveBuffsAndDebuffs();
+
                     Aisling.CastDeath();
 
                     var target = Aisling.Target;
@@ -332,51 +343,24 @@ namespace Darkages.Network.Game
                     else
                     {
                         SendMessage(Scope.NearbyAislings, 0x02,
-                            Aisling.Username + " has been killed.");
+                            Aisling.Username + " has been killed, somehow.");
                     }
 
                     return;
                 }
 
 
-                if (Aisling.Path != Class.Peasant)
+                if (!Aisling.Skulled)
                 {
-                    if (!Aisling.Skulled)
+                    if (Aisling.CurrentMapId == ServerContext.Config.DeathMap)
                     {
-                        if (Aisling.CurrentMapId == ServerContext.Config.DeathMap)
-                        {
-                            return;
-                        }
-
-                        var debuff = new debuff_reeping();
-                        {
-                            debuff.OnApplied(Aisling, debuff);
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    if (Aisling.AreaID != 85)
-                    {
-                        SendAnimation(78, Aisling, Aisling);
-                        SendMessage(0x02, "You can't die if you have no soul.");
-                        Aisling.Recover();
                         return;
                     }
-                    else
-                    {
-                        for (int i = 0; i < 2; i++)
-                            Aisling.RemoveBuffsAndDebuffs();
 
-                        TransitionToMap(1006, new Position(2, 4));
-                        Aisling.TutorialCompleted = true;
-                        {
-                            SendMessage(0x02, "You awake from a bad dream... or was it??");
-                            SendAnimation(94, Aisling, Aisling);
-                            Aisling.Recover();
-                            return;
-                        }
+                    var debuff = new debuff_reeping();
+                    {
+                        debuff.OnApplied(Aisling, debuff);
+                        return;
                     }
                 }
             }
@@ -743,7 +727,13 @@ namespace Darkages.Network.Game
             {
                 //only show to clients who can see ghosts.
                 var nearby = GetObjects<Aisling>(Aisling.Map, i => i.WithinRangeOf(Aisling) && i.Client.CanSeeGhosts());
-                Aisling.Show(Scope.NearbyAislingsExludingSelf, response, nearby);
+
+                if (nearby != null)
+                {
+                    Aisling.Show(Scope.NearbyAislingsExludingSelf, response, nearby);
+                }
+
+                return;
             }
             else
             {

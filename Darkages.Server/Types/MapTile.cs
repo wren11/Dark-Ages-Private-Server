@@ -48,8 +48,6 @@ namespace Darkages
 
             public bool SpotVacant()
             {
-                var result = true;
-
                 if (BaseObject == TileContent.Warp)
                     return true;
 
@@ -63,8 +61,10 @@ namespace Darkages
                     {
                         if ((Sprites[i] as Monster).Template.IgnoreCollision)
                         {
-                            return false;
+                            return true;
                         }
+
+                        return false;
                     }
 
                     if (Sprites[i] is Mundane)
@@ -72,13 +72,17 @@ namespace Darkages
                         return false;
                     }
 
-                    if (Sprites[i].CurrentHp > 0)
+
+                    if (Sprites[i] is Aisling)
                     {
+                        if ((Sprites[i] as Aisling).Dead)
+                            return true;
+
                         return false;
                     }
                 }
 
-                return result;
+                return true;
             }
 
             public bool Add(Sprite obj)

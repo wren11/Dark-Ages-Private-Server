@@ -1436,6 +1436,18 @@ namespace Darkages.Types
                     return false;
             }
 
+            if (!ServerContext.Config.CanMoveDuringReap)
+            {
+                if (this is Aisling _aisling)
+                {
+                    if (_aisling.Skulled)
+                    {
+                        _aisling.Client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
 

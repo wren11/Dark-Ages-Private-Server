@@ -87,8 +87,6 @@ namespace Darkages.Types
     }
 
 
-
-
     public class ItemTemplate : Template, ILootDefinition
     {
         [JsonProperty]
@@ -219,10 +217,13 @@ namespace Darkages.Types
         public void RunMiniScript(GameClient client)
         {
             Context.Items["client"] = client;
-            Context.Items["user"] = client.Aisling;
+            Context.Items["user"]   = client.Aisling;
+            Context.Items["result"] = false;
 
             "var client = (GameClient)Context.Items[\"client\"];".Run();
             "var user   = (Sprite)Context.Items[\"user\"];".Run();
+
+
 
             try
             {

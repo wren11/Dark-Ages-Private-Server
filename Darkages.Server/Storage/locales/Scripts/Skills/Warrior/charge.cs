@@ -89,12 +89,7 @@ namespace Darkages.Scripting.Scripts.Skills
 
             }
 
-            if (sprite is Aisling)
-            {
-                (sprite as Aisling).Client.Refresh();
-            }
-
-            Task.Delay(150).ContinueWith((dc) =>
+            Task.Delay(50).ContinueWith((dc) =>
             {
                 if (Target != null && collided)
                 {
@@ -103,10 +98,12 @@ namespace Darkages.Scripting.Scripts.Skills
                             new ServerFormat29((uint)sprite.Serial, (uint)Target.Serial,
                                 Skill.Template.TargetAnimation, 0, 100));
 
-                }
 
-                sprite.Show(Scope.NearbyAislings, action);
+                    sprite.Show(Scope.NearbyAislings, action);
+                }
             }).Wait();
+
+
 
         }
 
