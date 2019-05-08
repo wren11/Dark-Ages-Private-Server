@@ -37,6 +37,7 @@
   "HasPants": false,
   "Color": 0,
   "WeaponScript": null,
+  "Id": 607497720,
   "Name": "Raw Ruby",
   "Description": "A ruby fragment that is used for upgrading.",
   "Group": null

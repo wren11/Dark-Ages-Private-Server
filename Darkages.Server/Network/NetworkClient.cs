@@ -15,11 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Common;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -42,7 +42,11 @@ namespace Darkages.Network
 
         public int Serial { get; set; }
 
-        private Queue<byte[]> _sendBuffer { get; set; }
+        const int THROTTLE_SIZE = 128;
+
+        private FixedSizedQueue<byte[]> _sendQueue { get; set; }
+
+        public FixedSizedQueue<byte[]> _pendingQueue = new FixedSizedQueue<byte[]>(5);
 
         private ManualResetEvent SendReset;
 
@@ -53,7 +57,7 @@ namespace Darkages.Network
             this.Encryption = new SecurityProvider();
             this.SendReset  = new ManualResetEvent(true);
 
-            _sendBuffer     = new Queue<byte[]>();
+            _sendQueue      = new FixedSizedQueue<byte[]>(THROTTLE_SIZE);
         }
 
         public void Read(NetworkPacket packet, NetworkFormat format)
@@ -84,6 +88,12 @@ namespace Darkages.Network
             this.Reader.Position = -1;
         }
 
+        public void EmptyBuffers()
+        {
+            _sendQueue = new FixedSizedQueue<byte[]>(THROTTLE_SIZE);
+            this.SendReset.Set();
+        }
+
         public void FlushBuffers()
         {
             if (!WorkSocket.Connected)
@@ -91,11 +101,11 @@ namespace Darkages.Network
                 return;
             }
 
-            lock (_sendBuffer)
+            lock (_sendQueue)
             {
-                if (_sendBuffer != null)
+                if (_sendQueue != null)
                 {
-                    var data = _sendBuffer.SelectMany(i => i);
+                    var data = _sendQueue.SelectMany(i => i);
 
                     try
                     {
@@ -111,8 +121,7 @@ namespace Darkages.Network
                     catch { }
                     finally
                     {
-                        _sendBuffer = new Queue<byte[]>();
-                        this.SendReset.Set();
+                        EmptyBuffers();
                     }
                 }
             }
@@ -173,17 +182,19 @@ namespace Darkages.Network
                         return;
                     }
 
-                    lock (_sendBuffer)
+                    lock (_sendQueue)
                     {
                         var array = packet.ToArray();
-                        _sendBuffer.Enqueue(array);
+
+                        _pendingQueue.Enqueue(array);
+                        _sendQueue.Enqueue(array);
                     }
                 }
             }
             catch
             {
 
-            }            
+            }   
         }
 
         public void Send(NetworkPacketWriter lpData)
@@ -191,10 +202,10 @@ namespace Darkages.Network
             var packet = lpData.ToPacket();
             this.Encryption.Transform(packet);
 
-            lock (_sendBuffer)
+            lock (_sendQueue)
             {
                 var array = packet.ToArray();
-                _sendBuffer.Enqueue(array);
+                _sendQueue.Enqueue(array);
             }
         }
 
@@ -208,9 +219,9 @@ namespace Darkages.Network
                 var packet = Writer.ToPacket();
                 Encryption.Transform(packet);
 
-                lock (_sendBuffer)
+                lock (_sendQueue)
                 {
-                    _sendBuffer.Enqueue(packet.ToArray());
+                    _sendQueue.Enqueue(packet.ToArray());
                 }
             }
         }

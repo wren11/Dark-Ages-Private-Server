@@ -51,6 +51,7 @@
   "TierLevel": 0,
   "TargetAnimation": 0,
   "IsTrap": false,
+  "Id": 196084070,
   "Name": "armachd",
   "Description": "Increases the strength of your armor.",
   "Group": null

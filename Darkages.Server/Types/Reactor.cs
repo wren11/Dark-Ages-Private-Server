@@ -24,16 +24,10 @@ namespace Darkages.Types
     [Serializable]
     public class Reactor : Template
     {
-        [JsonIgnore]
-        public readonly int Id;
-
 
         public Reactor()
         {
-            lock (Generator.Random)
-            {
-                Id = Generator.GenerateNumber();
-            }
+
         }
 
         public string ScriptKey { get; set; }

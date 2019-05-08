@@ -27,7 +27,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Darkages
 {
@@ -69,6 +68,8 @@ namespace Darkages
         [JsonIgnore]
         public MapTile[,] MapNodes;
 
+        private static object _sybcRoot = new object();
+
         public void Update(int x, int y, Sprite obj)
         {
             if (x < 0 ||
@@ -79,10 +80,9 @@ namespace Darkages
                 y >= Rows)
                 return;
 
-
-            if (MapNodes[x, y]?.Add(obj) ?? false)
+            lock (_sybcRoot)
             {
-
+                MapNodes[x, y].Add(obj);
             }
         }
 
@@ -96,12 +96,11 @@ namespace Darkages
                 y >= Rows)
                 return;
 
-
-            if (remove)
+            lock (_sybcRoot)
             {
-                if (MapNodes[x, y]?.Remove(obj) ?? false)
+                if (remove)
                 {
-
+                    3.Times(() => MapNodes[x, y].Remove(obj));
                 }
             }
         }
@@ -138,11 +137,6 @@ namespace Darkages
 
             var isEmpty = obj.SpotVacant();
             return !isEmpty;
-        }
-
-        public void OnEntered(Aisling aisling)
-        {
-
         }
 
         public bool IsWall(Sprite obj, int x, int y)
@@ -196,43 +190,26 @@ namespace Darkages
         }
 
 
-        public async Task<IEnumerable<Sprite>> GetAreaObjects()
+        public void ObjectUpdate(TimeSpan elapsedTime)
         {
-            return await Task.Run(() => GetObjects(this, i => i != null && i.CurrentMapId == ID, Get.All));
-        }
-
-        public Cache<Sprite[]> AreaObjectCache = new Cache<Sprite[]>();
-
-        public async void ObjectUpdate(TimeSpan elapsedTime)
-        {
-            var users = ServerContext.Game.Clients.Where(i => i != null &&
-                i.Aisling != null && i.Aisling.CurrentMapId == ID).Select(i => i.Aisling).ToArray();
-
-            Sprite[] ObjectCache = null;
-
-            if (!AreaObjectCache.Exists(Name))
+            lock (_sybcRoot)
             {
-                ObjectCache = (await GetAreaObjects()).ToArray();
+                var users = ServerContext.Game.Clients.Where(i => i != null && i.Aisling != null && i.Aisling.CurrentMapId == ID).Select(i => i.Aisling).ToArray();
+                var objs  = GetObjects(this, i => i != null && i.CurrentMapId == ID, Get.All).ToArray();
+
+                if (objs != null && objs.Length > 0)
                 {
-                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 1, false);
-                }
-            }
-            else
-            {
-                ObjectCache = AreaObjectCache.Get(Name);
-            }
+                    //only update objects if an area has aislings.
+                    //This might need some changes to support creatures updating off-map.
 
-            if (ObjectCache != null && ObjectCache.Length > 0)
-            {
-                //only update objects if an area has aislings.
-                if (users.Length > 0)
-                {
-                    UpdateMonsters(users, elapsedTime, ObjectCache.OfType<Monster>());
+                    if (users.Length > 0)
+                    {
+                        UpdateMonsters(users, elapsedTime, objs.OfType<Monster>());
 
-                    UpdateMundanes(users, elapsedTime, ObjectCache.OfType<Mundane>());
+                        UpdateMundanes(users, elapsedTime, objs.OfType<Mundane>());
 
-                    UpdateItems(users, elapsedTime,
-                        ObjectCache.OfType<Money>().Concat<Sprite>(ObjectCache.OfType<Item>()));
+                        UpdateItems(users, elapsedTime, objs.OfType<Money>().Concat<Sprite>(objs.OfType<Item>()));
+                    }
                 }
             }
         }

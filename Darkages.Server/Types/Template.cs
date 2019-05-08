@@ -21,6 +21,7 @@ namespace Darkages.Types
 {
     public abstract class Template : ObjectManager
     {
+        public int Id { get; set; }
         public string Name { get; set; }
 
         public string Description { get; set; }

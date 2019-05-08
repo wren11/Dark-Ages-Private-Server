@@ -51,6 +51,7 @@
   "TierLevel": 9,
   "TargetAnimation": 196,
   "IsTrap": true,
+  "Id": 1886890457,
   "Name": "Poison Trap",
   "Description": "Place a Small Trap that will poison enemies who walk over it.",
   "Group": null

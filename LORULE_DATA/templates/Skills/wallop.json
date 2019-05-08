@@ -58,6 +58,7 @@
   },
   "NpcKey": "Combat Trainer",
   "TierLevel": 9,
+  "Id": 904879637,
   "Name": "Wallop",
   "Description": " A powerful Fourth Assail. Makes your space bar deal additional physical damage",
   "Group": null

@@ -57,6 +57,7 @@
   "TierLevel": 9,
   "TargetAnimation": 0,
   "IsTrap": false,
+  "Id": 456457362,
   "Name": "ao suain",
   "Description": "Unfreeze a frozen target.",
   "Group": null

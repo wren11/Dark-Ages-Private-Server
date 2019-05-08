@@ -58,6 +58,7 @@
   "TierLevel": 9,
   "TargetAnimation": 0,
   "IsTrap": false,
+  "Id": 944359511,
   "Name": "ia naomh aite",
   "Description": "Greatly Reduces the amount of incoming damage.",
   "Group": null

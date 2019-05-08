@@ -78,6 +78,7 @@
   "TierLevel": 9,
   "TargetAnimation": 0,
   "IsTrap": false,
+  "Id": 1784416063,
   "Name": "fas nadur",
   "Description": "Slightly amplifies a target's element.",
   "Group": null

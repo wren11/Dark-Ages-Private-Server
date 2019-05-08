@@ -51,6 +51,7 @@
   "TierLevel": 9,
   "TargetAnimation": 0,
   "IsTrap": false,
+  "Id": 152975285,
   "Name": "ao sith",
   "Description": "Removes all effects from a target.",
   "Group": null

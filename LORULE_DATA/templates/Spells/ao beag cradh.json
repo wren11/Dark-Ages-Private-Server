@@ -57,6 +57,7 @@
   "TierLevel": 9,
   "TargetAnimation": 0,
   "IsTrap": false,
+  "Id": 93083325,
   "Name": "ao beag cradh",
   "Description": "Removes the curse beag cradh from a target.",
   "Group": null

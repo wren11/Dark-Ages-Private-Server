@@ -15,8 +15,10 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.Common;
 using Darkages.Types;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 
 namespace Darkages.Storage
@@ -55,8 +57,14 @@ namespace Darkages.Storage
             if (ServerContext.Paused)
                 return;
 
+            lock (Generator.Random)
+            {
+                obj.Id = Generator.GenerateNumber();
+            }
 
             var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Name.ToLower()));
+
+
             var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
             File.WriteAllText(path, objString);
         }
@@ -73,6 +81,6 @@ namespace Darkages.Storage
                 var obj = StorageManager.WarpBucket.Load(Path.GetFileNameWithoutExtension(area));
                 ServerContext.GlobalWarpTemplateCache.Add(obj);
             }
-        }
+        }       
     }
 }

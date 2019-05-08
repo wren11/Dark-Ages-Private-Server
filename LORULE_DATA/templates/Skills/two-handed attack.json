@@ -47,6 +47,7 @@
   },
   "NpcKey": "Martial Arts Trainer",
   "TierLevel": 0,
+  "Id": 869497913,
   "Name": "Two-Handed Attack",
   "Description": "Allows you to wear two handed weapons.",
   "Group": null

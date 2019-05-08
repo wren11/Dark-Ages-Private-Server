@@ -137,20 +137,21 @@ namespace Darkages.Network.Login
                 if (_aisling.Username.Equals(ServerContext.Config.GameMaster, StringComparison.OrdinalIgnoreCase))
                 {
                     _aisling.Flags    = AislingFlags.GM | AislingFlags.SeeInvisible | AislingFlags.SeeGhosts;
-                    _aisling.Redirect = redirect;
 
-                    StorageManager.AislingBucket.Save(_aisling);
-                    {
-                        ServerContext.Info.Debug("GameMaster Entering Game: {0}", _aisling.Username);
-                    }
+                    ServerContext.Info.Debug("GameMaster Entering Game: {0}", _aisling.Username);
                 }
                 else
                 {
                     ServerContext.Info?.Debug("Player Entering Game: {0}", _aisling.Username);
                 }
 
-                client.SendMessageBox(0x00, "\0");
+                //Store Redirection, This provides Redirect Authentication From the GameServer Side.
+                //This is added to provide security by checking the serial generated at time of login against what is redirected to the game server.
+                _aisling.Redirect = redirect;
 
+                StorageManager.AislingBucket.Save(_aisling);
+
+                client.SendMessageBox(0x00, "\0");
                 client.Send(new ServerFormat03
                 {
                     EndPoint = new IPEndPoint(Address, ServerContext.DefaultPort),

@@ -73,6 +73,7 @@
   "TierLevel": 9,
   "TargetAnimation": 0,
   "IsTrap": false,
+  "Id": 893496253,
   "Name": "mor fas nadur",
   "Description": "Moderately amplifies a target's element.",
   "Group": null

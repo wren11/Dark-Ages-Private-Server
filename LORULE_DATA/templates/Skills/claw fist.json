@@ -15,7 +15,7 @@
   "Sound": 21,
   "Debuff": null,
   "Buff": {
-    "$type": "Darkages.Storage.locales.Buffs.buff_clawfist, Darkages.Server",
+    "$type": "Darkages.Types.Buff, Darkages.Server",
     "Name": "Claw Fist",
     "Length": 9,
     "Icon": 13,
@@ -65,6 +65,7 @@
   },
   "NpcKey": "Kung-Fu Master",
   "TierLevel": 9,
+  "Id": 942271770,
   "Name": "Claw Fist",
   "Description": "Doubles all unarmed assail damage for it's duration.",
   "Group": "Attack Bonus"

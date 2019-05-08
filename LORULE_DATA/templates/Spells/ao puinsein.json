@@ -51,6 +51,7 @@
   "TierLevel": 9,
   "TargetAnimation": 0,
   "IsTrap": false,
+  "Id": 1118795921,
   "Name": "ao puinsein",
   "Description": "Remove poison from a target, Instantly.",
   "Group": null

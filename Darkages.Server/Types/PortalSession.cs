@@ -82,19 +82,14 @@ namespace Darkages
                         client.LeaveArea(true, true);
                         client.Refresh();
 
-                        Task.Delay(150).ContinueWith((s) =>
-                        {
-                            client.Aisling.X = X >= 0 ? X : ServerContext.Config.TransitionPointX;
-                            client.Aisling.Y = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
-                            client.Aisling.CurrentMapId = DestinationMap;
-                            client.EnterArea();
-                            client.Refresh();
+                        client.Aisling.X = X >= 0 ? X : ServerContext.Config.TransitionPointX;
+                        client.Aisling.Y = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
+                        client.Aisling.CurrentMapId = DestinationMap;
+                        client.EnterArea();
+                        client.Refresh();
+                        client.Aisling.PortalSession = null;
 
-                            client.Aisling.PortalSession = null;
-                        });
                     }
-
-
                 }
             }
         }

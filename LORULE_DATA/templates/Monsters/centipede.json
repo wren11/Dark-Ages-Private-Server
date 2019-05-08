@@ -4,10 +4,7 @@
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
     "$values": [
       "Centipede's Gland",
-      "Pork",
-      "Chicken",
-      "Mileth Scroll",
-      "Lorule Scroll"
+      "Mileth Scroll"
     ]
   },
   "Image": 16436,
@@ -17,12 +14,12 @@
   "LootType": 4,
   "MoodType": 2,
   "SpawnType": 2,
-  "ElementType": 0,
+  "ElementType": 1,
   "PathQualifer": 1,
-  "Level": 3,
+  "Level": 18,
   "MaximumHP": 0,
   "MaximumMP": 0,
-  "AreaID": 426,
+  "AreaID": 430,
   "MovementSpeed": 1000,
   "CastSpeed": 10000,
   "SpawnMax": 100,
@@ -42,6 +39,7 @@
   "FamilyKey": "Insect",
   "BaseName": "Centipede",
   "EngagedWalkingSpeed": 0,
+  "Id": 1959278328,
   "Name": "Centipede",
   "Description": "Small creature that dwells in dark places, such as crypts. Known to be aggresive.",
   "Group": null

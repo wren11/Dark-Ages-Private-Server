@@ -47,6 +47,7 @@
   },
   "NpcKey": "Martial Arts Trainer",
   "TierLevel": 0,
+  "Id": 530147329,
   "Name": "Sneak",
   "Description": "Step into the shadows, your next attack does twice as much.",
   "Group": null

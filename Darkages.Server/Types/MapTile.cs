@@ -16,7 +16,6 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages.Types;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,6 +23,7 @@ namespace Darkages
 {
     public partial class Area
     {
+
         public Sprite Owner { get; set; }
 
         public class MapTile
@@ -33,17 +33,23 @@ namespace Darkages
             public TileContent BaseObject { get; set; }
 
             public bool HasWall => BaseObject == TileContent.Wall;
-          
-            private ConcurrentDictionary<int, Sprite> Objects = new ConcurrentDictionary<int, Sprite>();
+
+            private Dictionary<int, Sprite> Objects = new Dictionary<int, Sprite>();
 
             public List<Sprite> Sprites
             {
-                get => Objects.Select(i => i.Value).ToList(); 
+                get
+                {
+                    lock (Objects)
+                    {
+                        return Objects.Select(i => i.Value).ToList();
+                    }
+                }
             }
 
             public void Empty()
             {
-                Objects = new ConcurrentDictionary<int, Sprite>();
+                Objects = new Dictionary<int, Sprite>();
             }
 
             public bool SpotVacant()
@@ -54,31 +60,33 @@ namespace Darkages
                 if (BaseObject == TileContent.Wall)
                     return false;
 
-
-                for (int i = 0; i < Sprites.Count; i++)
+                lock (_sybcRoot)
                 {
-                    if (Sprites[i] is Monster)
+                    for (int i = 0; i < Sprites.Count; i++)
                     {
-                        if ((Sprites[i] as Monster).Template.IgnoreCollision)
+                        if (Sprites[i] is Monster)
                         {
-                            return true;
+                            if ((Sprites[i] as Monster).Template.IgnoreCollision)
+                            {
+                                return true;
+                            }
+
+                            return false;
                         }
 
-                        return false;
-                    }
-
-                    if (Sprites[i] is Mundane)
-                    {
-                        return false;
-                    }
+                        if (Sprites[i] is Mundane)
+                        {
+                            return false;
+                        }
 
 
-                    if (Sprites[i] is Aisling)
-                    {
-                        if ((Sprites[i] as Aisling).Dead)
-                            return true;
+                        if (Sprites[i] is Aisling)
+                        {
+                            if ((Sprites[i] as Aisling).Dead)
+                                return true;
 
-                        return false;
+                            return false;
+                        }
                     }
                 }
 
@@ -87,13 +95,24 @@ namespace Darkages
 
             public bool Add(Sprite obj)
             {
-                return Objects.TryAdd(obj.Serial, obj);
+                lock (_sybcRoot)
+                {
+                    Objects[obj.Serial] = obj;
+                    return Objects.ContainsKey(obj.Serial);
+                }
             }
 
             public bool Remove(Sprite obj)
             {
-                Sprite removedObj;
-                return Objects.TryRemove(obj.Serial, out removedObj);
+                lock (_sybcRoot)
+                {
+                    if (Objects.ContainsKey(obj.Serial))
+                    {
+                        return Objects.Remove(obj.Serial);
+                    }
+
+                    return true;
+                }
             }
         }
     }
