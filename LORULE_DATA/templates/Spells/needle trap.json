@@ -51,7 +51,6 @@
   "TierLevel": 9,
   "TargetAnimation": 68,
   "IsTrap": true,
-  "Id": 1982027255,
   "Name": "Needle Trap",
   "Description": "Place a Small Trap damaging enemies who walk over it.",
   "Group": null

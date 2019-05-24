@@ -1,0 +1,182 @@
+1 = shirt/blouse
+2 = warrior 1
+3 = monk 1
+4 = rogue 1
+5 = priest 1
+6 = wizard 1
+7 = warrior 11
+8 = monk 41
+9 = rogue 11
+10 = priest 11
+11 = wizard 11
+12 = warrrior 33
+13 = monk 11
+14 = rogue 41 (broken)
+15 = priest 41 (broken)
+16 = wizard 41
+17 = warrior 41
+18 = monk 71 (broken)
+19 = rogue 71 (broken)
+20 = priest 71
+21 = wizard 71
+22 = warrior 55
+23 = monk 99 (broken)
+24 = rogue 99
+25 = priest 99
+26 = wizard 99
+27 = warrior 85
+28 = warrior 71
+29 = warrior 99
+33 = clown suite
+34 = batman
+35 = ?
+36 = warrior 80
+37 = rogue 80
+38 = priest 80
+39 = priest 80 again.
+40 = monk 80
+41 = poofter armor
+43 = warrior 11 - red
+44 = warrior 11 - green
+45 = warrior 11 - grey
+46 = warrior 11 - purple
+47 = rogue 11 - red
+48 = rogue 11 - blue
+49 = rogue 11 - brown
+50 = rogue 11 - purple
+51 = wizard 11 - orange
+52 = wizard 11 - blue
+53 = wizard 11 - green
+54 = wizard 11 - white
+55 = priest 11 - black
+56 = priest 11 - green
+57 = priest 11 - blue
+58 = priest 11 - white
+59 = monk 11 - green
+60 = monk 11 - brown
+61 = monk 11 - cyan
+62 = monk 11 - golden
+63 = warrior 1 - brown
+64 = warrior 1 - grey
+65 = warrior 1 - white
+66 = warrior 1 - cyan
+67 = rogue 1 - brown
+68 = rogue 1 - green
+69 = rogue 1 - blue
+70 = rogue 1 - purple
+71 = wizard 1 - red
+72 = wizard 1 - blue
+73 = wizard 1 - green
+74 = wizard 1 - cyan
+75 = priest 1 - red
+76 = priest 1 - green
+77 = priest 1 - orange
+78 = priest 1 - purple
+79 = monk 1 - black
+80 = monk 1 - blue
+81 = monk 1 - grey
+82 = monk 1 - green
+83 = broken
+84 = broken
+85 = broken
+86 = broken
+87 = rogue 41 - silver
+88 = rogue 41 - blue
+89 = rogue 41 - brown
+90 = rogue 41 - steel
+91 = wizard 41 - red
+92 = wizard 41 - blue
+93 = wizard 41 - green
+94 = wizard 41 - white
+95 = broken
+96 = broken
+97 = broken
+98 = broken
+99 = broken
+111 = wizard 71 - red
+112 = wizard 71 - blue
+113 = wizard 71 - black
+114 = wizard 71 - white
+115 = priest 71 - orange
+116 = priest 71 - cyan
+117 = priest 71 - red
+118 = priest 71 - green
+123 = warrior 85 - red
+124 = warrior 85 - yellow
+125 = warrior 85 - blue
+126 = warrior 85 - black
+127 = rogue 99 - yellow
+128 = rogue 99 - silver
+129 = rogue 99 - teal
+130 = rogue 99 - brown
+131 - wizard 99 - brown
+132 - wizard 99 - blue
+133 - wizard 99 - grey
+134 - wizard 99 - green
+135 - priest 99 - brown
+136 = priest 99 - orange
+137 = priest 99 - red
+138 = priest 99 - blue
+156 - priest master
+157 = warrior master
+158 - monk master
+159 - rogue master
+160 - wizard master
+174 - priest gm - red
+175 - warrior gm -  red
+176 - monk gm - red
+177 - rogue gm - green
+178 - wizard gm - red
+179 - priest gm - green
+180 - warrior gm - white
+181 - monk gm = green
+182 - rogue gm - blue
+183 - wizard gm - gold
+210 - priest - darius
+212 - monk - nightmare
+222 - gm
+230 - monk 41 - grey
+231 - monk 1  - silver
+232 - monk 11 - oren
+233 - monk 41 - white
+234 - monk 71 - black
+235 - monk 99 - tiger
+236 - priest 1 - teal
+238 - priest 41 - brown
+239 - wizard 71 - oren
+240 = priest 99 - oren
+241 = rogue 1 - oren
+242 = rogue 99 - oren
+243 = rogue 71 - oren
+244 = rogue 41 - oren
+245 = rogue 11 - oren
+246 = warrior 1 - oren
+247 = warrior 41 - oren
+248 = warrior 33 - oren
+249 = warrior 71 - oren
+250 = warrior 99 - white
+
+
+265 = monk ab 1
+266 = priest ab 1
+267 = rogue ab 1
+268 = warrior ab 1
+269 = wizard ab 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

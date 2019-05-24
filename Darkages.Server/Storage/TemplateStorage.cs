@@ -15,7 +15,6 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Common;
 using Darkages.Types;
 using Newtonsoft.Json;
 using System;
@@ -200,11 +199,6 @@ namespace Darkages.Storage
             if (ServerContext.Paused)
                 return;
 
-            lock (Generator.Random)
-            {
-                obj.Id = Generator.GenerateNumber();
-            }
-
             if (replace)
             {
                 var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Name.ToLower()));
@@ -244,6 +238,13 @@ namespace Darkages.Storage
 
                 path = Path.Combine(dir, fileName + " " + i + fileExt);
             }
+        }
+        public void Delete(ItemTemplate obj)
+        {
+            var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Name.ToLower()));
+
+            if (File.Exists(path))
+                File.Delete(path);
         }
     }
 }

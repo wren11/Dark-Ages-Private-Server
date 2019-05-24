@@ -30,8 +30,6 @@ namespace Darkages
 {
     public class Aisling : Sprite
     {
-        private static object _sybcRoot = new object();
-
         [JsonIgnore]
         public DateTime LookupTime;
 
@@ -438,36 +436,36 @@ namespace Darkages
             return result;
         }
 
-
+        /// <summary>
+        ///     Removes Aisling, Sends Remove packet to nearby aislings
+        ///     and removes itself from the ObjectManager.
+        /// </summary>
         public void Remove(bool update = false, bool delete = true)
         {
-            lock (_sybcRoot)
+            if (Map != null)
             {
-                if (Map != null)
-                {
-                    Map.Update(X, Y, this, true);
-                }
+                Map.Update(X, Y, this, true);
+            }
 
-                if (update)
-                    Show(Scope.NearbyAislingsExludingSelf, new ServerFormat0E(Serial));
+            if (update)
+                Show(Scope.NearbyAislingsExludingSelf, new ServerFormat0E(Serial));
 
-                try
+            try
+            {
+                if (delete)
                 {
-                    if (delete)
+                    var objs = GetObjects(Map, i => i.WithinRangeOf(this) && i.Target != null && i.Target.Serial == Serial, Get.Monsters | Get.Mundanes);
+                    if (objs != null)
                     {
-                        var objs = GetObjects(Map, i => i.WithinRangeOf(this) && i.Target != null && i.Target.Serial == Serial, Get.Monsters | Get.Mundanes);
-                        if (objs != null)
-                        {
-                            foreach (var obj in objs)
-                                obj.Target = null;
-                        }
+                        foreach (var obj in objs)
+                            obj.Target = null;
                     }
                 }
-                finally
-                {
-                    if (delete)
-                        DelObject(this);
-                }
+            }
+            finally
+            {
+                if (delete)
+                    DelObject(this);
             }
         }
 

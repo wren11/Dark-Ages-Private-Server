@@ -53,7 +53,6 @@
   },
   "NpcKey": "Martial Arts Trainer",
   "TierLevel": 0,
-  "Id": 938985016,
   "Name": "Kelberoth Strike",
   "Description": "Damage a target using 30% of your current HP as direct true damage.",
   "Group": null

@@ -61,8 +61,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        //public static Dictionary<int, int> WarpIdx = new Dictionary<int, int>();
-
         /// <summary>
         ///     Activate Assails
         /// </summary>
@@ -83,49 +81,6 @@ namespace Darkages.Network.Game
                 client.Interupt();
                 return;
             }
-
-            ///* Sync Tests */
-            //var warps = new Action[] {
-            //    () =>
-            //    {
-            //        client.LeaveArea(true, false);
-            //        client.Aisling.X = 48;
-            //        client.Aisling.Y = 8;
-            //        client.EnterArea();
-            //        client.CloseDialog();
-            //    },
-            //    () =>
-            //    {
-            //        client.LeaveArea(true, false);
-            //        client.Aisling.X = 8;
-            //        client.Aisling.Y = 8;
-            //        client.EnterArea();
-            //        client.CloseDialog();
-            //    },
-            //    () =>
-            //    {
-            //        client.LeaveArea(true, false);
-            //        client.Aisling.X = 48;
-            //        client.Aisling.Y = 48;
-            //        client.EnterArea();
-            //        client.CloseDialog();
-            //    },
-            //    () =>
-            //    {
-            //        client.LeaveArea(true, false);
-            //        client.Aisling.X = 8;
-            //        client.Aisling.Y = 48;
-            //        client.EnterArea();
-            //        client.CloseDialog();
-            //    },
-            //};
-
-            //if (!WarpIdx.ContainsKey(client.Serial)) {
-            //    WarpIdx[client.Serial] = 0;
-            //}
-
-            //(warps[WarpIdx[client.Serial]++ % warps.Length])();
-            
 
             client.MenuInterpter = null;
 
@@ -436,8 +391,6 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Walk())
             {
-                client.Aisling.Map.Update(client.Aisling.X, client.Aisling.Y, client.Aisling, false);
-
                 ObjectComponent.UpdateClientObjects(client.Aisling);
                 if (client.Aisling.AreaID == ServerContext.Config.TransitionZone)
                 {

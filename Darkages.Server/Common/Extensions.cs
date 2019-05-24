@@ -17,24 +17,13 @@
 //*************************************************************************/
 using Mono.CSharp;
 using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
 
 namespace Darkages.Common
 {
-
     public static class Extensions
     {
-        public static void Times(this int count, Action action)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                action();
-            }
-        }
-
         public static T Eval<T>(this string code) where T : class
         {
             return Evaluator.Evaluate(code) as T;
@@ -52,11 +41,6 @@ namespace Darkages.Common
         public static byte[] ToByteArray(this string str)
         {
             return encoding.GetBytes(str);
-        }
-
-        public static string ToHexString(this byte[] Bytes)
-        {
-            return string.Concat(Bytes.Select(b => "0x" + b.ToString("X2") + " ")).TrimEnd(new char[] { ' ' });
         }
 
         public static bool IsWithin(this int value, int minimum, int maximum)

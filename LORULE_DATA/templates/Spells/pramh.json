@@ -51,7 +51,6 @@
   "TierLevel": 0,
   "TargetAnimation": 0,
   "IsTrap": false,
-  "Id": 228404362,
   "Name": "pramh",
   "Description": "Puts a target to sleep.",
   "Group": null

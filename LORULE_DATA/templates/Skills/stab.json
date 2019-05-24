@@ -58,7 +58,6 @@
   },
   "NpcKey": "Bullop",
   "TierLevel": 0,
-  "Id": 123352599,
   "Name": "Stab",
   "Description": "Stab an target, dealing heavy damage. and weaken the target.",
   "Group": null

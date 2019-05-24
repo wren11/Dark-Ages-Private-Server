@@ -58,7 +58,6 @@
   },
   "NpcKey": "Combat Trainer",
   "TierLevel": 0,
-  "Id": 499486660,
   "Name": "Rescue",
   "Description": "Force a creature to attack you, If used on a dying player. You may spare their life.",
   "Group": null

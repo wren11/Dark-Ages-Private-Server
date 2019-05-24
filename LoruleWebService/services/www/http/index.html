@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Lorule : A Dark Ages Roleplaying Server</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+
+        .console {
+            display: block;
+            background: #000;
+            border: 3px groove #ccc;
+            color: #ccc;
+            padding: 10px;
+            width: 250px;
+            overflow-y: auto;
+            height: 99%;
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            font-size: small;
+        }
+
+        .Debug {
+            color: aqua;
+        }
+
+        .Info {
+            color: khaki;
+        }
+
+        .Error {
+            color: red;
+        }
+
+        .Warning {
+            color: sandybrown;
+        }
+    </style>
+</head>
+
+<body ng-app="sampleApp" onload="loruleUpdate();">
+
+
+
+    <div class="container">
+
+        <div ng-controller="ServerController" style="background-color: #f3f3f3; width: 100%; margin: 0 auto; border-bottom: solid #333 1px;">
+            <span class="badge badge-light">
+                {{ServerStatus}}
+            </span>
+        </div>
+
+        <div class="row">
+            <div class="col-3">
+                
+                <br/>
+                <h1 class="display-4">Lorule</h1>
+
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="http://lorule-da.com/Lor_Installer.exe">Download</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://discord.gg/jZVEpr">Discord</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/wren11/DarkAges-Lorule-Server">GitHub</a>
+                    </li>
+                </ul>
+
+                <br />
+
+                <div ng-controller="MenuController">
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a class="nav-link" href="/items">Items</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/players">Players</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/creatures">Creatures</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/skills">Skills</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/spells">Spells</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+
+            <div class="col-8">
+                <br/>
+                <div ng-view style="margin-top: 10px;">
+                </div>
+            </div>
+        </div>
+
+        <div ng-controller="LogController" class="console">
+            <div ng-repeat="(key, value) in Logs">
+                <div class="{{value[0]}}">{{value[1]}}</div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-animate.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-cookies.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-resource.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-sanitize.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-touch.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        var lorTimer = setInterval(loruleUpdate, 3500);
+        function loruleUpdate() {
+            var scope = angular.element(document.querySelector('[ng-controller="ServerController"]')).scope();
+            var logScope = angular.element(document.querySelector('[ng-controller="LogController"]')).scope();
+
+            scope.getUsers();
+            scope.getServerStatus();
+            logScope.getServerLogs();
+        }
+
+    </script>
+</body>
+</html>

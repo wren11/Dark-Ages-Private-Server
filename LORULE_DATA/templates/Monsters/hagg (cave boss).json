@@ -3,8 +3,7 @@
   "Drops": {
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
     "$values": [
-      "random",
-      "Mileth Scroll"
+      "Hag's Replica Girdle"
     ]
   },
   "Image": 16542,
@@ -51,7 +50,6 @@
   "FamilyKey": null,
   "BaseName": null,
   "EngagedWalkingSpeed": 0,
-  "Id": 225975952,
   "Name": "Hagg (Cave Boss)",
   "Description": null,
   "Group": null

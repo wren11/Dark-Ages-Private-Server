@@ -51,7 +51,6 @@
   "TierLevel": 1,
   "TargetAnimation": 0,
   "IsTrap": false,
-  "Id": 1843313207,
   "Name": "beag ioc",
   "Description": "Heal a target, using your will.",
   "Group": null

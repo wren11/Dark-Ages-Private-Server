@@ -57,7 +57,6 @@
   "TierLevel": 9,
   "TargetAnimation": 394,
   "IsTrap": true,
-  "Id": 494747894,
   "Name": "Stiletto Trap",
   "Description": "Place a medium Trap damaging enemies who walk over it.",
   "Group": null

@@ -79,7 +79,6 @@ namespace Darkages.Network
                 {
                     if (AddClient(client))
                     {
-                        client.EmptyBuffers();
                         ClientConnected(client);
 
                         lock (Generator.Random)
@@ -162,6 +161,7 @@ namespace Darkages.Network
             }
             catch (Exception)
             {
+
             }
         }
 
@@ -188,14 +188,12 @@ namespace Darkages.Network
             lock (Clients)
             {
                 for (var i = Clients.Length - 1; i >= 0; i--)
-                {
                     if (Clients[i] != null &&
                         Clients[i].Serial == Serial)
                     {
                         Clients[i] = null;
                         break;
                     }
-                }
             }
         }
 
@@ -206,10 +204,8 @@ namespace Darkages.Network
             lock (Clients)
             {
                 foreach (var client in Clients)
-                {
                     if (client != null)
                         ClientDisconnected(client);
-                }
             }
         }
 
@@ -260,7 +256,6 @@ namespace Darkages.Network
             {
                 try
                 {
-                    //client.FlushBuffers();
                     client.Read(packet, format);
 
                     _handlers[format.Command]?.Invoke(this,
@@ -272,7 +267,7 @@ namespace Darkages.Network
                 }
                 catch (Exception)
                 {
-                    client.EmptyBuffers(); 
+                    //ignore   
                 }
             }
         }
@@ -282,24 +277,37 @@ namespace Darkages.Network
             if (client == null)
                 return;
 
-            if (client._pendingQueue.Count > 0)
-            {
-                ServerContext.Info.Warning("Client ID: {0} Disconnected, Dumping Pending Queue.", client.Serial);
-                foreach (var bin in client._pendingQueue)
-                {
-                    ServerContext.Info.Debug(client.Serial + "\n{0}", bin.ToHexString());
-                }
-            }
-
             if (client.WorkSocket != null &&
                 client.WorkSocket.Connected)
             {
-                client.EmptyBuffers();
                 client.WorkSocket.Shutdown(SocketShutdown.Both);
                 client.WorkSocket.Close();
             }
 
             RemoveClient(client.Serial);
+        }
+
+        private void RemoveAisling(TClient client)
+        {
+            if (ServerContext.Game == null)
+                return;
+
+            var nearby = GetObjects<Aisling>((client as GameClient).Aisling.Map, i => i.WithinRangeOf((client as GameClient).Aisling));
+            foreach (var near in nearby)
+            {
+                if (near.Serial == (client as GameClient).Aisling.Serial)
+                    continue;
+
+                if (near.LoggedIn)
+                {
+                    if (near.Map != null && near.Map.Ready)
+                        near.Map.Update(
+                            (client as GameClient).Aisling.X,
+                            (client as GameClient).Aisling.Y, (client as GameClient).Aisling, true);
+
+                    near.Show(Scope.Self, new ServerFormat0E((client as GameClient).Aisling.Serial));
+                }
+            }
         }
 
         #region Format Handlers

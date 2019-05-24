@@ -15,11 +15,9 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using ConsoleTables;
 using Darkages.Common;
 using Darkages.Interops;
 using Darkages.Network.Game;
-using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Script.Context;
 using Darkages.Storage;
@@ -48,8 +46,6 @@ namespace Darkages
         public static bool Running, Paused;
 
         public static GameServer Game;
-
-        public static LoginServer Lobby;
 
         public static ServerConstants Config;
 
@@ -125,7 +121,7 @@ namespace Darkages
         {
             if (Info != null)
             {
-                Info.Debug(message, args);
+                Info.Info(message, args);
             }
             else
             {
@@ -196,14 +192,8 @@ namespace Darkages
                 try
                 {
 
-                    Lobby = new LoginServer(1000);
-                    Lobby.Start(2610);
-
                     Game = new GameServer(Config.ConnectionCapacity);
                     Game.Start(DefaultPort);
-
-                    CreateConsole();
-
                 }
                 catch (Exception)
                 {
@@ -214,16 +204,6 @@ namespace Darkages
 
         
             Running = true;
-        }
-
-        private static void CreateConsole()
-        {
-            var table = new ConsoleTable("Server", "Port", "Status");
-            table.AddRow("Lobby", "2610", "Online")
-                 .AddRow("Game", DefaultPort, "Online");
-
-            Console.WriteLine();
-            table.Write(Format.Minimal);
         }
 
         /// <summary>
@@ -241,9 +221,6 @@ namespace Darkages
                 EmptyCacheCollectors();
                 Game?.Abort();
                 Game = null;
-
-                Lobby?.Abort();
-                Lobby = null;
             }
         }
 
@@ -254,6 +231,8 @@ namespace Darkages
             {
                 try
                 {
+                    LoadConstants();
+                    LoadAndCacheStorage();
                     InitScriptEvaluators();
                     StartServers();
                 }
@@ -263,6 +242,7 @@ namespace Darkages
                 }
             }
             Log("----------------------------------------------");
+            Log("{0} World Server: Online.", Config.SERVER_TITLE);
         }
 
 

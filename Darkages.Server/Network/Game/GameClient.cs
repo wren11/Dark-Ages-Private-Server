@@ -25,7 +25,6 @@ using MenuInterpreter;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 
@@ -421,14 +420,22 @@ namespace Darkages.Network.Game
             try
             {
                 LoadGlobalScripts();
+                Thread.Sleep(50);
                 InitSpellBar();
+                Thread.Sleep(50);
                 LoadInventory();
+                Thread.Sleep(50);
                 LoadSkillBook();
+                Thread.Sleep(100);
                 LoadSpellBook();
+                Thread.Sleep(100);
                 LoadEquipment();
+                Thread.Sleep(100);
                 SendProfileUpdate();
+                Thread.Sleep(100);
 
                 SendStats(StatusFlags.All);
+                Thread.Sleep(100);
             }
             catch
             {
@@ -738,37 +745,32 @@ namespace Darkages.Network.Game
         {
             if (IsRefreshing)
                 return;
+
             LeaveArea(delete);
             EnterArea();
         }
 
         public void LeaveArea(bool update = false, bool delete = false)
         {
-            lock (Aisling)
+            if (Aisling.LastMapId == short.MaxValue)
             {
-                if (Aisling.LastMapId == short.MaxValue)
-                {
-                    Aisling.LastMapId = Aisling.CurrentMapId;
-                }
-
-                Aisling.Remove(update, delete);
+                Aisling.LastMapId = Aisling.CurrentMapId;
             }
+
+            Aisling.Remove(update, delete);
         }
 
         public void EnterArea() => Enter();
 
         private void Enter()
         {
-            lock (Aisling)
-            {
-                LastScriptExecuted = DateTime.UtcNow;
+            LastScriptExecuted = DateTime.UtcNow;
 
-                SendSerial();
-                Insert();
-                RefreshMap();
-                SendLocation();
-                UpdateDisplay();
-            }
+            SendSerial();
+            Insert();
+            RefreshMap();
+            SendLocation();
+            UpdateDisplay();
         }
 
         public void SendMusic()

@@ -53,7 +53,6 @@
   },
   "NpcKey": "Combat Trainer",
   "TierLevel": 9,
-  "Id": 1425638587,
   "Name": "Assault",
   "Description": "\tSecond Assail. Makes your space bar deal additional physical damage",
   "Group": null

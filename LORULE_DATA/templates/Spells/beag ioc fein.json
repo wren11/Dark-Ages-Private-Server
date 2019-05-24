@@ -51,7 +51,6 @@
   "TierLevel": 0,
   "TargetAnimation": 0,
   "IsTrap": false,
-  "Id": 1237037758,
   "Name": "beag ioc fein",
   "Description": "Heals yourself and your group, instantly.",
   "Group": null

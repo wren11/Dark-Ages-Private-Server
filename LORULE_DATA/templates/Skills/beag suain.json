@@ -53,7 +53,6 @@
   },
   "NpcKey": "Combat Trainer",
   "TierLevel": 0,
-  "Id": 503815578,
   "Name": "beag suain",
   "Description": "Paralyze all target in-front of you. Damage done from behind your target while paralyzed is doubled.",
   "Group": null
