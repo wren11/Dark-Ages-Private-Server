@@ -105,7 +105,7 @@ namespace Darkages.Network
                         var packet = data.ToArray();
                         if (packet.Length > 0 && packet[0] == 0xAA)
                         {
-                            WorkSocket.Send(packet, packet.Length, SocketFlags.None);
+                            WorkSocket.Send(packet, packet.Length, SocketFlags.Partial);
                         }
                     }
                     catch { }

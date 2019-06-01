@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
@@ -278,13 +279,13 @@ namespace Darkages.Network.Game
                 return;
             #endregion
 
-            ProcessBuffers();
             HandleTimeOuts();
             StatusCheck();
             Regen(elapsedTime);
             UpdateStatusBar(elapsedTime);
             UpdateGlobalScripts(elapsedTime);
 
+            ProcessBuffers();
         }
 
         public static void SequenceNext(Aisling user, DialogSequence sequence)
@@ -412,6 +413,7 @@ namespace Darkages.Network.Game
         {
             if (Aisling == null || Aisling.AreaID == 0)
                 return false;
+
             if (!ServerContext.GlobalMapCache.ContainsKey(Aisling.AreaID))
                 return false;
 
@@ -760,17 +762,21 @@ namespace Darkages.Network.Game
             Aisling.Remove(update, delete);
         }
 
-        public void EnterArea() => Enter();
+        public void EnterArea()
+        {
+            RefreshMap();
+            SendSerial();
+            UpdateDisplay();
+            SendLocation();
+            Insert();
+        }
 
-        private void Enter()
+        public void Enter()
         {
             LastScriptExecuted = DateTime.UtcNow;
 
             SendSerial();
             Insert();
-            RefreshMap();
-            SendLocation();
-            UpdateDisplay();
         }
 
         public void SendMusic()
@@ -831,13 +837,10 @@ namespace Darkages.Network.Game
             if (ShouldUpdateMap)
             {
                 MapUpdating = true;
-                Aisling.View.Clear();
                 Send(new ServerFormat15(Aisling.Map));
             }
-            else
-            {
-                Aisling.View.Clear();
-            }
+
+            Aisling.View.Clear();
         }
 
         private void SendSerial()

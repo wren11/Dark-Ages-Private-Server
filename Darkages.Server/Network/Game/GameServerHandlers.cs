@@ -209,6 +209,7 @@ namespace Darkages.Network.Game
                 client.SendMessage(0x02, ServerContext.Config.ServerWelcomeMessage);
                 client.Aisling.LastLogged = DateTime.UtcNow;
                 client.SendStats(StatusFlags.All);;
+                client.Enter();
                 client.EnterArea();
                 client.Aisling.LoggedIn = true;
             }
@@ -216,6 +217,7 @@ namespace Darkages.Network.Game
             {
                 ClientDisconnected(client);
             }
+
         }
 
         /// <summary>

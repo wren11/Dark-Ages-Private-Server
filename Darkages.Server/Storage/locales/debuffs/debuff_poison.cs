@@ -22,7 +22,6 @@ namespace Darkages.Storage.locales.debuffs
 {
     public class Debuff_poison : Debuff
     {
-        public ushort Animation { get; set; }
         public double Modifier  { get; set; }
         public bool IsSpreading { get; set;  }
 
@@ -68,10 +67,7 @@ namespace Darkages.Storage.locales.debuffs
             if (Affected is Aisling)
             {
                 (Affected as Aisling)
-                    .Client.SendAnimation(Animation,
-                        (Affected as Aisling).Client.Aisling,
-                        (Affected as Aisling).Client.Aisling.Target ??
-                        (Affected as Aisling).Client.Aisling);
+                    .Client.SendAnimation((ushort)(Animation == 0 ? 25 : Animation), Affected, Affected);
 
                 ApplyPoison(Affected);
 

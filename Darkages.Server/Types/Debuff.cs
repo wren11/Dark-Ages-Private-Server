@@ -46,6 +46,9 @@ namespace Darkages.Types
         [JsonIgnore]
         public GameServerTimer Timer { get; set; }
 
+        [JsonProperty]
+        public ushort Animation { get; set; }
+
         public bool Has(string name)
         {
             return Name.Equals(name);
