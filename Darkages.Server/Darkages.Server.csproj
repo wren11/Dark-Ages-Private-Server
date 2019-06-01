@@ -23,7 +23,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet />
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -39,7 +39,7 @@
     <LangVersion>default</LangVersion>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <FileAlignment>1024</FileAlignment>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <NoWarn>true</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
