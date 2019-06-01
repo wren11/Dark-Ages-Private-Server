@@ -268,6 +268,8 @@ namespace Darkages.Network.Game
 
         public void Update(TimeSpan elapsedTime)
         {
+            ProcessBuffers();
+
             #region Sanity Checks
             if (Aisling == null)
                 return;
@@ -284,8 +286,6 @@ namespace Darkages.Network.Game
             Regen(elapsedTime);
             UpdateStatusBar(elapsedTime);
             UpdateGlobalScripts(elapsedTime);
-
-            ProcessBuffers();
         }
 
         public static void SequenceNext(Aisling user, DialogSequence sequence)
