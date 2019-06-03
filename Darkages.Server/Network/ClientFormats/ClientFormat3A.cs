@@ -45,7 +45,6 @@ namespace Darkages.Network.ClientFormats
             Console.WriteLine("0x3A : step {0}", step);
             Console.WriteLine("----------------------------");
 
-
             ScriptId = scriptid;
             Step = step;
             Serial = id;

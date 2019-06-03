@@ -57,6 +57,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
             else
             {
                 OnClick(Server, client);
+                client.CanMove = false;
             }
         }
 
@@ -259,6 +260,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
             else
             {
                 OnClick(Server, client);
+                client.CanMove = false;
             }
         }
 

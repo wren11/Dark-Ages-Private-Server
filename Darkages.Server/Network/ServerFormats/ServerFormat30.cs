@@ -28,6 +28,7 @@ namespace Darkages.Network.ServerFormats
         {
             Secured = true;
             Command = 0x30;
+
         }
 
         public ServerFormat30(GameClient gameClient) : this()

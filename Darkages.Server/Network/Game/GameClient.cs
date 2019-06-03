@@ -46,6 +46,7 @@ namespace Darkages.Network.Game
         public bool IsRefreshing =>
             DateTime.Now - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContext.Config.RefreshRate);
 
+        public bool CanMove { get;  set; }
 
         public DateTime LastScriptExecuted;
 
@@ -263,6 +264,7 @@ namespace Darkages.Network.Game
         public void CloseDialog()
         {
             Send(new byte[] { 0x30, 0x00, 0x0A, 0x00 });
+            DlgSession = null;
         }
 
 
@@ -449,9 +451,9 @@ namespace Darkages.Network.Game
 
         private void SetAislingStartupVariables()
         {
-            LastSave = DateTime.UtcNow;
-            LastPingResponse = DateTime.UtcNow;
-            
+            LastSave          = DateTime.UtcNow;
+            LastPingResponse  = DateTime.UtcNow;
+            CanMove           = true;
 
             BoardOpened = DateTime.UtcNow;
             {

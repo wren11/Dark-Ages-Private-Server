@@ -347,6 +347,12 @@ namespace Darkages.Network.Game
             if (!client.Aisling.LoggedIn)
                 return;
 
+            if (!client.CanMove)
+            {
+                client.SendLocation();
+                client.CanMove = true;
+            }
+
             if (ServerContext.Config.CancelCastingWhenWalking && client.Aisling.IsCastingSpell || client.Aisling.ActiveSpellInfo != null)
                 CancelIfCasting(client);
 
@@ -1472,6 +1478,7 @@ namespace Darkages.Network.Game
             {
                 var mundane = GetObject<Mundane>(client.Aisling.Map, i => i.Serial == format.Serial);
                 mundane?.Script?.OnResponse(this, client, format.Step, format.Args);
+                client.CanMove = true;
             }
             else
             {
@@ -1489,6 +1496,7 @@ namespace Darkages.Network.Game
 
                     client.SendSound(12);
                     helper.OnResponse(this, client, format.Step, format.Args);
+                    client.CanMove = true;
                 }
             }
         }
@@ -1898,6 +1906,7 @@ namespace Darkages.Network.Game
                 });
 
                 helper.OnClick(this, client);
+                client.CanMove = false;
                 return;
             }
 
@@ -1922,6 +1931,7 @@ namespace Darkages.Network.Game
                             {
                                 //try and call script first
                                 (obj as Mundane)?.Script?.OnClick(this, client);
+                                client.CanMove = false;
 
                                 //if call does not produce it's own interpreter. Assume default role.
                                 if (client.MenuInterpter == null)
