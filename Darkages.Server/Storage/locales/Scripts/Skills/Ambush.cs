@@ -74,8 +74,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                     if (blocks.Length > 0)
                     {
-                        var selections = blocks.Where(i => i.Content ==
-                                                           TileContent.Item
+                        var selections = blocks.Where(i => i.Content == TileContent.Item
                                                            || i.Content == TileContent.Money
                                                            || i.Content == TileContent.None).ToArray();
                         var selection = selections
@@ -116,7 +115,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         if (sprite is Aisling)
                         {
                             var client = (sprite as Aisling).Client;
-                            client.Refresh();
+                            client.SendLocation();
                         }
                         else
                         {

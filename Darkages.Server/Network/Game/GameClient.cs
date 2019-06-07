@@ -1032,10 +1032,15 @@ namespace Darkages.Network.Game
 
         public void WarpTo(Position position)
         {
+            Aisling.Map.Update(Aisling.X, Aisling.Y, Aisling, true);
+
             Aisling.X = position.X;
             Aisling.Y = position.Y;
 
             SendLocation();
+            SendLocation();
+
+            Aisling.Map.Update(Aisling.X, Aisling.Y, Aisling);
         }
 
         public void RepairEquipment(IEnumerable<Item> gear)

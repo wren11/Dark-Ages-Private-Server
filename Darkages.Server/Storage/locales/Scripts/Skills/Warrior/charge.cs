@@ -58,37 +58,55 @@ namespace Darkages.Scripting.Scripts.Skills
             };
 
             int steps = 0;
-            for (int i = 0; i < 5; i++)
+
+            for (int i = 0; i < 7; i++)
             {
-                if (sprite.Walk())
+                var targets = sprite.GetInfront(i, true);
+
+                var hits = 0;
+                foreach (var target in targets)
                 {
-                    steps++;
+                    if (target.Serial == sprite.Serial)
+                        continue;
 
-                    var targets = sprite.GetInfront(1, true);
-
-                    foreach (var target in targets)
+                    if (target != null)
                     {
-                        if (target.Serial == sprite.Serial)
-                            continue;
+                        var imp = (Skill.Level * 5 / 100);
+                        var dmg = 15 * (((sprite.Str * steps) + sprite.Dex * imp));
 
-                        if (target != null && sprite.Position.IsNextTo(target.Position))
+                        target.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
                         {
-                            var imp = (Skill.Level * 5 / 100);
-                            var dmg = 15 * (((sprite.Str * 2) + sprite.Dex * imp));
-                            target.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
-                            {
-                                Target = target;
-                                collided = true;
-                            }
+                            Target = target;
                         }
+
+                        if (sprite is Aisling aisling)
+                        {
+                            var position = target.Position;
+
+                            if (sprite.Direction == 0)
+                                position.Y++;
+                            if (sprite.Direction == 1)
+                                position.X--;
+                            if (sprite.Direction == 2)
+                                position.Y--;
+                            if (sprite.Direction == 3)
+                                position.X++;
+
+
+                            aisling.Client.WarpTo(position);
+                        }
+
                     }
+
+                    hits++;
                 }
 
-                if (collided)
+                if (hits > 0)
+                {
+                    collided = true;
                     break;
-
+                }
             }
-
             Task.Delay(50).ContinueWith((dc) =>
             {
                 if (Target != null && collided)
