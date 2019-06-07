@@ -27,7 +27,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
@@ -46,7 +45,6 @@ namespace Darkages.Network.Game
         public bool IsRefreshing =>
             DateTime.Now - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContext.Config.RefreshRate);
 
-        public bool CanMove { get;  set; }
 
         public DateTime LastScriptExecuted;
 
@@ -264,14 +262,11 @@ namespace Darkages.Network.Game
         public void CloseDialog()
         {
             Send(new byte[] { 0x30, 0x00, 0x0A, 0x00 });
-            DlgSession = null;
         }
 
 
         public void Update(TimeSpan elapsedTime)
         {
-            ProcessBuffers();
-
             #region Sanity Checks
             if (Aisling == null)
                 return;
@@ -283,11 +278,13 @@ namespace Darkages.Network.Game
                 return;
             #endregion
 
+            ProcessBuffers();
             HandleTimeOuts();
             StatusCheck();
             Regen(elapsedTime);
             UpdateStatusBar(elapsedTime);
             UpdateGlobalScripts(elapsedTime);
+
         }
 
         public static void SequenceNext(Aisling user, DialogSequence sequence)
@@ -415,7 +412,6 @@ namespace Darkages.Network.Game
         {
             if (Aisling == null || Aisling.AreaID == 0)
                 return false;
-
             if (!ServerContext.GlobalMapCache.ContainsKey(Aisling.AreaID))
                 return false;
 
@@ -451,15 +447,15 @@ namespace Darkages.Network.Game
 
         private void SetAislingStartupVariables()
         {
-            LastSave          = DateTime.UtcNow;
-            LastPingResponse  = DateTime.UtcNow;
-            CanMove           = true;
+            LastSave = DateTime.UtcNow;
+            LastPingResponse = DateTime.UtcNow;
+
 
             BoardOpened = DateTime.UtcNow;
             {
-                Aisling.BonusAc    = (int)(70 - Aisling.Level * 0.5 / 1.0);
-                Aisling.Exchange   = null;
-                Aisling.LastMapId  = short.MaxValue;
+                Aisling.BonusAc = (int)(70 - Aisling.Level * 0.5 / 1.0);
+                Aisling.Exchange = null;
+                Aisling.LastMapId = short.MaxValue;
             }
             BuildSettings();
         }
@@ -764,21 +760,17 @@ namespace Darkages.Network.Game
             Aisling.Remove(update, delete);
         }
 
-        public void EnterArea()
-        {
-            RefreshMap();
-            SendSerial();
-            UpdateDisplay();
-            SendLocation();
-            Insert();
-        }
+        public void EnterArea() => Enter();
 
-        public void Enter()
+        private void Enter()
         {
             LastScriptExecuted = DateTime.UtcNow;
 
             SendSerial();
             Insert();
+            RefreshMap();
+            SendLocation();
+            UpdateDisplay();
         }
 
         public void SendMusic()
@@ -839,10 +831,13 @@ namespace Darkages.Network.Game
             if (ShouldUpdateMap)
             {
                 MapUpdating = true;
+                Aisling.View.Clear();
                 Send(new ServerFormat15(Aisling.Map));
             }
-
-            Aisling.View.Clear();
+            else
+            {
+                Aisling.View.Clear();
+            }
         }
 
         private void SendSerial()
@@ -1035,6 +1030,14 @@ namespace Darkages.Network.Game
             SendLocation();
         }
 
+        public void WarpTo(Position position)
+        {
+            Aisling.X = position.X;
+            Aisling.Y = position.Y;
+
+            SendLocation();
+        }
+
         public void RepairEquipment(IEnumerable<Item> gear)
         {
             foreach (var item in Aisling.Inventory.Items
@@ -1049,7 +1052,7 @@ namespace Darkages.Network.Game
                 Aisling.Inventory.UpdateSlot(this, item);
             }
         }
-        
+
 
         public bool Revive()
         {
@@ -1137,7 +1140,7 @@ namespace Darkages.Network.Game
             if (nextitem == null)
                 return;
 
-            nextitem.Text    = nextitem.Text.Replace("%aisling%", Aisling.Username);
+            nextitem.Text = nextitem.Text.Replace("%aisling%", Aisling.Username);
 
             if (nextitem == null)
             {

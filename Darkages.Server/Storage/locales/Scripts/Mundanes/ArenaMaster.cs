@@ -83,10 +83,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 }
                 else
                 {
-                    client.LeaveArea(true, false);
-                    client.Aisling.X = 4;
-                    client.Aisling.Y = 4;
-                    client.EnterArea();
+                    client.WarpTo(new Position(4, 4));
                     client.CloseDialog();
                 }
             }
@@ -99,10 +96,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 }
                 else
                 {
-                    client.LeaveArea(true, false);
-                    client.Aisling.X = 51;
-                    client.Aisling.Y = 4;
-                    client.EnterArea();
+                    client.WarpTo(new Position(51, 4));
                     client.CloseDialog();
                 }
             }
@@ -115,10 +109,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 }
                 else
                 {
-                    client.LeaveArea(true, false);
-                    client.Aisling.X = 51;
-                    client.Aisling.Y = 51;
-                    client.EnterArea();
+                    client.WarpTo(new Position(51, 51));
                     client.CloseDialog();
                 }
             }
@@ -131,10 +122,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 }
                 else
                 {
-                    client.LeaveArea(true, false);
-                    client.Aisling.X = 4;
-                    client.Aisling.Y = 51;
-                    client.EnterArea();
+                    client.WarpTo(new Position(4, 51));
                     client.CloseDialog();
                 }
             }
@@ -147,10 +135,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 }
                 else
                 {
-                    client.LeaveArea(true, false);
-                    client.Aisling.X = 35;
-                    client.Aisling.Y = 35;
-                    client.EnterArea();
+                    client.WarpTo(new Position(35, 35));
                     client.CloseDialog();
                 }
             }
