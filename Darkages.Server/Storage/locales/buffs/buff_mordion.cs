@@ -36,6 +36,8 @@ namespace Darkages.Storage.locales.Buffs
                     .Client
                     .SendMessage(0x02, "Your skin turns to stone.");
 
+            Affected.Immunity = false;
+
             base.OnApplied(Affected, buff);
         }
 
@@ -50,6 +52,8 @@ namespace Darkages.Storage.locales.Buffs
                 (Affected as Aisling)
                     .Client
                     .SendMessage(0x02, "Your skin turns back to flesh.");
+
+            Affected.Immunity = false;
 
             base.OnEnded(Affected, buff);
         }

@@ -321,6 +321,8 @@ namespace Darkages.Types
         [JsonIgnore]
         public bool EmpoweredAssail { get; set; }
 
+        public bool Immunity { get; set; }
+
         #region Sprite Methods
         public bool TrapsAreNearby()
         {
@@ -600,7 +602,7 @@ namespace Darkages.Types
             }
             else
             {
-                if (HasBuff("dion") || HasBuff("mor dion"))
+                if (Immunity)
                 {
                     var empty = new ServerFormat13
                     {
