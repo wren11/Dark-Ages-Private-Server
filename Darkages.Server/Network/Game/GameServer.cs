@@ -20,6 +20,7 @@ using Darkages.Network.Object;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
@@ -42,10 +43,7 @@ namespace Darkages.Network.Game
 
         public GameServer(int capacity) : base(capacity)
         {
-
-            ServerUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
-            ClientUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
-            HeavyUpdateSpan  = TimeSpan.FromSeconds(1.0 / 30);
+            HeavyUpdateSpan  = TimeSpan.FromSeconds(1.0 / 60);
 
             InitializeGameServer();
         }
@@ -71,49 +69,19 @@ namespace Darkages.Network.Game
             }
         }
 
-        private void DoClientWork()
-        {
-            lastClientUpdate = DateTime.UtcNow;
 
-            while (true)
-            {
-                if (ServerContext.Paused)
-                    continue;
-
-                try
-                {
-                    var delta = DateTime.UtcNow - lastClientUpdate;
-                    {
-                        if (!ServerContext.Paused)
-                            ExecuteClientWork(delta);
-                    }
-                }
-                catch (Exception error)
-                {
-                    ServerContext.Info?.Error("Error In Client Worker", error);
-                }
-
-                lastClientUpdate = DateTime.UtcNow;
-                Thread.Sleep(ClientUpdateSpan);
-            }
-        }
-
-        private void DoHeavyWork()
+        private void Update()
         {
             lastHeavyUpdate = DateTime.UtcNow;
 
             while (true)
             {
-                if (ServerContext.Paused || !ServerContext.Running)
-                    continue;
-
                 try
                 {
                     var delta = DateTime.UtcNow - lastHeavyUpdate;
-                    {
-                        if (!ServerContext.Paused)
-                            ExecuteHeavyWork(delta);
-                    }
+                    ExecuteHeavyWork(delta);
+                    ExecuteServerWork(delta);
+                    ExecuteClientWork(delta);
                 }
                 catch (Exception error)
                 {
@@ -122,30 +90,6 @@ namespace Darkages.Network.Game
 
                 lastHeavyUpdate = DateTime.UtcNow;
                 Thread.Sleep(HeavyUpdateSpan);
-            }
-        }
-
-        private void DoServerWork()
-        {
-            lastServerUpdate = DateTime.UtcNow;
-
-            while (true)
-            {
-                try
-                {
-                    var delta = DateTime.UtcNow - lastServerUpdate;
-                    {
-                        if (!ServerContext.Paused)
-                            ExecuteServerWork(delta);
-                    }
-                }
-                catch (Exception error)
-                {
-                    ServerContext.Info?.Error("Error In Server Worker", error);
-                }
-
-                lastServerUpdate = DateTime.UtcNow;
-                Thread.Sleep(ServerUpdateSpan);
             }
         }
 
@@ -213,6 +157,7 @@ namespace Darkages.Network.Game
             }
         }
 
+        public ManualResetEvent msr = new ManualResetEvent(true);
         private void UpdateClients(TimeSpan elapsedTime)
         {
             if (ServerContext.Paused || !ServerContext.Running)
@@ -220,14 +165,32 @@ namespace Darkages.Network.Game
 
             lock (Clients)
             {
+
+
+                var syncObjects = new List<ManualResetEvent>();
+
                 foreach (var client in Clients)
                 {
                     if (client != null && client.Aisling != null)
                     {
-                        client.Update(elapsedTime);
+                        msr.WaitOne();
+                        msr.Reset();
+
+                        if (!client.IsWarping)
+                        {
+                            client.Update(elapsedTime);
+                            client.FlushBuffers();
+                        }
+                        else
+                        {
+                            client.SendLocation();
+                        }
+                        msr.Set();
                     }
                 }
-            }
+
+       
+           }
         }
 
         public override void ClientDisconnected(GameClient client)
@@ -265,23 +228,7 @@ namespace Darkages.Network.Game
         {
             base.Start(port);
 
-            ServerThread = new Thread(new ThreadStart(DoServerWork))
-            {
-                IsBackground = true
-            };
-            ServerThread.Start();
-
-            ClientThread = new Thread(new ThreadStart(DoClientWork))
-            {
-                IsBackground = true
-            };
-            ClientThread.Start();
-
-            HeavyThread = new Thread(new ThreadStart(DoHeavyWork))
-            {
-                IsBackground = true
-            };
-            HeavyThread.Start();
+            Task.Run(() => Update());
         }
     }
 }

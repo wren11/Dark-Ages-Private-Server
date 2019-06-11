@@ -44,6 +44,7 @@ namespace Darkages.Network
         public NetworkSocket(Socket socket)
             : base(socket.DuplicateAndClose(processId))
         {
+            UseOnlyOverlappedIO = true;
         }
 
         public IAsyncResult BeginReceiveHeader(AsyncCallback callback, out SocketError error, object state)

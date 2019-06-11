@@ -24,8 +24,10 @@ namespace Darkages.Network
 {
     public class NetworkPacketWriter
     {
-        private readonly byte[] buffer;
         private readonly Encoding encoding = Encoding.GetEncoding(949);
+        private readonly byte[] buffer;
+
+        public byte[] Data => buffer;
 
         public int Position;
 

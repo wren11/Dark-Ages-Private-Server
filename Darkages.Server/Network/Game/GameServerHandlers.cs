@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading;
 
 namespace Darkages.Network.Game
 {
@@ -48,10 +47,26 @@ namespace Darkages.Network.Game
                     client.MenuInterpter.Client = client;
                     client.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
 
+                    client.MenuInterpter.RegisterCheckpointHandler("QuestCompleted", (_client, res) =>
+                    {
+                        if (_client.Aisling.HasQuest(res.Value))
+                        {
+                            res.Result = _client.Aisling.HasCompletedQuest(res.Value);
+                        }
+                    });
+
+                    client.MenuInterpter.RegisterCheckpointHandler("ExecuteScript", (_client, res) =>
+                    {
+                        var scriptFile = res.Value;
+
+                    });
+
                     ServerContext.Info.Debug("Script Interpreter Created for Mundane: {0}", Name);
                 }
             }
         }
+
+
 
         private void MenuInterpter_OnMovedToNextStep(GameClient client, MenuInterpreter.MenuItem previous, MenuInterpreter.MenuItem current)
         {
@@ -187,23 +202,27 @@ namespace Darkages.Network.Game
                 client.Aisling.Serial = Generator.GenerateNumber();
             }
 
-            client.Aisling.Client = client;
+            client.Aisling.Client   = client;
             client.Aisling.LoggedIn = false;
-            client.Aisling.LastLogged = new DateTime();
-            client.Aisling.CurrentMapId = client.Aisling.Map.ID;
+
+            client.Aisling.LastLogged = DateTime.UtcNow;
+            client.LastScriptExecuted = DateTime.UtcNow;
+
+            client.Aisling.CurrentMapId            = client.Aisling.Map.ID;
             client.Aisling.EquipmentManager.Client = client;
-            client.Aisling.CurrentWeight = 0;
-            client.Aisling.ActiveStatus = ActivityStatus.Awake;
-            client.Aisling.InvitePrivleges = true;
-            client.Aisling.LeaderPrivleges = false;
+            client.Aisling.CurrentWeight           = 0;
+            client.Aisling.ActiveStatus            = ActivityStatus.Awake;
+            client.Aisling.InvitePrivleges         = true;
+            client.Aisling.LeaderPrivleges         = false;
+
+
 
             Party.Reform(client);
 
             if (client.Load())
             {
+                client.SendStats(StatusFlags.All); ;
                 client.SendMessage(0x02, ServerContext.Config.ServerWelcomeMessage);
-                client.Aisling.LastLogged = DateTime.UtcNow;
-                client.SendStats(StatusFlags.All);;
                 client.EnterArea();
                 client.Aisling.LoggedIn = true;
             }
@@ -346,8 +365,6 @@ namespace Darkages.Network.Game
 
             if (!client.Aisling.LoggedIn)
                 return;
-
-           
 
             if (ServerContext.Config.CancelCastingWhenWalking && client.Aisling.IsCastingSpell || client.Aisling.ActiveSpellInfo != null)
                 CancelIfCasting(client);
@@ -1219,6 +1236,10 @@ namespace Darkages.Network.Game
                 }
         }
 
+
+        protected override void Format32Handler(GameClient client, ClientFormat32 format)
+        {
+        }
 
         /// <summary>
         ///     Moving Slot

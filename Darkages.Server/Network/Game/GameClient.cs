@@ -43,8 +43,11 @@ namespace Darkages.Network.Game
         public DateTime LastClientRefresh;
 
         public bool IsRefreshing =>
-            DateTime.Now - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContext.Config.RefreshRate);
+            DateTime.UtcNow - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContext.Config.RefreshRate);
 
+        public bool IsWarping => DateTime.UtcNow - LastWarp < new TimeSpan(0, 0, 0, 0, 200);
+
+        public DateTime LastWarp;
 
         public DateTime LastScriptExecuted;
 
@@ -278,28 +281,30 @@ namespace Darkages.Network.Game
                 return;
             #endregion
 
-            ProcessBuffers();
+            var distance = Aisling.Position.DistanceFrom(Aisling.LastPosition);
+
+            if (distance > 2)
+            {
+                LastWarp               = DateTime.UtcNow;
+                Aisling.LastPosition.X = (ushort)Aisling.X;
+                Aisling.LastPosition.Y = (ushort)Aisling.Y;
+
+                Refresh();
+
+                ServerContext.Info.Warning("Player Warped {0} distance: {1}", Aisling.Username, distance);
+                return;
+            }
+
             HandleTimeOuts();
             StatusCheck();
             Regen(elapsedTime);
             UpdateStatusBar(elapsedTime);
             UpdateGlobalScripts(elapsedTime);
-
         }
 
         public static void SequenceNext(Aisling user, DialogSequence sequence)
         {
 
-        }
-
-        private void ProcessBuffers()
-        {
-            if (!WorkSocket.Connected)
-            {
-                return;
-            }
-
-            FlushBuffers();
         }
 
         public void SystemMessage(string lpmessage)
@@ -764,8 +769,6 @@ namespace Darkages.Network.Game
 
         private void Enter()
         {
-            LastScriptExecuted = DateTime.UtcNow;
-
             SendSerial();
             Insert();
             RefreshMap();
@@ -1037,8 +1040,7 @@ namespace Darkages.Network.Game
             Aisling.X = position.X;
             Aisling.Y = position.Y;
 
-            SendLocation();
-            SendLocation();
+            Refresh();
 
             Aisling.Map.Update(Aisling.X, Aisling.Y, Aisling);
         }

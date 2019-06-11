@@ -142,6 +142,7 @@ namespace Darkages.Types
             npc.Template.TurnTimer = new GameServerTimer(TimeSpan.FromSeconds(npc.Template.TurnRate));
             npc.Template.SpellTimer = new GameServerTimer(TimeSpan.FromSeconds(npc.Template.CastRate));
             npc.InitMundane();
+
             npc.AddObject(npc);
         }
 

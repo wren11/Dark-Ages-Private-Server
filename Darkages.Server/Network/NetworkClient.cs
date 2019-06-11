@@ -15,11 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using Darkages.IO;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -34,7 +36,7 @@ namespace Darkages.Network
 
         public NetworkPacketWriter Writer { get; set; }
 
-        public NetworkSocket WorkSocket { get; set; }
+        public NetworkSocket ServerSocket { get; set; }
 
         public SecurityProvider Encryption { get; set; }
 
@@ -42,18 +44,19 @@ namespace Darkages.Network
 
         public int Serial { get; set; }
 
-        private Queue<byte[]> _sendBuffer { get; set; }
 
-        private ManualResetEvent SendReset;
+        private ConcurrentQueue<byte[]> _sendBuffer { get; set; }
+
+        private ManualResetEvent _sendReset;
 
         public NetworkClient()
         {
             this.Reader     = new NetworkPacketReader();
             this.Writer     = new NetworkPacketWriter();
             this.Encryption = new SecurityProvider();
-            this.SendReset  = new ManualResetEvent(true);
+            this._sendReset  = new ManualResetEvent(true);
 
-            _sendBuffer     = new Queue<byte[]>();
+            _sendBuffer     = new ConcurrentQueue<byte[]>();
         }
 
         public void Read(NetworkPacket packet, NetworkFormat format)
@@ -86,7 +89,7 @@ namespace Darkages.Network
 
         public void FlushBuffers()
         {
-            if (!WorkSocket.Connected)
+            if (!ServerSocket.Connected)
             {
                 return;
             }
@@ -97,25 +100,61 @@ namespace Darkages.Network
                 {
                     var data = _sendBuffer.SelectMany(i => i);
 
+                    if (!data.Any())
+                        return;
+
+                    _sendReset.WaitOne();
+                    _sendReset.Reset();
+
                     try
                     {
-                        this.SendReset.WaitOne();
-                        this.SendReset.Reset();
-
                         var packet = data.ToArray();
                         if (packet.Length > 0 && packet[0] == 0xAA)
-                        {
-                            WorkSocket.Send(packet, packet.Length, SocketFlags.Partial);
+                        { 
+                            Send(ServerSocket, packet, 0, packet.Length, 5000);
                         }
                     }
                     catch { }
                     finally
                     {
-                        _sendBuffer = new Queue<byte[]>();
-                        this.SendReset.Set();
+                        EmptyBuffers();
                     }
                 }
             }
+        }
+
+        public static void Send(Socket socket, byte[] buffer, int offset, int size, int timeout)
+        {
+            var startTickCount = Environment.TickCount;
+            var sent           = 0;  
+
+            do
+            {
+                if (Environment.TickCount > startTickCount + timeout)
+                    throw new Exception("Timeout.");
+
+                try
+                {
+                    sent += socket.Send(buffer, offset + sent, size - sent, SocketFlags.None);
+                }
+                catch (SocketException ex)
+                {
+                    if (ex.SocketErrorCode == SocketError.WouldBlock ||
+                        ex.SocketErrorCode == SocketError.IOPending ||
+                        ex.SocketErrorCode == SocketError.NoBufferSpaceAvailable)
+                    {
+                        Thread.Sleep(30);
+                    }
+                    else
+                        throw ex;  
+                }
+            } while (sent < size);
+        }
+
+        public void EmptyBuffers()
+        {
+            _sendReset.Set();
+            _sendBuffer = new ConcurrentQueue<byte[]>();
         }
 
         public void FlushAndSend(NetworkFormat format)
@@ -140,56 +179,46 @@ namespace Darkages.Network
                 }
 
                 var array = packet.ToArray();
-                WorkSocket.Send(array, SocketFlags.None);
+                ServerSocket.Send(array, SocketFlags.None);
             }
         }
 
         public void Send(NetworkFormat format)
         {
-            try
+            if (this is LoginClient)
             {
-                lock (this.Writer)
-                {
-                    this.Writer.Position = 0;
-                    this.Writer.Write(format.Command);
-
-                    if (format.Secured)
-                    {
-                        this.Writer.Write(this.Ordinal++);
-                    }
-
-                    format.Serialize(this.Writer);
-
-                    var packet = this.Writer.ToPacket();
-
-                    if (format.Secured)
-                    {
-                        this.Encryption.Transform(packet);
-                    }
-
-                    if (this is LoginClient)
-                    {
-                        FlushAndSend(format);
-                        return;
-                    }
-
-                    lock (_sendBuffer)
-                    {
-                        var array = packet.ToArray();
-                        _sendBuffer.Enqueue(array);
-                    }
-                }
+                FlushAndSend(format);
+                return;
             }
-            catch
-            {
 
-            }            
+            Writer.Position = 0;
+            Writer.Write(format.Command);
+
+            if (format.Secured)
+            {
+                Writer.Write(Ordinal++);
+            }
+
+            format.Serialize(Writer);
+
+            var packet = Writer.ToPacket();
+
+            if (format.Secured)
+            {
+                Encryption.Transform(packet);
+            }
+
+            lock (_sendBuffer)
+            {
+                var array = packet.ToArray();
+                _sendBuffer.Enqueue(array);
+            }
         }
 
         public void Send(NetworkPacketWriter lpData)
         {
             var packet = lpData.ToPacket();
-            this.Encryption.Transform(packet);
+            Encryption.Transform(packet);
 
             lock (_sendBuffer)
             {

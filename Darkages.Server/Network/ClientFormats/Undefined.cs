@@ -141,9 +141,7 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    public class ClientFormat32
-    {
-    }
+    // public class ClientFormat32 { } end walk
 
     public class ClientFormat33
     {
