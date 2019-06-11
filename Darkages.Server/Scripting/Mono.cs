@@ -2,13 +2,22 @@
 
 namespace Darkages.Script.Context
 {
-    public static class Context
+    public class _Interop
     {
-        static Context()
-        {
-            Items = new Dictionary<string, object>();
-        }
+        private static Dictionary<string, object> _vars = new Dictionary<string, object>();
 
-        public static Dictionary<string, object> Items { get; set; }
+        public delegate List<string> ReturnStringListMethod();
+
+        public delegate void VoidMethod();
+
+        public delegate bool Call();
+
+        public static Dictionary<string, object> Storage
+        {
+            get
+            {
+                return _vars;
+            }
+        }
     }
 }

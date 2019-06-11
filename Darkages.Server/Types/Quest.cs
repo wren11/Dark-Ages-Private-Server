@@ -299,7 +299,7 @@ namespace Darkages.Types
 
         public void HandleQuest(GameClient client, Dialog menu = null, Action<bool> cb = null)
         {
-            var valid = false;
+            var valid = QuestStages.Any() ? false : true;
 
             foreach (var stage in QuestStages)
             {

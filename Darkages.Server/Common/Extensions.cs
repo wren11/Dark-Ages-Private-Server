@@ -16,27 +16,21 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Mono.CSharp;
-using System;
-using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 
 namespace Darkages.Common
 {
     public static class Extensions
     {
-        public static T Eval<T>(this string code) where T : class
-        {
-            return Evaluator.Evaluate(code) as T;
-        }
-
-        public static void Run(this string code, bool repQuotes = false)
-        {
-            var run = repQuotes ?
-                        code.Replace("'", "\"") : code;
-            Evaluator.Run(run);
-        }
-
         private static readonly Encoding encoding = Encoding.GetEncoding(949);
+
+
+        public static bool Run(this string str)
+        {
+            var result = ServerContext.EVALUATOR.Run(str);
+            return result;
+        }
 
         public static byte[] ToByteArray(this string str)
         {

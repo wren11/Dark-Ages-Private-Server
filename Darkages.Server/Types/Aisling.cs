@@ -186,6 +186,8 @@ namespace Darkages
             obj.Completed = true;
         }
 
+        public Quest GetQuest(string name) => Quests.FirstOrDefault(i => i.Name == name);
+        
         public bool AcceptQuest(Quest quest)
         {
             lock (Quests)

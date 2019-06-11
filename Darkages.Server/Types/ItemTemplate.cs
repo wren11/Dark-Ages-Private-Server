@@ -216,12 +216,11 @@ namespace Darkages.Types
 
         public void RunMiniScript(GameClient client)
         {
-            Context.Items["client"] = client;
-            Context.Items["user"]   = client.Aisling;
-            Context.Items["result"] = false;
+            _Interop.Storage["client"] = client;
+            _Interop.Storage["user"]   = client.Aisling;
 
-            "var client = (GameClient)Context.Items[\"client\"];".Run();
-            "var user   = (Sprite)Context.Items[\"user\"];".Run();
+            "var client = (GameClient)_Interop.Storage[\"client\"];".Run();
+            "var user   = (Sprite)_Interop.Storage[\"user\"];".Run();
 
 
 

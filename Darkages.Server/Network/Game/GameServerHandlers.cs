@@ -19,6 +19,7 @@ using Darkages.Common;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.Game.Components;
 using Darkages.Network.ServerFormats;
+using Darkages.Script.Context;
 using Darkages.Scripting;
 using Darkages.Storage;
 using Darkages.Storage.locales.Scripts.Mundanes;
@@ -55,10 +56,17 @@ namespace Darkages.Network.Game
                         }
                     });
 
-                    client.MenuInterpter.RegisterCheckpointHandler("ExecuteScript", (_client, res) =>
+                    client.MenuInterpter.RegisterCheckpointHandler("Call", (_client, res) =>
                     {
-                        var scriptFile = res.Value;
-
+                        _Interop.Storage["client"] = client;
+                        _Interop.Storage["user"]   = client.Aisling;
+                       
+                        {
+                            "var client = (GameClient)_Interop.Storage[\"client\"];".Run();
+                            "var user   = (Aisling)_Interop.Storage[\"user\"];".Run();
+                        }
+                        res.Value.Run();
+                        res.Result = (bool)ServerContext.EVALUATOR.Evaluate("result");
                     });
 
                     ServerContext.Info.Debug("Script Interpreter Created for Mundane: {0}", Name);
@@ -66,6 +74,31 @@ namespace Darkages.Network.Game
             }
         }
 
+        public class ScriptLibrary
+        {
+            public bool StartQuest(Aisling user)
+            {
+                var result = (user.HasCompletedQuest("test_quest"));
+
+                Quest quest = new Quest()
+                {
+                    Name = "test_quest",
+                    GoldReward = 5000,
+                    StatRewards = new List<AttrReward>()
+                      {
+                          new AttrReward()
+                          {
+                               Attribute = PlayerAttr.STR,
+                               Operator = new StatusOperator(Operator.Add, 3),
+                          },
+                      }
+                };
+
+                //var result = user.AcceptQuest(quest);
+
+                return true;
+            }
+        }
 
 
         private void MenuInterpter_OnMovedToNextStep(GameClient client, MenuInterpreter.MenuItem previous, MenuInterpreter.MenuItem current)

@@ -39,7 +39,10 @@ namespace Darkages
     public class ServerContext : ObjectManager
     {
         internal static object SyncObj = new object();
+
         internal static Exception UnhandledException = new Exception();
+
+        internal static Evaluator EVALUATOR = null;
 
         public static int Errors, DefaultPort;
 
@@ -418,30 +421,35 @@ namespace Darkages
         {
             try
             {
-                Evaluator.Init(new[] { "verbose=1;" });
-                Evaluator.GetVars();
 
-                var assembly = Assembly.Load("Darkages.Server");
+                var compilerContext = new CompilerContext(new CompilerSettings(), new ConsoleReportPrinter());
+                var assembly        = Assembly.GetExecutingAssembly();
 
-                Evaluator.ReferenceAssembly(assembly);
+                EVALUATOR = new Evaluator(compilerContext);
+                EVALUATOR.ReferenceAssembly(assembly);
+                EVALUATOR.InteractiveBaseClass = typeof(_Interop);
 
+                EVALUATOR.Run(@"
+                    using Darkages.Common;
+                    using Darkages.Interops;
+                    using Darkages.Network.Game;
+                    using Darkages.Network.Object;
+                    using Darkages.Script.Context;
+                    using Darkages.Storage;
+                    using Darkages.Storage.locales.Buffs;
+                    using Darkages.Storage.locales.debuffs;
+                    using Darkages.Types;
+                    using System;
+                    using System.Collections.Generic;
+                    using System.Diagnostics;
+                    using System.IO;
+                    using System.Linq;
+                    using System.Net;
+                    using System.Reflection;
+                    using Darkages;
+                    ");
 
-                @"  using Darkages.Common;
-                using Darkages.Network.Game;
-                using Darkages.Network.Object;
-                using Darkages.Script.Context;
-                using Darkages.Storage;
-                using Darkages.Types;
-                using System;
-                using System.Collections.Generic;
-                using System.Diagnostics;
-                using System.IO;
-                using System.Linq;
-                using System.Net;
-                using System.Reflection;
-                using System.Threading.Tasks;".Run();
-
-                Context.Items["game"] = Game;
+                EVALUATOR.Run("var _v = _Interop.Storage;");
             }
             catch
             {
