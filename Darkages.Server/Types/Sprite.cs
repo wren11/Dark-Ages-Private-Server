@@ -920,6 +920,9 @@ namespace Darkages.Types
         /// </summary>
         public void Show<T>(Scope op, T format, IEnumerable<Sprite> definer = null) where T : NetworkFormat
         {
+            if (Map == null)
+                return;
+
             switch (op)
             {
                 case Scope.Self:
@@ -1272,8 +1275,6 @@ namespace Darkages.Types
                 DelObject(this as Item);
             if (this is Mundane)
                 DelObject(this as Mundane);
-
-            Map?.Update(X, Y, this, true);
         }
 
         public void UpdateBuffs(TimeSpan elapsedTime)

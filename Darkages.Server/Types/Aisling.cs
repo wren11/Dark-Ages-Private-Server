@@ -33,6 +33,8 @@ namespace Darkages
         [JsonIgnore]
         public DateTime LookupTime;
 
+        public bool GameMaster { get; set; }
+
         public Aisling()
         {
             OffenseElement = ElementManager.Element.None;

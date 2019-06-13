@@ -17,10 +17,7 @@
 //*************************************************************************/
 using Darkages.Common;
 using Darkages.Network.ClientFormats;
-using Darkages.Network.Game;
 using Darkages.Network.Object;
-using Darkages.Network.ServerFormats;
-using Darkages.Types;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -42,6 +39,8 @@ namespace Darkages.Network
 
         public TClient[] Clients;
 
+        public Socket _listener;
+
         protected NetworkServer(int capacity)
         {
             var type  = typeof(NetworkServer<TClient>);
@@ -59,9 +58,7 @@ namespace Darkages.Network
         }
 
         private void EndConnectClient(IAsyncResult result)
-        {
-            var _listener = (Socket)result.AsyncState;
-
+        {           
             var _handler = _listener.EndAccept(result);
 
             if (_listener == null || !_listening)
@@ -73,7 +70,7 @@ namespace Darkages.Network
 
                 var client = new TClient
                 {
-                    ServerSocket   = new NetworkSocket(_handler),
+                    ServerSocket = new NetworkSocket(_handler),
                 };
 
                 if (client.ServerSocket.Connected)
@@ -206,8 +203,18 @@ namespace Darkages.Network
             {
                 foreach (var client in Clients)
                     if (client != null)
+                    {
                         ClientDisconnected(client);
+                    }
             }
+
+            if (_listener != null && _listener.Connected)
+            {
+                _listener.Shutdown(SocketShutdown.Both);
+                _listener.Close();
+                _listener = null;
+            }
+
         }
 
         public virtual void Start(int port)
@@ -217,14 +224,14 @@ namespace Darkages.Network
 
             _listening = true;
 
-            var _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+            _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             {
                 UseOnlyOverlappedIO = true
             };
             {
                 _listener.Bind(new IPEndPoint(IPAddress.Any, port));
                 _listener.Listen(Clients.Length);
-                _listener.BeginAccept(new AsyncCallback(EndConnectClient), _listener);
+                _listener.BeginAccept(new AsyncCallback(EndConnectClient), null);
             }
         }
 
@@ -286,32 +293,10 @@ namespace Darkages.Network
             {
                 client.ServerSocket.Shutdown(SocketShutdown.Both);
                 client.ServerSocket.Close();
+                client.ServerSocket = null;
             }
 
             RemoveClient(client.Serial);
-        }
-
-        private void RemoveAisling(TClient client)
-        {
-            if (ServerContext.Game == null)
-                return;
-
-            var nearby = GetObjects<Aisling>((client as GameClient).Aisling.Map, i => i.WithinRangeOf((client as GameClient).Aisling));
-            foreach (var near in nearby)
-            {
-                if (near.Serial == (client as GameClient).Aisling.Serial)
-                    continue;
-
-                if (near.LoggedIn)
-                {
-                    if (near.Map != null && near.Map.Ready)
-                        near.Map.Update(
-                            (client as GameClient).Aisling.X,
-                            (client as GameClient).Aisling.Y, (client as GameClient).Aisling, true);
-
-                    near.Show(Scope.Self, new ServerFormat0E((client as GameClient).Aisling.Serial));
-                }
-            }
         }
 
         #region Format Handlers

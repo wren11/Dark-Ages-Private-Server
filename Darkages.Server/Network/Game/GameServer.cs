@@ -20,22 +20,18 @@ using Darkages.Network.Object;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
     public partial class GameServer
     {
 
-        DateTime lastServerUpdate = DateTime.UtcNow;
-        DateTime lastClientUpdate = DateTime.UtcNow;
+
         DateTime lastHeavyUpdate  = DateTime.UtcNow;
 
-        TimeSpan ServerUpdateSpan, ClientUpdateSpan, HeavyUpdateSpan;
+        TimeSpan HeavyUpdateSpan;
 
-        private Thread ServerThread = null;
-        private Thread ClientThread = null;
-        private Thread HeavyThread = null;
+
 
         public ObjectService ObjectFactory = new ObjectService();
 
@@ -72,16 +68,21 @@ namespace Darkages.Network.Game
 
         private void Update()
         {
-            lastHeavyUpdate = DateTime.UtcNow;
+            lastHeavyUpdate       = DateTime.UtcNow;
+            ServerContext.Running = true;
 
-            while (true)
+            while (ServerContext.Running)
             {
                 try
                 {
                     var delta = DateTime.UtcNow - lastHeavyUpdate;
-                    ExecuteHeavyWork(delta);
-                    ExecuteServerWork(delta);
-                    ExecuteClientWork(delta);
+
+                    if (ServerContext.Running)
+                    {
+                        ExecuteHeavyWork(delta);
+                        ExecuteServerWork(delta);
+                        ExecuteClientWork(delta);
+                    }
                 }
                 catch (Exception error)
                 {
@@ -224,11 +225,18 @@ namespace Darkages.Network.Game
             base.Abort();
         }
 
+        
         public override void Start(int port)
         {
             base.Start(port);
 
-            Task.Run(() => Update());
+            new Thread(() => Update())
+            {
+                Priority = ThreadPriority.Highest,
+                IsBackground = true
+                // 
+            }.Start();
+
         }
     }
 }

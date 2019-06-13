@@ -32,13 +32,19 @@ namespace Lorule
     class Program
     {
         public static Instance _Server;
+        private const string OneInstanceMutexName = @"Global\Lorule";
 
-        static void Main(string[] args)
+        private static void Main()
         {
-
-            _Server = new Instance();        
-            _Server.Start();
-            _Server.Report();
+            using (Mutex _oneInstanceMutex = new System.Threading.Mutex(true, OneInstanceMutexName, out var firstInstance))
+            {
+                if (firstInstance)
+                {
+                    _Server = new Instance();
+                    _Server.Start();
+                    _Server.Report();
+                }
+            }
         }
 
         public class Instance : ServerContext

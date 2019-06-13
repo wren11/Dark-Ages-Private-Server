@@ -37,10 +37,11 @@ namespace Darkages.Types
 
         public Monster()
         {
-            BashEnabled = false;
-            CastEnabled = false;
-            WalkEnabled = false;
-            WaypointIndex = 0;
+            BashEnabled    = false;
+            CastEnabled    = false;
+            WalkEnabled    = false;
+            WaypointIndex  = 0;
+            TaggedAislings = new ConcurrentDictionary<int, Sprite>();
         }
 
         [JsonIgnore] public MonsterScript Script { get; set; }

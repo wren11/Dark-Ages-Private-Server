@@ -136,21 +136,22 @@ namespace Darkages.Network.Login
 
                 if (_aisling.Username.Equals(ServerContext.Config.GameMaster, StringComparison.OrdinalIgnoreCase))
                 {
-                    _aisling.Flags    = AislingFlags.GM | AislingFlags.SeeInvisible | AislingFlags.SeeGhosts;
-                    _aisling.Redirect = redirect;
-
-                    StorageManager.AislingBucket.Save(_aisling);
-                    {
-                        ServerContext.Info.Debug("GameMaster Entering Game: {0}", _aisling.Username);
-                    }
+                    _aisling.GameMaster  = true;
+                    ServerContext.Info.Debug("GameMaster Entering Game: {0}", _aisling.Username);
                 }
                 else
                 {
                     ServerContext.Info?.Debug("Player Entering Game: {0}", _aisling.Username);
                 }
 
-                client.SendMessageBox(0x00, "\0");
+                _aisling.Redirect = redirect;
 
+                lock (ServerContext.SyncObj)
+                {
+                    StorageManager.AislingBucket.Save(_aisling);
+                }
+
+                client.SendMessageBox(0x00, "\0");
                 client.Send(new ServerFormat03
                 {
                     EndPoint = new IPEndPoint(Address, ServerContext.DefaultPort),

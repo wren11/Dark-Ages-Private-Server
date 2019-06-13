@@ -36,14 +36,13 @@ namespace Darkages.Storage.locales.debuffs
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {
 
-            #warning GM-TEST-CODE
             /* GM Character's don't die. */
             if (Affected is Aisling)
             {
-                if ((Affected as Aisling).Flags.HasFlag(AislingFlags.GM))
+                if ((Affected as Aisling).GameMaster)
                     return;
             }
-            #warning GM-TEST-CODE
+
 
             base.OnApplied(Affected, debuff);
 

@@ -117,7 +117,7 @@ namespace Darkages
 
         [JsonProperty] public bool DontTurnDuringRefresh;
 
-        [JsonProperty] public int ERRORCAP = 5;
+        [JsonProperty] public int ERRORCAP = 15;
 
         [JsonProperty]
         /// <summary>

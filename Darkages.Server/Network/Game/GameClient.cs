@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using CLAP;
 using Darkages.Common;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
@@ -27,6 +28,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
@@ -35,6 +37,32 @@ namespace Darkages.Network.Game
         public Collection<GlobalScript> GlobalScripts = new Collection<GlobalScript>();
 
         public GameServer Server;
+
+        public Aisling Aisling;
+
+        public GameServerTimer HpRegenTimer;
+
+        public GameServerTimer MpRegenTimer;
+
+        public Interpreter MenuInterpter;
+
+        public DialogSession DlgSession;
+
+        public Item LastItemDropped;
+
+        public DateTime BoardOpened;
+
+        public DateTime LastWhisperMessageSent;
+
+        public DateTime LastAssail;
+
+        public DateTime LastMessageSent;
+
+        public DateTime LastPingResponse;
+
+        public DateTime LastWarp;
+
+        public DateTime LastScriptExecuted;
 
         public DateTime LastPing;
 
@@ -45,39 +73,14 @@ namespace Darkages.Network.Game
         public bool IsRefreshing =>
             DateTime.UtcNow - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContext.Config.RefreshRate);
 
-        public bool IsWarping => DateTime.UtcNow - LastWarp < new TimeSpan(0, 0, 0, 0, 200);
-
-        public DateTime LastWarp;
-
-        public DateTime LastScriptExecuted;
-
-        public GameServerTimer HpRegenTimer;
-
-        public GameServerTimer MpRegenTimer;
-
-        public Aisling Aisling;
-
-        public Interpreter MenuInterpter;
-
-        public bool ShouldUpdateMap;
-
-        public DateTime LastMessageSent;
-
-        public DateTime LastPingResponse;
-
-        public byte LastActivatedLost;
-
-        public DialogSession DlgSession;
-
-        public DateTime BoardOpened;
-
-        public DateTime LastWhisperMessageSent;
+        public bool IsWarping =>
+            DateTime.UtcNow - LastWarp < new TimeSpan(0, 0, 0, 0, 200);
 
         public ushort LastBoardActivated;
 
-        public Item LastItemDropped;
+        public bool ShouldUpdateMap;
 
-        public DateTime LastAssail;
+        public byte LastActivatedLost;
 
         public GameClient()
         {
@@ -86,6 +89,62 @@ namespace Darkages.Network.Game
 
             MpRegenTimer = new GameServerTimer(
                 TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate / 2));
+        }
+
+        /// <summary>
+        /// This chat command spawns a monster.
+        /// </summary>
+        /// <param name="t">Name of Monster, Case Sensitive.</param>
+        /// <param name="x">X Location to Spawn.</param>
+        /// <param name="y">Y Location to Spawn.</param>
+        /// <param name="c"></param>
+        /// <usage>spawnMonster -t:Undead -x:43 -y:16 -c:10</usage>
+        [Verb]
+        public void spawnMonster(string t, int x, int y, int c)
+        {
+            var obj = ServerContext.GlobalMonsterTemplateCache
+                .FirstOrDefault(i => i.Name.Equals(t, StringComparison.CurrentCulture));
+
+            if (obj != null)
+            {
+                for (int i = 0; i < c; i++)
+                {
+                    var mon = Monster.Create(obj, Aisling.Map);
+                    if (mon != null)
+                    {
+
+                        mon.X = x;
+                        mon.Y = y;
+
+                        AddObject(mon);
+
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// This chat command reloads all objects.
+        /// </summary>
+        /// <param name="all">[Optional] all objects | true or false</param>
+        /// <usage>reload -all:true|false</usage> 
+        /// <usage>reload</usage> 
+        [Verb]
+        public void reload(bool all = false)
+        {
+            lock (ServerContext.SyncObj)
+            {
+                var objs = GetObjects(null, i => i != null && i.Serial != Aisling.Serial,
+                    all ? Get.All : Get.Items | Get.Money | Get.Monsters | Get.Mundanes);
+
+                foreach (var obj in objs)
+                {
+                    obj.Remove();
+                }
+
+                ServerContext.LoadAndCacheStorage();
+            }
         }
 
         public void BuildSettings()
@@ -910,7 +969,7 @@ namespace Darkages.Network.Game
                     break;
                 case Scope.All:
                     {
-                        var nearby = GetObjects<Aisling>(Aisling.Map, i => i.LoggedIn);
+                        var nearby = GetObjects<Aisling>(null, i => i.LoggedIn);
                         foreach (var obj in nearby)
                             obj.Client.SendMessage(type, text);
                     }

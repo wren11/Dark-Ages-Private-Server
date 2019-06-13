@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+using CLAP;
 using Darkages.Common;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.Game.Components;
@@ -30,6 +31,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
@@ -37,7 +39,7 @@ namespace Darkages.Network.Game
     {
         public void CreateInterpreterFromMenuFile(GameClient client, string Name)
         {
-            var parser = new YamlMenuParser();
+            var parser   = new YamlMenuParser();
             var yamlPath = ServerContext.StoragePath + string.Format(@"\Scripts\Menus\{0}.yaml", Name);
 
             if (File.Exists(yamlPath))
@@ -112,6 +114,7 @@ namespace Darkages.Network.Game
         /// <summary>
         ///     Activate Assails
         /// </summary>
+        [Verb]
         public static void ActivateAssails(GameClient client)
         {
             #region Sanity Checks
@@ -280,26 +283,7 @@ namespace Darkages.Network.Game
 
             if (format.Type == 0)
             {
-                var redirect = new Redirect
-                {
-                    Serial = Convert.ToString(client.Serial),
-                    Salt   = System.Text.Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
-                    Seed   = Convert.ToString(client.Encryption.Parameters.Seed),
-                    Name   = client.Aisling.Username,
-                    Type   = "2"
-                };
-
-                client.Aisling.LoggedIn = false;
-
-                client.Save();
-                client.Aisling.Remove(true);
-
-                client.FlushAndSend(new ServerFormat03
-                {
-                    EndPoint = new IPEndPoint(Address, 2610),
-                    Redirect = redirect
-                });
-                client.FlushAndSend(new ServerFormat02(0x00, "\0"));
+                ExitGame(client);
             }
 
             if (format.Type == 1)
@@ -311,6 +295,30 @@ namespace Darkages.Network.Game
                 client.LastSave = DateTime.UtcNow;
                 client.Aisling.Remove();
             }
+        }
+
+        public void ExitGame(GameClient client)
+        {
+            var redirect = new Redirect
+            {
+                Serial = Convert.ToString(client.Serial),
+                Salt = System.Text.Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
+                Seed = Convert.ToString(client.Encryption.Parameters.Seed),
+                Name = client.Aisling.Username,
+                Type = "2"
+            };
+
+            client.Aisling.LoggedIn = false;
+
+            client.Save();
+            client.Aisling.Remove(true);
+
+            client.FlushAndSend(new ServerFormat03
+            {
+                EndPoint = new IPEndPoint(Address, 2610),
+                Redirect = redirect
+            });
+            client.FlushAndSend(new ServerFormat02(0x00, "\0"));
         }
 
         private static void SendMapData(GameClient client)
@@ -706,6 +714,26 @@ namespace Darkages.Network.Game
                 Type   = format.Type,
                 Text   = string.Empty
             };
+
+            if (client.Aisling.GameMaster)
+            {
+                int result = -1;
+
+                try
+                {
+                    result = Parser.Run<GameClient>
+                        (format.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries), client);
+                }
+                catch
+                {
+                    //ignore error
+                }
+
+                if (result == 0)
+                {
+                    return;
+                }
+            }
 
             IEnumerable<Aisling> audience;
 
@@ -1979,6 +2007,11 @@ namespace Darkages.Network.Game
                                 //try and call script first
                                 (obj as Mundane)?.Script?.OnClick(this, client);
 
+                                if (client.MenuInterpter  != null)
+                                {
+                                    client.MenuInterpter = null;
+                                    client.CloseDialog();
+                                }
 
                                 //if call does not produce it's own interpreter. Assume default role.
                                 if (client.MenuInterpter == null)

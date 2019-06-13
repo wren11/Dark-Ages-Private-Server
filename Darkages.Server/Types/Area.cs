@@ -158,7 +158,7 @@ namespace Darkages
 
         public bool IsWall(Aisling obj, int x, int y)
         {
-            if (obj.Flags.HasFlag(AislingFlags.GM))
+            if (obj.GameMaster)
                 return false;
 
             if (obj.Flags.HasFlag(AislingFlags.Dead))

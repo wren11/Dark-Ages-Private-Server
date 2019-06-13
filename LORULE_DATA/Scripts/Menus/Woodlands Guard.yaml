@@ -1,5 +1,5 @@
 ﻿start:
-    menu: 1
+    checkpoint: 4
 
 
 menus:
@@ -20,6 +20,12 @@ menus:
       - id: 3
         text: "Test complete quest"
         checkpoint: 3
+  - id: 3
+    text: "Hidden menu, Only visible after quest completed."
+    options:
+      - id: 1
+        text: "a"  
+
 
 
 sequences:
@@ -43,7 +49,7 @@ sequences:
     - id: 2                                
       text: "Please come back when you have completed my quest."
       answers:
-        - id: 1
+        - id: 1  
           menu: 2          
 
 
@@ -121,4 +127,20 @@ checkpoints:
     fail:
       step: 2
       sequence: 2 
+#########################################################################################################
+
+
+## Completes the Quest. 
+#-------------------------------------------
+## - success: quest was completed, any rewards given.
+## - fail: they have not completed it yet.
 ########################################################################################################
+  - id: 4
+    type: Call
+    value: >
+            var result = (user.HasCompletedQuest("test_quest"));                                   
+    success:
+      menu: 3
+    fail:
+      menu: 1 
+###########################################################################################################

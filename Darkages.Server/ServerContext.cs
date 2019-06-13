@@ -15,13 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Common;
 using Darkages.Interops;
 using Darkages.Network.Game;
+using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Script.Context;
 using Darkages.Storage;
-using Darkages.Storage.locales.Buffs;
 using Darkages.Types;
 using Mono.CSharp;
 using Newtonsoft.Json;
@@ -32,7 +31,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using Class = Darkages.Types.Class;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Darkages
 {
@@ -49,6 +50,8 @@ namespace Darkages
         public static bool Running, Paused;
 
         public static GameServer Game;
+
+        public static LoginServer Lobby;
 
         public static ServerConstants Config;
 
@@ -194,9 +197,11 @@ namespace Darkages
 
                 try
                 {
-
                     Game = new GameServer(Config.ConnectionCapacity);
                     Game.Start(DefaultPort);
+
+                    Lobby = new LoginServer(Config.ConnectionCapacity);
+                    Lobby.Start(2610);
                 }
                 catch (Exception)
                 {
@@ -205,8 +210,7 @@ namespace Darkages
                 }
             }
 
-        
-            Running = true;
+   
         }
 
         /// <summary>
@@ -219,12 +223,28 @@ namespace Darkages
 
         public virtual void Shutdown()
         {
+            DisposeGame();
+        }
+
+        public static void Terminate()
+        {
+            DisposeGame();
+        }
+
+        private static void DisposeGame()
+        {
+            Game  ?.Abort();
+            Lobby ?.Abort();
+
+
+            Game  = null;
+            Lobby = null;
+
+
             Running = false;
-            {
-                EmptyCacheCollectors();
-                Game?.Abort();
-                Game = null;
-            }
+
+            //Process.Start(Application.ExecutablePath);
+            //Application.Exit();
         }
 
         public static void Startup()
@@ -489,5 +509,6 @@ namespace Darkages
             foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values)
                 skill.Prerequisites?.AssociatedWith(skill);
         }
+
     }
 }

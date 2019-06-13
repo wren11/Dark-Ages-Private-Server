@@ -71,21 +71,30 @@ namespace Darkages.Network
         }
         public int EndReceiveHeader(IAsyncResult result, out SocketError error)
         {
-            var bytes = base.EndReceive(result, out error);
-
-            if (bytes == 0 ||
-                error != SocketError.Success)
-                return 0;
-
-            this.headerOffset += bytes;
-
-            if (this.HeaderComplete)
+            try
             {
-                this.packetLength = (this.header[1] << 8) | this.header[2];
-                this.packetOffset = (0);
+                var bytes = base.EndReceive(result, out error);
+
+                if (bytes == 0 ||
+                    error != SocketError.Success)
+                    return 0;
+
+                this.headerOffset += bytes;
+
+                if (this.HeaderComplete)
+                {
+                    this.packetLength = (this.header[1] << 8) | this.header[2];
+                    this.packetOffset = (0);
+                }
+
+                return bytes;
+            }
+            catch
+            {
+                error = SocketError.SocketError;
             }
 
-            return bytes;
+            return 0;
         }
         public int EndReceivePacket(IAsyncResult result, out SocketError error)
         {

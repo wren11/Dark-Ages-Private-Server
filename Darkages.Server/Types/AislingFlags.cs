@@ -24,7 +24,6 @@ namespace Darkages.Types
     {
         Normal        = 1,
         SeeInvisible  = 1 << 1,
-        GM            = 1 << 2,
         Dead          = 1 << 3,
         Invisible     = 1 << 4,
         SeeGhosts     = 1 << 5,
