@@ -32,7 +32,7 @@ namespace Darkages
         }
 
         public bool IsMapOpen { get; set; }
-        public int FieldNumber { get; set; }
+        public int FieldNumber { get; set; } = 1;
         public DateTime DateOpened { get; set; }
 
         [JsonIgnore]

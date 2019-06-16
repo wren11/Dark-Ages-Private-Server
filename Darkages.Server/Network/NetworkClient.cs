@@ -51,16 +51,19 @@ namespace Darkages.Network
 
         public NetworkClient()
         {
-            this.Reader     = new NetworkPacketReader();
-            this.Writer     = new NetworkPacketWriter();
-            this.Encryption = new SecurityProvider();
-            this._sendReset  = new ManualResetEvent(true);
+            this.Reader      = new NetworkPacketReader();
+            this.Writer      = new NetworkPacketWriter();
+            this.Encryption  = new SecurityProvider();
 
-            _sendBuffer     = new ConcurrentQueue<byte[]>();
+            _sendReset  = new ManualResetEvent(true);
+            _sendBuffer = new ConcurrentQueue<byte[]>();
         }
 
         public void Read(NetworkPacket packet, NetworkFormat format)
         {
+            if (packet == null)
+                return;
+
             if (format.Secured)
             {
                 Encryption.Transform(packet);
@@ -172,6 +175,8 @@ namespace Darkages.Network
                 format.Serialize(this.Writer);
 
                 var packet = this.Writer.ToPacket();
+                if (packet == null)
+                    return;
 
                 if (format.Secured)
                 {
@@ -202,6 +207,8 @@ namespace Darkages.Network
             format.Serialize(Writer);
 
             var packet = Writer.ToPacket();
+            if (packet == null)
+                return;
 
             if (format.Secured)
             {
@@ -235,6 +242,9 @@ namespace Darkages.Network
                 Writer.Write(data);
 
                 var packet = Writer.ToPacket();
+                if (packet == null)
+                    return;
+
                 Encryption.Transform(packet);
 
                 lock (_sendBuffer)

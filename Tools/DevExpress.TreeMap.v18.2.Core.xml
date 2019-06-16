@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <assembly>
+    <name>DevExpress.TreeMap.v18.2.Core</name>
+  </assembly>
+  <members>
+    <member name="N:DevExpress.TreeMap">
+      <summary>
+        <para>Contains all common classes that the WinForms TreeMap Control and WPF TreeMap Control require to function.</para>
+      </summary>
+    </member>
+    <member name="T:DevExpress.TreeMap.ITreeMapItem">
+      <summary>
+        <para>The interface that should be implemented by a class which can be used as a tree map item.</para>
+      </summary>
+    </member>
+  </members>
+</doc>

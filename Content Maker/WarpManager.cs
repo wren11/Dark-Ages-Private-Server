@@ -226,9 +226,8 @@ namespace Content_Maker
 
             template.To = new Warp()
             {
-                AreaID = SelectedArea.ID,
+                AreaID  = SelectedArea.ID,
                 Location = new Position(PreviousX, PreviousY),
-                PortalKey = 0
             };
 
             template.ActivationMapId = id;
@@ -238,9 +237,8 @@ namespace Content_Maker
             {
                 template.Activations.Add(new Warp()
                 {
-                    AreaID = id,
+                    AreaID   = id,
                     Location = activation,
-                    PortalKey = 0
                 });
             }
 
@@ -258,9 +256,8 @@ namespace Content_Maker
 
             template.To = new Warp()
             {
-                AreaID = id,
+                AreaID   = id,
                 Location = new Position(LocationX, LocationY),
-                PortalKey = 0
             };
 
             template.ActivationMapId = SelectedArea.ID;
@@ -270,9 +267,8 @@ namespace Content_Maker
             {
                 template.Activations.Add(new Warp()
                 {
-                    AreaID = SelectedArea.ID,
+                    AreaID   = SelectedArea.ID,
                     Location = activation,
-                    PortalKey = 0
                 });
             }
 

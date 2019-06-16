@@ -166,10 +166,6 @@ namespace Darkages.Network.Game
 
             lock (Clients)
             {
-
-
-                var syncObjects = new List<ManualResetEvent>();
-
                 foreach (var client in Clients)
                 {
                     if (client != null && client.Aisling != null)
@@ -189,9 +185,7 @@ namespace Darkages.Network.Game
                         msr.Set();
                     }
                 }
-
-       
-           }
+            }
         }
 
         public override void ClientDisconnected(GameClient client)
@@ -203,7 +197,7 @@ namespace Darkages.Network.Game
 
                 try
                 {
-                    AutoSave(client);
+                    client.Save();
                     ServerContext.Info.Warning("{0} has disconnected from server.", client.Aisling.Username);
 
                     client.Aisling.LoggedIn = false;
@@ -232,9 +226,8 @@ namespace Darkages.Network.Game
 
             new Thread(() => Update())
             {
-                Priority = ThreadPriority.Highest,
+                Priority     = ThreadPriority.Highest,
                 IsBackground = true
-                // 
             }.Start();
 
         }

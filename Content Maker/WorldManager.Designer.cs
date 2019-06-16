@@ -62,6 +62,7 @@ namespace Content_Maker
             this.button5 = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.button6 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
@@ -72,12 +73,14 @@ namespace Content_Maker
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.button6 = new System.Windows.Forms.Button();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -220,6 +223,8 @@ namespace Content_Maker
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.label7);
+            this.groupBox4.Controls.Add(this.numericUpDown1);
             this.groupBox4.Controls.Add(this.button6);
             this.groupBox4.Controls.Add(this.button3);
             this.groupBox4.Controls.Add(this.button2);
@@ -235,6 +240,16 @@ namespace Content_Maker
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Step 4: Add a Warp From The Arrival Map Back to the World Map.";
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(30, 100);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(273, 23);
+            this.button6.TabIndex = 16;
+            this.button6.Text = "Compile Warp";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // button3
             // 
@@ -333,15 +348,26 @@ namespace Content_Maker
             this.columnHeader2.Text = "Y";
             this.columnHeader2.Width = 66;
             // 
-            // button6
+            // numericUpDown1
             // 
-            this.button6.Location = new System.Drawing.Point(30, 100);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(273, 23);
-            this.button6.TabIndex = 16;
-            this.button6.Text = "Compile Warp";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.numericUpDown1.Location = new System.Drawing.Point(363, 19);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(29, 20);
+            this.numericUpDown1.TabIndex = 17;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(308, 22);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(54, 13);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "Portal key";
             // 
             // WorldManager
             // 
@@ -370,6 +396,7 @@ namespace Content_Maker
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -403,5 +430,7 @@ namespace Content_Maker
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Label label7;
     }
 }

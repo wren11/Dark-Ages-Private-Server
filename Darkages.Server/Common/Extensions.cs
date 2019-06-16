@@ -15,8 +15,6 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Mono.CSharp;
-using System.Reflection;
 using System.Text;
 
 namespace Darkages.Common
@@ -24,7 +22,6 @@ namespace Darkages.Common
     public static class Extensions
     {
         private static readonly Encoding encoding = Encoding.GetEncoding(949);
-
 
         public static bool Run(this string str)
         {

@@ -299,6 +299,7 @@
     <Compile Include="Storage\locales\debuffs\debuff_ardcradh.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_beagcradh.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_beagsuain.cs" />
+    <Compile Include="Storage\locales\debuffs\debuff_blind.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_cradh.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_cursed.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_fasnadur.cs" />
@@ -370,6 +371,7 @@
     <Compile Include="Storage\locales\Scripts\Skills\Rogue\Stab.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Sneak.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Unstuck.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Warrior\Rush.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Warrior\charge.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Warrior\rescue.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Warrior\Two-Handed-Attack.cs" />
@@ -405,6 +407,7 @@
     <Compile Include="Storage\locales\Scripts\Spells\elemental\wizard_Spells.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\heals\beagioc.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\heals\beagiocfein.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\rogue\Blind.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\Clone.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\NeedleTrap.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\PoisonTrap.cs" />
@@ -535,9 +538,7 @@
     <Compile Include="Types\WarpTemplate.cs" />
     <Compile Include="Types\WorldMapTemplate.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
     <VisualStudio AllowExistingFolder="true" />

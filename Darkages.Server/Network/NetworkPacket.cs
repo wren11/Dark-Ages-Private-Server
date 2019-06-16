@@ -27,14 +27,16 @@ namespace Darkages.Network
 
         public NetworkPacket(byte[] array, int count)
         {
-            this.Command = array[0];
-            this.Ordinal = array[1];
-            this.Data = new byte[count - 2];
+           
+                this.Command = array[0];
+                this.Ordinal = array[1];
+                this.Data = (count - 2 > 0) ? new byte[count - 2] : new byte[count];
 
-            if (this.Data.Length != 0)
-            {
-                Buffer.BlockCopy(array, 2, this.Data, 0, this.Data.Length);
-            }
+                if (this.Data.Length != 0)
+                {
+                    Buffer.BlockCopy(array, 2, this.Data, 0, this.Data.Length);
+                }
+            
         }
 
         public byte[] ToArray()

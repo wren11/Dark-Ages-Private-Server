@@ -134,9 +134,8 @@ namespace Content_Maker
             {
                 Destination = new Warp()
                 {
-                    PortalKey = 1,
-                    AreaID = SelectedArea.ID,
-                    Location = new Position(Convert.ToByte(ArrivalX), Convert.ToByte(ArrivalY)),
+                    AreaID    = SelectedArea.ID,
+                    Location  = new Position(Convert.ToByte(ArrivalX), Convert.ToByte(ArrivalY)),
                 },
                 DisplayName = textBox1.Text,
                 PointX = (short)SelectedPoint.Y,
@@ -244,8 +243,7 @@ namespace Content_Maker
 
                 template.To = new Warp()
                 {
-                    AreaID = 0,
-                    PortalKey = 1
+                    AreaID    = 0
                 };
 
                 template.ActivationMapId = SelectedArea.ID;
@@ -255,9 +253,8 @@ namespace Content_Maker
                 {
                     template.Activations.Add(new Warp()
                     {
-                        AreaID = SelectedArea.ID,
+                        AreaID   = SelectedArea.ID,
                         Location = activation,
-                        PortalKey = 0
                     });
                 }
 

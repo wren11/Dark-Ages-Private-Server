@@ -234,6 +234,12 @@ namespace Darkages.Security
 
         public void Transform(NetworkPacket packet)
         {
+            if (packet == null)
+                return;
+
+            if (packet.Data == null)
+                return;
+
             for (var i = 0; i < packet.Data.Length; i++)
                 Xor(packet, i);
         }

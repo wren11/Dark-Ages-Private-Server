@@ -428,11 +428,18 @@ namespace Darkages.Network.Game
             if (!client.Aisling.Map.Ready)
                 return;
 
+            if (client.IsWarping)
+            {
+                client.SendLocation();
+
+                return;
+            }
             /* This prevents actions during skulled. */
             if (!ServerContext.Config.CanMoveDuringReap)
             {
                 if (client.Aisling.Skulled)
                 {
+                    client.SendLocation();
                     client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                     return;
                 }
@@ -450,7 +457,7 @@ namespace Darkages.Network.Game
                 ObjectComponent.UpdateClientObjects(client.Aisling);
                 if (client.Aisling.AreaID == ServerContext.Config.TransitionZone)
                 {
-                    client.Aisling.PortalSession = new PortalSession { FieldNumber = 1, IsMapOpen = false };
+                    client.Aisling.PortalSession = new PortalSession { IsMapOpen = false };
                     client.Aisling.PortalSession.TransitionToMap(client);
                     return;
                 }

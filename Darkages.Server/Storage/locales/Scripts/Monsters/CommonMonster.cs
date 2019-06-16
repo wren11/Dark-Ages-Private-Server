@@ -191,7 +191,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void OnSkulled(GameClient client)
         {
-            Monster.Animate(163);
+
         }
 
         public override void OnLeave(GameClient client)

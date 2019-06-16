@@ -305,6 +305,9 @@ namespace Darkages
             new GameSetting("AUTO LOOT GOLD  :Toggle", "AUTO LOOT GOLD  :Toggled", false)
         };
 
+        [JsonProperty]
+        public string SpellFailedMessage = "failed.";
+
         public struct GameSetting
         {
             public string SettingOn, SettingOff;

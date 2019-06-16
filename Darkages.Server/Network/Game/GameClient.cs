@@ -102,8 +102,10 @@ namespace Darkages.Network.Game
         [Verb]
         public void spawnMonster(string t, int x, int y, int c)
         {
+            var name = t.Replace("-", string.Empty).Trim();
+
             var obj = ServerContext.GlobalMonsterTemplateCache
-                .FirstOrDefault(i => i.Name.Equals(t, StringComparison.CurrentCulture));
+                .FirstOrDefault(i => i.Name.Equals(name, StringComparison.CurrentCulture));
 
             if (obj != null)
             {
@@ -120,6 +122,11 @@ namespace Darkages.Network.Game
 
                     }
                 }
+                SystemMessage("spawnMonster: Success.");
+            }
+            else
+            {
+                SystemMessage("spawnMonster: Failed.");
             }
         }
 

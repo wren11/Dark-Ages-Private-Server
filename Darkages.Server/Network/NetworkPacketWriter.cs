@@ -139,7 +139,12 @@ namespace Darkages.Network
 
         public NetworkPacket ToPacket()
         {
-            return new NetworkPacket(buffer, Position);
+            if (Position > 0)
+            {
+                return new NetworkPacket(buffer, Position);
+            }
+
+            return null;
         }
     }
 }

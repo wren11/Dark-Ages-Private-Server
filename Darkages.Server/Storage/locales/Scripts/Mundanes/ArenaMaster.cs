@@ -69,7 +69,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 client.EnterArea();
                 client.SendStats(StatusFlags.All);
 
-                client.Aisling.PortalSession = new PortalSession { IsMapOpen = false, FieldNumber = 1 };
+                client.Aisling.PortalSession = new PortalSession { IsMapOpen = false };
                 client.Aisling.PortalSession.TransitionToMap(client);
                 client.CloseDialog();
             }

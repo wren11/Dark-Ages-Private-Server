@@ -1430,7 +1430,7 @@ namespace Darkages.Types
 
         public bool CanUpdate()
         {
-            if (IsSleeping || IsFrozen)
+            if (IsSleeping || IsFrozen || IsBlind)
                 return false;
 
             if (this is Monster || this is Mundane)

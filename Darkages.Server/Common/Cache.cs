@@ -264,7 +264,7 @@ public class Cache<K, T> : IDisposable
 }
 	#endregion
 
-	#region Other Cache classes (derived)
+#region Other Cache classes (derived)
 	/// <summary>
 	/// This is a generic cache subsystem based on key/value pairs, where key is a string.
 	/// You can add any item to this cache as long as the key is unique, so treat keys as something like namespaces and build them with a 

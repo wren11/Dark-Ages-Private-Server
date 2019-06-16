@@ -1,0 +1,1016 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <assembly>
+    <name>DevExpress.XtraWizard.v18.2</name>
+  </assembly>
+  <members>
+    <member name="N:DevExpress.XtraWizard">
+      <summary>
+        <para>Contains classes which implement the main functionality of the XtraWizard suite.</para>
+      </summary>
+    </member>
+    <member name="T:DevExpress.XtraWizard.BaseWelcomeWizardPage">
+      <summary>
+        <para>Serves as a base for classes that represent the Welcome Page and Completion Page.</para>
+      </summary>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWelcomeWizardPage.ForeColor">
+      <summary>
+        <para>This member supports the internal infrastructure and is not intended to be used directly from your code.</para>
+      </summary>
+      <value>A Color value.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWelcomeWizardPage.ProceedText">
+      <summary>
+        <para>Gets or sets the text displayed at the page&#39;s bottom.</para>
+      </summary>
+      <value>A string value that specifies the text displayed within the page&#39;s bottom.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.BaseWizardPage">
+      <summary>
+        <para>Serves as a base for classes that represent wizard pages.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.BaseWizardPage.#ctor">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> class.</para>
+      </summary>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.AllowBack">
+      <summary>
+        <para>Gets or sets whether the Back button is enabled.</para>
+      </summary>
+      <value>true, to enable the button; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.AllowCancel">
+      <summary>
+        <para>Gets or sets whether the Cancel button is enabled.</para>
+      </summary>
+      <value>true to enable the button; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.AllowFinish">
+      <summary>
+        <para>Gets or sets whether the Finish button is enabled.</para>
+      </summary>
+      <value>true, if the Finish button is enabled; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.AllowNext">
+      <summary>
+        <para>Gets or sets whether the Next button is enabled.</para>
+      </summary>
+      <value>true to enable the button; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.Anchor">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.AutoSize">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.BackColor">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.BackgroundImage">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.BackgroundImageLayout">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.CausesValidation">
+      <summary>
+        <para>This member supports the internal infrastructure and is not intended to be used directly from your code.</para>
+      </summary>
+      <value>A Booelan value.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.Dock">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.Enabled">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.Font">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.ForeColor">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.Location">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.Owner">
+      <summary>
+        <para>Gets the XtraWizard control which owns the current wizard page.</para>
+      </summary>
+      <value>A <see cref="T:DevExpress.XtraWizard.WizardControl"/> object which contains the current page within the <see cref="P:DevExpress.XtraWizard.WizardControl.Pages"/> collection.</value>
+    </member>
+    <member name="E:DevExpress.XtraWizard.BaseWizardPage.PageCommit">
+      <summary>
+        <para>Enables you to persist the changes made within the current step.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="E:DevExpress.XtraWizard.BaseWizardPage.PageInit">
+      <summary>
+        <para>Fires when the current <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> is about to be displayed and allows you to initialize the content of this page.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="E:DevExpress.XtraWizard.BaseWizardPage.PageRollback">
+      <summary>
+        <para>Enables you to rollback the current step.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="E:DevExpress.XtraWizard.BaseWizardPage.PageValidating">
+      <summary>
+        <para>Enables you to specify whether page data is valid, and whether the page can be switched.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.TabIndex">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.TabStop">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.Text">
+      <summary>
+        <para>Gets or sets the header text.</para>
+      </summary>
+      <value>A string value that specifies the header text.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.BaseWizardPage.Visible">
+      <summary>
+        <para>Gets or sets whether the page is visible.</para>
+      </summary>
+      <value>A Boolean value that specifies the visibility of the page.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.CompletionWizardPage">
+      <summary>
+        <para>Represents the Completion Page.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.CompletionWizardPage.#ctor">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.XtraWizard.CompletionWizardPage"/> class.</para>
+      </summary>
+    </member>
+    <member name="P:DevExpress.XtraWizard.CompletionWizardPage.FinishText">
+      <summary>
+        <para>Gets or sets the completion text.</para>
+      </summary>
+      <value>A string value that specifies the completion text.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.CompletionWizardPage.ProceedText">
+      <summary>
+        <para>Gets or sets the text displayed at the bottom of the page.</para>
+      </summary>
+      <value>A string value that specifies the text displayed at the bottom of the page.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.CompletionWizardPage.Text">
+      <summary>
+        <para>Gets or sets the header text.</para>
+      </summary>
+      <value>A string value that specifies the header text.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WelcomeWizardPage">
+      <summary>
+        <para>Represents the Welcome Page.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WelcomeWizardPage.#ctor">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.XtraWizard.WelcomeWizardPage"/> class.</para>
+      </summary>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WelcomeWizardPage.IntroductionText">
+      <summary>
+        <para>Gets or sets the introduction text.</para>
+      </summary>
+      <value>A string value that specifies the introduction text.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WelcomeWizardPage.Text">
+      <summary>
+        <para>Gets or sets the header text.</para>
+      </summary>
+      <value>A string value that specifies the header text.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardAppearanceCollection">
+      <summary>
+        <para>Contains appearance settings for the <see cref="T:DevExpress.XtraWizard.WizardControl"/>.</para>
+      </summary>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardAppearanceCollection.AeroWizardTitle">
+      <summary>
+        <para>Contains the appearance settings used to paint the wizard control&#39;s title (in the <see cref="F:DevExpress.XtraWizard.WizardStyle.WizardAero"/> style).</para>
+      </summary>
+      <value>An <see cref="T:DevExpress.Utils.AppearanceObject"/> that contains the corresponding appearance settings.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardAppearanceCollection.ExteriorPage">
+      <summary>
+        <para>Contains appearance settings used to customize the inner regions of the Welcome Page and Completion Page, when the <see cref="F:DevExpress.XtraWizard.WizardStyle.Wizard97"/> style is applied.</para>
+      </summary>
+      <value>An <see cref="T:DevExpress.Utils.AppearanceObject"/> that contains the corresponding appearance settings.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardAppearanceCollection.ExteriorPageTitle">
+      <summary>
+        <para>Contains the appearance settings used to paint the titles of Welcome Page and Completion Page, when the <see cref="F:DevExpress.XtraWizard.WizardStyle.Wizard97"/> style is applied.</para>
+      </summary>
+      <value>An <see cref="T:DevExpress.Utils.AppearanceObject"/> that contains the corresponding appearance settings.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardAppearanceCollection.IsLoading">
+      <summary>
+        <para>Gets whether the XtraWizard control is being initialized</para>
+      </summary>
+      <value>true if if the XtraWizard control is being initialized; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardAppearanceCollection.Page">
+      <summary>
+        <para>Contains the appearance settings used to paint 1) the background and descriptions of inner pages in the <see cref="F:DevExpress.XtraWizard.WizardStyle.Wizard97"/> style, and 2) the background of all pages in the <see cref="F:DevExpress.XtraWizard.WizardStyle.WizardAero"/> style.</para>
+      </summary>
+      <value>An <see cref="T:DevExpress.Utils.AppearanceObject"/> that contains the corresponding settings.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardAppearanceCollection.PageTitle">
+      <summary>
+        <para>Contains the appearance settings used to paint 1) the titles of inner pages in the <see cref="F:DevExpress.XtraWizard.WizardStyle.Wizard97"/> style, and 2) the titles of all pages in the <see cref="F:DevExpress.XtraWizard.WizardStyle.WizardAero"/> style.</para>
+      </summary>
+      <value>An <see cref="T:DevExpress.Utils.AppearanceObject"/> that contains the corresponding appearance settings.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardCommandButtonClickEventArgs">
+      <summary>
+        <para>Provides data for the <see cref="E:DevExpress.XtraWizard.WizardControl.PrevClick"/> and <see cref="E:DevExpress.XtraWizard.WizardControl.NextClick"/> events.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardCommandButtonClickEventArgs.#ctor(DevExpress.XtraWizard.BaseWizardPage)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.XtraWizard.WizardCommandButtonClickEventArgs"/> class.</para>
+      </summary>
+      <param name="page">A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> descendant that represents the current wizard page. This value is assigned to the <see cref="P:DevExpress.XtraWizard.WizardPageEventArgs.Page"/> property.</param>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardCommandButtonClickEventArgs.Handled">
+      <summary>
+        <para>Gets or sets whether an event was handled.</para>
+      </summary>
+      <value>true if the default precessing is not required; otherwise, false.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardCommandButtonClickEventHandler">
+      <summary>
+        <para>Represents a method that will handle the button click events.</para>
+      </summary>
+      <param name="sender">The event source.</param>
+      <param name="e">A <see cref="T:DevExpress.XtraWizard.WizardCommandButtonClickEventArgs"/> object that contains event data.</param>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardControl">
+      <summary>
+        <para>Allows you to generate multi-step wizard dialogs.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardControl.#ctor">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.XtraWizard.WizardControl"/> class.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardControl.About">
+      <summary>
+        <para>This member supports the .NET Framework infrastructure and cannot be used directly from your code.</para>
+      </summary>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.AllowAutoScaling">
+      <summary>
+        <para>Gets or sets whether the size of the WizardControl&#39;s buttons is changed according to the DPI settings.</para>
+      </summary>
+      <value>A <see cref="T:DevExpress.Utils.DefaultBoolean"/> value that specifies whether the size of the WizardControl&#39;s buttons is changed according to the DPI settings.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.AllowHtmlText">
+      <summary>
+        <para>Gets or sets whether HTML formatting tags can be used to format the text in wizard pages.</para>
+      </summary>
+      <value>true, if HTML formatting tags can be used to format text in wizard pages; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.AllowPagePadding">
+      <summary>
+        <para>Gets or sets whether to display page paddings.</para>
+      </summary>
+      <value>true to display page paddigns; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.AllowTransitionAnimation">
+      <summary>
+        <para>Gets or sets whether the fading animation effect in the transition from one page to another page is enabled.</para>
+      </summary>
+      <value>true to enable the fading animation effect; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.Anchor">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.AnimationInterval">
+      <summary>
+        <para>Gets or sets the length of the fading animation effect.</para>
+      </summary>
+      <value>An integer value that specifies the length of the fading animation effect, in system timer ticks.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.Appearance">
+      <summary>
+        <para>Provides access to the settings that control the appearance of the <see cref="T:DevExpress.XtraWizard.WizardControl"/>&#39;s elements.</para>
+      </summary>
+      <value>A<see cref="T:DevExpress.XtraWizard.WizardAppearanceCollection"/> object containing the appearance settings.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.BackColor">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.BackgroundImage">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.BackgroundImageLayout">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardControl.BeginInit">
+      <summary>
+        <para>Starts the XtraWizard&#39;s runtime initialization.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardControl.BeginUpdate">
+      <summary>
+        <para>Locks the <see cref="T:DevExpress.XtraWizard.WizardControl"></see> object by preventing visual updates until the EndUpdate method is called.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardControl.CalcHitInfo(System.Drawing.Point)">
+      <summary>
+        <para>Returns information about the visual elements located at the specified point.</para>
+      </summary>
+      <param name="pt">A <see cref="T:System.Drawing.Point"/> structure that specifies the test point coordinates relative to the XtraWizard control&#39;s top-left corner.</param>
+      <returns>A <see cref="T:DevExpress.XtraWizard.WizardHitInfo"/> object that contains information about the visual elements located at the specified point.</returns>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.CancelButtonCausesValidation">
+      <summary>
+        <para>Gets or sets whether a click on the Cancel button must fire validation events for the currently focused control.</para>
+      </summary>
+      <value>true if a click on this button must fire validation events; otherwise, false.</value>
+    </member>
+    <member name="E:DevExpress.XtraWizard.WizardControl.CancelClick">
+      <summary>
+        <para>Fires after the Cancel button has been clicked.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.CancelText">
+      <summary>
+        <para>Gets or sets the Cancel button&#39;s text.</para>
+      </summary>
+      <value>A string value that specifies the button&#39;s text.</value>
+    </member>
+    <member name="E:DevExpress.XtraWizard.WizardControl.CustomizeCommandButtons">
+      <summary>
+        <para>Allows you to customize the standard buttons (Previous, Next, Cancel, Finish and Help) and add/customize custom buttons before displaying a page</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.Dock">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardControl.EndInit">
+      <summary>
+        <para>Ends the XtraWizard&#39;s runtime initialization.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardControl.EndUpdate">
+      <summary>
+        <para>Unlocks the <see cref="T:DevExpress.XtraWizard.WizardControl"></see> object after a call to the BeginUpdate method and causes an immediate visual update.</para>
+      </summary>
+    </member>
+    <member name="E:DevExpress.XtraWizard.WizardControl.FinishClick">
+      <summary>
+        <para>Fires after the Finish button has been clicked.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.FinishText">
+      <summary>
+        <para>Gets or sets the Finish button&#39;s text.</para>
+      </summary>
+      <value>A string value that specifies the button&#39;s text.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.Font">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.ForeColor">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.HeaderImage">
+      <summary>
+        <para>Gets or sets the header image.</para>
+      </summary>
+      <value>A <see cref="T:System.Drawing.Image"/> object that represents the header image.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.HelpButtonCausesValidation">
+      <summary>
+        <para>Gets or sets whether a click on the Help button must fire validation events for the currently focused control.</para>
+      </summary>
+      <value>true if a click on this button must fire validation events; otherwise, false.</value>
+    </member>
+    <member name="E:DevExpress.XtraWizard.WizardControl.HelpClick">
+      <summary>
+        <para>Fires after the Help button has been clicked.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.HelpText">
+      <summary>
+        <para>Gets or sets the Help button&#39;s text.</para>
+      </summary>
+      <value>A string value that specifies the button&#39;s text.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.HelpVisible">
+      <summary>
+        <para>Gets or sets whether the Help button is displayed.</para>
+      </summary>
+      <value>true to display the Help button; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.Image">
+      <summary>
+        <para>Gets or sets an image displayed within the Welcome Page and Completion Page.</para>
+      </summary>
+      <value>A <see cref="T:System.Drawing.Image"/> object that represents the image.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.ImageLayout">
+      <summary>
+        <para>Gets or sets a value that specifies the position of the image.</para>
+      </summary>
+      <value>A <see cref="T:System.Windows.Forms.ImageLayout"/> enumeration value that specifies the position of the image.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.ImageWidth">
+      <summary>
+        <para>Gets or sets the width of an image displayed within the Welcome Page and Completion Page.</para>
+      </summary>
+      <value>An integer value that specifies the image width, in pixels.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.IsCompletionPageCreated">
+      <summary>
+        <para>Indicates whether the XtraWizard control contains the Completion Page.</para>
+      </summary>
+      <value>true if the Completion Page is created; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.IsLoading">
+      <summary>
+        <para>Indicates whether the XtraWizard control is being initialized.</para>
+      </summary>
+      <value>true if the XtraWizard control is being initialized; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.IsLockUpdate">
+      <summary>
+        <para>Gets whether the XtraWizard control is immediately updated in response to changing its settings.</para>
+      </summary>
+      <value>true if the XtraWizard control cannot be updated until unlocked; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.IsWelcomePageCreated">
+      <summary>
+        <para>Indicates whether the XtraWizard control contains the Welcome Page.</para>
+      </summary>
+      <value>true if the Welcome Page is created; otherwise, false.</value>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardControl.LayoutChanged">
+      <summary>
+        <para>Updates the XtraWizard control.</para>
+      </summary>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.Location">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.LookAndFeel">
+      <summary>
+        <para>Provides access to the settings that control the XtraWizard&#39;s look and feel.</para>
+      </summary>
+      <value>A <see cref="T:DevExpress.LookAndFeel.UserLookAndFeel"/> object whose properties specify the control&#39;s look and feel.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.NavigationMode">
+      <summary>
+        <para>Gets or sets whether clicking the Previous button navigates to the preceding or to the last visited page.</para>
+      </summary>
+      <value>A NavigationMode value that specifies which page is activated when clicking the Previous button.</value>
+    </member>
+    <member name="E:DevExpress.XtraWizard.WizardControl.NextClick">
+      <summary>
+        <para>Fires after the Next button has been clicked and allows you to cancel the operation.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.NextText">
+      <summary>
+        <para>Gets or sets the Next button&#39;s text.</para>
+      </summary>
+      <value>A string value that specifies the button&#39;s text.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.Pages">
+      <summary>
+        <para>Provides access to the XtraWizard&#39;s page collection.</para>
+      </summary>
+      <value>A <see cref="T:DevExpress.XtraWizard.WizardPageCollection"/> object that represents a collection of wizard pages.</value>
+    </member>
+    <member name="E:DevExpress.XtraWizard.WizardControl.PrevClick">
+      <summary>
+        <para>Fires after the Back button has been clicked and allows you to cancel the operation.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.PreviousButtonCausesValidation">
+      <summary>
+        <para>Gets or sets whether a click on the Previous button must fire validation events for the currently focused control.</para>
+      </summary>
+      <value>true if a click on this button must fire validation events; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.PreviousText">
+      <summary>
+        <para>Gets or sets the Back button&#39;s text.</para>
+      </summary>
+      <value>A string value that specifies the button&#39;s text.</value>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardControl.RefreshDesignButtons">
+      <summary>
+        <para>This member supports the internal infrastructure and is not intended to be used directly from your code.</para>
+      </summary>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.SelectedPage">
+      <summary>
+        <para>Gets or sets the currently selected wizard page.</para>
+      </summary>
+      <value>A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> descendant that represents the selected wizard page.</value>
+    </member>
+    <member name="E:DevExpress.XtraWizard.WizardControl.SelectedPageChanged">
+      <summary>
+        <para>Fires after the current wizard page has been changed.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="E:DevExpress.XtraWizard.WizardControl.SelectedPageChanging">
+      <summary>
+        <para>Enables you to control whether a wizard page can be selected.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.SelectedPageIndex">
+      <summary>
+        <para>Gets or sets the current wizard page.</para>
+      </summary>
+      <value>An integer value that specifies the wizard page&#39;s position within the <see cref="P:DevExpress.XtraWizard.WizardControl.Pages"/> collection.</value>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardControl.SetDesignButtonsCursor">
+      <summary>
+        <para>This member supports the internal infrastructure and is not intended to be used directly from your code.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardControl.SetNextPage">
+      <summary>
+        <para>Selects the next wizard page.</para>
+      </summary>
+      <returns>true if the next page has been selected; otherwise, false.</returns>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardControl.SetPreviousPage">
+      <summary>
+        <para>Selects the previous wizard page.</para>
+      </summary>
+      <returns>true if the previous page has been selected; otherwise, false.</returns>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.ShowBackButton">
+      <summary>
+        <para>Gets or sets whether the Back button is displayed. This property is in effect if <see cref="P:DevExpress.XtraWizard.WizardControl.WizardStyle"/> is set to <see cref="F:DevExpress.XtraWizard.WizardStyle.WizardAero"/>.</para>
+      </summary>
+      <value>true, if the Back button is displayed; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.ShowHeaderImage">
+      <summary>
+        <para>Gets or sets whether the header image is displayed within the Welcome Page and Completion Page.</para>
+      </summary>
+      <value>true to display the header image within the Welcome Page and Completion Page; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.Size">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.TabIndex">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.TabStop">
+      <summary>
+        <para>This property isn&#39;t used.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.Text">
+      <summary>
+        <para>Gets or sets the wizard&#39;s title.</para>
+      </summary>
+      <value>A string value that specifies the title.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.TitleImage">
+      <summary>
+        <para>Gets or sets the XtraWizard&#39;s title image.</para>
+      </summary>
+      <value>A <see cref="T:System.Drawing.Image"/> object that represents the title image (16x16 pixels).</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.UseAcceptButton">
+      <summary>
+        <para>Gets or sets whether the Next/Finish button is automatically clicked when the user presses the Enter key.</para>
+      </summary>
+      <value>true to enable Enter key processing; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.UseCancelButton">
+      <summary>
+        <para>Gets or sets whether the Cancel button is automatically clicked when the user presses the Esc key.</para>
+      </summary>
+      <value>true to enable Esc key processing; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardControl.WizardStyle">
+      <summary>
+        <para>Gets or sets the XtraWizard&#39;s layout.</para>
+      </summary>
+      <value>A <see cref="T:DevExpress.XtraWizard.WizardStyle"/> enumeration value that specifies the XtraWizard&#39;s layout.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardHitInfo">
+      <summary>
+        <para>Contains information about a specific point within the XtraWizard control.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardHitInfo.#ctor">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.XtraWizard.WizardHitInfo"/> class.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardHitInfo.Clear">
+      <summary>
+        <para>Sets the <see cref="T:DevExpress.XtraWizard.WizardHitInfo"/> class&#39; properties to their default values.</para>
+      </summary>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardHitInfo.HitPoint">
+      <summary>
+        <para>Gets or sets the test point.</para>
+      </summary>
+      <value>A <see cref="T:System.Drawing.Point"/> structure that represents the test point. The point coordinates are set relative to the XtraWizard&#39;s top-left corner.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardHitInfo.HitTest">
+      <summary>
+        <para>Gets a value which identifies a wizard element located under the test point.</para>
+      </summary>
+      <value>A <see cref="T:DevExpress.XtraWizard.WizardHitTest"/> enumeration value that identifies the wizard element located under the test point.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardHitInfo.IsValid">
+      <summary>
+        <para>Indicates whether the hit information supplied by this object is valid.</para>
+      </summary>
+      <value>true if the hit information is valid; otherwise, false.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardHitTest">
+      <summary>
+        <para>Lists the values that identify wizard elements located under the test point.</para>
+      </summary>
+    </member>
+    <member name="F:DevExpress.XtraWizard.WizardHitTest.CancelButton">
+      <summary>
+        <para>The test point belongs to the Cancel button.</para>
+      </summary>
+    </member>
+    <member name="F:DevExpress.XtraWizard.WizardHitTest.HelpButton">
+      <summary>
+        <para>The test point belongs to the Help button.</para>
+      </summary>
+    </member>
+    <member name="F:DevExpress.XtraWizard.WizardHitTest.NavigationPanel">
+      <summary>
+        <para>The test point belongs to the navigation panel.</para>
+      </summary>
+    </member>
+    <member name="F:DevExpress.XtraWizard.WizardHitTest.NextButton">
+      <summary>
+        <para>The test point belongs to the Next button.</para>
+      </summary>
+    </member>
+    <member name="F:DevExpress.XtraWizard.WizardHitTest.None">
+      <summary>
+        <para>The test point does not belong to any wizard element or is outside the XtraWizard control.</para>
+      </summary>
+    </member>
+    <member name="F:DevExpress.XtraWizard.WizardHitTest.PageClient">
+      <summary>
+        <para>The test point belongs to a content area.</para>
+      </summary>
+    </member>
+    <member name="F:DevExpress.XtraWizard.WizardHitTest.PrevButton">
+      <summary>
+        <para>The test point belongs to the Back button.</para>
+      </summary>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardPage">
+      <summary>
+        <para>Represents an Interior Page.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPage.#ctor">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.XtraWizard.WizardPage"/> class with the default settings.</para>
+      </summary>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardPage.DescriptionText">
+      <summary>
+        <para>Gets or sets the description text displayed below the header text.</para>
+      </summary>
+      <value>A string value that specifies the description.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardPage.Text">
+      <summary>
+        <para>Gets or sets the header text.</para>
+      </summary>
+      <value>A string value that specifies the header text.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardPageChangedEventArgs">
+      <summary>
+        <para>Provides data for the <see cref="E:DevExpress.XtraWizard.WizardControl.SelectedPageChanged"/> event.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageChangedEventArgs.#ctor(DevExpress.XtraWizard.BaseWizardPage,DevExpress.XtraWizard.BaseWizardPage,DevExpress.XtraWizard.Direction)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.XtraWizard.WizardPageChangedEventArgs"/> class.</para>
+      </summary>
+      <param name="prevPage">A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> descendant that represents the previously active wizard page. This value is assigned to the <see cref="P:DevExpress.XtraWizard.WizardPageChangedEventArgs.PrevPage"/> property.</param>
+      <param name="page">A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> descendant that represents the wizard page currently being selected. This value is assigned to the <see cref="P:DevExpress.XtraWizard.WizardPageEventArgs.Page"/> property.</param>
+      <param name="direction">A DevExpress.XtraWizard.Direction enumeration value that specifies in which direction a user navigates between pages. This value is assigned to the <see cref="P:DevExpress.XtraWizard.WizardPageChangedEventArgs.Direction"/> property.</param>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardPageChangedEventArgs.Direction">
+      <summary>
+        <para>Gets a value that indicates  in which direction a user navigates between pages.</para>
+      </summary>
+      <value>A DevExpress.XtraWizard.Direction enumeration value that specifies in which direction a user navigates between pages.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardPageChangedEventArgs.PrevPage">
+      <summary>
+        <para>Gets the previously active wizard page.</para>
+      </summary>
+      <value>A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> descendant that represents the previously active wizard page.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardPageChangedEventHandler">
+      <summary>
+        <para>Represents a method that will handle the <see cref="E:DevExpress.XtraWizard.WizardControl.SelectedPageChanged"/> event.</para>
+      </summary>
+      <param name="sender">The event sender.</param>
+      <param name="e">A <see cref="T:DevExpress.XtraWizard.WizardPageChangedEventArgs"/> object that contains event data.</param>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardPageChangingEventArgs">
+      <summary>
+        <para>Provides data for the <see cref="E:DevExpress.XtraWizard.WizardControl.SelectedPageChanging"/> event.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageChangingEventArgs.#ctor(DevExpress.XtraWizard.BaseWizardPage,DevExpress.XtraWizard.BaseWizardPage,DevExpress.XtraWizard.Direction)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.XtraWizard.WizardPageChangingEventArgs"/> class.</para>
+      </summary>
+      <param name="prevPage">A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> descendant that represents the previously active wizard page. This value is assigned to the <see cref="P:DevExpress.XtraWizard.WizardPageChangedEventArgs.PrevPage"/> property.</param>
+      <param name="page">A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> descendant that represents the current wizard page. This value is assigned to the <see cref="P:DevExpress.XtraWizard.WizardPageChangingEventArgs.Page"/> property.</param>
+      <param name="direction">A DevExpress.XtraWizard.Direction enumeration value that specifies the navigation direction. This value is assigned to the <see cref="P:DevExpress.XtraWizard.WizardPageChangedEventArgs.Direction"/> property.</param>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardPageChangingEventArgs.Cancel">
+      <summary>
+        <para>Gets or sets whether the operation must be canceled.</para>
+      </summary>
+      <value>true to cancel the operation; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardPageChangingEventArgs.Page">
+      <summary>
+        <para>Gets or sets the current wizard page.</para>
+      </summary>
+      <value>A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> descendant that represents the current wizard page.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardPageChangingEventHandler">
+      <summary>
+        <para>Represents a method that will handle the <see cref="E:DevExpress.XtraWizard.WizardControl.SelectedPageChanging"/> event.</para>
+      </summary>
+      <param name="sender">The event sender.</param>
+      <param name="e">A <see cref="T:DevExpress.XtraWizard.WizardPageChangingEventArgs"/> object that contains event data.</param>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardPageCollection">
+      <summary>
+        <para>Represents a collection of wizard pages within the XtraWizard control.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageCollection.#ctor(DevExpress.XtraWizard.WizardControl)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.XtraWizard.WizardPageCollection"/> class with the specified owner.</para>
+      </summary>
+      <param name="control">A <see cref="T:DevExpress.XtraWizard.WizardControl"/> object that owns this collection.</param>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageCollection.Add">
+      <summary>
+        <para>Adds a new page to the collection.</para>
+      </summary>
+      <returns>A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> descendant that represents the new page.</returns>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageCollection.Add(DevExpress.XtraWizard.BaseWizardPage)">
+      <summary>
+        <para>Adds the specified columns to the collection.</para>
+      </summary>
+      <param name="page">A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> object to add to the collection.</param>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageCollection.Add(System.String)">
+      <summary>
+        <para>Adds a new page with the specified text to the collection.</para>
+      </summary>
+      <param name="text">A string value that specifies the text displayed within the page&#39;s header. This value is assigned to the <see cref="P:DevExpress.XtraWizard.BaseWizardPage.Text"/> property.</param>
+      <returns>A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> descendant that represents the new page.</returns>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageCollection.AddRange(DevExpress.XtraWizard.BaseWizardPage[])">
+      <summary>
+        <para>Adds an array of wizard pages to the end of the collection.</para>
+      </summary>
+      <param name="pages">An array of <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> objects to add to the collection.</param>
+    </member>
+    <member name="E:DevExpress.XtraWizard.WizardPageCollection.CollectionChanged">
+      <summary>
+        <para>Fires when changes are made to the page collection.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageCollection.Contains(DevExpress.XtraWizard.BaseWizardPage)">
+      <summary>
+        <para>Indicates whether the collection contains the specified wizard page.</para>
+      </summary>
+      <param name="page">A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> object to locate in the collection.</param>
+      <returns>true if the collection contains the specified wizard page; otherwise, false.</returns>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageCollection.IndexOf(DevExpress.XtraWizard.BaseWizardPage)">
+      <summary>
+        <para>Returns the position of the wizard page within the collection.</para>
+      </summary>
+      <param name="page">A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> object to locate in the collection.</param>
+      <returns>A zero-based index of the specified wizard page in the collection. -1 if the collection doesn&#39;t contain the specified page.</returns>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageCollection.Insert(DevExpress.XtraWizard.BaseWizardPage,DevExpress.XtraWizard.BaseWizardPage)">
+      <summary>
+        <para>Adds the specified wizard page to the collection at the specified position.</para>
+      </summary>
+      <param name="cPage">A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> object at which position the specified wizard page is inserted. If this page isn&#39;t contained within the collection, the method does nothing.</param>
+      <param name="page">A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> object to add to the collection. If this wizard page is already contained within the collection, the method does nothing.</param>
+      <returns>true if the specified wizard page has been added to the collection; otherwise, false.</returns>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageCollection.Insert(System.Int32,DevExpress.XtraWizard.BaseWizardPage)">
+      <summary>
+        <para>Adds the specified wizard page to the collection at the specified position.</para>
+      </summary>
+      <param name="position">A zero-based index at which the specified page is inserted. If negative or exceeds the number of elements in the collection, an exception is thrown.</param>
+      <param name="page">A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> object to add to the collection.</param>
+      <returns>true if the specified wizard page has been added to the collection; otherwise, false.</returns>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardPageCollection.Item(System.Int32)">
+      <summary>
+        <para>Gets a wizard page at the specified index.</para>
+      </summary>
+      <param name="index">An integer value that specifies the zero-based index of the required wizard page. If negative or exceeds the maximum available index, an exception is raised.</param>
+      <value>A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> object located at the specified position within the collection.</value>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageCollection.Remove(DevExpress.XtraWizard.BaseWizardPage)">
+      <summary>
+        <para>Removes the specified wizard page from the collection.</para>
+      </summary>
+      <param name="page">A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> object to remove from the collection.</param>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardPageCollection.WizardControl">
+      <summary>
+        <para>Gets the XtraWizard control which owns this collection.</para>
+      </summary>
+      <value>A <see cref="T:DevExpress.XtraWizard.WizardControl"/> object which owns this collection.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardPageEventArgs">
+      <summary>
+        <para>Serves as a base for classes that provide data for the page events.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageEventArgs.#ctor(DevExpress.XtraWizard.BaseWizardPage)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.XtraWizard.WizardPageEventArgs"/> class.</para>
+      </summary>
+      <param name="page">A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> descendant that represents the processed wizard page.</param>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardPageEventArgs.Page">
+      <summary>
+        <para>Gets the processed wizard page.</para>
+      </summary>
+      <value>A <see cref="T:DevExpress.XtraWizard.BaseWizardPage"/> descendant that represents the processed wizard page.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardPageValidatingEventArgs">
+      <summary>
+        <para>Provides data for the <see cref="E:DevExpress.XtraWizard.BaseWizardPage.PageValidating"/> event.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.XtraWizard.WizardPageValidatingEventArgs.#ctor(DevExpress.XtraWizard.Direction)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.XtraWizard.WizardPageValidatingEventArgs"/> class with the specified drection.</para>
+      </summary>
+      <param name="direction">A DevExpress.XtraWizard.Direction value that specifies whether the next or previous page is about to be activated.</param>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardPageValidatingEventArgs.Direction">
+      <summary>
+        <para>Gets whether the next or previous page is about to be activated.</para>
+      </summary>
+      <value>A DevExpress.XtraWizard.Direction value that specifies whether the next or previous page is about to be activated.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardPageValidatingEventArgs.ErrorIconType">
+      <summary>
+        <para>Gets or sets the type of icon displayed within an error message.</para>
+      </summary>
+      <value>A System.Windows.Forms.MessageBoxIcon enumeration value that specifies the type of icon displayed within an error message.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardPageValidatingEventArgs.ErrorText">
+      <summary>
+        <para>Gets or sets the error text displayed within the error message box.</para>
+      </summary>
+      <value>A string value that specifies the error text.</value>
+    </member>
+    <member name="P:DevExpress.XtraWizard.WizardPageValidatingEventArgs.Valid">
+      <summary>
+        <para>Gets or sets whether the processed wizard page is valid.</para>
+      </summary>
+      <value>true if a wizard page is valid; otherwise, false.</value>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardPageValidatingEventHandler">
+      <summary>
+        <para>Represents a method that will handle the <see cref="E:DevExpress.XtraWizard.BaseWizardPage.PageValidating"/> event.</para>
+      </summary>
+      <param name="sender">The event sender.</param>
+      <param name="e">A <see cref="T:DevExpress.XtraWizard.WizardPageValidatingEventArgs"/> object that contains event data.</param>
+    </member>
+    <member name="T:DevExpress.XtraWizard.WizardStyle">
+      <summary>
+        <para>Lists values that specify the XtraWizard&#39;s layout.</para>
+      </summary>
+    </member>
+    <member name="F:DevExpress.XtraWizard.WizardStyle.Wizard97">
+      <summary>
+        <para>The XtraWizard control is painted inWizard&#39;97 style.</para>
+      </summary>
+    </member>
+    <member name="F:DevExpress.XtraWizard.WizardStyle.WizardAero">
+      <summary>
+        <para>The XtraWizard control is painted in Aero style.</para>
+      </summary>
+    </member>
+  </members>
+</doc>

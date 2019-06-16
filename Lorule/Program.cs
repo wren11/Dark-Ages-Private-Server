@@ -36,7 +36,7 @@ namespace Lorule
 
         private static void Main()
         {
-            using (Mutex _oneInstanceMutex = new System.Threading.Mutex(true, OneInstanceMutexName, out var firstInstance))
+            using (Mutex _oneInstanceMutex = new Mutex(true, OneInstanceMutexName, out var firstInstance))
             {
                 if (firstInstance)
                 {
