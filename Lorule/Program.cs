@@ -102,7 +102,6 @@ namespace Lorule
                 if (players_online != null)
                 {
                     Info.PlayersOnline    = new List<Aisling>(players_online.Select(i => i.Aisling));
-                    Info.GameServerStatus = $"Up time {Math.Round(Uptime.TotalDays, 2)}:{Math.Round(Uptime.TotalHours, 2)} | Online Users ({ players_online.Count() }) | Total Characters ({ StorageManager.AislingBucket.Count })";
                     Info.GameServerOnline = true;
                 }
                 else

@@ -19,7 +19,6 @@ namespace Darkages.Types
 {
     public class SkillTemplate : Template
     {
-        public int ID { get; set; }
 
         public byte Icon { get; set; }
 

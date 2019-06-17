@@ -26,7 +26,7 @@ namespace Darkages.Storage
     public class AislingStorage : IStorage<Aisling>
     {
         public static string StoragePath = $@"{ServerContext.StoragePath}\aislings";
-        public int Count => Directory.GetFiles(StoragePath, "*.json", SearchOption.TopDirectoryOnly).Length;
+        public string[] Files => Directory.GetFiles(StoragePath, "*.json", SearchOption.TopDirectoryOnly);
 
         public bool Saving { get; set; }
 

@@ -93,9 +93,6 @@ namespace Darkages.Types
         [Browsable(false)]
         public string MiniScript{ get; set; }
 
-        [Browsable(false)]
-        public int ID { get; set; }
-
         public bool CanStack { get; set; }
 
         public byte MaxStack { get; set; }

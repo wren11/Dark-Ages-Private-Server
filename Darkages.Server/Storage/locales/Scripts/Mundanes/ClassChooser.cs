@@ -94,22 +94,58 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 client.SendOptionsDialog(Mundane, string.Format("You are now a {0}",
                     Convert.ToString(client.Aisling.Path)));
 
+                client.Aisling.Stage      = ClassStage.Master;
+                client.Aisling.ExpLevel   = 99;
+                client.Aisling.StatPoints = 98 * 2;
+
                 if (client.Aisling.Path == Class.Priest)
                 {
-                    Spell.GiveTo(client.Aisling, "beag ia saighead", 1);
-                    Spell.GiveTo(client.Aisling, "beag ioc", 1);
-                    Spell.GiveTo(client.Aisling, "beag cradh", 1);
-                    Spell.GiveTo(client.Aisling, "ao beag cradh", 1);
                     Spell.GiveTo(client.Aisling, "armachd", 1);
+                    Spell.GiveTo(client.Aisling, "ao sith", 1);
+                    Spell.GiveTo(client.Aisling, "beag ioc", 1);
+                    Spell.GiveTo(client.Aisling, "beag ioc fein", 1);
+                    Spell.GiveTo(client.Aisling, "ard cradh", 1);
+                    Spell.GiveTo(client.Aisling, "mor cradh", 1);
+                    Spell.GiveTo(client.Aisling, "cradh", 1);
+                    Spell.GiveTo(client.Aisling, "beag cradh", 1);
+                    Spell.GiveTo(client.Aisling, "ard deo saighead", 1);
+                    Spell.GiveTo(client.Aisling, "deo saighead lamh", 1);
+                    Spell.GiveTo(client.Aisling, "mor deo saighead", 1);
+                    Spell.GiveTo(client.Aisling, "deo saighead", 1);
+                    Spell.GiveTo(client.Aisling, "dia deo saighead", 1);
+                    Spell.GiveTo(client.Aisling, "beag pramh", 1);
+                    Spell.GiveTo(client.Aisling, "ao suain", 1);
+                    Spell.GiveTo(client.Aisling, "ao ard cradh", 1);
+                    Spell.GiveTo(client.Aisling, "ao beag cradh", 1);
+                    Spell.GiveTo(client.Aisling, "ao cradh", 1);
+                    Spell.GiveTo(client.Aisling, "ao mor cradh", 1);
+                    Spell.GiveTo(client.Aisling, "ao puinsein", 1);
+                    Spell.GiveTo(client.Aisling, "mor dion", 1);
+                    Spell.GiveTo(client.Aisling, "ia naomh aite", 1);
+
                 }
 
                 if (client.Aisling.Path == Class.Wizard)
                 {
-                    Spell.GiveTo(client.Aisling, "beag srad", 1);
-                    Spell.GiveTo(client.Aisling, "beag sal", 1);
-                    Spell.GiveTo(client.Aisling, "beag athar", 1);
-                    Spell.GiveTo(client.Aisling, "beag creag", 1);
+                    Spell.GiveTo(client.Aisling, "ard puinsein", 1);
                     Spell.GiveTo(client.Aisling, "beag puinsein", 1);
+                    Spell.GiveTo(client.Aisling, "mor puinsein", 1);
+                    Spell.GiveTo(client.Aisling, "puinsein", 1);
+                    Spell.GiveTo(client.Aisling, "pramh", 1);
+                    Spell.GiveTo(client.Aisling, "ard srad", 1);
+                    Spell.GiveTo(client.Aisling, "ard athar", 1);
+                    Spell.GiveTo(client.Aisling, "mor sal", 1);
+                    Spell.GiveTo(client.Aisling, "mor srad", 1);
+                    Spell.GiveTo(client.Aisling, "mor athar", 1);
+                    Spell.GiveTo(client.Aisling, "sal", 1);
+                    Spell.GiveTo(client.Aisling, "srad", 1);
+                    Spell.GiveTo(client.Aisling, "athar", 1);
+
+                    Spell.GiveTo(client.Aisling, "fas spiorad", 1);
+                    Spell.GiveTo(client.Aisling, "Halt", 1);
+                    Spell.GiveTo(client.Aisling, "fas nadur", 1);
+                    Spell.GiveTo(client.Aisling, "mor strioch pian gar", 1);
+                    Spell.GiveTo(client.Aisling, "beag ioc fein", 1);
                 }
 
                 if (client.Aisling.Path == Class.Warrior)
@@ -117,21 +153,47 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     Skill.GiveTo(client.Aisling, "Wind Blade", 1);
                     Skill.GiveTo(client.Aisling, "Charge", 1);
                     Skill.GiveTo(client.Aisling, "Clobber", 1);
+                    Skill.GiveTo(client.Aisling, "Assault", 1);
+                    Skill.GiveTo(client.Aisling, "Wallop", 1);
+                    Skill.GiveTo(client.Aisling, "Two-Handed Attack", 1);
+                    Skill.GiveTo(client.Aisling, "Titan's Cleave", 1);
+                    Skill.GiveTo(client.Aisling, "Rush", 1);
+                    Skill.GiveTo(client.Aisling, "Rescue", 1);
+                    Skill.GiveTo(client.Aisling, "beag suain ia gar", 1);
+                    Skill.GiveTo(client.Aisling, "beag suain", 1);
+                    Skill.GiveTo(client.Aisling, "Crasher", 1);
+                    Spell.GiveTo(client.Aisling, "beag ioc fein", 1);
                 }
 
                 if (client.Aisling.Path == Class.Monk)
                 {
-                    Skill.GiveTo(client.Aisling, "Double Punch", 1);
-                    Skill.GiveTo(client.Aisling, "Ambush", 1);
-                    Skill.GiveTo(client.Aisling, "Kick", 1);
+                    Skill.GiveTo(client.Aisling, "Wolf Fang Fist", 1);
+                    Skill.GiveTo(client.Aisling, "Claw Fist", 1);
+                    Skill.GiveTo(client.Aisling, "Krane Kick", 1);
+                    Skill.GiveTo(client.Aisling, "Claw Fist", 1);
+                    Skill.GiveTo(client.Aisling, "Hurricane Kick", 1);
+                    Skill.GiveTo(client.Aisling, "Kelberoth Strike", 1);
+
+                    Spell.GiveTo(client.Aisling, "beag ioc fein", 1);
                     Spell.GiveTo(client.Aisling, "dion", 1);
+                    Spell.GiveTo(client.Aisling, "armachd", 1);
                 }
 
                 if (client.Aisling.Path == Class.Rogue)
                 {
-                    Skill.GiveTo(client.Aisling, "Stab");
-                    Spell.GiveTo(client.Aisling, "Needle Trap");
-                    Skill.GiveTo(client.Aisling, "Poison Trap");
+                    Skill.GiveTo(client.Aisling, "Unstuck", 1);
+                    Skill.GiveTo(client.Aisling, "Locate Player", 1);
+                    Skill.GiveTo(client.Aisling, "Locate Monster", 1);
+                    Skill.GiveTo(client.Aisling, "Sneak", 1);
+                    Skill.GiveTo(client.Aisling, "Rescue", 1);
+                    Skill.GiveTo(client.Aisling, "Stab", 1);
+
+
+                    Spell.GiveTo(client.Aisling, "beag ioc fein", 1);
+                    Spell.GiveTo(client.Aisling, "Poison Trap", 1);
+                    Spell.GiveTo(client.Aisling, "Needle Trap", 1);
+                    Spell.GiveTo(client.Aisling, "Stiletto Trap", 1);
+
 
                     var item = Item.Create(client.Aisling, ServerContext.GlobalItemTemplateCache["Snow Secret"]);
                     {
@@ -150,6 +212,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 });
 
                 client.Aisling.GoHome();
+                client.SendStats(StatusFlags.All);
 
                 Task.Delay(350).ContinueWith((ct) => {
                     client.Aisling.Animate(5);

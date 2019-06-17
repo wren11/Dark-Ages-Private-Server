@@ -25,6 +25,7 @@ using Darkages.Scripting;
 using Darkages.Storage;
 using Darkages.Storage.locales.Scripts.Mundanes;
 using Darkages.Types;
+using LiteDB;
 using MenuInterpreter.Parser;
 using System;
 using System.Collections.Generic;
@@ -203,14 +204,18 @@ namespace Darkages.Network.Game
         {
             lock (client)
             {
-                LoadPlayer(client, format);
+                var aisling = LoadPlayer(client, format);
+
+                if (aisling != null)
+                {
+
+                }
             }
         }
 
-        private void LoadPlayer(GameClient client, ClientFormat10 format)
+        private Aisling LoadPlayer(GameClient client, ClientFormat10 format)
         {
             Aisling aisling = StorageManager.AislingBucket.Load(format.Name);
-
 
             if (aisling != null)
                 client.Aisling = aisling;
@@ -219,14 +224,14 @@ namespace Darkages.Network.Game
             {
                 client.SendMessage(0x02, "Your have has been corrupted. Please report this bug to lorule staff.");
                 base.ClientDisconnected(client);
-                return;
+                return null;
             }
 
             if (client.Aisling._Str <= 0 || client.Aisling.Ac > 200 || client.Aisling.ExpLevel > 99)
             {
                 client.SendMessage(0x02, "Your have has been corrupted. Please report this bug to lorule staff.");
                 base.ClientDisconnected(client);
-                return;
+                return null;
             }
 
 
@@ -267,6 +272,8 @@ namespace Darkages.Network.Game
                 ClientDisconnected(client);
             }
 
+
+            return aisling;
         }
 
         /// <summary>

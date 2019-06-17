@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages.IO;
+using LiteDB;
 using Newtonsoft.Json;
 using System.IO;
 using System.Linq;

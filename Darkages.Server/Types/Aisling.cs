@@ -397,11 +397,9 @@ namespace Darkages
                 AnimalForm = AnimalForm.None
             };
 
-            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Keys)
-                Skill.GiveTo(result, skill);
-
-            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Keys)
-                Spell.GiveTo(result, spell);
+            Skill.GiveTo(result, "Assail", 1);
+            Spell.GiveTo(result, "Create Item", 1);
+            
 
             if (DateTime.UtcNow.Year <= 2020)
             {
