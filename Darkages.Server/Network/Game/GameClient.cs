@@ -891,8 +891,14 @@ namespace Darkages.Network.Game
 
             if (Aisling.CurrentMapId != Aisling.LastMapId)
             {
-                ShouldUpdateMap = true;
-                Aisling.LastMapId = Aisling.CurrentMapId;
+                ShouldUpdateMap    = true;
+                Aisling.LastMapId  = Aisling.CurrentMapId;
+
+                if (!Aisling.DiscoveredMaps.Any(i => i == Aisling.CurrentMapId))
+                {
+                    Aisling.DiscoveredMaps.Add(Aisling.CurrentMapId);
+                }
+
                 SendMusic();
             }
 
@@ -1206,6 +1212,36 @@ namespace Darkages.Network.Game
 
             client.SendMessage(0x02, ServerContext.Config.CantEquipThatMessage);
             return false;
+        }
+
+        public bool HasInInventory(string item, int count)
+        {
+            var template = ServerContext.GlobalItemTemplateCache[item];
+
+            if (!ServerContext.GlobalItemTemplateCache.ContainsKey(item))
+                return false;
+
+            if (template != null)
+            {
+                return Aisling.Inventory.Has(template) > 0;
+            }
+
+            return false;
+        }
+
+        public bool IsWearing(string item)
+        {
+            return Aisling.EquipmentManager.Equipment.Any(i => i.Value != null && i.Value.Item.Template.Name == item);
+        }
+
+        public bool HasKilled(string monster, int count)
+        {
+            return Aisling.HasKilled(monster, count);
+        }
+
+        public bool HasVisitedMap(int mapId)
+        {
+            return Aisling.DiscoveredMaps.Contains(mapId);
         }
 
         public void ShowCurrentMenu(Sprite obj, MenuItem currentitem, MenuItem nextitem)

@@ -213,6 +213,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
                 client.SendOptionsDialog(Mundane, "Where is the rat shit i need?");
                 quest.HandleQuest(client, SequenceMenu);
+
+
             }
             else if (quest.Completed)
             {

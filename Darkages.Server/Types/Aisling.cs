@@ -55,6 +55,7 @@ namespace Darkages
             Remains = new CursedSachel(this);
             ActiveReactor = null;
             LookupTime = DateTime.UtcNow;
+            DiscoveredMaps = new List<int>();
         }
 
         public void Assail()
@@ -131,6 +132,8 @@ namespace Darkages
         public EquipmentManager EquipmentManager { get; set; }
         public ActivityStatus ActiveStatus { get; set; }
 
+        public List<int> DiscoveredMaps { get; set; }
+
         [JsonIgnore]
         public bool ProfileOpen { get; set; }
 
@@ -149,6 +152,8 @@ namespace Darkages
         [JsonIgnore] public CastInfo ActiveSpellInfo { get; set; }
 
         [JsonIgnore] public List<Aisling> PartyMembers => GroupParty?.Members;
+
+
 
         public PortalSession PortalSession { get; set; }
 
