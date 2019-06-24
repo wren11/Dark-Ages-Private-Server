@@ -64,13 +64,25 @@ namespace Darkages.Scripting.Scripts.Skills
                 var success = false;
                 if (enemy != null)
                 {
-                    var imp = (Skill.Level * sprite.Level + 1 / 70);
+                    var imp = 10 + Skill.Level;
+
                     var dmg = ((client.Aisling.Str * 4) + client.Aisling.Dex * 2);
-                    var s   = (int)(imp * 0.01);
 
 
-                    dmg = dmg * s;
+                    dmg = (int)(imp * dmg) / 3;
 
+                    if (sprite.EmpoweredAssail)
+                    {
+                        if (sprite is Aisling)
+                        {
+                            if ((sprite as Aisling).Weapon == 0)
+                                dmg *= 3;
+                        }
+                        else
+                        {
+                            dmg *= 2;
+                        }
+                    }
 
                     foreach (var i in enemy)
                     {
@@ -91,18 +103,6 @@ namespace Darkages.Scripting.Scripts.Skills
 
                         Target = i;
 
-                        if (sprite.EmpoweredAssail)
-                        {
-                            if (sprite is Aisling)
-                            {
-                                if ((sprite as Aisling).Weapon == 0)
-                                    dmg *= 3;
-                            }
-                            else
-                            {
-                                dmg *= 2;
-                            }
-                        }
 
 
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);

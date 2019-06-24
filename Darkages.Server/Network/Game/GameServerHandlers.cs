@@ -146,18 +146,18 @@ namespace Darkages.Network.Game
             {
                 itemScript.OnUse(client.Aisling, (targets) =>
                 {
-                   client.LastScriptExecuted = DateTime.UtcNow.AddMilliseconds(600);
+                   client.LastScriptExecuted = DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
                 });
             }
 
 
-            if ((client.LastAssail - DateTime.UtcNow).TotalMilliseconds > 600)
+            if ((client.LastAssail - DateTime.UtcNow).TotalMilliseconds > ServerContext.Config.GlobalBaseSkillDelay)
             {
                 return;
             }
 
             var lastTemplate = string.Empty;
-            foreach (var skill in client.Aisling.GetAssails(SkillScope.Assail))
+            foreach (var skill in client.Aisling.GetAssails())
             {
                 if (skill == null)
                     continue;
@@ -184,15 +184,20 @@ namespace Darkages.Network.Game
             client.LastAssail = DateTime.UtcNow;
         }
 
-        private static void ExecuteAbility(GameClient client, Skill skill)
+        private static void ExecuteAbility(GameClient client, Skill skill, bool ExecuteScript = true)
         {
             skill.InUse = true;
-            skill.Script.OnUse(client.Aisling);
+
+            if (ExecuteScript)
+            {
+                skill.Script.OnUse(client.Aisling);
+            }
+
 
             if (skill.Template.Cooldown > 0)
                 skill.NextAvailableUse = DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
             else
-                skill.NextAvailableUse = DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
+                skill.NextAvailableUse = DateTime.UtcNow.AddMilliseconds(600);
 
             skill.InUse = false;
         }
@@ -1890,6 +1895,19 @@ namespace Darkages.Network.Game
                 return;
 
             skill.InUse = true;
+
+            if (skill.Template.Type == SkillScope.Assail)
+            {
+                //reset all other assail timers so that things work properly.
+                foreach (var assail in client.Aisling.GetAssails())
+                {
+                    if (assail.Template.Name == skill.Template.Name)
+                        continue;
+
+                    ExecuteAbility(client, assail, false);
+                }
+            }
+
             skill.Script.OnUse(client.Aisling);
 
             //define cooldown.

@@ -495,13 +495,10 @@ namespace Darkages
         /// <summary>
         ///     This Method will return all skills that are assail-like, Assail, Clobber, Ect.
         /// </summary>
-        public Skill[] GetAssails(SkillScope scope)
+        public Skill[] GetAssails()
         {
-            if ((scope & SkillScope.Assail) == SkillScope.Assail)
-                return SkillBook.Get(i => i != null && i.Template != null
-                                                    && i.Template.Type == SkillScope.Assail).ToArray();
-
-            return null;
+            return SkillBook.Get(i => i != null && i.Template != null
+                                                && i.Template.Type == SkillScope.Assail).ToArray();
         }
 
         public void UpdateStats()

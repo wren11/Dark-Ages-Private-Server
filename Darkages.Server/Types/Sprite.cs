@@ -446,11 +446,26 @@ namespace Darkages.Types
 
         public int GetBaseDamage(Sprite target, MonsterDamageType type)
         {
-            if (this is Monster)
+            if (this is Monster || this is Mundane)
             {
-                var monster = this as Monster;
-                var mod     = monster.Template.Level * (type == MonsterDamageType.Physical ? 0.02 : 0.04);
-                var dmg     = (int)(MaximumHp / 1 * mod);
+                var mod     = 0.0;
+                var diff    = 0;
+
+                if (target is Aisling obj)
+                    diff = Level + 1 - obj.ExpLevel;
+                if (target is Monster tmon)
+                    diff = Level + 1 - tmon.Template.Level;
+
+                if (diff <= 0)
+                    mod = Level * (type == MonsterDamageType.Physical ? 0.1 : 2) * 60;
+                else
+                    mod = Level * (type == MonsterDamageType.Physical ? 0.1 : 2) * (60 * diff);
+
+
+                var dmg = Math.Abs((int)(mod + 1));
+
+                if (dmg <= 0)
+                    dmg = 1;
 
                 return dmg;
             }
