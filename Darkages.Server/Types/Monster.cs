@@ -29,6 +29,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Darkages.Common.Generator;
 using static Darkages.ServerContext;
+using static Darkages.Types.Item;
 
 namespace Darkages.Types
 {
@@ -286,26 +287,36 @@ namespace Darkages.Types
                     {
                     if (i != null)
                     {
-                        if (GlobalItemTemplateCache.ContainsKey(i))
-                        {
-
-                            var rolled_item = Item.Create(this, GlobalItemTemplateCache[i]);
-                            if (rolled_item != GlobalLastItemRoll)
+                            if (GlobalItemTemplateCache.ContainsKey(i))
                             {
-                                GlobalLastItemRoll = rolled_item;
-                                var upgrade = DetermineQuality();
 
-                                if (rolled_item == null)
-                                    return;
-
-                                if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
-                                    upgrade = null;
-
-                                rolled_item.Upgrades = upgrade?.Upgrade ?? 0;
-
-                                if (rolled_item.Upgrades > 0)
+                                var rolled_item = Item.Create(this, GlobalItemTemplateCache[i]);
+                                if (rolled_item != GlobalLastItemRoll)
                                 {
-                                    Item.ApplyQuality(rolled_item);
+                                    GlobalLastItemRoll = rolled_item;
+
+                                    var upgrade = DetermineQuality();
+
+                                    if (rolled_item.Template.Enchantable)
+                                    {
+                                        var variance = DetermineVariance();
+                                        if (variance != Variance.None)
+                                        {
+                                            rolled_item.ItemVariance = variance;
+                                        }
+                                    }
+
+                                    if (rolled_item == null)
+                                        return;
+
+                                    if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
+                                        upgrade = null;
+
+                                    rolled_item.Upgrades = upgrade?.Upgrade ?? 0;
+
+                                    if (rolled_item.Upgrades > 0)
+                                    {
+                                        Item.ApplyQuality(rolled_item);
 
                                         if (rolled_item.Upgrades > 2)
                                         {
@@ -344,7 +355,10 @@ namespace Darkages.Types
             }
         }
 
-
+        private Variance DetermineVariance()
+        {
+            return Generator.RandomEnumValue<Variance>();
+        }
 
         private Sprite[] GetTaggedAislings()
         {

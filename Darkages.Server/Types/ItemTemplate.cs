@@ -210,6 +210,8 @@ namespace Darkages.Types
             get => DropRate; set { }
         }
 
+        [Category("Item Properties")]
+        public bool Enchantable { get; set; }
 
         public void RunMiniScript(GameClient client)
         {

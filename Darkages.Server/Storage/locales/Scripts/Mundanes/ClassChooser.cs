@@ -187,7 +187,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     Skill.GiveTo(client.Aisling, "Sneak", 1);
                     Skill.GiveTo(client.Aisling, "Rescue", 1);
                     Skill.GiveTo(client.Aisling, "Stab", 1);
-
+                    Skill.GiveTo(client.Aisling, "Inspect Item", 1);
 
                     Spell.GiveTo(client.Aisling, "beag ioc fein", 1);
                     Spell.GiveTo(client.Aisling, "Poison Trap", 1);

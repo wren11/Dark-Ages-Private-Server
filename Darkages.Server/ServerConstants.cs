@@ -123,7 +123,7 @@ namespace Darkages
         /// <summary>
         /// Ms between 0 cooldown based skills.
         /// </summary>
-        public double GlobalBaseSkillDelay = 450;
+        public double GlobalBaseSkillDelay = 350;
 
         [JsonProperty]
         /// <summary>

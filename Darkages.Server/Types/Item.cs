@@ -64,34 +64,50 @@ namespace Darkages.Types
         {
             get
             {
-                if (Upgrades == 4)
-                {
-                    return "{=fRare " + Template.Name;
-                }
-
-                if (Upgrades == 5)
-                {
-                    return "{=pEpic " + Template.Name;
-                }
-
-                if (Upgrades == 6)
-                {
-                    return "{=sLegendary " + Template.Name;
-                }
-
-                if (Upgrades == 7)
-                {
-                    return "{=bGodly " + Template.Name;
-                }
-
-                if (Upgrades == 8)
-                {
-                    return "{=uForsaken " + Template.Name;
-                }
-
-
-                return Template.Name;
+                return getDisplayName();
             }
+        }
+
+        private string getDisplayName()
+        {
+            var upgradeName = "";
+
+            if (Upgrades == 4)
+            {
+                upgradeName = "{=fRare";
+            }
+
+            if (Upgrades == 5)
+            {
+                upgradeName = "{=pEpic";
+            }
+
+            if (Upgrades == 6)
+            {
+                upgradeName = "{=sLegendary";
+            }
+
+            if (Upgrades == 7)
+            {
+                upgradeName = "{=bGodly";
+            }
+
+            if (Upgrades == 8)
+            {
+                upgradeName = "{=uForsaken";
+            }
+
+            if (ItemVariance != Variance.None && Identifed)
+            {
+                return string.Format("{0} {1} {2}", upgradeName, ItemVariance.ToString(), Template.Name);
+            }
+
+            if (upgradeName != "")
+            {
+                return string.Format("{0} {1}", upgradeName, Template.Name);
+            }
+
+            return Template.Name;
         }
 
         [JsonIgnore]
@@ -632,6 +648,28 @@ namespace Darkages.Types
                 client.Aisling.SpellBook.Set(a, false);
                 client.Send(new ServerFormat17(a));
             }
+        }
+
+        [JsonProperty]
+        public bool Identifed { get; set; } = false;
+
+        [JsonProperty]
+        public Variance ItemVariance { get; set; } = Variance.None;
+
+        public enum Variance
+        {
+            None,
+            Enchanted,
+            Blessed,
+            Magic,
+            Gramail,
+            Deoch,
+            Ceannlaidir,
+            Cail,
+            Fiosachd,
+            Glioca,
+            Luathas,
+            Sgrios
         }
 
         public static Item Create(Sprite owner, string item, bool curse = false)

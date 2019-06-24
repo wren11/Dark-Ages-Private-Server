@@ -415,6 +415,7 @@
     <Compile Include="Storage\locales\Scripts\Spells\rogue\NeedleTrap.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\PoisonTrap.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\StilettoTrap.cs" />
+    <Compile Include="Storage\locales\Scripts\Skills\Rogue\Inspect.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\utility\Create.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\utility\fasspoirad.cs" />
     <Compile Include="Storage\locales\Scripts\Weapons\SnowSecret.cs" />
