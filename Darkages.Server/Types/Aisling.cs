@@ -170,7 +170,7 @@ namespace Darkages
 
         [JsonIgnore] public bool UsingTwoHanded { get; set; }
 
-        [JsonIgnore] [Browsable(false)] public new Position Position => new Position(X, Y);
+        [JsonIgnore] [Browsable(false)] public new Position Position => new Position(XPos, YPos);
 
         [JsonIgnore] public bool Dead => Flags.HasFlag(AislingFlags.Dead);
 
@@ -265,8 +265,8 @@ namespace Darkages
                 var targetMap = ServerContext.GlobalMapCache[DestinationMap];
 
                 Client.LeaveArea(true, true);
-                Client.Aisling.X = ServerContext.Config.TransitionPointX;
-                Client.Aisling.Y = ServerContext.Config.TransitionPointY;
+                Client.Aisling.XPos = ServerContext.Config.TransitionPointX;
+                Client.Aisling.YPos = ServerContext.Config.TransitionPointY;
                 Client.Aisling.CurrentMapId = DestinationMap;
                 Client.EnterArea();
                 Client.Refresh();
@@ -391,8 +391,8 @@ namespace Darkages
                 BankManager = new Bank(),
                 Created = DateTime.UtcNow,
                 LastLogged = DateTime.UtcNow,
-                X = ServerContext.Config.StartingPosition.X,
-                Y = ServerContext.Config.StartingPosition.Y,
+                XPos = ServerContext.Config.StartingPosition.X,
+                YPos = ServerContext.Config.StartingPosition.Y,
                 Nation = (byte)randomFraction,
                 AnimalForm = AnimalForm.None
             };
@@ -454,7 +454,7 @@ namespace Darkages
         {
             if (Map != null)
             {
-                Map.Update(X, Y, this, true);
+                Map.Update(XPos, YPos, this, true);
             }
 
             if (update)
@@ -559,8 +559,8 @@ namespace Darkages
                 RemoveBuffsAndDebuffs();
 
             Client.LeaveArea(true, true);
-            X = 21;
-            Y = 21;
+            XPos = 21;
+            YPos = 21;
             Direction = 0;
             Client.Aisling.CurrentMapId = ServerContext.Config.DeathMap;
             Client.EnterArea();

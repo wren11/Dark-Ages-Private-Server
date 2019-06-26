@@ -55,22 +55,22 @@ namespace Darkages.Scripting.Scripts.Skills
                 {
                     if ((Direction)sprite.Direction == Direction.North)
                     {
-                        if (obj.Y <= sprite.Y)
+                        if (obj.YPos <= sprite.YPos)
                             result.Add(obj);
                     }
                     else if ((Direction)sprite.Direction == Direction.South)
                     {
-                        if (obj.Y >= sprite.Y)
+                        if (obj.YPos >= sprite.YPos)
                             result.Add(obj);
                     }
                     else if ((Direction)sprite.Direction == Direction.East)
                     {
-                        if (obj.X >= sprite.X)
+                        if (obj.XPos >= sprite.XPos)
                             result.Add(obj);
                     }
                     else if ((Direction)sprite.Direction == Direction.West)
                     {
-                        if (obj.X <= sprite.X)
+                        if (obj.XPos <= sprite.XPos)
                             result.Add(obj);
                     }
 
@@ -113,7 +113,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         i.Target = client.Aisling;
 
                         client.Aisling.Show(Scope.NearbyAislings,
-                            new ServerFormat29(Skill.Template.TargetAnimation, (ushort)i.X, (ushort)i.Y));
+                            new ServerFormat29(Skill.Template.TargetAnimation, (ushort)i.XPos, (ushort)i.YPos));
                     }
 
                     client.Aisling.Show(Scope.NearbyAislings, action);
@@ -165,7 +165,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (i is Aisling || i is Monster)
                         {
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29(Skill.Template.TargetAnimation, (ushort)i.X, (ushort)i.Y));
+                                new ServerFormat29(Skill.Template.TargetAnimation, (ushort)i.XPos, (ushort)i.YPos));
 
                             var dmg = (50 * (sprite.Str+ Skill.Level)) / 100;
                             i.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);

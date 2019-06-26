@@ -23,7 +23,7 @@ namespace Darkages.Storage.locales.Scripts.Global
         public override void Run(GameClient client)
         {
             if (client.Aisling.CurrentMapId == ServerContext.Config.StartingMap
-                    && client.Aisling.X == 26 && client.Aisling.Y == 47)
+                    && client.Aisling.XPos == 26 && client.Aisling.YPos == 47)
             {
                 if (client.Aisling.ActiveReactor == null)
                 {

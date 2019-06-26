@@ -64,8 +64,8 @@ namespace Darkages
 
                 DestinationMap = ServerContext.Config.TransitionZone;
                 var targetMap = ServerContext.GlobalMapCache[DestinationMap];
-                client.Aisling.X = X >= 0 ? X : ServerContext.Config.TransitionPointX;
-                client.Aisling.Y = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
+                client.Aisling.XPos = X >= 0 ? X : ServerContext.Config.TransitionPointX;
+                client.Aisling.YPos = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
                 client.Aisling.CurrentMapId = DestinationMap;
                 client.Refresh();
                 ShowFieldMap(client);
@@ -84,8 +84,8 @@ namespace Darkages
 
                         Task.Delay(150).ContinueWith((s) =>
                         {
-                            client.Aisling.X = X >= 0 ? X : ServerContext.Config.TransitionPointX;
-                            client.Aisling.Y = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
+                            client.Aisling.XPos = X >= 0 ? X : ServerContext.Config.TransitionPointX;
+                            client.Aisling.YPos = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
                             client.Aisling.CurrentMapId = DestinationMap;
                             client.EnterArea();
                             client.Refresh();

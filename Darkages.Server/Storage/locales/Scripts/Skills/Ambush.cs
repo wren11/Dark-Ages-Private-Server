@@ -96,12 +96,12 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                     if (targetPosition != null)
                     {
-                        sprite.X = targetPosition.X;
-                        sprite.Y = targetPosition.Y;
+                        sprite.XPos = targetPosition.X;
+                        sprite.YPos = targetPosition.Y;
 
                         int direction;
 
-                        if (!sprite.Facing(target.X, target.Y, out direction))
+                        if (!sprite.Facing(target.XPos, target.YPos, out direction))
                         {
                             sprite.Direction = (byte)direction;
 
@@ -110,7 +110,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         }
 
                         sprite.Map.Update(prev.X, prev.Y, sprite, true);
-                        sprite.Map.Update(sprite.X, sprite.Y, sprite);
+                        sprite.Map.Update(sprite.XPos, sprite.YPos, sprite);
 
                         if (sprite is Aisling)
                         {

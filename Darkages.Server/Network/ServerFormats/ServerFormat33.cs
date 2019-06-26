@@ -51,8 +51,8 @@ namespace Darkages.Network.ServerFormats
                 if (Aisling.Invisible && !Client.CanSeeHidden())
                     return;
 
-            writer.Write((ushort)Aisling.X);
-            writer.Write((ushort)Aisling.Y);
+            writer.Write((ushort)Aisling.XPos);
+            writer.Write((ushort)Aisling.YPos);
             writer.Write(Aisling.Direction);
             writer.Write((uint)Aisling.Serial);
 

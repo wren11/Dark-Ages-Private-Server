@@ -41,7 +41,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
             {
                 var client = (sprite as Aisling).Client;
                 client.Aisling.Show(Scope.NearbyAislings,
-                    new ServerFormat29(Skill.Template.MissAnimation, (ushort)sprite.X, (ushort)sprite.Y));
+                    new ServerFormat29(Skill.Template.MissAnimation, (ushort)sprite.XPos, (ushort)sprite.YPos));
 
                 client.SendMessage(0x02, "The enemy has made it through.");
             }

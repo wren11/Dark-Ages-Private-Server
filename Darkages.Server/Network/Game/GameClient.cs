@@ -115,8 +115,8 @@ namespace Darkages.Network.Game
                     if (mon != null)
                     {
 
-                        mon.X = x;
-                        mon.Y = y;
+                        mon.XPos = x;
+                        mon.YPos = y;
 
                         AddObject(mon);
 
@@ -211,8 +211,8 @@ namespace Darkages.Network.Game
                 else
                 {
                     LeaveArea(true);
-                    Aisling.X = warps.To.Location.X;
-                    Aisling.Y = warps.To.Location.Y;
+                    Aisling.XPos = warps.To.Location.X;
+                    Aisling.YPos = warps.To.Location.Y;
                     EnterArea();
                     Aisling.Client.CloseDialog();
                 }
@@ -300,16 +300,16 @@ namespace Darkages.Network.Game
             if (area.ID != Aisling.CurrentMapId)
             {
                 LeaveArea(true);
-                Aisling.X = position.X;
-                Aisling.Y = position.Y;
+                Aisling.XPos = position.X;
+                Aisling.YPos = position.Y;
                 Aisling.CurrentMapId = area.ID;
                 EnterArea();
             }
             else
             {
                 LeaveArea(true, false);
-                Aisling.X = position.X;
-                Aisling.Y = position.Y;
+                Aisling.XPos = position.X;
+                Aisling.YPos = position.Y;
                 EnterArea();
             }
 
@@ -352,8 +352,8 @@ namespace Darkages.Network.Game
             if (distance > 2)
             {
                 LastWarp               = DateTime.UtcNow;
-                Aisling.LastPosition.X = (ushort)Aisling.X;
-                Aisling.LastPosition.Y = (ushort)Aisling.Y;
+                Aisling.LastPosition.X = (ushort)Aisling.XPos;
+                Aisling.LastPosition.Y = (ushort)Aisling.YPos;
 
                 Refresh();
 
@@ -814,9 +814,6 @@ namespace Darkages.Network.Game
 
         public void Refresh(bool delete = false)
         {
-            if (IsRefreshing)
-                return;
-
             LeaveArea(delete);
             EnterArea();
         }
@@ -880,7 +877,7 @@ namespace Darkages.Network.Game
             if (GetObject<Aisling>(Aisling.Map, i => i.Serial == Aisling.Serial) == null)
                 AddObject(Aisling);
 
-            Aisling.Map.Update(Aisling.X, Aisling.Y, Aisling);
+            Aisling.Map.Update(Aisling.XPos, Aisling.YPos, Aisling);
         }
 
         public bool MapUpdating;
@@ -1107,14 +1104,14 @@ namespace Darkages.Network.Game
 
         public void WarpTo(Position position)
         {
-            Aisling.Map.Update(Aisling.X, Aisling.Y, Aisling, true);
+            Aisling.Map.Update(Aisling.XPos, Aisling.YPos, Aisling, true);
 
-            Aisling.X = position.X;
-            Aisling.Y = position.Y;
+            Aisling.XPos = position.X;
+            Aisling.YPos = position.Y;
 
             Refresh();
 
-            Aisling.Map.Update(Aisling.X, Aisling.Y, Aisling);
+            Aisling.Map.Update(Aisling.XPos, Aisling.YPos, Aisling);
         }
 
         public void RepairEquipment(IEnumerable<Item> gear)

@@ -63,11 +63,11 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                     if (targetPosition != null)
                     {
-                        client.Aisling.X = targetPosition.X;
-                        client.Aisling.Y = targetPosition.Y;
+                        client.Aisling.XPos = targetPosition.X;
+                        client.Aisling.YPos = targetPosition.Y;
                         client.Aisling.Map.Update(prev.X, prev.Y, client.Aisling, true);
 
-                        if (!client.Aisling.Facing(nearest.X, nearest.Y, out var direction))
+                        if (!client.Aisling.Facing(nearest.XPos, nearest.YPos, out var direction))
                         {
                             client.Aisling.Direction = (byte)direction;
 

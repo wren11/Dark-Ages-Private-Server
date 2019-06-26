@@ -367,9 +367,9 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
             if (Target != null)
             {
-                if (Monster.NextTo(Target.X, Target.Y))
+                if (Monster.NextTo(Target.XPos, Target.YPos))
                 {
-                    if (Monster.Facing(Target.X, Target.Y, out int direction))
+                    if (Monster.Facing(Target.XPos, Target.YPos, out int direction))
                     {
                         Bash();
                         Monster.BashEnabled = true;
@@ -387,7 +387,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 {
                     Monster.BashEnabled = false;
                     Monster.CastEnabled = true;
-                    Monster.WalkTo(Target.X, Target.Y);
+                    Monster.WalkTo(Target.XPos, Target.YPos);
 
                 }
             }
@@ -427,7 +427,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
 
             if (Monster.Target != null)
-                if (!Monster.Facing(Target.X, Target.Y, out int direction))
+                if (!Monster.Facing(Target.XPos, Target.YPos, out int direction))
                 {
                     Monster.Direction = (byte)direction;
                     Monster.Turn();

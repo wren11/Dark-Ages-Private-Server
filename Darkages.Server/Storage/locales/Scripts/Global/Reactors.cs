@@ -117,8 +117,8 @@ namespace Darkages.Storage.locales.Scripts.Global
                         {
                             if (script.Reactor.MapId == Client.Aisling.CurrentMapId)
                             {
-                                if (script.Reactor.Location.X == Client.Aisling.X &&
-                                    script.Reactor.Location.Y == Client.Aisling.Y)
+                                if (script.Reactor.Location.X == Client.Aisling.XPos &&
+                                    script.Reactor.Location.Y == Client.Aisling.YPos)
                                 {
                                     script.Reactor.Update(Client);
                                 }
@@ -146,7 +146,7 @@ namespace Darkages.Storage.locales.Scripts.Global
 
         private void EastWoodlands()
         {
-            if (Client.Aisling.CurrentMapId == 300 && Client.Aisling.Y == 2)
+            if (Client.Aisling.CurrentMapId == 300 && Client.Aisling.YPos == 2)
             {
                 Client.SendMessage(0x02, "This zone is governed by law. A guard has let you pass, this time.");
                 Client.TransitionToMap(300, new Types.Position(3, 5));

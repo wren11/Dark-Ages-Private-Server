@@ -87,7 +87,7 @@ namespace Darkages.Types
         {
             Items = items != null ? new HashSet<Item>(items) : new HashSet<Item>();
             {
-                Location = new Position(Owner.X, Owner.Y);
+                Location = new Position(Owner.XPos, Owner.YPos);
                 MapId = Owner.CurrentMapId;
 
                 ReepInventory();

@@ -22,7 +22,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                 var item = Client.LastItemDropped;
                 if (item != null)
                 {
-                    if (item.X == 31 && item.Y == 52 || item.X == 31 && item.Y == 53)
+                    if (item.XPos == 31 && item.YPos == 52 || item.XPos == 31 && item.YPos == 53)
                     {
 
                         if (Client.Aisling.EquipmentManager.RemoveFromInventory(item, true))

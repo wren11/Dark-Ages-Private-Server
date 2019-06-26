@@ -23,14 +23,30 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using static Darkages.Types.ElementManager;
 using ObjectManager = Darkages.Network.Object.ObjectManager;
 using Point = System.Windows.Point;
 namespace Darkages.Types
 {
-    public abstract class Sprite : ObjectManager
+    public abstract class Sprite : ObjectManager, INotifyPropertyChanged
     {
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // This method is called by the Set accessor of each property.
+        // The CallerMemberName attribute that is applied to the optional propertyName
+        // parameter causes the property name of the caller to be substituted as an argument.
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
         public readonly Random rnd = new Random();
 
         [JsonIgnore]
@@ -67,7 +83,7 @@ namespace Darkages.Types
 
         [JsonIgnore] public Sprite Target { get; set; }
 
-        [JsonIgnore] public Position Position => new Position(X, Y);
+        [JsonIgnore] public Position Position => new Position(XPos, YPos);
 
         [JsonIgnore] public bool Attackable => this is Monster || this is Aisling || this is Mundane;
 
@@ -96,9 +112,40 @@ namespace Darkages.Types
         #region Identification & Position
         public int Serial { get; set; }
 
-        public int X { get; set; }
+        public int X;
 
-        public int Y { get; set; }
+        public int Y;
+
+        [JsonIgnore]
+        public int XPos
+        {
+            get { return X; }
+            set
+            {
+                if (X != value)
+                {
+                    X = value;
+                    NotifyPropertyChanged("XPos");
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public int YPos
+        {
+            get { return Y; }
+            set
+            {
+                if (Y != value)
+                {
+                    Y = value;
+                    NotifyPropertyChanged("YPos");
+                }
+            }
+
+        }
+
+
         #endregion
 
         #region Attributes
@@ -345,39 +392,6 @@ namespace Darkages.Types
             return true;
         }
 
-        public bool IsPrimaryStat()
-        {
-            var sums = new List<int>();
-            {
-                sums.Add(Str);
-                sums.Add(Int);
-                sums.Add(Wis);
-                sums.Add(Con);
-                sums.Add(Dex);
-            }
-
-            return sums.Max() == GetPrimaryAttribute();
-        }
-
-        public int GetPrimaryAttribute()
-        {
-            switch (MajorAttribute)
-            {
-                case PrimaryStat.STR:
-                    return Str;
-                case PrimaryStat.INT:
-                    return Int;
-                case PrimaryStat.WIS:
-                    return Wis;
-                case PrimaryStat.CON:
-                    return Con;
-                case PrimaryStat.DEX:
-                    return Dex;
-                default:
-                    return 0;
-            }
-        }
-
         public bool HasBuff(string buff)
         {
             if (Buffs == null || Buffs.Count == 0)
@@ -496,24 +510,20 @@ namespace Darkages.Types
             Element element,
             byte sound = 1)
         {
-            element = CheckRandomElement(element);
+            element   = CheckRandomElement(element);
 
             var saved = source.OffenseElement;
-            source.OffenseElement = element;
-            ApplyDamage(source, dmg, false, sound, null);
-            source.OffenseElement = saved;
+            {
+                source.OffenseElement = element;
+                ApplyDamage(source, dmg, false, sound, null);
+                source.OffenseElement = saved;
+            }
         }
 
         public static Element CheckRandomElement(Element element)
         {
             if (element == Element.Random)
-            {
                 element = Generator.RandomEnumValue<Element>();
-                while (element == Element.Random)
-                {
-                    element = Generator.RandomEnumValue<Element>();
-                }
-            }
 
             return element;
         }
@@ -596,7 +606,7 @@ namespace Darkages.Types
             }
             #endregion
 
-            if (!this.WithinRangeOf(Source))
+            if (!WithinRangeOf(Source))
                 return;
 
             if (truedamage)
@@ -1116,14 +1126,9 @@ namespace Darkages.Types
         }
 
 
-        public Sprite GetSprite(int x, int y)
-        {
-            return GetObject(Map, i => i.X == x && i.Y == y, Get.All);
-        }
-
         public IEnumerable<Sprite> GetSprites(int x, int y)
         {
-            return GetObjects(Map, i => i.X == x && i.Y == y, Get.All);
+            return GetObjects(Map, i => i.XPos == x && i.YPos == y, Get.All);
         }
 
 
@@ -1146,16 +1151,16 @@ namespace Darkages.Types
                 switch (Direction)
                 {
                     case 0:
-                        results.AddRange(GetSprites(X, Y - i));
+                        results.AddRange(GetSprites(XPos, YPos - i));
                         break;
                     case 1:
-                        results.AddRange(GetSprites(X + i, Y));
+                        results.AddRange(GetSprites(XPos + i, YPos));
                         break;
                     case 2:
-                        results.AddRange(GetSprites(X, Y + i));
+                        results.AddRange(GetSprites(XPos, YPos + i));
                         break;
                     case 3:
-                        results.AddRange(GetSprites(X - i, Y));
+                        results.AddRange(GetSprites(XPos - i, YPos));
                         break;
                 }
             }
@@ -1203,12 +1208,12 @@ namespace Darkages.Types
             }
 
 
-            return WithinRangeOf(other.X, other.Y, distance);
+            return WithinRangeOf(other.XPos, other.YPos, distance);
         }
 
         public bool WithinRangeOf(int x, int y, int subjectLength)
         {
-            var A   = new Point(X, Y);
+            var A   = new Point(XPos, YPos);
             var B   = new Point(x, y);        
             var Dst = Point.Subtract(A, B).Length;
 
@@ -1217,13 +1222,13 @@ namespace Darkages.Types
 
         public bool Facing(Sprite other, out int direction)
         {
-            return Facing(other.X, other.Y, out direction);
+            return Facing(other.XPos, other.YPos, out direction);
         }
 
         public bool Facing(int x, int y, out int direction)
         {
-            var xDist = (x - X).Clamp(-1, +1);
-            var yDist = (y - Y).Clamp(-1, +1);
+            var xDist = (x - XPos).Clamp(-1, +1);
+            var yDist = (y - YPos).Clamp(-1, +1);
 
             direction = DirectionTable[xDist + 1][yDist + 1];
             return Direction == direction;
@@ -1277,9 +1282,13 @@ namespace Darkages.Types
             foreach (var o in nearby)
             {
                 o?.Client?.Send(response);
-
             }
 
+            DeleteObject();
+        }
+
+        private void DeleteObject()
+        {
             if (this is Monster)
                 DelObject(this as Monster);
             if (this is Aisling)
@@ -1357,7 +1366,9 @@ namespace Darkages.Types
         public void WalkTo(int x, int y, bool ignoreWalls = false)
         {
             if (!CanUpdate())
+            {
                 return;
+            }
 
             try
             {
@@ -1367,8 +1378,8 @@ namespace Darkages.Types
 
                 for (byte i = 0; i < 4; i++)
                 {
-                    var newX = X + Directions[i][0];
-                    var newY = Y + Directions[i][1];
+                    var newX = XPos + Directions[i][0];
+                    var newY = YPos + Directions[i][1];
 
                     if (newX == x &&
                         newY == y)
@@ -1470,99 +1481,165 @@ namespace Darkages.Types
         }
 
 
-
         public virtual bool Walk()
         {
-            if (!CanUpdate())
-                return false;
+            int savedX = ((int)(object)this.XPos);
+            int savedY = ((int)(object)this.YPos);
 
-            int savedX = this.X;
-            int savedY = this.Y;
+            int pendingX = ((int)(object)this.XPos);
+            int pendingY = ((int)(object)this.YPos);
+
+            bool result = false;
+
+
+            if ((result = TryWalk(pendingX, pendingY, savedX, savedY)))
+            {
+                Map.MapNodes[savedX, savedY].Remove(this);
+            }
+            else
+            {
+                Map.MapNodes[savedX, savedY].Add(this);
+                Map.MapNodes[pendingX, pendingY].Remove(this);
+
+                if (this is Aisling aisling)
+                {
+                    aisling.Client.Refresh();
+                }
+            }
+
+
+            return result;
+        }
+
+        public bool TryWalk(int pendingX, int pendingY, int savedX, int savedY)
+        {
+
+            if (!CanUpdate())
+            {
+                if (this is Aisling aisling)
+                {
+                    aisling.Client.Refresh();
+                }
+
+                return false;
+            }
 
             if (this.Direction == 0)
             {
                 if ((this is Aisling)
-                    ? Map.IsWall(this as Aisling, this.X, this.Y - 1)
-                    : Map.IsWall(this, this.X, this.Y - 1))
+                    ? Map.IsWall(this as Aisling, this.XPos, this.YPos - 1)
+                    : Map.IsWall(this, this.XPos, this.YPos - 1))
                     return false;
 
-                this.Y--;
+                pendingY--;
             }
 
             if (this.Direction == 1)
             {
                 if ((this is Aisling)
-                    ? Map.IsWall(this as Aisling, this.X + 1, this.Y)
-                    : Map.IsWall(this, this.X + 1, this.Y))
+                    ? Map.IsWall(this as Aisling, this.XPos + 1, this.YPos)
+                    : Map.IsWall(this, this.XPos + 1, this.YPos))
                     return false;
 
-                this.X++;
+                pendingX++;
             }
 
             if (this.Direction == 2)
             {
                 if ((this is Aisling)
-                    ? Map.IsWall(this as Aisling, this.X, this.Y + 1)
-                    : Map.IsWall(this, this.X, this.Y + 1))
+                    ? Map.IsWall(this as Aisling, this.XPos, this.YPos + 1)
+                    : Map.IsWall(this, this.XPos, this.YPos + 1))
                     return false;
 
-                this.Y++;
+                pendingY++;
             }
 
             if (this.Direction == 3)
             {
                 if ((this is Aisling)
-                    ? Map.IsWall(this as Aisling, this.X - 1, this.Y)
-                    : Map.IsWall(this, this.X - 1, this.Y))
+                    ? Map.IsWall(this as Aisling, this.XPos - 1, this.YPos)
+                    : Map.IsWall(this, this.XPos - 1, this.YPos))
                     return false;
 
-                this.X--;
+                pendingX--;
             }
 
-            X = X.Clamp(X, Map.Cols - 1);
-            Y = Y.Clamp(Y, Map.Rows - 1);
+            pendingX = pendingX.Clamp(pendingX, Map.Cols - 1);
+            pendingY = pendingY.Clamp(pendingY, Map.Rows - 1);
 
             LastPosition = new Position(savedX, savedY);
             {
-                CompleteWalk(savedX, savedY);
+                Map.MapNodes[pendingX, pendingY].Add(this);
+
+                return CompleteWalk(pendingX, pendingY, savedX, savedY);
             }
-            return true;
         }
 
-        public bool CanWalk()
+        private bool CompleteWalk(int pendingX, int pendingY, int savedX, int savedY)
         {
-            return true;
-        }
 
-        private void CompleteWalk(int savedX, int savedY)
-        {
-            Map.Update(savedX, savedY, this, true);
-            Map.Update(X, Y, this);
+            if (new Position(savedX, savedY).DistanceFrom(new Position(pendingX, pendingY)) > 1)
+            {
+                return false;
+            }
 
             TriggerNearbyTraps();
 
             if (this is Aisling)
             {
-                Client.Send(new ServerFormat0B
+                if (Map.MapNodes[pendingX, pendingY].SpotVacant(this))
+                {
+                    bool result = false;
+                    foreach (var spriteObj in Map.MapNodes[pendingX, pendingY].Sprites)
+                    {
+                        if (spriteObj.Serial == Serial)
+                        {
+                            if (spriteObj.XPos != pendingX || spriteObj.YPos != pendingY)
+                            {
+                                spriteObj.XPos = pendingX;
+                                spriteObj.YPos = pendingY;
+
+                                result = true;
+                            }
+                            break;
+                        }
+                    }
+
+                    Client.Send(new ServerFormat0B
+                    {
+                        Direction = Direction,
+                        LastX     = (ushort)savedX,
+                        LastY     = (ushort)savedY
+                    });
+
+                    return result;
+                }
+            }
+            else
+            {
+                var response = new ServerFormat0C
                 {
                     Direction = Direction,
-                    LastX = (ushort)savedX,
-                    LastY = (ushort)savedY
-                });
+                    Serial    = Serial,
+                    X         = (short)savedX,
+                    Y         = (short)savedY
+                };
 
-                Client.Send(new ServerFormat32());
+                Show(Scope.NearbyAislingsExludingSelf, response);
+
+                if (Map.MapNodes[pendingX, pendingY].SpotVacant(this))
+                {
+                    if (XPos != pendingX)
+                        XPos = pendingX;
+
+                    if (YPos != pendingY)
+                        YPos = pendingY;
+                }
+
+                return true;
             }
 
-
-            var response = new ServerFormat0C
-            {
-                Direction = Direction,
-                Serial = Serial,
-                X = (short)savedX,
-                Y = (short)savedY
-            };
-
-            Show(Scope.NearbyAislingsExludingSelf, response);
+            return false;
         }
 
         public void SendAnimation(ushort Animation, Sprite To, Sprite From, byte speed = 100)
@@ -1571,58 +1648,6 @@ namespace Darkages.Types
             {
                 Show(Scope.NearbyAislings, format);
             }
-        }
-
-        public void BarMsg(string message, byte type = 0x02)
-        {
-            var response = new ServerFormat0D
-            {
-                Serial = this.Serial,
-                Type = type,
-                Text = message
-            };
-
-            Show(Scope.NearbyAislings, response);
-        }
-
-        public void GiveHP(int value) => _MaximumHp += value;
-
-        public void GiveMP(int value) => _MaximumMp += value;
-
-        public void Kill() => CurrentHp = 0;
-
-        public void Update()
-        {
-            Show(Scope.NearbyAislings, new ServerFormat0E(Serial));
-            Show(Scope.NearbyAislings, new ServerFormat07(new[] { this }));
-        }
-        public void Charge(int steps)
-        {
-            for (int i = 0; i < steps; i++)
-                Walk();
-
-            Update();
-        }
-
-        public void ScrollTo(string destination, short x, short y)
-        {
-            var map = ServerContext.GlobalMapCache.Where(i =>
-            i.Value.Name.Equals(destination, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-
-            if (map.Value != null)
-            {
-                if (this is Aisling)
-                {
-                    var client = (this as Aisling).Client;
-
-                    client.TransitionToMap(map.Value, new Position(x, y));
-                }
-            }
-        }
-
-        public void SendAnimation(ushort v, Position position)
-        {
-            Show(Scope.NearbyAislings, new ServerFormat29(v, position.X, position.Y));
         }
 
         public void Animate(ushort animation, byte speed = 100)
@@ -1644,38 +1669,6 @@ namespace Darkages.Types
                     Buff.OnApplied(this, Buff);
                 }
             }
-        }
-
-        public void ApplyDebuff(string debuff)
-        {
-            if (ServerContext.GlobalDeBuffCache.ContainsKey(debuff))
-            {
-                var Debuff = Clone<Debuff>(ServerContext.GlobalBuffCache[debuff]);
-                if (!HasDebuff(Debuff.Name))
-                {
-                    Debuff.OnApplied(this, Debuff);
-                }
-            }
-        }
-
-        public void RefreshStats()
-        {
-            if (this is Aisling)
-                (this as Aisling).Client.SendStats(StatusFlags.All);
-        }
-
-        public void WarpTo(Position newLocation)
-        {
-            Map.Update(X, Y, this, true);
-            {
-                var location = new Position(newLocation.X, newLocation.Y);
-
-                this.X = location.X;
-                this.Y = location.Y;
-            }
-
-            Map.Update(X, Y, this);
-            Update();
         }
         #endregion
     }

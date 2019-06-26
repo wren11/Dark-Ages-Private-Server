@@ -39,7 +39,7 @@ namespace Darkages.Network.Game
 
         public GameServer(int capacity) : base(capacity)
         {
-            HeavyUpdateSpan  = TimeSpan.FromSeconds(1.0 / 60);
+            HeavyUpdateSpan  = TimeSpan.FromSeconds(1.0 / 30);
 
             InitializeGameServer();
         }
@@ -79,9 +79,12 @@ namespace Darkages.Network.Game
 
                     if (ServerContext.Running)
                     {
-                        ExecuteHeavyWork(delta);
-                        ExecuteServerWork(delta);
-                        ExecuteClientWork(delta);
+                        lock (ServerContext.SyncObj)
+                        {
+                            ExecuteClientWork (delta);
+                            ExecuteServerWork (delta);
+                            ExecuteHeavyWork  (delta);
+                        }
                     }
                 }
                 catch (Exception error)
@@ -159,7 +162,8 @@ namespace Darkages.Network.Game
         }
 
         public ManualResetEvent msr = new ManualResetEvent(true);
-        private void UpdateClients(TimeSpan elapsedTime)
+
+        public void UpdateClients(TimeSpan elapsedTime)
         {
             if (ServerContext.Paused || !ServerContext.Running)
                 return;
@@ -178,10 +182,7 @@ namespace Darkages.Network.Game
                             client.Update(elapsedTime);
                             client.FlushBuffers();
                         }
-                        else
-                        {
-                            client.SendLocation();
-                        }
+
                         msr.Set();
                     }
                 }

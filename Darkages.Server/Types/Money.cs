@@ -60,8 +60,8 @@ namespace Darkages.Types
 
             money.AbandonedDate = DateTime.UtcNow;
             money.CurrentMapId = Parent.CurrentMapId;
-            money.X = location.X;
-            money.Y = location.Y;
+            money.XPos = location.X;
+            money.YPos = location.Y;
 
 
             var mt = (int)money.Type;

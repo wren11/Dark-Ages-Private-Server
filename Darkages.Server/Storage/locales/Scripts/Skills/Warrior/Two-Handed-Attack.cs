@@ -38,7 +38,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 {
                     var client = (sprite as Aisling).Client;
                     client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29(Skill.Template.MissAnimation, (ushort)Target.X, (ushort)Target.Y));
+                        new ServerFormat29(Skill.Template.MissAnimation, (ushort)Target.XPos, (ushort)Target.YPos));
                 }
         }
 

@@ -49,38 +49,38 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
                     var obj = Clone<Monster>(target as Monster);
 
 
-                    var posA = new Position(obj.X - 1, obj.Y);
-                    var posB = new Position(obj.X + 1, obj.Y);
-                    var posC = new Position(obj.X, obj.Y - 1);
-                    var posD = new Position(obj.X, obj.Y + 1);
+                    var posA = new Position(obj.XPos - 1, obj.YPos);
+                    var posB = new Position(obj.XPos + 1, obj.YPos);
+                    var posC = new Position(obj.XPos, obj.YPos - 1);
+                    var posD = new Position(obj.XPos, obj.YPos + 1);
 
                     if (obj.Map.IsWall(obj, posA.X, posA.Y))
                     {
-                        obj.X = posA.X;
-                        obj.Y = posA.Y;
+                        obj.XPos = posA.X;
+                        obj.YPos = posA.Y;
                     }
                     else if (obj.Map.IsWall(obj, posB.X, posB.Y))
                     {
-                        obj.X = posB.X;
-                        obj.Y = posB.Y;
+                        obj.XPos = posB.X;
+                        obj.YPos = posB.Y;
                     }
                     else if (obj.Map.IsWall(obj, posC.X, posC.Y))
                     {
-                        obj.X = posC.X;
-                        obj.Y = posC.Y;
+                        obj.XPos = posC.X;
+                        obj.YPos = posC.Y;
                     }
                     else if (obj.Map.IsWall(obj, posD.X, posD.Y))
                     {
-                        obj.X = posD.X;
-                        obj.Y = posD.Y;
+                        obj.XPos = posD.X;
+                        obj.YPos = posD.Y;
                     }
 
                     var monster = Monster.Create(obj.Template, obj.Map);
                     {
                         if (monster != null)
                         {
-                            monster.X = obj.X;
-                            monster.Y = obj.Y;
+                            monster.XPos = obj.XPos;
+                            monster.YPos = obj.YPos;
                             AddObject<Monster>(monster);
                         }
                     }

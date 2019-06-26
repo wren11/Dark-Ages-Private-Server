@@ -28,8 +28,6 @@ namespace Darkages
 
         public class MapTile
         {
-            public ushort X, Y;
-
             public TileContent BaseObject { get; set; }
 
             public bool HasWall => BaseObject == TileContent.Wall;
@@ -79,6 +77,48 @@ namespace Darkages
                             return true;
 
                         return false;
+                    }
+                }
+
+                return true;
+            }
+
+            public bool SpotVacant(Sprite obj)
+            {
+                if (BaseObject == TileContent.Warp)
+                    return true;
+
+                if (BaseObject == TileContent.Wall)
+                    return false;
+
+
+                for (int i = 0; i < Sprites.Count; i++)
+                {
+                    if (obj.Serial != Sprites[i].Serial)
+                    {
+                        if (Sprites[i] is Monster)
+                        {
+                            if ((Sprites[i] as Monster).Template.IgnoreCollision)
+                            {
+                                return true;
+                            }
+
+                            return false;
+                        }
+
+                        if (Sprites[i] is Mundane)
+                        {
+                            return false;
+                        }
+
+
+                        if (Sprites[i] is Aisling)
+                        {
+                            if ((Sprites[i] as Aisling).Dead)
+                                return true;
+
+                            return false;
+                        }
                     }
                 }
 

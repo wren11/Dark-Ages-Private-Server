@@ -696,8 +696,8 @@ namespace Darkages.Types
             {
                 AbandonedDate = DateTime.UtcNow,
                 Template = template,
-                X = Owner.X,
-                Y = Owner.Y,
+                XPos = Owner.XPos,
+                YPos = Owner.YPos,
                 Image = template.Image,
                 DisplayImage = template.DisplayImage,
                 CurrentMapId = Owner.CurrentMapId,
@@ -896,8 +896,8 @@ namespace Darkages.Types
 
         public void Release(Sprite owner, Position position)
         {
-            X = position.X;
-            Y = position.Y;
+            XPos = position.X;
+            YPos = position.Y;
 
 
             lock (Generator.Random)

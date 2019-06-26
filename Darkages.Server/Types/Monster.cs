@@ -93,15 +93,15 @@ namespace Darkages.Types
 
         public bool NextTo(int x, int y)
         {
-            var xDist = Math.Abs(x - X);
-            var yDist = Math.Abs(y - Y);
+            var xDist = Math.Abs(x - XPos);
+            var yDist = Math.Abs(y - YPos);
 
             return xDist + yDist == 1;
         }
 
         public bool NextTo(Sprite target)
         {
-            return NextTo(target.X, target.Y);
+            return NextTo(target.XPos, target.YPos);
         }
 
         public void GenerateRewards(Aisling player)
@@ -239,7 +239,7 @@ namespace Darkages.Types
             }
 
             if (sum > 0)
-                Money.Create(this, sum, new Position(X, Y));
+                Money.Create(this, sum, new Position(XPos, YPos));
         }
 
         private List<string> DetermineDrop()
@@ -517,16 +517,16 @@ namespace Darkages.Types
                 var x = Generator.Random.Next(1, map.Cols);
                 var y = Generator.Random.Next(1, map.Rows);
 
-                obj.X = x;
-                obj.Y = y;
+                obj.XPos = x;
+                obj.YPos = y;
 
                 if (map.IsWall(x, y))
                     return null;
             }
             else if (template.SpawnType == SpawnQualifer.Defined)
             {
-                obj.X = template.DefinedX;
-                obj.Y = template.DefinedY;
+                obj.XPos = template.DefinedX;
+                obj.YPos = template.DefinedY;
             }
 
             lock (Generator.Random)

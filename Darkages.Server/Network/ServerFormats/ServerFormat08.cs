@@ -95,7 +95,7 @@ namespace Darkages.Network.ServerFormats
             if ((Flags & 0x08) != 0)
             {
                 writer.Write((uint)Aisling.ExpTotal);
-                writer.Write((uint)Aisling.ExpNext >= uint.MaxValue ? 1 : Aisling.ExpNext);
+                writer.Write((uint)Aisling.ExpLevel >= ServerContext.Config.PlayerLevelCap ? 0 : Aisling.ExpNext);
                 writer.Write((uint)Aisling.AbpTotal);
                 writer.Write((uint)Aisling.AbpNext);
                 writer.Write((uint)Aisling.GamePoints);

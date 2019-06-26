@@ -110,8 +110,8 @@ namespace Darkages.Types
                 npc.Serial = Generator.GenerateNumber();
             }
 
-            npc.X = template.X;
-            npc.Y = template.Y;
+            npc.XPos = template.X;
+            npc.YPos = template.Y;
             npc._MaximumHp = (int)(template.Level / 0.1 * 15);
             npc._MaximumMp = (int)(template.Level / 0.1 * 5);
             npc.Template.MaximumHp = npc.MaximumHp;
@@ -177,7 +177,7 @@ namespace Darkages.Types
 
         public void OnDeath()
         {
-            Map.Update(X, Y, this, true);
+            Map.Update(XPos, YPos, this, true);
 
             RemoveActiveTargets();
 
@@ -323,7 +323,7 @@ namespace Darkages.Types
 
                         if (!Position.IsNextTo(target.Position))
                         {
-                            WalkTo(target.X, target.Y);
+                            WalkTo(target.XPos, target.YPos);
                         }
                         else
                         {

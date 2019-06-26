@@ -442,10 +442,9 @@ namespace Darkages.Network.Game
 
             if (client.IsWarping)
             {
-                client.SendLocation();
-
                 return;
             }
+
             /* This prevents actions during skulled. */
             if (!ServerContext.Config.CanMoveDuringReap)
             {
@@ -527,7 +526,7 @@ namespace Darkages.Network.Game
             #endregion
 
 
-            var objs = GetObjects(client.Aisling.Map, i => i.X == format.Position.X && i.Y == format.Position.Y, Get.Items | Get.Money);
+            var objs = GetObjects(client.Aisling.Map, i => i.XPos == format.Position.X && i.YPos == format.Position.Y, Get.Items | Get.Money);
 
             if (objs == null)
                 return;
@@ -563,8 +562,8 @@ namespace Darkages.Network.Game
                             }
                             else
                             {
-                                obj.X = client.Aisling.X;
-                                obj.Y = client.Aisling.Y;
+                                obj.XPos = client.Aisling.XPos;
+                                obj.YPos = client.Aisling.YPos;
                                 obj.Show(Scope.NearbyAislings, new ServerFormat07(new Sprite[] { obj }));
                                 break;
                             }
@@ -579,8 +578,8 @@ namespace Darkages.Network.Game
                         }
                         else
                         {
-                            obj.X = client.Aisling.X;
-                            obj.Y = client.Aisling.Y;
+                            obj.XPos = client.Aisling.XPos;
+                            obj.YPos = client.Aisling.YPos;
                             obj.Show(Scope.NearbyAislings, new ServerFormat07(new Sprite[] { obj }));
                             break;
                         }
@@ -629,8 +628,8 @@ namespace Darkages.Network.Game
 
             if (item_position.OnAlter(client))
             {
-                item.X = item_position.X;
-                item.Y = item_position.Y;
+                item.XPos = item_position.X;
+                item.YPos = item_position.Y;
 
                 client.LastItemDropped = item;
                 return;
@@ -646,7 +645,7 @@ namespace Darkages.Network.Game
 
             //check position is available to drop.
             if (client.Aisling.Map.IsWall(client.Aisling, format.X, format.Y))
-                if (client.Aisling.X != format.X || client.Aisling.Y != format.Y)
+                if (client.Aisling.XPos != format.X || client.Aisling.YPos != format.Y)
                 {
                     client.SendMessage(Scope.Self, 0x02, ServerContext.Config.CantDoThat);
                     return;
@@ -1513,7 +1512,7 @@ namespace Darkages.Network.Game
 
             #endregion
 
-            client.Refresh();
+            client.Refresh(client.IsRefreshing);
             client.LastClientRefresh = DateTime.UtcNow;
         }
 

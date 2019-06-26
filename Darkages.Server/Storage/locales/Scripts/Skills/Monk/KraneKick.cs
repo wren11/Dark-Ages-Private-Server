@@ -56,22 +56,22 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 {
                     if ((Direction)sprite.Direction == Direction.North)
                     {
-                        if (obj.Y <= sprite.Y)
+                        if (obj.YPos <= sprite.YPos)
                             result.Add(obj);
                     }
                     else if ((Direction)sprite.Direction == Direction.South)
                     {
-                        if (obj.Y >= sprite.Y)
+                        if (obj.YPos >= sprite.YPos)
                             result.Add(obj);
                     }
                     else if ((Direction)sprite.Direction == Direction.East)
                     {
-                        if (obj.X >= sprite.X)
+                        if (obj.XPos >= sprite.XPos)
                             result.Add(obj);
                     }
                     else if ((Direction)sprite.Direction == Direction.West)
                     {
-                        if (obj.X <= sprite.X)
+                        if (obj.XPos <= sprite.XPos)
                             result.Add(obj);
                     }
 

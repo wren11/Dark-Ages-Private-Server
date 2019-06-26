@@ -205,7 +205,7 @@ namespace Darkages.Network.Object
             {
                 var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
                 objCollection.Add(obj);
-                obj.Map?.Update(obj.X, obj.Y, obj);
+                obj.Map?.Update(obj.XPos, obj.YPos, obj);
 
             }
         }
@@ -215,7 +215,7 @@ namespace Darkages.Network.Object
             if (_spriteCollections.ContainsKey(obj.CurrentMapId))
             {
                 var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
-                obj.Map?.Update(obj.X, obj.Y, obj, true);
+                obj.Map?.Update(obj.XPos, obj.YPos, obj, true);
                 objCollection.Delete(obj);
             }
         }

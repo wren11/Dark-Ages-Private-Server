@@ -32,13 +32,13 @@ namespace Darkages.Storage.locales.Scripts.Skills
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                var prev = new Position(client.Aisling.X, client.Aisling.Y);
+                var prev = new Position(client.Aisling.XPos, client.Aisling.YPos);
                 var targetPosition = client.Aisling.Map.FindNearestEmpty(client.Aisling.Position);
 
                 if (targetPosition != null)
                 {
-                    client.Aisling.X = targetPosition.X;
-                    client.Aisling.Y = targetPosition.Y;
+                    client.Aisling.XPos = targetPosition.X;
+                    client.Aisling.YPos = targetPosition.Y;
                     client.Aisling.Map.Update(prev.X, prev.Y, sprite, true);
                     client.Refresh();
                 }
