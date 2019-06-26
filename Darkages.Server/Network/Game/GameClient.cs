@@ -76,6 +76,11 @@ namespace Darkages.Network.Game
         public bool IsWarping =>
             DateTime.UtcNow - LastWarp < new TimeSpan(0, 0, 0, 0, 200);
 
+        public DateTime LastLocationSent { get; set; }
+
+        public bool CanSendLocation =>
+            DateTime.UtcNow - LastLocationSent < new TimeSpan(0, 0, 0, 1);
+
         public ushort LastBoardActivated;
 
         public bool ShouldUpdateMap;
@@ -920,6 +925,8 @@ namespace Darkages.Network.Game
         public void SendLocation()
         {
             Send(new ServerFormat04(Aisling));
+
+            LastLocationSent = DateTime.UtcNow;
         }
 
         public void Save()

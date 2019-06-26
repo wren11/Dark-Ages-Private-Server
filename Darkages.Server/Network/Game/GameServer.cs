@@ -182,7 +182,11 @@ namespace Darkages.Network.Game
                             client.Update(elapsedTime);
                             client.FlushBuffers();
                         }
-
+                        else
+                        {
+                            if (client.CanSendLocation)
+                                client.SendLocation();
+                        }
                         msr.Set();
                     }
                 }
