@@ -285,22 +285,6 @@ namespace Darkages.Network.ServerFormats
         }
     }
 
-    public class NumberInputData : IDialogData
-    {
-        public byte Type => 0x03;
-
-        public void Serialize(NetworkPacketReader reader)
-        {
-
-        }
-
-        public void Serialize(NetworkPacketWriter writer)
-        {
-            writer.Write((byte)1);
-            writer.Write((ushort)0x05);
-        }
-    }
-
     public class SpellAcquireData : IDialogData
     {
         public SpellAcquireData(ushort step, IEnumerable<SpellTemplate> spells)

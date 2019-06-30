@@ -243,7 +243,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 case 0x0015:
                     client.SendOptionsDialog(Mundane, "well then. i will see you later.");
                     break;
-
+                case 0x0020:
+                    {
+                        client.PendingItemSessions = null;
+                        client.SendOptionsDialog(Mundane, "well then. i will see you later.");
+                    } break;
                 case 0x0004:
                     {
                         if (string.IsNullOrEmpty(args))
