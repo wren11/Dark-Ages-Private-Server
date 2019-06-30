@@ -221,13 +221,19 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                                                                    ItemFlags.Repairable)).Sum(i =>
                         i.Value.Template.Value / 4);
 
-                    var opts = new List<OptionsDataItem>();
-                    opts.Add(new OptionsDataItem(0x0014, ServerContext.Config.MerchantConfirmMessage));
-                    opts.Add(new OptionsDataItem(0x0015, ServerContext.Config.MerchantCancelMessage));
-                    client.SendOptionsDialog(Mundane,
-                        "It will cost " + repair_sum + " Gold to repair everything. Do you Agree?",
-                        repair_sum.ToString(), opts.ToArray());
-
+                    if (repair_sum > 0)
+                    {
+                        var opts = new List<OptionsDataItem>();
+                        opts.Add(new OptionsDataItem(0x0014, ServerContext.Config.MerchantConfirmMessage));
+                        opts.Add(new OptionsDataItem(0x0015, ServerContext.Config.MerchantCancelMessage));
+                        client.SendOptionsDialog(Mundane,
+                            "It will cost " + repair_sum + " Gold to repair everything. Do you Agree?",
+                            repair_sum.ToString(), opts.ToArray());
+                    }
+                    else
+                    {
+                        client.SendOptionsDialog(Mundane, "You have nothing that needs repairing.");
+                    }
                     break;
 
                 case 0x0014:

@@ -38,59 +38,62 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
+            if (Sprites.Count > 0)
+            { 
             writer.Write((ushort)Sprites.Count);
 
-            foreach (var sprite in Sprites)
-            {
-                if (sprite is Money || sprite is Item)
+                foreach (var sprite in Sprites)
                 {
-                    if (sprite is Money)
+                    if (sprite is Money || sprite is Item)
+                    {
+                        if (sprite is Money)
+                        {
+                            writer.Write((ushort)sprite.XPos);
+                            writer.Write((ushort)sprite.YPos);
+                            writer.Write((uint)sprite.Serial);
+                            writer.Write((sprite as Money).Image);
+                            writer.Write(byte.MinValue);
+                            writer.Write(byte.MinValue);
+                            writer.Write(byte.MinValue);
+                        }
+
+                        if (sprite is Item)
+                        {
+                            writer.Write((ushort)sprite.XPos);
+                            writer.Write((ushort)sprite.YPos);
+                            writer.Write((uint)sprite.Serial);
+                            writer.Write((ushort)(sprite as Item).DisplayImage);
+                            writer.Write(byte.MinValue);
+                            writer.Write(byte.MinValue);
+                            writer.Write(byte.MinValue);
+                        }
+                    }
+
+                    if (sprite is Monster)
                     {
                         writer.Write((ushort)sprite.XPos);
                         writer.Write((ushort)sprite.YPos);
                         writer.Write((uint)sprite.Serial);
-                        writer.Write((sprite as Money).Image);
-                        writer.Write(byte.MinValue);
-                        writer.Write(byte.MinValue);
-                        writer.Write(byte.MinValue);
+                        writer.Write((sprite as Monster).Image);
+                        writer.Write((uint)0x0); // NFI
+                        writer.Write(sprite.Direction);
+                        writer.Write(byte.MinValue); // NFI
+                        writer.Write(byte.MinValue); // Tint
                     }
 
-                    if (sprite is Item)
+                    if (sprite is Mundane)
                     {
                         writer.Write((ushort)sprite.XPos);
                         writer.Write((ushort)sprite.YPos);
                         writer.Write((uint)sprite.Serial);
-                        writer.Write((ushort)(sprite as Item).DisplayImage);
-                        writer.Write(byte.MinValue);
-                        writer.Write(byte.MinValue);
-                        writer.Write(byte.MinValue);
+                        writer.Write((ushort)(sprite as Mundane).Template.Image);
+                        writer.Write(uint.MinValue); // NFI
+                        writer.Write(sprite.Direction);
+                        writer.Write(byte.MinValue); // NFI
+
+                        writer.Write((byte)0x02); // Type
+                        writer.WriteStringA((sprite as Mundane).Template.Name);
                     }
-                }
-
-                if (sprite is Monster)
-                {
-                    writer.Write((ushort)sprite.XPos);
-                    writer.Write((ushort)sprite.YPos);
-                    writer.Write((uint)sprite.Serial);
-                    writer.Write((sprite as Monster).Image);
-                    writer.Write((uint)0x0); // NFI
-                    writer.Write(sprite.Direction);
-                    writer.Write(byte.MinValue); // NFI
-                    writer.Write(byte.MinValue); // Tint
-                }
-
-                if (sprite is Mundane)
-                {
-                    writer.Write((ushort)sprite.XPos);
-                    writer.Write((ushort)sprite.YPos);
-                    writer.Write((uint)sprite.Serial);
-                    writer.Write((ushort)(sprite as Mundane).Template.Image);
-                    writer.Write(uint.MinValue); // NFI
-                    writer.Write(sprite.Direction);
-                    writer.Write(byte.MinValue); // NFI
-
-                    writer.Write((byte)0x02); // Type
-                    writer.WriteStringA((sprite as Mundane).Template.Name);
                 }
             }
         }

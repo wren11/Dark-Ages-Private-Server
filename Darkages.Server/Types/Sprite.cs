@@ -948,14 +948,37 @@ namespace Darkages.Types
             if (Map == null)
                 return;
 
-            switch (op)
+
+            try
             {
-                case Scope.Self:
-                    Client?.Send(format);
-                    break;
-                case Scope.NearbyAislingsExludingSelf:
-                    foreach (var gc in GetObjects<Aisling>(Map, that => WithinRangeOf(that)))
-                        if (gc.Serial != Serial)
+
+
+                switch (op)
+                {
+                    case Scope.Self:
+                        Client?.Send(format);
+                        break;
+                    case Scope.NearbyAislingsExludingSelf:
+                        foreach (var gc in GetObjects<Aisling>(Map, that => WithinRangeOf(that)))
+                            if (gc.Serial != Serial)
+                            {
+                                if (this is Aisling)
+                                {
+                                    if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
+                                        if (format is ServerFormat33)
+                                            return;
+
+                                    if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
+                                        if (format is ServerFormat33)
+                                            return;
+                                }
+
+                                gc.Client.Send(format);
+                            }
+
+                        break;
+                    case Scope.NearbyAislings:
+                        foreach (var gc in GetObjects<Aisling>(Map, that => WithinRangeOf(that)))
                         {
                             if (this is Aisling)
                             {
@@ -971,118 +994,10 @@ namespace Darkages.Types
                             gc.Client.Send(format);
                         }
 
-                    break;
-                case Scope.NearbyAislings:
-                    foreach (var gc in GetObjects<Aisling>(Map, that => WithinRangeOf(that)))
-                    {
-                        if (this is Aisling)
-                        {
-                            if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
-                                if (format is ServerFormat33)
-                                    return;
-
-                            if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
-                                if (format is ServerFormat33)
-                                    return;
-                        }
-
-                        gc.Client.Send(format);
-                    }
-
-                    break;
-                case Scope.VeryNearbyAislings:
-                    foreach (var gc in GetObjects<Aisling>(Map, that =>
-                        WithinRangeOf(that, ServerContext.Config.VeryNearByProximity)))
-                    {
-                        if (this is Aisling)
-                        {
-                            if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
-                                if (format is ServerFormat33)
-                                    return;
-
-                            if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
-                                if (format is ServerFormat33)
-                                    return;
-                        }
-
-                        gc.Client.Send(format);
-                    }
-
-                    break;
-                case Scope.AislingsOnSameMap:
-                    foreach (var gc in GetObjects<Aisling>(Map, that => CurrentMapId == that.CurrentMapId))
-                    {
-                        if (this is Aisling)
-                        {
-                            if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
-                                if (format is ServerFormat33)
-                                    return;
-
-                            if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
-                                if (format is ServerFormat33)
-                                    return;
-                        }
-
-                        gc.Client.Send(format);
-                    }
-
-                    break;
-                case Scope.GroupMembers:
-                    {
-                        if (this is Aisling)
-                            foreach (var gc in GetObjects<Aisling>(Map, that => (this as Aisling).GroupParty.Has(that)))
-                            {
-                                if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
-                                    if (format is ServerFormat33)
-                                        return;
-
-                                if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
-                                    if (format is ServerFormat33)
-                                        return;
-
-                                gc.Client.Send(format);
-                            }
-                    }
-                    break;
-                case Scope.NearbyGroupMembersExcludingSelf:
-                    {
-                        if (this is Aisling)
-                            foreach (var gc in GetObjects<Aisling>(Map, that =>
-                                that.WithinRangeOf(this) && (this as Aisling).GroupParty.Has(that)))
-                            {
-                                if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
-                                    if (format is ServerFormat33)
-                                        return;
-
-                                if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
-                                    if (format is ServerFormat33)
-                                        return;
-
-                                gc.Client.Send(format);
-                            }
-                    }
-                    break;
-                case Scope.NearbyGroupMembers:
-                    {
-                        if (this is Aisling)
-                            foreach (var gc in GetObjects<Aisling>(Map, that =>
-                                that.WithinRangeOf(this) && (this as Aisling).GroupParty.Has(that, true)))
-                            {
-                                if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
-                                    if (format is ServerFormat33)
-                                        return;
-
-                                if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
-                                    if (format is ServerFormat33)
-                                        return;
-
-                                gc.Client.Send(format);
-                            }
-                    }
-                    break;
-                case Scope.DefinedAislings:
-                    if (definer != null)
-                        foreach (var gc in definer)
+                        break;
+                    case Scope.VeryNearbyAislings:
+                        foreach (var gc in GetObjects<Aisling>(Map, that =>
+                            WithinRangeOf(that, ServerContext.Config.VeryNearByProximity)))
                         {
                             if (this is Aisling)
                             {
@@ -1095,10 +1010,105 @@ namespace Darkages.Types
                                         return;
                             }
 
-                            (gc as Aisling).Client.Send(format);
+                            gc.Client.Send(format);
                         }
 
-                    break;
+                        break;
+                    case Scope.AislingsOnSameMap:
+                        foreach (var gc in GetObjects<Aisling>(Map, that => CurrentMapId == that.CurrentMapId))
+                        {
+                            if (this is Aisling)
+                            {
+                                if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
+                                    if (format is ServerFormat33)
+                                        return;
+
+                                if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
+                                    if (format is ServerFormat33)
+                                        return;
+                            }
+
+                            gc.Client.Send(format);
+                        }
+
+                        break;
+                    case Scope.GroupMembers:
+                        {
+                            if (this is Aisling)
+                                foreach (var gc in GetObjects<Aisling>(Map, that => (this as Aisling).GroupParty.Has(that)))
+                                {
+                                    if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
+                                        if (format is ServerFormat33)
+                                            return;
+
+                                    if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
+                                        if (format is ServerFormat33)
+                                            return;
+
+                                    gc.Client.Send(format);
+                                }
+                        }
+                        break;
+                    case Scope.NearbyGroupMembersExcludingSelf:
+                        {
+                            if (this is Aisling)
+                                foreach (var gc in GetObjects<Aisling>(Map, that =>
+                                    that.WithinRangeOf(this) && (this as Aisling).GroupParty.Has(that)))
+                                {
+                                    if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
+                                        if (format is ServerFormat33)
+                                            return;
+
+                                    if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
+                                        if (format is ServerFormat33)
+                                            return;
+
+                                    gc.Client.Send(format);
+                                }
+                        }
+                        break;
+                    case Scope.NearbyGroupMembers:
+                        {
+                            if (this is Aisling)
+                                foreach (var gc in GetObjects<Aisling>(Map, that =>
+                                    that.WithinRangeOf(this) && (this as Aisling).GroupParty.Has(that, true)))
+                                {
+                                    if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
+                                        if (format is ServerFormat33)
+                                            return;
+
+                                    if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
+                                        if (format is ServerFormat33)
+                                            return;
+
+                                    gc.Client.Send(format);
+                                }
+                        }
+                        break;
+                    case Scope.DefinedAislings:
+                        if (definer != null)
+                            foreach (var gc in definer)
+                            {
+                                if (this is Aisling)
+                                {
+                                    if (!gc.Client.CanSeeHidden() && (this as Aisling).Invisible)
+                                        if (format is ServerFormat33)
+                                            return;
+
+                                    if (!gc.Client.CanSeeGhosts() && (this as Aisling).Dead)
+                                        if (format is ServerFormat33)
+                                            return;
+                                }
+
+                                (gc as Aisling).Client.Send(format);
+                            }
+
+                        break;
+                }
+            }
+            catch (Exception err)
+            {
+                ServerContext.Info.Error("Error in Show<T>", err);
             }
         }
 
@@ -1655,6 +1665,51 @@ namespace Darkages.Types
             Show(Scope.NearbyAislings, new ServerFormat29((uint)Serial, (uint)Serial, animation, animation, speed));
         }
 
+        public void BarMsg(string message, byte type = 0x02)
+        {
+            var response = new ServerFormat0D
+            {
+                Serial = this.Serial,
+                Type = type,
+                Text = message
+            };
+
+            Show(Scope.NearbyAislings, response);
+        }
+
+        public void GiveHP(int value) => _MaximumHp += value;
+
+        public void GiveMP(int value) => _MaximumMp += value;
+
+        public void Kill() => CurrentHp = 0;
+
+        public void Update()
+        {
+            Show(Scope.NearbyAislings, new ServerFormat0E(Serial));
+            Show(Scope.NearbyAislings, new ServerFormat07(new[] { this }));
+        }
+
+        public void ScrollTo(string destination, short x, short y)
+        {
+            var map = ServerContext.GlobalMapCache.Where(i =>
+            i.Value.Name.Equals(destination, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+            if (map.Value != null)
+            {
+                if (this is Aisling)
+                {
+                    var client = (this as Aisling).Client;
+
+                    client.TransitionToMap(map.Value, new Position(x, y));
+                }
+            }
+        }
+
+        public void SendAnimation(ushort v, Position position)
+        {
+            Show(Scope.NearbyAislings, new ServerFormat29(v, position.X, position.Y));
+        }
+
         public void ApplyBuff(string buff)
         {
             if (ServerContext.GlobalBuffCache.ContainsKey(buff))
@@ -1669,6 +1724,38 @@ namespace Darkages.Types
                     Buff.OnApplied(this, Buff);
                 }
             }
+        }
+
+        public void ApplyDebuff(string debuff)
+        {
+            if (ServerContext.GlobalDeBuffCache.ContainsKey(debuff))
+            {
+                var Debuff = Clone<Debuff>(ServerContext.GlobalBuffCache[debuff]);
+                if (!HasDebuff(Debuff.Name))
+                {
+                    Debuff.OnApplied(this, Debuff);
+                }
+            }
+        }
+
+        public void RefreshStats()
+        {
+            if (this is Aisling)
+                (this as Aisling).Client.SendStats(StatusFlags.All);
+        }
+
+        public void WarpTo(Position newLocation)
+        {
+            Map.Update(X, Y, this, true);
+            {
+                var location = new Position(newLocation.X, newLocation.Y);
+
+                this.X = location.X;
+                this.Y = location.Y;
+            }
+
+            Map.Update(X, Y, this);
+            Update();
         }
         #endregion
     }
