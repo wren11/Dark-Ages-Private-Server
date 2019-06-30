@@ -169,7 +169,7 @@ namespace Darkages
 
         [JsonProperty]
         /// <summary>
-        /// What is the Lowest HP an aisling can reach under any circumstances?
+        /// What is the Lowest Max HP an aisling can reach under any circumstances?
         /// </summary>
         public int MinimumHp = 50;
 
@@ -186,6 +186,29 @@ namespace Darkages
         public double MundaneRespawnInterval = 10.0;
 
         [JsonProperty] public string NotEnoughGoldToDropMsg = "You wish you had that much.";
+
+        [JsonProperty]
+        public string MerchantBuyMessage = "What you looking for?";
+        [JsonProperty]
+        public string MerchantBuy  = "Buy";
+        [JsonProperty]
+        public string MerchantSell = "Sell";
+        [JsonProperty]
+        public string MerchantTradeErrorMessage  = "You should probably fuck off.";
+        [JsonProperty]
+        public string MerchantStackErrorMessage  = "You don't even have that many.";
+        [JsonProperty]
+        public string MerchantRefuseTradeMessage = "I don't want to buy that.";
+        [JsonProperty]
+        public string MerchantCancelMessage = "No Thanks.";
+        [JsonProperty]
+        public string MerchantConfirmMessage = "Yes Please!";
+        [JsonProperty]
+        public string MerchantTradeCompletedMessage = "Thanks for your business.";
+        [JsonProperty]
+        public string MerchantDefaultMessage = "Ok, Good Bye then.";
+        [JsonProperty]
+        public string MerchantWarningMessage = "Hey you don't even have the money!! don't waste my time.";
 
         [JsonProperty]
         /// <summary>

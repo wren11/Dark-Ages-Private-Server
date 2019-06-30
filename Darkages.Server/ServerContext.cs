@@ -74,8 +74,6 @@ namespace Darkages
 
         static ServerContext()
         {
-            //BufferPool.SetBufferManagerBufferPool(1000, 0x10000);
-
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
 

@@ -48,11 +48,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         private void TopMenu(GameClient client)
         {
             var opts = new List<OptionsDataItem>();
-            opts.Add(new OptionsDataItem(0x0001, "Buy"));
-            opts.Add(new OptionsDataItem(0x0002, "Sell"));
+            opts.Add(new OptionsDataItem(0x0001, ServerContext.Config.MerchantBuy));
+            opts.Add(new OptionsDataItem(0x0002, ServerContext.Config.MerchantSell));
             opts.Add(new OptionsDataItem(0x0003, "Repair Items"));
 
-            client.SendOptionsDialog(Mundane, "What you looking for?", opts.ToArray());
+            client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantBuyMessage, opts.ToArray());
         }
 
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
@@ -123,8 +123,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
 
                                         var opts2 = new List<OptionsDataItem>();
-                                        opts2.Add(new OptionsDataItem(0x0030, "Sounds Good!"));
-                                        opts2.Add(new OptionsDataItem(0x0020, "Get Fucked!"));
+                                        opts2.Add(new OptionsDataItem(0x0030, ServerContext.Config.MerchantConfirmMessage));
+                                        opts2.Add(new OptionsDataItem(0x0020, ServerContext.Config.MerchantCancelMessage));
 
                                         client.SendOptionsDialog(Mundane, string.Format(
                                             "I will give offer you {0} gold for {1} of those ({2} Gold Each), Deal?",
@@ -135,7 +135,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                 else
                                 {
                                     client.PendingItemSessions = null;
-                                    client.SendOptionsDialog(Mundane, "You don't even have that many.");
+                                    client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantStackErrorMessage);
                                     return;
                                 }
                             }
@@ -143,7 +143,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         }
                         else
                         {
-                            client.SendOptionsDialog(Mundane, "you should probably fuck off.");
+                            client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantTradeErrorMessage);
                             return;
                         }
                     } break;
@@ -155,7 +155,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                         if (offer == "0")
                         {
-                            client.SendOptionsDialog(Mundane, "I don't want to buy that.");
+                            client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantRefuseTradeMessage);
                             return;
                         }
 
@@ -173,8 +173,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         {
 
                             var opts2 = new List<OptionsDataItem>();
-                            opts2.Add(new OptionsDataItem(0x0019, "Fair enough."));
-                            opts2.Add(new OptionsDataItem(0x0020, "decline offer."));
+                            opts2.Add(new OptionsDataItem(0x0019, ServerContext.Config.MerchantConfirmMessage));
+                            opts2.Add(new OptionsDataItem(0x0020, ServerContext.Config.MerchantCancelMessage));
 
                             client.SendOptionsDialog(Mundane, string.Format(
                                 "I will give offer you {0} gold for that {1}, Deal?",
@@ -206,7 +206,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                             client.Aisling.EquipmentManager.RemoveFromInventory(item, true);
                             client.SendStats(StatusFlags.StructC);
 
-                            client.SendOptionsDialog(Mundane, "A Deal is a deal mate...");
+                            client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantTradeCompletedMessage);
                         }
                     }
                     break;
@@ -222,8 +222,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         i.Value.Template.Value / 4);
 
                     var opts = new List<OptionsDataItem>();
-                    opts.Add(new OptionsDataItem(0x0014, "Fair enough."));
-                    opts.Add(new OptionsDataItem(0x0015, "No Thanks"));
+                    opts.Add(new OptionsDataItem(0x0014, ServerContext.Config.MerchantConfirmMessage));
+                    opts.Add(new OptionsDataItem(0x0015, ServerContext.Config.MerchantCancelMessage));
                     client.SendOptionsDialog(Mundane,
                         "It will cost " + repair_sum + " Gold to repair everything. Do you Agree?",
                         repair_sum.ToString(), opts.ToArray());
@@ -236,17 +236,17 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                         client.RepairEquipment(gear);
 
-                        client.SendOptionsDialog(Mundane, "All done, Bye for now.");
+                        client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantTradeCompletedMessage);
                     }
                     break;
 
                 case 0x0015:
-                    client.SendOptionsDialog(Mundane, "well then. i will see you later.");
+                    client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantCancelMessage);
                     break;
                 case 0x0020:
                     {
                         client.PendingItemSessions = null;
-                        client.SendOptionsDialog(Mundane, "well then. i will see you later.");
+                        client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantCancelMessage);
                     } break;
                 case 0x0004:
                     {
@@ -287,7 +287,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                     {
                                         script.OnUse(Mundane, client.Aisling);
                                     }
-                                    client.SendOptionsDialog(Mundane, "Now now, None of that here. Be warned.");
+                                    client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantWarningMessage);
                                 }
                             }
                     }
