@@ -23,6 +23,7 @@ using Darkages.Storage;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
 using MenuInterpreter;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -80,6 +81,9 @@ namespace Darkages.Network.Game
 
         public bool CanSendLocation =>
             DateTime.UtcNow - LastLocationSent < new TimeSpan(0, 0, 0, 1);
+
+        [JsonIgnore]
+        public PendingSell PendingItemSessions { get; set; }
 
         public ushort LastBoardActivated;
 
@@ -523,9 +527,10 @@ namespace Darkages.Network.Game
 
         private void SetAislingStartupVariables()
         {
-            LastSave = DateTime.UtcNow;
+            LastSave         = DateTime.UtcNow;
             LastPingResponse = DateTime.UtcNow;
 
+            PendingItemSessions = null;
 
             BoardOpened = DateTime.UtcNow;
             {

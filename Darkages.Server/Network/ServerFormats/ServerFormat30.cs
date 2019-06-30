@@ -70,6 +70,12 @@ namespace Darkages.Network.ServerFormats
         }
     }
 
+
+    public class ReactorInputSequence : ServerFormat30
+    {
+
+    }
+
     public class ReactorSequence : ServerFormat30
     {
         DialogSequence sequence;

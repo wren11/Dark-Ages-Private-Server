@@ -93,6 +93,7 @@ namespace Darkages
         public int BodyStyle { get; set; }
         public int FaceColor { get; set; }
         public int FaceStyle { get; set; }
+
         public byte HairColor { get; set; }
         public byte HairStyle { get; set; }
         public byte Boots { get; set; }
@@ -683,7 +684,6 @@ namespace Darkages
 
         public bool ReactedWith(string str) => Reactions.ContainsKey(str);
 
-
         public void ReviveInFront()
         {
             var infront = GetInfront(1).OfType<Aisling>();
@@ -711,6 +711,22 @@ namespace Darkages
             ApplyDamage(this, 0, true, 8);
             Show(Scope.NearbyAislings, action);
 
+        }
+
+        public bool GiveGold(int offer, bool SendClientUpdate = true)
+        {
+            if (GoldPoints + offer < ServerContext.Config.MaxCarryGold)
+            {
+                GoldPoints += offer;
+                return true;
+            }
+
+            if (SendClientUpdate)
+            {
+                Client?.SendStats(StatusFlags.StructC);
+            }
+
+            return false;
         }
     }
 }

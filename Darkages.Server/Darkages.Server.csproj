@@ -479,6 +479,7 @@
     <Compile Include="Types\Item.cs" />
     <Compile Include="Types\ItemColor.cs" />
     <Compile Include="Types\ItemFlags.cs" />
+    <Compile Include="Types\ItemPending.cs" />
     <Compile Include="Types\ItemSlots.cs" />
     <Compile Include="Types\ItemTemplate.cs" />
     <Compile Include="Types\LearningPredicate.cs" />

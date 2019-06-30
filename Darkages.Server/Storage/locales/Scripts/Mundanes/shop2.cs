@@ -42,6 +42,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnClick(GameServer server, GameClient client)
         {
+            TopMenu(client);
+        }
+
+        private void TopMenu(GameClient client)
+        {
             var opts = new List<OptionsDataItem>();
             opts.Add(new OptionsDataItem(0x0001, "Buy"));
             opts.Add(new OptionsDataItem(0x0002, "Sell"));
@@ -66,20 +71,115 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                             .Select(i => i.Slot).ToList());
 
                     break;
+                case 0x0030:
+                    {
+                        if (client.PendingItemSessions != null)
+                        {
+                            if (ServerContext.GlobalItemTemplateCache.ContainsKey(client.PendingItemSessions.Name))
+                            {
+                                var item = client.Aisling.Inventory.Get(i => i != null && i.Template.Name == client.PendingItemSessions.Name).FirstOrDefault();
 
+                                if (item != null)
+                                {
+                                    if (client.Aisling.GiveGold(client.PendingItemSessions.Offer))
+                                    {
+                                        client.Aisling.Inventory.RemoveRange(client, item, client.PendingItemSessions.Removing);
+                                        client.PendingItemSessions = null;
+                                        TopMenu(client);
+
+                                        return;
+                                    }
+                                }
+                            }
+
+                            client.PendingItemSessions = null;
+                            TopMenu(client);
+                        }
+                    } break;
+                case 0x0000:
+                    {
+
+                        if (string.IsNullOrEmpty(args))
+                            return;
+
+                        int.TryParse(args, out var amount);
+
+                        if (amount > 0 && client.PendingItemSessions != null)
+                        {
+                            client.PendingItemSessions.Quantity = amount;
+
+                            var item = client.Aisling.Inventory.Get(i => i != null && i.Template.Name == client.PendingItemSessions.Name).FirstOrDefault();
+
+                            if (item != null)
+                            {
+                                var offer = Convert.ToString((int)(item.Template.Value / 1.6));
+
+                                if (item.Stacks >= amount)
+                                {
+                                    if (client.Aisling.GoldPoints + Convert.ToInt32(offer) <= ServerContext.Config.MaxCarryGold)
+                                    {
+                                        client.PendingItemSessions.Offer = Convert.ToInt32(offer) * amount;
+                                        client.PendingItemSessions.Removing = amount;
+
+
+                                        var opts2 = new List<OptionsDataItem>();
+                                        opts2.Add(new OptionsDataItem(0x0030, "Sounds Good!"));
+                                        opts2.Add(new OptionsDataItem(0x0020, "Get Fucked!"));
+
+                                        client.SendOptionsDialog(Mundane, string.Format(
+                                            "I will give offer you {0} gold for {1} of those ({2} Gold Each), Deal?",
+                                            client.PendingItemSessions.Offer,
+                                            amount, client.PendingItemSessions.Offer / amount, item.Template.Name), opts2.ToArray());
+                                    }
+                                }
+                                else
+                                {
+                                    client.PendingItemSessions = null;
+                                    client.SendOptionsDialog(Mundane, "You don't even have that many.");
+                                    return;
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            client.SendOptionsDialog(Mundane, "you should probably fuck off.");
+                            return;
+                        }
+                    } break;
                 case 0x0500:
                     {
                         var item = client.Aisling.Inventory.Get(i => i != null && i.Slot == Convert.ToInt32(args))
                             .FirstOrDefault();
                         var offer = Convert.ToString((int)(item.Template.Value / 1.6));
 
-                        var opts2 = new List<OptionsDataItem>();
-                        opts2.Add(new OptionsDataItem(0x0019, "Fair enough."));
-                        opts2.Add(new OptionsDataItem(0x0020, "decline offer."));
+                        if (offer == "0")
+                        {
+                            client.SendOptionsDialog(Mundane, "I don't want to buy that.");
+                            return;
+                        }
 
-                        client.SendOptionsDialog(Mundane, string.Format(
-                            "I will give offer you {0} gold for that {1}, Deal?",
-                            offer, item.Template.Name), item.Template.Name, opts2.ToArray());
+                        if (item.Stacks > 1 && item.Template.CanStack)
+                        {
+                            client.PendingItemSessions = new PendingSell()
+                            {
+                                Name     = item.Template.Name,
+                                Quantity = 0
+                            };
+
+                            client.Send(new ServerFormat2F(Mundane, string.Format("How many [{0}] do you want to sell?", item.Template.Name), new TextInputData()));
+                        }
+                        else
+                        {
+
+                            var opts2 = new List<OptionsDataItem>();
+                            opts2.Add(new OptionsDataItem(0x0019, "Fair enough."));
+                            opts2.Add(new OptionsDataItem(0x0020, "decline offer."));
+
+                            client.SendOptionsDialog(Mundane, string.Format(
+                                "I will give offer you {0} gold for that {1}, Deal?",
+                                offer, item.Template.Name), item.Template.Name, opts2.ToArray());
+                        }
                     }
                     break;
 
