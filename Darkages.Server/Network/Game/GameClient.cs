@@ -100,6 +100,20 @@ namespace Darkages.Network.Game
                 TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate / 2));
         }
 
+
+
+        [Verb]
+
+        ///
+        /// This Chat command ports the user to a location.
+        /// Example chat command: 'port -i:100 -x:5 -y:5'
+        public void port(int i, int x = 0, int y = 0)
+        {
+            TransitionToMap(i, new Position(x, y));
+
+            SystemMessage("Port: Success.");
+        }
+
         /// <summary>
         /// This chat command spawns a monster.
         /// </summary>
