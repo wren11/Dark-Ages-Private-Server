@@ -77,9 +77,9 @@ namespace Lorule
 
             private void SendServerInfo(MemoryMappedFileCommunicator communicator)
             {
-                if (Info == null)
+                if (ILog == null)
                 {
-                    Info = new ServerInformation
+                    ILog = new ServerInformation
                     {
                         ServerConfig = Config,
                         MonsterTemplates = new List<MonsterTemplate>(GlobalMonsterTemplateCache),
@@ -94,26 +94,26 @@ namespace Lorule
                     };
                 }
 
-                Info.GameServerOnline   = true;
-                Info.LoginServerOnline  = true;
+                ILog.GameServerOnline   = true;
+                ILog.LoginServerOnline  = true;
 
                 var players_online      = Game?.Clients.Where(i => i != null && i.Aisling != null && i.Aisling.LoggedIn);
 
                 if (players_online != null)
                 {
-                    Info.PlayersOnline    = new List<Aisling>(players_online.Select(i => i.Aisling));
-                    Info.GameServerOnline = true;
+                    ILog.PlayersOnline    = new List<Aisling>(players_online.Select(i => i.Aisling));
+                    ILog.GameServerOnline = true;
                 }
                 else
                 {
-                    Info.PlayersOnline    = new List<Aisling>();
-                    Info.GameServerOnline = false;
-                    Info.GameServerStatus = "Offline.";
+                    ILog.PlayersOnline    = new List<Aisling>();
+                    ILog.GameServerOnline = false;
+                    ILog.GameServerStatus = "Offline.";
                 }
 
                 lock (communicator)
                 {
-                    var jsonWrap = JsonConvert.SerializeObject(Info, StorageManager.Settings);
+                    var jsonWrap = JsonConvert.SerializeObject(ILog, StorageManager.Settings);
                     communicator.Write(jsonWrap);
                 }
             }

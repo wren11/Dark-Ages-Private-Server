@@ -228,7 +228,7 @@ namespace Darkages.Types
                             obj.Show(Scope.Self,
                                 new ServerFormat0D
                                 {
-                                    Serial = Serial,
+                                    Serial = this.Serial,
                                     Text = msg,
                                     Type = 0
                                 });

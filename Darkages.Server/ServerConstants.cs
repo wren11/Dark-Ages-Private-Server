@@ -18,6 +18,7 @@
 using Darkages.Storage;
 using Darkages.Types;
 using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace Darkages
 {
@@ -78,6 +79,10 @@ namespace Darkages
         [JsonProperty] public string ConAddedMessage = "You become more fit.";
 
         [JsonProperty] public int ConnectionCapacity = 300;
+
+        [JsonProperty] public string WrongClassMessage = "This is best suited for somebody else.";
+
+        [JsonProperty] public string CantWearYetMessage = "You can't equip this until you are stronger.";
 
         [JsonProperty]
         /// <summary>
@@ -330,6 +335,19 @@ namespace Darkages
 
         [JsonProperty]
         public string SpellFailedMessage = "failed.";
+
+        [JsonProperty]
+        public string RepairItemMessage = "You can't wear somethin' that fucked. Go repair it first.";
+
+        [JsonProperty]
+        public bool CancelWalkingIfRefreshing = false;
+
+
+
+        [JsonProperty]
+        [DefaultValue(200)]
+        [Description("WarpCheckRate, This Value determines the amount of time to wait for async operations to complete before updating the aislingss position. default is 200.")]
+        public int WarpCheckRate = 200;
 
         public struct GameSetting
         {

@@ -89,7 +89,7 @@ namespace Darkages.Network.Game
                 }
                 catch (Exception error)
                 {
-                    ServerContext.Info?.Error("Error In Heavy Worker", error);
+                    ServerContext.ILog?.Error("Error In Heavy Worker", error);
                 }
 
                 lastHeavyUpdate = DateTime.UtcNow;
@@ -101,7 +101,7 @@ namespace Darkages.Network.Game
         {
             InitComponentCache();
 
-            ServerContext.Info?.Info(string.Format("[Lorule] {0} Server Components loaded.", Components.Count));
+            ServerContext.ILog?.Info(string.Format("[Lorule] {0} Server Components loaded.", Components.Count));
         }
 
         private void InitComponentCache()
@@ -203,7 +203,7 @@ namespace Darkages.Network.Game
                 try
                 {
                     client.Save();
-                    ServerContext.Info.Warning("{0} has disconnected from server.", client.Aisling.Username);
+                    ServerContext.ILog.Warning("{0} has disconnected from server.", client.Aisling.Username);
 
                     client.Aisling.LoggedIn = false;
                     client.Aisling.Remove(true);

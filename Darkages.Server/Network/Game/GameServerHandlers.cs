@@ -47,8 +47,9 @@ namespace Darkages.Network.Game
             {
                 if (client.MenuInterpter == null)
                 {
-                    client.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
-                    client.MenuInterpter.Client = client;
+                    client.MenuInterpter            = parser.CreateInterpreterFromFile(yamlPath);
+                    client.MenuInterpter.Client     = client;
+
                     client.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
 
                     client.MenuInterpter.RegisterCheckpointHandler("QuestCompleted", (_client, res) =>
@@ -61,18 +62,18 @@ namespace Darkages.Network.Game
 
                     client.MenuInterpter.RegisterCheckpointHandler("Call", (_client, res) =>
                     {
-                        _Interop.Storage["client"] = client;
-                        _Interop.Storage["user"]   = client.Aisling;
+                        _Interop.Storage["client"]  = client;
+                        _Interop.Storage["user"]    = client.Aisling;
                        
                         {
-                            "var client = (GameClient)_Interop.Storage[\"client\"];".Run();
-                            "var user   = (Aisling)_Interop.Storage[\"user\"];".Run();
+                            "var client = (GameClient) _Interop.Storage[\"client\"];".Run();
+                            "var user   = (Aisling)    _Interop.Storage[\"user\"];".Run();
                         }
                         res.Value.Run();
                         res.Result = (bool)ServerContext.EVALUATOR.Evaluate("result");
                     });
 
-                    ServerContext.Info.Debug("Script Interpreter Created for Mundane: {0}", Name);
+                    ServerContext.ILog.Debug("Script Interpreter Created for Mundane: {0}", Name);
                 }
             }
         }
@@ -209,7 +210,7 @@ namespace Darkages.Network.Game
         {
             lock (client)
             {
-                var aisling = LoadPlayer(client, format);
+                var aisling = LoadPlayerAsync(client, format);
 
                 if (aisling != null)
                 {
@@ -218,7 +219,7 @@ namespace Darkages.Network.Game
             }
         }
 
-        private Aisling LoadPlayer(GameClient client, ClientFormat10 format)
+        private async Task<Aisling> LoadPlayerAsync(GameClient client, ClientFormat10 format)
         {
             Aisling aisling = StorageManager.AislingBucket.Load(format.Name);
 
@@ -265,7 +266,7 @@ namespace Darkages.Network.Game
 
             Party.Reform(client);
 
-            if (client.Load())
+            if (await client.LoadAsync())
             {
                 client.SendStats(StatusFlags.All); ;
                 client.SendMessage(0x02, ServerContext.Config.ServerWelcomeMessage);
@@ -314,10 +315,10 @@ namespace Darkages.Network.Game
             var redirect = new Redirect
             {
                 Serial = Convert.ToString(client.Serial),
-                Salt = System.Text.Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
-                Seed = Convert.ToString(client.Encryption.Parameters.Seed),
-                Name = client.Aisling.Username,
-                Type = "2"
+                Salt   = System.Text.Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
+                Seed   = Convert.ToString(client.Encryption.Parameters.Seed),
+                Name   = client.Aisling.Username,
+                Type   = "2"
             };
 
             client.Aisling.LoggedIn = false;
@@ -419,6 +420,15 @@ namespace Darkages.Network.Game
             if (!client.Aisling.LoggedIn)
                 return;
 
+            if (client.Aisling.Map == null)
+                return;
+
+            if (!client.Aisling.Map.Ready)
+                return;
+
+            if (client.IsWarping)
+                return;
+
             if (ServerContext.Config.CancelCastingWhenWalking && client.Aisling.IsCastingSpell || client.Aisling.ActiveSpellInfo != null)
                 CancelIfCasting(client);
 
@@ -434,17 +444,6 @@ namespace Darkages.Network.Game
             client.Aisling.CanReact = true;
             client.MenuInterpter    = null;
 
-            if (client.Aisling.Map == null)
-                return;
-
-            if (!client.Aisling.Map.Ready)
-                return;
-
-            if (client.IsWarping)
-            {
-                return;
-            }
-
             /* This prevents actions during skulled. */
             if (!ServerContext.Config.CanMoveDuringReap)
             {
@@ -457,8 +456,8 @@ namespace Darkages.Network.Game
             }
 
 
-            //if (client.IsRefreshing && ServerContext.Config.CancelWalkingIfRefreshing)
-            //    return;
+            if (client.IsRefreshing && ServerContext.Config.CancelWalkingIfRefreshing)
+                return;
 
             if (client.Aisling.Direction != format.Direction)
                 client.Aisling.Direction = format.Direction;
@@ -1547,7 +1546,7 @@ namespace Darkages.Network.Game
             }
 
 
-            var objId = format.Serial;
+            var objId = (uint)format.Serial;
 
             if (objId > 0 && objId < int.MaxValue)
             {
@@ -1562,8 +1561,27 @@ namespace Darkages.Network.Game
 
                         if (selected_answer != null)
                         {
-                            ServerContext.Info.Debug("User Answer: {0}", selected_answer.Text);
+                            ServerContext.ILog.Debug("User Answer: {0}", selected_answer.Text);
                             client.ShowCurrentMenu(obj, null, menu.Move(selected_answer.Id));
+                        }
+                    }
+                }
+                else
+                {
+                    var popup = Popup.GetById(objId);
+
+                    if (popup != null)
+                    {
+                        var menu = client.MenuInterpter;
+
+                        if (menu != null)
+                        {
+                            var selected_answer = menu.GetCurrentStep()?.Answers.ElementAt(format.Step - 1);
+                            if (selected_answer != null)
+                            {
+                                client.ShowCurrentMenu(popup, null, menu.Move(selected_answer.Id));
+                                return;
+                            }
                         }
                     }
                 }
@@ -1696,6 +1714,74 @@ namespace Darkages.Network.Game
 
                     return;
                 }
+                else
+                {
+
+                    var popup = Popup.GetById(objId);
+
+                    if (popup != null)
+                    {
+                        if (client.MenuInterpter == null)
+                            return;
+
+                        var interpreter = client.MenuInterpter;
+
+                        if (format.Step > 2)
+                        {
+                            var back = interpreter.GetCurrentStep().Answers.FirstOrDefault(i => i.Text == "back");
+
+                            if (back != null)
+                            {
+                                client.ShowCurrentMenu(popup, interpreter.GetCurrentStep(), interpreter.Move(back.Id));
+                            }
+                            else
+                            {
+                                client.CloseDialog();
+                            }
+                        }
+                        if (format.Step == 1)
+                        {
+                            var next = interpreter.GetCurrentStep().Answers.FirstOrDefault(i => i.Text == "next");
+
+                            if (next != null)
+                                client.ShowCurrentMenu(popup, interpreter.GetCurrentStep(), interpreter.Move(next.Id));
+                            else
+                            {
+                                var complete = interpreter.GetCurrentStep().Answers.FirstOrDefault(i => i.Text == null);
+
+                                if (complete != null)
+                                {
+                                    client.ShowCurrentMenu(popup, null, interpreter.Move(complete.Id));
+                                }
+                                else
+                                {
+                                    var last = interpreter.GetCurrentStep().Answers.FirstOrDefault(i => i.Text == "complete");
+                                    if (last != null)
+                                    {
+                                        client.ShowCurrentMenu(popup, null, interpreter.Move(last.Id));
+                                    }
+                                }
+                            }
+                        }
+                        if (format.Step < 1 || format.Step == 2)
+                        {
+                            var step = interpreter.GetCurrentStep();
+
+                            if (step == null)
+                            {
+                                return;
+                            }
+
+                            var close = step.Answers.FirstOrDefault(i => i.Text == "close");
+
+                            if (close != null)
+                            {
+                                client.CloseDialog();
+                            }
+                        }
+                    }
+                }
+
             }
 
 
@@ -1973,7 +2059,7 @@ namespace Darkages.Network.Game
         }
 
         /// <summary>
-        ///     Mouse Click
+        /// Mouse Click
         /// </summary>
         protected override void Format43Handler(GameClient client, ClientFormat43 format)
         {
@@ -1992,6 +2078,34 @@ namespace Darkages.Network.Game
                 if (client.Aisling.Skulled)
                 {
                     client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
+                    return;
+                }
+            }
+
+            if (format.Type == 3)
+            {
+                var popTemplate = ServerContext.GlobalPopupCache.OfType<UserClickPopup>()
+                    .Where(i => i.X == format.X && i.Y == format.Y).FirstOrDefault();
+
+                if (popTemplate != null)
+                {
+                    var popup = Popup.Create(client, popTemplate);
+
+                    if (popup != null)
+                    {
+                        if (client.MenuInterpter == null)
+                        {
+                            CreateInterpreterFromMenuFile(client, popup.Template.YamlKey);
+
+                            if (client.MenuInterpter != null)
+                            {
+                                client.MenuInterpter.Start();
+                                client.ShowCurrentMenu(popup, null, client.MenuInterpter.GetCurrentStep());
+                            }
+                        }
+
+                        return;
+                    }
                     return;
                 }
             }
@@ -2038,7 +2152,7 @@ namespace Darkages.Network.Game
                                 //try and call script first
                                 (obj as Mundane)?.Script?.OnClick(this, client);
 
-                                if (client.MenuInterpter  != null)
+                                if (client.MenuInterpter != null)
                                 {
                                     client.MenuInterpter = null;
                                     client.CloseDialog();
@@ -2054,11 +2168,11 @@ namespace Darkages.Network.Game
                                         client.MenuInterpter.Start();
                                     }
 
-                                    ServerContext.Info.Debug("Interpreter - Using Default Role: {0}", (obj as Mundane).Template.Name);
+                                    ServerContext.ILog.Debug("Interpreter - Using Default Role: {0}", (obj as Mundane).Template.Name);
                                 }
                                 else
                                 {
-                                    ServerContext.Info.Debug("Interpreter - Using Defined Role: {0}", (obj as Mundane).Template.Name);
+                                    ServerContext.ILog.Debug("Interpreter - Using Defined Role: {0}", (obj as Mundane).Template.Name);
                                     return;
                                 }
 
@@ -2069,7 +2183,7 @@ namespace Darkages.Network.Game
                             }
                             catch (Exception err)
                             {
-                                ServerContext.Info.Error(string.Format("Error in Menu Handler : {0}", obj.GetType().FullName), err);
+                                ServerContext.ILog.Error(string.Format("Error in Menu Handler : {0}", obj.GetType().FullName), err);
                             }
                         }
                         break;

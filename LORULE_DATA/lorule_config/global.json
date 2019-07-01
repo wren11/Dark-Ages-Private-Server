@@ -22,6 +22,8 @@
   "ClickLootDistance": 3,
   "ConAddedMessage": "You become more fit.",
   "ConnectionCapacity": 300,
+  "WrongClassMessage": "This is best suited for somebody else.",
+  "CantWearYetMessage": "You can't equip this until you are stronger.",
   "DayTimeInterval": 30.0,
   "DeathHPPenalty": 50,
   "DeathMap": 88888,
@@ -49,6 +51,17 @@
   "MonsterSpellSuccessRate": 30,
   "MundaneRespawnInterval": 10.0,
   "NotEnoughGoldToDropMsg": "You wish you had that much.",
+  "MerchantBuyMessage": "What you looking for?",
+  "MerchantBuy": "Buy",
+  "MerchantSell": "Sell",
+  "MerchantTradeErrorMessage": "You should probably fuck off.",
+  "MerchantStackErrorMessage": "You don't even have that many.",
+  "MerchantRefuseTradeMessage": "I don't want to buy that.",
+  "MerchantCancelMessage": "No Thanks.",
+  "MerchantConfirmMessage": "Yes Please!",
+  "MerchantTradeCompletedMessage": "Thanks for your business.",
+  "MerchantDefaultMessage": "Ok, Good Bye then.",
+  "MerchantWarningMessage": "Hey you don't even have the money!! don't waste my time.",
   "PingInterval": 10.0,
   "RefreshOnWalkCollision": true,
   "RefreshRate": 300,
@@ -136,5 +149,8 @@
       }
     ]
   },
-  "SpellFailedMessage": "failed."
+  "SpellFailedMessage": "failed.",
+  "RepairItemMessage": "You can't wear somethin' that fucked. Go repair it first.",
+  "CancelWalkingIfRefreshing": false,
+  "WarpCheckRate": 200
 }

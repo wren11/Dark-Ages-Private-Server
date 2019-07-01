@@ -21,6 +21,47 @@ using System.Linq;
 
 namespace Darkages.Network.ServerFormats
 {
+
+    public class PopupFormat : NetworkFormat
+    {
+        public Popup       _popup  { get; set; }
+        public string      Text    { get; set; }
+        public IDialogData Data    { get; set; }
+
+        public PopupFormat(Popup lpPopup, string lptext, IDialogData data)
+        {
+            Command   = 0x2F;
+            Secured   = true;
+            {
+                Text  = lptext;
+                Data  = data;
+            }
+
+            _popup = lpPopup;
+        }
+
+        public override void Serialize(NetworkPacketReader reader)
+        {
+
+        }
+
+        public override void Serialize(NetworkPacketWriter writer)
+        {
+            writer.Write((byte)0x00); // type
+            writer.Write((byte)0x01);
+            writer.Write((uint)_popup.Id);
+            writer.Write((byte)0x02);
+            writer.Write((ushort)_popup.Template.SpriteId);
+            writer.Write((byte)0x00);
+            writer.Write((byte)0x01);
+            writer.Write((byte)0x02);
+            writer.Write((byte)0x01);
+            writer.Write((byte)0x00);
+            writer.WriteStringB(_popup.Template.Name);
+            writer.WriteStringB(Text);
+            writer.Write(Data);
+        }
+    }
     public class ServerFormat2F : NetworkFormat
     {
         public ServerFormat2F(Mundane mundane, string text, IDialogData data) : this()
@@ -37,7 +78,9 @@ namespace Darkages.Network.ServerFormats
         }
 
         public IDialogData Data { get; set; }
+
         public Mundane Mundane { get; set; }
+
         public string Text { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)

@@ -66,7 +66,7 @@ namespace Darkages
         [JsonIgnore]
         private static ServerInformation _info = new ServerInformation();
 
-        public static ServerInformation Info
+        public static ServerInformation ILog
         {
             get { return _info; }
             set { _info = value; }
@@ -80,7 +80,7 @@ namespace Darkages
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Exception error = (Exception)e.ExceptionObject;
-            Info?.Error("Unhandled Exception", error);
+            ILog?.Error("Unhandled Exception", error);
         }
 
         public static List<Metafile> GlobalMetaCache = new List<Metafile>();
@@ -121,13 +121,16 @@ namespace Darkages
         public static Dictionary<string, Aisling> ConnectedBots
             = new Dictionary<string, Aisling>();
 
+        public static List<PopupTemplate> GlobalPopupCache
+            = new List<PopupTemplate>();
+
         public static Board[] Community = new Board[7];
 
         public static void Log(string message, params object[] args)
         {
-            if (Info != null)
+            if (ILog != null)
             {
-                Info.Info(message, args);
+                ILog.Info(message, args);
             }
             else
             {
@@ -135,53 +138,52 @@ namespace Darkages
             }
         }
 
-
         public static void LoadSkillTemplates()
         {
             StorageManager.SkillBucket.CacheFromStorage();
-            Info?.Debug("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
+            ILog?.Debug("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
         }
 
         public static void LoadSpellTemplates()
         {
             StorageManager.SpellBucket.CacheFromStorage();
-            Info?.Debug("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
+            ILog?.Debug("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
         }
 
         public static void LoadItemTemplates()
         {
             StorageManager.ItemBucket.CacheFromStorage();
-            Info?.Debug("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
+            ILog?.Debug("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
         }
 
         public static void LoadMonsterTemplates()
         {
             StorageManager.MonsterBucket.CacheFromStorage();
-            Info?.Debug("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
+            ILog?.Debug("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
         }
 
         public static void LoadMundaneTemplates()
         {
             StorageManager.MundaneBucket.CacheFromStorage();
-            Info?.Debug("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
+            ILog?.Debug("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
         }
 
         public static void LoadWarpTemplates()
         {
             StorageManager.WarpBucket.CacheFromStorage();
-            Info?.Debug("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
+            ILog?.Debug("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
         }
 
         public static void LoadWorldMapTemplates()
         {
             StorageManager.WorldMapBucket.CacheFromStorage();
-            Info?.Debug("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
+            ILog?.Debug("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
         }
 
         public static void LoadMaps()
         {
             StorageManager.AreaBucket.CacheFromStorage();
-            Info?.Debug("Map Templates Loaded: {0}", GlobalMapCache.Count);
+            ILog?.Debug("Map Templates Loaded: {0}", GlobalMapCache.Count);
         }
 
         private static void StartServers()
@@ -189,7 +191,6 @@ namespace Darkages
 #if DEBUG
             ServerContext.Config.DebugMode = true;
 #endif
-
             redo:
             {
                 if (Errors > Config.ERRORCAP)
@@ -208,14 +209,9 @@ namespace Darkages
                     { ++DefaultPort; Errors++; }
                     goto redo;
                 }
-            }
-
-   
+            }   
         }
 
-        /// <summary>
-        ///     EP
-        /// </summary>
         public virtual void Start()
         {
             Startup();
@@ -236,15 +232,9 @@ namespace Darkages
             Game  ?.Abort();
             Lobby ?.Abort();
 
-
-            Game  = null;
-            Lobby = null;
-
-
+            Game    = null;
+            Lobby   = null;
             Running = false;
-
-            //Process.Start(Application.ExecutablePath);
-            //Application.Exit();
         }
 
         public static void Startup()
@@ -378,44 +368,23 @@ namespace Darkages
             }
 
 
-            Paused = false;
-
-
-            GlobalMundaneTemplateCache["Dubios"] = new MundaneTemplate()
+            var template = new UserClickPopup()
             {
-                Name = "Dubios",
-                ScriptKey = "monk/forms",
-                Image = 0x4013,
-                X = 3,
-                Y = 3,
-                AreaID = 5211,
-                Direction = (byte)Direction.West,
-                Level = 1000,
+                Description = "A user Click Popup",
+                Ephemeral   = true,
+                SpriteId    = 0x4005,
+                Timeout     = 200,
+                Name        = "Woodlands Guard",
+                X           = 31,
+                Y           = 23,
+                MapId       = 200,
+                YamlKey     = "Woodlands Guard"
             };
 
+            GlobalPopupCache.Add(template);
 
-
-            //SyncStorage();
+            Paused = false;
         }
-
-        private static void SyncStorage()
-        {
-            foreach (var obj in GlobalItemTemplateCache.Select(i => i.Value))
-                StorageManager.ItemBucket.SaveOrReplace(obj);
-
-            foreach (var obj in GlobalSpellTemplateCache.Select(i => i.Value))
-                StorageManager.SpellBucket.SaveOrReplace(obj);
-
-            foreach (var obj in GlobalSkillTemplateCache.Select(i => i.Value))
-                StorageManager.SkillBucket.SaveOrReplace(obj);
-
-            foreach (var obj in GlobalMonsterTemplateCache)
-                StorageManager.MonsterBucket.SaveOrReplace(obj);
-
-            foreach (var obj in GlobalMundaneTemplateCache.Select(i => i.Value))
-                StorageManager.MundaneBucket.SaveOrReplace(obj);
-        }
-
         private static void LoadExtensions()
         {
             CacheBuffs();
@@ -468,10 +437,7 @@ namespace Darkages
                     using System.Linq;
                     using System.Net;
                     using System.Reflection;
-                    using Darkages;
-                    ");
-
-                EVALUATOR.Run("var _v = _Interop.Storage;");
+                    using Darkages;");
             }
             catch
             {

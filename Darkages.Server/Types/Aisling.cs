@@ -493,9 +493,6 @@ namespace Darkages
         }
 
 
-        /// <summary>
-        ///     This Method will return all skills that are assail-like, Assail, Clobber, Ect.
-        /// </summary>
         public Skill[] GetAssails()
         {
             return SkillBook.Get(i => i != null && i.Template != null
@@ -537,7 +534,6 @@ namespace Darkages
             if (CurrentMapId == ServerContext.Config.DeathMap)
                 return;
 
-
             Remains.Owner = this;
 
             var reepStack = Remains;
@@ -555,7 +551,6 @@ namespace Darkages
                 }
             }
 
-            //dirty: one extra pass here, just to ENSURE all buffs are gone.
             for (int i = 0; i < 2; i++)
                 RemoveBuffsAndDebuffs();
 
@@ -569,12 +564,6 @@ namespace Darkages
             UpdateStats();
         }
 
-
-        /// <summary>
-        /// This entire exchange routine was shamelessly copy pasted from Kojasou's Server Project.
-        /// (Yes I'm way to lazy to write this myself when it's already been done correctly.)
-        /// Credits: https://github.com/kojasou/wewladh
-        /// </summary>
         public void CancelExchange()
         {
             var trader = Exchange.Trader;
@@ -631,11 +620,6 @@ namespace Darkages
             trader.Client.Send(packet);
         }
 
-        /// <summary>
-        /// This entire exchange routine was shamelessly copy pasted from Kojasou's Server Project.
-        /// (Yes I'm way to lazy to write this myself when it's already been done correctly.)
-        /// Credits: https://github.com/kojasou/wewladh
-        /// </summary>
         public void FinishExchange()
         {
             var trader = Exchange.Trader;
@@ -666,7 +650,7 @@ namespace Darkages
             }
 
 
-            GoldPoints += goldB;
+            GoldPoints        += goldB;
             trader.GoldPoints += goldA;
 
             if (trader.GoldPoints > ServerContext.Config.MaxCarryGold)
@@ -690,7 +674,7 @@ namespace Darkages
 
             var action = new ServerFormat1A
             {
-                Serial = Serial,
+                Serial = this.Serial,
                 Number = 0x01,
                 Speed = 30
             };

@@ -237,7 +237,7 @@ namespace Darkages.Network
 
         public virtual void ClientConnected(TClient client)
         {
-            ServerContext.Info?.Warning("Connection From {0} Established.", client.ServerSocket.RemoteEndPoint.ToString());
+            ServerContext.ILog?.Warning("Connection From {0} Established.", client.ServerSocket.RemoteEndPoint.ToString());
         }
 
         public virtual void ClientDataReceived(TClient client, NetworkPacket packet)

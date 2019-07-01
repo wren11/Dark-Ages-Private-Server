@@ -75,7 +75,7 @@ namespace Darkages.Network.Game
             DateTime.UtcNow - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContext.Config.RefreshRate);
 
         public bool IsWarping =>
-            DateTime.UtcNow - LastWarp < new TimeSpan(0, 0, 0, 0, 200);
+            DateTime.UtcNow - LastWarp < new TimeSpan(0, 0, 0, 0, ServerContext.Config.WarpCheckRate);
 
         public DateTime LastLocationSent { get; set; }
 
@@ -370,6 +370,7 @@ namespace Darkages.Network.Game
                 return;
             #endregion
 
+            #region Warping Sanity Check
             var distance = Aisling.Position.DistanceFrom(Aisling.LastPosition);
 
             if (distance > 2)
@@ -379,10 +380,9 @@ namespace Darkages.Network.Game
                 Aisling.LastPosition.Y = (ushort)Aisling.YPos;
 
                 Refresh();
-
-                ServerContext.Info.Warning("Player Warped {0} distance: {1}", Aisling.Username, distance);
                 return;
             }
+            #endregion
 
             HandleTimeOuts();
             StatusCheck();
@@ -502,7 +502,7 @@ namespace Darkages.Network.Game
             }
         }
 
-        public bool Load()
+        public async Task<bool> LoadAsync()
         {
             if (Aisling == null || Aisling.AreaID == 0)
                 return false;
@@ -513,23 +513,20 @@ namespace Darkages.Network.Game
 
             try
             {
-                LoadGlobalScripts();
-                Thread.Sleep(50);
-                InitSpellBar();
-                Thread.Sleep(50);
-                LoadInventory();
-                Thread.Sleep(50);
-                LoadSkillBook();
-                Thread.Sleep(100);
-                LoadSpellBook();
-                Thread.Sleep(100);
-                LoadEquipment();
-                Thread.Sleep(100);
-                SendProfileUpdate();
-                Thread.Sleep(100);
-
-                SendStats(StatusFlags.All);
-                Thread.Sleep(100);
+                await Task.Run(() =>
+                    LoadGlobalScripts()
+                        .InitSpellBar()
+                        .LoadInventory()
+                        .LoadSkillBook()
+                        .LoadSpellBook()
+                        .LoadEquipment()
+                        .SendProfileUpdate()
+                ).ContinueWith((ct) =>
+                {
+                    SendStats(StatusFlags.All);
+                    Thread.Sleep(100);
+                    return true;
+                });
             }
             catch
             {
@@ -539,11 +536,10 @@ namespace Darkages.Network.Game
             return true;
         }
 
-        private void SetAislingStartupVariables()
+        private GameClient SetAislingStartupVariables()
         {
-            LastSave         = DateTime.UtcNow;
-            LastPingResponse = DateTime.UtcNow;
-
+            LastSave            = DateTime.UtcNow;
+            LastPingResponse    = DateTime.UtcNow;
             PendingItemSessions = null;
 
             BoardOpened = DateTime.UtcNow;
@@ -553,12 +549,16 @@ namespace Darkages.Network.Game
                 Aisling.LastMapId = short.MaxValue;
             }
             BuildSettings();
+
+            return this;
         }
 
-        private void LoadGlobalScripts()
+        private GameClient LoadGlobalScripts()
         {
             foreach (var script in ServerContext.Config.GlobalScripts)
                 GlobalScripts.Add(ScriptManager.Load<GlobalScript>(script, this));
+
+            return this;
         }
 
         private void Regen(TimeSpan elapsedTime)
@@ -595,7 +595,7 @@ namespace Darkages.Network.Game
 
         }
 
-        private void InitSpellBar()
+        private GameClient InitSpellBar()
         {
             foreach (var buff in Aisling.Buffs.Select(i => i.Value))
             {
@@ -612,9 +612,11 @@ namespace Darkages.Network.Game
                     debuff.Display(Aisling);
                 }
             }
+
+            return this;
         }
 
-        private void LoadEquipment()
+        private GameClient LoadEquipment()
         {
             var formats = new List<NetworkFormat>();
 
@@ -677,9 +679,12 @@ namespace Darkages.Network.Game
 
             foreach (var format in formats)
                 Aisling.Client.Send(format);
+
+
+            return this;
         }
 
-        private void LoadSpellBook()
+        private GameClient LoadSpellBook()
         {
             var spells_Available = Aisling.SpellBook.Spells.Values
                 .Where(i => i != null && i.Template != null).ToArray();
@@ -710,9 +715,11 @@ namespace Darkages.Network.Game
 
                 Send(new ServerFormat17(spell));
             }
+
+            return this;
         }
 
-        private void LoadSkillBook()
+        private GameClient LoadSkillBook()
         {
             var skills_Available = Aisling.SkillBook.Skills.Values
                 .Where(i => i != null && i.Template != null).ToArray();
@@ -737,22 +744,18 @@ namespace Darkages.Network.Game
                 skill.InUse = false;
                 skill.NextAvailableUse = DateTime.UtcNow;
 
-                if (skill.Template.Name == "Stab")
-                {
-
-                }
-
                 Send(new ServerFormat2C(skill.Slot,
                     skill.Icon,
                     skill.Name));
 
-
                 skill.Script = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
                 Aisling.SkillBook.Set(skill, false);
             }
+
+            return this;
         }
 
-        private void LoadInventory()
+        private GameClient LoadInventory()
         {
             var items_Available = Aisling.Inventory.Items.Values
                 .Where(i => i != null && i.Template != null).ToArray();
@@ -807,9 +810,11 @@ namespace Darkages.Network.Game
                     }
                 }
             }
+
+            return this;
         }
 
-        public void UpdateDisplay()
+        public GameClient UpdateDisplay()
         {
             //construct display Format for dispatching out.
             var response = new ServerFormat33(this, Aisling);
@@ -828,12 +833,14 @@ namespace Darkages.Network.Game
                     Aisling.Show(Scope.NearbyAislingsExludingSelf, response, nearby);
                 }
 
-                return;
+                return this;
             }
             else
             {
                 Aisling.Show(Scope.NearbyAislingsExludingSelf, response);
             }
+
+            return this;
         }
 
         public void Refresh(bool delete = false)
@@ -854,13 +861,15 @@ namespace Darkages.Network.Game
 
         public void EnterArea() => Enter();
 
-        private void Enter()
+        private GameClient Enter()
         {
             SendSerial();
             Insert();
             RefreshMap();
             SendLocation();
             UpdateDisplay();
+
+            return this;
         }
 
         public void SendMusic()
@@ -943,21 +952,25 @@ namespace Darkages.Network.Game
 
         public void SendLocation()
         {
-            Send(new ServerFormat04(Aisling));
-
-            LastLocationSent = DateTime.UtcNow;
+            CloseDialog();
+            {
+                Send(new ServerFormat04(Aisling));
+                LastLocationSent = DateTime.UtcNow;
+            }
         }
 
         public void Save()
         {
-
-            ThreadPool.QueueUserWorkItem((state) =>
+            lock (ServerContext.SyncObj)
             {
-                StorageManager.AislingBucket.Save(Aisling);
+                ThreadPool.QueueUserWorkItem((state) =>
                 {
-                    LastSave = DateTime.UtcNow;
-                }
-            });
+                    StorageManager.AislingBucket.Save(Aisling);
+                    {
+                        LastSave = DateTime.UtcNow;
+                    }
+                });
+            }
         }
 
         public void SendMessage(byte type, string text)
@@ -1044,6 +1057,11 @@ namespace Darkages.Network.Game
         public void SendOptionsDialog(Mundane mundane, string text, params OptionsDataItem[] options)
         {
             Send(new ServerFormat2F(mundane, text, new OptionsData(options)));
+        }
+
+        public void SendPopupDialog(Popup popup, string text, params OptionsDataItem[] options)
+        {
+            Send(new PopupFormat(popup, text, new OptionsData(options)));
         }
 
         public void SendOptionsDialog(Mundane mundane, string text, string args, params OptionsDataItem[] options)
@@ -1158,13 +1176,13 @@ namespace Darkages.Network.Game
 
         public bool Revive()
         {
-            Aisling.CurrentHp = Aisling.MaximumHp / 6;
-            Aisling.Flags = AislingFlags.Normal;
+            Aisling.CurrentHp     = Aisling.MaximumHp / 6;
+            Aisling.Flags         = AislingFlags.Normal;
             HpRegenTimer.Disabled = false;
             MpRegenTimer.Disabled = false;
-            Aisling.Recover();
 
-            return true;
+            Aisling.Recover();
+            return Aisling.CurrentHp > 0;
         }
 
         public bool CheckReqs(GameClient client, Item item)
@@ -1173,7 +1191,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.ExpLevel < item.Template.LevelRequired)
             {
-                message = "You can't wear this yet.";
+                message = ServerContext.Config.CantWearYetMessage;
                 if (message != string.Empty)
                 {
                     client.SendMessage(0x02, message);
@@ -1183,7 +1201,7 @@ namespace Darkages.Network.Game
 
             if (item.Durability <= 0)
             {
-                message = "You can't wear something to fucked. go repair it first.";
+                message = ServerContext.Config.RepairItemMessage;
                 if (message != string.Empty)
                 {
                     client.SendMessage(0x02, message);
@@ -1195,11 +1213,11 @@ namespace Darkages.Network.Game
             {
                 if (client.Aisling.ExpLevel >= item.Template.LevelRequired)
                 {
-                    message = "This is best suited for somebody else.";
+                    message = ServerContext.Config.WrongClassMessage;
                 }
                 else
                 {
-                    message = "You can't wear this yet.";
+                    message = ServerContext.Config.CantWearYetMessage;
                 }
             }
 
@@ -1301,10 +1319,51 @@ namespace Darkages.Network.Game
                         continue;
 
                     options.Add(new OptionsDataItem((short)ans.Id, ans.Text));
-                    ServerContext.Info.Debug($"{ans.Id}. {ans.Text}");
+                    ServerContext.ILog.Debug($"{ans.Id}. {ans.Text}");
                 }
 
                 SendOptionsDialog(obj as Mundane, nextitem.Text, options.ToArray());
+            }
+        }
+
+        public void ShowCurrentMenu(Popup popup, MenuItem currentitem, MenuItem nextitem)
+        {
+            if (nextitem == null)
+                return;
+
+            nextitem.Text = nextitem.Text.Replace("%aisling%", Aisling.Username);
+
+            if (nextitem == null)
+            {
+                return;
+            }
+            if (nextitem.Type == MenuItemType.Step)
+            {
+                Send(new ReactorSequence(this, new DialogSequence()
+                {
+                    DisplayText = nextitem.Text,
+                    HasOptions = false,
+                    DisplayImage = (ushort)popup.Template.SpriteId,
+                    Title = popup.Template.Name,
+                    CanMoveNext = nextitem.Answers.Length > 0,
+                    CanMoveBack = nextitem.Answers.Any(i => i.Text == "back"),
+                    Id = popup.Id,
+                }));
+            }
+            else if (nextitem.Type == MenuItemType.Menu)
+            {
+                var options = new List<OptionsDataItem>();
+
+                foreach (var ans in nextitem.Answers)
+                {
+                    if (ans.Text == "close")
+                        continue;
+
+                    options.Add(new OptionsDataItem((short)ans.Id, ans.Text));
+                    ServerContext.ILog.Debug($"{ans.Id}. {ans.Text}");
+                }
+
+                 SendPopupDialog(popup, nextitem.Text, options.ToArray());
             }
         }
     }

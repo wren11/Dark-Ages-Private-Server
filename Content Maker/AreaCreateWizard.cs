@@ -119,7 +119,7 @@ namespace Content_Maker
             }
             catch (Exception error)
             {
-                ServerContext.Info?.Error("Error creating area", error);
+                ServerContext.ILog?.Error("Error creating area", error);
             }
         }
 

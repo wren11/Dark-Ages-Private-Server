@@ -65,7 +65,7 @@ namespace Darkages.Network.ServerFormats
                 writer.Write((short)warps.Destination.Location.Y);
             }
 
-            ServerContext.Info.Debug("World Map Length : {0}", writer.Position);
+            ServerContext.ILog.Debug("World Map Length : {0}", writer.Position);
         }
     }
 }

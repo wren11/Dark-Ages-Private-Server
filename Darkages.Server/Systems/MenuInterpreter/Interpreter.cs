@@ -145,7 +145,7 @@ namespace MenuInterpreter
 			var nextItem = _items.FirstOrDefault(i => i.Id == nextId);
             if (nextItem == null)
             {
-                ServerContext.Info.Warning($"There is no item with id {nextId} (answer id {answerId}).");
+                ServerContext.ILog.Warning($"There is no item with id {nextId} (answer id {answerId}).");
                 return null;
             }
 
@@ -237,7 +237,7 @@ namespace MenuInterpreter
 			// find handler
 			if (_checkpointHandlers.ContainsKey(checkpoint.Text) == false)
             {
-                ServerContext.Info.Warning("No Callback for checkpoint: {0}", checkpoint.Text);
+                ServerContext.ILog.Warning("No Callback for checkpoint: {0}", checkpoint.Text);
                 return Constants.CheckpointOnFail;
             }
 

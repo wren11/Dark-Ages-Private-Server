@@ -88,7 +88,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                      {
                                          if (Item.Create(cbAisling, "Stick")?.GiveTo(cbAisling) ?? false)
                                          {
-                                             ServerContext.Info.Debug("{0} received Stick from {1}", cbAisling.Username, cbSequence.Title);
+                                             ServerContext.ILog.Debug("{0} received Stick from {1}", cbAisling.Username, cbSequence.Title);
                                          }
                                      }
                                  }),

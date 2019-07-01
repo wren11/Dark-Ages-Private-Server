@@ -509,7 +509,7 @@
     <Compile Include="Types\Party.cs" />
     <Compile Include="Types\PartyMember.cs" />
     <Compile Include="Types\PathQualifer.cs" />
-    <Compile Include="Types\Popup.cs" />
+    <Compile Include="Types\PopupTemplate.cs" />
     <Compile Include="Types\PortalSession.cs" />
     <Compile Include="Types\Position.cs" />
     <Compile Include="Types\PostQualifer.cs" />

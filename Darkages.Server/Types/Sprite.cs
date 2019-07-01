@@ -613,7 +613,7 @@ namespace Darkages.Types
             {
                 var empty = new ServerFormat13
                 {
-                    Serial = Serial,
+                    Serial = this.Serial,
                     Health = byte.MaxValue,
                     Sound = sound,
                 };
@@ -631,7 +631,7 @@ namespace Darkages.Types
                 {
                     var empty = new ServerFormat13
                     {
-                        Serial = Serial,
+                        Serial = this.Serial,
                         Health = byte.MaxValue,
                         Sound = sound
                     };
@@ -1108,7 +1108,7 @@ namespace Darkages.Types
             }
             catch (Exception err)
             {
-                ServerContext.Info.Error("Error in Show<T>", err);
+                ServerContext.ILog.Error("Error in Show<T>", err);
             }
         }
 
@@ -1369,7 +1369,7 @@ namespace Darkages.Types
             Show(Scope.NearbyAislings, new ServerFormat11
             {
                 Direction = this.Direction,
-                Serial = Serial
+                Serial    = this.Serial
             });
         }
 
@@ -1630,7 +1630,7 @@ namespace Darkages.Types
                 var response = new ServerFormat0C
                 {
                     Direction = Direction,
-                    Serial    = Serial,
+                    Serial    = this.Serial,
                     X         = (short)savedX,
                     Y         = (short)savedY
                 };
