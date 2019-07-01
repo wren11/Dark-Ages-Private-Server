@@ -154,6 +154,31 @@ namespace Darkages.Network.Game
         }
 
 
+
+        /// <summary>
+        /// Add Exp
+        /// </summary>
+        /// Example Chat command: addExp -a:10000
+        /// <param name="a">Ammount of exp to give</param>
+        [Verb]        
+        public void addExp(int a)
+        {
+            Monster.DistributeExperience(Aisling, a);
+        }
+
+        [Verb]
+        public async void eff(ushort n, int d = 1000, int r = 1)
+        {
+            if (r <= 0)
+                r = 1;
+
+            for (int i = 0; i < r; i++)
+            {
+                Aisling.SendAnimation(n, Aisling, Aisling);
+                await Task.Delay(d);
+            }
+        }
+
         /// <summary>
         /// This chat command reloads all objects.
         /// </summary>

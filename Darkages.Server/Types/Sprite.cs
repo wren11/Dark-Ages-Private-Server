@@ -1581,7 +1581,20 @@ namespace Darkages.Types
             {
                 Map.MapNodes[pendingX, pendingY].Add(this);
 
-                return CompleteWalk(pendingX, pendingY, savedX, savedY);
+                if (CompleteWalk(pendingX, pendingY, savedX, savedY))
+                {
+                    var response = new ServerFormat0C
+                    {
+                        Direction = Direction,
+                        Serial    = this.Serial,
+                        X         = (short)savedX,
+                        Y         = (short)savedY
+                    };
+
+                    Show(Scope.NearbyAislingsExludingSelf, response);
+                    return true;
+                }
+                return false;
             }
         }
 
@@ -1627,16 +1640,6 @@ namespace Darkages.Types
             }
             else
             {
-                var response = new ServerFormat0C
-                {
-                    Direction = Direction,
-                    Serial    = this.Serial,
-                    X         = (short)savedX,
-                    Y         = (short)savedY
-                };
-
-                Show(Scope.NearbyAislingsExludingSelf, response);
-
                 if (Map.MapNodes[pendingX, pendingY].SpotVacant(this))
                 {
                     if (XPos != pendingX)

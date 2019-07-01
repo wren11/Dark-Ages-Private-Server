@@ -738,8 +738,15 @@ namespace Darkages.Network.Game
 
                 try
                 {
-                    result = Parser.Run<GameClient>
-                        (format.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries), client);
+                    int index = format.Text.IndexOf('/');
+
+                    if (index == 0)
+                    {
+                        var command = format.Text.Remove(index, 1);
+
+                        result = Parser.Run<GameClient>
+                            (command.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries), client);
+                    }
                 }
                 catch
                 {
