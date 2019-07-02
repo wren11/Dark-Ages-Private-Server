@@ -118,6 +118,9 @@ namespace Darkages.Network.Game
 
         private void MenuInterpter_OnMovedToNextStep(GameClient client, MenuInterpreter.MenuItem previous, MenuInterpreter.MenuItem current)
         {
+            if (client.MenuInterpter == null)
+                return;
+
             if (client.MenuInterpter.IsFinished)
             {
                 client.MenuInterpter = null;
