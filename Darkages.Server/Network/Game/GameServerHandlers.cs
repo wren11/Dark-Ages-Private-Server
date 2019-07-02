@@ -25,7 +25,6 @@ using Darkages.Scripting;
 using Darkages.Storage;
 using Darkages.Storage.locales.Scripts.Mundanes;
 using Darkages.Types;
-using LiteDB;
 using MenuInterpreter.Parser;
 using System;
 using System.Collections.Generic;
@@ -36,23 +35,58 @@ using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
+    /*
+        The main Packet Handler Class
+        Contains all methods handling received packets from the Game Client.
+    */
+
+    /// <summary>
+    /// The main <c>Packet Handler Class</c> class.
+    /// Contains all methods handling received packets from the Game Client.
+    /// </summary>
     public partial class GameServer : NetworkServer<GameClient>
     {
-        public void CreateInterpreterFromMenuFile(GameClient client, string Name)
+        // CreateInterpreterFromMenuFile
+        /// <summary>
+        /// Creates a yaml Interpreter from a <paramref name="lpClient"/> and <paramref name="lpName"/>
+        /// </summary>
+        /// <returns>
+        /// void
+        /// </returns>
+        /// <example>
+        /// <code>
+        /// if (client.MenuInterpter == null)
+        /// {
+        ///     CreateInterpreterFromMenuFile(client, popup.Template.YamlKey);
+        ///
+        ///     if (client.MenuInterpter != null)
+        ///     {
+        ///         client.MenuInterpter.Start();
+        ///         client.ShowCurrentMenu(popup, null, client.MenuInterpter.GetCurrentStep());
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        /// <exception cref="FileNotFoundException">
+        /// Thrown when The lpName yaml File could not be created. 
+        /// </exception>
+        /// <param name="lpClient">A valid GameClient</param>
+        /// <param name="lpName">The yaml Script excluding the .yaml extension.</param>
+        public void CreateInterpreterFromMenuFile(GameClient lpClient, string lpName)
         {
             var parser   = new YamlMenuParser();
-            var yamlPath = ServerContext.StoragePath + string.Format(@"\Scripts\Menus\{0}.yaml", Name);
+            var yamlPath = ServerContext.StoragePath + string.Format(@"\Scripts\Menus\{0}.yaml", lpName);
 
             if (File.Exists(yamlPath))
             {
-                if (client.MenuInterpter == null)
+                if (lpClient.MenuInterpter == null)
                 {
-                    client.MenuInterpter            = parser.CreateInterpreterFromFile(yamlPath);
-                    client.MenuInterpter.Client     = client;
+                    lpClient.MenuInterpter            = parser.CreateInterpreterFromFile(yamlPath);
+                    lpClient.MenuInterpter.Client     = lpClient;
 
-                    client.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
+                    lpClient.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
 
-                    client.MenuInterpter.RegisterCheckpointHandler("QuestCompleted", (_client, res) =>
+                    lpClient.MenuInterpter.RegisterCheckpointHandler("QuestCompleted", (_client, res) =>
                     {
                         if (_client.Aisling.HasQuest(res.Value))
                         {
@@ -60,10 +94,10 @@ namespace Darkages.Network.Game
                         }
                     });
 
-                    client.MenuInterpter.RegisterCheckpointHandler("Call", (_client, res) =>
+                    lpClient.MenuInterpter.RegisterCheckpointHandler("Call", (_client, res) =>
                     {
-                        _Interop.Storage["client"]  = client;
-                        _Interop.Storage["user"]    = client.Aisling;
+                        _Interop.Storage["client"]  = lpClient;
+                        _Interop.Storage["user"]    = lpClient.Aisling;
                        
                         {
                             "var client = (GameClient) _Interop.Storage[\"client\"];".Run();
@@ -73,37 +107,14 @@ namespace Darkages.Network.Game
                         res.Result = (bool)ServerContext.EVALUATOR.Evaluate("result");
                     });
 
-                    ServerContext.ILog.Debug("Script Interpreter Created for Mundane: {0}", Name);
+                    ServerContext.ILog.Debug("Script Interpreter Created for Mundane: {0}", lpName);
                 }
+
+                return;
             }
+
+            throw new FileNotFoundException(string.Format("{0} could not be loaded.", lpName));
         }
-
-        public class ScriptLibrary
-        {
-            public bool StartQuest(Aisling user)
-            {
-                var result = (user.HasCompletedQuest("test_quest"));
-
-                Quest quest = new Quest()
-                {
-                    Name = "test_quest",
-                    GoldReward = 5000,
-                    StatRewards = new List<AttrReward>()
-                      {
-                          new AttrReward()
-                          {
-                               Attribute = PlayerAttr.STR,
-                               Operator = new StatusOperator(Operator.Add, 3),
-                          },
-                      }
-                };
-
-                //var result = user.AcceptQuest(quest);
-
-                return true;
-            }
-        }
-
 
         private void MenuInterpter_OnMovedToNextStep(GameClient client, MenuInterpreter.MenuItem previous, MenuInterpreter.MenuItem current)
         {
@@ -113,52 +124,67 @@ namespace Darkages.Network.Game
             }
         }
 
+        // ActivateAssails
         /// <summary>
-        ///     Activate Assails
+        /// Activates all available "Assails" for the provided <paramref name="lpClient"/>
         /// </summary>
-        [Verb]
-        public static void ActivateAssails(GameClient client)
+        /// <returns>
+        /// void
+        /// </returns>
+        /// <example>
+        /// <code>
+        /// public void Assail()
+        /// {
+        ///     if (Client != null)
+        ///     {
+        ///         GameServer.ActivateAssails(Client);
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        /// <param name="lpClient">A valid GameClient</param>
+        public static void ActivateAssails(GameClient lpClient)
         {
             #region Sanity Checks
 
-            if (client?.Aisling == null)
+            if (lpClient?.Aisling == null)
                 return;
 
-            if (client.IsDead())
+            if (lpClient.IsDead())
                 return;
 
             #endregion
 
-            if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
+            if (lpClient.Aisling.IsSleeping || lpClient.Aisling.IsFrozen)
             {
-                client.Interupt();
+                lpClient.Interupt();
                 return;
             }
 
-            client.MenuInterpter = null;
+            lpClient.MenuInterpter = null;
 
             if (ServerContext.Config.AssailsCancelSpells)
-                CancelIfCasting(client);
+                CancelIfCasting(lpClient);
 
-            var ready = DateTime.UtcNow > client.LastScriptExecuted;
+            var ready = DateTime.UtcNow > lpClient.LastScriptExecuted;
 
-            var itemScript = client.Aisling.EquipmentManager.Weapon?.Item?.WeaponScript;
+            var itemScript = lpClient.Aisling.EquipmentManager.Weapon?.Item?.WeaponScript;
             if (itemScript != null && ready)
             {
-                itemScript.OnUse(client.Aisling, (targets) =>
+                itemScript.OnUse(lpClient.Aisling, (targets) =>
                 {
-                   client.LastScriptExecuted = DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
+                   lpClient.LastScriptExecuted = DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
                 });
             }
 
 
-            if ((client.LastAssail - DateTime.UtcNow).TotalMilliseconds > ServerContext.Config.GlobalBaseSkillDelay)
+            if ((lpClient.LastAssail - DateTime.UtcNow).TotalMilliseconds > ServerContext.Config.GlobalBaseSkillDelay)
             {
                 return;
             }
 
             var lastTemplate = string.Empty;
-            foreach (var skill in client.Aisling.GetAssails())
+            foreach (var skill in lpClient.Aisling.GetAssails())
             {
                 if (skill == null)
                     continue;
@@ -177,30 +203,55 @@ namespace Darkages.Network.Game
 
                 if (lastTemplate != skill.Template.Name)
                 {
-                    ExecuteAbility(client, skill);
+                    ExecuteAbility(lpClient, skill);
                     lastTemplate = skill.Template.Name;
                 }
             }
 
-            client.LastAssail = DateTime.UtcNow;
+            lpClient.LastAssail = DateTime.UtcNow;
         }
 
-        private static void ExecuteAbility(GameClient client, Skill skill, bool ExecuteScript = true)
+        // ExecuteAbility
+        /// <summary>
+        /// Activates A <paramref name="lpSkill"/> for the provided <paramref name="lpClient"/>
+        /// With an optional parameter <paramref name="optExecuteScript"/>
+        /// </summary>
+        /// <returns>
+        /// void
+        /// </returns>
+        /// <example>
+        /// <code>
+        /// foreach (var assail in client.Aisling.GetAssails())
+        /// {
+        ///     if (assail.Template.Name == skill.Template.Name)
+        ///         continue;
+        ///
+        ///     ExecuteAbility(client, assail, false);
+        /// }
+        /// </code>
+        /// </example>
+        /// <param name="lpClient">A valid GameClient</param>
+        /// <param name="lpSkill">The Skill to Execute</param>
+        /// <param name="optExecuteScript">[Optional] Default: True, Execute the Script linked to <paramref name="lpSkill"/>
+        /// set False to "Fake" the ability.
+        /// </param>
+         /// <seealso cref="ActivateAssails(GameClient)"/>
+        public static void ExecuteAbility(GameClient lpClient, Skill lpSkill, bool optExecuteScript = true)
         {
-            skill.InUse = true;
+            lpSkill.InUse = true;
 
-            if (ExecuteScript)
+            if (optExecuteScript)
             {
-                skill.Script.OnUse(client.Aisling);
+                lpSkill.Script.OnUse(lpClient.Aisling);
             }
 
 
-            if (skill.Template.Cooldown > 0)
-                skill.NextAvailableUse = DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
+            if (lpSkill.Template.Cooldown > 0)
+                lpSkill.NextAvailableUse = DateTime.UtcNow.AddSeconds(lpSkill.Template.Cooldown);
             else
-                skill.NextAvailableUse = DateTime.UtcNow.AddMilliseconds(600);
+                lpSkill.NextAvailableUse = DateTime.UtcNow.AddMilliseconds(600);
 
-            skill.InUse = false;
+            lpSkill.InUse = false;
         }
 
         /// <summary>

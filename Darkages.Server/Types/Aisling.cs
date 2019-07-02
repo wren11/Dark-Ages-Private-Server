@@ -28,13 +28,11 @@ using System.Linq;
 
 namespace Darkages
 {
+    /// <summary>The Main Aisling Class, Contains all Coupled Fields and Members for Interacting with the Aisling Sprite Object.</summary>
+    /// <seealso cref="Darkages.Types.Sprite" />
     public class Aisling : Sprite
     {
-        [JsonIgnore]
-        public DateTime LookupTime;
-
-        public bool GameMaster { get; set; }
-
+        /// <summary>Initializes a new instance of the <see cref="Aisling"/> class.</summary>
         public Aisling()
         {
             OffenseElement = ElementManager.Element.None;
@@ -54,28 +52,24 @@ namespace Darkages
             LeaderPrivleges = false;
             Remains = new CursedSachel(this);
             ActiveReactor = null;
-            LookupTime = DateTime.UtcNow;
             DiscoveredMaps = new List<int>();
             Popups = new List<Popup>();
         }
 
-        public void Assail()
-        {
-            if (Client != null)
-            {
-                GameServer.ActivateAssails(Client);
-            }
-        }
+        /// <summary>Gets or sets a value indicating whether The Aisling is a [game master].</summary>
+        /// <value>
+        /// <c>true</c> if [game master]; otherwise, <c>false</c>.</value>
+        public bool GameMaster { get; set; }
 
-        public override string ToString()
-        {
-            return Username;
-        }
-
+        /// <summary>Gets or sets the game settings.</summary>
+        /// <value>The game settings.</value>
         public List<ClientGameSettings> GameSettings { get; set; }
+
+        /// <summary>Gets or sets the <strong>bank</strong> manager.</summary>
+        /// <value>The bank manager.</value>
         public Bank BankManager { get; set; }
+
         public int CurrentWeight { get; set; }
-        [JsonIgnore] public int MaximumWeight => (int)(_Str * ServerContext.Config.WeightIncreaseModifer);
         public string Username { get; set; }
         public string Password { get; set; }
         public int AbpLevel { get; set; }
@@ -85,7 +79,6 @@ namespace Darkages
         public int ExpTotal { get; set; }
         public int ExpNext { get; set; }
         public int Title { get; set; }
-        [JsonIgnore] public int AreaID => CurrentMapId;
         public int ClassID { get; set; }
         public int GamePoints { get; set; }
         public int GoldPoints { get; set; }
@@ -94,7 +87,6 @@ namespace Darkages
         public int BodyStyle { get; set; }
         public int FaceColor { get; set; }
         public int FaceStyle { get; set; }
-
         public byte HairColor { get; set; }
         public byte HairStyle { get; set; }
         public byte Boots { get; set; }
@@ -133,23 +125,24 @@ namespace Darkages
         public Inventory Inventory { get; set; }
         public EquipmentManager EquipmentManager { get; set; }
         public ActivityStatus ActiveStatus { get; set; }
-
         public List<int> DiscoveredMaps { get; set; }
 
+        public Dictionary<string, int> MonsterKillCounters = new Dictionary<string, int>();
+
+        public Dictionary<string, DateTime> Reactions      = new Dictionary<string, DateTime>();
+
+        public PortalSession PortalSession { get; set; }
+
+        public Dictionary<string, EphemeralReactor> ActiveReactors = new Dictionary<string, EphemeralReactor>();
+
+        [JsonIgnore] public int MaximumWeight => (int)(_Str * ServerContext.Config.WeightIncreaseModifer);
 
         [JsonIgnore]
-        public List<Popup> Popups
-            = new List<Popup>();
+        public List<Popup> Popups = new List<Popup>();
 
+        [JsonIgnore] public bool ProfileOpen { get; set; }
 
-        [JsonIgnore]
-        public bool ProfileOpen { get; set; }
-
-        public Dictionary<string, int> MonsterKillCounters
-            = new Dictionary<string, int>();
-
-        public Dictionary<string, DateTime> Reactions
-            = new Dictionary<string, DateTime>();
+        [JsonIgnore] public int AreaID => CurrentMapId;
 
         [JsonIgnore] public bool Skulled => HasDebuff("skulled");
 
@@ -161,12 +154,7 @@ namespace Darkages
 
         [JsonIgnore] public List<Aisling> PartyMembers => GroupParty?.Members;
 
-
-
-        public PortalSession PortalSession { get; set; }
-
-        [JsonIgnore]
-        public int FieldNumber { get; set; } = 1;
+        [JsonIgnore] public int FieldNumber { get; set; } = 1;
 
         [JsonIgnore] public int LastMapId { get; set; }
 
@@ -188,57 +176,12 @@ namespace Darkages
 
         [JsonIgnore] public ExchangeSession Exchange { get; set; }
 
-        public Dictionary<string, EphemeralReactor> ActiveReactors = new Dictionary<string, EphemeralReactor>();
-
-        public void MakeReactor(string name, int timeout)
-        {
-            ActiveReactors[name] = new EphemeralReactor(name, timeout);
-        }
-
-        public bool HasQuest(string name)
-        {
-            return Quests.Any(i => i.Name == name);
-        }
-
-        public bool HasCompletedQuest(string name)
-        {
-            return Quests.Any(i => i.Name == name && i.Completed);
-        }
-
-        public void CompleteQuest(string name)
-        {
-            var obj = Quests.Find(i => i.Name == name);
-            obj.Completed = true;
-        }
-
-        public Quest GetQuest(string name) => Quests.FirstOrDefault(i => i.Name == name);
-        
-        public bool AcceptQuest(Quest quest)
-        {
-            lock (Quests)
-            {
-                if (!Quests.Any(i => i.Name == quest.Name))
-                {
-                    Quests.Add(quest);
-
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
 
         [JsonIgnore]
         public Reactor ActiveReactor { get; set; }
 
         [JsonIgnore]
         public List<Trap> MyTraps => Trap.Traps.Select(i => i.Value).Where(i => i.Owner.Serial == this.Serial).ToList();
-
-        public Trap NearestTrap()
-        {
-            return MyTraps.OrderBy(i => this.Position.DistanceFrom(i.Location)).FirstOrDefault();
-        }
 
         #region Reactor Stuff
         [JsonIgnore]
@@ -255,11 +198,103 @@ namespace Darkages
         /// <summary>
         /// Used for Internal Server Authentication
         /// </summary>
-        public Redirect Redirect { get;  set; }
+        public Redirect Redirect { get; set; }
         #endregion
 
         [JsonIgnore]
         public HashSet<Sprite> View = new HashSet<Sprite>();
+
+        /// <summary>Assail, (Space-Bar) Activating all Assails.</summary>
+        public void Assail()
+        {
+            if (Client != null)
+            {
+                GameServer.ActivateAssails(Client);
+            }
+        }
+
+        /// <summary>Makes the reactor.</summary>
+        /// <param name="lpName">The Yaml Script Name</param>
+        /// <param name="lpTimeout">Number of seconds until the Reactor expires.</param>
+        /// <returns>void</returns>
+        public void MakeReactor(string lpName, int lpTimeout)
+        {
+            ActiveReactors[lpName] = new EphemeralReactor(lpName, lpTimeout);
+        }
+
+        /// <summary>Determines whether the specified lp name has quest.</summary>
+        /// <param name="lpName">  The Quest key to check for.</param>
+        /// <returns>
+        /// <c>true</c> if the specified Quest Exists; otherwise, <c>false</c>.
+        /// </returns>
+        public bool HasQuest(string lpName)
+        {
+            return Quests.Any(i => i.Name == lpName);
+        }
+
+        /// <summary>Determines whether [has completed quest] [the specified lp name].</summary>
+        /// <param name="lpName">The Quest key to check for Completion.</param>
+        /// <returns>
+        ///   <c>true</c> if [has completed quest] [lpName]; otherwise, <c>false</c>.</returns>
+        /// <example>
+        /// Aisling.HasCompletedQuest("Quest Name");
+        /// <code>
+        /// </code>
+        /// </example>
+        public bool HasCompletedQuest(string lpName)
+        {
+            return Quests.Any(i => i.Name == lpName && i.Completed);
+        }
+
+        /// <summary>Forcefully Completes a Quest</summary>
+        /// <param name="lpName">Name of the Quest to Complete</param>
+        /// <example>Aisling.CompleteQuest("Quest Name");
+        /// <code>
+        /// </code>
+        /// </example>
+        public void CompleteQuest(string lpName)
+        {
+            var obj = Quests.Find(i => i.Name == lpName);
+            obj.Completed = true;
+        }
+
+        /// <summary>Gets the quest.</summary>
+        /// <param name="name">The name.</param>
+        /// <returns>Returns the Quest, or returns null if no Quest was retrieved.</returns>
+        public Quest GetQuest(string name) => Quests.FirstOrDefault(i => i.Name == name);
+
+        /// <summary>Accepts the quest.</summary>
+        /// <param name="lpQuest">The Quest to Accept.</param>
+        /// <returns>True if the quest was accepted, and the Aisling does not already have it accepted. Returns false if the Quest has already been Accepted.</returns>
+        /// <example>
+        /// <code>
+        /// if (client.Aisling.AcceptQuest(quest))
+        /// {
+        ///     //quest has been added to interpreter.
+        /// }
+        /// </code>
+        /// </example>
+        public bool AcceptQuest(Quest lpQuest)
+        {
+            lock (Quests)
+            {
+                if (!Quests.Any(i => i.Name == lpQuest.Name))
+                {
+                    Quests.Add(lpQuest);
+
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+        /// <summary>Nearests trap.</summary>
+        /// <returns>Returns the Nearest Trap Closest to the Aisling</returns>
+        public Trap NearestTrap()
+        {
+            return MyTraps.OrderBy(i => this.Position.DistanceFrom(i.Location)).FirstOrDefault();
+        }
 
         public void Recover()
         {
@@ -268,8 +303,6 @@ namespace Darkages
 
             Client?.SendStats(StatusFlags.All);
         }
-
-
 
         public void GoHome()
         {
@@ -725,6 +758,11 @@ namespace Darkages
             }
 
             return false;
+        }
+
+        public override string ToString()
+        {
+            return Username;
         }
     }
 }
