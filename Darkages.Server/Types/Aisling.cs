@@ -56,6 +56,7 @@ namespace Darkages
             ActiveReactor = null;
             LookupTime = DateTime.UtcNow;
             DiscoveredMaps = new List<int>();
+            Popups = new List<Popup>();
         }
 
         public void Assail()
@@ -135,6 +136,12 @@ namespace Darkages
 
         public List<int> DiscoveredMaps { get; set; }
 
+
+        [JsonIgnore]
+        public List<Popup> Popups
+            = new List<Popup>();
+
+
         [JsonIgnore]
         public bool ProfileOpen { get; set; }
 
@@ -180,6 +187,13 @@ namespace Darkages
         [JsonIgnore] public CursedSachel Remains { get; set; }
 
         [JsonIgnore] public ExchangeSession Exchange { get; set; }
+
+        public Dictionary<string, EphemeralReactor> ActiveReactors = new Dictionary<string, EphemeralReactor>();
+
+        public void MakeReactor(string name, int timeout)
+        {
+            ActiveReactors[name] = new EphemeralReactor(name, timeout);
+        }
 
         public bool HasQuest(string name)
         {
@@ -395,12 +409,12 @@ namespace Darkages
                 XPos = ServerContext.Config.StartingPosition.X,
                 YPos = ServerContext.Config.StartingPosition.Y,
                 Nation = (byte)randomFraction,
-                AnimalForm = AnimalForm.None
+                AnimalForm = AnimalForm.None,
             };
 
             Skill.GiveTo(result, "Assail", 1);
             Spell.GiveTo(result, "Create Item", 1);
-            
+            Spell.GiveTo(result, "Gem Polishing", 1);
 
             if (DateTime.UtcNow.Year <= 2020)
             {

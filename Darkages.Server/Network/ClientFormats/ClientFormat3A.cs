@@ -38,12 +38,6 @@ namespace Darkages.Network.ClientFormats
             var scriptid = reader.ReadUInt16();
             var step = reader.ReadUInt16();
 
-            Console.WriteLine("----------------------------");
-            Console.WriteLine("0x3A : type {0}", type);
-            Console.WriteLine("0x3A : id  {0}", id);
-            Console.WriteLine("0x3A : scriptid {0}", scriptid);
-            Console.WriteLine("0x3A : step {0}", step);
-            Console.WriteLine("----------------------------");
 
             ScriptId = scriptid;
             Step = step;

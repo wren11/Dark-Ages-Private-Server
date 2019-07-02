@@ -622,6 +622,29 @@ namespace Darkages.Network.Game
                 return;
             }
 
+            var popupTemplate = ServerContext.GlobalPopupCache.OfType<ItemDropPopup>()
+                .Where(i => i.ItemName == item.Template.Name).FirstOrDefault();
+
+            if (popupTemplate != null && client.Aisling.ActiveReactors.ContainsKey(popupTemplate.YamlKey))
+            {
+                popupTemplate.SpriteId = item.Template.DisplayImage;
+
+                var popup = Popup.Create(client, popupTemplate);
+
+                if (popup != null)
+                {
+                    if (client.MenuInterpter == null)
+                    {
+                        CreateInterpreterFromMenuFile(client, popup.Template.YamlKey);
+
+                        if (client.MenuInterpter != null)
+                        {
+                            client.MenuInterpter.Start();
+                            client.ShowCurrentMenu(popup, null, client.MenuInterpter.GetCurrentStep());
+                        }
+                    }
+                }
+            }
 
             var item_position = new Position(format.X, format.Y);
 
@@ -1651,6 +1674,12 @@ namespace Darkages.Network.Game
                 return;
             }
 
+
+            if (format.Step == 0 && format.ScriptId == ushort.MaxValue)
+            {
+                client.CloseDialog();
+                return;
+            }
 
             var objId = format.Serial;
 

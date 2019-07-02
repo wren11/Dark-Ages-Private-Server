@@ -196,6 +196,7 @@
     <Compile Include="Network\ClientFormats\ClientFormat7B.cs" />
     <Compile Include="Network\ClientFormats\ClientFormat89.cs" />
     <Compile Include="Network\ClientFormats\Undefined.cs" />
+    <Compile Include="Network\Game\Components\ClientTickComponent.cs" />
     <Compile Include="Network\Game\Components\DaytimeComponent.cs" />
     <Compile Include="Network\Game\Components\MessageComponent.cs" />
     <Compile Include="Network\Game\Components\MonolithComponent.cs" />
@@ -412,6 +413,7 @@
     <Compile Include="Storage\locales\Scripts\Spells\heals\beagiocfein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\Blind.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\Clone.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\rogue\GemPolishing.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\NeedleTrap.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\PoisonTrap.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\StilettoTrap.cs" />
@@ -469,6 +471,7 @@
     <Compile Include="Types\Direction.cs" />
     <Compile Include="Types\ElementManager.cs" />
     <Compile Include="Types\ElementQualifer.cs" />
+    <Compile Include="Types\EphemeralReactor.cs" />
     <Compile Include="Types\EquipmentManager.cs" />
     <Compile Include="Types\EquipmentSlot.cs" />
     <Compile Include="Types\ExchangeSession.cs" />

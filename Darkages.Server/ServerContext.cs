@@ -383,6 +383,20 @@ namespace Darkages
 
             GlobalPopupCache.Add(template);
 
+            var user_drop = new ItemDropPopup()
+            {
+                 Description = "Polish a gem and hopefully improve it's quality.",
+                 Ephemeral   = true,
+                 ItemName    = "Raw Beryl",
+                 Name        = "Polish Gem",
+                 Group       = "Popups",
+                 SpriteId    = 33000,
+                 Timeout     = 15,
+                 YamlKey     = "gem_polishing"
+            };
+
+            GlobalPopupCache.Add(user_drop);
+
             Paused = false;
         }
         private static void LoadExtensions()

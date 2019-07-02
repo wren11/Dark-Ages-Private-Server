@@ -123,7 +123,7 @@ namespace Darkages.Network.Game
         /// <param name="c"></param>
         /// <usage>spawnMonster -t:Undead -x:43 -y:16 -c:10</usage>
         [Verb]
-        public void spawnMonster(string t, int x, int y, int c)
+        public void spawn(string t, int x, int y, int c)
         {
             var name = t.Replace("-", string.Empty).Trim();
 
@@ -161,7 +161,7 @@ namespace Darkages.Network.Game
         /// Example Chat command: addExp -a:10000
         /// <param name="a">Ammount of exp to give</param>
         [Verb]        
-        public void addExp(int a)
+        public void addexp(int a)
         {
             Monster.DistributeExperience(Aisling, a);
         }
@@ -178,6 +178,29 @@ namespace Darkages.Network.Game
                 await Task.Delay(d);
             }
         }
+
+        [Verb]
+        public void life(string u)
+        {
+            var user = GetObject<Aisling>(null, i => i.Username.Equals(u, StringComparison.OrdinalIgnoreCase));
+
+            if (user != null)
+            {
+                user.Client.Revive();
+            }
+        }
+
+        [Verb]
+        public void death(string u)
+        {
+            var user = GetObject<Aisling>(null, i => i.Username.Equals(u, StringComparison.OrdinalIgnoreCase));
+
+            if (user != null)
+            {
+                user.CurrentHp = 0; // The system will take care of the rest.
+            }
+        }
+
 
         /// <summary>
         /// This chat command reloads all objects.
@@ -379,6 +402,7 @@ namespace Darkages.Network.Game
         public void CloseDialog()
         {
             Send(new byte[] { 0x30, 0x00, 0x0A, 0x00 });
+            MenuInterpter = null;
         }
 
 
@@ -414,11 +438,37 @@ namespace Darkages.Network.Game
             Regen(elapsedTime);
             UpdateStatusBar(elapsedTime);
             UpdateGlobalScripts(elapsedTime);
+            UpdateReactors(elapsedTime);
         }
 
-        public static void SequenceNext(Aisling user, DialogSequence sequence)
+        private void UpdateReactors(TimeSpan elapsedTime)
         {
+            List<EphemeralReactor> Inactive = new List<EphemeralReactor>();
 
+            lock (Aisling.ActiveReactors)
+            {
+                var reactors = Aisling.ActiveReactors.Select(i => i.Value).ToArray();
+
+                foreach (var reactor in reactors)
+                {
+
+                    reactor.Update(elapsedTime);
+
+                    if (reactor.Elapsed)
+                    {
+                        Inactive.Add(reactor);
+                    }
+                }
+            }
+
+            //Remove inactive reactors.
+            foreach (var reactor in Inactive)
+            {
+                if (Aisling.ActiveReactors.ContainsKey(reactor.YamlKey))
+                {
+                    Aisling.ActiveReactors.Remove(reactor.YamlKey);
+                }
+            }
         }
 
         public void SystemMessage(string lpmessage)
