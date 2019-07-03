@@ -217,7 +217,7 @@ namespace Darkages.Network
 
         }
 
-        public virtual void Start(int port)
+        public virtual void StartAsync(int port)
         {
             if (_listening)
                 return;

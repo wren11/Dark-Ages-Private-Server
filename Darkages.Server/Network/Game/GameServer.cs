@@ -262,11 +262,11 @@ namespace Darkages.Network.Game
         }
 
         
-        public override void Start(int port)
+        public override async void StartAsync(int port)
         {
-            base.Start(port);
+            base.StartAsync(port);
 
-            Task.Run(ServerGuard);
+            await new TaskFactory().StartNew(ServerGuard);
         }
 
         private Thread _thread = null;

@@ -199,10 +199,10 @@ namespace Darkages
                 try
                 {
                     Game = new GameServer(Config.ConnectionCapacity);
-                    Game.Start(DefaultPort);
+                    Game.StartAsync(DefaultPort);
 
                     Lobby = new LoginServer(Config.ConnectionCapacity);
-                    Lobby.Start(2610);
+                    Lobby.StartAsync(2610);
                 }
                 catch (Exception)
                 {

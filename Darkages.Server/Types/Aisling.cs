@@ -21,6 +21,7 @@ using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -110,20 +111,33 @@ namespace Darkages
         public string ClanRank { get; set; }
         public byte BootColor { get; set; }
         public byte NameColor { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
         public Gender Gender { get; set; }
+
         public DateTime Created { get; set; }
         public DateTime LastLogged { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
         public AislingFlags Flags { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
         public GroupStatus PartyStatus { get; set; }
         public List<Quest> Quests { get; set; }
         public ClassStage Stage { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
         public Class Path { get; set; }
         public Legend LegendBook { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
         public BodySprite Display { get; set; }
         public SkillBook SkillBook { get; set; }
         public SpellBook SpellBook { get; set; }
         public Inventory Inventory { get; set; }
         public EquipmentManager EquipmentManager { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
         public ActivityStatus ActiveStatus { get; set; }
         public List<int> DiscoveredMaps { get; set; }
 
