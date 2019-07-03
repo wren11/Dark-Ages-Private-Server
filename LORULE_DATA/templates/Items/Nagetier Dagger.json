@@ -1,0 +1,59 @@
+{
+  "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
+  "ID": 0,
+  "CanStack": false,
+  "MaxStack": 0,
+  "Image": 85,
+  "DisplayImage": 33865,
+  "ScriptName": "Weapon",
+  "Gender": 255,
+  "HealthModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 50
+  },
+  "ManaModifer": null,
+  "StrModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 2
+  },
+  "IntModifer": null,
+  "WisModifer": null,
+  "ConModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 1
+  },
+  "DexModifer": null,
+  "AcModifer": null,
+  "MrModifer": null,
+  "HitModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1
+  },
+  "DmgModifer": null,
+  "SpellOperator": null,
+  "OffenseElement": 0,
+  "DefenseElement": 0,
+  "CarryWeight": 5,
+  "Flags": 4221,
+  "MaxDurability": 70000,
+  "Value": 185000,
+  "EquipmentSlot": 1,
+  "NpcKey": null,
+  "Class": 2,
+  "LevelRequired": 79,
+  "DmgMin": 1,
+  "DmgMax": 180,
+  "DropRate": 1.0,
+  "StageRequired": 0,
+  "HasPants": false,
+  "Color": 0,
+  "WeaponScript": "ThrowHarder5",
+  "Name": "Nagetier Dagger",
+  "Description": "A wide obsidian dagger, excellent for an underhanded grip",
+  "Group": null
+}

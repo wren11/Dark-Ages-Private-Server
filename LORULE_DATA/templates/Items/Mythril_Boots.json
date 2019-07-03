@@ -1,0 +1,59 @@
+{
+  "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
+  "ID": 0,
+  "CanStack": false,
+  "MaxStack": 0,
+  "Image": 5,
+  "DisplayImage": 33682,
+  "ScriptName": "Boot",
+  "Gender": 255,
+  "HealthModifer": null,
+  "ManaModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1000
+  },
+  "StrModifer": null,
+  "IntModifer": null,
+  "WisModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1
+  },
+  "ConModifer": null,
+  "DexModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 10
+  },
+  "AcModifer": null,
+  "MrModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 10
+  },
+  "HitModifer": null,
+  "DmgModifer": null,
+  "SpellOperator": null,
+  "OffenseElement": 0,
+  "DefenseElement": 0,
+  "CarryWeight": 2,
+  "Flags": 4189,
+  "MaxDurability": 200000,
+  "Value": 10000,
+  "EquipmentSlot": 13,
+  "NpcKey": "Scroll Merchant",
+  "Class": 0,
+  "LevelRequired": 1,
+  "DmgMin": 0,
+  "DmgMax": 0,
+  "DropRate": 1.0,
+  "StageRequired": 0,
+  "HasPants": false,
+  "Color": 13,
+  "WeaponScript": null,
+  "Name": "Mythril Boots",
+  "Description": null,
+  "Group": null
+}

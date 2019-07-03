@@ -1,0 +1,74 @@
+{
+  "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
+  "ID": 0,
+  "CanStack": false,
+  "MaxStack": 0,
+  "Image": 110,
+  "DisplayImage": 34129,
+  "ScriptName": "Weapon",
+  "Gender": 255,
+  "HealthModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 500
+  },
+  "ManaModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 2000
+  },
+  "StrModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1
+  },
+  "IntModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 0
+  },
+  "WisModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 0
+  },
+  "ConModifer": null,
+  "DexModifer": null,
+  "AcModifer": null,
+  "MrModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 30
+  },
+  "HitModifer": null,
+  "DmgModifer": null,
+  "SpellOperator": {
+    "$type": "Darkages.Types.SpellOperator, Darkages.Server",
+    "Scope": 3,
+    "Option": 0,
+    "Value": 1,
+    "MinValue": 0,
+    "MaxValue": 9
+  },
+  "OffenseElement": 0,
+  "DefenseElement": 0,
+  "CarryWeight": 5,
+  "Flags": 13435,
+  "MaxDurability": 300000,
+  "Value": 24500,
+  "EquipmentSlot": 1,
+  "NpcKey": null,
+  "Class": 4,
+  "LevelRequired": 99,
+  "DmgMin": 1,
+  "DmgMax": 30,
+  "DropRate": 2.0,
+  "StageRequired": 0,
+  "HasPants": false,
+  "Color": 1,
+  "WeaponScript": null,
+  "Name": "Master Celestial Staff",
+  "Description": "The purest of wands, a Priests delight.",
+  "Group": null
+}
