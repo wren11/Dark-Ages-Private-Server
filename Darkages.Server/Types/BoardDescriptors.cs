@@ -99,7 +99,7 @@ namespace Darkages.Types
     {
         public List<Board> CommunityBoards { get; set; }
 
-        public BoardList(Board[] community)
+        public BoardList(IEnumerable<Board> community)
         {
             CommunityBoards = new List<Board>(community
                 .OrderBy(i => i.Index));
@@ -112,13 +112,10 @@ namespace Darkages.Types
             writer.Write((byte)0x01);
             writer.Write((ushort)CommunityBoards.Count);
 
-            ushort count = 0;
             foreach (var topic in CommunityBoards)
             {
-                topic.LetterId = count;
                 writer.Write(topic.LetterId);
                 writer.WriteStringA(topic.Subject);
-                ++count;
             }
         }
     }

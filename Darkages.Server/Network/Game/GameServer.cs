@@ -213,7 +213,7 @@ namespace Darkages.Network.Game
                             }
                             else
                             {
-                                if (client.CanSendLocation)
+                                if (client.CanSendLocation && !client.IsRefreshing)
                                     client.SendLocation();
                             }
                         }

@@ -126,6 +126,9 @@ namespace Darkages
 
         public static Board[] Community = new Board[7];
 
+        public static Dictionary<string, List<Board>> GlobalBoardCache
+             = new Dictionary<string, List<Board>>();
+
         public static void Log(string message, params object[] args)
         {
             if (ILog != null)
@@ -273,6 +276,7 @@ namespace Darkages
             GlobalReactorCache = new Dictionary<string, Reactor>();
             GlobalBuffCache = new Dictionary<string, Buff>();
             GlobalDeBuffCache = new Dictionary<string, Debuff>();
+            GlobalBoardCache = new Dictionary<string, List<Board>>();            
         }
 
         public static void LoadConstants()
@@ -325,7 +329,7 @@ namespace Darkages
 
             foreach (var asset in tmp)
             {
-                asset.Save();
+                asset.Save("Personal");
             }
         }
 
@@ -333,14 +337,46 @@ namespace Darkages
         {
             if (Community != null)
             {
-                var boards = Board.CacheFromStorage();
 
-                if (boards.Find(i => i.Index == 0) == null)
+                var dirs = Directory.GetDirectories(Path.Combine(StoragePath, "Community\\Boards"));
+
+                Dictionary<string, List<Board>> Boards = new Dictionary<string, List<Board>>();
+
+                foreach (var dir in dirs.Select(i => new DirectoryInfo(i)))
                 {
-                    boards.Add(new Board("Mail", 0, true));
+                    var boards = Board.CacheFromStorage(dir.FullName);
+
+                    if (boards == null)
+                    {
+                        continue;
+                    }
+
+                    if (dir.Name == "Personal")
+                    {
+                        if (boards.Find(i => i.Index == 0) == null)
+                        {
+                            boards.Add(new Board("Mail", 0, true));
+                        }
+                    }
+
+                    if (!Boards.ContainsKey(dir.Name)) {
+                        Boards[dir.Name] = new List<Board>();
+                    }
+
+                    Boards[dir.Name].AddRange(boards);
                 }
 
-                Community = boards.OrderBy(i => i.Index).ToArray();
+                Community = Boards["Personal"].OrderBy(i => i.Index).ToArray();
+
+                foreach (var obj in Boards)
+                {
+                    if (!GlobalBoardCache.ContainsKey(obj.Key))
+                    {
+                        GlobalBoardCache[obj.Key] = new List<Board>();
+                    }
+
+                    GlobalBoardCache[obj.Key].AddRange(obj.Value);
+                }
             }
         }
 

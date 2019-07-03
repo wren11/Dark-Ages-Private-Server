@@ -1943,7 +1943,15 @@ namespace Darkages.Network.Game
                     }
                     else
                     {
-                        client.Send(ServerContext.Community[format.BoardIndex]);
+
+                        var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
+                            .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
+                            .FirstOrDefault();
+
+                        if (boards != null)
+                            client.Send(boards);
+
+
                         return;
                     }
                 }
@@ -1951,10 +1959,15 @@ namespace Darkages.Network.Game
                 if (format.Type == 0x03)
                 {
                     var index = format.TopicIndex - 1;
-                    if (ServerContext.Community[format.BoardIndex] != null &&
-                        ServerContext.Community[format.BoardIndex].Posts.Count > index)
+
+                    var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
+                        .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
+                        .FirstOrDefault();
+
+                    if (boards != null &&
+                        boards.Posts.Count > index)
                     {
-                        var post = ServerContext.Community[format.BoardIndex].Posts[index];
+                        var post = boards.Posts[index];
                         client.Send(post);
                         return;
                     }
@@ -1965,46 +1978,66 @@ namespace Darkages.Network.Game
 
                 if (format.Type == 0x06)
                 {
-                    var np = new PostFormat(format.BoardIndex, format.TopicIndex)
-                    {
-                        DatePosted = DateTime.UtcNow,
-                        Message = format.Message,
-                        Subject = format.Title,
-                        Read = false,
-                        Sender = client.Aisling.Username,
-                        Recipient = format.To,
-                        PostId = (ushort)(ServerContext.Community[format.BoardIndex].Posts.Count + 1),
-                    };
+                    var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
+                        .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
+                        .FirstOrDefault();
 
-                    np.Associate(client.Aisling.Username);
-                    ServerContext.Community[format.BoardIndex].Posts.Add(np);
-                    ServerContext.SaveCommunityAssets();
-                    client.Send(new ForumCallback("Message Delivered.", 0x06, true));
+                    if (boards != null)
+                    {
+                        var np = new PostFormat(format.BoardIndex, format.TopicIndex)
+                        {
+                            DatePosted = DateTime.UtcNow,
+                            Message = format.Message,
+                            Subject = format.Title,
+                            Read = false,
+                            Sender = client.Aisling.Username,
+                            Recipient = format.To,
+                            PostId = (ushort)(boards.Posts.Count + 1),
+                        };
+
+                        np.Associate(client.Aisling.Username);
+                        boards.Posts.Add(np);
+                        ServerContext.SaveCommunityAssets();
+                        client.Send(new ForumCallback("Message Delivered.", 0x06, true));
+                    }
                     return;
                 }
 
                 if (format.Type == 0x04)
                 {
-                    var np = new PostFormat(format.BoardIndex, format.TopicIndex)
-                    {
-                        DatePosted = DateTime.UtcNow,
-                        Message = format.Message,
-                        Subject = format.Title,
-                        Read = false,
-                        Sender = client.Aisling.Username,
-                        PostId = (ushort)(ServerContext.Community[format.BoardIndex].Posts.Count + 1),
-                    };
+                    var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
+                        .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
+                        .FirstOrDefault();
 
-                    np.Associate(client.Aisling.Username);
-                    ServerContext.Community[format.BoardIndex].Posts.Add(np);
-                    ServerContext.SaveCommunityAssets();
-                    client.Send(new ForumCallback("Post Added.", 0x06, true));
+                    if (boards != null)
+                    {
+
+                        var np = new PostFormat(format.BoardIndex, format.TopicIndex)
+                        {
+                            DatePosted = DateTime.UtcNow,
+                            Message = format.Message,
+                            Subject = format.Title,
+                            Read = false,
+                            Sender = client.Aisling.Username,
+                            PostId = (ushort)(boards.Posts.Count + 1),
+                        };
+
+                        np.Associate(client.Aisling.Username);
+
+
+
+                        boards.Posts.Add(np);
+                        ServerContext.SaveCommunityAssets();
+                        client.Send(new ForumCallback("Post Added.", 0x06, true));
+                    }
                     return;
                 }
 
                 if (format.Type == 0x05)
                 {
-                    var community = ServerContext.Community[format.BoardIndex];
+                    var community = ServerContext.GlobalBoardCache.Select(i => i.Value)
+                        .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
+                        .FirstOrDefault();
 
                     if (community != null && community.Posts.Count > 0)
                     {
@@ -2013,7 +2046,7 @@ namespace Darkages.Network.Game
                             : (community.Posts[format.TopicIndex - 1].Sender)
                             ).Equals(client.Aisling.Username, StringComparison.OrdinalIgnoreCase))
                         {
-                            ServerContext.Community[format.BoardIndex].Posts.RemoveAt(format.TopicIndex - 1);
+                            community.Posts.RemoveAt(format.TopicIndex - 1);
                             ServerContext.SaveCommunityAssets();
                             client.Send(new ForumCallback("Post has been deleted.", 0x07, true));
                             return;

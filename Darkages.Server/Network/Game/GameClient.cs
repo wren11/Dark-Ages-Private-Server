@@ -201,6 +201,20 @@ namespace Darkages.Network.Game
             }
         }
 
+        [Verb]
+        public void board(string n)
+        {
+            if (ServerContext.GlobalBoardCache.ContainsKey(n))
+            {
+                var boardListObj = ServerContext.GlobalBoardCache[n];
+
+                if (boardListObj != null && boardListObj.Any())
+                {
+                    Send(new BoardList(boardListObj));
+                }
+            }
+        }
+
 
         /// <summary>
         /// This chat command reloads all objects.

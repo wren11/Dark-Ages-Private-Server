@@ -90,11 +90,11 @@ namespace Darkages.Types
         }
 
 
-        public static List<Board> CacheFromStorage()
+        public static List<Board> CacheFromStorage(string dir)
         {
             var results = new List<Board>();
             var asset_names = Directory.GetFiles(
-                StoragePath,
+                Path.Combine(StoragePath, dir),
                 "*.json",
                 SearchOption.TopDirectoryOnly);
 
@@ -103,7 +103,7 @@ namespace Darkages.Types
 
             foreach (var asset in asset_names)
             {
-                var tmp = Load(Path.GetFileNameWithoutExtension(asset));
+                var tmp = LoadFromFile(asset);
 
                 if (tmp != null)
                     results.Add(tmp);
@@ -126,13 +126,25 @@ namespace Darkages.Types
             }
         }
 
-        public void Save()
+        public static Board LoadFromFile(string path)
+        {
+            if (!File.Exists(path))
+                return null;
+
+            using (var s = File.OpenRead(path))
+            using (var f = new StreamReader(s))
+            {
+                return JsonConvert.DeserializeObject<Board>(f.ReadToEnd(), StorageManager.Settings);
+            }
+        }
+
+        public void Save(string key)
         {
             if (ServerContext.Paused)
                 return;
 
 
-            var path = Path.Combine(StoragePath, string.Format("{0}.json", Subject));
+            var path = Path.Combine(StoragePath, string.Format("{0}\\{1}.json", key, Subject));
             var objString = JsonConvert.SerializeObject(this, StorageManager.Settings);
             File.WriteAllText(path, objString);
         }

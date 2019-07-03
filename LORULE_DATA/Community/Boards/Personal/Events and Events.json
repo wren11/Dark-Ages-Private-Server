@@ -27,6 +27,20 @@
       "Message": "test",
       "Recipient": null,
       "Subject": "test"
+    },
+    {
+      "Secured": true,
+      "Command": 49,
+      "Owner": "lol",
+      "TopicId": 2664,
+      "PostId": 3,
+      "BoardId": 2,
+      "Read": false,
+      "DatePosted": "2019-07-03T16:02:20.4800046Z",
+      "Sender": "lol",
+      "Message": "ghjkhjg",
+      "Recipient": null,
+      "Subject": "hjgk event"
     }
   ],
   "Secured": true,
