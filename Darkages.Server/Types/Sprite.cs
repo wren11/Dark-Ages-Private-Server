@@ -164,6 +164,9 @@ namespace Darkages.Types
 
         public byte _Hit { get; set; }
 
+        public int _Regen { get; set; }
+
+        [JsonIgnore] public int Regen => (Extensions.Clamp(_Regen + BonusRegen, 0, 300));
 
         [JsonIgnore] public int MaximumHp => _MaximumHp + BonusHp;
 
@@ -273,6 +276,8 @@ namespace Darkages.Types
         [JsonIgnore] public int BonusHp { get; set; }
 
         [JsonIgnore] public int BonusMp { get; set; }
+
+        [JsonIgnore] public int BonusRegen { get; set; }
 
         #endregion
 

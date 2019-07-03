@@ -42,88 +42,20 @@ namespace Lorule
                 {
                     _Server = new Instance();
                     _Server.Start();
-                    _Server.Report();
+
+                    Thread.Sleep(Timeout.Infinite);
                 }
             }
         }
 
         public class Instance : ServerContext
-        {
-            readonly DateTime SystemStartTime = DateTime.Now;
-
-            TimeSpan Uptime => (DateTime.Now - SystemStartTime);
-
-           
+        {           
             public Instance()
             {
                 LoadConstants();
             }
 
             public bool IsRunning => Running;
-
-            public void Report()
-            {
-
-                new TaskFactory().StartNew(() =>
-                {
-                    while (Running)
-                    {
-                        Thread.Sleep(15000);
-                    }
-                });
-
-                Thread.CurrentThread.Join();
-            }
-
-            private void SendServerInfo(MemoryMappedFileCommunicator communicator)
-            {
-                if (ILog == null)
-                {
-                    ILog = new ServerInformation
-                    {
-                        ServerConfig = Config,
-                        MonsterTemplates = new List<MonsterTemplate>(GlobalMonsterTemplateCache),
-                        ItemTemplates = new List<ItemTemplate>(GlobalItemTemplateCache.Select(i => i.Value)),
-                        SkillTemplates = new List<SkillTemplate>(GlobalSkillTemplateCache.Select(i => i.Value)),
-                        SpellTemplates = new List<SpellTemplate>(GlobalSpellTemplateCache.Select(i => i.Value)),
-                        MundaneTemplates = new List<MundaneTemplate>(GlobalMundaneTemplateCache.Select(i => i.Value)),
-                        WarpTemplates = new List<WarpTemplate>(GlobalWarpTemplateCache),
-                        Areas = new List<Area>(GlobalMapCache.Select(i => i.Value)),
-                        Buffs = new List<Buff>(GlobalBuffCache.Select(i => i.Value)),
-                        Debuffs = new List<Debuff>(GlobalDeBuffCache.Select(i => i.Value)),
-                    };
-                }
-
-                ILog.GameServerOnline   = true;
-                ILog.LoginServerOnline  = true;
-
-                var players_online      = Game?.Clients.Where(i => i != null && i.Aisling != null && i.Aisling.LoggedIn);
-
-                if (players_online != null)
-                {
-                    ILog.PlayersOnline    = new List<Aisling>(players_online.Select(i => i.Aisling));
-                    ILog.GameServerOnline = true;
-                }
-                else
-                {
-                    ILog.PlayersOnline    = new List<Aisling>();
-                    ILog.GameServerOnline = false;
-                    ILog.GameServerStatus = "Offline.";
-                }
-
-                lock (communicator)
-                {
-                    var jsonWrap = JsonConvert.SerializeObject(ILog, StorageManager.Settings);
-                    communicator.Write(jsonWrap);
-                }
-            }
-
-
-            public void Reboot(Instance instance)
-            {
-                instance.Shutdown();
-                instance.Start();            
-            }
         }
     }
 }

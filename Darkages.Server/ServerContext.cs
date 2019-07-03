@@ -367,7 +367,6 @@ namespace Darkages
                 LoadExtensions();
             }
 
-
             var template = new UserClickPopup()
             {
                 Description = "A user Click Popup",

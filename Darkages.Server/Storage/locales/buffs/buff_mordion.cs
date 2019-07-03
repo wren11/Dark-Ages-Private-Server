@@ -36,7 +36,7 @@ namespace Darkages.Storage.locales.Buffs
                     .Client
                     .SendMessage(0x02, "Your skin turns to stone.");
 
-            Affected.Immunity = false;
+            Affected.Immunity = true;
 
             base.OnApplied(Affected, buff);
         }

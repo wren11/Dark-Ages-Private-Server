@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 
 namespace Darkages.Types
@@ -28,6 +29,8 @@ namespace Darkages.Types
 
         public List<Warp> Activations { get; set; }
         public Warp To { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
         public WarpType WarpType { get; set; }
 
         [JsonProperty] public int ActivationMapId { get; set; }

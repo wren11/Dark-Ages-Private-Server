@@ -3,7 +3,7 @@
   "Icon": 84,
   "MaxLevel": 100,
   "ScriptKey": "ard cradh",
-  "MinLines": 1,
+  "MinLines": 0,
   "MaxLines": 9,
   "ManaCost": 290,
   "Text": "",

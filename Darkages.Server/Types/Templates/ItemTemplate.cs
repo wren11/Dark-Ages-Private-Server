@@ -26,6 +26,7 @@ using System.Collections;
 using System.ComponentModel;
 using static Darkages.Types.ElementManager;
 using System.ComponentModel.Design;
+using Newtonsoft.Json.Converters;
 
 namespace Darkages.Types
 {
@@ -106,6 +107,7 @@ namespace Darkages.Types
         [Browsable(false)]
         public string ScriptName { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public Gender Gender { get; set; }
 
         [Category("Mods")]
@@ -142,12 +144,18 @@ namespace Darkages.Types
         public StatusOperator DmgModifer { get; set; }
 
         [Category("Mods")]
+        public StatusOperator RegenModifer { get; set; }
+
+
+        [Category("Mods")]
         public SpellOperator SpellOperator { get; set; }
 
         [Category("Elements")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public Element OffenseElement { get; set; }
 
         [Category("Elements")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public Element DefenseElement { get; set; }
 
 
@@ -155,6 +163,7 @@ namespace Darkages.Types
         public byte CarryWeight { get; set; }
 
         [Category("Item Properties")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public ItemFlags Flags { get; set; }
 
         [Category("Item Properties")]
@@ -175,6 +184,7 @@ namespace Darkages.Types
         public string NpcKey { get; set; }
 
         [Category("Requirements")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public Class Class { get; set; }
 
         [Category("Requirements")]
@@ -192,12 +202,14 @@ namespace Darkages.Types
 
         [Category("Requirements")]
         [Description("What state is required of the player to use the item?")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public ClassStage StageRequired { get; set; }
 
         [Category("Item Properties")]
         public bool HasPants { get; set; }
 
         [Category("Item Properties")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public ItemColor Color { get; set; }
 
         [Browsable(false)]

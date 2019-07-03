@@ -237,7 +237,7 @@ namespace Darkages
         /// What is the Regen Rate Expononent Modifier?
         /// 0.15 is about the same rate as USDA.
         /// </summary>
-        public int RegenRate = 15000;
+        public int RegenRate = 5000;
 
         [JsonProperty]
         /// <summary>
@@ -306,6 +306,7 @@ namespace Darkages
         [JsonProperty] public double GroupExpBonus = 5.0;
 
         [JsonProperty] public int PlayerLevelCap = 99;
+
 
         [JsonProperty]
         public Position[] Alters = new Position[]

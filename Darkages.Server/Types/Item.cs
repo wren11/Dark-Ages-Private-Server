@@ -329,10 +329,17 @@ namespace Darkages.Types
                     client.Aisling.BonusMp -= Template.ManaModifer.Value;
                 if (Template.ManaModifer.Option == Operator.Remove)
                     client.Aisling.BonusMp += Template.ManaModifer.Value;
-
-               
             }
+            #endregion
 
+            #region Regen
+            if (Template.RegenModifer != null)
+            {
+                if (Template.RegenModifer.Option == Operator.Add)
+                    client.Aisling.BonusRegen -= Template.RegenModifer.Value;
+                if (Template.RegenModifer.Option == Operator.Remove)
+                    client.Aisling.BonusRegen += Template.RegenModifer.Value;
+            }
             #endregion
 
             #region Str
@@ -549,6 +556,16 @@ namespace Darkages.Types
                     client.Aisling.BonusMp -= Template.ManaModifer.Value;
             }
 
+            #endregion
+
+            #region Regen
+            if (Template.RegenModifer != null)
+            {
+                if (Template.RegenModifer.Option == Operator.Add)
+                    client.Aisling.BonusRegen += Template.RegenModifer.Value;
+                if (Template.RegenModifer.Option == Operator.Remove)
+                    client.Aisling.BonusRegen -= Template.RegenModifer.Value;
+            }
             #endregion
 
             #region Str

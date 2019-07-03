@@ -20,6 +20,7 @@ using Darkages.Network.Object;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
@@ -65,6 +66,16 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        ///   <para>
+        /// Gets the Value True or False That represents if the Server is running Healthy.</para>
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [server healthy]; otherwise, <c>false</c>.</value>
+        /// <remarks>This is done by Checking that the lastUpdate took less then the specified length of time. By Default this is one second.</remarks>
+        public bool ServerHealthy => DateTime.UtcNow - lastHeavyUpdate < new TimeSpan(0, 0, 0, 1);
+
+        private readonly ManualResetEvent __msync = new ManualResetEvent(true);
 
         private void Update()
         {
@@ -77,23 +88,22 @@ namespace Darkages.Network.Game
                 {
                     var delta = DateTime.UtcNow - lastHeavyUpdate;
 
-                    if (ServerContext.Running)
-                    {
-                        lock (ServerContext.SyncObj)
-                        {
-                            ExecuteClientWork (delta);
-                            ExecuteServerWork (delta);
-                            ExecuteHeavyWork  (delta);
-                        }
-                    }
+                    if (ServerContext.Paused)
+                        continue;
+
+                    ExecuteClientWork(delta);
+                    ExecuteServerWork(delta);
+                    ExecuteObjectWork(delta);
                 }
                 catch (Exception error)
                 {
                     ServerContext.ILog?.Error("Error In Heavy Worker", error);
                 }
-
-                lastHeavyUpdate = DateTime.UtcNow;
-                Thread.Sleep(HeavyUpdateSpan);
+                finally
+                {
+                    lastHeavyUpdate = DateTime.UtcNow;
+                    Thread.Sleep(HeavyUpdateSpan);
+                }
             }
         }
 
@@ -109,49 +119,71 @@ namespace Darkages.Network.Game
             Components = new Dictionary<Type, GameServerComponent>
             {
                 [typeof(MonolithComponent)] = new MonolithComponent(this),
-                [typeof(DaytimeComponent)] = new DaytimeComponent(this),
-                [typeof(MundaneComponent)] = new MundaneComponent(this),
-                [typeof(MessageComponent)] = new MessageComponent(this),
-                [typeof(PingComponent)] = new PingComponent(this),
-                [typeof(Save)] = new Save(this),
-                [typeof(ObjectComponent)] = new ObjectComponent(this),
+                [typeof(DaytimeComponent)]  = new DaytimeComponent(this),
+                [typeof(MundaneComponent)]  = new MundaneComponent(this),
+                [typeof(MessageComponent)]  = new MessageComponent(this),
+                [typeof(PingComponent)]     = new PingComponent(this),
+                [typeof(Save)]              = new Save(this),
+                [typeof(ObjectComponent)]   = new ObjectComponent(this),
             };
         }
 
         public void ExecuteClientWork(TimeSpan elapsedTime)
         {
-            UpdateClients(elapsedTime);
+            try
+            {
+                UpdateClients(elapsedTime);
+            }
+            catch (Exception err)
+            {
+                ServerContext.ILog.Error("Error: ExecuteClientWork", err);
+            }
         }
 
         public void ExecuteServerWork(TimeSpan elapsedTime)
         {
-            UpdateComponents(elapsedTime);
+            try
+            {
+                UpdateComponents(elapsedTime);
+            }
+            catch (Exception err)
+            {
+                ServerContext.ILog.Error("Error: ExecuteServerWork", err);
+            }
         }
 
-        public void ExecuteHeavyWork(TimeSpan elapsedTime)
+        public void ExecuteObjectWork(TimeSpan elapsedTime)
         {
-            UpdateAreas(elapsedTime);
+            try
+            {
+                UpdateAreas(elapsedTime);
+            }
+            catch (Exception err)
+            {
+                ServerContext.ILog.Error("Error: ExecuteObjectWork", err);
+            }
         }
 
         private void UpdateComponents(TimeSpan elapsedTime)
         {
-            if (ServerContext.Paused || !ServerContext.Running)
-                return;
-
-            lock (Components)
+            try
             {
-                foreach (var component in Components.Values)
+                lock (Components)
                 {
-                    component.Update(elapsedTime);
+                    foreach (var component in Components.Values)
+                    {
+                        component.Update(elapsedTime);
+                    }
                 }
+            }
+            catch (Exception err)
+            {
+                ServerContext.ILog.Error("Error: UpdateComponents", err);
             }
         }
 
         private void UpdateAreas(TimeSpan elapsedTime)
         {
-            if (ServerContext.Paused || !ServerContext.Running)
-                return;
-
             lock (Clients)
             {
                 foreach (var area in ServerContext.GlobalMapCache.Values)
@@ -161,33 +193,38 @@ namespace Darkages.Network.Game
             }
         }
 
-        public ManualResetEvent msr = new ManualResetEvent(true);
-
         public void UpdateClients(TimeSpan elapsedTime)
         {
-            if (ServerContext.Paused || !ServerContext.Running)
-                return;
-
             lock (Clients)
             {
                 foreach (var client in Clients)
                 {
                     if (client != null && client.Aisling != null)
                     {
-                        msr.WaitOne();
-                        msr.Reset();
+                        __msync.WaitOne();
+                        __msync.Reset();
 
-                        if (!client.IsWarping)
+                        try
                         {
-                            client.Update(elapsedTime);
-                            client.FlushBuffers();
+                            if (!client.IsWarping)
+                            {
+                                client.Update(elapsedTime);
+                                client.FlushBuffers();
+                            }
+                            else
+                            {
+                                if (client.CanSendLocation)
+                                    client.SendLocation();
+                            }
                         }
-                        else
+                        catch (Exception err)
                         {
-                            if (client.CanSendLocation)
-                                client.SendLocation();
+                            ServerContext.ILog.Error("Error: UpdateClients", err);
                         }
-                        msr.Set();
+                        finally
+                        {
+                            __msync.Set();
+                        }
                     }
                 }
             }
@@ -229,12 +266,44 @@ namespace Darkages.Network.Game
         {
             base.Start(port);
 
-            new Thread(() => Update())
-            {
-                Priority     = ThreadPriority.Highest,
-                IsBackground = true
-            }.Start();
+            Task.Run(ServerGuard);
+        }
 
+        private Thread _thread = null;
+
+        public void Launch()
+        {
+            var thread = _thread;
+            Thread.MemoryBarrier();
+
+            if (thread == null || thread.ThreadState == ThreadState.Stopped)
+            {
+                var __tmpl = new Thread(Update)
+                {
+                    IsBackground = true,
+                    Name         = ServerContext.Config.SERVER_TITLE
+                };
+
+                __tmpl.Start();
+
+
+                Thread.MemoryBarrier();
+                _thread = __tmpl;
+            }
+        }
+
+        private void ServerGuard()
+        {
+            while (true)
+            {
+                if (!ServerHealthy)
+                {
+                    ServerContext.ILog.Warning("Starting Main Server Threads.");
+                    Launch();
+                }
+
+                Thread.Sleep(5000);
+            }
         }
     }
 }

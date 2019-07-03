@@ -484,7 +484,7 @@
     <Compile Include="Types\ItemFlags.cs" />
     <Compile Include="Types\ItemPending.cs" />
     <Compile Include="Types\ItemSlots.cs" />
-    <Compile Include="Types\ItemTemplate.cs" />
+    <Compile Include="Types\Templates\ItemTemplate.cs" />
     <Compile Include="Types\LearningPredicate.cs" />
     <Compile Include="Types\Legend.cs" />
     <Compile Include="Types\LegendColor.cs" />
@@ -501,18 +501,18 @@
     <Compile Include="Types\MoneySprites.cs" />
     <Compile Include="Types\Monster.cs" />
     <Compile Include="Types\MonsterDamageType.cs" />
-    <Compile Include="Types\MonsterTemplate.cs" />
+    <Compile Include="Types\Templates\MonsterTemplate.cs" />
     <Compile Include="Types\MoodQualifer.cs" />
     <Compile Include="Types\MServer.cs" />
     <Compile Include="Types\MServerTable.cs" />
     <Compile Include="Types\Mundane.cs" />
-    <Compile Include="Types\MundaneTemplate.cs" />
+    <Compile Include="Types\Templates\MundaneTemplate.cs" />
     <Compile Include="Types\Notification.cs" />
     <Compile Include="Types\Operator.cs" />
     <Compile Include="Types\Party.cs" />
     <Compile Include="Types\PartyMember.cs" />
     <Compile Include="Types\PathQualifer.cs" />
-    <Compile Include="Types\PopupTemplate.cs" />
+    <Compile Include="Types\Templates\PopupTemplate.cs" />
     <Compile Include="Types\PortalSession.cs" />
     <Compile Include="Types\Position.cs" />
     <Compile Include="Types\PostQualifer.cs" />
@@ -531,7 +531,7 @@
     <Compile Include="Types\Spell.cs" />
     <Compile Include="Types\SpellBook.cs" />
     <Compile Include="Types\SpellOperator.cs" />
-    <Compile Include="Types\SpellTemplate.cs" />
+    <Compile Include="Types\Templates\SpellTemplate.cs" />
     <Compile Include="Types\Sprite.cs" />
     <Compile Include="Types\Stat.cs" />
     <Compile Include="Types\StaticSprite.cs" />
@@ -543,8 +543,8 @@
     <Compile Include="Types\TileContent.cs" />
     <Compile Include="Types\Trap.cs" />
     <Compile Include="Types\Warp.cs" />
-    <Compile Include="Types\WarpTemplate.cs" />
-    <Compile Include="Types\WorldMapTemplate.cs" />
+    <Compile Include="Types\Templates\WarpTemplate.cs" />
+    <Compile Include="Types\Templates\WorldMapTemplate.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />

@@ -5,9 +5,9 @@
   "CanStack": false,
   "MaxStack": 0,
   "Image": 162,
-  "DisplayImage": 33768,
+  "DisplayImage": 0x83DE,
   "ScriptName": "Helmet",
-  "Gender": 1,
+  "Gender": 255,
   "HealthModifer": {
     "$type": "Darkages.Types.StatusOperator, Darkages.Server",
     "Option": 0,

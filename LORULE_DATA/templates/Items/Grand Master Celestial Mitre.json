@@ -4,7 +4,7 @@
   "ID": 0,
   "CanStack": false,
   "MaxStack": 0,
-  "Image": 167,
+  "Image": 162,
   "DisplayImage": 33773,
   "ScriptName": "Helmet",
   "Gender": 1,
@@ -69,7 +69,7 @@
   "HasPants": false,
   "Color": 0,
   "WeaponScript": null,
-  "Name": "Grand Master Celestial Mitre",
+  "Name": "Grand Master Celestial Mitre F",
   "Description": null,
   "Group": null
 }

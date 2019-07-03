@@ -199,6 +199,7 @@ namespace Darkages
         /// Used for Internal Server Authentication
         /// </summary>
         public Redirect Redirect { get; set; }
+
         #endregion
 
         [JsonIgnore]
