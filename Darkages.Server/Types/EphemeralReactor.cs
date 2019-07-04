@@ -23,7 +23,7 @@ namespace Darkages
     public class EphemeralReactor
     {
         public string YamlKey { get; set; }
-        public bool Elapsed { get; set; } = false;
+        public bool Expired { get; set; } = false;
 
         GameServerTimer _timer;
 
@@ -39,7 +39,7 @@ namespace Darkages
 
             if (_timer.Elapsed)
             {
-                Elapsed = true;
+                Expired = true;
                 _timer = null;
             }
         }

@@ -518,12 +518,37 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Walk())
             {
-                ObjectComponent.UpdateClientObjects(client.Aisling);
+                //ObjectComponent.UpdateClientObjects(client.Aisling);
+
                 if (client.Aisling.AreaID == ServerContext.Config.TransitionZone)
                 {
                     client.Aisling.PortalSession = new PortalSession { IsMapOpen = false };
                     client.Aisling.PortalSession.TransitionToMap(client);
                     return;
+                }
+
+                var popupTemplate = ServerContext.GlobalPopupCache.OfType<UserWalkPopup>()
+                .Where(i => i.MapId == client.Aisling.CurrentMapId).FirstOrDefault();
+
+                if (popupTemplate != null && client.Aisling.X == popupTemplate.X && client.Aisling.Y == popupTemplate.Y)
+                {
+                    popupTemplate.SpriteId = popupTemplate.SpriteId;
+
+                    var popup = Popup.Create(client, popupTemplate);
+
+                    if (popup != null)
+                    {
+                        if (client.MenuInterpter == null)
+                        {
+                            CreateInterpreterFromMenuFile(client, popup.Template.YamlKey);
+
+                            if (client.MenuInterpter != null)
+                            {
+                                client.MenuInterpter.Start();
+                                client.ShowCurrentMenu(popup, null, client.MenuInterpter.GetCurrentStep());
+                            }
+                        }
+                    }
                 }
 
                 foreach (var warps in ServerContext.GlobalWarpTemplateCache)
@@ -532,7 +557,9 @@ namespace Darkages.Network.Game
                         continue;
 
                     foreach (var o in warps.Activations)
+                    {
                         if (o.Location.DistanceFrom(client.Aisling.Position) <= warps.WarpRadius)
+                        {
                             if (warps.WarpType == WarpType.Map)
                             {
                                 client.WarpTo(warps);
@@ -541,7 +568,6 @@ namespace Darkages.Network.Game
                             {
                                 if (!ServerContext.GlobalWorldMapTemplateCache.ContainsKey(warps.To.PortalKey))
                                 {
-                                    client.SendMessage(0x02, "You can't travel at the moment.");
                                     return;
                                 }
 
@@ -551,6 +577,8 @@ namespace Darkages.Network.Game
                                 };
                                 client.Aisling.PortalSession.TransitionToMap(client);
                             }
+                        }
+                    }
                 }
             }
             else
@@ -627,6 +655,34 @@ namespace Darkages.Network.Game
                         if ((obj as Item).GiveTo(client.Aisling, true))
                         {
                             obj.Remove<Item>();
+
+                            var popupTemplate = ServerContext.GlobalPopupCache.OfType<ItemPickupPopup>()
+                                .Where(i => i.ItemName == (obj as Item).Template.Name).FirstOrDefault();
+
+                            if (popupTemplate != null && client.Aisling.ActiveReactors.ContainsKey(popupTemplate.YamlKey))
+                            {
+                                if ((obj as Item).Owner == client.Aisling.Serial)
+                                {
+                                    popupTemplate.SpriteId = (obj as Item).Template.DisplayImage;
+
+                                    var popup = Popup.Create(client, popupTemplate);
+
+                                    if (popup != null)
+                                    {
+                                        if (client.MenuInterpter == null)
+                                        {
+                                            CreateInterpreterFromMenuFile(client, popup.Template.YamlKey);
+
+                                            if (client.MenuInterpter != null)
+                                            {
+                                                client.MenuInterpter.Start();
+                                                client.ShowCurrentMenu(popup, null, client.MenuInterpter.GetCurrentStep());
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             break;
                         }
                         else

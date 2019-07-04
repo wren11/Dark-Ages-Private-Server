@@ -28,6 +28,16 @@ namespace Darkages.Types
         }
     }
 
+    public class ItemPickupPopup : PopupTemplate
+    {
+        public string ItemName { get; set; }
+
+        public ItemPickupPopup()
+        {
+            TypeOfTrigger = TriggerType.ItemPickup;
+        }
+    }
+
     public class UserClickPopup : PopupTemplate
     {
         public int X { get; set; }
@@ -40,6 +50,19 @@ namespace Darkages.Types
         }
     }
 
+    public class UserWalkPopup : PopupTemplate
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int MapId { get; set; }
+
+        public UserWalkPopup()
+        {
+            TypeOfTrigger = TriggerType.MapLocation;
+        }
+    }
+
+
     public enum TriggerType
     {
         ItemDrop,
@@ -47,6 +70,7 @@ namespace Darkages.Types
         MapRandom,
         MapLocation,
         UserGossip,
+        ItemPickup,
     }
 
     public class Popup

@@ -15,7 +15,6 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Common;
 using Darkages.Interops;
 using Darkages.Network.Game;
 using Darkages.Network.Login;
@@ -23,7 +22,6 @@ using Darkages.Network.Object;
 using Darkages.Script.Context;
 using Darkages.Storage;
 using Darkages.Types;
-using LiteDB;
 using Mono.CSharp;
 using Newtonsoft.Json;
 using System;
@@ -33,9 +31,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Darkages
 {
@@ -430,8 +425,36 @@ namespace Darkages
                  YamlKey     = "gem_polishing"
             };
 
-            GlobalPopupCache.Add(user_drop);
+            var user_pickup_drop = new ItemPickupPopup()
+            {
+                Description = "Drop [ItemName] onto the reactor [gem_polishing] invoke the gem_polishing yaml script.",
+                Ephemeral   = true,
+                ItemName    = "Raw Beryl",
+                Name        = "Polish Gem",
+                Group       = "Popups",
+                SpriteId    = 33000,
+                Timeout     = 15,
+                YamlKey     = "gem_polishing"
+            };
 
+
+            var user_walk = new UserWalkPopup()
+            {
+                 Description = "Call yaml script when user walks to X, Y on MapId.",
+                 MapId       = 301,
+                 X           = 10,
+                 Y           = 8,
+                 SpriteId    = 0x4032,
+                 Group       = "Popups",
+                 Name        = "Crazy Quest",
+                 YamlKey     = "gem_polishing"
+
+
+            };
+
+            //GlobalPopupCache.Add(user_drop);
+            GlobalPopupCache.Add(user_pickup_drop);
+            GlobalPopupCache.Add(user_walk);
             Paused = false;
         }
         private static void LoadExtensions()

@@ -135,9 +135,9 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 quest.LegendRewards.Add(new Legend.LegendItem
                 {
                     Category = "Quest",
-                    Color = (byte)LegendColor.Blue,
-                    Icon = (byte)LegendIcon.Victory,
-                    Value = "Helped Benson start a fight."
+                    Color    = (byte)LegendColor.Blue,
+                    Icon     = (byte)LegendIcon.Victory,
+                    Value    = "Helped Benson start a fight."
                 });
 
                 client.Aisling.Quests.Add(quest);

@@ -93,8 +93,17 @@ checkpoints:
                 {
                     Name = "AbelShip",
                     GoldReward = 100,
-                };
-                var result = user.AcceptQuest(quest);
+                };   
+                
+            quest.LegendRewards.Add(new Legend.LegendItem
+                {
+                    Category = "Quest",
+                    Color = (byte)LegendColor.Blue,
+                    Icon = (byte)LegendIcon.Victory,
+                    Value = "Helped Benson start a fight."
+                });
+                
+            var result = user.AcceptQuest(quest);
             quest.QuestStages = new List<QuestStep<Template>>();            
             var q1 = new QuestStep<Template> { Type = QuestType.Accept };
             var q2 = new QuestStep<Template> { Type = QuestType.ItemHandIn };

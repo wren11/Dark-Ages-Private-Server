@@ -468,7 +468,7 @@ namespace Darkages.Network.Game
 
                     reactor.Update(elapsedTime);
 
-                    if (reactor.Elapsed)
+                    if (reactor.Expired)
                     {
                         Inactive.Add(reactor);
                     }
