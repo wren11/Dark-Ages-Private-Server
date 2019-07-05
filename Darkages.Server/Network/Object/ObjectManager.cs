@@ -24,7 +24,7 @@ using System.Linq;
 namespace Darkages.Network.Object
 {
 
-    public class ObjectManager
+    public class ObjectManager 
     {
 
         [Flags]

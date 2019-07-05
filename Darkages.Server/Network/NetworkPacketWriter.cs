@@ -1,4 +1,4 @@
-﻿///************************************************************************
+﻿// ************************************************************************
 //Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
@@ -14,7 +14,7 @@
 //
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+// *************************************************************************/
 using Darkages.IO;
 using System;
 using System.Net;
@@ -27,9 +27,19 @@ namespace Darkages.Network
         private readonly Encoding encoding = Encoding.GetEncoding(949);
         private readonly byte[] buffer;
 
-        public byte[] Data => buffer;
+        private int _position; // ENCAPSULATE FIELD BY CODEIT.RIGHT
 
-        public int Position;
+        public int Position
+        {
+            get
+            {
+                return _position;
+            }
+            set
+            {
+                _position = value;
+            }
+        }
 
         public NetworkPacketWriter()
         {

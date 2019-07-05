@@ -15,148 +15,65 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Spells
 {
+    /// <summary>
+    /// Class Beagioc.
+    /// Implements the <see cref="Darkages.Scripting.SpellScript" />
+    /// </summary>
+    /// <seealso cref="Darkages.Scripting.SpellScript" />
     [Script("beag ioc", "Dean")]
     public class Beagioc : SpellScript
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Beagioc"/> class.
+        /// </summary>
+        /// <param name="spell">The spell.</param>
         public Beagioc(Spell spell) : base(spell)
         {
         }
 
+        /// <summary>
+        /// Called when [failed].
+        /// </summary>
+        /// <param name="sprite">The sprite.</param>
+        /// <param name="target">The target.</param>
         public override void OnFailed(Sprite sprite, Sprite target)
         {
+
         }
 
+        /// <summary>
+        /// Called when [success].
+        /// </summary>
+        /// <param name="sprite">The sprite.</param>
+        /// <param name="target">The target.</param>
         public override void OnSuccess(Sprite sprite, Sprite target)
         {
         }
 
 
+
+
+
+        /// <summary>
+        /// Called when [use].
+        /// </summary>
+        /// <param name="sprite">The sprite.</param>
+        /// <param name="target">The target.</param>
         public override void OnUse(Sprite sprite, Sprite target)
         {
-            if (target is Aisling && sprite is Aisling)
-            {
-                var client = (sprite as Aisling).Client;
-                if (client.Aisling.CurrentMp >= Spell.Template.ManaCost)
-                {
+            var healValue = (int)(200 + (Spell.Level * sprite.Wis) * 0.05);
 
-                    var action = new ServerFormat1A
-                    {
-                        Serial = sprite.Serial,
-                        Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
-                        Speed = 30
-                    };
-
-                    target.Client.SendAnimation(Spell.Template.Animation, target, client.Aisling);
-                    client.Aisling.Show(Scope.NearbyAislings, action);
-
-                    sprite.CurrentMp -= Spell.Template.ManaCost;
-                    target.CurrentHp += (200 + ((Spell.Level + sprite.Wis) * 26));
-
-                    if (target.CurrentHp > target.MaximumHp)
-                        target.CurrentHp = target.MaximumHp;
-
-                    if (client.Aisling.CurrentMp < 0)
-                        client.Aisling.CurrentMp = 0;
-
-                    if (target.CurrentHp > 0)
-                    {
-                        var hpbar = new ServerFormat13
-                        {
-                            Serial = target.Serial,
-                            Health = (ushort)(100 * target.CurrentHp / target.MaximumHp),
-                            Sound = 8
-                        };
-                        target.Show(Scope.NearbyAislings, hpbar);
-                    }
-
-                    sprite.Client.SendStats(StatusFlags.StructB);
-                    client.SendMessage(0x02, "you cast " + Spell.Template.Name + ".");
-                    client.SendStats(StatusFlags.All);
-                    client.TrainSpell(Spell);
-                }
-                else
-                {
-                    if (sprite is    Aisling)
-                    {
-                        (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
-                    }
-                    return;
-
-                }
-            }
-            else
-            {
-                var action = new ServerFormat1A
-                {
-                    Serial = sprite.Serial,
-                    Number = 80,
-                    Speed = 30
-                };
-
-
-                if (sprite is Mundane)
-                {
-                    var nearby = target.GetObjects(sprite.Map, i => i.CurrentMapId == sprite.CurrentMapId &&
-                                    i.CurrentHp != i.MaximumHp, Get.Aislings);
-
-                    if (nearby.Count() > 0)
-                    {
-                        foreach (var s in nearby)
-                        {
-                            target = s;
-
-                            target.CurrentHp += (200 * ((Spell.Level + sprite.Wis) + 26));
-                            if (target.CurrentHp > target.MaximumHp)
-                                target.CurrentHp = target.MaximumHp;
-
-                            var hpbar = new ServerFormat13
-                            {
-                                Serial = target.Serial,
-                                Health = (ushort)(100 * target.CurrentHp / target.MaximumHp),
-                                Sound = 8
-                            };
-
-                            target.Show(Scope.NearbyAislings, hpbar);
-                            sprite.Show(Scope.NearbyAislings, action);
-                            target.SendAnimation(Spell.Template.Animation, target, target);
-
-                            if (target is Aisling)
-                            {
-                                (target as Aisling).Client.SendStats(StatusFlags.StructB);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    target.CurrentHp += (200 * ((Spell.Level + sprite.Wis) + 26));
-                    if (target.CurrentHp > target.MaximumHp)
-                        target.CurrentHp = target.MaximumHp;
-
-                    var hpbar = new ServerFormat13
-                    {
-                        Serial = target.Serial,
-                        Health = (ushort)(100 * target.CurrentHp / target.MaximumHp),
-                        Sound = 8
-                    };
-
-                    target.Show(Scope.NearbyAislings, hpbar);
-                    sprite.Show(Scope.NearbyAislings, action);
-                    target.SendAnimation(Spell.Template.Animation, target, sprite);
-
-                    if (target is Aisling)
-                    {
-                        (target as Aisling).Client.SendStats(StatusFlags.StructB);
-                    }
-                }
-            }
+            sprite.Aisling     (sprite)
+                ?.HasManaFor   (Spell)
+                ?.Cast         (Spell, target)
+                ?.GiveHealth   (target, healValue)
+                ?.UpdateStats  (Spell)
+                ?.TrainSpell   (Spell);
         }
     }
 }

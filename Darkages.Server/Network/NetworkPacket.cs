@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using System;
+using System.Globalization;
 
 namespace Darkages.Network
 {
@@ -59,7 +60,7 @@ namespace Darkages.Network
 
         public override string ToString()
         {
-            return string.Format("{0:X2} {1:X2} {2}",
+            return string.Format(CultureInfo.CurrentCulture, "{0:X2} {1:X2} {2}",
                 this.Command,
                 this.Ordinal,
                 BitConverter.ToString(this.Data).Replace('-', ' '));

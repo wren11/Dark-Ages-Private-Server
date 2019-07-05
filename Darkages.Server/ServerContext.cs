@@ -1,4 +1,4 @@
-﻿///************************************************************************
+﻿// *****************************************************************************
 //Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
@@ -14,7 +14,9 @@
 //
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+// *************************************************************************
+
+
 using Darkages.Interops;
 using Darkages.Network.Game;
 using Darkages.Network.Login;
@@ -30,10 +32,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 
 namespace Darkages
 {
+    /// <summary>The Main Application Context Used to Couple All Information used to Manage Running Servers and Clients and Storage.</summary>
+    /// <remarks>Implements the ObjectManager Class</remarks>
+    /// <seealso cref="Darkages.Network.Object.ObjectManager" />
     public class ServerContext : ObjectManager
     {
         internal static object SyncObj = new object();
@@ -202,9 +208,12 @@ namespace Darkages
                     Lobby = new LoginServer(Config.ConnectionCapacity);
                     Lobby.StartAsync(2610);
                 }
-                catch (Exception)
+                catch (SocketException)
                 {
-                    { ++DefaultPort; Errors++; }
+                    {
+                        ++DefaultPort;
+                        Errors++;
+                    }
                     goto redo;
                 }
             }   
@@ -333,9 +342,8 @@ namespace Darkages
             if (Community != null)
             {
 
-                var dirs = Directory.GetDirectories(Path.Combine(StoragePath, "Community\\Boards"));
-
-                Dictionary<string, List<Board>> Boards = new Dictionary<string, List<Board>>();
+                var dirs       = Directory.GetDirectories(Path.Combine(StoragePath, "Community\\Boards"));
+                var tmplBoards = new Dictionary<string, List<Board>>();
 
                 foreach (var dir in dirs.Select(i => new DirectoryInfo(i)))
                 {
@@ -354,16 +362,16 @@ namespace Darkages
                         }
                     }
 
-                    if (!Boards.ContainsKey(dir.Name)) {
-                        Boards[dir.Name] = new List<Board>();
+                    if (!tmplBoards.ContainsKey(dir.Name)) {
+                        tmplBoards[dir.Name] = new List<Board>();
                     }
 
-                    Boards[dir.Name].AddRange(boards);
+                    tmplBoards[dir.Name].AddRange(boards);
                 }
 
-                Community = Boards["Personal"].OrderBy(i => i.Index).ToArray();
+                Community = tmplBoards["Personal"].OrderBy(i => i.Index).ToArray();
 
-                foreach (var obj in Boards)
+                foreach (var obj in tmplBoards)
                 {
                     if (!GlobalBoardCache.ContainsKey(obj.Key))
                     {
@@ -467,32 +475,20 @@ namespace Darkages
 
         private static void InitScriptEvaluators()
         {
-            Log("Loading Script Evaluator...");
-
-            try
-            {
-                InitScriptEvaluator();
-                Log("Loading Script Evaluator... Success");
-            }
-            catch
-            {
-                Log("Loading Script Evaluator... Error.");
-            }
+            Log("Loading Script Evaluator... {0}", InitScriptEvaluator() ? "Success" : "Failed");
         }
 
-        public static void InitScriptEvaluator()
+        public static bool InitScriptEvaluator()
         {
-            try
-            {
 
-                var compilerContext = new CompilerContext(new CompilerSettings(), new ConsoleReportPrinter());
-                var assembly        = Assembly.GetExecutingAssembly();
+            var compilerContext = new CompilerContext(new CompilerSettings(), new ConsoleReportPrinter());
+            var assembly = Assembly.GetExecutingAssembly();
 
-                EVALUATOR = new Evaluator(compilerContext);
-                EVALUATOR.ReferenceAssembly(assembly);
-                EVALUATOR.InteractiveBaseClass = typeof(_Interop);
+            EVALUATOR = new Evaluator(compilerContext);
+            EVALUATOR.ReferenceAssembly(assembly);
+            EVALUATOR.InteractiveBaseClass = typeof(_Interop);
 
-                EVALUATOR.Run(@"
+            return EVALUATOR.Run(@"
                     using Darkages.Common;
                     using Darkages.Interops;
                     using Darkages.Network.Game;
@@ -510,10 +506,6 @@ namespace Darkages
                     using System.Net;
                     using System.Reflection;
                     using Darkages;");
-            }
-            catch
-            {
-            }
         }
 
         private static void CacheDebuffs()

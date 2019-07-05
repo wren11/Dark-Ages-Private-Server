@@ -16,16 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using Darkages;
-using Darkages.Interops;
-using Darkages.Storage;
-using Darkages.Types;
-using MemoryMappedFileManager;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Lorule
 {

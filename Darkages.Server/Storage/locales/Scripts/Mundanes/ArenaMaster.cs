@@ -62,8 +62,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
                 client.Aisling.CurrentHp = client.Aisling.MaximumHp;
                 client.Aisling.Flags = AislingFlags.Normal;
-                client.HpRegenTimer.Disabled = false;
-                client.MpRegenTimer.Disabled = false;
+                client.HPRegenTimer.Disabled = false;
+                client.MPRegenTimer.Disabled = false;
 
                 client.LeaveArea(true, false);
                 client.EnterArea();

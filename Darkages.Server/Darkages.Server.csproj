@@ -145,6 +145,7 @@
     <Compile Include="IO\BufferWriter.cs" />
     <Compile Include="IO\Crc16Provider.cs" />
     <Compile Include="IO\Crc32Provider.cs" />
+    <Compile Include="IO\GCBufferPool.cs" />
     <Compile Include="Network\ClientFormats\ClientFormat32.cs" />
     <Compile Include="Network\ClientFormats\ClientFormat00.cs" />
     <Compile Include="Network\ClientFormats\ClientFormat02.cs" />
@@ -224,6 +225,7 @@
     <Compile Include="Network\Object\ObjectEvent.cs" />
     <Compile Include="Network\Object\ObjectManager.cs" />
     <Compile Include="Network\Object\ObjectService.cs" />
+    <Compile Include="Network\ServerFormatStubs.cs" />
     <Compile Include="Network\ServerFormats\ServerFormat00.cs" />
     <Compile Include="Network\ServerFormats\ServerFormat02.cs" />
     <Compile Include="Network\ServerFormats\ServerFormat03.cs" />

@@ -49,7 +49,7 @@ namespace Darkages.Network
 
         private ManualResetEvent _sendReset;
 
-        public NetworkClient()
+        protected NetworkClient()
         {
             this.Reader      = new NetworkPacketReader();
             this.Writer      = new NetworkPacketWriter();
@@ -109,19 +109,13 @@ namespace Darkages.Network
                     _sendReset.WaitOne();
                     _sendReset.Reset();
 
-                    try
+                    var packet = data.ToArray();
+                    if (packet.Length > 0 && packet[0] == 0xAA)
                     {
-                        var packet = data.ToArray();
-                        if (packet.Length > 0 && packet[0] == 0xAA)
-                        { 
-                            Send(ServerSocket, packet, 0, packet.Length, 5000);
-                        }
+                        Send(ServerSocket, packet, 0, packet.Length, 5000);
                     }
-                    catch { }
-                    finally
-                    {
-                        EmptyBuffers();
-                    }
+
+                    EmptyBuffers();
                 }
             }
         }

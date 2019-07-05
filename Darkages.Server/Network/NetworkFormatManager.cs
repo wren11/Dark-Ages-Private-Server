@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using System;
+using System.Globalization;
 
 namespace Darkages.Network
 {
@@ -28,7 +29,7 @@ namespace Darkages.Network
             for (var i = 0; i < 256; i++)
             {
                 ClientFormats[i] = Type.GetType(
-                    string.Format("Darkages.Network.ClientFormats.ClientFormat{0:X2}", i), false, false);
+                    string.Format(CultureInfo.CurrentCulture, "Darkages.Network.ClientFormats.ClientFormat{0:X2}", i), false, false);
             }
         }
 

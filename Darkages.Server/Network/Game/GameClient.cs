@@ -1,4 +1,4 @@
-﻿///************************************************************************
+﻿// ************************************************************************
 //Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
@@ -14,7 +14,8 @@
 //
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+//*************************************************************************
+
 using CLAP;
 using Darkages.Common;
 using Darkages.Network.ServerFormats;
@@ -30,84 +31,520 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Darkages.Network.Game
 {
+    /// <summary>
+    /// Class GameClient.
+    /// Implements the <see cref="Darkages.Network.NetworkClient{Darkages.Network.Game.GameClient}" />
+    /// </summary>
+    /// <seealso cref="Darkages.Network.NetworkClient{Darkages.Network.Game.GameClient}" />
     public class GameClient : NetworkClient<GameClient>
     {
-        public Collection<GlobalScript> GlobalScripts = new Collection<GlobalScript>();
+        /// <summary>
+        /// The global scripts
+        /// </summary>
+        private Collection<GlobalScript> _globalScripts = new Collection<GlobalScript>();
+        /// <summary>
+        /// Gets or sets the global scripts.
+        /// </summary>
+        /// <value>The global scripts.</value>
+        public Collection<GlobalScript> GlobalScripts
+        {
+            get
+            {
+                return _globalScripts;
+            }
+            set
+            {
+                _globalScripts = value;
+            }
+        }
 
-        public GameServer Server;
+        /// <summary>
+        /// The server
+        /// </summary>
+        private GameServer _server;
 
-        public Aisling Aisling;
+        /// <summary>
+        /// Gets or sets the server.
+        /// </summary>
+        /// <value>The server.</value>
+        public GameServer Server
+        {
+            get
+            {
+                return _server;
+            }
+            set
+            {
+                _server = value;
+            }
+        }
 
-        public GameServerTimer HpRegenTimer;
+        /// <summary>
+        /// The aisling
+        /// </summary>
+        private Aisling _aisling;
 
-        public GameServerTimer MpRegenTimer;
+        /// <summary>
+        /// Gets or sets the aisling.
+        /// </summary>
+        /// <value>The aisling.</value>
+        public Aisling Aisling
+        {
+            get
+            {
+                return _aisling;
+            }
+            set
+            {
+                _aisling = value;
+            }
+        }
 
-        public Interpreter MenuInterpter;
+        /// <summary>
+        /// The hp regen timer
+        /// </summary>
+        private GameServerTimer _hpRegenTimer;
 
-        public DialogSession DlgSession;
+        /// <summary>
+        /// Gets or sets the hp regen timer.
+        /// </summary>
+        /// <value>The hp regen timer.</value>
+        public GameServerTimer HPRegenTimer
+        {
+            get
+            {
+                return _hpRegenTimer;
+            }
+            set
+            {
+                _hpRegenTimer = value;
+            }
+        }
 
-        public Item LastItemDropped;
+        /// <summary>
+        /// The mp regen timer
+        /// </summary>
+        private GameServerTimer _mpRegenTimer;
 
-        public DateTime BoardOpened;
+        /// <summary>
+        /// Gets or sets the mp regen timer.
+        /// </summary>
+        /// <value>The mp regen timer.</value>
+        public GameServerTimer MPRegenTimer
+        {
+            get
+            {
+                return _mpRegenTimer;
+            }
+            set
+            {
+                _mpRegenTimer = value;
+            }
+        }
 
-        public DateTime LastWhisperMessageSent;
+        /// <summary>
+        /// The menu interpter
+        /// </summary>
+        private Interpreter _menuInterpter;
 
-        public DateTime LastAssail;
+        /// <summary>
+        /// Gets or sets the menu interpter.
+        /// </summary>
+        /// <value>The menu interpter.</value>
+        public Interpreter MenuInterpter
+        {
+            get
+            {
+                return _menuInterpter;
+            }
+            set
+            {
+                _menuInterpter = value;
+            }
+        }
 
-        public DateTime LastMessageSent;
+        /// <summary>
+        /// The dialog session
+        /// </summary>
+        private DialogSession _dlgSession;
 
-        public DateTime LastPingResponse;
+        /// <summary>
+        /// Gets or sets the dialog session.
+        /// </summary>
+        /// <value>The dialog session.</value>
+        public DialogSession DlgSession
+        {
+            get
+            {
+                return _dlgSession;
+            }
+            set
+            {
+                _dlgSession = value;
+            }
+        }
 
-        public DateTime LastWarp;
+        /// <summary>
+        /// The last item dropped
+        /// </summary>
+        private Item _lastItemDropped;
 
-        public DateTime LastScriptExecuted;
+        /// <summary>
+        /// Gets or sets the last item dropped.
+        /// </summary>
+        /// <value>The last item dropped.</value>
+        public Item LastItemDropped
+        {
+            get
+            {
+                return _lastItemDropped;
+            }
+            set
+            {
+                _lastItemDropped = value;
+            }
+        }
 
-        public DateTime LastPing;
+        /// <summary>
+        /// The board opened
+        /// </summary>
+        private DateTime _boardOpened;
 
-        public DateTime LastSave;
+        /// <summary>
+        /// Gets or sets the board opened.
+        /// </summary>
+        /// <value>The board opened.</value>
+        public DateTime BoardOpened
+        {
+            get
+            {
+                return _boardOpened;
+            }
+            set
+            {
+                _boardOpened = value;
+            }
+        }
 
-        public DateTime LastClientRefresh;
+        /// <summary>
+        /// The last whisper message sent
+        /// </summary>
+        private DateTime _lastWhisperMessageSent;
 
+        /// <summary>
+        /// Gets or sets the last whisper message sent.
+        /// </summary>
+        /// <value>The last whisper message sent.</value>
+        public DateTime LastWhisperMessageSent
+        {
+            get
+            {
+                return _lastWhisperMessageSent;
+            }
+            set
+            {
+                _lastWhisperMessageSent = value;
+            }
+        }
+
+        /// <summary>
+        /// The last assail
+        /// </summary>
+        private DateTime _lastAssail;
+
+        /// <summary>
+        /// Gets or sets the last assail.
+        /// </summary>
+        /// <value>The last assail.</value>
+        public DateTime LastAssail
+        {
+            get
+            {
+                return _lastAssail;
+            }
+            set
+            {
+                _lastAssail = value;
+            }
+        }
+
+        /// <summary>
+        /// The last message sent
+        /// </summary>
+        private DateTime _lastMessageSent;
+
+        /// <summary>
+        /// Gets or sets the last message sent.
+        /// </summary>
+        /// <value>The last message sent.</value>
+        public DateTime LastMessageSent
+        {
+            get
+            {
+                return _lastMessageSent;
+            }
+            set
+            {
+                _lastMessageSent = value;
+            }
+        }
+
+        /// <summary>
+        /// The last ping response
+        /// </summary>
+        private DateTime _lastPingResponse;
+
+        /// <summary>
+        /// Gets or sets the last ping response.
+        /// </summary>
+        /// <value>The last ping response.</value>
+        public DateTime LastPingResponse
+        {
+            get
+            {
+                return _lastPingResponse;
+            }
+            set
+            {
+                _lastPingResponse = value;
+            }
+        }
+
+        /// <summary>
+        /// The last warp
+        /// </summary>
+        private DateTime _lastWarp;
+
+        /// <summary>
+        /// Gets or sets the last warp.
+        /// </summary>
+        /// <value>The last warp.</value>
+        public DateTime LastWarp
+        {
+            get
+            {
+                return _lastWarp;
+            }
+            set
+            {
+                _lastWarp = value;
+            }
+        }
+
+        /// <summary>
+        /// The last script executed
+        /// </summary>
+        private DateTime _lastScriptExecuted;
+
+        /// <summary>
+        /// Gets or sets the last script executed.
+        /// </summary>
+        /// <value>The last script executed.</value>
+        public DateTime LastScriptExecuted
+        {
+            get
+            {
+                return _lastScriptExecuted;
+            }
+            set
+            {
+                _lastScriptExecuted = value;
+            }
+        }
+
+        /// <summary>
+        /// The last ping
+        /// </summary>
+        private DateTime _lastPing;
+
+        /// <summary>
+        /// Gets or sets the last ping.
+        /// </summary>
+        /// <value>The last ping.</value>
+        public DateTime LastPing
+        {
+            get
+            {
+                return _lastPing;
+            }
+            set
+            {
+                _lastPing = value;
+            }
+        }
+
+        /// <summary>
+        /// The last save
+        /// </summary>
+        private DateTime _lastSave;
+
+        /// <summary>
+        /// Gets or sets the last save.
+        /// </summary>
+        /// <value>The last save.</value>
+        public DateTime LastSave
+        {
+            get
+            {
+                return _lastSave;
+            }
+            set
+            {
+                _lastSave = value;
+            }
+        }
+
+        /// <summary>
+        /// The last client refresh
+        /// </summary>
+        private DateTime _lastClientRefresh;
+
+        /// <summary>
+        /// Gets or sets the last client refresh.
+        /// </summary>
+        /// <value>The last client refresh.</value>
+        public DateTime LastClientRefresh
+        {
+            get
+            {
+                return _lastClientRefresh;
+            }
+            set
+            {
+                _lastClientRefresh = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is refreshing.
+        /// </summary>
+        /// <value><c>true</c> if this instance is refreshing; otherwise, <c>false</c>.</value>
         public bool IsRefreshing =>
             DateTime.UtcNow - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContext.Config.RefreshRate);
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is warping.
+        /// </summary>
+        /// <value><c>true</c> if this instance is warping; otherwise, <c>false</c>.</value>
         public bool IsWarping =>
             DateTime.UtcNow - LastWarp < new TimeSpan(0, 0, 0, 0, ServerContext.Config.WarpCheckRate);
 
-        public DateTime LastLocationSent { get; set; }
-
+        /// <summary>
+        /// Gets a value indicating whether this instance can send location.
+        /// </summary>
+        /// <value><c>true</c> if this instance can send location; otherwise, <c>false</c>.</value>
         public bool CanSendLocation =>
             DateTime.UtcNow - LastLocationSent < new TimeSpan(0, 0, 0, 1);
 
+        /// <summary>
+        /// Gets or sets the last location sent.
+        /// </summary>
+        /// <value>The last location sent.</value>
+        public DateTime LastLocationSent { get; set; }
+
+        /// <summary>
+        /// The last board activated
+        /// </summary>
+        private ushort _lastBoardActivated;
+
+        /// <summary>
+        /// Gets or sets the last board activated.
+        /// </summary>
+        /// <value>The last board activated.</value>
+        public ushort LastBoardActivated
+        {
+            get
+            {
+                return _lastBoardActivated;
+            }
+            set
+            {
+                _lastBoardActivated = value;
+            }
+        }
+
+        /// <summary>
+        /// The should update map
+        /// </summary>
+        private bool _shouldUpdateMap;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [should update map].
+        /// </summary>
+        /// <value><c>true</c> if [should update map]; otherwise, <c>false</c>.</value>
+        public bool ShouldUpdateMap
+        {
+            get
+            {
+                return _shouldUpdateMap;
+            }
+            set
+            {
+                _shouldUpdateMap = value;
+            }
+        }
+
+        /// <summary>
+        /// The last activated lost
+        /// </summary>
+        private byte _lastActivatedLost;
+
+        /// <summary>
+        /// Gets or sets the last activated lost.
+        /// </summary>
+        /// <value>The last activated lost.</value>
+        public byte LastActivatedLost
+        {
+            get
+            {
+                return _lastActivatedLost;
+            }
+            set
+            {
+                _lastActivatedLost = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the pending item sessions.
+        /// </summary>
+        /// <value>The pending item sessions.</value>
         [JsonIgnore]
         public PendingSell PendingItemSessions { get; set; }
 
-        public ushort LastBoardActivated;
-
-        public bool ShouldUpdateMap;
-
-        public byte LastActivatedLost;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameClient"/> class.
+        /// </summary>
+        [JsonConstructor]
         public GameClient()
         {
-            HpRegenTimer = new GameServerTimer(
+            HPRegenTimer = new GameServerTimer(
                 TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate));
 
-            MpRegenTimer = new GameServerTimer(
+            MPRegenTimer = new GameServerTimer(
                 TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate));
         }
 
-
+        /// <summary>
+        /// The map updating
+        /// </summary>
+        public bool MapUpdating;
 
         [Verb]
 
-        ///
+        /// <summary>
+        /// Ports the specified i.
+        /// </summary>
+        /// <param name="i">The i.</param>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
         /// This Chat command ports the user to a location.
         /// Example chat command: 'port -i:100 -x:5 -y:5'
-        public void port(int i, int x = 0, int y = 0)
+        public void Port(int i, int x = 0, int y = 0)
         {
             TransitionToMap(i, new Position(x, y));
 
@@ -120,10 +557,10 @@ namespace Darkages.Network.Game
         /// <param name="t">Name of Monster, Case Sensitive.</param>
         /// <param name="x">X Location to Spawn.</param>
         /// <param name="y">Y Location to Spawn.</param>
-        /// <param name="c"></param>
+        /// <param name="c">The c.</param>
         /// <usage>spawnMonster -t:Undead -x:43 -y:16 -c:10</usage>
         [Verb]
-        public void spawn(string t, int x, int y, int c)
+        public void Spawn(string t, int x, int y, int c)
         {
             var name = t.Replace("-", string.Empty).Trim();
 
@@ -158,16 +595,23 @@ namespace Darkages.Network.Game
         /// <summary>
         /// Add Exp
         /// </summary>
-        /// Example Chat command: addExp -a:10000
         /// <param name="a">Ammount of exp to give</param>
+        /// Example Chat command: addExp -a:10000
         [Verb]        
-        public void addexp(int a)
+        public void Addexp(int a)
         {
             Monster.DistributeExperience(Aisling, a);
         }
 
+        /// <summary>
+        /// Effs the specified n.
+        /// </summary>
+        /// <param name="n">The n.</param>
+        /// <param name="d">The d.</param>
+        /// <param name="r">The r.</param>
+        /// <returns>Task.</returns>
         [Verb]
-        public async void eff(ushort n, int d = 1000, int r = 1)
+        public async Task eff(ushort n, int d = 1000, int r = 1)
         {
             if (r <= 0)
                 r = 1;
@@ -179,6 +623,10 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Lifes the specified u.
+        /// </summary>
+        /// <param name="u">The u.</param>
         [Verb]
         public void life(string u)
         {
@@ -190,6 +638,10 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Deathes the specified u.
+        /// </summary>
+        /// <param name="u">The u.</param>
         [Verb]
         public void death(string u)
         {
@@ -197,10 +649,14 @@ namespace Darkages.Network.Game
 
             if (user != null)
             {
-                user.CurrentHp = 0; // The system will take care of the rest.
+                user.CurrentHp = 0; 
             }
         }
 
+        /// <summary>
+        /// Boards the specified n.
+        /// </summary>
+        /// <param name="n">The n.</param>
         [Verb]
         public void board(string n)
         {
@@ -220,8 +676,8 @@ namespace Darkages.Network.Game
         /// This chat command reloads all objects.
         /// </summary>
         /// <param name="all">[Optional] all objects | true or false</param>
-        /// <usage>reload -all:true|false</usage> 
-        /// <usage>reload</usage> 
+        /// <usage>reload -all:true|false</usage>
+        /// <usage>reload</usage>
         [Verb]
         public void reload(bool all = false)
         {
@@ -239,6 +695,9 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Builds the settings.
+        /// </summary>
         public void BuildSettings()
         {
             if (ServerContext.Config.Settings == null || ServerContext.Config.Settings.Length == 0)
@@ -255,23 +714,10 @@ namespace Darkages.Network.Game
             }
         }
 
-        public bool IsDead()
-        {
-            var result = Aisling != null && Aisling.Flags.HasFlag(AislingFlags.Dead);
-
-            return result;
-        }
-
-        public bool CanSeeGhosts()
-        {
-            return IsDead();
-        }
-
-        public bool CanSeeHidden()
-        {
-            return Aisling != null && (Aisling.Flags & AislingFlags.SeeInvisible) == AislingFlags.SeeInvisible;
-        }
-
+        /// <summary>
+        /// Warps to.
+        /// </summary>
+        /// <param name="warps">The warps.</param>
         public void WarpTo(WarpTemplate warps)
         {
             if (warps.WarpType == WarpType.World)
@@ -284,8 +730,8 @@ namespace Darkages.Network.Game
                     var msgTier = Math.Abs(Aisling.ExpLevel - warps.LevelRequired);
 
                     SendMessage(0x02, msgTier <= 10
-                        ? string.Format("You can't enter there just yet. ({0} req)", warps.LevelRequired)
-                        : string.Format("Nightmarish visions of your own death repel you. ({0} Req)", warps.LevelRequired));
+                        ? string.Format(CultureInfo.CurrentCulture, "You can't enter there just yet. ({0} req)", warps.LevelRequired)
+                        : string.Format(CultureInfo.CurrentCulture, "Nightmarish visions of your own death repel you. ({0} Req)", warps.LevelRequired));
                     return;
                 }
 
@@ -304,6 +750,12 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Learns the spell.
+        /// </summary>
+        /// <param name="Source">The source.</param>
+        /// <param name="subject">The subject.</param>
+        /// <param name="message">The message.</param>
         public void LearnSpell(Mundane Source, SpellTemplate subject, string message)
         {
             if (PayPrerequisites(subject.Prerequisites))
@@ -318,6 +770,12 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Learns the skill.
+        /// </summary>
+        /// <param name="Source">The source.</param>
+        /// <param name="subject">The subject.</param>
+        /// <param name="message">The message.</param>
         public void LearnSkill(Mundane Source, SkillTemplate subject, string message)
         {
             if (PayPrerequisites(subject.Prerequisites))
@@ -332,6 +790,11 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Pays the prerequisites.
+        /// </summary>
+        /// <param name="prerequisites">The prerequisites.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         public bool PayPrerequisites(LearningPredicate prerequisites)
         {
             if (prerequisites == null)
@@ -352,6 +815,10 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Pays the item prerequisites.
+        /// </summary>
+        /// <param name="prerequisites">The prerequisites.</param>
         private void PayItemPrerequisites(LearningPredicate prerequisites)
         {
             if (prerequisites.Items_Required != null && prerequisites.Items_Required.Count > 0)
@@ -377,6 +844,11 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Transitions to map.
+        /// </summary>
+        /// <param name="area">The area.</param>
+        /// <param name="position">The position.</param>
         public void TransitionToMap(Area area, Position position)
         {
             if (area == null)
@@ -401,6 +873,11 @@ namespace Darkages.Network.Game
             Aisling.Client.CloseDialog();
         }
 
+        /// <summary>
+        /// Transitions to map.
+        /// </summary>
+        /// <param name="area">The area.</param>
+        /// <param name="position">The position.</param>
         public void TransitionToMap(int area, Position position)
         {
             if (ServerContext.GlobalMapCache.ContainsKey(area))
@@ -413,6 +890,9 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Closes the dialog.
+        /// </summary>
         public void CloseDialog()
         {
             Send(new byte[] { 0x30, 0x00, 0x0A, 0x00 });
@@ -420,6 +900,10 @@ namespace Darkages.Network.Game
         }
 
 
+        /// <summary>
+        /// Updates the specified elapsed time.
+        /// </summary>
+        /// <param name="elapsedTime">The elapsed time.</param>
         public void Update(TimeSpan elapsedTime)
         {
             #region Sanity Checks
@@ -455,6 +939,10 @@ namespace Darkages.Network.Game
             UpdateReactors(elapsedTime);
         }
 
+        /// <summary>
+        /// Updates the reactors.
+        /// </summary>
+        /// <param name="elapsedTime">The elapsed time.</param>
         private void UpdateReactors(TimeSpan elapsedTime)
         {
             List<EphemeralReactor> Inactive = new List<EphemeralReactor>();
@@ -485,11 +973,18 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Systems the message.
+        /// </summary>
+        /// <param name="lpmessage">The lpmessage.</param>
         public void SystemMessage(string lpmessage)
         {
             SendMessage(0x02, lpmessage);
         }
 
+        /// <summary>
+        /// Statuses the check.
+        /// </summary>
         private void StatusCheck()
         {
             bool proceed = false;
@@ -549,6 +1044,9 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Handles the time outs.
+        /// </summary>
         private void HandleTimeOuts()
         {
             if (Aisling.Exchange != null)
@@ -573,6 +1071,10 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Updates the status bar.
+        /// </summary>
+        /// <param name="elapsedTime">The elapsed time.</param>
         public void UpdateStatusBar(TimeSpan elapsedTime)
         {
             lock (Aisling)
@@ -582,6 +1084,10 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Updates the global scripts.
+        /// </summary>
+        /// <param name="elapsedTime">The elapsed time.</param>
         public void UpdateGlobalScripts(TimeSpan elapsedTime)
         {
             lock (GlobalScripts)
@@ -591,6 +1097,10 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// load as an asynchronous operation.
+        /// </summary>
+        /// <returns>Task&lt;System.Boolean&gt;.</returns>
         public async Task<bool> LoadAsync()
         {
             if (Aisling == null || Aisling.AreaID == 0)
@@ -617,7 +1127,7 @@ namespace Darkages.Network.Game
                     return true;
                 });
             }
-            catch
+            catch (NullReferenceException)
             {
                 return false;
             }
@@ -625,6 +1135,10 @@ namespace Darkages.Network.Game
             return true;
         }
 
+        /// <summary>
+        /// Sets the aisling startup variables.
+        /// </summary>
+        /// <returns>GameClient.</returns>
         private GameClient SetAislingStartupVariables()
         {
             LastSave            = DateTime.UtcNow;
@@ -642,6 +1156,10 @@ namespace Darkages.Network.Game
             return this;
         }
 
+        /// <summary>
+        /// Loads the global scripts.
+        /// </summary>
+        /// <returns>GameClient.</returns>
         private GameClient LoadGlobalScripts()
         {
             foreach (var script in ServerContext.Config.GlobalScripts)
@@ -650,37 +1168,42 @@ namespace Darkages.Network.Game
             return this;
         }
 
+        /// <summary>
+        /// Regens the specified elapsed time.
+        /// </summary>
+        /// <param name="elapsedTime">The elapsed time.</param>
         private void Regen(TimeSpan elapsedTime)
         {
             if (Aisling.Con > Aisling.ExpLevel + 1)
-                HpRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate);
+                HPRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate / 2);
 
             if (Aisling.Wis > Aisling.ExpLevel + 1)
-                MpRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate);
+                MPRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate / 2);
 
-            HpRegenTimer.Update(elapsedTime);
-            MpRegenTimer.Update(elapsedTime);
+            HPRegenTimer.Update(elapsedTime);
+            MPRegenTimer.Update(elapsedTime);
 
-            if (HpRegenTimer.Elapsed)
+            if (HPRegenTimer.Elapsed)
             {
-                HpRegenTimer.Reset();
+                HPRegenTimer.Reset();
 
                 var hpRegenSeed   = (Aisling.Con - Aisling.ExpLevel).Clamp(0, 10) * 0.01;
                 var hpRegenAmount = (Aisling.MaximumHp * (hpRegenSeed + 0.10));
 
-                hpRegenAmount = (hpRegenAmount / 100) * Aisling.Regen;
+                hpRegenAmount += (hpRegenAmount / 100) * (1 + Aisling.Regen);
 
                 Aisling.CurrentHp = (Aisling.CurrentHp + (int)hpRegenAmount).Clamp(0, Aisling.MaximumHp);
                 SendStats(StatusFlags.StructB);
             }
 
-            if (MpRegenTimer.Elapsed)
+            if (MPRegenTimer.Elapsed)
             {
-                MpRegenTimer.Reset();
-                var mpRegenSeed = (Aisling.Wis - Aisling.ExpLevel).Clamp(0, 10) * 0.01;
+                MPRegenTimer.Reset();
+
+                var mpRegenSeed   =  (Aisling.Wis - Aisling.ExpLevel).Clamp(0, 10) * 0.01;
                 var mpRegenAmount = (Aisling.MaximumMp * (mpRegenSeed + 0.10));
 
-                mpRegenAmount = (mpRegenAmount / 100)  * (Aisling.Regen + 20);
+                mpRegenAmount += (mpRegenAmount / 100)  * (3 + Aisling.Regen);
 
                 Aisling.CurrentMp = (Aisling.CurrentMp + (int)mpRegenAmount).Clamp(0, Aisling.MaximumMp);
                 SendStats(StatusFlags.StructB);
@@ -688,6 +1211,10 @@ namespace Darkages.Network.Game
 
         }
 
+        /// <summary>
+        /// Initializes the spell bar.
+        /// </summary>
+        /// <returns>GameClient.</returns>
         private GameClient InitSpellBar()
         {
             foreach (var buff in Aisling.Buffs.Select(i => i.Value))
@@ -709,6 +1236,10 @@ namespace Darkages.Network.Game
             return this;
         }
 
+        /// <summary>
+        /// Loads the equipment.
+        /// </summary>
+        /// <returns>GameClient.</returns>
         private GameClient LoadEquipment()
         {
             var formats = new List<NetworkFormat>();
@@ -756,7 +1287,7 @@ namespace Darkages.Network.Game
                     nitem.Release(Aisling, Aisling.Position);
 
                     //display message
-                    SendMessage(0x02, string.Format("{0} is too heavy to hold.", nitem.Template.Name));
+                    SendMessage(0x02, string.Format(CultureInfo.CurrentCulture, "{0} is too heavy to hold.", nitem.Template.Name));
 
                     continue;
                 }
@@ -777,6 +1308,10 @@ namespace Darkages.Network.Game
             return this;
         }
 
+        /// <summary>
+        /// Loads the spell book.
+        /// </summary>
+        /// <returns>GameClient.</returns>
         private GameClient LoadSpellBook()
         {
             var spells_Available = Aisling.SpellBook.Spells.Values
@@ -812,6 +1347,10 @@ namespace Darkages.Network.Game
             return this;
         }
 
+        /// <summary>
+        /// Loads the skill book.
+        /// </summary>
+        /// <returns>GameClient.</returns>
         private GameClient LoadSkillBook()
         {
             var skills_Available = Aisling.SkillBook.Skills.Values
@@ -848,6 +1387,10 @@ namespace Darkages.Network.Game
             return this;
         }
 
+        /// <summary>
+        /// Loads the inventory.
+        /// </summary>
+        /// <returns>GameClient.</returns>
         private GameClient LoadInventory()
         {
             var items_Available = Aisling.Inventory.Items.Values
@@ -898,7 +1441,7 @@ namespace Darkages.Network.Game
                             copy.Release(Aisling, Aisling.Position);
 
                             //display message
-                            SendMessage(0x02, string.Format("You stumble and drop {0}", item.Template.Name));
+                            SendMessage(0x02, string.Format(CultureInfo.CurrentCulture, "You stumble and drop {0}", item.Template.Name));
                         }
                     }
                 }
@@ -907,6 +1450,10 @@ namespace Darkages.Network.Game
             return this;
         }
 
+        /// <summary>
+        /// Updates the display.
+        /// </summary>
+        /// <returns>GameClient.</returns>
         public GameClient UpdateDisplay()
         {
             //construct display Format for dispatching out.
@@ -919,7 +1466,7 @@ namespace Darkages.Network.Game
             if (Aisling.Flags.HasFlag(AislingFlags.Dead))
             {
                 //only show to clients who can see ghosts.
-                var nearby = GetObjects<Aisling>(Aisling.Map, i => i.WithinRangeOf(Aisling) && i.Client.CanSeeGhosts());
+                var nearby = GetObjects<Aisling>(Aisling.Map, i => i.WithinRangeOf(Aisling) && i.CanSeeGhosts());
 
                 if (nearby != null)
                 {
@@ -936,12 +1483,21 @@ namespace Darkages.Network.Game
             return this;
         }
 
+        /// <summary>
+        /// Refreshes the specified delete.
+        /// </summary>
+        /// <param name="delete">if set to <c>true</c> [delete].</param>
         public void Refresh(bool delete = false)
         {
             LeaveArea(delete);
             EnterArea();
         }
 
+        /// <summary>
+        /// Leaves the area.
+        /// </summary>
+        /// <param name="update">if set to <c>true</c> [update].</param>
+        /// <param name="delete">if set to <c>true</c> [delete].</param>
         public void LeaveArea(bool update = false, bool delete = false)
         {
             if (Aisling.LastMapId == short.MaxValue)
@@ -952,8 +1508,15 @@ namespace Darkages.Network.Game
             Aisling.Remove(update, delete);
         }
 
+        /// <summary>
+        /// Enters the area.
+        /// </summary>
         public void EnterArea() => Enter();
 
+        /// <summary>
+        /// Enters this instance.
+        /// </summary>
+        /// <returns>GameClient.</returns>
         private GameClient Enter()
         {
             SendSerial();
@@ -965,6 +1528,9 @@ namespace Darkages.Network.Game
             return this;
         }
 
+        /// <summary>
+        /// Sends the music.
+        /// </summary>
         public void SendMusic()
         {
             Aisling.Client.Send(new byte[]
@@ -974,6 +1540,11 @@ namespace Darkages.Network.Game
             });
         }
 
+        /// <summary>
+        /// Sends the sound.
+        /// </summary>
+        /// <param name="sound">The sound.</param>
+        /// <param name="scope">The scope.</param>
         public void SendSound(byte sound, Scope scope = Scope.Self)
         {
             var empty = new ServerFormat13
@@ -989,12 +1560,10 @@ namespace Darkages.Network.Game
         /// <summary>
         /// Client.Insert: if map is ready (loaded), Inserts an Aisling onto the map in question.
         /// condition: if it's not present in the object manager.
-        /// 
         /// true: inserts the object into the object manager, then updates the Map tile location.
         /// false: does not insert the object into the object manager.
-        /// 
         /// Note: It will update the map object grid regardless of the above condition.
-        /// </summary>       
+        /// </summary>
         public void Insert()
         {
             if (!Aisling.Map.Ready)
@@ -1006,8 +1575,9 @@ namespace Darkages.Network.Game
             Aisling.Map.Update(Aisling.XPos, Aisling.YPos, Aisling);
         }
 
-        public bool MapUpdating;
-
+        /// <summary>
+        /// Refreshes the map.
+        /// </summary>
         public void RefreshMap()
         {
             ShouldUpdateMap = false;
@@ -1025,7 +1595,6 @@ namespace Darkages.Network.Game
                 SendMusic();
             }
 
-
             if (ShouldUpdateMap)
             {
                 MapUpdating = true;
@@ -1038,11 +1607,17 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Sends the serial.
+        /// </summary>
         private void SendSerial()
         {
             Send(new ServerFormat05(Aisling));
         }
 
+        /// <summary>
+        /// Sends the location.
+        /// </summary>
         public void SendLocation()
         {
             CloseDialog();
@@ -1052,6 +1627,9 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Saves this instance.
+        /// </summary>
         public void Save()
         {
             lock (ServerContext.SyncObj)
@@ -1066,12 +1644,23 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Sends the message.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="text">The text.</param>
         public void SendMessage(byte type, string text)
         {
             Send(new ServerFormat0A(type, text));
             LastMessageSent = DateTime.UtcNow;
         }
 
+        /// <summary>
+        /// Sends the message.
+        /// </summary>
+        /// <param name="scope">The scope.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="text">The text.</param>
         public void SendMessage(Scope scope, byte type, string text)
         {
             switch (scope)
@@ -1119,6 +1708,11 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Says the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="type">The type.</param>
         public void Say(string message, byte type = 0x00)
         {
             var response = new ServerFormat0D
@@ -1131,67 +1725,144 @@ namespace Darkages.Network.Game
             Aisling.Show(Scope.NearbyAislings, response);
         }
 
+        /// <summary>
+        /// Sends the animation.
+        /// </summary>
+        /// <param name="Animation">The animation.</param>
+        /// <param name="To">To.</param>
+        /// <param name="From">From.</param>
+        /// <param name="speed">The speed.</param>
         public void SendAnimation(ushort Animation, Sprite To, Sprite From, byte speed = 100)
         {
             var format = new ServerFormat29((uint)From.Serial, (uint)To.Serial, Animation, 0, speed);
             Aisling.Show(Scope.NearbyAislings, format);
         }
 
+        /// <summary>
+        /// Sends the item shop dialog.
+        /// </summary>
+        /// <param name="mundane">The mundane.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="step">The step.</param>
+        /// <param name="items">The items.</param>
         public void SendItemShopDialog(Mundane mundane, string text, ushort step, IEnumerable<ItemTemplate> items)
         {
             Send(new ServerFormat2F(mundane, text, new ItemShopData(step, items)));
         }
 
+        /// <summary>
+        /// Sends the item sell dialog.
+        /// </summary>
+        /// <param name="mundane">The mundane.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="step">The step.</param>
+        /// <param name="items">The items.</param>
         public void SendItemSellDialog(Mundane mundane, string text, ushort step, IEnumerable<byte> items)
         {
             Send(new ServerFormat2F(mundane, text, new ItemSellData(step, items)));
         }
 
+        /// <summary>
+        /// Sends the options dialog.
+        /// </summary>
+        /// <param name="mundane">The mundane.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="options">The options.</param>
         public void SendOptionsDialog(Mundane mundane, string text, params OptionsDataItem[] options)
         {
             Send(new ServerFormat2F(mundane, text, new OptionsData(options)));
         }
 
+        /// <summary>
+        /// Sends the popup dialog.
+        /// </summary>
+        /// <param name="popup">The popup.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="options">The options.</param>
         public void SendPopupDialog(Popup popup, string text, params OptionsDataItem[] options)
         {
             Send(new PopupFormat(popup, text, new OptionsData(options)));
         }
 
+        /// <summary>
+        /// Sends the options dialog.
+        /// </summary>
+        /// <param name="mundane">The mundane.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="args">The arguments.</param>
+        /// <param name="options">The options.</param>
         public void SendOptionsDialog(Mundane mundane, string text, string args, params OptionsDataItem[] options)
         {
             Send(new ServerFormat2F(mundane, text, new OptionsPlusArgsData(options, args)));
         }
 
+        /// <summary>
+        /// Sends the skill learn dialog.
+        /// </summary>
+        /// <param name="mundane">The mundane.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="step">The step.</param>
+        /// <param name="skills">The skills.</param>
         public void SendSkillLearnDialog(Mundane mundane, string text, ushort step, IEnumerable<SkillTemplate> skills)
         {
             Send(new ServerFormat2F(mundane, text, new SkillAcquireData(step, skills)));
         }
 
+        /// <summary>
+        /// Sends the spell learn dialog.
+        /// </summary>
+        /// <param name="mundane">The mundane.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="step">The step.</param>
+        /// <param name="spells">The spells.</param>
         public void SendSpellLearnDialog(Mundane mundane, string text, ushort step, IEnumerable<SpellTemplate> spells)
         {
             Send(new ServerFormat2F(mundane, text, new SpellAcquireData(step, spells)));
         }
 
+        /// <summary>
+        /// Sends the skill forget dialog.
+        /// </summary>
+        /// <param name="mundane">The mundane.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="step">The step.</param>
         public void SendSkillForgetDialog(Mundane mundane, string text, ushort step)
         {
             Send(new ServerFormat2F(mundane, text, new SkillForfeitData(step)));
         }
 
+        /// <summary>
+        /// Sends the spell forget dialog.
+        /// </summary>
+        /// <param name="mundane">The mundane.</param>
+        /// <param name="text">The text.</param>
+        /// <param name="step">The step.</param>
         public void SendSpellForgetDialog(Mundane mundane, string text, ushort step)
         {
             Send(new ServerFormat2F(mundane, text, new SpellForfeitData(step)));
         }
 
+        /// <summary>
+        /// Sends the stats.
+        /// </summary>
+        /// <param name="flags">The flags.</param>
         public void SendStats(StatusFlags flags)
         {
             Send(new ServerFormat08(Aisling, flags));
         }
 
+        /// <summary>
+        /// Sends the profile update.
+        /// </summary>
         public void SendProfileUpdate()
         {
             Send(new byte[] { 73, 0x00 });
         }
 
+        /// <summary>
+        /// Trains the spell.
+        /// </summary>
+        /// <param name="spell">The spell.</param>
         public void TrainSpell(Spell spell)
         {
             if (spell.Level < spell.Template.MaxLevel)
@@ -1202,11 +1873,15 @@ namespace Darkages.Network.Game
                     spell.Level++;
                     spell.Casts = 0;
                     Send(new ServerFormat17(spell));
-                    SendMessage(0x02, string.Format("{0} has improved.", spell.Template.Name));
+                    SendMessage(0x02, string.Format(CultureInfo.CurrentCulture, "{0} has improved.", spell.Template.Name));
                 }
             }
         }
 
+        /// <summary>
+        /// Trains the skill.
+        /// </summary>
+        /// <param name="skill">The skill.</param>
         public void TrainSkill(Skill skill)
         {
             if (skill.Level < skill.Template.MaxLevel)
@@ -1219,7 +1894,7 @@ namespace Darkages.Network.Game
                     skill.Uses = 0;
                     Send(new ServerFormat2C(skill.Slot, skill.Icon, skill.Name));
 
-                    SendMessage(0x02, string.Format("{0} has improved. (Lv. {1})",
+                    SendMessage(0x02, string.Format(CultureInfo.CurrentCulture, "{0} has improved. (Lv. {1})",
                         skill.Template.Name,
                         skill.Level));
                 }
@@ -1231,7 +1906,7 @@ namespace Darkages.Network.Game
         }
 
         /// <summary>
-        ///     Stop and Interupt everything this client is doing.
+        /// Stop and Interupt everything this client is doing.
         /// </summary>
         public void Interupt()
         {
@@ -1239,6 +1914,10 @@ namespace Darkages.Network.Game
             SendLocation();
         }
 
+        /// <summary>
+        /// Warps to.
+        /// </summary>
+        /// <param name="position">The position.</param>
         public void WarpTo(Position position)
         {
             Aisling.Map.Update(Aisling.XPos, Aisling.YPos, Aisling, true);
@@ -1251,6 +1930,10 @@ namespace Darkages.Network.Game
             Aisling.Map.Update(Aisling.XPos, Aisling.YPos, Aisling);
         }
 
+        /// <summary>
+        /// Repairs the equipment.
+        /// </summary>
+        /// <param name="gear">The gear.</param>
         public void RepairEquipment(IEnumerable<Item> gear)
         {
             foreach (var item in Aisling.Inventory.Items
@@ -1267,17 +1950,26 @@ namespace Darkages.Network.Game
         }
 
 
+        /// <summary>
+        /// Revives this instance.
+        /// </summary>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         public bool Revive()
         {
-            Aisling.CurrentHp     = Aisling.MaximumHp / 6;
             Aisling.Flags         = AislingFlags.Normal;
-            HpRegenTimer.Disabled = false;
-            MpRegenTimer.Disabled = false;
+            HPRegenTimer.Disabled = false;
+            MPRegenTimer.Disabled = false;
 
             Aisling.Recover();
             return Aisling.CurrentHp > 0;
         }
 
+        /// <summary>
+        /// Checks the reqs.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="item">The item.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         public bool CheckReqs(GameClient client, Item item)
         {
             var message = string.Empty;
@@ -1285,7 +1977,7 @@ namespace Darkages.Network.Game
             if (client.Aisling.ExpLevel < item.Template.LevelRequired)
             {
                 message = ServerContext.Config.CantWearYetMessage;
-                if (message != string.Empty)
+                if (!(message != null && String.IsNullOrEmpty(message)))
                 {
                     client.SendMessage(0x02, message);
                     return false;
@@ -1295,7 +1987,7 @@ namespace Darkages.Network.Game
             if (item.Durability <= 0)
             {
                 message = ServerContext.Config.RepairItemMessage;
-                if (message != string.Empty)
+                if (!(message != null && String.IsNullOrEmpty(message)))
                 {
                     client.SendMessage(0x02, message);
                     return false;
@@ -1314,7 +2006,7 @@ namespace Darkages.Network.Game
                 }
             }
 
-            if (message != string.Empty)
+            if (!(message != null && String.IsNullOrEmpty(message)))
             {
                 client.SendMessage(0x02, message);
                 return false;
@@ -1348,36 +2040,12 @@ namespace Darkages.Network.Game
             return false;
         }
 
-        public bool HasInInventory(string item, int count)
-        {
-            var template = ServerContext.GlobalItemTemplateCache[item];
-
-            if (!ServerContext.GlobalItemTemplateCache.ContainsKey(item))
-                return false;
-
-            if (template != null)
-            {
-                return Aisling.Inventory.Has(template) > 0;
-            }
-
-            return false;
-        }
-
-        public bool IsWearing(string item)
-        {
-            return Aisling.EquipmentManager.Equipment.Any(i => i.Value != null && i.Value.Item.Template.Name == item);
-        }
-
-        public bool HasKilled(string monster, int count)
-        {
-            return Aisling.HasKilled(monster, count);
-        }
-
-        public bool HasVisitedMap(int mapId)
-        {
-            return Aisling.DiscoveredMaps.Contains(mapId);
-        }
-
+        /// <summary>
+        /// Shows the current menu.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="currentitem">The currentitem.</param>
+        /// <param name="nextitem">The nextitem.</param>
         public void ShowCurrentMenu(Sprite obj, MenuItem currentitem, MenuItem nextitem)
         {
             if (nextitem == null)
@@ -1419,6 +2087,12 @@ namespace Darkages.Network.Game
             }
         }
 
+        /// <summary>
+        /// Shows the current menu.
+        /// </summary>
+        /// <param name="popup">The popup.</param>
+        /// <param name="currentitem">The currentitem.</param>
+        /// <param name="nextitem">The nextitem.</param>
         public void ShowCurrentMenu(Popup popup, MenuItem currentitem, MenuItem nextitem)
         {
             if (nextitem == null)

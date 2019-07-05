@@ -32,6 +32,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Darkages.Network.Game
 {
@@ -75,7 +76,7 @@ namespace Darkages.Network.Game
         public void CreateInterpreterFromMenuFile(GameClient lpClient, string lpName)
         {
             var parser   = new YamlMenuParser();
-            var yamlPath = ServerContext.StoragePath + string.Format(@"\Scripts\Menus\{0}.yaml", lpName);
+            var yamlPath = ServerContext.StoragePath + string.Format(CultureInfo.CurrentCulture, @"\Scripts\Menus\{0}.yaml", lpName);
 
             if (File.Exists(yamlPath))
             {
@@ -113,7 +114,7 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            throw new FileNotFoundException(string.Format("{0} could not be loaded.", lpName));
+            lpClient.MenuInterpter = null;
         }
 
         private void MenuInterpter_OnMovedToNextStep(GameClient client, MenuInterpreter.MenuItem previous, MenuInterpreter.MenuItem current)
@@ -153,7 +154,7 @@ namespace Darkages.Network.Game
             if (lpClient?.Aisling == null)
                 return;
 
-            if (lpClient.IsDead())
+            if (lpClient.Aisling.IsDead())
                 return;
 
             #endregion
@@ -368,9 +369,9 @@ namespace Darkages.Network.Game
         {
             var redirect = new Redirect
             {
-                Serial = Convert.ToString(client.Serial),
+                Serial = Convert.ToString(client.Serial, CultureInfo.CurrentCulture),
                 Salt   = System.Text.Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
-                Seed   = Convert.ToString(client.Encryption.Parameters.Seed),
+                Seed   = Convert.ToString(client.Encryption.Parameters.Seed, CultureInfo.CurrentCulture),
                 Name   = client.Aisling.Username,
                 Type   = "2"
             };
@@ -601,7 +602,7 @@ namespace Darkages.Network.Game
             if (!client.Aisling.LoggedIn)
                 return;
 
-            if (client.IsDead())
+            if (client.Aisling.IsDead())
                 return;
 
             #endregion
@@ -934,7 +935,7 @@ namespace Darkages.Network.Game
             if (!client.Aisling.LoggedIn)
                 return;
 
-            if (client.IsDead())
+            if (client.Aisling.IsDead())
                 return;
 
             #endregion
@@ -1077,7 +1078,7 @@ namespace Darkages.Network.Game
             if (!client.Aisling.LoggedIn)
                 return;
 
-            if (client.IsDead())
+            if (client.Aisling.IsDead())
                 return;
 
             #endregion
@@ -1140,15 +1141,18 @@ namespace Darkages.Network.Game
 
             client.LastWhisperMessageSent = DateTime.UtcNow;
 
-            var user = Clients.FirstOrDefault(i => i != null && i.Aisling != null && i.Aisling.LoggedIn && i.Aisling.Username.ToLower() == format.Name.ToLower());
+            var user = Clients.FirstOrDefault(i => i != null && i.Aisling != null && i.Aisling.LoggedIn && i.Aisling.Username.ToLower() == format.Name.ToLower(CultureInfo.CurrentCulture));
 
             if (user == null)
-                client.SendMessage(0x02, string.Format("{0} is nowhere to be found.", format.Name));
+                client.SendMessage
+                    (0x02, string.Format(CultureInfo.CurrentCulture, "{0} is nowhere to be found.", format.Name));
 
             if (user != null)
             {
-                user.SendMessage(0x00, string.Format("{0}\" {1}", client.Aisling.Username, format.Message));
-                client.SendMessage(0x00, string.Format("{0}> {1}", user.Aisling.Username, format.Message));
+                user.SendMessage
+                    (0x00,   string.Format(CultureInfo.CurrentCulture, "{0}\" {1}", client.Aisling.Username, format.Message));
+                client.SendMessage
+                    (0x00, string.Format(CultureInfo.CurrentCulture, "{0}> {1}", user.Aisling.Username, format.Message));
             }
         }
 
@@ -1191,14 +1195,14 @@ namespace Darkages.Network.Game
 
             client.LastActivatedLost = slot;
 
-            bool Activated = false;
+            bool activated = false;
 
             if (item.Template != null)
             {
                 if (!string.IsNullOrEmpty(item?.Template?.MiniScript))
                 {
                     item.Template.RunMiniScript(client);
-                    Activated = true;
+                    activated = true;
                 }
                 else
                 {
@@ -1222,11 +1226,11 @@ namespace Darkages.Network.Game
                     {
 
                         item.Script.OnUse(client.Aisling, slot);
-                        Activated = true;
+                        activated = true;
                     }
                 }
 
-                if (Activated)
+                if (activated)
                 {
                     if (item.Template.Flags.HasFlag(ItemFlags.Stackable))
                     {
@@ -1277,7 +1281,7 @@ namespace Darkages.Network.Game
 
             CancelIfCasting(client);
 
-            if (client.IsDead())
+            if (client.Aisling.IsDead())
                 return;
 
             #endregion
@@ -1398,7 +1402,7 @@ namespace Darkages.Network.Game
 
             CancelIfCasting(client);
 
-            if (client.IsDead())
+            if (client.Aisling.IsDead())
                 return;
 
             #endregion
@@ -1407,7 +1411,7 @@ namespace Darkages.Network.Game
                 return;
 
             //get aisling who i want to group, check if they are nearby.
-            var player = GetObject<Aisling>(client.Aisling.Map, i => i.Username.ToLower() == format.Name
+            var player = GetObject<Aisling>(client.Aisling.Map, i => i.Username.ToLower(CultureInfo.CurrentCulture) == format.Name
                                                  && i.WithinRangeOf(client.Aisling));
 
             if (player == null)
@@ -1477,7 +1481,7 @@ namespace Darkages.Network.Game
 
             CancelIfCasting(client);
 
-            if (client.IsDead())
+            if (client.Aisling.IsDead())
                 return;
 
             #endregion
@@ -1954,6 +1958,8 @@ namespace Darkages.Network.Game
                     case 1:
                         client.Aisling.ActiveReactor.Decorator.OnNext(client.Aisling);
                         break;
+                    default:
+                        break;
                 }
             }
             else
@@ -2130,7 +2136,7 @@ namespace Darkages.Network.Game
             if (client?.Aisling == null)
                 return;
 
-            if (client.IsDead())
+            if (client.Aisling.IsDead())
                 return;
 
             #endregion
@@ -2362,7 +2368,7 @@ namespace Darkages.Network.Game
                             }
                             catch (Exception err)
                             {
-                                ServerContext.ILog.Error(string.Format("Error in Menu Handler : {0}", obj.GetType().FullName), err);
+                                ServerContext.ILog.Error(string.Format(CultureInfo.CurrentCulture, "Error in Menu Handler : {0}", obj.GetType().FullName), err);
                             }
                         }
                         break;
@@ -2737,6 +2743,8 @@ namespace Darkages.Network.Game
                         trader.Client.Send(packet);
                     }
                     break;
+                default:
+                    break;
             }
         }
 
@@ -2753,7 +2761,7 @@ namespace Darkages.Network.Game
             if (!client.Aisling.LoggedIn)
                 return;
 
-            if (client.IsDead())
+            if (client.Aisling.IsDead())
                 return;
 
             #endregion
@@ -2796,7 +2804,7 @@ namespace Darkages.Network.Game
             if (!client.Aisling.LoggedIn)
                 return;
 
-            if (client.IsDead())
+            if (client.Aisling.IsDead())
                 return;
 
             #endregion

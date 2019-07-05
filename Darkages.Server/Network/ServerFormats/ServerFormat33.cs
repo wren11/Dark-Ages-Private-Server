@@ -44,11 +44,11 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            if (Aisling.Dead && !Client.CanSeeGhosts())
+            if (Aisling.Dead && !Client.Aisling.CanSeeGhosts())
                 return;
 
             if (Client.Aisling.Serial != Aisling.Serial)
-                if (Aisling.Invisible && !Client.CanSeeHidden())
+                if (Aisling.Invisible && !Client.Aisling.CanSeeHidden())
                     return;
 
             writer.Write((ushort)Aisling.XPos);
