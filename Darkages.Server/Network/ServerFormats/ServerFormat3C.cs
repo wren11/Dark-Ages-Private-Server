@@ -15,18 +15,20 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat3C : NetworkFormat
     {
+        public byte[] Data;
+
+        public ushort Line;
+
         public ServerFormat3C()
         {
             Secured = true;
             Command = 0x3C;
         }
-
-        public ushort Line;
-        public byte[] Data;
 
         public override void Serialize(NetworkPacketReader reader)
         {

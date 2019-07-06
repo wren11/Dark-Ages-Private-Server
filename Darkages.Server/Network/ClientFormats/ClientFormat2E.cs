@@ -15,19 +15,20 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat2E : NetworkFormat
     {
-        public byte Type { get; set; }
-        public string Name { get; set; }
-        public bool ShowOnMap { get; set; }
-
         public ClientFormat2E()
         {
             Secured = true;
             Command = 0x2E;
         }
+
+        public byte Type { get; set; }
+        public string Name { get; set; }
+        public bool ShowOnMap { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

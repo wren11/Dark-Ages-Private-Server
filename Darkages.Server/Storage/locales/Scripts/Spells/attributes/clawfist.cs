@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.Buffs;
@@ -25,7 +26,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
     [Script("Claw Fist", "Dean")]
     public class clawfist : SkillScript
     {
-
         public clawfist(Skill skill) : base(skill)
         {
         }
@@ -55,7 +55,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     var action = new ServerFormat1A
                     {
                         Serial = sprite.Serial,
-                        Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
+                        Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                            client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                         Speed = 30
                     };
 
@@ -68,9 +69,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     client.SendMessage(0x02, "Your hands are already empowered.");
                 }
             }
-
-
         }
+
         public override void OnUse(Sprite sprite)
         {
             if (sprite is Aisling)

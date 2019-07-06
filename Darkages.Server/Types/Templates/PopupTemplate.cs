@@ -1,65 +1,66 @@
-﻿using Darkages.Common;
-using Darkages.Network.Game;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Common;
+using Darkages.Network.Game;
 
 namespace Darkages.Types
 {
-    public class PopupTemplate  : Template
+    public class PopupTemplate : Template
     {
         /// <summary>
-        /// The Script (Yaml File that is executed on trigger)
+        ///     The Script (Yaml File that is executed on trigger)
         /// </summary>
-        public string      YamlKey           { get; set; }
-        public int         Timeout           { get; set; }
-        public bool        Ephemeral         { get; set; }
-        public ushort      SpriteId          { get; set; }
-        public TriggerType TypeOfTrigger     { get; set; }
+        public string YamlKey { get; set; }
+
+        public int Timeout { get; set; }
+        public bool Ephemeral { get; set; }
+        public ushort SpriteId { get; set; }
+        public TriggerType TypeOfTrigger { get; set; }
     }
 
     public class ItemDropPopup : PopupTemplate
     {
-        public string ItemName { get; set; }
-
         public ItemDropPopup()
         {
             TypeOfTrigger = TriggerType.ItemDrop;
         }
+
+        public string ItemName { get; set; }
     }
 
     public class ItemPickupPopup : PopupTemplate
     {
-        public string ItemName { get; set; }
-
         public ItemPickupPopup()
         {
             TypeOfTrigger = TriggerType.ItemPickup;
         }
+
+        public string ItemName { get; set; }
     }
 
     public class UserClickPopup : PopupTemplate
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int MapId { get; set; }
-
         public UserClickPopup()
         {
             TypeOfTrigger = TriggerType.UserClick;
         }
+
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int MapId { get; set; }
     }
 
     public class UserWalkPopup : PopupTemplate
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int MapId { get; set; }
-
         public UserWalkPopup()
         {
             TypeOfTrigger = TriggerType.MapLocation;
         }
+
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int MapId { get; set; }
     }
 
 
@@ -70,20 +71,22 @@ namespace Darkages.Types
         MapRandom,
         MapLocation,
         UserGossip,
-        ItemPickup,
+        ItemPickup
     }
 
     public class Popup
     {
-        private static HashSet<Popup> _popups = new HashSet<Popup>();
+        private static readonly HashSet<Popup> _popups = new HashSet<Popup>();
 
-
-        public static Popup Get(Predicate<Popup> predicate)
+        public Popup()
         {
-            return Popups.Find(i => predicate(i));
-        }
+            Users = new List<int>();
 
-        public static Popup GetById(uint id) => Get(i => i.Id == id);
+            lock (Generator.Random)
+            {
+                Id = Generator.GenerateNumber();
+            }
+        }
 
         public static List<Popup> Popups
         {
@@ -98,6 +101,34 @@ namespace Darkages.Types
 
                 return tmpl;
             }
+        }
+
+        public int Id { get; set; }
+
+        /// <summary>
+        ///     The Owner
+        /// </summary>
+        public int Owner { get; set; }
+
+        /// <summary>
+        ///     List of Users who can receive the popup.
+        /// </summary>
+        public List<int> Users { get; set; }
+
+        /// <summary>
+        ///     Popup Template
+        /// </summary>
+        public PopupTemplate Template { get; set; }
+
+
+        public static Popup Get(Predicate<Popup> predicate)
+        {
+            return Popups.Find(i => predicate(i));
+        }
+
+        public static Popup GetById(uint id)
+        {
+            return Get(i => i.Id == id);
         }
 
         public static void Add(Popup obj)
@@ -116,49 +147,21 @@ namespace Darkages.Types
             }
         }
 
-        public int Id { get; set; }
-
-        /// <summary>
-        /// The Owner
-        /// </summary>
-        public int Owner { get; set; }
-
-        /// <summary>
-        /// List of Users who can receive the popup.
-        /// </summary>
-        public List<int> Users { get; set; }
-
-        /// <summary>
-        /// Popup Template
-        /// </summary>
-        public PopupTemplate Template { get; set; }
-
-        public Popup()
-        {
-            Users = new List<int>();
-
-            lock (Generator.Random)
-            {
-                Id = Generator.GenerateNumber();
-            }
-        }
-
 
         public static Popup Create(GameClient client, PopupTemplate template)
         {
             var popup = new Popup
             {
                 Template = template,
-                Owner    = client.Aisling.Serial,
+                Owner = client.Aisling.Serial
             };
 
-            var users   = client.Aisling.AislingsNearby().Where(i => i.Serial != client.Aisling.Serial);
+            var users = client.Aisling.AislingsNearby().Where(i => i.Serial != client.Aisling.Serial);
             popup.Users = new List<int>(users.Select(i => i.Serial));
 
-            Popup.Add(popup);
+            Add(popup);
 
             return popup;
         }
     }
-
 }

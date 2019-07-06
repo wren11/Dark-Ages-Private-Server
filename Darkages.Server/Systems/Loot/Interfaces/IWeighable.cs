@@ -15,15 +15,16 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Systems.Loot.Interfaces
 {
     /// <summary>
-    /// An interface for weighable items.
+    ///     An interface for weighable items.
     /// </summary>
     public interface IWeighable
     {
         /// <summary>
-        /// The weight of this item.
+        ///     The weight of this item.
         /// </summary>
         double Weight { get; set; }
     }

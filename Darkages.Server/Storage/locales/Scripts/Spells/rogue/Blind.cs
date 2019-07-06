@@ -1,21 +1,20 @@
-﻿using Darkages.Network.ServerFormats;
+﻿using System;
+using System.Linq;
+using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
-using System;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Spells.rogue
 {
     [Script("Blind", "Dean")]
     public class Blind : SpellScript
     {
-        public Random rnd    = new Random();
         public Debuff debuff = new debuff_blind();
+        public Random rnd = new Random();
 
         public Blind(Spell spell) : base(spell)
         {
-
         }
 
         public override void OnFailed(Sprite sprite, Sprite target)
@@ -39,17 +38,15 @@ namespace Darkages.Storage.locales.Scripts.Spells.rogue
                 var action = new ServerFormat1A
                 {
                     Serial = sprite.Serial,
-                    Number = (byte)(aisling.Path
-                            == Class.Priest ? 0x80 : aisling.Path
-                            == Class.Wizard ? 0x88 : 0x06),
+                    Number = (byte) (aisling.Path
+                                     == Class.Priest ? 0x80 :
+                        aisling.Path
+                        == Class.Wizard ? 0x88 : 0x06),
                     Speed = 30
                 };
                 sprite.Show(Scope.NearbyAislings, action);
                 aisling.Client.SendMessage(0x02, "you cast " + Spell.Template.Name + ".");
             }
-
-
-
         }
 
         public override void OnUse(Sprite sprite, Sprite target)
@@ -72,13 +69,9 @@ namespace Darkages.Storage.locales.Scripts.Spells.rogue
 
 
             if (Spell.RollDice(rnd))
-            {
                 OnSuccess(sprite, target);
-            }
             else
-            {
                 OnSuccess(sprite, target);
-            }
         }
     }
 }

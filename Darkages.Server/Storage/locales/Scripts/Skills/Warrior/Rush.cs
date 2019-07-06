@@ -15,12 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Game;
+
+using System;
+using System.Threading.Tasks;
 using Darkages.Network.ServerFormats;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
-using System;
-using System.Threading.Tasks;
 
 namespace Darkages.Scripting.Scripts.Skills
 {
@@ -59,22 +59,19 @@ namespace Darkages.Scripting.Scripts.Skills
                 Speed = 20
             };
 
-            var debuff    = new debuff_frozen();
-            Sprite t      = null;
+            var debuff = new debuff_frozen();
+            Sprite t = null;
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
                 var targets = sprite.GetInfront(i, true);
-                var hits    = 0;
+                var hits = 0;
                 foreach (var target in targets)
                 {
                     if (target.Serial == sprite.Serial)
                         continue;
 
                     if (target != null)
-                    {
-
-
                         if (sprite is Aisling aisling)
                         {
                             var position = target.Position;
@@ -92,7 +89,6 @@ namespace Darkages.Scripting.Scripts.Skills
                             aisling.Client.WarpTo(position);
                         }
 
-                    }
                     t = target;
                     hits++;
                 }
@@ -116,22 +112,20 @@ namespace Darkages.Scripting.Scripts.Skills
                     break;
                 }
             }
-            Task.Delay(50).ContinueWith((dc) =>
+
+            Task.Delay(50).ContinueWith(dc =>
             {
                 if (Target != null && collided)
                 {
                     if (Target is Monster || Target is Mundane || Target is Aisling)
                         Target.Show(Scope.NearbyAislings,
-                            new ServerFormat29((uint)sprite.Serial, (uint)Target.Serial,
+                            new ServerFormat29((uint) sprite.Serial, (uint) Target.Serial,
                                 Skill.Template.TargetAnimation, 0, 100));
 
 
                     sprite.Show(Scope.NearbyAislings, action);
                 }
             }).Wait();
-
-
-
         }
 
         public override void OnUse(Sprite sprite)

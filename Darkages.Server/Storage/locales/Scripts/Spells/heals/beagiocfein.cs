@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
@@ -48,7 +49,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     var action = new ServerFormat1A
                     {
                         Serial = sprite.Serial,
-                        Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
+                        Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                            client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                         Speed = 30
                     };
 
@@ -73,7 +75,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                             var hpbar = new ServerFormat13
                             {
                                 Serial = obj.Serial,
-                                Health = (ushort)(100 * obj.CurrentHp / obj.MaximumHp),
+                                Health = (ushort) (100 * obj.CurrentHp / obj.MaximumHp),
                                 Sound = 8
                             };
                             obj.Show(Scope.NearbyAislings, hpbar);
@@ -90,11 +92,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 else
                 {
                     if (sprite is Aisling)
-                    {
                         (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
-                    }
-                    return;
-
                 }
             }
             else
@@ -104,7 +102,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 var hpbar = new ServerFormat13
                 {
                     Serial = sprite.Serial,
-                    Health = (ushort)(100 * sprite.CurrentHp / sprite.MaximumHp),
+                    Health = (ushort) (100 * sprite.CurrentHp / sprite.MaximumHp),
                     Sound = 8
                 };
 

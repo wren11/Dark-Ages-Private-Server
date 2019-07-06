@@ -15,13 +15,14 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat00 : NetworkFormat
     {
-        public int Version;
         public byte UnknownA;
         public byte UnknownB;
+        public int Version;
 
         public ClientFormat00()
         {

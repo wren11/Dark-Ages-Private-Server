@@ -15,10 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Network;
 
 namespace Darkages.Types
 {
@@ -30,9 +31,9 @@ namespace Darkages.Types
 
     public class ForumCallback : BoardDescriptors
     {
-        public string Message;
-        public bool Close;
         public byte ActionType;
+        public bool Close;
+        public string Message;
 
         public ForumCallback(string message, byte type, bool close = false)
         {
@@ -43,29 +44,22 @@ namespace Darkages.Types
 
         public override void Serialize(NetworkPacketReader reader)
         {
-
         }
 
         public override void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(ActionType);
-            writer.Write((byte)(Close ? 1 : 0));
+            writer.Write((byte) (Close ? 1 : 0));
             writer.WriteStringA(Message);
         }
     }
 
     public class PostFormat : BoardDescriptors
     {
-
-        public PostFormat(ushort boardId, ushort topicId) : base()
+        public PostFormat(ushort boardId, ushort topicId)
         {
             BoardId = boardId;
             TopicId = topicId;
-        }
-
-        public void Associate(string username)
-        {
-            Owner = username;
         }
 
         public string Owner { get; set; }
@@ -79,17 +73,24 @@ namespace Darkages.Types
         public string Recipient { get; set; }
         public string Subject { get; set; }
 
-        public override void Serialize(NetworkPacketReader reader) { }
+        public void Associate(string username)
+        {
+            Owner = username;
+        }
+
+        public override void Serialize(NetworkPacketReader reader)
+        {
+        }
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)0x03);
-            writer.Write((byte)0x01);
-            writer.Write((byte)0x00);
+            writer.Write((byte) 0x03);
+            writer.Write((byte) 0x01);
+            writer.Write((byte) 0x00);
             writer.Write(PostId);
             writer.WriteStringA(Sender);
-            writer.Write((byte)DatePosted.Month);
-            writer.Write((byte)DatePosted.Day);
+            writer.Write((byte) DatePosted.Month);
+            writer.Write((byte) DatePosted.Day);
             writer.WriteStringA(Subject);
             writer.WriteStringB(Message);
         }
@@ -97,20 +98,22 @@ namespace Darkages.Types
 
     public class BoardList : BoardDescriptors
     {
-        public List<Board> CommunityBoards { get; set; }
-
         public BoardList(IEnumerable<Board> community)
         {
             CommunityBoards = new List<Board>(community
                 .OrderBy(i => i.Index));
         }
 
-        public override void Serialize(NetworkPacketReader reader) { }
+        public List<Board> CommunityBoards { get; set; }
+
+        public override void Serialize(NetworkPacketReader reader)
+        {
+        }
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)0x01);
-            writer.Write((ushort)CommunityBoards.Count);
+            writer.Write((byte) 0x01);
+            writer.Write((ushort) CommunityBoards.Count);
 
             foreach (var topic in CommunityBoards)
             {

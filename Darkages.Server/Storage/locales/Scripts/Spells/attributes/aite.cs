@@ -15,11 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.Buffs;
 using Darkages.Types;
-using System;
 
 namespace Darkages.Storage.locales.Scripts.Spells
 {
@@ -55,7 +55,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     var action = new ServerFormat1A
                     {
                         Serial = sprite.Serial,
-                        Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
+                        Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                            client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                         Speed = 30
                     };
 
@@ -87,11 +88,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 else
                 {
                     if (sprite is Aisling)
-                    {
                         (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
-                    }
                     return;
-
                 }
 
 

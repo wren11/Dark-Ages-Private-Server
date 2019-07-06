@@ -15,18 +15,20 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat57 : NetworkFormat
     {
+        public byte Slot;
+
+        public byte Type;
+
         public ClientFormat57()
         {
             Secured = true;
             Command = 0x57;
         }
-
-        public byte Type;
-        public byte Slot;
 
         public override void Serialize(NetworkPacketReader reader)
         {

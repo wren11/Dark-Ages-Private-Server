@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System.IO;
 
 namespace Darkages.IO
@@ -70,7 +71,7 @@ namespace Darkages.IO
 
             for (var i = 0; i < filedata.Length; ++i)
             {
-                data = (byte)(filedata[i] ^ (hash & 0xFF));
+                data = (byte) (filedata[i] ^ (hash & 0xFF));
                 hash = table[data] ^ (hash >> 0x8);
             }
 

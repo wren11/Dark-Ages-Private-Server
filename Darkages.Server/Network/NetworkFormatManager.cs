@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System;
 using System.Globalization;
 
@@ -27,10 +28,9 @@ namespace Darkages.Network
             ClientFormats = new Type[256];
 
             for (var i = 0; i < 256; i++)
-            {
                 ClientFormats[i] = Type.GetType(
-                    string.Format(CultureInfo.CurrentCulture, "Darkages.Network.ClientFormats.ClientFormat{0:X2}", i), false, false);
-            }
+                    string.Format(CultureInfo.CurrentCulture, "Darkages.Network.ClientFormats.ClientFormat{0:X2}", i),
+                    false, false);
         }
 
         public static Type[] ClientFormats { get; }

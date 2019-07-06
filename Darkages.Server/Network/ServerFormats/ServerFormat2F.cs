@@ -15,60 +15,60 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Types;
+
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Types;
 
 namespace Darkages.Network.ServerFormats
 {
-
     public class PopupFormat : NetworkFormat
     {
-        public Popup       _popup  { get; set; }
-        public string      Text    { get; set; }
-        public IDialogData Data    { get; set; }
-
         public PopupFormat(Popup lpPopup, string lptext, IDialogData data)
         {
-            Command   = 0x2F;
-            Secured   = true;
+            Command = 0x2F;
+            Secured = true;
             {
-                Text  = lptext;
-                Data  = data;
+                Text = lptext;
+                Data = data;
             }
 
             _popup = lpPopup;
         }
 
+        public Popup _popup { get; set; }
+        public string Text { get; set; }
+        public IDialogData Data { get; set; }
+
         public override void Serialize(NetworkPacketReader reader)
         {
-
         }
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)0x00); // type
-            writer.Write((byte)0x01);
-            writer.Write((uint)_popup.Id);
-            writer.Write((byte)0x02);
-            writer.Write((ushort)_popup.Template.SpriteId);
-            writer.Write((byte)0x00);
-            writer.Write((byte)0x01);
-            writer.Write((byte)0x02);
-            writer.Write((byte)0x01);
-            writer.Write((byte)0x00);
+            writer.Write((byte) 0x00); // type
+            writer.Write((byte) 0x01);
+            writer.Write((uint) _popup.Id);
+            writer.Write((byte) 0x02);
+            writer.Write(_popup.Template.SpriteId);
+            writer.Write((byte) 0x00);
+            writer.Write((byte) 0x01);
+            writer.Write((byte) 0x02);
+            writer.Write((byte) 0x01);
+            writer.Write((byte) 0x00);
             writer.WriteStringB(_popup.Template.Name);
             writer.WriteStringB(Text);
             writer.Write(Data);
         }
     }
+
     public class ServerFormat2F : NetworkFormat
     {
         public ServerFormat2F(Mundane mundane, string text, IDialogData data) : this()
         {
             Mundane = mundane;
-            Text    = text;
-            Data    = data;
+            Text = text;
+            Data = data;
         }
 
         public ServerFormat2F()
@@ -90,16 +90,16 @@ namespace Darkages.Network.ServerFormats
         public override void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(Data.Type);
-            writer.Write((byte)0x01);
-            writer.Write((uint)Mundane.Serial);
-            writer.Write((byte)0x02);
+            writer.Write((byte) 0x01);
+            writer.Write((uint) Mundane.Serial);
+            writer.Write((byte) 0x02);
 
-            writer.Write((ushort)Mundane.Template.Image);
-            writer.Write((byte)0x00);
+            writer.Write((ushort) Mundane.Template.Image);
+            writer.Write((byte) 0x00);
 
-            writer.Write((byte)0x01);
-            writer.Write((byte)0x02);
-            writer.Write((byte)0x01);
+            writer.Write((byte) 0x01);
+            writer.Write((byte) 0x02);
+            writer.Write((byte) 0x01);
 
             writer.Write(byte.MinValue);
 
@@ -142,7 +142,7 @@ namespace Darkages.Network.ServerFormats
         public void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(
-                (byte)Count);
+                (byte) Count);
 
             foreach (var option in this)
             {
@@ -172,7 +172,7 @@ namespace Darkages.Network.ServerFormats
         {
             writer.WriteStringA(Args);
             writer.Write(
-                (byte)Count);
+                (byte) Count);
 
             foreach (var option in this)
             {
@@ -218,12 +218,12 @@ namespace Darkages.Network.ServerFormats
         public void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(Step);
-            writer.Write((ushort)Items.Count());
+            writer.Write((ushort) Items.Count());
 
             foreach (var item in Items)
             {
                 writer.Write(item.DisplayImage);
-                writer.Write((byte)item.Color);
+                writer.Write((byte) item.Color);
                 writer.Write(item.Value);
                 writer.WriteStringA(item.Name);
                 writer.WriteStringA(item.Class.ToString());
@@ -251,7 +251,7 @@ namespace Darkages.Network.ServerFormats
         public void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(Step);
-            writer.Write((ushort)Data.Items.Count);
+            writer.Write((ushort) Data.Items.Count);
 
             foreach (var str in Data.Items.Keys)
             {
@@ -264,8 +264,8 @@ namespace Darkages.Network.ServerFormats
                     continue;
 
                 writer.Write(item.DisplayImage);
-                writer.Write((byte)item.Color);
-                writer.Write((uint)Data.Items[str]);
+                writer.Write((byte) item.Color);
+                writer.Write((uint) Data.Items[str]);
                 writer.WriteStringA(item.Name);
                 writer.WriteStringA(item.Class.ToString());
             }
@@ -274,16 +274,16 @@ namespace Darkages.Network.ServerFormats
 
     public class BankingData : IDialogData
     {
-        public IEnumerable<byte> Items { get; set; }
-        public ushort Step { get; set; }
-
-        public byte Type => 0x05;
-
         public BankingData(ushort step, IEnumerable<byte> items)
         {
             Step = step;
             Items = items;
         }
+
+        public IEnumerable<byte> Items { get; set; }
+        public ushort Step { get; set; }
+
+        public byte Type => 0x05;
 
         public void Serialize(NetworkPacketReader reader)
         {
@@ -291,9 +291,9 @@ namespace Darkages.Network.ServerFormats
 
         public void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)Step);
+            writer.Write((byte) Step);
             writer.Write(
-                (short)Items.Count());
+                (short) Items.Count());
 
             foreach (var item in Items)
                 writer.Write(item);
@@ -321,7 +321,7 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write(Type);
             writer.Write(
-                (short)Items.Count());
+                (short) Items.Count());
 
             foreach (var item in Items)
                 writer.Write(item);
@@ -349,13 +349,13 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write(Step);
             writer.Write(
-                (ushort)Spells.Count());
+                (ushort) Spells.Count());
 
             foreach (var spell in Spells)
             {
-                writer.Write((byte)0x02);
-                writer.Write((ushort)spell.Icon);
-                writer.Write((byte)0x00);
+                writer.Write((byte) 0x02);
+                writer.Write((ushort) spell.Icon);
+                writer.Write((byte) 0x00);
                 writer.WriteStringA(spell.Name);
             }
         }
@@ -382,13 +382,13 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write(Step);
             writer.Write(
-                (ushort)Skills.Count());
+                (ushort) Skills.Count());
 
             foreach (var skill in Skills)
             {
-                writer.Write((byte)0x03);
-                writer.Write((ushort)skill.Icon);
-                writer.Write((byte)0x00);
+                writer.Write((byte) 0x03);
+                writer.Write((ushort) skill.Icon);
+                writer.Write((byte) 0x00);
                 writer.WriteStringA(skill.Name);
             }
         }

@@ -1,8 +1,8 @@
 {
   "Posts": [
     {
-      "Secured": true,
       "Command": 49,
+      "Secured": true,
       "Owner": "lol",
       "TopicId": 3187,
       "PostId": 1,
@@ -15,8 +15,8 @@
       "Subject": "some testing"
     }
   ],
-  "Secured": true,
   "Command": 49,
+  "Secured": true,
   "Index": 1,
   "IsMail": false,
   "Subject": "Power Rankings",

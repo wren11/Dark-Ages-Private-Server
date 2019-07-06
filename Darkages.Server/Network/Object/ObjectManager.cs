@@ -15,18 +15,17 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Types;
-using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Types;
+using Newtonsoft.Json;
 
 namespace Darkages.Network.Object
 {
-
-    public class ObjectManager 
+    public class ObjectManager
     {
-
         [Flags]
         public enum Get
         {
@@ -38,13 +37,25 @@ namespace Darkages.Network.Object
             All = Aislings | Items | Money | Monsters | Mundanes
         }
 
-        public void DelObject<T>(T obj) where T : Sprite => ServerContext.Game?.ObjectFactory.RemoveGameObject(obj);
+        public void DelObject<T>(T obj) where T : Sprite
+        {
+            ServerContext.Game?.ObjectFactory.RemoveGameObject(obj);
+        }
 
-        public void DelObjects<T>(T[] obj) where T : Sprite => ServerContext.Game?.ObjectFactory.RemoveAllGameObjects(obj);
+        public void DelObjects<T>(T[] obj) where T : Sprite
+        {
+            ServerContext.Game?.ObjectFactory.RemoveAllGameObjects(obj);
+        }
 
-        public T GetObject<T>(Area map, Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.Query(map, p);
+        public T GetObject<T>(Area map, Predicate<T> p) where T : Sprite
+        {
+            return ServerContext.Game?.ObjectFactory.Query(map, p);
+        }
 
-        public IEnumerable<T> GetObjects<T>(Area map, Predicate<T> p) where T : Sprite => ServerContext.Game?.ObjectFactory.QueryAll(map, p);
+        public IEnumerable<T> GetObjects<T>(Area map, Predicate<T> p) where T : Sprite
+        {
+            return ServerContext.Game?.ObjectFactory.QueryAll(map, p);
+        }
 
         public static T Clone<T>(object source)
         {
@@ -58,19 +69,19 @@ namespace Darkages.Network.Object
                 TypeNameHandling = TypeNameHandling.All
             });
 
-            if ((source as Item) != null)
+            if (source as Item != null)
                 (obj as Item).Template = (source as Item).Template;
 
-            if ((source as Skill) != null)
+            if (source as Skill != null)
                 (obj as Skill).Template = (source as Skill).Template;
 
-            if ((source as Spell) != null)
+            if (source as Spell != null)
                 (obj as Spell).Template = (source as Spell).Template;
 
-            if ((source as Monster) != null)
+            if (source as Monster != null)
                 (obj as Monster).Template = (source as Monster).Template;
 
-            if ((source as Mundane) != null)
+            if (source as Mundane != null)
                 (obj as Mundane).Template = (source as Mundane).Template;
 
             return obj;
@@ -79,14 +90,8 @@ namespace Darkages.Network.Object
         public void AddObject<T>(T obj, Predicate<T> p = null) where T : Sprite
         {
             if (p != null && p(obj))
-            {
                 ServerContext.Game.ObjectFactory.AddGameObject(obj);
-                return;
-            }
-            else if (p == null) 
-            {
-                ServerContext.Game.ObjectFactory.AddGameObject(obj);
-            }
+            else if (p == null) ServerContext.Game.ObjectFactory.AddGameObject(obj);
         }
 
         public IEnumerable<Sprite> GetObjects(Area map, Predicate<Sprite> p, Get selections)

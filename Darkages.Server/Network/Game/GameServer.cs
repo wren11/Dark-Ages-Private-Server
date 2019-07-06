@@ -15,37 +15,54 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Game.Components;
-using Darkages.Network.Object;
+
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Darkages.Network.Game.Components;
+using Darkages.Network.Object;
 
 namespace Darkages.Network.Game
 {
     public partial class GameServer
     {
+        private readonly ManualResetEvent __msync = new ManualResetEvent(true);
+
+        private Thread _thread;
+
+        private readonly ReaderWriterLock _writerLock = new ReaderWriterLock();
+
+        public Dictionary<Type, GameServerComponent> Components;
+
+        private readonly TimeSpan HeavyUpdateSpan;
 
 
-        DateTime lastHeavyUpdate  = DateTime.UtcNow;
-
-        TimeSpan HeavyUpdateSpan;
-
+        private DateTime lastHeavyUpdate = DateTime.UtcNow;
 
 
         public ObjectService ObjectFactory = new ObjectService();
 
-        public Dictionary<Type, GameServerComponent> Components;
-
         public GameServer(int capacity) : base(capacity)
         {
-            HeavyUpdateSpan  = TimeSpan.FromSeconds(1.0 / 30);
+            HeavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
 
             InitializeGameServer();
         }
 
-        ReaderWriterLock _writerLock = new ReaderWriterLock();
+        /// <summary>
+        ///     <para>
+        ///         Gets the Value True or False That represents if the Server is running Healthy.
+        ///     </para>
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if [server healthy]; otherwise, <c>false</c>.
+        /// </value>
+        /// <remarks>
+        ///     This is done by Checking that the lastUpdate took less then the specified length of time. By Default this is
+        ///     one second.
+        /// </remarks>
+        public bool ServerHealthy => DateTime.UtcNow - lastHeavyUpdate < new TimeSpan(0, 0, 0, 1);
 
         private void AutoSave(GameClient client)
         {
@@ -58,32 +75,17 @@ namespace Darkages.Network.Game
                         client.Save();
                     }
 
-                    if (_writerLock.IsWriterLockHeld)
-                    {
-                        _writerLock.ReleaseWriterLock();
-                    }
+                    if (_writerLock.IsWriterLockHeld) _writerLock.ReleaseWriterLock();
                 }
             }
         }
 
-        /// <summary>
-        ///   <para>
-        /// Gets the Value True or False That represents if the Server is running Healthy.</para>
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [server healthy]; otherwise, <c>false</c>.</value>
-        /// <remarks>This is done by Checking that the lastUpdate took less then the specified length of time. By Default this is one second.</remarks>
-        public bool ServerHealthy => DateTime.UtcNow - lastHeavyUpdate < new TimeSpan(0, 0, 0, 1);
-
-        private readonly ManualResetEvent __msync = new ManualResetEvent(true);
-
         private void Update()
         {
-            lastHeavyUpdate       = DateTime.UtcNow;
+            lastHeavyUpdate = DateTime.UtcNow;
             ServerContext.Running = true;
 
             while (ServerContext.Running)
-            {
                 try
                 {
                     var delta = DateTime.UtcNow - lastHeavyUpdate;
@@ -104,7 +106,6 @@ namespace Darkages.Network.Game
                     lastHeavyUpdate = DateTime.UtcNow;
                     Thread.Sleep(HeavyUpdateSpan);
                 }
-            }
         }
 
         public void InitializeGameServer()
@@ -119,12 +120,12 @@ namespace Darkages.Network.Game
             Components = new Dictionary<Type, GameServerComponent>
             {
                 [typeof(MonolithComponent)] = new MonolithComponent(this),
-                [typeof(DaytimeComponent)]  = new DaytimeComponent(this),
-                [typeof(MundaneComponent)]  = new MundaneComponent(this),
-                [typeof(MessageComponent)]  = new MessageComponent(this),
-                [typeof(PingComponent)]     = new PingComponent(this),
-                [typeof(Save)]              = new Save(this),
-                [typeof(ObjectComponent)]   = new ObjectComponent(this),
+                [typeof(DaytimeComponent)] = new DaytimeComponent(this),
+                [typeof(MundaneComponent)] = new MundaneComponent(this),
+                [typeof(MessageComponent)] = new MessageComponent(this),
+                [typeof(PingComponent)] = new PingComponent(this),
+                [typeof(Save)] = new Save(this),
+                [typeof(ObjectComponent)] = new ObjectComponent(this)
             };
         }
 
@@ -170,10 +171,7 @@ namespace Darkages.Network.Game
             {
                 lock (Components)
                 {
-                    foreach (var component in Components.Values)
-                    {
-                        component.Update(elapsedTime);
-                    }
+                    foreach (var component in Components.Values) component.Update(elapsedTime);
                 }
             }
             catch (Exception err)
@@ -186,10 +184,7 @@ namespace Darkages.Network.Game
         {
             lock (Clients)
             {
-                foreach (var area in ServerContext.GlobalMapCache.Values)
-                {
-                    area.Update(elapsedTime);
-                }
+                foreach (var area in ServerContext.GlobalMapCache.Values) area.Update(elapsedTime);
             }
         }
 
@@ -198,7 +193,6 @@ namespace Darkages.Network.Game
             lock (Clients)
             {
                 foreach (var client in Clients)
-                {
                     if (client != null && client.Aisling != null)
                     {
                         __msync.WaitOne();
@@ -226,7 +220,6 @@ namespace Darkages.Network.Game
                             __msync.Set();
                         }
                     }
-                }
             }
         }
 
@@ -234,7 +227,7 @@ namespace Darkages.Network.Game
         {
             lock (Clients)
             {
-                if (client == null || client.Aisling == null)
+                if (client?.Aisling == null)
                     return;
 
                 try
@@ -261,15 +254,13 @@ namespace Darkages.Network.Game
             base.Abort();
         }
 
-        
+
         public override async void StartAsync(int port)
         {
             base.StartAsync(port);
 
             await new TaskFactory().StartNew(ServerGuard);
         }
-
-        private Thread _thread = null;
 
         public void Launch()
         {
@@ -281,7 +272,7 @@ namespace Darkages.Network.Game
                 var __tmpl = new Thread(Update)
                 {
                     IsBackground = true,
-                    Name         = ServerContext.Config.SERVER_TITLE
+                    Name = ServerContext.Config.SERVER_TITLE
                 };
 
                 __tmpl.Start();

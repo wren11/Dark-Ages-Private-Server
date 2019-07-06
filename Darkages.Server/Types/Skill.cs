@@ -15,14 +15,15 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.ComponentModel;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Newtonsoft.Json;
-using System;
-using System.ComponentModel;
 
 namespace Darkages.Types
 {
@@ -74,13 +75,10 @@ namespace Darkages.Types
                 obj.ID = Generator.GenerateNumber();
             }
 
-            obj.Slot = (byte)slot;
+            obj.Slot = (byte) slot;
             obj.Icon = skillTemplate.Icon;
 
-            if (obj.Template.Debuff == null || obj.Template.Buff == null)
-            {
-                AssignDebuffs(obj);
-            }
+            if (obj.Template.Debuff == null || obj.Template.Buff == null) AssignDebuffs(obj);
 
             return obj;
         }

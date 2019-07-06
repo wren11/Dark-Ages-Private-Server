@@ -15,9 +15,9 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Types;
+
 using System;
-using System.Threading.Tasks;
+using Darkages.Types;
 
 namespace Darkages.Network.Game.Components
 {
@@ -57,7 +57,8 @@ namespace Darkages.Network.Game.Components
                     continue;
 
                 var npc = GetObject<Mundane>(map, i => i.CurrentMapId == map.ID && i.Template != null
-                                                                           && i.Template.Name == mundane.Value.Name);
+                                                                                && i.Template.Name ==
+                                                                                mundane.Value.Name);
 
                 if (npc != null && npc.CurrentHp > 0)
                     continue;

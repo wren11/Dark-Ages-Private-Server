@@ -15,7 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.ServerFormats;
+
 using Darkages.Types;
 
 namespace Darkages.Storage.locales.debuffs
@@ -38,7 +38,7 @@ namespace Darkages.Storage.locales.debuffs
         }
 
         public override void OnDurationUpdate(Sprite Affected, Debuff debuff)
-        {          
+        {
             base.OnDurationUpdate(Affected, debuff);
         }
 

@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System;
 using System.Text.RegularExpressions;
 
@@ -23,14 +24,17 @@ namespace Darkages.Systems.Loot.Modifiers
     [Serializable]
     public class StringModifier : BaseModifier
     {
-        public string NewValue { get; set; }
+        public StringModifier()
+        {
+        }
 
-        public StringModifier() { }
         public StringModifier(string propertyName, string newValue)
             : base(propertyName)
         {
             NewValue = newValue;
         }
+
+        public string NewValue { get; set; }
 
         public override void Apply(object itemToModify)
         {

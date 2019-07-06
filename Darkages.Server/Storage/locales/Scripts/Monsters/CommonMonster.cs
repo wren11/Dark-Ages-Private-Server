@@ -15,12 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Game;
-using Darkages.Scripting;
-using Darkages.Types;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Network.Game;
+using Darkages.Scripting;
+using Darkages.Types;
 
 namespace Darkages.Storage.locales.Scripts.Monsters
 {
@@ -31,50 +32,38 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         public List<SkillScript> SkillScripts = new List<SkillScript>();
         public List<SpellScript> SpellScripts = new List<SpellScript>();
 
-        public SkillScript DefaultSkill
-        {
-            get
-            {
-                return SkillScripts.Find(i => i.IsScriptDefault) ?? null;
-            }
-        }
-
-        public SpellScript DefaultSpell
-        {
-            get
-            {
-                return SpellScripts.Find(i => i.IsScriptDefault) ?? null;
-            }
-        }
-
         public CommonMonster(Monster monster, Area map)
             : base(monster, map)
         {
-
             LoadSkillScript("Assail", true);
 
             if (Monster.Template.SpellScripts != null)
                 foreach (var spellscriptstr in Monster.Template.SpellScripts)
-                {
                     LoadSpellScript(spellscriptstr);
-                }
 
             if (Monster.Template.SkillScripts != null)
                 foreach (var skillscriptstr in Monster.Template.SkillScripts)
-                {
                     LoadSkillScript(skillscriptstr);
-                }
         }
+
+        public SkillScript DefaultSkill
+        {
+            get { return SkillScripts.Find(i => i.IsScriptDefault) ?? null; }
+        }
+
+        public SpellScript DefaultSpell
+        {
+            get { return SpellScripts.Find(i => i.IsScriptDefault) ?? null; }
+        }
+
+        public Sprite Target => Monster.Target;
 
         private void LoadSkillScript(string skillscriptstr, bool primary = false)
         {
             try
             {
-
                 if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skillscriptstr))
                 {
-
-
                     var script = ScriptManager.Load<SkillScript>(skillscriptstr,
                         Skill.Create(1, ServerContext.GlobalSkillTemplateCache[skillscriptstr]));
 
@@ -116,33 +105,18 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             }
         }
 
-        public Sprite Target
-        {
-            get
-            {
-                return Monster.Target;
-            }
-        }
-
         public override void OnApproach(GameClient client)
         {
             RefreshTarget(client);
 
             UpdateTarget();
-
         }
 
         private void RefreshTarget(GameClient client)
         {
-            if (client.Aisling.Dead)
-            {
-                ClearTarget();
-            }
+            if (client.Aisling.Dead) ClearTarget();
 
-            if (client.Aisling.Invisible)
-            {
-                ClearTarget();
-            }
+            if (client.Aisling.Invisible) ClearTarget();
         }
 
         public override void OnAttacked(GameClient client)
@@ -169,7 +143,8 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         public override void OnClick(GameClient client)
         {
             client.SendMessage(0x02, string.IsNullOrEmpty(Monster.Template.BaseName)
-                ? Monster.Template.Name : Monster.Template.BaseName);
+                ? Monster.Template.Name
+                : Monster.Template.BaseName);
         }
 
         public override void OnDeath(GameClient client)
@@ -191,7 +166,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void OnSkulled(GameClient client)
         {
-
         }
 
         public override void OnLeave(GameClient client)
@@ -211,19 +185,15 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 return;
 
             if (Monster.Target != null && Monster.TaggedAislings.Count > 0 && Monster.Template.EngagedWalkingSpeed > 0)
-            {
-                Monster.WalkTimer.Delay = TimeSpan.FromMilliseconds(Monster.Template.EngagedWalkingSpeed); 
-            }
+                Monster.WalkTimer.Delay = TimeSpan.FromMilliseconds(Monster.Template.EngagedWalkingSpeed);
 
             if (Monster.Target != null && Monster.Target is Aisling)
-            {
                 if ((Monster.Target as Aisling).Invisible)
                 {
                     ClearTarget();
                     Monster.WalkTimer.Update(elapsedTime);
                     return;
                 }
-            }
 
             Monster.BashTimer.Update(elapsedTime);
             Monster.CastTimer.Update(elapsedTime);
@@ -243,20 +213,14 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 {
                     Monster.CastTimer.Reset();
 
-                    if (Monster.CastEnabled)
-                    {
-                        CastSpell();
-                    }
+                    if (Monster.CastEnabled) CastSpell();
                 }
 
                 if (Monster.WalkTimer.Elapsed)
                 {
                     Monster.WalkTimer.Reset();
 
-                    if (Monster.WalkEnabled)
-                    {
-                        Walk();
-                    }
+                    if (Monster.WalkEnabled) Walk();
                 }
             }
             catch
@@ -287,30 +251,22 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     ClearTarget();
 
                 if (Monster.Target is Monster)
-                {
                     if (Monster.AislingsNearby().Length > 0)
-                    {
                         ClearTarget();
-                    }
-                }
             }
             else
             {
                 if (Monster.Aggressive)
                 {
                     if (Monster.Target == null)
-                    {
-
                         Monster.Target = GetObjects(Monster.Map, i => i.Serial != Monster.Serial
-                        && i.WithinRangeOf(Monster) && i.CurrentHp > 0,
-                        Monster.Template.MoodType == MoodQualifer.VeryAggressive ? Get.Aislings | Get.Monsters : Get.Aislings)
-                                          .OrderBy(v => v.Position.DistanceFrom(Monster.Position)).FirstOrDefault();
-                    }
+                                                                      && i.WithinRangeOf(Monster) && i.CurrentHp > 0,
+                                Monster.Template.MoodType == MoodQualifer.VeryAggressive
+                                    ? Get.Aislings | Get.Monsters
+                                    : Get.Aislings)
+                            .OrderBy(v => v.Position.DistanceFrom(Monster.Position)).FirstOrDefault();
 
-                    if (Monster.Target != null && Monster.Target.CurrentHp <= 0)
-                    {
-                        Monster.Target = null;
-                    }
+                    if (Monster.Target != null && Monster.Target.CurrentHp <= 0) Monster.Target = null;
 
                     Monster.WalkEnabled = Monster.Target != null;
                 }
@@ -329,35 +285,29 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (!Monster.Target.WithinRangeOf(Monster))
                 return;
 
-            if (Monster != null && Monster.Target   != null && SpellScripts.Count > 0)
-            {
-                if (_random.  Next(1, 101) < ServerContext.Config.MonsterSpellSuccessRate)
+            if (Monster != null && Monster.Target != null && SpellScripts.Count > 0)
+                if (_random.Next(1, 101) < ServerContext.Config.MonsterSpellSuccessRate)
                 {
                     var spellidx = _random.Next(SpellScripts.Count);
 
                     if (SpellScripts[spellidx] != null)
                         SpellScripts[spellidx].OnUse(Monster, Target);
                 }
-            }
 
             if (Monster != null && Monster.Target != null && Monster.Target.CurrentHp > 0)
-            {
                 if (DefaultSpell != null)
                     DefaultSpell.OnUse(Monster, Monster.Target);
-            }
         }
 
 
         public override void OnDamaged(GameClient client, int dmg)
         {
             if (Monster.Target == null || Monster.Target != client.Aisling)
-            {
                 if (Monster.CanAcceptTarget(client.Aisling))
                 {
                     Monster.Target = client.Aisling;
                     Monster.Aggressive = true;
                 }
-            }
         }
 
         private void Walk()
@@ -369,7 +319,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             {
                 if (Monster.NextTo(Target.XPos, Target.YPos))
                 {
-                    if (Monster.Facing(Target.XPos, Target.YPos, out int direction))
+                    if (Monster.Facing(Target.XPos, Target.YPos, out var direction))
                     {
                         Bash();
                         Monster.BashEnabled = true;
@@ -379,7 +329,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     {
                         Monster.BashEnabled = false;
                         Monster.CastEnabled = true;
-                        Monster.Direction = (byte)direction;
+                        Monster.Direction = (byte) direction;
                         Monster.Turn();
                     }
                 }
@@ -388,7 +338,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     Monster.BashEnabled = false;
                     Monster.CastEnabled = true;
                     Monster.WalkTo(Target.XPos, Target.YPos);
-
                 }
             }
             else
@@ -399,7 +348,9 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 if (Monster.Template.PathQualifer.HasFlag(PathQualifer.Patrol))
                 {
                     if (Monster.Template.Waypoints == null)
+                    {
                         Monster.Wander();
+                    }
                     else
                     {
                         if (Monster.Template.Waypoints.Count > 0)
@@ -420,16 +371,16 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (!Monster.CanCast)
                 return;
 
-            var obj = Monster.GetInfront(1);
+            var obj = Monster.GetInfront();
 
             if (obj == null)
                 return;
 
 
             if (Monster.Target != null)
-                if (!Monster.Facing(Target.XPos, Target.YPos, out int direction))
+                if (!Monster.Facing(Target.XPos, Target.YPos, out var direction))
                 {
-                    Monster.Direction = (byte)direction;
+                    Monster.Direction = (byte) direction;
                     Monster.Turn();
                     return;
                 }
@@ -456,18 +407,15 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                         if (skill.Template.Cooldown > 0)
                             skill.NextAvailableUse = DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
                         else
-                            skill.NextAvailableUse = DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
+                            skill.NextAvailableUse =
+                                DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
                     }
 
                     skill.InUse = false;
                 }
             }
 
-            if (Monster != null && DefaultSkill != null)
-            {
-                DefaultSkill.OnUse(Monster);
-            }
-
+            if (Monster != null && DefaultSkill != null) DefaultSkill.OnUse(Monster);
         }
 
         private void ClearTarget()

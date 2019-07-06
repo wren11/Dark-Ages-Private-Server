@@ -15,12 +15,10 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Types;
-using MenuInterpreter;
-using MenuInterpreter.Parser;
-using System.IO;
 
 namespace Darkages.Scripting
 {
@@ -28,7 +26,7 @@ namespace Darkages.Scripting
     {
         public MundaneScript(GameServer server, Mundane mundane)
         {
-            Server  = server;
+            Server = server;
             Mundane = mundane;
         }
 

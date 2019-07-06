@@ -16,16 +16,18 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
-using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Types;
 
 namespace Darkages.Network.Game.Components
 {
     public class MonolithComponent : GameServerComponent
     {
         private readonly GameServerTimer _timer;
+
+        public Dictionary<int, Spawn> _spawns = new Dictionary<int, Spawn>();
 
         public MonolithComponent(GameServer server)
             : base(server)
@@ -53,14 +55,13 @@ namespace Darkages.Network.Game.Components
                     var temps = templates.Where(i => i.AreaID == map.ID);
 
                     foreach (var template in temps)
-                    {
                         if (template.ReadyToSpawn())
                         {
                             var spawn = new Spawn
                             {
-                                 Capacity = template.SpawnMax,
-                                 TotalSpawned = 0,
-                                 LastSpawned = DateTime.UtcNow,
+                                Capacity = template.SpawnMax,
+                                TotalSpawned = 0,
+                                LastSpawned = DateTime.UtcNow
                             };
 
                             if (template.SpawnCount < template.SpawnMax)
@@ -69,7 +70,6 @@ namespace Darkages.Network.Game.Components
                                 template.SpawnCount++;
                             }
                         }
-                    }
                 }
             }
         }
@@ -78,13 +78,8 @@ namespace Darkages.Network.Game.Components
         {
             var newObj = Monster.Create(template, map);
 
-            if (newObj != null)
-            {
-                AddObject(newObj);
-            }
+            if (newObj != null) AddObject(newObj);
         }
-
-        public Dictionary<int, Spawn> _spawns = new Dictionary<int, Spawn>();
 
         public class Spawn
         {
@@ -92,8 +87,7 @@ namespace Darkages.Network.Game.Components
 
 
             public int Capacity { get; set; }
-            public int TotalSpawned { get; set; }          
+            public int TotalSpawned { get; set; }
         }
     }
 }
-

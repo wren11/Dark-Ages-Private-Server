@@ -15,10 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat0E : NetworkFormat
     {
+        public int Serial;
+
         public ServerFormat0E(int serial) : this()
         {
             Serial = serial;
@@ -29,8 +32,6 @@ namespace Darkages.Network.ServerFormats
             Secured = true;
             Command = 0x0E;
         }
-
-        public int Serial;
 
         public override void Serialize(NetworkPacketReader reader)
         {

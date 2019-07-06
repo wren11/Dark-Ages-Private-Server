@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System.IO;
 using System.Net;
 using System.Text;
@@ -42,7 +43,7 @@ namespace Darkages.IO
 
         public void WriteStringA(string value)
         {
-            var length = (byte)encoding.GetByteCount(value);
+            var length = (byte) encoding.GetByteCount(value);
 
             base.Write(length);
             base.Write(encoding.GetBytes(value));
@@ -50,7 +51,7 @@ namespace Darkages.IO
 
         public void WriteStringB(string value)
         {
-            var length = (ushort)encoding.GetByteCount(value);
+            var length = (ushort) encoding.GetByteCount(value);
 
             Write(length);
             base.Write(encoding.GetBytes(value));

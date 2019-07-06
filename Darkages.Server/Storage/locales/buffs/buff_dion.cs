@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Types;
 
 namespace Darkages.Storage.locales.Buffs
@@ -24,33 +25,11 @@ namespace Darkages.Storage.locales.Buffs
         /// <summary>
         ///     This name MUST match and correspond the name in the type BUFF.
         /// </summary>
-        public override string Name
-        {
-            get
-            {
-                return "dion";
-            }
-        }
+        public override string Name => "dion";
 
-        public override int Length
-        {
-            get
-            {
-                return 6;
-            }
-        }
-        public override byte Icon
-        {
-            get
-            {
-                return 53;
-            }
-        }
+        public override int Length => 6;
 
-        public buff_dion() 
-        {
-
-        }
+        public override byte Icon => 53;
 
         public override void OnApplied(Sprite Affected, Buff buff)
         {

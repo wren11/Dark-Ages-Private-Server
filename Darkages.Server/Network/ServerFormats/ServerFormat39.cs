@@ -15,8 +15,9 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Types;
+
 using System;
+using Darkages.Types;
 
 namespace Darkages.Network.ServerFormats
 {
@@ -44,14 +45,14 @@ namespace Darkages.Network.ServerFormats
             packet.Write(Aisling.Nation);
             packet.WriteStringA(Aisling.ClanRank);
 
-            packet.Write((byte)0x07);
-            packet.Write((byte)0x0);
-            packet.Write((byte)0x0);
-            packet.Write((byte)0x0);
-            packet.Write((byte)0x0);
-            packet.Write((byte)0x0);
-            packet.Write((byte)0x0);
-            packet.Write((byte)0x0);
+            packet.Write((byte) 0x07);
+            packet.Write((byte) 0x0);
+            packet.Write((byte) 0x0);
+            packet.Write((byte) 0x0);
+            packet.Write((byte) 0x0);
+            packet.Write((byte) 0x0);
+            packet.Write((byte) 0x0);
+            packet.Write((byte) 0x0);
 
             var isGrouped = Aisling.GroupParty.LengthExcludingSelf > 0;
 
@@ -73,11 +74,11 @@ namespace Darkages.Network.ServerFormats
                 packet.WriteStringA(partyMessage);
             }
 
-            packet.Write((byte)Aisling.PartyStatus);
-            packet.Write((byte)0x00);
-            packet.Write((byte)Aisling.ClassID);
-            packet.Write((byte)Aisling.Nation);
-            packet.Write((byte)0x01);
+            packet.Write((byte) Aisling.PartyStatus);
+            packet.Write((byte) 0x00);
+            packet.Write((byte) Aisling.ClassID);
+            packet.Write(Aisling.Nation);
+            packet.Write((byte) 0x01);
             packet.WriteStringA(Convert.ToString(Aisling.Stage
                                                  != ClassStage.Class
                 ? Aisling.Stage.ToString()
@@ -85,7 +86,7 @@ namespace Darkages.Network.ServerFormats
 
             packet.WriteStringA(Aisling.Clan);
 
-            packet.Write((byte)Aisling.LegendBook.LegendMarks.Count);
+            packet.Write((byte) Aisling.LegendBook.LegendMarks.Count);
             foreach (var legend in Aisling.LegendBook.LegendMarks)
             {
                 packet.Write(legend.Icon);
@@ -94,11 +95,11 @@ namespace Darkages.Network.ServerFormats
                 packet.WriteStringA(legend.Value + string.Format(" - {0}", DateTime.UtcNow.ToShortDateString()));
             }
 
-            packet.Write((byte)0x00);
-            packet.Write((ushort)Aisling.Display);
-            packet.Write((byte)0x02);
-            packet.Write((uint)0x00);
-            packet.Write((byte)0x00);
+            packet.Write((byte) 0x00);
+            packet.Write((ushort) Aisling.Display);
+            packet.Write((byte) 0x02);
+            packet.Write((uint) 0x00);
+            packet.Write((byte) 0x00);
         }
     }
 }

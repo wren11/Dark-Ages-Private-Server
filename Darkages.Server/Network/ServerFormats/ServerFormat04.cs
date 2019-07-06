@@ -15,14 +15,15 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat04 : NetworkFormat
     {
         public ServerFormat04(Aisling aisling) : this()
         {
-            X = (short)aisling.XPos;
-            Y = (short)aisling.YPos;
+            X = (short) aisling.XPos;
+            Y = (short) aisling.YPos;
         }
 
         public ServerFormat04()
@@ -43,9 +44,9 @@ namespace Darkages.Network.ServerFormats
             writer.Write(X);
             writer.Write(Y);
             writer.Write(
-                (short)0x000B);
+                (short) 0x000B);
             writer.Write(
-                (short)0x000B);
+                (short) 0x000B);
         }
     }
 }

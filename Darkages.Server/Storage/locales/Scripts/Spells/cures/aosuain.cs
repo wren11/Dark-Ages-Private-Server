@@ -15,12 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
-using System;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Spells
 {
@@ -28,21 +28,18 @@ namespace Darkages.Storage.locales.Scripts.Spells
     public class ao_suain : SpellScript
     {
         private readonly Random rand = new Random();
-        private debuff_frozen Debuff = new debuff_frozen();
+        private readonly debuff_frozen Debuff = new debuff_frozen();
 
         public ao_suain(Spell spell) : base(spell)
         {
-
         }
 
         public override void OnFailed(Sprite sprite, Sprite target)
         {
             if (sprite is Aisling)
-            {
                 (sprite as Aisling)
                     .Client
                     .SendMessage(0x02, "failed.");
-            }
         }
 
         public override void OnSuccess(Sprite sprite, Sprite target)
@@ -59,7 +56,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 var action = new ServerFormat1A
                 {
                     Serial = sprite.Serial,
-                    Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
+                    Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                        client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                     Speed = 30
                 };
 
@@ -75,27 +73,20 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
 
                 if (target.HasDebuff(debuff.Name))
-                {
                     if (target.RemoveDebuff(debuff.Name, true))
-                    {
                         if (target is Aisling)
                             (target as Aisling).Client
                                 .SendMessage(0x02,
                                     string.Format("{0} Removes {1} from you.", client.Aisling.Username,
                                         Spell.Template.Name));
-                    }
-                }
             }
             else
             {
                 var debuff = Clone<debuff_frozen>(Debuff);
 
                 if (target.HasDebuff(debuff.Name))
-                {
                     if (target.RemoveDebuff(debuff.Name, true))
-                    {
                         if (target is Aisling)
-                        {
                             (target as Aisling).Client
                                 .SendMessage(0x02,
                                     string.Format("{0} Removes {1} from you.",
@@ -103,9 +94,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
                                             ? (sprite as Monster).Template.Name
                                             : (sprite as Mundane).Template.Name) ?? "Monster",
                                         Spell.Template.Name));
-                        }
-                    }
-                }
 
 
                 target.SendAnimation(Spell.Template.Animation, target, sprite);
@@ -132,13 +120,12 @@ namespace Darkages.Storage.locales.Scripts.Spells
         public override void OnUse(Sprite sprite, Sprite target)
         {
             if (sprite.CurrentMp - Spell.Template.ManaCost > 0)
+            {
                 sprite.CurrentMp -= Spell.Template.ManaCost;
+            }
             else
             {
-                if (sprite is Aisling)
-                {
-                    (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
-                }
+                if (sprite is Aisling) (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
 
                 return;
             }

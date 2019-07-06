@@ -15,19 +15,36 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.Linq;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage;
 using Newtonsoft.Json;
-using System;
-using System.Linq;
 
 namespace Darkages.Types
 {
     public class Item : Sprite
     {
+        public enum Variance
+        {
+            None,
+            Enchanted,
+            Blessed,
+            Magic,
+            Gramail,
+            Deoch,
+            Ceannlaidir,
+            Cail,
+            Fiosachd,
+            Glioca,
+            Luathas,
+            Sgrios
+        }
+
         public ItemTemplate Template { get; set; }
 
         [JsonIgnore] public ItemScript Script { get; set; }
@@ -59,59 +76,35 @@ namespace Darkages.Types
         public Type Type { get; set; }
 
 
-        [JsonIgnore]
-        public string DisplayName
-        {
-            get
-            {
-                return getDisplayName();
-            }
-        }
+        [JsonIgnore] public string DisplayName => getDisplayName();
+
+        [JsonIgnore] public bool Equipped { get; set; }
+
+        [JsonProperty] public bool Identifed { get; set; }
+
+        [JsonProperty] public Variance ItemVariance { get; set; } = Variance.None;
 
         private string getDisplayName()
         {
             var upgradeName = "";
 
-            if (Upgrades == 4)
-            {
-                upgradeName = "{=fRare";
-            }
+            if (Upgrades == 4) upgradeName = "{=fRare";
 
-            if (Upgrades == 5)
-            {
-                upgradeName = "{=pEpic";
-            }
+            if (Upgrades == 5) upgradeName = "{=pEpic";
 
-            if (Upgrades == 6)
-            {
-                upgradeName = "{=sLegendary";
-            }
+            if (Upgrades == 6) upgradeName = "{=sLegendary";
 
-            if (Upgrades == 7)
-            {
-                upgradeName = "{=bGodly";
-            }
+            if (Upgrades == 7) upgradeName = "{=bGodly";
 
-            if (Upgrades == 8)
-            {
-                upgradeName = "{=uForsaken";
-            }
+            if (Upgrades == 8) upgradeName = "{=uForsaken";
 
             if (ItemVariance != Variance.None && Identifed)
-            {
                 return string.Format("{0} {1} {2}", upgradeName, ItemVariance.ToString(), Template.Name);
-            }
 
-            if (upgradeName != "")
-            {
-                return string.Format("{0} {1}", upgradeName, Template.Name);
-            }
+            if (upgradeName != "") return string.Format("{0} {1}", upgradeName, Template.Name);
 
             return Template.Name;
         }
-
-        [JsonIgnore]
-        public bool Equipped { get; set; }
 
         public bool CanCarry(Sprite sprite)
         {
@@ -129,9 +122,10 @@ namespace Darkages.Types
             if (sprite is Aisling)
             {
                 #region stackable items 
+
                 if (Template.Flags.HasFlag(ItemFlags.Stackable))
                 {
-                    var num_stacks = (byte)Stacks;
+                    var num_stacks = (byte) Stacks;
 
                     if (num_stacks <= 0)
                         num_stacks = 1;
@@ -160,51 +154,48 @@ namespace Darkages.Types
 
                         //send message
                         (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
-                            string.Format("Received {0}, You now have ({1})", DisplayName, item.Stacks == 0 ? item.Stacks + 1 : item.Stacks));
+                            string.Format("Received {0}, You now have ({1})", DisplayName,
+                                item.Stacks == 0 ? item.Stacks + 1 : item.Stacks));
 
                         return true;
                     }
-                    else // it's the first item of a stack.
-                    {
-                        //if we don't find an existing item of this stack, create a new stack.
-                        if (Stacks <= 0)
-                            Stacks = 1;
 
-                        if (CheckWeight)
-                        {
-                            if (!CanCarry(sprite))
-                            {
-                                return false;
-                            }
-                        }
+                    //if we don't find an existing item of this stack, create a new stack.
+                    if (Stacks <= 0)
+                        Stacks = 1;
 
-                        Slot = (sprite as Aisling).Inventory.FindEmpty();
-
-                        if (Slot == byte.MaxValue)
-                        {
-                            (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02, ServerContext.Config.CantCarryMoreMsg);
+                    if (CheckWeight)
+                        if (!CanCarry(sprite))
                             return false;
-                        }
+
+                    Slot = (sprite as Aisling).Inventory.FindEmpty();
+
+                    if (Slot == byte.MaxValue)
+                    {
+                        (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02, ServerContext.Config.CantCarryMoreMsg);
+                        return false;
+                    }
 
                     //assign this item to the inventory.
                     (sprite as Aisling).Inventory.Set(this, false);
-                        var format = new ServerFormat0F(this);
-                        (sprite as Aisling).Show(Scope.Self, format);
-                        (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
-                            string.Format("{0} Received.", DisplayName));
+                    var format = new ServerFormat0F(this);
+                    (sprite as Aisling).Show(Scope.Self, format);
+                    (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
+                        string.Format("{0} Received.", DisplayName));
 
-                        if (CheckWeight)
-                        {
-                            (sprite as Aisling).CurrentWeight += Template.CarryWeight;
-                            (sprite as Aisling).Client.SendStats(StatusFlags.StructA);
-                        }
-
-                        return true;
+                    if (CheckWeight)
+                    {
+                        (sprite as Aisling).CurrentWeight += Template.CarryWeight;
+                        (sprite as Aisling).Client.SendStats(StatusFlags.StructA);
                     }
+
+                    return true;
                 }
+
                 #endregion
+
                 #region not stackable items
-                else
+
                 {
                     //not stackable. find inventory slot.
                     Slot = (sprite as Aisling).Inventory.FindEmpty();
@@ -216,12 +207,8 @@ namespace Darkages.Types
                     }
 
                     if (CheckWeight)
-                    {
                         if (!CanCarry(sprite))
-                        {
                             return false;
-                        }
-                    }
 
 
                     //assign this item to the inventory.
@@ -237,6 +224,7 @@ namespace Darkages.Types
 
                     return true;
                 }
+
                 #endregion
             }
 
@@ -252,7 +240,6 @@ namespace Darkages.Types
 
             if (Template.AcModifer != null)
             {
-
                 if (Template.AcModifer.Option == Operator.Add)
                     client.Aisling.BonusAc -= Template.AcModifer.Value;
                 if (Template.AcModifer.Option == Operator.Remove)
@@ -296,9 +283,9 @@ namespace Darkages.Types
             if (Template.MrModifer != null)
             {
                 if (Template.MrModifer.Option == Operator.Add)
-                    client.Aisling.BonusMr -= (byte)Template.MrModifer.Value;
+                    client.Aisling.BonusMr -= (byte) Template.MrModifer.Value;
                 if (Template.MrModifer.Option == Operator.Remove)
-                    client.Aisling.BonusMr += (byte)Template.MrModifer.Value;
+                    client.Aisling.BonusMr += (byte) Template.MrModifer.Value;
 
                 if (client.Aisling.BonusMr < 0)
                     client.Aisling.BonusMr = 0;
@@ -330,9 +317,11 @@ namespace Darkages.Types
                 if (Template.ManaModifer.Option == Operator.Remove)
                     client.Aisling.BonusMp += Template.ManaModifer.Value;
             }
+
             #endregion
 
             #region Regen
+
             if (Template.RegenModifer != null)
             {
                 if (Template.RegenModifer.Option == Operator.Add)
@@ -340,6 +329,7 @@ namespace Darkages.Types
                 if (Template.RegenModifer.Option == Operator.Remove)
                     client.Aisling.BonusRegen += Template.RegenModifer.Value;
             }
+
             #endregion
 
             #region Str
@@ -347,9 +337,9 @@ namespace Darkages.Types
             if (Template.StrModifer != null)
             {
                 if (Template.StrModifer.Option == Operator.Add)
-                    client.Aisling.BonusStr -= (byte)Template.StrModifer.Value;
+                    client.Aisling.BonusStr -= (byte) Template.StrModifer.Value;
                 if (Template.StrModifer.Option == Operator.Remove)
-                    client.Aisling.BonusStr += (byte)Template.StrModifer.Value;
+                    client.Aisling.BonusStr += (byte) Template.StrModifer.Value;
             }
 
             #endregion
@@ -359,9 +349,9 @@ namespace Darkages.Types
             if (Template.IntModifer != null)
             {
                 if (Template.IntModifer.Option == Operator.Add)
-                    client.Aisling.BonusInt -= (byte)Template.IntModifer.Value;
+                    client.Aisling.BonusInt -= (byte) Template.IntModifer.Value;
                 if (Template.IntModifer.Option == Operator.Remove)
-                    client.Aisling.BonusInt += (byte)Template.IntModifer.Value;
+                    client.Aisling.BonusInt += (byte) Template.IntModifer.Value;
             }
 
             #endregion
@@ -371,9 +361,9 @@ namespace Darkages.Types
             if (Template.WisModifer != null)
             {
                 if (Template.WisModifer.Option == Operator.Add)
-                    client.Aisling.BonusWis -= (byte)Template.WisModifer.Value;
+                    client.Aisling.BonusWis -= (byte) Template.WisModifer.Value;
                 if (Template.WisModifer.Option == Operator.Remove)
-                    client.Aisling.BonusWis += (byte)Template.WisModifer.Value;
+                    client.Aisling.BonusWis += (byte) Template.WisModifer.Value;
             }
 
             #endregion
@@ -383,9 +373,9 @@ namespace Darkages.Types
             if (Template.ConModifer != null)
             {
                 if (Template.ConModifer.Option == Operator.Add)
-                    client.Aisling.BonusCon -= (byte)Template.ConModifer.Value;
+                    client.Aisling.BonusCon -= (byte) Template.ConModifer.Value;
                 if (Template.ConModifer.Option == Operator.Remove)
-                    client.Aisling.BonusCon += (byte)Template.ConModifer.Value;
+                    client.Aisling.BonusCon += (byte) Template.ConModifer.Value;
 
                 if (client.Aisling.BonusCon < 0)
                     client.Aisling.BonusCon = ServerContext.Config.BaseStatAttribute;
@@ -400,9 +390,9 @@ namespace Darkages.Types
             if (Template.DexModifer != null)
             {
                 if (Template.DexModifer.Option == Operator.Add)
-                    client.Aisling.BonusDex -= (byte)Template.DexModifer.Value;
+                    client.Aisling.BonusDex -= (byte) Template.DexModifer.Value;
                 if (Template.DexModifer.Option == Operator.Remove)
-                    client.Aisling.BonusDex += (byte)Template.DexModifer.Value;
+                    client.Aisling.BonusDex += (byte) Template.DexModifer.Value;
             }
 
             #endregion
@@ -412,9 +402,9 @@ namespace Darkages.Types
             if (Template.HitModifer != null)
             {
                 if (Template.HitModifer.Option == Operator.Add)
-                    client.Aisling.BonusHit -= (byte)Template.HitModifer.Value;
+                    client.Aisling.BonusHit -= (byte) Template.HitModifer.Value;
                 if (Template.HitModifer.Option == Operator.Remove)
-                    client.Aisling.BonusHit += (byte)Template.HitModifer.Value;
+                    client.Aisling.BonusHit += (byte) Template.HitModifer.Value;
             }
 
             #endregion
@@ -424,9 +414,9 @@ namespace Darkages.Types
             if (Template.DmgModifer != null)
             {
                 if (Template.DmgModifer.Option == Operator.Add)
-                    client.Aisling.BonusDmg -= (byte)Template.DmgModifer.Value;
+                    client.Aisling.BonusDmg -= (byte) Template.DmgModifer.Value;
                 if (Template.DmgModifer.Option == Operator.Remove)
-                    client.Aisling.BonusDmg += (byte)Template.DmgModifer.Value;
+                    client.Aisling.BonusDmg += (byte) Template.DmgModifer.Value;
             }
 
             #endregion
@@ -519,9 +509,9 @@ namespace Darkages.Types
             if (Template.MrModifer != null)
             {
                 if (Template.MrModifer.Option == Operator.Add)
-                    client.Aisling.BonusMr += (byte)Template.MrModifer.Value;
+                    client.Aisling.BonusMr += (byte) Template.MrModifer.Value;
                 if (Template.MrModifer.Option == Operator.Remove)
-                    client.Aisling.BonusMr -= (byte)Template.MrModifer.Value;
+                    client.Aisling.BonusMr -= (byte) Template.MrModifer.Value;
 
                 if (client.Aisling.BonusMr < 0)
                     client.Aisling.BonusMr = 0;
@@ -559,6 +549,7 @@ namespace Darkages.Types
             #endregion
 
             #region Regen
+
             if (Template.RegenModifer != null)
             {
                 if (Template.RegenModifer.Option == Operator.Add)
@@ -566,6 +557,7 @@ namespace Darkages.Types
                 if (Template.RegenModifer.Option == Operator.Remove)
                     client.Aisling.BonusRegen -= Template.RegenModifer.Value;
             }
+
             #endregion
 
             #region Str
@@ -573,10 +565,9 @@ namespace Darkages.Types
             if (Template.StrModifer != null)
             {
                 if (Template.StrModifer.Option == Operator.Add)
-                    client.Aisling.BonusStr += (byte)Template.StrModifer.Value;
+                    client.Aisling.BonusStr += (byte) Template.StrModifer.Value;
                 if (Template.StrModifer.Option == Operator.Remove)
-                    client.Aisling.BonusStr -= (byte)Template.StrModifer.Value;
-
+                    client.Aisling.BonusStr -= (byte) Template.StrModifer.Value;
             }
 
             #endregion
@@ -586,9 +577,9 @@ namespace Darkages.Types
             if (Template.IntModifer != null)
             {
                 if (Template.IntModifer.Option == Operator.Add)
-                    client.Aisling.BonusInt += (byte)Template.IntModifer.Value;
+                    client.Aisling.BonusInt += (byte) Template.IntModifer.Value;
                 if (Template.IntModifer.Option == Operator.Remove)
-                    client.Aisling.BonusInt -= (byte)Template.IntModifer.Value;
+                    client.Aisling.BonusInt -= (byte) Template.IntModifer.Value;
             }
 
             #endregion
@@ -598,9 +589,9 @@ namespace Darkages.Types
             if (Template.WisModifer != null)
             {
                 if (Template.WisModifer.Option == Operator.Add)
-                    client.Aisling.BonusWis += (byte)Template.WisModifer.Value;
+                    client.Aisling.BonusWis += (byte) Template.WisModifer.Value;
                 if (Template.WisModifer.Option == Operator.Remove)
-                    client.Aisling.BonusWis -= (byte)Template.WisModifer.Value;
+                    client.Aisling.BonusWis -= (byte) Template.WisModifer.Value;
             }
 
             #endregion
@@ -610,9 +601,9 @@ namespace Darkages.Types
             if (Template.ConModifer != null)
             {
                 if (Template.ConModifer.Option == Operator.Add)
-                    client.Aisling.BonusCon += (byte)Template.ConModifer.Value;
+                    client.Aisling.BonusCon += (byte) Template.ConModifer.Value;
                 if (Template.ConModifer.Option == Operator.Remove)
-                    client.Aisling.BonusCon -= (byte)Template.ConModifer.Value;
+                    client.Aisling.BonusCon -= (byte) Template.ConModifer.Value;
             }
 
             #endregion
@@ -622,9 +613,9 @@ namespace Darkages.Types
             if (Template.DexModifer != null)
             {
                 if (Template.DexModifer.Option == Operator.Add)
-                    client.Aisling.BonusDex += (byte)Template.DexModifer.Value;
+                    client.Aisling.BonusDex += (byte) Template.DexModifer.Value;
                 if (Template.DexModifer.Option == Operator.Remove)
-                    client.Aisling.BonusDex -= (byte)Template.DexModifer.Value;
+                    client.Aisling.BonusDex -= (byte) Template.DexModifer.Value;
             }
 
             #endregion
@@ -634,9 +625,9 @@ namespace Darkages.Types
             if (Template.HitModifer != null)
             {
                 if (Template.HitModifer.Option == Operator.Add)
-                    client.Aisling.BonusHit += (byte)Template.HitModifer.Value;
+                    client.Aisling.BonusHit += (byte) Template.HitModifer.Value;
                 if (Template.HitModifer.Option == Operator.Remove)
-                    client.Aisling.BonusHit -= (byte)Template.HitModifer.Value;
+                    client.Aisling.BonusHit -= (byte) Template.HitModifer.Value;
             }
 
             #endregion
@@ -646,9 +637,9 @@ namespace Darkages.Types
             if (Template.DmgModifer != null)
             {
                 if (Template.DmgModifer.Option == Operator.Add)
-                    client.Aisling.BonusDmg += (byte)Template.DmgModifer.Value;
+                    client.Aisling.BonusDmg += (byte) Template.DmgModifer.Value;
                 if (Template.DmgModifer.Option == Operator.Remove)
-                    client.Aisling.BonusDmg -= (byte)Template.DmgModifer.Value;
+                    client.Aisling.BonusDmg -= (byte) Template.DmgModifer.Value;
             }
 
             #endregion
@@ -667,28 +658,6 @@ namespace Darkages.Types
             }
         }
 
-        [JsonProperty]
-        public bool Identifed { get; set; } = false;
-
-        [JsonProperty]
-        public Variance ItemVariance { get; set; } = Variance.None;
-
-        public enum Variance
-        {
-            None,
-            Enchanted,
-            Blessed,
-            Magic,
-            Gramail,
-            Deoch,
-            Ceannlaidir,
-            Cail,
-            Fiosachd,
-            Glioca,
-            Luathas,
-            Sgrios
-        }
-
         public static Item Create(Sprite owner, string item, bool curse = false)
         {
             if (!ServerContext.GlobalItemTemplateCache.ContainsKey(item))
@@ -704,7 +673,7 @@ namespace Darkages.Types
                 return null;
 
             var template =
-                (ItemTemplate)StorageManager.ItemBucket.LoadFromStorage(itemtemplate);
+                (ItemTemplate) StorageManager.ItemBucket.LoadFromStorage(itemtemplate);
 
             if (itemtemplate != null && template == null)
                 template = itemtemplate;
@@ -719,7 +688,7 @@ namespace Darkages.Types
                 DisplayImage = template.DisplayImage,
                 CurrentMapId = Owner.CurrentMapId,
                 Cursed = curse,
-                Owner = (uint)Owner.Serial,
+                Owner = (uint) Owner.Serial,
                 Durability = template.MaxDurability,
                 OffenseElement = template.OffenseElement,
                 DefenseElement = template.DefenseElement
@@ -728,12 +697,12 @@ namespace Darkages.Types
             if (obj.Template == null)
                 obj.Template = template;
 
-            obj.Warnings = new[] { false, false, false };
+            obj.Warnings = new[] {false, false, false};
 
             obj.AuthenticatedAislings = null;
 
             if (obj.Color == 0)
-                obj.Color = (byte)ServerContext.Config.DefaultItemColor;
+                obj.Color = (byte) ServerContext.Config.DefaultItemColor;
 
             if (obj.Template.Flags.HasFlag(ItemFlags.Repairable))
             {
@@ -761,9 +730,7 @@ namespace Darkages.Types
 
             obj.Script = ScriptManager.Load<ItemScript>(template.ScriptName, obj);
             if (!string.IsNullOrEmpty(obj.Template.WeaponScript))
-            {
                 obj.WeaponScript = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
-            }
             return obj;
         }
 
@@ -776,8 +743,7 @@ namespace Darkages.Types
 
                 lock (ServerContext.SyncObj)
                 {
-
-                    var template = (ItemTemplate)StorageManager.ItemBucket.LoadFromStorage(obj.Template);
+                    var template = (ItemTemplate) StorageManager.ItemBucket.LoadFromStorage(obj.Template);
                     if (template == null)
                         return;
 
@@ -825,84 +791,57 @@ namespace Darkages.Types
                 if (obj.Upgrades > 0)
                 {
                     if (obj.Template.AcModifer != null)
-                    {
                         if (obj.Template.AcModifer.Option == Operator.Remove)
-                        {
-                            obj.Template.AcModifer.Value -= -(obj.Upgrades);
-                        }
-                    }
+                            obj.Template.AcModifer.Value -= -obj.Upgrades;
 
                     if (obj.Template.MrModifer != null)
-                    {
                         if (obj.Template.MrModifer.Option == Operator.Add)
-                            obj.Template.MrModifer.Value += (obj.Upgrades * 10);
-                    }
+                            obj.Template.MrModifer.Value += obj.Upgrades * 10;
 
                     if (obj.Template.HealthModifer != null)
-                    {
                         if (obj.Template.HealthModifer.Option == Operator.Add)
-                            obj.Template.HealthModifer.Value += (500 * obj.Upgrades);
-                    }
+                            obj.Template.HealthModifer.Value += 500 * obj.Upgrades;
 
                     if (obj.Template.ManaModifer != null)
-                    {
                         if (obj.Template.ManaModifer.Option == Operator.Add)
-                            obj.Template.ManaModifer.Value += (300 * obj.Upgrades);
-                    }
+                            obj.Template.ManaModifer.Value += 300 * obj.Upgrades;
 
                     if (obj.Template.StrModifer != null)
-                    {
                         if (obj.Template.StrModifer.Option == Operator.Add)
                             obj.Template.StrModifer.Value += obj.Upgrades;
-                    }
 
                     if (obj.Template.IntModifer != null)
-                    {
                         if (obj.Template.IntModifer.Option == Operator.Add)
                             obj.Template.IntModifer.Value += obj.Upgrades;
-                    }
 
                     if (obj.Template.WisModifer != null)
-                    {
                         if (obj.Template.WisModifer.Option == Operator.Add)
                             obj.Template.WisModifer.Value += obj.Upgrades;
-                    }
                     if (obj.Template.ConModifer != null)
-                    {
                         if (obj.Template.ConModifer.Option == Operator.Add)
                             obj.Template.ConModifer.Value += obj.Upgrades;
-                    }
 
                     if (obj.Template.DexModifer != null)
-                    {
                         if (obj.Template.DexModifer.Option == Operator.Add)
                             obj.Template.DexModifer.Value += obj.Upgrades;
-                    }
 
                     if (obj.Template.DmgModifer != null)
-                    {
                         if (obj.Template.DmgModifer.Option == Operator.Add)
                             obj.Template.DmgModifer.Value += obj.Upgrades;
-                    }
 
                     if (obj.Template.HitModifer != null)
-                    {
                         if (obj.Template.HitModifer.Option == Operator.Add)
                             obj.Template.HitModifer.Value += obj.Upgrades;
-                    }
 
-                    obj.Template.LevelRequired -= (byte)obj.Upgrades;
-                    obj.Template.Value *= (byte)obj.Upgrades;
-                    obj.Template.MaxDurability += (byte)(1500 * obj.Upgrades);
-                    obj.Template.DmgMax += (100 * obj.Upgrades);
-                    obj.Template.DmgMin += (20 * obj.Upgrades);
+                    obj.Template.LevelRequired -= (byte) obj.Upgrades;
+                    obj.Template.Value *= (byte) obj.Upgrades;
+                    obj.Template.MaxDurability += (byte) (1500 * obj.Upgrades);
+                    obj.Template.DmgMax += 100 * obj.Upgrades;
+                    obj.Template.DmgMin += 20 * obj.Upgrades;
 
 
                     if (obj.Template.LevelRequired <= 0 || obj.Template.LevelRequired > 99)
-                    {
                         obj.Template.LevelRequired = 1;
-                    }
-
                 }
             }
             catch (Exception error)

@@ -15,9 +15,10 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Systems.Loot.Interfaces;
+
 using System;
 using System.Reflection;
+using Darkages.Systems.Loot.Interfaces;
 
 namespace Darkages.Systems.Loot.Modifiers
 {
@@ -26,15 +27,18 @@ namespace Darkages.Systems.Loot.Modifiers
     {
         private const BindingFlags Flags = BindingFlags.Instance | BindingFlags.Public;
 
-        public string PropertyName { get; set; }
+        protected BaseModifier()
+        {
+        }
 
-        public abstract void Apply(object itemToModify);
-
-        protected BaseModifier() { }
         protected BaseModifier(string propertyName)
         {
             PropertyName = propertyName;
         }
+
+        public string PropertyName { get; set; }
+
+        public abstract void Apply(object itemToModify);
 
         protected T GetValue<T>(object objectInstance)
         {
@@ -45,11 +49,11 @@ namespace Darkages.Systems.Loot.Modifiers
                 var value = property.GetValue(objectInstance);
                 try
                 {
-                    return (T)value;
+                    return (T) value;
                 }
                 catch
                 {
-                    return (T)Convert.ChangeType(value, typeof(T));
+                    return (T) Convert.ChangeType(value, typeof(T));
                 }
             }
 
@@ -60,15 +64,15 @@ namespace Darkages.Systems.Loot.Modifiers
                 var value = field.GetValue(objectInstance);
                 try
                 {
-                    return (T)value;
+                    return (T) value;
                 }
                 catch
                 {
-                    return (T)Convert.ChangeType(value, typeof(T));
+                    return (T) Convert.ChangeType(value, typeof(T));
                 }
             }
 
-            return default(T);
+            return default;
         }
 
         protected void SetValue(object objectInstance, object value)
@@ -85,6 +89,7 @@ namespace Darkages.Systems.Loot.Modifiers
                 {
                     property.SetValue(objectInstance, Convert.ChangeType(value, property.PropertyType));
                 }
+
                 return;
             }
 

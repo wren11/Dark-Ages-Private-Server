@@ -15,18 +15,19 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Systems.Loot.Extensions;
-using Darkages.Systems.Loot.Interfaces;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Common;
+using Darkages.Systems.Loot.Extensions;
+using Darkages.Systems.Loot.Interfaces;
 
 namespace Darkages.Systems.Loot
 {
     public class LootDropper : ILootDropper
     {
-        public event EventHandler<EventArgs> OnDropStarted;
-        public event EventHandler<EventArgs> OnDropCompleted;
+        public static long GlobalRolls;
 
         public ILootDefinition Drop(ILootTable lootTable, string name)
         {
@@ -47,10 +48,7 @@ namespace Darkages.Systems.Loot
 
             var drops = new List<ILootDefinition>();
 
-            for (var i = 0; i < amount; i++)
-            {
-                drops.Add(Drop(lootTable));
-            }
+            for (var i = 0; i < amount; i++) drops.Add(Drop(lootTable));
 
             OnDropCompleted?.Invoke(this, EventArgs.Empty);
 
@@ -64,15 +62,11 @@ namespace Darkages.Systems.Loot
 
             var drops = new List<ILootDefinition>();
 
-            for (var i = 0; i < amount; i++)
-            {
-                drops.Add(Drop(lootTable, name));
-            }
+            for (var i = 0; i < amount; i++) drops.Add(Drop(lootTable, name));
 
             return drops;
         }
 
-        public static long GlobalRolls = 0;
         public ILootDefinition Drop(ILootTable lootTable)
         {
             if (lootTable == null || lootTable.Children.Count == 0)
@@ -82,11 +76,11 @@ namespace Darkages.Systems.Loot
             if (item == null)
                 return null;
 
-            var bonus = (Math.Round(GlobalRolls * 0.01, 3));
+            var bonus = Math.Round(GlobalRolls * 0.01, 3);
 
-            lock (Common.Generator.Random)
+            lock (Generator.Random)
             {
-                var roll = Math.Abs((Common.Generator.Random.NextDouble() * 2.0) - 1.0);
+                var roll = Math.Abs(Generator.Random.NextDouble() * 2.0 - 1.0);
                 if (roll - bonus <= item.Weight || bonus > 0.05)
                 {
                     GlobalRolls = 0;
@@ -101,6 +95,9 @@ namespace Darkages.Systems.Loot
             GlobalRolls++;
             return null;
         }
+
+        public event EventHandler<EventArgs> OnDropStarted;
+        public event EventHandler<EventArgs> OnDropCompleted;
 
         public static T Pick<T>(IEnumerable<T> items) where T : class, IWeighable
         {

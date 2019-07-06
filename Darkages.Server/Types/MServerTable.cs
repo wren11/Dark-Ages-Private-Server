@@ -15,12 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Compression;
-using Darkages.IO;
+
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Xml.Serialization;
+using Darkages.Compression;
+using Darkages.IO;
 
 namespace Darkages.Types
 {
@@ -33,7 +34,7 @@ namespace Darkages.Types
 
         public Collection<MServer> Servers { get; set; }
 
-        [XmlIgnore] public ushort Size => (ushort)DeflatedData.Length;
+        [XmlIgnore] public ushort Size => (ushort) DeflatedData.Length;
 
         [XmlIgnore] public byte[] Data => DeflatedData;
 
@@ -78,7 +79,7 @@ namespace Darkages.Types
                         Port = reader.ReadUInt16()
                     };
 
-                    var text = reader.ReadString().Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                    var text = reader.ReadString().Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
 
                     server.Name = text[0];
                     server.Description = text[1];
@@ -95,7 +96,7 @@ namespace Darkages.Types
             using (var writer = new BufferWriter(stream))
             {
                 writer.Write(
-                    (byte)Servers.Count);
+                    (byte) Servers.Count);
 
                 foreach (var server in Servers)
                 {

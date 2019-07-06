@@ -1,8 +1,8 @@
 {
   "Posts": [
     {
-      "Secured": true,
       "Command": 49,
+      "Secured": true,
       "Owner": "lol",
       "TopicId": 2931,
       "PostId": 1,
@@ -15,8 +15,8 @@
       "Subject": "some event."
     },
     {
-      "Secured": true,
       "Command": 49,
+      "Secured": true,
       "Owner": "lol",
       "TopicId": 1140,
       "PostId": 2,
@@ -29,8 +29,8 @@
       "Subject": "test"
     },
     {
-      "Secured": true,
       "Command": 49,
+      "Secured": true,
       "Owner": "lol",
       "TopicId": 2664,
       "PostId": 3,
@@ -43,8 +43,8 @@
       "Subject": "hjgk event"
     }
   ],
-  "Secured": true,
   "Command": 49,
+  "Secured": true,
   "Index": 2,
   "IsMail": false,
   "Subject": "Events and Events",

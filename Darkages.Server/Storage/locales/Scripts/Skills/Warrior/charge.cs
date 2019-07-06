@@ -15,10 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.ServerFormats;
-using Darkages.Types;
+
 using System;
 using System.Threading.Tasks;
+using Darkages.Network.ServerFormats;
+using Darkages.Types;
 
 namespace Darkages.Scripting.Scripts.Skills
 {
@@ -57,9 +58,9 @@ namespace Darkages.Scripting.Scripts.Skills
                 Speed = 20
             };
 
-            int steps = 0;
+            var steps = 0;
 
-            for (int i = 0; i < 7; i++)
+            for (var i = 0; i < 7; i++)
             {
                 var targets = sprite.GetInfront(i, true);
 
@@ -71,8 +72,8 @@ namespace Darkages.Scripting.Scripts.Skills
 
                     if (target != null)
                     {
-                        var imp = (Skill.Level * 5 / 100);
-                        var dmg = 15 * (((sprite.Str * steps) + sprite.Dex * imp));
+                        var imp = Skill.Level * 5 / 100;
+                        var dmg = 15 * (sprite.Str * steps + sprite.Dex * imp);
 
                         target.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
                         {
@@ -95,7 +96,6 @@ namespace Darkages.Scripting.Scripts.Skills
 
                             aisling.Client.WarpTo(position);
                         }
-
                     }
 
                     hits++;
@@ -107,22 +107,20 @@ namespace Darkages.Scripting.Scripts.Skills
                     break;
                 }
             }
-            Task.Delay(50).ContinueWith((dc) =>
+
+            Task.Delay(50).ContinueWith(dc =>
             {
                 if (Target != null && collided)
                 {
                     if (Target is Monster || Target is Mundane || Target is Aisling)
                         Target.Show(Scope.NearbyAislings,
-                            new ServerFormat29((uint)sprite.Serial, (uint)Target.Serial,
+                            new ServerFormat29((uint) sprite.Serial, (uint) Target.Serial,
                                 Skill.Template.TargetAnimation, 0, 100));
 
 
                     sprite.Show(Scope.NearbyAislings, action);
                 }
             }).Wait();
-
-
-
         }
 
         public override void OnUse(Sprite sprite)

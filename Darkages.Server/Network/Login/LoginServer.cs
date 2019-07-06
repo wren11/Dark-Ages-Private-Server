@@ -15,12 +15,14 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.Net;
+using System.Text;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.ServerFormats;
 using Darkages.Storage;
 using Darkages.Types;
-using System;
-using System.Net;
 
 namespace Darkages.Network.Login
 {
@@ -75,10 +77,10 @@ namespace Darkages.Network.Login
 
             //create aisling from default template.
             var template = Aisling.Create();
-            template.Display = (BodySprite)(format.Gender * 16);
+            template.Display = (BodySprite) (format.Gender * 16);
             template.Username = client.CreateInfo.AislingUsername;
             template.Password = client.CreateInfo.AislingPassword;
-            template.Gender = (Gender)format.Gender;
+            template.Gender = (Gender) format.Gender;
             template.HairColor = format.HairColor;
             template.HairStyle = format.HairStyle;
 
@@ -109,13 +111,19 @@ namespace Darkages.Network.Login
                 }
                 else
                 {
-                    client.SendMessageBox(0x02, string.Format("{0} does not exist in this world. You can make this hero by clicking on 'Create'.", format.Username));
+                    client.SendMessageBox(0x02,
+                        string.Format(
+                            "{0} does not exist in this world. You can make this hero by clicking on 'Create'.",
+                            format.Username));
                     return;
                 }
             }
             catch
             {
-                client.SendMessageBox(0x02, string.Format("{0} is not supported by the new server. Please remake your character. This will not happen when the server goes to beta.", format.Username));
+                client.SendMessageBox(0x02,
+                    string.Format(
+                        "{0} is not supported by the new server. Please remake your character. This will not happen when the server goes to beta.",
+                        format.Username));
                 return;
             }
 
@@ -129,14 +137,14 @@ namespace Darkages.Network.Login
                 var redirect = new Redirect
                 {
                     Serial = Convert.ToString(client.Serial),
-                    Salt = System.Text.Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
+                    Salt = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
                     Seed = Convert.ToString(client.Encryption.Parameters.Seed),
                     Name = _aisling.Username
                 };
 
                 if (_aisling.Username.Equals(ServerContext.Config.GameMaster, StringComparison.OrdinalIgnoreCase))
                 {
-                    _aisling.GameMaster  = true;
+                    _aisling.GameMaster = true;
                     ServerContext.ILog.Debug("GameMaster Entering Game: {0}", _aisling.Username);
                 }
                 else
@@ -225,7 +233,6 @@ namespace Darkages.Network.Login
 
         protected override void Format66Handler(LoginClient client, ClientFormat66 format)
         {
-
         }
 
         protected override void Format57Handler(LoginClient client, ClientFormat57 format)
@@ -235,9 +242,9 @@ namespace Darkages.Network.Login
                 var redirect = new Redirect
                 {
                     Serial = Convert.ToString(client.Serial),
-                    Salt   = System.Text.Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
-                    Seed   = Convert.ToString(client.Encryption.Parameters.Seed),
-                    Name   = "socket[" + client.Serial + "]"
+                    Salt = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
+                    Seed = Convert.ToString(client.Encryption.Parameters.Seed),
+                    Name = "socket[" + client.Serial + "]"
                 };
 
                 client.Send(new ServerFormat03
@@ -251,7 +258,7 @@ namespace Darkages.Network.Login
                 client.Send(new ServerFormat56
                 {
                     Size = MServerTable.Size,
-                    Data = MServerTable.Data,
+                    Data = MServerTable.Data
                 });
             }
         }

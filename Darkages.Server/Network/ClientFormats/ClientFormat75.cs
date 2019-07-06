@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat75 : NetworkFormat
@@ -29,7 +30,7 @@ namespace Darkages.Network.ClientFormats
 
         public override void Serialize(NetworkPacketReader reader)
         {
-            Tick = (long)(reader.ReadByte() >> 4) - 0x15;
+            Tick = (long) (reader.ReadByte() >> 4) - 0x15;
         }
 
         public override void Serialize(NetworkPacketWriter writer)

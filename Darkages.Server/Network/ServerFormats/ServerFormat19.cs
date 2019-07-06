@@ -15,17 +15,18 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat19 : NetworkFormat
     {
+        public short Number;
+
         public ServerFormat19()
         {
             Secured = true;
             Command = 0x19;
         }
-
-        public short Number;
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -33,8 +34,8 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)0x00);
-            writer.Write((ushort)Number);
+            writer.Write((byte) 0x00);
+            writer.Write((ushort) Number);
         }
     }
 }

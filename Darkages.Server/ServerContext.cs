@@ -17,6 +17,14 @@
 // *************************************************************************
 
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Reflection;
 using Darkages.Interops;
 using Darkages.Network.Game;
 using Darkages.Network.Login;
@@ -26,27 +34,20 @@ using Darkages.Storage;
 using Darkages.Types;
 using Mono.CSharp;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
 
 namespace Darkages
 {
-    /// <summary>The Main Application Context Used to Couple All Information used to Manage Running Servers and Clients and Storage.</summary>
+    /// <summary>
+    ///     The Main Application Context Used to Couple All Information used to Manage Running Servers and Clients and
+    ///     Storage.
+    /// </summary>
     /// <remarks>Implements the ObjectManager Class</remarks>
     /// <seealso cref="Darkages.Network.Object.ObjectManager" />
     public class ServerContext : ObjectManager
     {
         internal static object SyncObj = new object();
 
-        internal static Exception UnhandledException = new Exception();
-
-        internal static Evaluator EVALUATOR = null;
+        internal static Evaluator EVALUATOR;
 
         public static int Errors, DefaultPort;
 
@@ -58,31 +59,7 @@ namespace Darkages
 
         public static ServerConstants Config;
 
-        public static IPAddress Ipaddress => IPAddress.Parse(File.ReadAllText("server.tbl"));
-
-        public static string GlobalMessage { get; internal set; }
-
         public static string StoragePath = @"..\..\..\LORULE_DATA";
-
-        [JsonIgnore]
-        private static ServerInformation _info = new ServerInformation();
-
-        public static ServerInformation ILog
-        {
-            get { return _info; }
-            set { _info = value; }
-        }
-
-        static ServerContext()
-        {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-        }
-
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Exception error = (Exception)e.ExceptionObject;
-            ILog?.Error("Unhandled Exception", error);
-        }
 
         public static List<Metafile> GlobalMetaCache = new List<Metafile>();
 
@@ -113,14 +90,11 @@ namespace Darkages
         public static Dictionary<string, Reactor> GlobalReactorCache =
             new Dictionary<string, Reactor>();
 
-        public static Dictionary<string, Buff> GlobalBuffCache 
+        public static Dictionary<string, Buff> GlobalBuffCache
             = new Dictionary<string, Buff>();
 
         public static Dictionary<string, Debuff> GlobalDeBuffCache
             = new Dictionary<string, Debuff>();
-
-        public static Dictionary<string, Aisling> ConnectedBots
-            = new Dictionary<string, Aisling>();
 
         public static List<PopupTemplate> GlobalPopupCache
             = new List<PopupTemplate>();
@@ -128,18 +102,31 @@ namespace Darkages
         public static Board[] Community = new Board[7];
 
         public static Dictionary<string, List<Board>> GlobalBoardCache
-             = new Dictionary<string, List<Board>>();
+            = new Dictionary<string, List<Board>>();
+
+        static ServerContext()
+        {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+        }
+
+        public static IPAddress Ipaddress => IPAddress.Parse(File.ReadAllText("server.tbl"));
+
+        public static string GlobalMessage { get; internal set; }
+
+        [field: JsonIgnore] public static ServerInformation ILog { get; set; } = new ServerInformation();
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var error = (Exception) e.ExceptionObject;
+            ILog?.Error("Unhandled Exception", error);
+        }
 
         public static void Log(string message, params object[] args)
         {
             if (ILog != null)
-            {
                 ILog.Info(message, args);
-            }
             else
-            {
                 Console.WriteLine(message, args);
-            }
         }
 
         public static void LoadSkillTemplates()
@@ -193,7 +180,7 @@ namespace Darkages
         private static void StartServers()
         {
 #if DEBUG
-            ServerContext.Config.DebugMode = true;
+            Config.DebugMode = true;
 #endif
             redo:
             {
@@ -216,7 +203,7 @@ namespace Darkages
                     }
                     goto redo;
                 }
-            }   
+            }
         }
 
         public virtual void Start()
@@ -236,11 +223,11 @@ namespace Darkages
 
         private static void DisposeGame()
         {
-            Game  ?.Abort();
-            Lobby ?.Abort();
+            Game?.Abort();
+            Lobby?.Abort();
 
-            Game    = null;
-            Lobby   = null;
+            Game = null;
+            Lobby = null;
             Running = false;
         }
 
@@ -280,7 +267,7 @@ namespace Darkages
             GlobalReactorCache = new Dictionary<string, Reactor>();
             GlobalBuffCache = new Dictionary<string, Buff>();
             GlobalDeBuffCache = new Dictionary<string, Debuff>();
-            GlobalBoardCache = new Dictionary<string, List<Board>>();            
+            GlobalBoardCache = new Dictionary<string, List<Board>>();
         }
 
         public static void LoadConstants()
@@ -331,40 +318,27 @@ namespace Darkages
                 tmp = new List<Board>(Community);
             }
 
-            foreach (var asset in tmp)
-            {
-                asset.Save("Personal");
-            }
+            foreach (var asset in tmp) asset.Save("Personal");
         }
 
         public static void CacheCommunityAssets()
         {
             if (Community != null)
             {
-
-                var dirs       = Directory.GetDirectories(Path.Combine(StoragePath, "Community\\Boards"));
+                var dirs = Directory.GetDirectories(Path.Combine(StoragePath, "Community\\Boards"));
                 var tmplBoards = new Dictionary<string, List<Board>>();
 
                 foreach (var dir in dirs.Select(i => new DirectoryInfo(i)))
                 {
                     var boards = Board.CacheFromStorage(dir.FullName);
 
-                    if (boards == null)
-                    {
-                        continue;
-                    }
+                    if (boards == null) continue;
 
                     if (dir.Name == "Personal")
-                    {
                         if (boards.Find(i => i.Index == 0) == null)
-                        {
                             boards.Add(new Board("Mail", 0, true));
-                        }
-                    }
 
-                    if (!tmplBoards.ContainsKey(dir.Name)) {
-                        tmplBoards[dir.Name] = new List<Board>();
-                    }
+                    if (!tmplBoards.ContainsKey(dir.Name)) tmplBoards[dir.Name] = new List<Board>();
 
                     tmplBoards[dir.Name].AddRange(boards);
                 }
@@ -373,16 +347,12 @@ namespace Darkages
 
                 foreach (var obj in tmplBoards)
                 {
-                    if (!GlobalBoardCache.ContainsKey(obj.Key))
-                    {
-                        GlobalBoardCache[obj.Key] = new List<Board>();
-                    }
+                    if (!GlobalBoardCache.ContainsKey(obj.Key)) GlobalBoardCache[obj.Key] = new List<Board>();
 
                     GlobalBoardCache[obj.Key].AddRange(obj.Value);
                 }
             }
         }
-
 
 
         public static void LoadAndCacheStorage()
@@ -406,58 +376,56 @@ namespace Darkages
                 LoadExtensions();
             }
 
-            var template = new UserClickPopup()
+            var template = new UserClickPopup
             {
                 Description = "A user Click Popup",
-                Ephemeral   = true,
-                SpriteId    = 0x4005,
-                Timeout     = 200,
-                Name        = "Woodlands Guard",
-                X           = 31,
-                Y           = 23,
-                MapId       = 200,
-                YamlKey     = "Woodlands Guard"
+                Ephemeral = true,
+                SpriteId = 0x4005,
+                Timeout = 200,
+                Name = "Woodlands Guard",
+                X = 31,
+                Y = 23,
+                MapId = 200,
+                YamlKey = "Woodlands Guard"
             };
 
             GlobalPopupCache.Add(template);
 
-            var user_drop = new ItemDropPopup()
+            var user_drop = new ItemDropPopup
             {
-                 Description = "Polish a gem and hopefully improve it's quality.",
-                 Ephemeral   = true,
-                 ItemName    = "Raw Beryl",
-                 Name        = "Polish Gem",
-                 Group       = "Popups",
-                 SpriteId    = 33000,
-                 Timeout     = 15,
-                 YamlKey     = "gem_polishing"
+                Description = "Polish a gem and hopefully improve it's quality.",
+                Ephemeral = true,
+                ItemName = "Raw Beryl",
+                Name = "Polish Gem",
+                Group = "Popups",
+                SpriteId = 33000,
+                Timeout = 15,
+                YamlKey = "gem_polishing"
             };
 
-            var user_pickup_drop = new ItemPickupPopup()
+            var user_pickup_drop = new ItemPickupPopup
             {
                 Description = "Drop [ItemName] onto the reactor [gem_polishing] invoke the gem_polishing yaml script.",
-                Ephemeral   = true,
-                ItemName    = "Raw Beryl",
-                Name        = "Polish Gem",
-                Group       = "Popups",
-                SpriteId    = 33000,
-                Timeout     = 15,
-                YamlKey     = "gem_polishing"
+                Ephemeral = true,
+                ItemName = "Raw Beryl",
+                Name = "Polish Gem",
+                Group = "Popups",
+                SpriteId = 33000,
+                Timeout = 15,
+                YamlKey = "gem_polishing"
             };
 
 
-            var user_walk = new UserWalkPopup()
+            var user_walk = new UserWalkPopup
             {
-                 Description = "Call yaml script when user walks to X, Y on MapId.",
-                 MapId       = 301,
-                 X           = 10,
-                 Y           = 8,
-                 SpriteId    = 0x4032,
-                 Group       = "Popups",
-                 Name        = "Crazy Quest",
-                 YamlKey     = "gem_polishing"
-
-
+                Description = "Call yaml script when user walks to X, Y on MapId.",
+                MapId = 301,
+                X = 10,
+                Y = 8,
+                SpriteId = 0x4032,
+                Group = "Popups",
+                Name = "Crazy Quest",
+                YamlKey = "gem_polishing"
             };
 
             //GlobalPopupCache.Add(user_drop);
@@ -465,6 +433,7 @@ namespace Darkages
             GlobalPopupCache.Add(user_walk);
             Paused = false;
         }
+
         private static void LoadExtensions()
         {
             CacheBuffs();
@@ -480,7 +449,6 @@ namespace Darkages
 
         public static bool InitScriptEvaluator()
         {
-
             var compilerContext = new CompilerContext(new CompilerSettings(), new ConsoleReportPrinter());
             var assembly = Assembly.GetExecutingAssembly();
 
@@ -511,36 +479,30 @@ namespace Darkages
         private static void CacheDebuffs()
         {
             var listOfDebuffs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
-                                 from assemblyType in domainAssembly.GetTypes()
-                                 where typeof(Debuff).IsAssignableFrom(assemblyType)
-                                 select assemblyType).ToArray();
+                from assemblyType in domainAssembly.GetTypes()
+                where typeof(Debuff).IsAssignableFrom(assemblyType)
+                select assemblyType).ToArray();
 
             foreach (var debuff in listOfDebuffs)
-            {
-                GlobalDeBuffCache[debuff.Name] = (Debuff)Activator.CreateInstance(debuff);
-            }
+                GlobalDeBuffCache[debuff.Name] = (Debuff) Activator.CreateInstance(debuff);
         }
 
         private static void CacheBuffs()
         {
             var listOfBuffs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
-                               from assemblyType in domainAssembly.GetTypes()
-                               where typeof(Buff).IsAssignableFrom(assemblyType)
-                               select assemblyType).ToArray();
+                from assemblyType in domainAssembly.GetTypes()
+                where typeof(Buff).IsAssignableFrom(assemblyType)
+                select assemblyType).ToArray();
 
-            foreach (var buff in listOfBuffs)
-            {
-                GlobalBuffCache[buff.Name] = (Buff)Activator.CreateInstance(buff);
-            }
+            foreach (var buff in listOfBuffs) GlobalBuffCache[buff.Name] = (Buff) Activator.CreateInstance(buff);
         }
 
         private static void BindTemplates()
         {
-            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Values)
+            foreach (var spell in GlobalSpellTemplateCache.Values)
                 spell.Prerequisites?.AssociatedWith(spell);
-            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values)
+            foreach (var skill in GlobalSkillTemplateCache.Values)
                 skill.Prerequisites?.AssociatedWith(skill);
         }
-
     }
 }

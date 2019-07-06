@@ -15,10 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.ServerFormats;
-using Darkages.Types;
+
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Network.ServerFormats;
+using Darkages.Types;
 
 namespace Darkages.Scripting.Scripts.Skills
 {
@@ -27,12 +28,12 @@ namespace Darkages.Scripting.Scripts.Skills
     {
         public Skill _skill;
 
-        public int Damage => (150 * _skill.Level) / 100;
-
         public ConeAttack(Skill skill) : base(skill)
         {
             _skill = skill;
         }
+
+        public int Damage => 150 * _skill.Level / 100;
 
         public override void OnFailed(Sprite sprite)
         {
@@ -48,34 +49,32 @@ namespace Darkages.Scripting.Scripts.Skills
         public List<Sprite> GetInCone(Sprite sprite, int distance)
         {
             var result = new List<Sprite>();
-            var objects = GetObjects(sprite.Map, i => i.WithinRangeOf(sprite, distance), Get.Aislings | Get.Monsters | Get.Mundanes);
+            var objects = GetObjects(sprite.Map, i => i.WithinRangeOf(sprite, distance),
+                Get.Aislings | Get.Monsters | Get.Mundanes);
             foreach (var obj in objects)
-            {
                 if (sprite.Position.DistanceSquared(obj.Position) <= distance)
                 {
-                    if ((Direction)sprite.Direction == Direction.North)
+                    if ((Direction) sprite.Direction == Direction.North)
                     {
                         if (obj.YPos <= sprite.YPos)
                             result.Add(obj);
                     }
-                    else if ((Direction)sprite.Direction == Direction.South)
+                    else if ((Direction) sprite.Direction == Direction.South)
                     {
                         if (obj.YPos >= sprite.YPos)
                             result.Add(obj);
                     }
-                    else if ((Direction)sprite.Direction == Direction.East)
+                    else if ((Direction) sprite.Direction == Direction.East)
                     {
                         if (obj.XPos >= sprite.XPos)
                             result.Add(obj);
                     }
-                    else if ((Direction)sprite.Direction == Direction.West)
+                    else if ((Direction) sprite.Direction == Direction.West)
                     {
                         if (obj.XPos <= sprite.XPos)
                             result.Add(obj);
                     }
-
                 }
-            }
 
             return result;
         }
@@ -89,7 +88,9 @@ namespace Darkages.Scripting.Scripts.Skills
                 var action = new ServerFormat1A
                 {
                     Serial = sprite.Serial,
-                    Number = (byte)(client.Aisling.Path == Class.Warrior ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01 : 0x01),
+                    Number = (byte) (client.Aisling.Path == Class.Warrior
+                        ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01
+                        : 0x01),
                     Speed = 20
                 };
 
@@ -103,7 +104,6 @@ namespace Darkages.Scripting.Scripts.Skills
                             continue;
 
 
-
                         if (client.Aisling.Serial == i.Serial)
                             continue;
 
@@ -113,7 +113,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         i.Target = client.Aisling;
 
                         client.Aisling.Show(Scope.NearbyAislings,
-                            new ServerFormat29(Skill.Template.TargetAnimation, (ushort)i.XPos, (ushort)i.YPos));
+                            new ServerFormat29(Skill.Template.TargetAnimation, (ushort) i.XPos, (ushort) i.YPos));
                     }
 
                     client.Aisling.Show(Scope.NearbyAislings, action);
@@ -153,7 +153,6 @@ namespace Darkages.Scripting.Scripts.Skills
                 var enemy = GetInCone(sprite, 3);
 
                 if (enemy != null)
-                {
                     foreach (var i in enemy)
                     {
                         if (i == null)
@@ -165,13 +164,12 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (i is Aisling || i is Monster)
                         {
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29(Skill.Template.TargetAnimation, (ushort)i.XPos, (ushort)i.YPos));
+                                new ServerFormat29(Skill.Template.TargetAnimation, (ushort) i.XPos, (ushort) i.YPos));
 
-                            var dmg = (50 * (sprite.Str+ Skill.Level)) / 100;
+                            var dmg = 50 * (sprite.Str + Skill.Level) / 100;
                             i.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
                         }
                     }
-                }
             }
         }
     }

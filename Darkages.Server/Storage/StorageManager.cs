@@ -15,11 +15,10 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Game;
-using Darkages.Network.Object;
+
+using System.IO;
 using Darkages.Types;
 using Newtonsoft.Json;
-using System.IO;
 
 namespace Darkages.Storage
 {
@@ -29,7 +28,7 @@ namespace Darkages.Storage
         {
             TypeNameHandling = TypeNameHandling.All,
             TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
-            Formatting = Formatting.Indented,
+            Formatting = Formatting.Indented
         };
 
         public static AislingStorage AislingBucket = new AislingStorage();
@@ -54,10 +53,7 @@ namespace Darkages.Storage
                 return;
             foreach (var item in ServerContext.GlobalItemTemplateCache.Values)
             {
-                if (ItemBucket.IsStored(item))
-                {
-                    continue;
-                }
+                if (ItemBucket.IsStored(item)) continue;
 
                 ItemBucket.Save(item);
             }
@@ -79,7 +75,7 @@ namespace Darkages.Storage
 
                     T result;
 
-                    using (FileStream s = File.OpenRead(path))
+                    using (var s = File.OpenRead(path))
                     using (var f = new StreamReader(s))
                     {
                         result = JsonConvert.DeserializeObject<ServerConstants>(f.ReadToEnd(), Settings) as T;
@@ -116,7 +112,7 @@ namespace Darkages.Storage
                     File.WriteAllText(path, objString);
                     return objString;
                 }
-                
+
                 return string.Empty;
             }
             catch

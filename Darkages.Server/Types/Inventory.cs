@@ -15,13 +15,14 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Darkages.Types
 {
@@ -31,15 +32,16 @@ namespace Darkages.Types
 
         public Dictionary<int, Item> Items = new Dictionary<int, Item>();
 
-        [JsonIgnore]
-        public IEnumerable<byte> BankList => ((Items?.Where(i => i.Value != null && i.Value.Template != null && i.Value.Template.Flags.HasFlag(ItemFlags.Bankable)))
-                                                    .Select(i => i.Value.Slot));
-
 
         public Inventory()
         {
             for (var i = 0; i < LENGTH; i++) Items[i + 1] = null;
         }
+
+        [JsonIgnore]
+        public IEnumerable<byte> BankList => (Items?.Where(i =>
+                i.Value != null && i.Value.Template != null && i.Value.Template.Flags.HasFlag(ItemFlags.Bankable)))
+            .Select(i => i.Value.Slot);
 
         public int Length => Items.Count;
 
@@ -136,7 +138,8 @@ namespace Darkages.Types
             if (LpItem.Template == null)
                 return false;
 
-            return ((player.CurrentWeight + LpItem.Template.CarryWeight < player.MaximumWeight) && FindEmpty() != byte.MaxValue);
+            return player.CurrentWeight + LpItem.Template.CarryWeight < player.MaximumWeight &&
+                   FindEmpty() != byte.MaxValue;
         }
 
         public void RemoveRange(GameClient client, Item item, int range)
@@ -157,7 +160,7 @@ namespace Darkages.Types
             }
             else
             {
-                item.Stacks = (byte)remaining;
+                item.Stacks = (byte) remaining;
                 client.Aisling.Inventory.Set(item, false);
 
                 client.Send(new ServerFormat0F(item));

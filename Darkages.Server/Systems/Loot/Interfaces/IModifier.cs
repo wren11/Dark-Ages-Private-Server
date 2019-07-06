@@ -15,12 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Systems.Loot.Interfaces
 {
     public interface IModifier
     {
         /// <summary>
-        /// Apply this modifier to an item
+        ///     Apply this modifier to an item
         /// </summary>
         void Apply(object item);
     }

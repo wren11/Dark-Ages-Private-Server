@@ -15,14 +15,22 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Network.Object;
 
 namespace Darkages.Types
 {
     public class CursedSachel
     {
+        public CursedSachel(Aisling parent)
+        {
+            Owner = parent;
+            Items = new HashSet<Item>();
+        }
+
         public ISet<Item> Items { get; set; }
         public Aisling Owner { get; set; }
         public DateTime DateReleased { get; set; }
@@ -32,7 +40,7 @@ namespace Darkages.Types
 
         public void GenerateReeper()
         {
-            var itemTemplate = new ItemTemplate()
+            var itemTemplate = new ItemTemplate
             {
                 Name = string.Format("{0}'s Lost Sachel.", Owner?.Username),
                 ScriptName = "Cursed Sachel",
@@ -44,31 +52,22 @@ namespace Darkages.Types
                 LevelRequired = 11,
                 MaxStack = 255,
                 CanStack = true,
-                CarryWeight = 1,
+                CarryWeight = 1
             };
 
 
             ReaperBag = Item.Create(Owner, itemTemplate, true);
             ReaperBag?.Release(Owner, Owner.Position);
-
-        }
-
-        public CursedSachel(Aisling parent)
-        {
-            Owner = parent;
-            Items = new HashSet<Item>();
         }
 
         public void RecoverItems(Aisling Owner)
         {
             foreach (var item in Items)
             {
-                var nitem = Item.Clone<Item>(item);
+                var nitem = ObjectManager.Clone<Item>(item);
 
-                if (nitem.GiveTo(Owner, true))
-                {
+                if (nitem.GiveTo(Owner))
                     Owner.Client.SendMessage(0x02, string.Format("You have recovered {0}.", item.Template.Name));
-                }
             }
 
 
@@ -80,7 +79,6 @@ namespace Darkages.Types
 
             ReaperBag?.Remove();
             ReaperBag = null;
-
         }
 
         public void ReepItems(List<Item> items = null)
@@ -121,14 +119,11 @@ namespace Darkages.Types
                 inv = new List<EquipmentSlot>(batch);
             }
 
-            foreach (EquipmentSlot es in inv)
+            foreach (var es in inv)
             {
                 var obj = es.Item;
 
-                if (obj == null)
-                {
-                    continue;
-                }
+                if (obj == null) continue;
 
                 if (obj.Template == null)
                     continue;
@@ -136,11 +131,11 @@ namespace Darkages.Types
                 if (Owner.EquipmentManager.RemoveFromExisting(es.Slot, false))
                 {
                     //reduce item durability.
-                    obj.Durability -= (obj.Durability * 10 / 100);
+                    obj.Durability -= obj.Durability * 10 / 100;
 
                     if (obj.Durability > 0)
                     {
-                        var copy = Item.Clone<Item>(obj);
+                        var copy = ObjectManager.Clone<Item>(obj);
                         Add(copy);
                     }
                 }
@@ -158,19 +153,16 @@ namespace Darkages.Types
                 inv = new List<Item>(batch);
             }
 
-            foreach (Item item in inv)
+            foreach (var item in inv)
             {
                 var obj = item;
 
-                if (obj == null)
-                {
-                    continue;
-                }
+                if (obj == null) continue;
 
                 if (obj.Template == null)
                     continue;
 
-                obj.Durability -= (obj.Durability * 10 / 100);
+                obj.Durability -= obj.Durability * 10 / 100;
 
                 //delete the item from inventory.
                 Owner.EquipmentManager.RemoveFromInventory(obj, true);
@@ -178,7 +170,7 @@ namespace Darkages.Types
 
                 if (obj.Durability > 0)
                 {
-                    var copy = Item.Clone<Item>(obj);
+                    var copy = ObjectManager.Clone<Item>(obj);
                     Add(copy);
                 }
             }

@@ -15,17 +15,18 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat66 : NetworkFormat
     {
+        public byte Type = 0x03;
+
         public ServerFormat66()
         {
             Secured = true;
             Command = 0x66;
         }
-
-        public byte Type = 0x03;
 
         public string Text =>
             "https://classicrpgcharacter.nexon.com/service/ConfirmGameUser.aspx?id=%s&pw=%s&mainCode=2&subCode=0";

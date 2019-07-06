@@ -15,11 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Scripting;
-using Darkages.Types;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Scripting;
+using Darkages.Types;
 
 namespace Darkages.Storage.locales.Scripts.Spells
 {
@@ -32,12 +33,10 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
         public override void OnFailed(Sprite sprite, Sprite target)
         {
-
         }
 
         public override void OnSuccess(Sprite sprite, Sprite target)
         {
-
         }
 
         public override void OnUse(Sprite sprite, Sprite target)
@@ -53,15 +52,9 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 var spellArgs = Arguments;
                 var Upgrades = 0;
 
-                if (spellArgs == "die")
-                {
-                    sprite.CurrentHp = 0;
-                }
+                if (spellArgs == "die") sprite.CurrentHp = 0;
 
-                if (spellArgs == "+hit")
-                {
-                    sprite._Hit += 10;                    
-                }
+                if (spellArgs == "+hit") sprite._Hit += 10;
 
                 if (spellArgs.ToLower().Contains("forsaken"))
                     Upgrades = 8;
@@ -93,8 +86,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     if (exists != null)
                     {
                         var template = ServerContext.GlobalItemTemplateCache[exists];
-                        var offset   = template.DisplayImage - 0x8000;
-                        var item     = Item.Create(sprite, template, false);
+                        var offset = template.DisplayImage - 0x8000;
+                        var item = Item.Create(sprite, template);
                         {
                             item.Upgrades = Upgrades;
                         }

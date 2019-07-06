@@ -15,13 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -31,7 +30,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         public TowerDefenseHandler(GameServer server, Mundane mundane)
             : base(server, mundane)
         {
-
         }
 
         public override void OnClick(GameServer server, GameClient client)
@@ -44,26 +42,18 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnGossip(GameServer server, GameClient client, string message)
         {
-
         }
 
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
         {
             if (responseID == 0x0001)
-            {
                 client.TransitionToMap(510, new Position(5, 4));
-
-                return;
-            }
             else
-            {
                 client.CloseDialog();
-            }
         }
 
         public override void TargetAcquired(Sprite Target)
         {
-
         }
     }
 }

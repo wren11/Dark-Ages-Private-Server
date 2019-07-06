@@ -15,17 +15,18 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat1B : NetworkFormat
     {
+        public int Index;
+
         public ClientFormat1B()
         {
             Secured = true;
             Command = 0x1B;
         }
-
-        public int Index;
 
         public override void Serialize(NetworkPacketReader reader)
         {

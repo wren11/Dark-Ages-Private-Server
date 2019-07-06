@@ -15,12 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat43 : NetworkFormat
     {
-        public byte Type;
         public int Serial;
+        public byte Type;
 
         public ClientFormat43()
         {
@@ -39,7 +40,6 @@ namespace Darkages.Network.ClientFormats
             {
                 // ???
             }
-
 
 
             if (Type == 0x03)

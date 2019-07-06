@@ -15,10 +15,10 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Game;
+
+using System.Collections.Concurrent;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
-using System.Linq;
 
 namespace Darkages.Scripting.Scripts.Skills
 {
@@ -40,7 +40,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 {
                     var client = (sprite as Aisling).Client;
                     client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29(Skill.Template.MissAnimation, (ushort)Target.XPos, (ushort)Target.YPos));
+                        new ServerFormat29(Skill.Template.MissAnimation, (ushort) Target.XPos, (ushort) Target.YPos));
                 }
         }
 
@@ -58,11 +58,9 @@ namespace Darkages.Scripting.Scripts.Skills
                 };
 
 
-                var enemy = client.Aisling.GetInfront(1);
-                 
-                if (enemy != null)
-                {
+                var enemy = client.Aisling.GetInfront();
 
+                if (enemy != null)
                     foreach (var i in enemy)
                     {
                         if (i == null)
@@ -75,12 +73,9 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (!i.Attackable)
                             continue;
 
-                        if (i is Monster)
-                        {
-                            (i as Monster).TaggedAislings = new System.Collections.Concurrent.ConcurrentDictionary<int, Sprite>();
-                        }
+                        if (i is Monster) (i as Monster).TaggedAislings = new ConcurrentDictionary<int, Sprite>();
 
-                        Target = i;                        
+                        Target = i;
                         i.ApplyDamage(sprite, 0, true, Skill.Template.Sound);
 
                         if (i is Aisling)
@@ -93,18 +88,16 @@ namespace Darkages.Scripting.Scripts.Skills
 
 
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial, byte.MinValue,
+                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial, byte.MinValue,
                                     Skill.Template.TargetAnimation, 100));
                             (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
                         }
 
                         if (i is Monster || i is Mundane || i is Aisling)
                             client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
+                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial,
                                     Skill.Template.TargetAnimation, 0, 100));
-
                     }
-                }
 
                 client.Aisling.Show(Scope.NearbyAislings, action);
             }

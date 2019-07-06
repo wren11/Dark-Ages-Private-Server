@@ -15,8 +15,9 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Types;
+
 using System.Text;
+using Darkages.Types;
 
 namespace Darkages.Network
 {
@@ -103,24 +104,24 @@ namespace Darkages.Network
 
         public short ReadInt16()
         {
-            return (short)ReadUInt16();
+            return (short) ReadUInt16();
         }
 
         public ushort ReadUInt16()
         {
-            return (ushort)((
+            return (ushort) ((
                                  ReadByte() << 8) |
                              ReadByte());
         }
 
         public int ReadInt32()
         {
-            return (int)ReadUInt32();
+            return (int) ReadUInt32();
         }
 
         public uint ReadUInt32()
         {
-            return (uint)((
+            return (uint) ((
                                ReadUInt16() << 0x10) +
                            ReadUInt16());
         }

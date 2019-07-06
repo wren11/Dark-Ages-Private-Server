@@ -15,12 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
-using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
-using System;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Spells
 {
@@ -31,17 +30,14 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
         public ao_sith(Spell spell) : base(spell)
         {
-
         }
 
         public override void OnFailed(Sprite sprite, Sprite target)
         {
             if (sprite is Aisling)
-            {
                 (sprite as Aisling)
                     .Client
                     .SendMessage(0x02, "failed.");
-            }
         }
 
         public override void OnSuccess(Sprite sprite, Sprite target)
@@ -62,7 +58,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 var action = new ServerFormat1A
                 {
                     Serial = sprite.Serial,
-                    Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
+                    Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                        client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                     Speed = 30
                 };
 
@@ -88,8 +85,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-
-
                 if (target is Aisling)
                 {
                     (target as Aisling).Client.SendStats(StatusFlags.All);
@@ -124,7 +119,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
         public override void OnUse(Sprite sprite, Sprite target)
         {
-
             if (sprite is Aisling)
             {
                 if (sprite.CurrentMp - Spell.Template.ManaCost > 0)

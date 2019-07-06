@@ -15,18 +15,19 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Common;
-using Darkages.Network.Game;
-using Darkages.Network.ServerFormats;
-using Darkages.Scripting;
-using Darkages.Systems.Loot;
-using Newtonsoft.Json;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Darkages.Common;
+using Darkages.Network.Game;
+using Darkages.Network.ServerFormats;
+using Darkages.Scripting;
+using Darkages.Systems.Loot;
+using Newtonsoft.Json;
 using static Darkages.Common.Generator;
 using static Darkages.ServerContext;
 using static Darkages.Types.Item;
@@ -35,13 +36,14 @@ namespace Darkages.Types
 {
     public class Monster : Sprite
     {
+        [JsonIgnore] public int WaypointIndex;
 
         public Monster()
         {
-            BashEnabled    = false;
-            CastEnabled    = false;
-            WalkEnabled    = false;
-            WaypointIndex  = 0;
+            BashEnabled = false;
+            CastEnabled = false;
+            WalkEnabled = false;
+            WaypointIndex = 0;
             TaggedAislings = new ConcurrentDictionary<int, Sprite>();
         }
 
@@ -66,30 +68,20 @@ namespace Darkages.Types
 
         public bool Aggressive { get; set; }
 
-        [JsonIgnore]
-        public int WaypointIndex = 0;
+        [JsonIgnore] public Position CurrentWaypoint => Template.Waypoints[WaypointIndex] ?? null;
 
-        [JsonIgnore]
-        public Position CurrentWaypoint => Template.Waypoints[WaypointIndex] ?? null;
+        [JsonIgnore] public LootTable LootTable { get; set; }
 
-        [JsonIgnore]
-        public LootTable LootTable { get; set; }
+        [JsonIgnore] public ConcurrentDictionary<int, Sprite> TaggedAislings { get; set; }
 
-        [JsonIgnore]
-        public ConcurrentDictionary<int, Sprite> TaggedAislings { get; set; }
-
-        [JsonIgnore]
-        public LootTable UpgradeTable { get; set; }
+        [JsonIgnore] public LootTable UpgradeTable { get; set; }
 
 
-        [JsonIgnore]
-        public LootDropper LootManager { get; set; }
+        [JsonIgnore] public LootDropper LootManager { get; set; }
 
-        [JsonIgnore]
-        public Item GlobalLastItemRoll { get; set; }
+        [JsonIgnore] public Item GlobalLastItemRoll { get; set; }
 
-        [JsonIgnore]
-        public bool Skulled { get; set; }
+        [JsonIgnore] public bool Skulled { get; set; }
 
         public bool NextTo(int x, int y)
         {
@@ -130,19 +122,16 @@ namespace Darkages.Types
             if (!player.MonsterKillCounters.ContainsKey(Template.Name))
                 player.MonsterKillCounters[Template.Name] = 1;
             else
-            {
                 player.MonsterKillCounters[Template.Name]++;
-            }
         }
-
 
 
         private void GenerateExperience(Aisling player)
         {
             var exp = 0;
-            var seed = (Template.Level * 0.1) + 1.5;
+            var seed = Template.Level * 0.1 + 1.5;
             {
-                exp = (int)(Template.Level * seed * 300);
+                exp = (int) (Template.Level * seed * 300);
             }
 
             lock (Generator.Random)
@@ -158,40 +147,32 @@ namespace Darkages.Types
             DistributeExperience(player, exp);
 
             foreach (var party in player.PartyMembers.Where(i => i.Serial != player.Serial))
-            {
                 if (party.WithinRangeOf(player))
                     DistributeExperience(party, exp);
-            }
         }
 
         public static void DistributeExperience(Aisling player, double exp)
         {
             //Formula BoilerPlate: 1000 * E7 * 10 /100
-            var bonus = exp * player.GroupParty.LengthExcludingSelf * ServerContext.Config.GroupExpBonus / 100;
+            var bonus = exp * player.GroupParty.LengthExcludingSelf * Config.GroupExpBonus / 100;
 
             if (bonus > 0)
                 exp += bonus;
 
-            player.ExpTotal += (int)exp;
-            player.ExpNext  -= (int)exp;
-            player.Client.SendMessage(0x02, string.Format("You received {0} Experience!.", (int)exp));
+            player.ExpTotal += (int) exp;
+            player.ExpNext -= (int) exp;
+            player.Client.SendMessage(0x02, string.Format("You received {0} Experience!.", (int) exp));
 
-            var seed = (player.ExpLevel * 0.1) + 0.5;
-            { 
-                if (player.ExpLevel >= ServerContext.Config.PlayerLevelCap)
-                {
-                    return;
-                }
+            var seed = player.ExpLevel * 0.1 + 0.5;
+            {
+                if (player.ExpLevel >= Config.PlayerLevelCap) return;
             }
 
             while (player.ExpNext <= 0 && player.ExpLevel < 99)
             {
-                player.ExpNext = (int)(player.ExpLevel * seed * 5000);
+                player.ExpNext = (int) (player.ExpLevel * seed * 5000);
 
-                if (player.ExpLevel == 99)
-                {
-                    break;
-                }
+                if (player.ExpLevel == 99) break;
 
                 if (player.ExpTotal <= 0)
                     player.ExpTotal = int.MaxValue;
@@ -211,16 +192,16 @@ namespace Darkages.Types
 
         private static void Levelup(Aisling player)
         {
-            if (player.ExpLevel < ServerContext.Config.PlayerLevelCap)
+            if (player.ExpLevel < Config.PlayerLevelCap)
             {
-                player._MaximumHp += (int)(ServerContext.Config.HpGainFactor * player.Con * 0.65);
-                player._MaximumMp += (int)(ServerContext.Config.MpGainFactor * player.Wis * 0.45);
-                player.StatPoints += ServerContext.Config.StatsPerLevel;
+                player._MaximumHp += (int) (Config.HpGainFactor * player.Con * 0.65);
+                player._MaximumMp += (int) (Config.MpGainFactor * player.Wis * 0.45);
+                player.StatPoints += Config.StatsPerLevel;
                 player.ExpLevel++;
 
-                player.Client.SendMessage(0x02, string.Format(ServerContext.Config.LevelUpMessage, player.ExpLevel));
+                player.Client.SendMessage(0x02, string.Format(Config.LevelUpMessage, player.ExpLevel));
                 player.Show(Scope.NearbyAislings,
-                    new ServerFormat29((uint)player.Serial, (uint)player.Serial, 0x004F, 0x004F, 64));
+                    new ServerFormat29((uint) player.Serial, (uint) player.Serial, 0x004F, 0x004F, 64));
             }
         }
 
@@ -229,13 +210,13 @@ namespace Darkages.Types
             if (!Template.LootType.HasFlag(LootQualifer.Gold))
                 return;
 
-            int sum = 0;
+            var sum = 0;
 
             lock (rnd)
             {
                 sum = rnd.Next(
-                            Template.Level * 500,
-                            Template.Level * 1000);
+                    Template.Level * 500,
+                    Template.Level * 1000);
             }
 
             if (sum > 0)
@@ -243,15 +224,19 @@ namespace Darkages.Types
         }
 
         private List<string> DetermineDrop()
-            => LootManager.Drop(LootTable, rnd.Next(ServerContext.Config.LootTableStackSize))
+        {
+            return LootManager.Drop(LootTable, rnd.Next(Config.LootTableStackSize))
                 .Select(i => i?.Name).ToList();
+        }
 
         private ItemUpgrade DetermineQuality()
-            => (ItemUpgrade)LootManager.Drop(UpgradeTable, 1).FirstOrDefault();
+        {
+            return (ItemUpgrade) LootManager.Drop(UpgradeTable, 1).FirstOrDefault();
+        }
 
         private void DetermineRandomDrop()
         {
-            int idx = 0;
+            var idx = 0;
             if (Template.Drops.Count > 0)
                 lock (rnd)
                 {
@@ -285,11 +270,9 @@ namespace Darkages.Types
                 {
                     DetermineDrop().ForEach(i =>
                     {
-                    if (i != null)
-                    {
+                        if (i != null)
                             if (GlobalItemTemplateCache.ContainsKey(i))
                             {
-
                                 var rolled_item = Item.Create(this, GlobalItemTemplateCache[i]);
                                 if (rolled_item != GlobalLastItemRoll)
                                 {
@@ -300,10 +283,7 @@ namespace Darkages.Types
                                     if (rolled_item.Template.Enchantable)
                                     {
                                         var variance = DetermineVariance();
-                                        if (variance != Variance.None)
-                                        {
-                                            rolled_item.ItemVariance = variance;
-                                        }
+                                        if (variance != Variance.None) rolled_item.ItemVariance = variance;
                                     }
 
                                     if (rolled_item == null)
@@ -316,7 +296,7 @@ namespace Darkages.Types
 
                                     if (rolled_item.Upgrades > 0)
                                     {
-                                        Item.ApplyQuality(rolled_item);
+                                        ApplyQuality(rolled_item);
 
                                         if (rolled_item.Upgrades > 2)
                                         {
@@ -327,37 +307,31 @@ namespace Darkages.Types
                                                 var party = aisling.GroupParty.Members;
 
                                                 foreach (var player in party)
-                                                {
-                                                    player.Client.SendMessage(0x03, string.Format("Special Drop: {0}", rolled_item.DisplayName));
-                                                }
+                                                    player.Client.SendMessage(0x03,
+                                                        string.Format("Special Drop: {0}", rolled_item.DisplayName));
 
-                                                Task.Delay(500).ContinueWith((ct) =>
-                                                {
-                                                    rolled_item.Animate(160, 200);
-                                                });
+                                                Task.Delay(500).ContinueWith(ct => { rolled_item.Animate(160, 200); });
                                             }
                                         }
                                     }
+
                                     rolled_item.Cursed = true;
                                     rolled_item.AuthenticatedAislings = GetTaggedAislings();
                                     rolled_item.Release(this, Position);
                                 }
                             }
-                        }
                     });
                 }
-                return;
             }
             else if (Template.LootType.HasFlag(LootQualifer.Random))
             {
                 DetermineRandomDrop();
-                return;
             }
         }
 
         private Variance DetermineVariance()
         {
-            return Generator.RandomEnumValue<Variance>();
+            return RandomEnumValue<Variance>();
         }
 
         private Sprite[] GetTaggedAislings()
@@ -375,28 +349,18 @@ namespace Darkages.Types
             {
                 var aisling = target as Aisling;
 
-                if (!TaggedAislings.ContainsKey(aisling.Serial))
-                {
-                    TaggedAislings.TryAdd(aisling.Serial, aisling);
-                }
+                if (!TaggedAislings.ContainsKey(aisling.Serial)) TaggedAislings.TryAdd(aisling.Serial, aisling);
 
                 if (aisling.GroupParty.LengthExcludingSelf > 0)
-                {
                     foreach (var member in aisling.GroupParty.MembersExcludingSelf)
-                    {
                         if (!TaggedAislings.ContainsKey(member.Serial))
-                        {
                             TaggedAislings.TryAdd(member.Serial, member);
-                        }
-                    }
-                }
             }
         }
 
 
         public static Monster Create(MonsterTemplate template, Area map)
         {
-
             if (template.CastSpeed == 0)
                 template.CastSpeed = 2000;
 
@@ -422,15 +386,15 @@ namespace Darkages.Types
             if (obj.Template.Grow)
                 obj.Template.Level++;
 
-            var mod  = (obj.Template.Level + 1) * 0.01;
+            var mod = (obj.Template.Level + 1) * 0.01;
             var rate = mod * 250 * obj.Template.Level;
-            var exp  = obj.Template.Level * rate / 1;
-            var hp   = mod + 50 + obj.Template.Level * (obj.Template.Level + 40);
-            var mp   = hp / 3;
-            var dmg  = hp / 1 * mod * 1;
+            var exp = obj.Template.Level * rate / 1;
+            var hp = mod + 50 + obj.Template.Level * (obj.Template.Level + 40);
+            var mp = hp / 3;
+            var dmg = hp / 1 * mod * 1;
 
-            obj.Template.MaximumHP = (int)hp;
-            obj.Template.MaximumMP = (int)mp;
+            obj.Template.MaximumHP = (int) hp;
+            obj.Template.MaximumMP = (int) mp;
 
             var stat = RandomEnumValue<PrimaryStat>();
 
@@ -443,31 +407,27 @@ namespace Darkages.Types
             switch (stat)
             {
                 case PrimaryStat.STR:
-                    obj._Str += (byte)(obj.Template.Level * 0.5 * 2);
+                    obj._Str += (byte) (obj.Template.Level * 0.5 * 2);
                     break;
                 case PrimaryStat.INT:
-                    obj._Int += (byte)(obj.Template.Level * 0.5 * 2);
+                    obj._Int += (byte) (obj.Template.Level * 0.5 * 2);
                     break;
                 case PrimaryStat.WIS:
-                    obj._Wis += (byte)(obj.Template.Level * 0.5 * 2);
+                    obj._Wis += (byte) (obj.Template.Level * 0.5 * 2);
                     break;
                 case PrimaryStat.CON:
-                    obj._Con += (byte)(obj.Template.Level * 0.5 * 2);
+                    obj._Con += (byte) (obj.Template.Level * 0.5 * 2);
                     break;
                 case PrimaryStat.DEX:
-                    obj._Dex += (byte)(obj.Template.Level * 0.5 * 2);
+                    obj._Dex += (byte) (obj.Template.Level * 0.5 * 2);
                     break;
-
             }
 
             obj.MajorAttribute = stat;
 
-            obj.BonusAc = (int)(70 - obj.Template.Level * 0.5 / 1.0);
+            obj.BonusAc = (int) (70 - obj.Template.Level * 0.5 / 1.0);
 
-            if (obj.BonusAc < -70)
-            {
-                obj.BonusAc = -70;
-            }
+            if (obj.BonusAc < -70) obj.BonusAc = -70;
 
             obj.DefenseElement = ElementManager.Element.None;
             obj.OffenseElement = ElementManager.Element.None;
@@ -487,7 +447,7 @@ namespace Darkages.Types
                     : template.OffenseElement;
             }
 
-            obj.BonusMr = (byte)(10 * (template.Level / 20));
+            obj.BonusMr = (byte) (10 * (template.Level / 20));
 
             if (obj.BonusMr > Config.BaseMR)
                 obj.BonusMr = Config.BaseMR;
@@ -508,9 +468,7 @@ namespace Darkages.Types
                     obj.Aggressive = Generator.Random.Next(1, 101) > 50;
                 }
             else
-            {
                 obj.Aggressive = false;
-            }
 
             if (template.SpawnType == SpawnQualifer.Random)
             {
@@ -531,7 +489,7 @@ namespace Darkages.Types
 
             lock (Generator.Random)
             {
-                obj.Serial = Generator.GenerateNumber();
+                obj.Serial = GenerateNumber();
             }
 
             obj.CurrentMapId = map.ID;
@@ -545,10 +503,8 @@ namespace Darkages.Types
             {
                 obj.Image = template.ImageVarience
                             > 0
-                    ? (ushort)Generator.Random.Next(template.Image, template.Image + template.ImageVarience)
+                    ? (ushort) Generator.Random.Next(template.Image, template.Image + template.ImageVarience)
                     : template.Image;
-
-
             }
 
             obj.Script = ScriptManager.Load<MonsterScript>(template.ScriptName, obj, map);
@@ -560,27 +516,19 @@ namespace Darkages.Types
                 obj.UpgradeTable = new LootTable("Probabilities");
 
                 foreach (var drop in obj.Template.Drops)
-                {
                     if (drop.Equals("random", StringComparison.OrdinalIgnoreCase))
                     {
                         lock (Generator.Random)
                         {
                             var available = GlobalItemTemplateCache.Select(i => i.Value)
                                 .Where(i => Math.Abs(i.LevelRequired - obj.Template.Level) <= 10).ToList();
-                            if (available.Count > 0)
-                            {
-                                obj.LootTable.Add(available[GenerateNumber() % available.Count]);
-                            }
+                            if (available.Count > 0) obj.LootTable.Add(available[GenerateNumber() % available.Count]);
                         }
                     }
                     else
                     {
-                        if (GlobalItemTemplateCache.ContainsKey(drop))
-                        {
-                            obj.LootTable.Add(GlobalItemTemplateCache[drop]);
-                        }
+                        if (GlobalItemTemplateCache.ContainsKey(drop)) obj.LootTable.Add(GlobalItemTemplateCache[drop]);
                     }
-                }
 
                 obj.UpgradeTable.Add(new Common());
                 obj.UpgradeTable.Add(new Uncommon());
@@ -597,10 +545,7 @@ namespace Darkages.Types
 
         public void Patrol(bool ignoreWalls = false)
         {
-            if (CurrentWaypoint != null)
-            {
-                WalkTo(CurrentWaypoint.X, CurrentWaypoint.Y, ignoreWalls);
-            }
+            if (CurrentWaypoint != null) WalkTo(CurrentWaypoint.X, CurrentWaypoint.Y, ignoreWalls);
 
             if (Position.DistanceFrom(CurrentWaypoint) <= 1 || CurrentWaypoint == null)
             {

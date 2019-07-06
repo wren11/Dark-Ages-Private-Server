@@ -14,16 +14,11 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MemoryMappedFileManager
 {
     public class MemoryMappedDataReceivedEventArgs : EventArgs
     {
-        public byte[] Data { get; private set; }
-
         internal MemoryMappedDataReceivedEventArgs(byte[] data, long length)
         {
             if (data != null)
@@ -32,5 +27,7 @@ namespace MemoryMappedFileManager
                 Array.Copy(data, Data, length);
             }
         }
+
+        public byte[] Data { get; }
     }
 }

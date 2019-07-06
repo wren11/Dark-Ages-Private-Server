@@ -15,8 +15,9 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network;
+
 using System.Collections.Generic;
+using Darkages.Network;
 
 namespace Darkages.Types
 {
@@ -39,7 +40,7 @@ namespace Darkages.Types
         public void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(
-                (ushort)Count);
+                (ushort) Count);
 
             foreach (var metafile in this)
             {

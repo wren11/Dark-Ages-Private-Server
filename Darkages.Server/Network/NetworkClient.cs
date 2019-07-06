@@ -15,23 +15,33 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.IO;
+
+using System;
+using System.Collections.Concurrent;
+using System.Linq;
+using System.Net.Sockets;
+using System.Threading;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Threading;
 
 namespace Darkages.Network
 {
-
     public abstract class NetworkClient<TClient> : ObjectManager
     {
+        private readonly ManualResetEvent _sendReset;
+
+        protected NetworkClient()
+        {
+            Reader = new NetworkPacketReader();
+            Writer = new NetworkPacketWriter();
+            Encryption = new SecurityProvider();
+
+            _sendReset = new ManualResetEvent(true);
+            _sendBuffer = new ConcurrentQueue<byte[]>();
+        }
+
         public NetworkPacketReader Reader { get; set; }
 
         public NetworkPacketWriter Writer { get; set; }
@@ -46,18 +56,6 @@ namespace Darkages.Network
 
 
         private ConcurrentQueue<byte[]> _sendBuffer { get; set; }
-
-        private ManualResetEvent _sendReset;
-
-        protected NetworkClient()
-        {
-            this.Reader      = new NetworkPacketReader();
-            this.Writer      = new NetworkPacketWriter();
-            this.Encryption  = new SecurityProvider();
-
-            _sendReset  = new ManualResetEvent(true);
-            _sendBuffer = new ConcurrentQueue<byte[]>();
-        }
 
         public void Read(NetworkPacket packet, NetworkFormat format)
         {
@@ -87,15 +85,12 @@ namespace Darkages.Network
 
             Reader.Packet = packet;
             format.Serialize(Reader);
-            this.Reader.Position = -1;
+            Reader.Position = -1;
         }
 
         public void FlushBuffers()
         {
-            if (!ServerSocket.Connected)
-            {
-                return;
-            }
+            if (!ServerSocket.Connected) return;
 
             lock (_sendBuffer)
             {
@@ -110,10 +105,7 @@ namespace Darkages.Network
                     _sendReset.Reset();
 
                     var packet = data.ToArray();
-                    if (packet.Length > 0 && packet[0] == 0xAA)
-                    {
-                        Send(ServerSocket, packet, 0, packet.Length, 5000);
-                    }
+                    if (packet.Length > 0 && packet[0] == 0xAA) Send(ServerSocket, packet, 0, packet.Length, 5000);
 
                     EmptyBuffers();
                 }
@@ -123,7 +115,7 @@ namespace Darkages.Network
         public static void Send(Socket socket, byte[] buffer, int offset, int size, int timeout)
         {
             var startTickCount = Environment.TickCount;
-            var sent           = 0;  
+            var sent = 0;
 
             do
             {
@@ -139,11 +131,9 @@ namespace Darkages.Network
                     if (ex.SocketErrorCode == SocketError.WouldBlock ||
                         ex.SocketErrorCode == SocketError.IOPending ||
                         ex.SocketErrorCode == SocketError.NoBufferSpaceAvailable)
-                    {
                         Thread.Sleep(30);
-                    }
                     else
-                        throw ex;  
+                        throw ex;
                 }
             } while (sent < size);
         }
@@ -156,26 +146,20 @@ namespace Darkages.Network
 
         public void FlushAndSend(NetworkFormat format)
         {
-            lock (this.Writer)
+            lock (Writer)
             {
-                this.Writer.Position = 0;
-                this.Writer.Write(format.Command);
+                Writer.Position = 0;
+                Writer.Write(format.Command);
 
-                if (format.Secured)
-                {
-                    this.Writer.Write(this.Ordinal++);
-                }
+                if (format.Secured) Writer.Write(Ordinal++);
 
-                format.Serialize(this.Writer);
+                format.Serialize(Writer);
 
-                var packet = this.Writer.ToPacket();
+                var packet = Writer.ToPacket();
                 if (packet == null)
                     return;
 
-                if (format.Secured)
-                {
-                    this.Encryption.Transform(packet);
-                }
+                if (format.Secured) Encryption.Transform(packet);
 
                 var array = packet.ToArray();
                 ServerSocket.Send(array, SocketFlags.None);
@@ -193,10 +177,7 @@ namespace Darkages.Network
             Writer.Position = 0;
             Writer.Write(format.Command);
 
-            if (format.Secured)
-            {
-                Writer.Write(Ordinal++);
-            }
+            if (format.Secured) Writer.Write(Ordinal++);
 
             format.Serialize(Writer);
 
@@ -204,10 +185,7 @@ namespace Darkages.Network
             if (packet == null)
                 return;
 
-            if (format.Secured)
-            {
-                Encryption.Transform(packet);
-            }
+            if (format.Secured) Encryption.Transform(packet);
 
             lock (_sendBuffer)
             {
@@ -250,25 +228,23 @@ namespace Darkages.Network
 
         private static byte P(NetworkPacket value)
         {
-            return (byte)(value.Data[1] ^ (byte)(value.Data[0] - 0x2D));
+            return (byte) (value.Data[1] ^ (byte) (value.Data[0] - 0x2D));
         }
 
         private static void TransFormDialog(NetworkPacket value)
         {
-            value.Data[2] ^= (byte)(P(value) + 0x73);
-            value.Data[3] ^= (byte)(P(value) + 0x73);
-            value.Data[4] ^= (byte)(P(value) + 0x28);
-            value.Data[5] ^= (byte)(P(value) + 0x29);
+            value.Data[2] ^= (byte) (P(value) + 0x73);
+            value.Data[3] ^= (byte) (P(value) + 0x73);
+            value.Data[4] ^= (byte) (P(value) + 0x28);
+            value.Data[5] ^= (byte) (P(value) + 0x29);
 
-            for (int i = 0; i < value.Data.Length - 6; i++)
-            {
-                value.Data[6 + i] ^= (byte)(((byte)(P(value) + 0x28) + i + 2) % 256);
-            }
+            for (var i = 0; i < value.Data.Length - 6; i++)
+                value.Data[6 + i] ^= (byte) (((byte) (P(value) + 0x28) + i + 2) % 256);
         }
 
         public void SendMessageBox(byte code, string text)
         {
-            this.Send(new ServerFormat02(code, text));
+            Send(new ServerFormat02(code, text));
         }
 
         #region Server Formats 

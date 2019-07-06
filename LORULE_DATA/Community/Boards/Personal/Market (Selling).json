@@ -1,8 +1,8 @@
 {
   "Posts": [
     {
-      "Secured": true,
       "Command": 49,
+      "Secured": true,
       "Owner": "lol",
       "TopicId": 2423,
       "PostId": 1,
@@ -15,8 +15,8 @@
       "Subject": "well shit"
     },
     {
-      "Secured": true,
       "Command": 49,
+      "Secured": true,
       "Owner": "hi",
       "TopicId": 3443,
       "PostId": 2,
@@ -29,8 +29,8 @@
       "Subject": "selling poop."
     }
   ],
-  "Secured": true,
   "Command": 49,
+  "Secured": true,
   "Index": 5,
   "IsMail": false,
   "Subject": "Market (Selling)",

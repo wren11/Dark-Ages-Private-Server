@@ -15,8 +15,9 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Types;
+
 using System;
+using Darkages.Types;
 
 namespace Darkages.Network.ClientFormats
 {
@@ -35,7 +36,7 @@ namespace Darkages.Network.ClientFormats
 
         public override void Serialize(NetworkPacketReader reader)
         {
-            string data = CHeckData(reader);
+            var data = CHeckData(reader);
 
             reader.Position = 0;
             Index = reader.ReadByte();
@@ -62,15 +63,15 @@ namespace Darkages.Network.ClientFormats
         {
             Index = reader.ReadByte();
 
-            var @data = string.Empty;
-            var @char = (default(char));
+            var data = string.Empty;
+            var @char = default(char);
 
             do
             {
                 @char = Convert.ToChar(reader.ReadByte());
                 data += new string(@char, 1);
-            }
-            while (@char != Char.Parse("\0"));
+            } while (@char != char.Parse("\0"));
+
             return data;
         }
 

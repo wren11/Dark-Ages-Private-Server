@@ -15,26 +15,29 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Newtonsoft.Json;
+
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Darkages.Storage
 {
     public class AislingStorage : IStorage<Aisling>
     {
         public static string StoragePath = $@"{ServerContext.StoragePath}\aislings";
-        public string[] Files => Directory.GetFiles(StoragePath, "*.json", SearchOption.TopDirectoryOnly);
-
-        public bool Saving { get; set; }
 
         static AislingStorage()
         {
             if (!Directory.Exists(StoragePath))
                 Directory.CreateDirectory(StoragePath);
         }
+
+        public string[] Files => Directory.GetFiles(StoragePath, "*.json", SearchOption.TopDirectoryOnly);
+
+        public bool Saving { get; set; }
 
         public Aisling Load(string Name)
         {
@@ -53,32 +56,6 @@ namespace Darkages.Storage
             }
         }
 
-        public bool IsFileLocked(string filePath, int secondsToWait)
-        {
-            bool isLocked = true;
-            int i = 0;
-
-            while (isLocked && ((i < secondsToWait) || (secondsToWait == 0)))
-            {
-                try
-                {
-                    using (File.Open(filePath, FileMode.Open)) { }
-                    return false;
-                }
-                catch (IOException e)
-                {
-                    var errorCode = Marshal.GetHRForException(e) & ((1 << 16) - 1);
-                    isLocked = errorCode == 32 || errorCode == 33;
-                    i++;
-
-                    if (secondsToWait != 0)
-                        new System.Threading.ManualResetEvent(false).WaitOne(1000);
-                }
-            }
-
-            return isLocked;
-        }
-
         public void Save(Aisling obj)
         {
             if (ServerContext.Paused)
@@ -86,7 +63,6 @@ namespace Darkages.Storage
 
             try
             {
-
                 Task.Run(() =>
                 {
                     var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Username.ToLower()));
@@ -112,6 +88,33 @@ namespace Darkages.Storage
             {
                 Saving = false;
             }
+        }
+
+        public bool IsFileLocked(string filePath, int secondsToWait)
+        {
+            var isLocked = true;
+            var i = 0;
+
+            while (isLocked && (i < secondsToWait || secondsToWait == 0))
+                try
+                {
+                    using (File.Open(filePath, FileMode.Open))
+                    {
+                    }
+
+                    return false;
+                }
+                catch (IOException e)
+                {
+                    var errorCode = Marshal.GetHRForException(e) & ((1 << 16) - 1);
+                    isLocked = errorCode == 32 || errorCode == 33;
+                    i++;
+
+                    if (secondsToWait != 0)
+                        new ManualResetEvent(false).WaitOne(1000);
+                }
+
+            return isLocked;
         }
     }
 }

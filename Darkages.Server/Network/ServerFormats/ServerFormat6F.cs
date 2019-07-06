@@ -15,20 +15,22 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Types;
 
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat6F : NetworkFormat
     {
+        public string Name;
+
+        public byte Type;
+
         public ServerFormat6F()
         {
             Secured = true;
             Command = 0x6F;
         }
-
-        public byte Type;
-        public string Name;
 
 
         public override void Serialize(NetworkPacketReader reader)

@@ -15,25 +15,28 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Types
 {
-    public partial class StatusOperator
+    public class StatusOperator
     {
-
         public StatusOperator(Operator option, int value)
         {
             Option = option;
-            Value  = value;
+            Value = value;
         }
 
         public StatusOperator()
         {
             Option = Operator.Add;
-            Value  = 0; 
+            Value = 0;
         }
+
         public Operator Option { get; set; }
         public int Value { get; set; }
 
-        public void Apply(object item) { }
+        public void Apply(object item)
+        {
+        }
     }
 }

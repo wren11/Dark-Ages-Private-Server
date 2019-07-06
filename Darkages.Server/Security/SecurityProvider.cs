@@ -15,8 +15,8 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Network;
-using System.Threading.Tasks;
 
 namespace Darkages.Security
 {
@@ -248,7 +248,7 @@ namespace Darkages.Security
         {
             var mod = (i / Parameters.Salt.Length) & 0xFF;
 
-            packet.Data[i] ^= (byte)(Parameters.Salt[i % Parameters.Salt.Length]
+            packet.Data[i] ^= (byte) (Parameters.Salt[i % Parameters.Salt.Length]
                                       ^ tree[Parameters.Seed][packet.Ordinal]
                                       ^ tree[Parameters.Seed][mod]);
 

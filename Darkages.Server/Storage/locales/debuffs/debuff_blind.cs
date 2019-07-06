@@ -5,8 +5,8 @@ namespace Darkages.Storage.locales.debuffs
     public class debuff_blind : Debuff
     {
         public override string Name => "blind";
-        public override byte Icon   => 114;
-        public override int Length  => 35;
+        public override byte Icon => 114;
+        public override int Length => 35;
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {
@@ -38,7 +38,6 @@ namespace Darkages.Storage.locales.debuffs
 
                 (Affected as Aisling)
                     .Client.SendLocation();
-
             }
 
             Affected.SendAnimation(391, Affected, Affected);

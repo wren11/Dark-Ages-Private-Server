@@ -15,8 +15,9 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.ServerFormats;
+
 using System;
+using Darkages.Network.ServerFormats;
 
 namespace Darkages.Network.Game.Components
 {
@@ -40,13 +41,11 @@ namespace Darkages.Network.Game.Components
             {
                 timer.Reset();
 
-                var format20 = new ServerFormat20 { Shade = shade };
+                var format20 = new ServerFormat20 {Shade = shade};
 
                 foreach (var client in Server.Clients)
-                {
                     if (client != null)
                         client.Send(format20);
-                }
 
                 shade += 1;
                 shade %= 18;

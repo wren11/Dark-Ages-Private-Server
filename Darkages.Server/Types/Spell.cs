@@ -15,6 +15,9 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.ComponentModel;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
@@ -22,8 +25,6 @@ using Darkages.Scripting;
 using Darkages.Storage.locales.Buffs;
 using Darkages.Storage.locales.debuffs;
 using Newtonsoft.Json;
-using System;
-using System.ComponentModel;
 
 namespace Darkages.Types
 {
@@ -69,7 +70,7 @@ namespace Darkages.Types
 
             obj.Template = spellTemplate;
             obj.Level = 0;
-            obj.Slot = (byte)slot;
+            obj.Slot = (byte) slot;
             obj.Lines = obj.Template.BaseLines;
 
             if (obj.Template.Buff == null || obj.Template.Debuff == null)
@@ -115,6 +116,7 @@ namespace Darkages.Types
         {
             spell.Script = ScriptManager.Load<SpellScript>(spell.Template.ScriptKey, spell);
         }
+
         public static bool GiveTo(Aisling Aisling, string spellname, byte slot)
         {
             var spellTemplate = ServerContext.GlobalSpellTemplateCache[spellname];
@@ -187,7 +189,7 @@ namespace Darkages.Types
 
             var spell = Create(slot, spellTemplate);
             {
-                spell.Level = (byte)level;
+                spell.Level = (byte) level;
                 AttachScript(Aisling, spell);
                 {
                     Aisling.SpellBook.Assign(spell);

@@ -15,16 +15,15 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Object;
 
 namespace Darkages.Network
 {
     public abstract class NetworkFormat
     {
-        public abstract void Serialize(NetworkPacketReader reader);
-        public abstract void Serialize(NetworkPacketWriter writer);
+        public byte Command;
 
         public bool Secured;
-        public byte Command;
+        public abstract void Serialize(NetworkPacketReader reader);
+        public abstract void Serialize(NetworkPacketWriter writer);
     }
 }

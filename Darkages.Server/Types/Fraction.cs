@@ -15,12 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Types
 {
-    public enum Fraction : int
+    public enum Fraction
     {
-        Lorule  = 1,
+        Lorule = 1,
         Lividia = 2,
-        Exiles  = 3
+        Exiles = 3
     }
 }

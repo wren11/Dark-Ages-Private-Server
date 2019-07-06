@@ -15,10 +15,20 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat29 : NetworkFormat
     {
+        public ushort CasterEffect;
+
+        public uint CasterSerial;
+        public ushort Speed;
+        public ushort TargetEffect;
+        public uint TargetSerial;
+
+        public ushort X;
+        public ushort Y;
 
         public ServerFormat29()
         {
@@ -36,7 +46,7 @@ namespace Darkages.Network.ServerFormats
         }
 
         public ServerFormat29(uint casterSerial, uint targetSerial, ushort casterEffect, ushort targetEffet,
-            ushort speed): this()
+            ushort speed) : this()
         {
             CasterSerial = casterSerial;
             TargetSerial = targetSerial;
@@ -44,15 +54,6 @@ namespace Darkages.Network.ServerFormats
             TargetEffect = targetEffet;
             Speed = speed;
         }
-
-        public uint CasterSerial;
-        public uint TargetSerial;
-        public ushort CasterEffect;
-        public ushort TargetEffect;
-        public ushort Speed;
-
-        public ushort X;
-        public ushort Y;
 
 
         //29 [00 00 00 00] [00 60] [00 64] [00 03] [00 01]
@@ -64,10 +65,10 @@ namespace Darkages.Network.ServerFormats
         {
             if (CasterSerial == 0)
             {
-                writer.Write((uint)0);
+                writer.Write((uint) 0);
                 writer.Write(CasterEffect);
-                writer.Write((byte)0x00);
-                writer.Write((byte)Speed);
+                writer.Write((byte) 0x00);
+                writer.Write((byte) Speed);
                 writer.Write(X);
                 writer.Write(Y);
             }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Darkages.Network.Game.Components
 {
@@ -21,10 +17,7 @@ namespace Darkages.Network.Game.Components
         {
             timer.Update(elapsedTime);
 
-            if (timer.Elapsed)
-            {
-                timer.Reset();
-            }
+            if (timer.Elapsed) timer.Reset();
         }
     }
 }

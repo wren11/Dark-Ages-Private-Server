@@ -15,10 +15,14 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat3A : NetworkFormat
     {
+        public ushort Icon;
+        public byte Length;
+
         public ServerFormat3A()
         {
             Secured = true;
@@ -27,12 +31,9 @@ namespace Darkages.Network.ServerFormats
 
         public ServerFormat3A(ushort icon, byte length) : this()
         {
-            Icon   = icon;
+            Icon = icon;
             Length = length;
         }
-
-        public ushort Icon;
-        public byte Length;
 
         public override void Serialize(NetworkPacketReader reader)
         {

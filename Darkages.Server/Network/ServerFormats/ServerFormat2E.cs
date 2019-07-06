@@ -15,12 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
-
-
     public class ServerFormat2E : NetworkFormat
     {
+        private readonly Aisling User;
+
         public ServerFormat2E()
         {
             Command = 0x2E;
@@ -32,8 +33,6 @@ namespace Darkages.Network.ServerFormats
             User = user;
         }
 
-        private Aisling User;
-
         public override void Serialize(NetworkPacketReader reader)
         {
         }
@@ -44,11 +43,11 @@ namespace Darkages.Network.ServerFormats
                 return;
 
             var portal = ServerContext.GlobalWorldMapTemplateCache[User.PortalSession?.FieldNumber ?? 1];
-            var name   = string.Format("field{0:000}", portal.FieldNumber);
+            var name = string.Format("field{0:000}", portal.FieldNumber);
 
             writer.WriteStringA(name);
-            writer.Write((byte)portal.Portals.Count);
-            writer.Write((byte)portal.FieldNumber);
+            writer.Write((byte) portal.Portals.Count);
+            writer.Write((byte) portal.FieldNumber);
 
             foreach (var warps in portal.Portals)
             {
@@ -61,8 +60,8 @@ namespace Darkages.Network.ServerFormats
 
                 writer.WriteStringA(warps.DisplayName);
                 writer.Write(warps.Destination.AreaID);
-                writer.Write((short)warps.Destination.Location.X);
-                writer.Write((short)warps.Destination.Location.Y);
+                writer.Write((short) warps.Destination.Location.X);
+                writer.Write((short) warps.Destination.Location.Y);
             }
 
             ServerContext.ILog.Debug("World Map Length : {0}", writer.Position);

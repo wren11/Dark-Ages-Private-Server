@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System.Net;
 using System.Xml.Serialization;
 
@@ -53,6 +54,5 @@ namespace Darkages.Types
         [XmlElement("Desc")] public string Description { get; set; }
 
         [XmlElement("ID")] public byte ID { get; set; }
-
     }
 }

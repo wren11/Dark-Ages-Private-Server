@@ -15,23 +15,24 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Game;
+
 using System;
+using Darkages.Network.Game;
 
 namespace Darkages
 {
     public class EphemeralReactor
     {
-        public string YamlKey { get; set; }
-        public bool Expired { get; set; } = false;
-
-        GameServerTimer _timer;
+        private GameServerTimer _timer;
 
         public EphemeralReactor(string lpKey, int lpTimeout)
         {
             YamlKey = lpKey;
             _timer = new GameServerTimer(TimeSpan.FromSeconds(lpTimeout));
         }
+
+        public string YamlKey { get; set; }
+        public bool Expired { get; set; }
 
         public void Update(TimeSpan elapsedTime)
         {
@@ -43,5 +44,5 @@ namespace Darkages
                 _timer = null;
             }
         }
-    }    
+    }
 }

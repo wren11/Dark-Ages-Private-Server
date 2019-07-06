@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Network.Object;
 using Darkages.Types;
 
@@ -22,7 +23,6 @@ namespace Darkages.Scripting
 {
     public abstract class SkillScript : ObjectManager
     {
-
         public SkillScript(Skill skill)
         {
             Skill = skill;

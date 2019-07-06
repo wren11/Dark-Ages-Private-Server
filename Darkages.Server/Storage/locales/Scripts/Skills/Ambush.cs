@@ -15,11 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Skills
 {
@@ -48,7 +49,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public override void OnSuccess(Sprite sprite)
         {
-
             var targets = sprite.GetInfront(3, true).ToList();
             var prev = sprite.Position;
 
@@ -82,13 +82,11 @@ namespace Darkages.Storage.locales.Scripts.Skills
                             .FirstOrDefault();
 
                         if (selections.Length == 0 || selection == null)
-                        {
                             if (sprite is Aisling)
                             {
                                 (sprite as Aisling).Client.SendMessageBox(0x02, ServerContext.Config.CantDoThat);
                                 return;
                             }
-                        }
 
                         targetPosition = selection.Position;
                     }
@@ -103,7 +101,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                         if (!sprite.Facing(target.XPos, target.YPos, out direction))
                         {
-                            sprite.Direction = (byte)direction;
+                            sprite.Direction = (byte) direction;
 
                             if (sprite.Position.IsNextTo(target.Position))
                                 sprite.Turn();
@@ -120,7 +118,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         else
                         {
                             sprite.Show(Scope.NearbyAislings, new ServerFormat0E(sprite.Serial));
-                            sprite.Show(Scope.NearbyAislings, new ServerFormat07(new[] { sprite }));
+                            sprite.Show(Scope.NearbyAislings, new ServerFormat07(new[] {sprite}));
                         }
 
                         return;
@@ -133,10 +131,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                if (client.Aisling != null && !client.Aisling.Dead && Skill.Ready)
-                {
-                    client.TrainSkill(Skill);
-                }
+                if (client.Aisling != null && !client.Aisling.Dead && Skill.Ready) client.TrainSkill(Skill);
             }
 
             if (Skill.Ready)

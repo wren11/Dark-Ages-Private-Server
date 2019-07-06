@@ -1,8 +1,8 @@
 {
   "Posts": [
     {
-      "Secured": true,
       "Command": 49,
+      "Secured": true,
       "Owner": "lol",
       "TopicId": 1640,
       "PostId": 2,
@@ -15,8 +15,8 @@
       "Subject": "ghjkghj"
     },
     {
-      "Secured": true,
       "Command": 49,
+      "Secured": true,
       "Owner": "lol",
       "TopicId": 876,
       "PostId": 3,
@@ -29,8 +29,8 @@
       "Subject": "lol"
     },
     {
-      "Secured": true,
       "Command": 49,
+      "Secured": true,
       "Owner": "lol",
       "TopicId": 1894,
       "PostId": 4,
@@ -43,8 +43,8 @@
       "Subject": "fghjfgh"
     },
     {
-      "Secured": true,
       "Command": 49,
+      "Secured": true,
       "Owner": "lol",
       "TopicId": 1895,
       "PostId": 5,
@@ -57,8 +57,8 @@
       "Subject": "gfjghfj"
     },
     {
-      "Secured": true,
       "Command": 49,
+      "Secured": true,
       "Owner": "lol",
       "TopicId": 2407,
       "PostId": 5,
@@ -71,8 +71,8 @@
       "Subject": "gfhnbvhcn"
     },
     {
-      "Secured": true,
       "Command": 49,
+      "Secured": true,
       "Owner": "lol",
       "TopicId": 872,
       "PostId": 6,
@@ -85,8 +85,8 @@
       "Subject": "vbnmvbnn"
     }
   ],
-  "Secured": true,
   "Command": 49,
+  "Secured": true,
   "Index": 0,
   "IsMail": true,
   "Subject": "Mail",

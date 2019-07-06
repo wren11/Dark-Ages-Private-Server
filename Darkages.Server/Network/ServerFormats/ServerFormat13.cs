@@ -15,10 +15,17 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat13 : NetworkFormat
     {
+        public ushort Health;
+        public int Serial;
+        public byte Sound;
+
+        public int Source;
+
         public ServerFormat13()
         {
             Secured = true;
@@ -29,13 +36,8 @@ namespace Darkages.Network.ServerFormats
         {
             Serial = serial;
             Health = health;
-            Sound  = sound;
+            Sound = sound;
         }
-
-        public int Source;
-        public int Serial;
-        public ushort Health;
-        public byte Sound;
 
         public override void Serialize(NetworkPacketReader reader)
         {

@@ -15,13 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Types
 {
     /// <summary>
-    /// CREDITS: Enum Borrowed from Project hybrasyl (hybrasyl.com)
+    ///     CREDITS: Enum Borrowed from Project hybrasyl (hybrasyl.com)
     /// </summary>
-    /// 
-
     public enum EquipSlot
     {
         None = 0,
@@ -41,7 +40,7 @@ namespace Darkages.Types
         FirstAcc = 14,
         Trousers = 15,
         Coat = 16,
-        SecondAcc = 17,
+        SecondAcc = 17
     }
 
 

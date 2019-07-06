@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Scripting;
 using Darkages.Types;
 
@@ -54,7 +55,7 @@ namespace Darkages.Storage.locales.Scripts.Items
                 if (Item.Template.Flags.HasFlag(ItemFlags.Equipable))
                 {
                     if (!client.CheckReqs(client, Item))
-                    { 
+                    {
                     }
                 }
                 else

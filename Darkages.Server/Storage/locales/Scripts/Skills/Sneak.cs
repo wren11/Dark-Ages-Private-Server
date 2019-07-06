@@ -15,10 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
 
 namespace Darkages.Storage.locales.Scripts.Skills
 {
@@ -61,8 +62,8 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                         client.Aisling.Show(Scope.NearbyAislings,
                             new ServerFormat29(Skill.Template.TargetAnimation,
-                                (ushort)client.Aisling.XPos,
-                                (ushort)client.Aisling.YPos
+                                (ushort) client.Aisling.XPos,
+                                (ushort) client.Aisling.YPos
                             ));
                     }
 

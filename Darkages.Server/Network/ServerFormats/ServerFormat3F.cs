@@ -15,10 +15,15 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat3F : NetworkFormat
     {
+        public byte Pane;
+        public byte Slot;
+        public int Time;
+
         public ServerFormat3F()
         {
             Secured = true;
@@ -32,19 +37,15 @@ namespace Darkages.Network.ServerFormats
             Time = time;
         }
 
-        public byte Pane;
-        public byte Slot;
-        public int Time;
-
         public override void Serialize(NetworkPacketReader reader)
         {
         }
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)Pane);
-            writer.Write((byte)Slot);
-            writer.Write((int)Time);
+            writer.Write(Pane);
+            writer.Write(Slot);
+            writer.Write(Time);
         }
     }
 }

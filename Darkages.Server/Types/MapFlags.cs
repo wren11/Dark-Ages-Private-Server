@@ -15,10 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Types
 {
     /// <summary>
-    /// CREDITS: Enum Borrowed from... i forgot where... the creator i guess.)
+    ///     CREDITS: Enum Borrowed from... i forgot where... the creator i guess.)
     /// </summary>
     public enum MapFlags : uint
     {

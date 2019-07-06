@@ -15,13 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat7E : NetworkFormat
     {
-        public byte  Type  = 0x1B;
-
         public string Text = ServerContext.Config?.HandShakeMessage ?? "CUNTS\n";
+        public byte Type = 0x1B;
 
         public ServerFormat7E()
         {

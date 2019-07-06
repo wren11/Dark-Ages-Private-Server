@@ -15,11 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Types;
-using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Darkages.Types;
+using Newtonsoft.Json;
 
 namespace Darkages.Storage
 {
@@ -80,22 +81,22 @@ namespace Darkages.Storage
                 File.Delete(path);
 
             if (template is ItemTemplate)
-                StorageManager.ItemBucket.Save(template as ItemTemplate, false);
+                StorageManager.ItemBucket.Save(template as ItemTemplate);
 
             if (template is SpellTemplate)
-                StorageManager.SpellBucket.Save(template as SpellTemplate, false);
+                StorageManager.SpellBucket.Save(template as SpellTemplate);
 
             if (template is SkillTemplate)
-                StorageManager.SkillBucket.Save(template as SkillTemplate, false);
+                StorageManager.SkillBucket.Save(template as SkillTemplate);
 
             if (template is MonsterTemplate)
-                StorageManager.MonsterBucket.Save(template as MonsterTemplate, false);
+                StorageManager.MonsterBucket.Save(template as MonsterTemplate);
 
             if (template is MundaneTemplate)
-                StorageManager.MundaneBucket.Save(template as MundaneTemplate, false);
+                StorageManager.MundaneBucket.Save(template as MundaneTemplate);
 
             if (template is Reactor)
-                StorageManager.ReactorBucket.Save(template as Reactor, false);
+                StorageManager.ReactorBucket.Save(template as Reactor);
 
             if (template is WarpTemplate)
                 StorageManager.WarpBucket.Save(template as WarpTemplate);
@@ -125,8 +126,6 @@ namespace Darkages.Storage
                 return;
 
             foreach (var asset in asset_names)
-            {
-
                 if (tmp is SkillTemplate)
                 {
                     var template =
@@ -147,7 +146,9 @@ namespace Darkages.Storage
                 }
                 else if (tmp is MonsterTemplate)
                 {
-                    var template = StorageManager.MonsterBucket.Load<MonsterTemplate>(Path.GetFileNameWithoutExtension(asset), asset);
+                    var template =
+                        StorageManager.MonsterBucket.Load<MonsterTemplate>(Path.GetFileNameWithoutExtension(asset),
+                            asset);
 
                     if (template != null)
                     {
@@ -173,7 +174,6 @@ namespace Darkages.Storage
                         StorageManager.WorldMapBucket.Load<WorldMapTemplate>(Path.GetFileNameWithoutExtension(asset));
                     ServerContext.GlobalWorldMapTemplateCache[template.FieldNumber] = template;
                 }
-            }
         }
 
 #pragma warning disable CS0693 
@@ -189,7 +189,7 @@ namespace Darkages.Storage
             {
                 using (var f = new StreamReader(s))
                 {
-                    return (T)JsonConvert.DeserializeObject<T>(f.ReadToEnd(), StorageManager.Settings);
+                    return JsonConvert.DeserializeObject<T>(f.ReadToEnd(), StorageManager.Settings);
                 }
             }
         }
@@ -231,7 +231,7 @@ namespace Darkages.Storage
             var fileName = Path.GetFileNameWithoutExtension(path);
             var fileExt = Path.GetExtension(path);
 
-            for (var i = 1; ; ++i)
+            for (var i = 1;; ++i)
             {
                 if (!File.Exists(path))
                     return new FileInfo(path);
@@ -239,6 +239,7 @@ namespace Darkages.Storage
                 path = Path.Combine(dir, fileName + " " + i + fileExt);
             }
         }
+
         public void Delete(ItemTemplate obj)
         {
             var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Name.ToLower()));

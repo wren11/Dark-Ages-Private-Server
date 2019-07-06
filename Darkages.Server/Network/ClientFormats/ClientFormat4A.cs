@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat4A : NetworkFormat
@@ -38,15 +39,11 @@ namespace Darkages.Network.ClientFormats
             if (Type == 0x01 && reader.GetCanRead())
                 ItemSlot = reader.ReadByte();
 
-            if (Type == 0x03 && reader.GetCanRead())
-            {
-                Gold = reader.ReadInt32();
-            }
+            if (Type == 0x03 && reader.GetCanRead()) Gold = reader.ReadInt32();
         }
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-
         }
     }
 }

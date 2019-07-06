@@ -15,10 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Systems.Loot.Interfaces;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Common;
+using Darkages.Systems.Loot.Interfaces;
 
 namespace Darkages.Systems.Loot.Extensions
 {
@@ -26,11 +28,11 @@ namespace Darkages.Systems.Loot.Extensions
     {
         private static readonly Random Random = new Random();
 
-        static float NextFloat(Random random)
+        private static float NextFloat(Random random)
         {
-            double mantissa = (random.NextDouble() * 2.0) - 1.0;
-            double exponent = Math.Pow(2.0, random.Next(-126, 128));
-            return (float)(mantissa * exponent);
+            var mantissa = random.NextDouble() * 2.0 - 1.0;
+            var exponent = Math.Pow(2.0, random.Next(-126, 128));
+            return (float) (mantissa * exponent);
         }
 
         public static T WeightedChoice<T>(this IEnumerable<T> items, double sum) where T : IWeighable
@@ -41,21 +43,15 @@ namespace Darkages.Systems.Loot.Extensions
                 var objs = items.ToArray();
 
                 foreach (var item in items)
-                {
-                    lock (Common.Generator.Random)
+                    lock (Generator.Random)
                     {
-                        short luck = (short)Math.Abs(NextFloat(Common.Generator.Random));
+                        var luck = (short) Math.Abs(NextFloat(Generator.Random));
 
-                        if (luck < 0 || luck > 0)
-                        {
-                            return objs[randomNumber];
-                        }
+                        if (luck < 0 || luck > 0) return objs[randomNumber];
                     }
-                }
-
             }
 
-            return default(T);
+            return default;
         }
     }
 }

@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System;
 using System.Collections.ObjectModel;
 using System.Text;
@@ -27,6 +28,9 @@ namespace Darkages.Common
 
         public static volatile int SERIAL;
 
+        public static Collection<int> GeneratedNumbers;
+        public static Collection<string> GeneratedStrings;
+
         static Generator()
         {
             Random = new Random();
@@ -34,21 +38,18 @@ namespace Darkages.Common
             GeneratedStrings = new Collection<string>();
         }
 
-        public static Collection<int> GeneratedNumbers;
-        public static Collection<string> GeneratedStrings;
-
         public static T RandomEnumValue<T>()
         {
             lock (Random)
             {
                 var v = Enum.GetValues(typeof(T));
-                return (T)v.GetValue(Random.Next(1, v.Length));
+                return (T) v.GetValue(Random.Next(1, v.Length));
             }
         }
 
         public static int GenerateNumber()
         {
-            var id = (0);
+            var id = 0;
 
             do
             {

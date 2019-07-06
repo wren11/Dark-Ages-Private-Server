@@ -15,19 +15,17 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.IO;
-using LiteDB;
-using Newtonsoft.Json;
+
 using System.IO;
 using System.Linq;
+using Darkages.IO;
+using Newtonsoft.Json;
 
 namespace Darkages.Storage
 {
     public class AreaStorage : IStorage<Area>
     {
         public static string StoragePath;
-
-        public int Count => Directory.GetFiles(StoragePath, "*.json", SearchOption.TopDirectoryOnly).Length;
 
         static AreaStorage()
         {
@@ -39,6 +37,8 @@ namespace Darkages.Storage
             if (!Directory.Exists(StoragePath))
                 Directory.CreateDirectory(StoragePath);
         }
+
+        public int Count => Directory.GetFiles(StoragePath, "*.json", SearchOption.TopDirectoryOnly).Length;
 
         public Area Load(string Name)
         {
@@ -108,10 +108,7 @@ namespace Darkages.Storage
             mapObj.Data = File.ReadAllBytes(mapFile);
             mapObj.Hash = Crc16Provider.ComputeChecksum(mapObj.Data);
             {
-                if (save)
-                {
-                    StorageManager.AreaBucket.Save(mapObj);
-                }
+                if (save) StorageManager.AreaBucket.Save(mapObj);
             }
 
             mapObj.OnLoaded();

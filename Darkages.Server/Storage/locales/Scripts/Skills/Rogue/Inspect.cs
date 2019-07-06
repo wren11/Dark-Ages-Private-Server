@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Scripting;
 using Darkages.Types;
 
@@ -25,7 +26,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
     {
         public Inspect(Skill skill) : base(skill)
         {
-
         }
 
         public override void OnFailed(Sprite sprite)
@@ -41,8 +41,8 @@ namespace Darkages.Storage.locales.Scripts.Skills
         {
             if (sprite is Aisling aisling)
             {
-                var client          = aisling.Client;
-                var itemFirstSlot   = aisling.Inventory.Has(i => i.Slot == 1);
+                var client = aisling.Client;
+                var itemFirstSlot = aisling.Inventory.Has(i => i.Slot == 1);
 
                 if (itemFirstSlot != null)
                 {

@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Types;
 
 namespace Darkages.Storage.locales.Buffs
@@ -24,33 +25,11 @@ namespace Darkages.Storage.locales.Buffs
         /// <summary>
         ///     This name MUST match and correspond the name in the type BUFF.
         /// </summary>
-        public override string Name
-        {
-            get
-            {
-                return "Claw Fist";
-            }
-        }
+        public override string Name => "Claw Fist";
 
-        public override int Length
-        {
-            get
-            {
-                return 9;
-            }
-        }
-        public override byte Icon
-        {
-            get
-            {
-                return 13;
-            }
-        }
+        public override int Length => 9;
 
-        public buff_clawfist() 
-        {
-
-        }
+        public override byte Icon => 13;
 
         public override void OnApplied(Sprite Affected, Buff buff)
         {

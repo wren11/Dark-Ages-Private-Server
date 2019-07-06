@@ -15,13 +15,14 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Darkages.Types
 {
@@ -34,7 +35,7 @@ namespace Darkages.Types
         Legend = 4,
         HasItem = 5,
         SingleItemHandIn = 6,
-        Accept = 255,
+        Accept = 255
     }
 
     public enum PlayerAttr : byte
@@ -45,6 +46,7 @@ namespace Darkages.Types
         CON,
         DEX
     }
+
     public class AttrReward
     {
         public PlayerAttr Attribute { get; set; }
@@ -53,16 +55,9 @@ namespace Darkages.Types
 
     public class Quest
     {
-        [JsonIgnore]
-        public readonly int Id;
+        [JsonIgnore] public readonly int Id;
 
-        public Quest()
-        {
-            lock (Generator.Random)
-            {
-                Id = Generator.GenerateNumber();
-            }
-        }
+        public List<uint> ExpRewards = new List<uint>();
 
         public List<string> ItemRewards = new List<string>();
         public List<Legend.LegendItem> LegendRewards = new List<Legend.LegendItem>();
@@ -74,21 +69,26 @@ namespace Darkages.Types
 
         public List<AttrReward> StatRewards = new List<AttrReward>();
 
+        public Quest()
+        {
+            lock (Generator.Random)
+            {
+                Id = Generator.GenerateNumber();
+            }
+        }
+
         public string Name { get; set; }
         public bool Started { get; set; }
         public bool Completed { get; set; }
 
         public DateTime TimeStarted { get; set; }
         public DateTime TimeCompleted { get; set; }
-
-        public List<uint> ExpRewards = new List<uint>();
         public uint GoldReward { get; set; }
         public int StageIndex { get; set; }
 
         public bool Rewarded { get; set; }
 
-        [JsonIgnore]
-        public QuestStep<Template> Current => QuestStages.Count > 0 ? QuestStages[StageIndex] : null;
+        [JsonIgnore] public QuestStep<Template> Current => QuestStages.Count > 0 ? QuestStages[StageIndex] : null;
 
 
         public void OnCompleted(Aisling user, bool equipLoot = false)
@@ -114,49 +114,47 @@ namespace Darkages.Types
                     if (attrs.Attribute == PlayerAttr.STR)
                     {
                         if (attrs.Operator.Option == Operator.Add)
-                            user._Str += (byte)attrs.Operator.Value;
+                            user._Str += (byte) attrs.Operator.Value;
 
                         if (attrs.Operator.Option == Operator.Remove)
-                            user._Str -= (byte)attrs.Operator.Value;
+                            user._Str -= (byte) attrs.Operator.Value;
                     }
 
                     if (attrs.Attribute == PlayerAttr.INT)
                     {
                         if (attrs.Operator.Option == Operator.Add)
-                            user._Int += (byte)attrs.Operator.Value;
+                            user._Int += (byte) attrs.Operator.Value;
 
                         if (attrs.Operator.Option == Operator.Remove)
-                            user._Int -= (byte)attrs.Operator.Value;
+                            user._Int -= (byte) attrs.Operator.Value;
                     }
 
                     if (attrs.Attribute == PlayerAttr.WIS)
                     {
                         if (attrs.Operator.Option == Operator.Add)
-                            user._Wis += (byte)attrs.Operator.Value;
+                            user._Wis += (byte) attrs.Operator.Value;
 
                         if (attrs.Operator.Option == Operator.Remove)
-                            user._Wis -= (byte)attrs.Operator.Value;
+                            user._Wis -= (byte) attrs.Operator.Value;
                     }
 
                     if (attrs.Attribute == PlayerAttr.CON)
                     {
                         if (attrs.Operator.Option == Operator.Add)
-                            user._Con += (byte)attrs.Operator.Value;
+                            user._Con += (byte) attrs.Operator.Value;
 
                         if (attrs.Operator.Option == Operator.Remove)
-                            user._Con -= (byte)attrs.Operator.Value;
+                            user._Con -= (byte) attrs.Operator.Value;
                     }
 
                     if (attrs.Attribute == PlayerAttr.DEX)
                     {
                         if (attrs.Operator.Option == Operator.Add)
-                            user._Dex += (byte)attrs.Operator.Value;
+                            user._Dex += (byte) attrs.Operator.Value;
 
                         if (attrs.Operator.Option == Operator.Remove)
-                            user._Dex -= (byte)attrs.Operator.Value;
+                            user._Dex -= (byte) attrs.Operator.Value;
                     }
-
-
                 }
 
                 foreach (var step in completeStages)
@@ -166,7 +164,6 @@ namespace Darkages.Types
                         var objs = user.Inventory.Get(o => o.Template.Name == step.TemplateContext.Name);
 
                         foreach (var obj in objs)
-                        {
                             if (obj != null && obj.Template.Flags.HasFlag(ItemFlags.QuestRelated))
                             {
                                 if (step.IsMet(user, b => b(obj.Template)))
@@ -174,12 +171,8 @@ namespace Darkages.Types
                             }
                             else if (obj != null)
                             {
-                                if (step.IsMet(user, b => b(obj.Template)))
-                                {
-                                    user.Inventory.Remove(user.Client, obj);
-                                }
+                                if (step.IsMet(user, b => b(obj.Template))) user.Inventory.Remove(user.Client, obj);
                             }
-                        }
                     }
 
                     if (step.Type == QuestType.SingleItemHandIn)
@@ -190,7 +183,6 @@ namespace Darkages.Types
                         if (obj != null && obj.Template.Flags.HasFlag(ItemFlags.QuestRelated))
                             if (step.IsMet(user, b => b(obj.Template)))
                                 user.EquipmentManager.RemoveFromInventory(obj, true);
-
                     }
                 }
 
@@ -206,25 +198,19 @@ namespace Darkages.Types
                 }
 
 
-
             foreach (var items in SpellRewards)
                 if (!Spell.GiveTo(user, items))
                 {
                 }
 
             foreach (var items in ItemRewards)
-            {
                 if (ServerContext.GlobalItemTemplateCache.ContainsKey(items))
                 {
                     var template = ServerContext.GlobalItemTemplateCache[items];
 
                     var obj = Item.Create(user, template);
-                    if (!obj.GiveTo(user, true))
-                    {
-                        obj.Release(user, user.Position);
-                    }
+                    if (!obj.GiveTo(user)) obj.Release(user, user.Position);
                 }
-            }
 
             foreach (var legends in LegendRewards)
                 user.LegendBook.AddLegend(new Legend.LegendItem
@@ -242,7 +228,7 @@ namespace Darkages.Types
 
             if (GoldReward > 0)
             {
-                user.GoldPoints += (int)GoldReward;
+                user.GoldPoints += (int) GoldReward;
                 user.Client.SendMessage(0x02, string.Format("You are awarded {0} gold.", GoldReward));
             }
 
@@ -265,27 +251,23 @@ namespace Darkages.Types
                     .Inventory
                     .Items
                     .Select(i => i.Value).ToArray()
-                    );
+                );
             }
 
             foreach (var obj in items)
-            {
                 if (obj != null)
                 {
                     user.EquipmentManager.Add
-                        (
-                            obj.Template.EquipmentSlot,
-                            obj
-                        );
+                    (
+                        obj.Template.EquipmentSlot,
+                        obj
+                    );
 
                     obj.Script = ScriptManager.Load<ItemScript>(obj.Template.ScriptName, obj);
                     if (!string.IsNullOrEmpty(obj.Template.WeaponScript))
-                    {
                         obj.WeaponScript = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
-                    }
-                    obj.Script?.Equipped(user, (byte)obj.Template.EquipmentSlot);
+                    obj.Script?.Equipped(user, (byte) obj.Template.EquipmentSlot);
                 }
-            }
         }
 
         public void UpdateQuest(Aisling user)
@@ -305,11 +287,9 @@ namespace Darkages.Types
             {
                 var results = new List<bool>();
                 foreach (var reqs in stage.Prerequisites)
-                {
                     results.Add(reqs.IsMet(client.Aisling, i => i(reqs.TemplateContext)));
-                }
 
-                valid = results.TrueForAll(i => i != false);
+                valid = results.TrueForAll(i => i);
                 stage.StepComplete = valid;
             }
 
@@ -329,13 +309,11 @@ namespace Darkages.Types
             }
 
             if (menu != null && valid)
-            {
                 if (menu.CanMoveNext)
                 {
                     menu.MoveNext(client);
                     menu.Invoke(client);
                 }
-            }
         }
     }
 
@@ -366,8 +344,7 @@ namespace Darkages.Types
 
     public class QuestStep<T>
     {
-        [JsonIgnore]
-        public List<QuestRequirement> Prerequisites = new List<QuestRequirement>();
+        [JsonIgnore] public List<QuestRequirement> Prerequisites = new List<QuestRequirement>();
 
         public QuestType Type { get; set; }
 

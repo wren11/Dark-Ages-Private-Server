@@ -15,19 +15,20 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat20 : NetworkFormat
     {
+        public byte Shade;
+
+        public byte Unknown = 0x01;
+
         public ServerFormat20()
         {
             Secured = true;
             Command = 0x20;
         }
-
-        public byte Shade;
-
-        public byte Unknown = 0x01;
 
         public override void Serialize(NetworkPacketReader reader)
         {

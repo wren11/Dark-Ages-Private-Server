@@ -15,12 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Monsters
 {
@@ -34,7 +34,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void OnApproach(GameClient client)
         {
-
         }
 
         public override void OnSkulled(GameClient client)
@@ -44,17 +43,20 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void OnAttacked(GameClient client)
         {
-
         }
 
         public override void OnDamaged(GameClient client, int dmg)
         {
-            Monster.Show(Scope.NearbyAislings, new ServerFormat0D() { Serial = Monster.Serial, Text = string.Format("{0} dealt {1}", client.Aisling.Username, dmg), Type = 0x01 });
+            Monster.Show(Scope.NearbyAislings,
+                new ServerFormat0D
+                {
+                    Serial = Monster.Serial, Text = string.Format("{0} dealt {1}", client.Aisling.Username, dmg),
+                    Type = 0x01
+                });
         }
 
         public override void OnCast(GameClient client)
         {
-
         }
 
         public override void OnDeath(GameClient client)
@@ -64,12 +66,13 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void OnClick(GameClient client)
         {
-            client.SendMessage(0x02, string.Format("(Lv {0}, HP: {1}/{2}, AC: {3}, O: {4}, D: {5})", Monster.Template.Level, Monster.CurrentHp, Monster.MaximumHp, Monster.Ac, Monster.OffenseElement, Monster.DefenseElement));
+            client.SendMessage(0x02,
+                string.Format("(Lv {0}, HP: {1}/{2}, AC: {3}, O: {4}, D: {5})", Monster.Template.Level,
+                    Monster.CurrentHp, Monster.MaximumHp, Monster.Ac, Monster.OffenseElement, Monster.DefenseElement));
         }
 
         public override void OnLeave(GameClient client)
         {
-
         }
 
         public override void Update(TimeSpan elapsedTime)

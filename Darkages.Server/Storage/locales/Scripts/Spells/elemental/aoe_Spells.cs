@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Scripting;
 using Darkages.Types;
 
@@ -25,7 +26,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
     {
         public mspg(Spell spell) : base(spell)
         {
-
         }
     }
 
@@ -34,7 +34,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
     {
         public deosaigheadlamh(Spell spell) : base(spell)
         {
-
         }
     }
 }

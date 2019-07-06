@@ -15,21 +15,19 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using System;
 
 namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat29 : NetworkFormat
     {
+        public uint ID;
+        public byte ItemSlot;
 
         public ClientFormat29()
         {
             Secured = true;
             Command = 0x29;
         }
-
-        public uint ID;
-        public byte ItemSlot;
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -39,7 +37,6 @@ namespace Darkages.Network.ClientFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-
         }
     }
 }

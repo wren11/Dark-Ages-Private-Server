@@ -15,10 +15,9 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
-using System;
-using System.Linq;
 
 namespace Darkages.Scripting.Scripts.Skills
 {
@@ -42,7 +41,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 {
                     var client = (sprite as Aisling).Client;
                     client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29(Skill.Template.MissAnimation, (ushort)Target.XPos, (ushort)Target.YPos));
+                        new ServerFormat29(Skill.Template.MissAnimation, (ushort) Target.XPos, (ushort) Target.YPos));
                 }
         }
 
@@ -55,7 +54,9 @@ namespace Darkages.Scripting.Scripts.Skills
                 var action = new ServerFormat1A
                 {
                     Serial = client.Aisling.Serial,
-                    Number = (byte)(client.Aisling.Path == Class.Warrior ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01 : 0x01),
+                    Number = (byte) (client.Aisling.Path == Class.Warrior
+                        ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01
+                        : 0x01),
                     Speed = 20
                 };
 
@@ -66,10 +67,10 @@ namespace Darkages.Scripting.Scripts.Skills
                 {
                     var imp = 10 + Skill.Level;
 
-                    var dmg = ((client.Aisling.Str * 4) + client.Aisling.Dex * 2);
+                    var dmg = client.Aisling.Str * 4 + client.Aisling.Dex * 2;
 
 
-                    dmg = (int)(imp * dmg) / 3;
+                    dmg = imp * dmg / 3;
 
                     if (sprite.EmpoweredAssail)
                     {
@@ -104,21 +105,20 @@ namespace Darkages.Scripting.Scripts.Skills
                         Target = i;
 
 
-
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
                         success = true;
 
                         if (i is Aisling)
                         {
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial, byte.MinValue,
+                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial, byte.MinValue,
                                     Skill.Template.TargetAnimation, 100));
                             (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
                         }
 
                         if (i is Monster || i is Mundane || i is Aisling)
                             client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
+                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial,
                                     Skill.Template.TargetAnimation, 0, 100));
                     }
                 }
@@ -144,6 +144,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         client.Aisling.Flags = AislingFlags.Normal;
                         client.Refresh();
                     }
+
                     OnSuccess(sprite);
                 }
             }
@@ -163,7 +164,6 @@ namespace Darkages.Scripting.Scripts.Skills
                 };
 
                 if (enemy != null)
-                {
                     foreach (var i in enemy)
                     {
                         if (i == null)
@@ -186,16 +186,13 @@ namespace Darkages.Scripting.Scripts.Skills
                         }
 
                         if (Skill.Template.TargetAnimation > 0)
-                        {
                             if (i is Monster || i is Mundane || i is Aisling)
                                 sprite.Show(Scope.NearbyAislings,
-                                    new ServerFormat29((uint)sprite.Serial, (uint)i.Serial,
+                                    new ServerFormat29((uint) sprite.Serial, (uint) i.Serial,
                                         Skill.Template.TargetAnimation, 0, 100));
-                        }
 
                         sprite.Show(Scope.NearbyAislings, action);
                     }
-                }
             }
         }
     }

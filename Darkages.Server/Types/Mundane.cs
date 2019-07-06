@@ -15,60 +15,50 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Common;
-using Darkages.Network.Game;
-using Darkages.Network.ServerFormats;
-using Darkages.Scripting;
-using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Darkages.Common;
+using Darkages.Network.Game;
+using Darkages.Network.ServerFormats;
+using Darkages.Scripting;
+using Newtonsoft.Json;
 
 namespace Darkages.Types
 {
     public class Mundane : Sprite
     {
+        [JsonIgnore] private int ChatIdx = new ThreadLocal<int>(() => 0, true).Value;
+
+        [JsonIgnore] public List<SkillScript> SkillScripts = new List<SkillScript>();
+
+        [JsonIgnore] public List<SpellScript> SpellScripts = new List<SpellScript>();
+
+        [JsonIgnore] public int WaypointIndex;
+
         public MundaneTemplate Template { get; set; }
 
         [JsonIgnore] public MundaneScript Script { get; set; }
 
-        [JsonIgnore]
-        public List<SkillScript> SkillScripts = new List<SkillScript>();
+        [JsonIgnore] public SkillScript DefaultSkill => SkillScripts.Find(i => i.IsScriptDefault) ?? null;
 
-        [JsonIgnore]
-        public List<SpellScript> SpellScripts = new List<SpellScript>();
+        [JsonIgnore] public SpellScript DefaultSpell => SpellScripts.Find(i => i.IsScriptDefault) ?? null;
 
-        [JsonIgnore]
-        public SkillScript DefaultSkill => SkillScripts.Find(i => i.IsScriptDefault) ?? null;
-
-        [JsonIgnore]
-        public SpellScript DefaultSpell => SpellScripts.Find(i => i.IsScriptDefault) ?? null;
-
-        [JsonIgnore]
-        public int WaypointIndex = 0;
-
-        [JsonIgnore]
-        public Position CurrentWaypoint => Template.Waypoints[WaypointIndex] ?? null;
-
-        [JsonIgnore]
-        int ChatIdx = new ThreadLocal<int>(() => 0, true).Value;
+        [JsonIgnore] public Position CurrentWaypoint => Template.Waypoints[WaypointIndex] ?? null;
 
 
         public void InitMundane()
         {
             if (Template.Spells != null)
                 foreach (var spellscriptstr in Template.Spells)
-                {
                     LoadSpellScript(spellscriptstr);
-                }
 
             if (Template.Skills != null)
                 foreach (var skillscriptstr in Template.Skills)
-                {
                     LoadSkillScript(skillscriptstr);
-                }
 
             LoadSkillScript("Assail", true);
         }
@@ -78,8 +68,9 @@ namespace Darkages.Types
             if (template == null)
                 return;
 
-            var map      = ServerContext.GlobalMapCache[template.AreaID];
-            var existing = template.GetObject<Mundane>(map, p => p != null && p.Template != null && p.Template.Name == template.Name);
+            var map = ServerContext.GlobalMapCache[template.AreaID];
+            var existing = template.GetObject<Mundane>(map,
+                p => p != null && p.Template != null && p.Template.Name == template.Name);
 
             //this npc was already created?
             if (existing != null)
@@ -112,8 +103,8 @@ namespace Darkages.Types
 
             npc.XPos = template.X;
             npc.YPos = template.Y;
-            npc._MaximumHp = (int)(template.Level / 0.1 * 15);
-            npc._MaximumMp = (int)(template.Level / 0.1 * 5);
+            npc._MaximumHp = (int) (template.Level / 0.1 * 15);
+            npc._MaximumMp = (int) (template.Level / 0.1 * 5);
             npc.Template.MaximumHp = npc.MaximumHp;
             npc.Template.MaximumMp = npc.MaximumMp;
 
@@ -122,12 +113,9 @@ namespace Darkages.Types
             npc.Direction = npc.Template.Direction;
             npc.CurrentMapId = npc.Template.AreaID;
 
-            npc.BonusAc = (int)(70 - npc.Template.Level * 0.5 / 1.0);
+            npc.BonusAc = (int) (70 - npc.Template.Level * 0.5 / 1.0);
 
-            if (npc.BonusAc < -70)
-            {
-                npc.BonusAc = -70;
-            }
+            if (npc.BonusAc < -70) npc.BonusAc = -70;
 
 
             npc.DefenseElement = Generator.RandomEnumValue<ElementManager.Element>();
@@ -194,9 +182,7 @@ namespace Darkages.Types
             var nearbyMonsters = GetObjects<Monster>(Map, i => WithinRangeOf(this));
             foreach (var nearby in nearbyMonsters)
                 if (nearby.Target != null && nearby.Target.Serial == Serial)
-                {
                     nearby.Target = null;
-                }
         }
 
         public void Update(TimeSpan update)
@@ -207,10 +193,7 @@ namespace Darkages.Types
             if (IsConfused || IsFrozen || IsParalyzed || IsSleeping)
                 return;
 
-            if (Target != null && !WithinRangeOf(Target))
-            {
-                Target = null;
-            }
+            if (Target != null && !WithinRangeOf(Target)) Target = null;
 
             if (Template.ChatTimer != null)
             {
@@ -220,7 +203,6 @@ namespace Darkages.Types
                 {
                     var nearby = GetObjects<Aisling>(Map, i => i.WithinRangeOf(this));
                     foreach (var obj in nearby)
-                    {
                         if (Template.Speech.Count > 0)
                         {
                             var msg = Template.Speech[ChatIdx++ % Template.Speech.Count];
@@ -228,20 +210,17 @@ namespace Darkages.Types
                             obj.Show(Scope.Self,
                                 new ServerFormat0D
                                 {
-                                    Serial = this.Serial,
+                                    Serial = Serial,
                                     Text = msg,
                                     Type = 0
                                 });
-
                         }
-                    }
 
                     Template.ChatTimer.Reset();
                 }
             }
 
             if (Template.EnableTurning)
-            {
                 if (Template.TurnTimer != null)
                 {
                     Template.TurnTimer.Update(update);
@@ -249,7 +228,7 @@ namespace Darkages.Types
                     {
                         lock (Generator.Random)
                         {
-                            Direction = (byte)Generator.Random.Next(0, 4);
+                            Direction = (byte) Generator.Random.Next(0, 4);
                         }
 
                         Turn();
@@ -257,7 +236,6 @@ namespace Darkages.Types
                         Template.TurnTimer.Reset();
                     }
                 }
-            }
 
             if (Template.EnableCasting)
             {
@@ -265,12 +243,10 @@ namespace Darkages.Types
 
                 if (Template.SpellTimer.Elapsed)
                 {
-
                     if (Target == null || Target.CurrentHp == 0 || !Target.WithinRangeOf(this))
                     {
-
                         var targets = GetObjects<Monster>(Map, i => i.WithinRangeOf(this))
-                               .OrderBy(i => i.Position.DistanceFrom(Position));
+                            .OrderBy(i => i.Position.DistanceFrom(Position));
 
                         foreach (var t in targets) t.Target = this;
 
@@ -298,7 +274,6 @@ namespace Darkages.Types
 
                     Template.SpellTimer.Reset();
                 }
-
             }
 
             if (Template.AttackTimer != null && Template.EnableWalking)
@@ -329,7 +304,7 @@ namespace Darkages.Types
                         {
                             if (!Facing(target, out var direction))
                             {
-                                Direction = (byte)direction;
+                                Direction = (byte) direction;
                                 Turn();
                             }
                             else
@@ -340,8 +315,6 @@ namespace Darkages.Types
 
                                 if (SkillScripts.Count > 0 && target.Target != null)
                                 {
-
-
                                     var obj = SkillScripts.FirstOrDefault(i => i.Skill.Ready);
 
                                     if (obj != null)
@@ -353,9 +326,12 @@ namespace Darkages.Types
                                             skill.InUse = true;
 
                                             if (skill.Template.Cooldown > 0)
-                                                skill.NextAvailableUse = DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
+                                                skill.NextAvailableUse =
+                                                    DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
                                             else
-                                                skill.NextAvailableUse = DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
+                                                skill.NextAvailableUse =
+                                                    DateTime.UtcNow.AddMilliseconds(ServerContext.Config
+                                                        .GlobalBaseSkillDelay);
                                         }
 
                                         skill.InUse = false;
@@ -369,7 +345,9 @@ namespace Darkages.Types
                         if (Template.PathQualifer.HasFlag(PathQualifer.Patrol))
                         {
                             if (Template.Waypoints == null)
+                            {
                                 Wander();
+                            }
                             else
                             {
                                 if (Template.Waypoints?.Count > 0)
@@ -391,10 +369,7 @@ namespace Darkages.Types
 
         public void Patrol()
         {
-            if (CurrentWaypoint != null)
-            {
-                WalkTo(CurrentWaypoint.X, CurrentWaypoint.Y);
-            }
+            if (CurrentWaypoint != null) WalkTo(CurrentWaypoint.X, CurrentWaypoint.Y);
 
             if (Position.DistanceFrom(CurrentWaypoint) <= 2 || CurrentWaypoint == null)
             {

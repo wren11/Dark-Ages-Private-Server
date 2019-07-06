@@ -15,12 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
-using System;
 
 namespace Darkages.Storage.locales.Scripts.Skills
 {
@@ -84,7 +85,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         private void Apply(GameClient client, Debuff debuff, Sprite target)
         {
-
             var action = new ServerFormat1A
             {
                 Serial = client.Aisling.Serial,

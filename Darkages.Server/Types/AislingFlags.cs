@@ -15,17 +15,18 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System;
 
 namespace Darkages.Types
 {
     [Flags]
-    public enum AislingFlags 
+    public enum AislingFlags
     {
-        Normal        = 1,
-        SeeInvisible  = 1 << 1,
-        Dead          = 1 << 3,
-        Invisible     = 1 << 4,
-        SeeGhosts     = 1 << 5,
+        Normal = 1,
+        SeeInvisible = 1 << 1,
+        Dead = 1 << 3,
+        Invisible = 1 << 4,
+        SeeGhosts = 1 << 5
     }
 }

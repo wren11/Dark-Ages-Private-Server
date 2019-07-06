@@ -15,10 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat05 : NetworkFormat
     {
+        public Aisling Aisling;
+
         public ServerFormat05()
         {
             Secured = true;
@@ -29,8 +32,6 @@ namespace Darkages.Network.ServerFormats
         {
             Aisling = aisling;
         }
-
-        public Aisling Aisling;
 
         //05 A2 [03 95 C1 2D] [02 00 01 00] [00 00]
         public override void Serialize(NetworkPacketReader reader)

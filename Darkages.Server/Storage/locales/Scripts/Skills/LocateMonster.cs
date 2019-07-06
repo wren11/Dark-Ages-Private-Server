@@ -15,9 +15,10 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System.Linq;
 using Darkages.Scripting;
 using Darkages.Types;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Skills
 {
@@ -30,7 +31,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public override void OnUse(Sprite sprite)
         {
-            var nearest = GetObjects<Monster>(sprite.Map, i => (i.CurrentMapId == sprite.CurrentMapId) && i.IsAlive)
+            var nearest = GetObjects<Monster>(sprite.Map, i => i.CurrentMapId == sprite.CurrentMapId && i.IsAlive)
                 .OrderBy(i => i.Position.DistanceFrom(sprite.Position)).FirstOrDefault();
 
             if (sprite is Aisling)
@@ -69,7 +70,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                         if (!client.Aisling.Facing(nearest.XPos, nearest.YPos, out var direction))
                         {
-                            client.Aisling.Direction = (byte)direction;
+                            client.Aisling.Direction = (byte) direction;
 
                             if (client.Aisling.Position.IsNextTo(nearest.Position))
                                 client.Aisling.Turn();

@@ -15,17 +15,17 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.ServerFormats;
-using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
+using Darkages.Network.ServerFormats;
+using Newtonsoft.Json;
 
 namespace Darkages.Types
 {
     public class DialogSequence
     {
-        [JsonIgnore]
-        public Action<Aisling, DialogSequence> OnSequenceStep { get; set; }
+        [JsonIgnore] public Action<Aisling, DialogSequence> OnSequenceStep { get; set; }
 
         public string CallbackKey { get; set; }
 

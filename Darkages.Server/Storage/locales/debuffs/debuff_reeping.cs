@@ -15,33 +15,31 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.ServerFormats;
-using Darkages.Storage.locales.Scripts.Global;
-using Darkages.Types;
+
 using System;
+using Darkages.Network.ServerFormats;
+using Darkages.Types;
 
 namespace Darkages.Storage.locales.debuffs
 {
     public class debuff_reeping : Debuff
     {
+        public readonly Random _rnd = new Random();
         public override string Name => "skulled";
         public override byte Icon => 89;
         public override int Length => ServerContext.Config.SkullLength;
 
-        public string[] Messages => ServerContext.Config.ReapMessage.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-        public int Count => Messages.Length;
+        public string[] Messages =>
+            ServerContext.Config.ReapMessage.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 
-        public readonly Random _rnd = new Random();
+        public int Count => Messages.Length;
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {
-
             /* GM Character's don't die. */
             if (Affected is Aisling)
-            {
                 if ((Affected as Aisling).GameMaster)
                     return;
-            }
 
 
             base.OnApplied(Affected, debuff);
@@ -103,7 +101,6 @@ namespace Darkages.Storage.locales.debuffs
                 };
 
                 (Affected as Aisling).Show(Scope.Self, hpbar);
-
 
 
                 (Affected as Aisling)

@@ -15,10 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System.Collections.Generic;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
-using System.Collections.Generic;
 
 namespace Darkages.Types
 {
@@ -57,7 +58,7 @@ namespace Darkages.Types
             if (CanMoveNext)
                 SequenceIndex++;
 
-            client.DlgSession.Sequence = (ushort)SequenceIndex;
+            client.DlgSession.Sequence = (ushort) SequenceIndex;
         }
     }
 }

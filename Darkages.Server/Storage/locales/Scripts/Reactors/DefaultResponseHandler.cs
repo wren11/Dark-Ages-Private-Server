@@ -1,9 +1,9 @@
-﻿namespace Darkages.Storage.locales.Scripts.Reactors
-{
-    using global::Darkages.Scripting;
-    using global::Darkages.Types;
-    using System;
+﻿using System;
+using Darkages.Scripting;
+using Darkages.Types;
 
+namespace Darkages.Storage.locales.Scripts.Reactors
+{
     namespace Darkages.Assets.locales.Scripts.Reactors
     {
         [Script("Default Response Handler")]
@@ -18,7 +18,7 @@
             {
                 if (aisling.ActiveReactor == null)
                 {
-                    aisling.ReactorActive  = false;
+                    aisling.ReactorActive = false;
                     aisling.ActiveSequence = null;
                     aisling.Client.CloseDialog();
                     return;
@@ -39,7 +39,6 @@
 
             public override void OnNext(Aisling aisling)
             {
-
                 if (aisling.ActiveReactor == null)
                 {
                     aisling.ReactorActive = false;
@@ -58,7 +57,6 @@
                     aisling.ActiveReactor.Index--;
                     SequenceComplete(aisling, null);
                 }
-
             }
 
             public override void OnTriggered(Aisling aisling)
@@ -77,19 +75,16 @@
                 {
                     if (aisling.ActiveReactor != null)
                     {
-                        aisling.ReactorActive  = true;
+                        aisling.ReactorActive = true;
                         aisling.ActiveSequence = aisling.ActiveReactor.Sequences[0];
                         aisling.ActiveReactor.Next(aisling.Client);
                     }
                 }
             }
 
-            void SequenceComplete(Aisling aisling, DialogSequence sequence)
+            private void SequenceComplete(Aisling aisling, DialogSequence sequence)
             {
-                if (aisling.ActiveSequence != null && !aisling.ActiveSequence.CanMoveNext)
-                {
-                    return;
-                }
+                if (aisling.ActiveSequence != null && !aisling.ActiveSequence.CanMoveNext) return;
 
                 if (aisling.ReactedWith(Reactor.Name))
                     return;
@@ -114,7 +109,6 @@
                         }
 
                         if (!aisling_quest.Completed)
-                        {
                             aisling_quest.HandleQuest(aisling.Client, null, quest_completed_ok =>
                             {
                                 if (quest_completed_ok)
@@ -123,7 +117,6 @@
                                     aisling_quest.OnCompleted(aisling, true);
                                 }
                             });
-                        }
                     }
                 }
             }

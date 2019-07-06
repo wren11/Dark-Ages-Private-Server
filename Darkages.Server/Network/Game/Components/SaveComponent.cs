@@ -15,14 +15,14 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System;
 
 namespace Darkages.Network.Game.Components
 {
     public class Save : GameServerComponent
     {
-
-        GameServerTimer Timer;
+        private readonly GameServerTimer Timer;
 
         public Save(GameServer server) : base(server)
         {
@@ -31,7 +31,6 @@ namespace Darkages.Network.Game.Components
 
         public override void Update(TimeSpan elapsedTime)
         {
-        
             Timer.Update(elapsedTime);
 
             if (Timer.Elapsed)

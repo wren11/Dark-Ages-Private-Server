@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Types;
 
 namespace Darkages.Storage.locales.Buffs
@@ -43,8 +44,9 @@ namespace Darkages.Storage.locales.Buffs
                     .Client
                     .SendMessage(0x02, "Your armor has been increased.");
                 (Affected as Aisling)
-                        .Client.SendStats(StatusFlags.All);
+                    .Client.SendStats(StatusFlags.All);
             }
+
             base.OnApplied(Affected, buff);
         }
 
@@ -66,7 +68,7 @@ namespace Darkages.Storage.locales.Buffs
                     .Client
                     .SendMessage(0x02, "Your armor returns to normal.");
                 (Affected as Aisling)
-                        .Client.SendStats(StatusFlags.All);
+                    .Client.SendStats(StatusFlags.All);
             }
 
             base.OnEnded(Affected, buff);

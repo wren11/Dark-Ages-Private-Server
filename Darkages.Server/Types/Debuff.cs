@@ -15,11 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Newtonsoft.Json;
-using System;
 
 namespace Darkages.Types
 {
@@ -31,23 +32,17 @@ namespace Darkages.Types
             Timer = new GameServerTimer(TimeSpan.FromSeconds(1));
         }
 
-        [JsonProperty]
-        public virtual string Name { get; set; }
+        [JsonProperty] public virtual string Name { get; set; }
 
-        [JsonProperty]
-        public virtual int Length { get; set; }
+        [JsonProperty] public virtual int Length { get; set; }
 
-        [JsonProperty]
-        public virtual byte Icon { get; set; }
+        [JsonProperty] public virtual byte Icon { get; set; }
 
-        [JsonProperty]
-        public virtual bool Cancelled { get; set; }
+        [JsonProperty] public virtual bool Cancelled { get; set; }
 
-        [JsonIgnore]
-        public GameServerTimer Timer { get; set; }
+        [JsonIgnore] public GameServerTimer Timer { get; set; }
 
-        [JsonProperty]
-        public ushort Animation { get; set; }
+        [JsonProperty] public ushort Animation { get; set; }
 
         public bool Has(string name)
         {
@@ -56,10 +51,7 @@ namespace Darkages.Types
 
         public virtual void OnApplied(Sprite Affected, Debuff debuff)
         {
-            if (Affected.Debuffs.TryAdd(debuff.Name, debuff))
-            {
-                Display(Affected);
-            }
+            if (Affected.Debuffs.TryAdd(debuff.Name, debuff)) Display(Affected);
         }
 
         public virtual void OnDurationUpdate(Sprite Affected, Debuff buff)
@@ -70,12 +62,10 @@ namespace Darkages.Types
         public virtual void OnEnded(Sprite Affected, Debuff debuff)
         {
             if (Affected.Debuffs.TryRemove(debuff.Name, out var removed))
-            {
                 if (Affected is Aisling)
                     (Affected as Aisling)
                         .Client
                         .Send(new ServerFormat3A(Icon, byte.MinValue));
-            }
         }
 
         internal void Update(Sprite Affected, TimeSpan elapsedTime)
@@ -117,7 +107,7 @@ namespace Darkages.Types
             if (Affected is Aisling)
                 (Affected as Aisling)
                     .Client
-                    .Send(new ServerFormat3A(Icon, (byte)colorInt));
+                    .Send(new ServerFormat3A(Icon, (byte) colorInt));
         }
     }
 }

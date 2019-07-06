@@ -1,6 +1,6 @@
-﻿using Darkages.Scripting;
+﻿using System;
+using Darkages.Scripting;
 using Darkages.Types;
-using System;
 
 namespace Darkages.Assets.locales.Scripts.Reactors
 {
@@ -9,8 +9,8 @@ namespace Darkages.Assets.locales.Scripts.Reactors
     {
         public ExampleReactor(Reactor reactor) : base(reactor)
         {
-            Reactor 
-                 = reactor;
+            Reactor
+                = reactor;
         }
 
         public override void OnBack(Aisling aisling)
@@ -37,14 +37,13 @@ namespace Darkages.Assets.locales.Scripts.Reactors
 
         public override void OnNext(Aisling aisling)
         {
-
             if (aisling.ActiveReactor == null)
             {
                 aisling.ReactorActive = false;
                 aisling.Client.CloseDialog();
                 return;
             }
-            
+
             if (aisling.ActiveReactor.Index + 1 < aisling.ActiveReactor.Sequences.Count)
             {
                 aisling.ActiveReactor.Index++;
@@ -55,7 +54,6 @@ namespace Darkages.Assets.locales.Scripts.Reactors
                 aisling.ActiveReactor.Index--;
                 SequenceComplete(aisling, null);
             }
-
         }
 
         public override void OnTriggered(Aisling aisling)
@@ -65,7 +63,7 @@ namespace Darkages.Assets.locales.Scripts.Reactors
             aisling.ActiveReactor.Next(aisling.Client);
         }
 
-        void SequenceComplete(Aisling aisling, DialogSequence sequence)
+        private void SequenceComplete(Aisling aisling, DialogSequence sequence)
         {
             if (sequence == null)
             {
@@ -77,10 +75,7 @@ namespace Darkages.Assets.locales.Scripts.Reactors
                 if (Reactor.Quest != null)
                     Reactor.Quest.Rewards(aisling, false);
 
-                if (Reactor.PostScript != null)
-                {
-                    Reactor.PostScript.OnTriggered(aisling);
-                }
+                if (Reactor.PostScript != null) Reactor.PostScript.OnTriggered(aisling);
             }
         }
     }

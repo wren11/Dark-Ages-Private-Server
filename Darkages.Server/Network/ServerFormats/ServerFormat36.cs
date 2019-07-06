@@ -15,9 +15,10 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Game;
+
 using System;
 using System.Linq;
+using Darkages.Network.Game;
 
 namespace Darkages.Network.ServerFormats
 {
@@ -60,14 +61,14 @@ namespace Darkages.Network.ServerFormats
             Help
         }
 
+        private readonly GameClient Client;
+
         public ServerFormat36(GameClient client)
         {
             Secured = true;
             Command = 0x36;
-            Client  = client;
+            Client = client;
         }
-
-        private GameClient Client;
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -75,27 +76,28 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            var users = Client.Server.Clients.Where(i => i != null && i.Aisling != null && i.Aisling.LoggedIn).Select(i => i.Aisling).ToArray();
+            var users = Client.Server.Clients.Where(i => i != null && i.Aisling != null && i.Aisling.LoggedIn)
+                .Select(i => i.Aisling).ToArray();
             users = users.OrderByDescending(i => i.MaximumHp + i.MaximumMp * 2).ToArray();
 
-            var count = (ushort)users.Length;
-            var total = (short)(users.Length - users.Length / 11);
+            var count = (ushort) users.Length;
+            var total = (short) (users.Length - users.Length / 11);
 
-            writer.Write((ushort)total);
+            writer.Write((ushort) total);
             writer.Write(count);
 
             foreach (var user in users)
             {
-                writer.Write((byte)user.ClassID);
-                writer.Write((byte)(
+                writer.Write((byte) user.ClassID);
+                writer.Write((byte) (
                     user.Serial == Client.Aisling.Serial
                         ? ListColor.Tan
                         : Math.Abs(Client.Aisling.ExpLevel - user.ExpLevel) < 10
                             ? ListColor.Orange
                             : ListColor.White));
-                writer.Write((byte)user.ActiveStatus);
-                writer.Write((byte)user.Title > 0);
-                writer.Write((byte)user.Stage > 0);
+                writer.Write((byte) user.ActiveStatus);
+                writer.Write((byte) user.Title > 0);
+                writer.Write((byte) user.Stage > 0);
                 writer.WriteStringA(user.Username);
             }
         }

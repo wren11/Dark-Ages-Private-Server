@@ -15,10 +15,16 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat2C : NetworkFormat
     {
+        public short Icon;
+
+
+        public byte Slot;
+        public string Text;
 
         public ServerFormat2C()
         {
@@ -28,17 +34,10 @@ namespace Darkages.Network.ServerFormats
 
         public ServerFormat2C(byte slot, short icon, string text) : this()
         {
-            
             Slot = slot;
             Icon = icon;
             Text = text;
         }
-
-
-
-        public byte Slot;
-        public short Icon;
-        public string Text;
 
         public override void Serialize(NetworkPacketReader reader)
         {

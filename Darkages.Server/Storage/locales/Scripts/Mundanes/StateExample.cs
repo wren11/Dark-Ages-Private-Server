@@ -1,32 +1,32 @@
-﻿using Darkages.Network.Game;
+﻿using System.Collections.Generic;
+using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System.Collections.Generic;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
     [Script("some example")]
     public class StateExample : MundaneScript
     {
-        Quest quest;
+        private readonly Quest quest;
 
-        public StateExample(GameServer server, Mundane mundane) 
+        public StateExample(GameServer server, Mundane mundane)
             : base(server, mundane)
         {
             //this is called on script compile, build a quest.
 
             quest = new Quest();
             quest.Name = "some unique name";
-            quest.LegendRewards = new List<Legend.LegendItem>()
+            quest.LegendRewards = new List<Legend.LegendItem>
             {
-                new Legend.LegendItem()
+                new Legend.LegendItem
                 {
-                     Category = "Class",
-                     Color = (byte)LegendColor.Blue,
-                      Icon = (byte)LegendIcon.Priest,
-                       Value = "some legend mark"
-                },
+                    Category = "Class",
+                    Color = (byte) LegendColor.Blue,
+                    Icon = (byte) LegendIcon.Priest,
+                    Value = "some legend mark"
+                }
             };
         }
 
@@ -42,34 +42,27 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             switch (responseID)
             {
                 case 0x0003:
+                {
+                    //this would return false if they were already on the quest.
+                    //or failed to accept it for any reason
+                    if (client.Aisling.AcceptQuest(quest))
                     {
-                        //this would return false if they were already on the quest.
-                        //or failed to accept it for any reason
-                        if (client.Aisling.AcceptQuest(quest))
-                        {
-                            //completed it.
-                            quest.OnCompleted(client.Aisling, false);
-                        }
-                        else
-                        {
-                            //they already did it.
-                        }
+                        //completed it.
+                        quest.OnCompleted(client.Aisling);
                     }
+                }
                     break;
-                default: break;
             }
         }
 
 
         public override void OnGossip(GameServer server, GameClient client, string message)
         {
-
         }
 
 
         public override void TargetAcquired(Sprite Target)
         {
-
         }
     }
 }

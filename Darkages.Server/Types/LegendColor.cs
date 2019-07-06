@@ -15,10 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Types
 {
     /// <summary>
-    /// CREDITS: Enum Borrowed from Project hybrasyl (hybrasyl.com)
+    ///     CREDITS: Enum Borrowed from Project hybrasyl (hybrasyl.com)
     /// </summary>
     public enum LegendColor
     {

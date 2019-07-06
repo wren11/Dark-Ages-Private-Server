@@ -15,21 +15,20 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Common;
+
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
+using Darkages.Common;
 
 namespace Darkages.Network
 {
-    public abstract class NetworkServer<TClient> : ServerFormatStubs<TClient> , IDisposable
+    public abstract class NetworkServer<TClient> : ServerFormatStubs<TClient>, IDisposable
         where TClient : NetworkClient<TClient>, new()
     {
         private readonly MethodInfo[] _handlers;
-
-        private Cache<byte, NetworkFormat> FormatCache = new Cache<byte, NetworkFormat>();
 
         private bool _listening;
 
@@ -37,26 +36,14 @@ namespace Darkages.Network
 
         public TClient[] Clients;
 
-        private Socket _listener; 
-
-        public Socket Listener
-        {
-            get
-            {
-                return _listener;
-            }
-            set
-            {
-                _listener = value;
-            }
-        }
+        private readonly Cache<byte, NetworkFormat> FormatCache = new Cache<byte, NetworkFormat>();
 
         protected NetworkServer(int capacity)
         {
-            var type  = typeof(NetworkServer<TClient>);
+            var type = typeof(NetworkServer<TClient>);
 
-            Address   = ServerContext.Ipaddress;
-            Clients   = new TClient[capacity];
+            Address = ServerContext.Ipaddress;
+            Clients = new TClient[capacity];
 
             _handlers = new MethodInfo[256];
 
@@ -64,11 +51,12 @@ namespace Darkages.Network
                 _handlers[i] = type.GetMethod(
                     $"Format{i:X2}Handler",
                     BindingFlags.NonPublic | BindingFlags.Instance);
-
         }
 
+        public Socket Listener { get; set; }
+
         private void EndConnectClient(IAsyncResult result)
-        {           
+        {
             var _handler = Listener.EndAccept(result);
 
             if (Listener == null || !_listening)
@@ -80,7 +68,7 @@ namespace Darkages.Network
 
                 var client = new TClient
                 {
-                    ServerSocket = new NetworkSocket(_handler),
+                    ServerSocket = new NetworkSocket(_handler)
                 };
 
                 if (client.ServerSocket.Connected)
@@ -94,7 +82,7 @@ namespace Darkages.Network
                             client.Serial = Generator.GenerateNumber();
                         }
 
-                        client.ServerSocket.BeginReceiveHeader(new AsyncCallback(EndReceiveHeader), out var error, client);
+                        client.ServerSocket.BeginReceiveHeader(EndReceiveHeader, out var error, client);
 
                         if (error != SocketError.Success)
                             ClientDisconnected(client);
@@ -106,7 +94,7 @@ namespace Darkages.Network
                 }
 
 
-                Listener.BeginAccept(new AsyncCallback(EndConnectClient), Listener);
+                Listener.BeginAccept(EndConnectClient, Listener);
             }
         }
 
@@ -126,18 +114,20 @@ namespace Darkages.Network
                     }
 
                     if (client.ServerSocket.HeaderComplete)
-                    {
-                        client.ServerSocket.BeginReceivePacket(new AsyncCallback(EndReceivePacket), out error, client);
-                    }
+                        client.ServerSocket.BeginReceivePacket(EndReceivePacket, out error, client);
                     else
-                    {
-                        client.ServerSocket.BeginReceiveHeader(new AsyncCallback(EndReceiveHeader), out error, client);
-                    }
+                        client.ServerSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
                 }
             }
-            catch (SocketException)          { }
-            catch (NullReferenceException)   { }
-            catch (IndexOutOfRangeException) { }
+            catch (SocketException)
+            {
+            }
+            catch (NullReferenceException)
+            {
+            }
+            catch (IndexOutOfRangeException)
+            {
+            }
         }
 
         private void EndReceivePacket(IAsyncResult result)
@@ -159,17 +149,23 @@ namespace Darkages.Network
                     {
                         ClientDataReceived(client, client.ServerSocket.ToPacket());
 
-                        client.ServerSocket.BeginReceiveHeader(new AsyncCallback(EndReceiveHeader), out error, client);
+                        client.ServerSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
                     }
                     else
                     {
-                        client.ServerSocket.BeginReceivePacket(new AsyncCallback(EndReceivePacket), out error, client);
+                        client.ServerSocket.BeginReceivePacket(EndReceivePacket, out error, client);
                     }
                 }
             }
-            catch (SocketException)          { }
-            catch (NullReferenceException)   { }
-            catch (IndexOutOfRangeException) { }
+            catch (SocketException)
+            {
+            }
+            catch (NullReferenceException)
+            {
+            }
+            catch (IndexOutOfRangeException)
+            {
+            }
         }
 
         public virtual bool AddClient(TClient client)
@@ -212,9 +208,7 @@ namespace Darkages.Network
             {
                 foreach (var client in Clients)
                     if (client != null)
-                    {
                         ClientDisconnected(client);
-                    }
             }
 
             if (Listener != null && Listener.Connected)
@@ -223,7 +217,6 @@ namespace Darkages.Network
                 Listener.Close();
                 Listener = null;
             }
-
         }
 
         public virtual void StartAsync(int port)
@@ -240,13 +233,14 @@ namespace Darkages.Network
             {
                 Listener.Bind(new IPEndPoint(IPAddress.Any, port));
                 Listener.Listen(Clients.Length);
-                Listener.BeginAccept(new AsyncCallback(EndConnectClient), null);
+                Listener.BeginAccept(EndConnectClient, null);
             }
         }
 
         public virtual void ClientConnected(TClient client)
         {
-            ServerContext.ILog?.Warning("Connection From {0} Established.", client.ServerSocket.RemoteEndPoint.ToString());
+            ServerContext.ILog?.Warning("Connection From {0} Established.",
+                client.ServerSocket.RemoteEndPoint.ToString());
         }
 
         public virtual void ClientDataReceived(TClient client, NetworkPacket packet)
@@ -273,7 +267,6 @@ namespace Darkages.Network
             }
 
             if (format != null)
-            {
                 try
                 {
                     client.Read(packet, format);
@@ -281,15 +274,22 @@ namespace Darkages.Network
                     _handlers[format.Command]?.Invoke(this,
                         new object[]
                         {
-                                client,
-                                format
+                            client,
+                            format
                         });
                 }
-                catch (NullReferenceException)   { }
-                catch (OverflowException)        { }
-                catch (ArithmeticException)      { }
-                catch (IndexOutOfRangeException) { }
-            }
+                catch (NullReferenceException)
+                {
+                }
+                catch (OverflowException)
+                {
+                }
+                catch (ArithmeticException)
+                {
+                }
+                catch (IndexOutOfRangeException)
+                {
+                }
         }
 
         public virtual void ClientDisconnected(TClient client)
@@ -326,6 +326,7 @@ namespace Darkages.Network
                     if (Listener != null)
                         Listener.Dispose();
                 }
+
                 disposed = true;
             }
         }

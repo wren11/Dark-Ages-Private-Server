@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Types;
 
 namespace Darkages.Storage.locales.debuffs
@@ -22,8 +23,8 @@ namespace Darkages.Storage.locales.debuffs
     public class debuff_morfasnadur : Debuff
     {
         public override string Name => "mor fas nadur";
-        public override byte Icon   => 119;
-        public override int Length  => 320;
+        public override byte Icon => 119;
+        public override int Length => 320;
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {

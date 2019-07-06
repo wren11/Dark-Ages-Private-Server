@@ -15,23 +15,25 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
 using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Types;
-using System;
 
 namespace Darkages.Scripting
 {
     public abstract class MonsterScript : ObjectManager
     {
+        public Area Map;
+
+        public Monster Monster;
+
         public MonsterScript(Monster monster, Area map)
         {
             Monster = monster;
             Map = map;
         }
-
-        public Monster Monster;
-        public Area Map;
 
         public abstract void OnApproach(GameClient client);
         public abstract void OnAttacked(GameClient client);
@@ -41,7 +43,9 @@ namespace Darkages.Scripting
         public abstract void OnLeave(GameClient client);
         public abstract void Update(TimeSpan elapsedTime);
 
-        public virtual void OnDamaged(GameClient client, int dmg) { }
+        public virtual void OnDamaged(GameClient client, int dmg)
+        {
+        }
 
         public abstract void OnSkulled(GameClient client);
     }

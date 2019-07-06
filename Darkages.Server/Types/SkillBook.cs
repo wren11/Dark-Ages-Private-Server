@@ -15,11 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Object;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Darkages.Network.Object;
 
 namespace Darkages.Types
 {
@@ -85,24 +86,21 @@ namespace Darkages.Types
         public bool Has(Skill s)
         {
             return Skills.Where(i => i.Value != null && i.Value != null).Select(i => i.Value.Template)
-                .FirstOrDefault(i => i.Name.Equals(s.Template.Name)) != null;
+                       .FirstOrDefault(i => i.Name.Equals(s.Template.Name)) != null;
         }
 
         public bool Has(SkillTemplate s)
         {
             return Skills.Where(i => i.Value != null && i.Value.Template != null).Select(i => i.Value.Template)
-                .FirstOrDefault(i => i.Name.Equals(s.Name)) != null;
+                       .FirstOrDefault(i => i.Name.Equals(s.Name)) != null;
         }
 
 
         public int FindEmpty()
         {
             for (var i = 0; i < Length; i++)
-            {
-
                 if (Skills[i + 1] == null)
                     return i + 1;
-            }
             return -1;
         }
     }

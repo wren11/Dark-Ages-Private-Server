@@ -15,17 +15,22 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Game;
-using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Darkages.Network.Game;
+using Newtonsoft.Json;
 
 namespace Darkages.Types
 {
     public class MundaneTemplate : Template
     {
+        public MundaneTemplate()
+        {
+            Speech = new Collection<string>();
+        }
 
         public int WalkRate { get; set; }
         public int TurnRate { get; set; }
@@ -34,11 +39,6 @@ namespace Darkages.Types
         public bool EnableCasting { get; set; }
         public List<string> Spells { get; set; }
         public List<string> Skills { get; set; }
-
-        public MundaneTemplate()
-        {
-            Speech = new Collection<string>();
-        }
 
         public short Image { get; set; }
         public int Level { get; set; }
@@ -73,27 +73,23 @@ namespace Darkages.Types
 
         public string QuestKey { get; set; }
 
-        [JsonProperty]
-        public List<Position> Waypoints { get; set; }
+        [JsonProperty] public List<Position> Waypoints { get; set; }
 
-        [JsonProperty]
-        public PathQualifer PathQualifer { get; set; }
+        [JsonProperty] public PathQualifer PathQualifer { get; set; }
 
-        [JsonProperty]
-        public ViewQualifer ViewingQualifer { get; set; }
-
+        [JsonProperty] public ViewQualifer ViewingQualifer { get; set; }
     }
 
     [Flags]
     public enum ViewQualifer
     {
-        None     = 0,
+        None = 0,
         Peasents = 1 << 1,
         Warriors = 1 << 2,
-        Wizards  = 1 << 3,
-        Monks    = 1 << 4,
-        Rogues   = 1 << 5,
-        Priests  = 1 << 6,
-        All = Peasents | Warriors | Wizards | Monks | Rogues | Priests,
+        Wizards = 1 << 3,
+        Monks = 1 << 4,
+        Rogues = 1 << 5,
+        Priests = 1 << 6,
+        All = Peasents | Warriors | Wizards | Monks | Rogues | Priests
     }
 }

@@ -15,10 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System.IO;
 using Darkages.Common;
 using Darkages.Compression;
 using Darkages.IO;
-using System.IO;
 
 namespace Darkages.Types
 {
@@ -26,17 +27,17 @@ namespace Darkages.Types
     {
         public byte[] Data => DeflatedData;
 
-        public ushort Size => (ushort)DeflatedData.Length;
+        public ushort Size => (ushort) DeflatedData.Length;
 
         public uint Hash { get; private set; }
 
         public static Notification FromFile(string filename)
         {
-            var result          = new Notification();
-            var message         = File.ReadAllText(filename);
+            var result = new Notification();
+            var message = File.ReadAllText(filename);
 
             result.InflatedData = message.ToByteArray();
-            result.Hash         = Crc32Provider.ComputeChecksum(result.InflatedData);
+            result.Hash = Crc32Provider.ComputeChecksum(result.InflatedData);
             result.Compress();
 
             ServerContext.GlobalMessage = message;

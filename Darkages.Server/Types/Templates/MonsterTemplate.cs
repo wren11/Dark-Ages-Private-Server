@@ -15,18 +15,18 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace Darkages.Types
 {
     public class MonsterTemplate : Template
     {
-        [JsonProperty]
-        [Description("What Drops?")]
+        [JsonProperty] [Description("What Drops?")]
         public Collection<string> Drops = new Collection<string>();
 
         [Description("What sprite ID? range from 0x4000 - 0x8000 ")]
@@ -97,26 +97,21 @@ namespace Darkages.Types
 
         public ElementManager.Element OffenseElement { get; set; }
 
-        [JsonProperty]
-        public List<Position> Waypoints { get; set; }
+        [JsonProperty] public List<Position> Waypoints { get; set; }
 
         public bool UpdateMapWide { get; set; }
 
-        [JsonProperty]
-        public string FamilyKey { get; set; }
+        [JsonProperty] public string FamilyKey { get; set; }
 
-        [JsonIgnore]
-        public DateTime NextAvailableSpawn { get; set; }
+        [JsonIgnore] public DateTime NextAvailableSpawn { get; set; }
 
-        [JsonIgnore]
-        public int SpawnCount { get; set; }
+        [JsonIgnore] public int SpawnCount { get; set; }
 
-        [JsonIgnore]
-        public bool Ready => DateTime.UtcNow > NextAvailableSpawn;
+        [JsonIgnore] public bool Ready => DateTime.UtcNow > NextAvailableSpawn;
 
         public string BaseName { get; set; }
 
-        public int EngagedWalkingSpeed { get;set; }
+        public int EngagedWalkingSpeed { get; set; }
 
         public bool ReadyToSpawn()
         {
@@ -125,6 +120,7 @@ namespace Darkages.Types
                 NextAvailableSpawn = DateTime.UtcNow.AddSeconds(SpawnRate);
                 return true;
             }
+
             return false;
         }
     }

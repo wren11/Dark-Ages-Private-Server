@@ -15,13 +15,14 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -51,8 +52,9 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     new OptionsDataItem(0x06, "I'm ready to choose a Path,"),
                     new OptionsDataItem(0x07, "I'm not ready.")
                 };
-                client.SendOptionsDialog(Mundane, "Hm? You look weak. you are a peasant. You can't survive this world without a set of skills and discipline. You must make a choice. Now is the time.", options.ToArray());
-
+                client.SendOptionsDialog(Mundane,
+                    "Hm? You look weak. you are a peasant. You can't survive this world without a set of skills and discipline. You must make a choice. Now is the time.",
+                    options.ToArray());
             }
             else
             {
@@ -65,7 +67,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             if (responseID < 0x0001 ||
                 responseID > 0x0005)
             {
-
                 if (responseID == 6)
                 {
                     var options = new List<OptionsDataItem>
@@ -79,23 +80,21 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                     client.SendOptionsDialog(Mundane, "What do you seek?", options.ToArray());
                 }
+
                 if (responseID == 7)
                 {
-
                 }
-                return;
             }
             else
             {
-
                 client.Aisling.ClassID = responseID;
-                client.Aisling.Path = (Class)responseID;
+                client.Aisling.Path = (Class) responseID;
 
                 client.SendOptionsDialog(Mundane, string.Format("You are now a {0}",
                     Convert.ToString(client.Aisling.Path)));
 
-                client.Aisling.Stage      = ClassStage.Master;
-                client.Aisling.ExpLevel   = 99;
+                client.Aisling.Stage = ClassStage.Master;
+                client.Aisling.ExpLevel = 99;
                 client.Aisling.StatPoints = 98 * 2;
 
                 if (client.Aisling.Path == Class.Priest)
@@ -122,7 +121,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     Spell.GiveTo(client.Aisling, "ao puinsein", 1);
                     Spell.GiveTo(client.Aisling, "mor dion", 1);
                     Spell.GiveTo(client.Aisling, "ia naomh aite", 1);
-
                 }
 
                 if (client.Aisling.Path == Class.Wizard)
@@ -206,17 +204,15 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 client.Aisling.LegendBook.AddLegend(new Legend.LegendItem
                 {
                     Category = "Class",
-                    Color = (byte)LegendColor.Blue,
-                    Icon = (byte)LegendIcon.Victory,
+                    Color = (byte) LegendColor.Blue,
+                    Icon = (byte) LegendIcon.Victory,
                     Value = string.Format("Devoted to the path of {0} ", Convert.ToString(client.Aisling.Path))
                 });
 
                 client.Aisling.GoHome();
                 client.SendStats(StatusFlags.All);
 
-                Task.Delay(350).ContinueWith((ct) => {
-                    client.Aisling.Animate(5);
-                });
+                Task.Delay(350).ContinueWith(ct => { client.Aisling.Animate(5); });
             }
         }
     }

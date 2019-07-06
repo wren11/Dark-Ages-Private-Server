@@ -4,20 +4,12 @@ namespace Darkages.Script.Context
 {
     public class _Interop
     {
-        private static Dictionary<string, object> _vars = new Dictionary<string, object>();
+        public delegate bool Call();
 
         public delegate List<string> ReturnStringListMethod();
 
         public delegate void VoidMethod();
 
-        public delegate bool Call();
-
-        public static Dictionary<string, object> Storage
-        {
-            get
-            {
-                return _vars;
-            }
-        }
+        public static Dictionary<string, object> Storage { get; } = new Dictionary<string, object>();
     }
 }

@@ -15,11 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Monsters
 {
@@ -29,10 +30,11 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         public TowerDefense(Monster monster, Area map)
             : base(monster, map)
         {
-            Monster.Template.SpawnSize  = 100;
-            Monster.Template.SpawnMax   = 100;
-            Monster.Template.SpawnRate  = 1;
+            Monster.Template.SpawnSize = 100;
+            Monster.Template.SpawnMax = 100;
+            Monster.Template.SpawnRate = 1;
         }
+
         public override void OnSkulled(GameClient client)
         {
         }
@@ -44,32 +46,29 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void OnAttacked(GameClient client)
         {
-
         }
 
         public override void OnCast(GameClient client)
         {
-
         }
 
         public override void OnClick(GameClient client)
         {
-
         }
 
         public override void OnDeath(GameClient client)
         {
             var remaining = GetObjects<Monster>(client.Aisling.Map, i => i.CurrentMapId == client.Aisling.AreaID
-                && i.Template.Name == Monster.Template.Name).Count();
+                                                                         && i.Template.Name == Monster.Template.Name)
+                .Count();
 
             if (remaining <= 1)
             {
-
                 var temp = Monster.Template;
                 temp.Image += 2;
                 temp.MovementSpeed -= 50;
                 temp.MaximumHP *= 2;
-                temp.SpawnMax+=2;
+                temp.SpawnMax += 2;
                 temp.SpawnRate--;
                 temp.SpawnSize++;
 
@@ -101,10 +100,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             {
                 Monster.WalkTimer.Reset();
 
-                if (Monster.WalkEnabled)
-                {
-                    Walk(true);
-                }
+                if (Monster.WalkEnabled) Walk(true);
             }
         }
 
@@ -122,9 +118,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 Monster.CurrentHp = 0;
 
                 if (Monster.Target != null)
-                {
                     Monster.Target.ApplyDamage(Monster, Monster.Target.MaximumHp / 10, true, 88);
-                }
             }
         }
     }

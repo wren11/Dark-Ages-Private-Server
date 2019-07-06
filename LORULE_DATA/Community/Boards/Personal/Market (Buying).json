@@ -1,8 +1,8 @@
 {
   "Posts": [
     {
-      "Secured": true,
       "Command": 49,
+      "Secured": true,
       "Owner": "lol",
       "TopicId": 1645,
       "PostId": 1,
@@ -15,8 +15,8 @@
       "Subject": "me too"
     }
   ],
-  "Secured": true,
   "Command": 49,
+  "Secured": true,
   "Index": 4,
   "IsMail": false,
   "Subject": "Market (Buying)",

@@ -15,9 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Compression;
+
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
+using Darkages.Compression;
 
 namespace Darkages.Types
 {
@@ -42,34 +44,31 @@ namespace Darkages.Types
                 {
                     foreach (var file in files)
                     {
-                        var mf = CompressableObject.Load<Metafile>(file, true);
+                        var mf = CompressableObject.Load<Metafile>(file);
                         mf.Name = mf.Name.Replace(".deflated", string.Empty).Trim();
 
                         if (mf.Name.StartsWith("NationDesc"))
-                        {
-                            mf.Nodes = new System.Collections.ObjectModel.Collection<MetafileNode>
+                            mf.Nodes = new Collection<MetafileNode>
                             {
                                 new MetafileNode("nation_1", "Lorule"),
                                 new MetafileNode("nation_2", "Lividia"),
                                 new MetafileNode("nation_3", "Exiles")
                             };
-                        }
 
                         if (mf.Name.StartsWith("SClass"))
                         {
-                            mf.Nodes = new System.Collections.ObjectModel.Collection<MetafileNode>
+                            mf.Nodes = new Collection<MetafileNode>
                             {
                                 new MetafileNode("Skill")
                             };
 
                             foreach (var skill in ServerContext.GlobalSkillTemplateCache)
-                            {
                                 if (skill.Value.Prerequisites != null)
                                 {
                                     var nmf = new MetafileNode(skill.Key, skill.Value.Prerequisites.MetaData);
                                     mf.Nodes.Add(nmf);
                                 }
-                            }
+
                             mf.Nodes.Add(new MetafileNode("Skill_End"));
                             mf.Nodes.Add(new MetafileNode(""));
                         }
@@ -78,7 +77,6 @@ namespace Darkages.Types
                         //CompressableObject.Save(file, mf);
 
                         metafiles.Add(mf);
-
                     }
                 }
             }

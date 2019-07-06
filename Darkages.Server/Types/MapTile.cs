@@ -15,10 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Types;
+
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Types;
 
 namespace Darkages
 {
@@ -28,16 +29,12 @@ namespace Darkages
 
         public class MapTile
         {
+            private ConcurrentDictionary<int, Sprite> Objects = new ConcurrentDictionary<int, Sprite>();
             public TileContent BaseObject { get; set; }
 
             public bool HasWall => BaseObject == TileContent.Wall;
-          
-            private ConcurrentDictionary<int, Sprite> Objects = new ConcurrentDictionary<int, Sprite>();
 
-            public List<Sprite> Sprites
-            {
-                get => Objects.Select(i => i.Value).ToList(); 
-            }
+            public List<Sprite> Sprites => Objects.Select(i => i.Value).ToList();
 
             public void Empty()
             {
@@ -53,22 +50,16 @@ namespace Darkages
                     return false;
 
 
-                for (int i = 0; i < Sprites.Count; i++)
+                for (var i = 0; i < Sprites.Count; i++)
                 {
                     if (Sprites[i] is Monster)
                     {
-                        if ((Sprites[i] as Monster).Template.IgnoreCollision)
-                        {
-                            return true;
-                        }
+                        if ((Sprites[i] as Monster).Template.IgnoreCollision) return true;
 
                         return false;
                     }
 
-                    if (Sprites[i] is Mundane)
-                    {
-                        return false;
-                    }
+                    if (Sprites[i] is Mundane) return false;
 
 
                     if (Sprites[i] is Aisling)
@@ -92,24 +83,17 @@ namespace Darkages
                     return false;
 
 
-                for (int i = 0; i < Sprites.Count; i++)
-                {
+                for (var i = 0; i < Sprites.Count; i++)
                     if (obj.Serial != Sprites[i].Serial)
                     {
                         if (Sprites[i] is Monster)
                         {
-                            if ((Sprites[i] as Monster).Template.IgnoreCollision)
-                            {
-                                return true;
-                            }
+                            if ((Sprites[i] as Monster).Template.IgnoreCollision) return true;
 
                             return false;
                         }
 
-                        if (Sprites[i] is Mundane)
-                        {
-                            return false;
-                        }
+                        if (Sprites[i] is Mundane) return false;
 
 
                         if (Sprites[i] is Aisling)
@@ -120,7 +104,6 @@ namespace Darkages
                             return false;
                         }
                     }
-                }
 
                 return true;
             }

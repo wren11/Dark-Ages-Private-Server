@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Types;
 
 namespace Darkages.Storage.locales.debuffs
@@ -23,7 +24,6 @@ namespace Darkages.Storage.locales.debuffs
     {
         public debuff_cursed()
         {
-
         }
 
         public debuff_cursed(string name, int length, byte icon)

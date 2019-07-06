@@ -15,9 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Types;
+
 using System;
 using System.Net;
+using System.Text;
+using Darkages.Types;
 
 namespace Darkages.Network.ServerFormats
 {
@@ -31,7 +33,7 @@ namespace Darkages.Network.ServerFormats
 
         public IPEndPoint EndPoint { get; set; }
 
-        public byte Remaining => (byte)(Redirect.Salt.Length + Redirect.Name.Length + 7);
+        public byte Remaining => (byte) (Redirect.Salt.Length + Redirect.Name.Length + 7);
 
         public Redirect Redirect { get; set; }
 
@@ -43,13 +45,12 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write(EndPoint);
             writer.Write(Remaining);
-            writer.Write((byte)
-                Convert.ToByte(Redirect.Seed));
+            writer.Write(Convert.ToByte(Redirect.Seed));
             writer.Write(
-                (byte)Redirect.Salt.Length);
-            writer.Write((byte[])System.Text.Encoding.UTF8.GetBytes(Redirect.Salt));
+                (byte) Redirect.Salt.Length);
+            writer.Write(Encoding.UTF8.GetBytes(Redirect.Salt));
             writer.WriteStringA(Redirect.Name);
-            writer.Write((int)Convert.ToInt32(Redirect.Serial));
+            writer.Write(Convert.ToInt32(Redirect.Serial));
         }
     }
 }

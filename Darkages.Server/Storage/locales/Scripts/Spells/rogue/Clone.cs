@@ -1,8 +1,8 @@
-﻿using Darkages.Network.ServerFormats;
+﻿using System;
+using System.Threading.Tasks;
+using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Threading.Tasks;
 
 namespace Darkages.Assets.locales.Scripts.Spells.rogue
 {
@@ -13,7 +13,6 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
 
         public Clone(Spell spell) : base(spell)
         {
-
         }
 
         public override void OnFailed(Sprite sprite, Sprite target)
@@ -36,10 +35,10 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
                 var action = new ServerFormat1A
                 {
                     Serial = sprite.Serial,
-                    Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
+                    Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                        client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                     Speed = 30
                 };
-
 
 
                 sprite.Client.SendStats(StatusFlags.StructB);
@@ -81,7 +80,7 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
                         {
                             monster.XPos = obj.XPos;
                             monster.YPos = obj.YPos;
-                            AddObject<Monster>(monster);
+                            AddObject(monster);
                         }
                     }
                 });
@@ -91,7 +90,6 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
                 client.SendStats(StatusFlags.All);
             }
         }
-
 
 
         public override void OnUse(Sprite sprite, Sprite target)
@@ -113,9 +111,7 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
                 else
                 {
                     if (sprite is Aisling)
-                    {
                         (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
-                    }
                 }
             }
         }

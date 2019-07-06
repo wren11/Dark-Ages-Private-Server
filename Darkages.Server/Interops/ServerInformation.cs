@@ -1,13 +1,15 @@
-﻿using Darkages.Types;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Darkages.Types;
+using Newtonsoft.Json;
 
 namespace Darkages.Interops
 {
     public class ServerInformation
     {
+        [JsonIgnore] public ReaderWriterLock _lock = new ReaderWriterLock();
+
         public IReadOnlyCollection<Aisling> PlayersOnline { get; set; }
 
         public List<ItemTemplate> ItemTemplates { get; set; }
@@ -38,48 +40,45 @@ namespace Darkages.Interops
 
         public List<ServerLog> Logs { get; set; }
 
-        [JsonIgnore]
-        public ReaderWriterLock _lock = new ReaderWriterLock();
-
 
         public void Error(string message, Exception err)
         {
-            var color = ((object)Console.ForegroundColor);
+            var color = (object) Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
             Write(message + Environment.NewLine + err.Message + Environment.NewLine + err.StackTrace, LogType.Error);
-            Console.ForegroundColor = (ConsoleColor)color;
+            Console.ForegroundColor = (ConsoleColor) color;
         }
 
         public void Info(string message, params object[] args)
         {
-            var color = ((object)Console.ForegroundColor);
+            var color = (object) Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Green;
             Write(string.Format(message, args), LogType.Info);
-            Console.ForegroundColor = (ConsoleColor)color;
+            Console.ForegroundColor = (ConsoleColor) color;
         }
 
         public void Info(string message)
         {
-            var color = ((object)Console.ForegroundColor);
+            var color = (object) Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Green;
             Write(string.Format(message), LogType.Info);
-            Console.ForegroundColor = (ConsoleColor)color;
+            Console.ForegroundColor = (ConsoleColor) color;
         }
 
         public void Debug(string message, params object[] args)
         {
-            var color = ((object)Console.ForegroundColor);
+            var color = (object) Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Gray;
             Write(string.Format(message, args), LogType.Debug);
-            Console.ForegroundColor = (ConsoleColor)color;
+            Console.ForegroundColor = (ConsoleColor) color;
         }
 
         public void Warning(string message, params object[] args)
         {
-            var color = ((object)Console.ForegroundColor);
+            var color = (object) Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Write(string.Format(message, args), LogType.Warning);
-            Console.ForegroundColor = (ConsoleColor)color;
+            Console.ForegroundColor = (ConsoleColor) color;
         }
 
         public void Write(string message, LogType type)
@@ -91,7 +90,7 @@ namespace Darkages.Interops
                 if (Logs == null)
                     Logs = new List<ServerLog>();
 
-                Logs.Add(new ServerLog()
+                Logs.Add(new ServerLog
                 {
                     When = DateTime.UtcNow,
                     What = message,
@@ -109,13 +108,16 @@ namespace Darkages.Interops
     public struct ServerLog
     {
         public DateTime When { get; set; }
-        public string What   { get; set; }
-        public LogType Why   { get; set; }
+        public string What { get; set; }
+        public LogType Why { get; set; }
     }
 
     public enum LogType
     {
-        Info, Debug, Warning, Error, Critical
+        Info,
+        Debug,
+        Warning,
+        Error,
+        Critical
     }
 }
- 

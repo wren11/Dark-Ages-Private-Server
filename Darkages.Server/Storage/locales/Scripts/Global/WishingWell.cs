@@ -1,9 +1,9 @@
-﻿using Darkages.Common;
+﻿using System;
+using System.Linq;
+using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Global
 {
@@ -21,14 +21,12 @@ namespace Darkages.Storage.locales.Scripts.Global
             {
                 var item = Client.LastItemDropped;
                 if (item != null)
-                {
                     if (item.XPos == 31 && item.YPos == 52 || item.XPos == 31 && item.YPos == 53)
-                    {
-
                         if (Client.Aisling.EquipmentManager.RemoveFromInventory(item, true))
                         {
                             var valReqarded = item.Template.Value + 15 / 3;
-                            Client.SendMessage(Scope.Self, 0x02, string.Format("Thank you, You are rewarded with {0} Experience!", valReqarded));
+                            Client.SendMessage(Scope.Self, 0x02,
+                                string.Format("Thank you, You are rewarded with {0} Experience!", valReqarded));
 
                             item.Remove();
 
@@ -41,10 +39,9 @@ namespace Darkages.Storage.locales.Scripts.Global
 
                                 Client.Aisling.ApplyBuff(buffs[n]);
                             }
+
                             Client.LastItemDropped = null;
                         }
-                    }
-                }
             }
         }
 

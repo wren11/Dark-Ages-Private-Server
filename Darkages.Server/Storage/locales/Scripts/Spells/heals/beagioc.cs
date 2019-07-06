@@ -15,21 +15,22 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Scripting;
 using Darkages.Types;
 
 namespace Darkages.Storage.locales.Scripts.Spells
 {
     /// <summary>
-    /// Class Beagioc.
-    /// Implements the <see cref="Darkages.Scripting.SpellScript" />
+    ///     Class Beagioc.
+    ///     Implements the <see cref="Darkages.Scripting.SpellScript" />
     /// </summary>
     /// <seealso cref="Darkages.Scripting.SpellScript" />
     [Script("beag ioc", "Dean")]
     public class Beagioc : SpellScript
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Beagioc"/> class.
+        ///     Initializes a new instance of the <see cref="Beagioc" /> class.
         /// </summary>
         /// <param name="spell">The spell.</param>
         public Beagioc(Spell spell) : base(spell)
@@ -37,17 +38,16 @@ namespace Darkages.Storage.locales.Scripts.Spells
         }
 
         /// <summary>
-        /// Called when [failed].
+        ///     Called when [failed].
         /// </summary>
         /// <param name="sprite">The sprite.</param>
         /// <param name="target">The target.</param>
         public override void OnFailed(Sprite sprite, Sprite target)
         {
-
         }
 
         /// <summary>
-        /// Called when [success].
+        ///     Called when [success].
         /// </summary>
         /// <param name="sprite">The sprite.</param>
         /// <param name="target">The target.</param>
@@ -56,25 +56,21 @@ namespace Darkages.Storage.locales.Scripts.Spells
         }
 
 
-
-
-
         /// <summary>
-        /// Called when [use].
+        ///     Called when [use].
         /// </summary>
         /// <param name="sprite">The sprite.</param>
         /// <param name="target">The target.</param>
         public override void OnUse(Sprite sprite, Sprite target)
         {
-            var healValue = (int)(200 + (Spell.Level * sprite.Wis) * 0.05);
+            var healValue = (int) (200 + Spell.Level * sprite.Wis * 0.05);
 
-            sprite.Aisling     (sprite)
-                ?.HasManaFor   (Spell)
-                ?.Cast         (Spell, target)
-                ?.GiveHealth   (target, healValue)
-                ?.UpdateStats  (Spell)
-                ?.TrainSpell   (Spell);
+            sprite.Aisling(sprite)
+                ?.HasManaFor(Spell)
+                ?.Cast(Spell, target)
+                ?.GiveHealth(target, healValue)
+                ?.UpdateStats(Spell)
+                ?.TrainSpell(Spell);
         }
     }
 }
-

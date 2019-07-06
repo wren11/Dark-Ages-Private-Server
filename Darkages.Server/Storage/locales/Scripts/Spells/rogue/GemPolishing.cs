@@ -3,17 +3,15 @@ using Darkages.Types;
 
 namespace Darkages.Storage.locales.Scripts.Spells.rogue
 {
-    [Script("gem_polishing", author: "Dean")]
+    [Script("gem_polishing", "Dean")]
     public class GemPolishing : SpellScript
     {
         public GemPolishing(Spell spell) : base(spell)
         {
-
         }
 
         public override void OnFailed(Sprite sprite, Sprite target)
         {
-
         }
 
         public override void OnSuccess(Sprite sprite, Sprite target)

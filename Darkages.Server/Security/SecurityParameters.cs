@@ -15,10 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Common;
-using Darkages.Network;
+
 using System;
 using System.Text;
+using Darkages.Common;
+using Darkages.Network;
 using IFormattable = Darkages.Network.IFormattable;
 
 namespace Darkages.Security
@@ -31,7 +32,7 @@ namespace Darkages.Security
 
         public SecurityParameters()
         {
-            Seed = (byte)Generator.Random.Next(0, 9);
+            Seed = (byte) Generator.Random.Next(0, 9);
             Salt = Generator.GenerateString(9).ToByteArray();
         }
 
@@ -54,7 +55,7 @@ namespace Darkages.Security
         {
             writer.Write(Seed);
             writer.Write(
-                (byte)Salt.Length);
+                (byte) Salt.Length);
             writer.Write(Salt);
         }
     }

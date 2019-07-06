@@ -15,27 +15,28 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Types;
 
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat42 : NetworkFormat
     {
-        public ServerFormat42()
-        {
-            Secured = true;
-            Command = 0x42;
-        }
+        public Item ExchangedItem;
+
+        public string Message;
 
         public Aisling Player;
-
-        public Item ExchangedItem;
 
         public byte Stage;
 
         public byte Type;
 
-        public string Message;
+        public ServerFormat42()
+        {
+            Secured = true;
+            Command = 0x42;
+        }
 
         public ServerFormat42(Aisling user, byte type = 0x00, byte method = 0x00, string lpMsg = "", Item lpItem = null)
         {
@@ -47,12 +48,10 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketReader reader)
         {
-
         }
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-
         }
     }
 }

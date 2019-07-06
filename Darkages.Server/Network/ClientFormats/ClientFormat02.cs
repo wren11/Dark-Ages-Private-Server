@@ -15,19 +15,20 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat02 : NetworkFormat
     {
+        public string AislingPassword;
+
+        public string AislingUsername;
+
         public ClientFormat02()
         {
             Secured = true;
             Command = 0x02;
         }
-
-        public string AislingUsername;
-
-        public string AislingPassword;
 
 
         public override void Serialize(NetworkPacketReader reader)

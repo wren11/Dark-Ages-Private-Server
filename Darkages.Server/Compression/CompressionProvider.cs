@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System.IO;
 using zlib;
 
@@ -40,13 +41,11 @@ namespace Darkages.Compression
                 {
                     using (var zStream = new ZOutputStream(oStream, -1))
                     {
-
                         CopyStream(iStream, zStream);
 
                         zStream.finish();
 
                         return oStream.ToArray();
-
                     }
                 }
             }

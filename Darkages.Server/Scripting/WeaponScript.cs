@@ -1,5 +1,5 @@
-﻿using Darkages.Types;
-using System;
+﻿using System;
+using Darkages.Types;
 
 namespace Darkages.Scripting
 {

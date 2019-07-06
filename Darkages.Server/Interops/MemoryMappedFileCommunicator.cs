@@ -15,80 +15,54 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO.MemoryMappedFiles;
-using System.Threading;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
+using System.IO.MemoryMappedFiles;
+using System.Text;
+using System.Threading;
 
 namespace MemoryMappedFileManager
 {
     public class MemoryMappedFileCommunicator : IDisposable
     {
-        #region Constants
-
-        private const int DATA_AVAILABLE_OFFSET = 0;
-        private const int READ_CONFIRM_OFFSET = DATA_AVAILABLE_OFFSET + 1;
-        private const int DATA_LENGTH_OFFSET = READ_CONFIRM_OFFSET + 1;
-        private const int DATA_OFFSET = DATA_LENGTH_OFFSET + 10;
-
-        #endregion  
-        
-        #region Properties
-
-        public MemoryMappedFile MappedFile { get; set; }
-        public event EventHandler<MemoryMappedDataReceivedEventArgs> DataReceived;
-
-        public int ReadPosition { get; set; }
-
-        private int writePosition;
-        public int WritePosition
-        {
-            get { return writePosition; }
-            set
-            {
-                if (value != writePosition)
-                {
-                    writePosition = value;
-                    view.Write(WritePosition + READ_CONFIRM_OFFSET, true);
-                }
-            }
-        }
-
-        #endregion
+        private readonly SendOrPostCallback callback;
+        private readonly List<byte[]> dataToSend;
+        private bool disposed;
+        private readonly AsyncOperation operation;
+        private bool started;
 
         private MemoryMappedViewAccessor view;
-        private AsyncOperation operation;
-        private readonly SendOrPostCallback callback;
-        private bool started;
-        private bool disposed;
 
         private Thread writerThread;
-        private List<byte[]> dataToSend;
         private bool writerThreadRunning;
 
         public MemoryMappedFileCommunicator(string mapName, long capacity)
             : this(MemoryMappedFile.CreateOrOpen(mapName, capacity), 0, 0, MemoryMappedFileAccess.ReadWrite)
-        { }
+        {
+        }
 
         public MemoryMappedFileCommunicator(string mapName, long capacity, long offset, long size)
             : this(MemoryMappedFile.CreateOrOpen(mapName, capacity), offset, size, MemoryMappedFileAccess.ReadWrite)
-        { }
+        {
+        }
 
-        public MemoryMappedFileCommunicator(string mapName, long capacity, long offset, long size, MemoryMappedFileAccess access)
+        public MemoryMappedFileCommunicator(string mapName, long capacity, long offset, long size,
+            MemoryMappedFileAccess access)
             : this(MemoryMappedFile.CreateOrOpen(mapName, capacity), offset, size, access)
-        { }
+        {
+        }
 
         public MemoryMappedFileCommunicator(MemoryMappedFile mappedFile)
             : this(mappedFile, 0, 0, MemoryMappedFileAccess.ReadWrite)
-        { }
+        {
+        }
 
         public MemoryMappedFileCommunicator(MemoryMappedFile mappedFile, long offset, long size)
             : this(mappedFile, offset, size, MemoryMappedFileAccess.ReadWrite)
-        { }
+        {
+        }
 
-        public MemoryMappedFileCommunicator(MemoryMappedFile mappedFile, long offset, long size, MemoryMappedFileAccess access)
+        public MemoryMappedFileCommunicator(MemoryMappedFile mappedFile, long offset, long size,
+            MemoryMappedFileAccess access)
         {
             MappedFile = mappedFile;
             view = mappedFile.CreateViewAccessor(offset, size, access);
@@ -97,9 +71,40 @@ namespace MemoryMappedFileManager
             writePosition = -1;
             dataToSend = new List<byte[]>();
 
-            callback = new SendOrPostCallback(OnDataReceivedInternal);
+            callback = OnDataReceivedInternal;
             operation = AsyncOperationManager.CreateOperation(null);
         }
+
+        #region IDisposable
+
+        public void Dispose()
+        {
+            started = false;
+            if (view != null)
+                try
+                {
+                    view.Dispose();
+                    view = null;
+                }
+                catch
+                {
+                }
+
+            if (MappedFile != null)
+                try
+                {
+                    MappedFile.Dispose();
+                    MappedFile = null;
+                }
+                catch
+                {
+                }
+
+            disposed = true;
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
 
         public void StartReader()
         {
@@ -109,7 +114,7 @@ namespace MemoryMappedFileManager
             if (ReadPosition < 0 || writePosition < 0)
                 throw new ArgumentException();
 
-            Thread t = new Thread(ReaderThread)
+            var t = new Thread(ReaderThread)
             {
                 IsBackground = true
             };
@@ -119,8 +124,8 @@ namespace MemoryMappedFileManager
 
         public void Write(string message)
         {
-            var data = System.Text.Encoding.UTF8.GetBytes(message);
-            this.Write(data);
+            var data = Encoding.UTF8.GetBytes(message);
+            Write(data);
         }
 
         public void Write(byte[] data)
@@ -129,7 +134,9 @@ namespace MemoryMappedFileManager
                 throw new ArgumentException();
 
             lock (dataToSend)
+            {
                 dataToSend.Add(data);
+            }
 
             if (!writerThreadRunning)
             {
@@ -158,7 +165,7 @@ namespace MemoryMappedFileManager
 
                 // Sets length and write data.
                 view.Write(writePosition + DATA_LENGTH_OFFSET, data.Length);
-                view.WriteArray<byte>(writePosition + DATA_OFFSET, data, 0, data.Length);
+                view.WriteArray(writePosition + DATA_OFFSET, data, 0, data.Length);
 
                 // Resets the flag used to signal that data has been read.
                 view.Write(writePosition + READ_CONFIRM_OFFSET, false);
@@ -183,17 +190,17 @@ namespace MemoryMappedFileManager
                 if (dataAvailable)
                 {
                     // Checks how many bytes to read.
-                    int availableBytes = view.ReadInt32(ReadPosition + DATA_LENGTH_OFFSET);
+                    var availableBytes = view.ReadInt32(ReadPosition + DATA_LENGTH_OFFSET);
                     var bytes = new byte[availableBytes];
                     // Reads the byte array.
-                    int read = view.ReadArray<byte>(ReadPosition + DATA_OFFSET, bytes, 0, availableBytes);
+                    var read = view.ReadArray(ReadPosition + DATA_OFFSET, bytes, 0, availableBytes);
 
                     // Sets the flag used to signal that there aren't available data anymore.
                     view.Write(ReadPosition + DATA_AVAILABLE_OFFSET, false);
                     // Sets the flag used to signal that data has been read. 
                     view.Write(ReadPosition + READ_CONFIRM_OFFSET, true);
 
-                    MemoryMappedDataReceivedEventArgs args = new MemoryMappedDataReceivedEventArgs(bytes, read);
+                    var args = new MemoryMappedDataReceivedEventArgs(bytes, read);
                     operation.Post(callback, args);
                 }
 
@@ -212,33 +219,35 @@ namespace MemoryMappedFileManager
                 DataReceived(this, e);
         }
 
-        #region IDisposable
+        #region Constants
 
-        public void Dispose()
+        private const int DATA_AVAILABLE_OFFSET = 0;
+        private const int READ_CONFIRM_OFFSET = DATA_AVAILABLE_OFFSET + 1;
+        private const int DATA_LENGTH_OFFSET = READ_CONFIRM_OFFSET + 1;
+        private const int DATA_OFFSET = DATA_LENGTH_OFFSET + 10;
+
+        #endregion
+
+        #region Properties
+
+        public MemoryMappedFile MappedFile { get; set; }
+        public event EventHandler<MemoryMappedDataReceivedEventArgs> DataReceived;
+
+        public int ReadPosition { get; set; }
+
+        private int writePosition;
+
+        public int WritePosition
         {
-            started = false;
-            if (view != null)
+            get => writePosition;
+            set
             {
-                try
+                if (value != writePosition)
                 {
-                    view.Dispose();
-                    view = null;
+                    writePosition = value;
+                    view.Write(WritePosition + READ_CONFIRM_OFFSET, true);
                 }
-                catch { }
             }
-
-            if (MappedFile != null)
-            {
-                try
-                {
-                    MappedFile.Dispose();
-                    MappedFile = null;
-                }
-                catch { }
-            }
-
-            disposed = true;
-            GC.SuppressFinalize(this);
         }
 
         #endregion

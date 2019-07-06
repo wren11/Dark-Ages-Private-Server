@@ -15,12 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Types
 {
     public class ClientGameSettings
     {
         public string EnabledSettingStr, DisabledSettingStr;
-        public bool Enabled { get; set; }
 
         public ClientGameSettings(string lpEnabledStr, string lpDisabledStr, bool state = false)
         {
@@ -28,6 +28,8 @@ namespace Darkages.Types
             DisabledSettingStr = lpDisabledStr;
             Enabled = state;
         }
+
+        public bool Enabled { get; set; }
 
         public void Toggle()
         {

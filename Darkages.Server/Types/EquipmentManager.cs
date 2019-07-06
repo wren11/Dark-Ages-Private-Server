@@ -15,11 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 
 namespace Darkages.Types
 {
@@ -36,8 +37,7 @@ namespace Darkages.Types
 
         [JsonIgnore] public GameClient Client { get; set; }
 
-        [JsonIgnore]
-        public int Length => Equipment?.Count ?? 0;
+        [JsonIgnore] public int Length => Equipment?.Count ?? 0;
 
         public Dictionary<int, EquipmentSlot> Equipment { get; set; }
 
@@ -129,11 +129,9 @@ namespace Darkages.Types
                     continue;
 
                 if (RemoveFromExisting(item.Template.EquipmentSlot))
-                {
-                    Client.SendMessage(0x02, 
+                    Client.SendMessage(0x02,
                         string.Format("{0} has broken.",
-                        item.Template.Name));
-                }
+                            item.Template.Name));
             }
         }
 
@@ -148,12 +146,14 @@ namespace Darkages.Types
             {
                 if (p10 <= 10 && !item.Warnings[0])
                 {
-                    Client.SendMessage(0x02, string.Format("{0} is almost broken!. Please repair it soon (< 10%)", item.Template.Name));
+                    Client.SendMessage(0x02,
+                        string.Format("{0} is almost broken!. Please repair it soon (< 10%)", item.Template.Name));
                     item.Warnings[0] = true;
                 }
                 else if (p10 <= 30 && p10 > 10 && !item.Warnings[1])
                 {
-                    Client.SendMessage(0x02, string.Format("{0} is wearing out soon. Please repair it ASAP. (< 30%)", item.Template.Name));
+                    Client.SendMessage(0x02,
+                        string.Format("{0} is wearing out soon. Please repair it ASAP. (< 30%)", item.Template.Name));
                     item.Warnings[1] = true;
                 }
                 else if (p10 <= 50 && p10 > 30 && !item.Warnings[2])
@@ -206,12 +206,8 @@ namespace Darkages.Types
             RemoveFromSlot(displayslot);
 
             if (returnit)
-            {
                 if (itemObj.GiveTo(Client.Aisling, false))
-                {
                     return true;
-                }
-            }
 
             return HandleUnreturnedItem(itemObj);
         }
@@ -223,16 +219,16 @@ namespace Darkages.Types
             if (Client.Aisling.CurrentWeight < 0)
                 Client.Aisling.CurrentWeight = 0;
 
-            Client.DelObject<Item>(itemObj);
+            Client.DelObject(itemObj);
             return true;
         }
 
         private void RemoveFromSlot(int displayslot)
         {
             //send remove equipment packet.
-            Client.Aisling.Show(Scope.Self, new ServerFormat38((byte)displayslot));
+            Client.Aisling.Show(Scope.Self, new ServerFormat38((byte) displayslot));
 
-            OnEquipmentRemoved((byte)displayslot);
+            OnEquipmentRemoved((byte) displayslot);
 
             //make sure we remove it!
             Equipment[displayslot] = null;
@@ -243,11 +239,11 @@ namespace Darkages.Types
             Equipment[displayslot] = new EquipmentSlot(displayslot, item);
 
             //Remove it from inventory, do not handle weight.
-            RemoveFromInventory(item, false);
+            RemoveFromInventory(item);
 
-            DisplayToEquipment((byte)displayslot, item);
+            DisplayToEquipment((byte) displayslot, item);
 
-            OnEquipmentAdded((byte)displayslot);
+            OnEquipmentAdded((byte) displayslot);
         }
 
         public void DisplayToEquipment(byte displayslot, Item item)

@@ -15,11 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System.Collections.ObjectModel;
+using System.IO;
 using Darkages.Compression;
 using Darkages.IO;
 using Darkages.Network;
-using System.Collections.ObjectModel;
-using System.IO;
 
 namespace Darkages.Types
 {
@@ -43,7 +44,7 @@ namespace Darkages.Types
             writer.WriteStringA(Name);
             writer.Write(Hash);
             writer.Write(
-                (ushort)DeflatedData.Length);
+                (ushort) DeflatedData.Length);
             writer.Write(DeflatedData);
         }
 
@@ -75,13 +76,13 @@ namespace Darkages.Types
             using (var writer = new BufferWriter(stream))
             {
                 writer.Write(
-                    (ushort)Nodes.Count);
+                    (ushort) Nodes.Count);
 
                 foreach (var node in Nodes)
                 {
                     writer.WriteStringA(node.Name);
                     writer.Write(
-                        (ushort)node.Atoms.Count);
+                        (ushort) node.Atoms.Count);
 
                     foreach (var atom in node.Atoms) writer.WriteStringB(atom);
                 }

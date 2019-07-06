@@ -15,16 +15,17 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
-using System;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Skills
 {
-    [Script("beag suain", author: "Wren")]
+    [Script("beag suain", "Wren")]
     public class beagsuain : SkillScript
     {
         public Random rand = new Random();
@@ -32,7 +33,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public beagsuain(Skill skill) : base(skill)
         {
-
         }
 
         public override void OnFailed(Sprite sprite)
@@ -41,7 +41,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
             {
                 var client = (sprite as Aisling).Client;
                 client.Aisling.Show(Scope.NearbyAislings,
-                    new ServerFormat29(Skill.Template.MissAnimation, (ushort)sprite.XPos, (ushort)sprite.YPos));
+                    new ServerFormat29(Skill.Template.MissAnimation, (ushort) sprite.XPos, (ushort) sprite.YPos));
 
                 client.SendMessage(0x02, "The enemy has made it through.");
             }
@@ -55,14 +55,12 @@ namespace Darkages.Storage.locales.Scripts.Skills
             var i = a.Concat<Sprite>(b);
 
             if (i == null || !i.Any())
-            {
                 if (sprite is Aisling)
                 {
                     var client = (sprite as Aisling).Client;
                     client.SendMessage(0x02, "The enemy has made it through.");
                     return;
                 }
-            }
 
             var debuff = new debuff_beagsuain();
 
@@ -70,9 +68,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 return;
 
             foreach (var target in i)
-            {
                 if (!target.HasDebuff(debuff.Name))
-                {
                     if (sprite is Aisling)
                     {
                         var client = (sprite as Aisling).Client;
@@ -90,8 +86,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         }
                         return;
                     }
-                }
-            }
         }
 
         public override void OnUse(Sprite sprite)

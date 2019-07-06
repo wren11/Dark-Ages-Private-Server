@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat0B : NetworkFormat
@@ -38,9 +39,9 @@ namespace Darkages.Network.ServerFormats
             writer.Write(Direction);
             writer.Write(LastX);
             writer.Write(LastY);
-            writer.Write((ushort)0x0B);
-            writer.Write((ushort)0x0B);
-            writer.Write((byte)0x01);
+            writer.Write((ushort) 0x0B);
+            writer.Write((ushort) 0x0B);
+            writer.Write((byte) 0x01);
         }
     }
 }

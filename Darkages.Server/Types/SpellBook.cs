@@ -15,11 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Object;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Darkages.Network.Object;
 
 namespace Darkages.Types
 {
@@ -47,10 +48,7 @@ namespace Darkages.Types
             if (Spells.ContainsKey(Slot))
                 ret = Spells[Slot];
 
-            if (ret != null && ret.Template != null)
-            {
-                return ret;
-            }
+            if (ret != null && ret.Template != null) return ret;
 
             return null;
         }
@@ -96,13 +94,13 @@ namespace Darkages.Types
         public bool Has(Spell s)
         {
             return Spells.Where(i => i.Value != null && i.Value.Template != null).Select(i => i.Value.Template)
-                .FirstOrDefault(i => i.Name.Equals(s.Template.Name)) != null;
+                       .FirstOrDefault(i => i.Name.Equals(s.Template.Name)) != null;
         }
 
         public bool Has(string s)
         {
             return Spells.Where(i => i.Value != null && i.Value.Template != null).Select(i => i.Value.Template)
-                .FirstOrDefault(i => s.Equals(i.Name)) != null;
+                       .FirstOrDefault(i => s.Equals(i.Name)) != null;
         }
 
         public bool Has(SpellTemplate s)

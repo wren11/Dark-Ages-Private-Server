@@ -15,13 +15,19 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Game;
+
 using System.Collections.Generic;
+using Darkages.Network.Game;
 
 namespace Darkages.Types
 {
     public class Bank
     {
+        public Bank()
+        {
+            Items = new Dictionary<string, int>();
+        }
+
         public Dictionary<string, int> Items { get; set; }
 
         public void Deposit(Item lpItem)
@@ -38,16 +44,12 @@ namespace Darkages.Types
                 var template = ServerContext.GlobalItemTemplateCache[itemName];
                 var item = Item.Create(client.Aisling, template);
 
-                if (item.GiveTo(client.Aisling, true))
+                if (item.GiveTo(client.Aisling))
                 {
                     if (Items[itemName] - 1 <= 0)
-                    {
                         Items.Remove(itemName);
-                    }
                     else
-                    {
                         Items[itemName]--;
-                    }
 
                     return true;
                 }
@@ -55,11 +57,5 @@ namespace Darkages.Types
 
             return false;
         }
-
-        public Bank()
-        {
-            Items = new Dictionary<string, int>();
-        }
-
     }
 }

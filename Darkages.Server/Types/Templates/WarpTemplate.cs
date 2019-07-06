@@ -15,14 +15,20 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.Collections.Generic;
 
 namespace Darkages.Types
 {
     public class WarpTemplate : Template
     {
+        public WarpTemplate()
+        {
+            Activations = new List<Warp>();
+        }
+
         [JsonProperty] public byte LevelRequired { get; set; }
 
         [JsonProperty] public int WarpRadius { get; set; }
@@ -34,12 +40,6 @@ namespace Darkages.Types
         public WarpType WarpType { get; set; }
 
         [JsonProperty] public int ActivationMapId { get; set; }
-
-        public WarpTemplate()
-        {
-            Activations = new List<Warp>();
-        }
-
     }
 
     public enum WarpType

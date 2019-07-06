@@ -15,11 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Types
 {
     public class SkillTemplate : Template
     {
-
         public byte Icon { get; set; }
 
         public string ScriptName { get; set; }
@@ -53,6 +53,5 @@ namespace Darkages.Types
         public string NpcKey { get; set; }
 
         public Tier TierLevel { get; set; }
-
     }
 }

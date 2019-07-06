@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System;
 
 namespace Darkages.Types
@@ -37,12 +38,11 @@ namespace Darkages.Types
         TwoHanded = 1 << 13,
         LongRanged = 1 << 14,
 
-        
-        NormalEquipment   = Equipable | Repairable | Tradeable | Sellable | Bankable | Dropable,
+
+        NormalEquipment = Equipable | Repairable | Tradeable | Sellable | Bankable | Dropable,
         NormalEquipPerish = NormalEquipment | Perishable,
         NormalEquipElementPerish = NormalEquipment | Perishable | Elemental,
 
-        NormalConsumable = Consumable | Stackable | Dropable | Sellable | Tradeable | Bankable,
-
+        NormalConsumable = Consumable | Stackable | Dropable | Sellable | Tradeable | Bankable
     }
 }

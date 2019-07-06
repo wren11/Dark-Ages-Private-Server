@@ -15,22 +15,20 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Types;
+
 using System.Linq;
+using Darkages.Types;
 
 namespace Darkages.Storage.locales.debuffs
 {
     public class Debuff_poison : Debuff
     {
-        public double Modifier  { get; set; }
-        public bool IsSpreading { get; set;  }
-
         public Debuff_poison()
         {
-
         }
 
-        public Debuff_poison(string name, int length, byte icon, ushort animation, double mod = 0.05, bool spread = false)
+        public Debuff_poison(string name, int length, byte icon, ushort animation, double mod = 0.05,
+            bool spread = false)
         {
             Animation = animation;
             Name = name;
@@ -39,6 +37,9 @@ namespace Darkages.Storage.locales.debuffs
             Modifier = mod;
             IsSpreading = spread;
         }
+
+        public double Modifier { get; set; }
+        public bool IsSpreading { get; set; }
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {
@@ -67,7 +68,7 @@ namespace Darkages.Storage.locales.debuffs
             if (Affected is Aisling)
             {
                 (Affected as Aisling)
-                    .Client.SendAnimation((ushort)(Animation == 0 ? 25 : Animation), Affected, Affected);
+                    .Client.SendAnimation((ushort) (Animation == 0 ? 25 : Animation), Affected, Affected);
 
                 ApplyPoison(Affected);
 
@@ -94,8 +95,6 @@ namespace Darkages.Storage.locales.debuffs
                     var client = near.Client;
                     client.SendAnimation(Animation, Affected, client.Aisling);
                 }
-
-
             }
 
             base.OnDurationUpdate(Affected, debuff);
@@ -103,26 +102,20 @@ namespace Darkages.Storage.locales.debuffs
 
         private void ApplyPoison(Sprite Affected)
         {
-
             if (IsSpreading)
             {
                 var nearby = (from v in Affected.MonstersNearby()
-                              where v.Serial != Affected.Serial &&
-                              !v.HasDebuff(this.Name)
-                              select v).ToList();
+                    where v.Serial != Affected.Serial &&
+                          !v.HasDebuff(Name)
+                    select v).ToList();
 
                 if (nearby.Count > 0)
-                {
                     foreach (var near in nearby)
                     {
-                        if (near.Target == null && Affected.Target != null)
-                        {
-                            near.Target = Affected.Target;
-                        }
+                        if (near.Target == null && Affected.Target != null) near.Target = Affected.Target;
 
-                        OnApplied(near, new Debuff_poison("Poison Trap", Length, Icon, Animation, 0.35, false));
+                        OnApplied(near, new Debuff_poison("Poison Trap", Length, Icon, Animation, 0.35));
                     }
-                }
             }
 
 
@@ -131,11 +124,8 @@ namespace Darkages.Storage.locales.debuffs
 
             if (Affected.CurrentHp > 0)
             {
-                var cap = (int)(Affected.CurrentHp - (Affected.CurrentHp * Modifier));
-                if (cap > 0)
-                {
-                    Affected.CurrentHp = cap;
-                }
+                var cap = (int) (Affected.CurrentHp - Affected.CurrentHp * Modifier);
+                if (cap > 0) Affected.CurrentHp = cap;
             }
         }
 

@@ -15,55 +15,58 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Types;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Darkages.Types;
 
 namespace Darkages.Network.Object
 {
     [DataContract]
     public class SpriteCollection<T> : IEnumerable<T>
-        where T: Sprite
+        where T : Sprite
     {
-        public readonly List<T> Values = null;
+        public readonly List<T> Values;
 
         public SpriteCollection(IEnumerable<T> values)
         {
             Values = new List<T>(values);
         }
 
+        public IEnumerator<T> GetEnumerator()
+        {
+            return Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
         public T Query(Predicate<T> predicate)
         {
-            for (int i = Values.Count - 1; i >= 0; i--)
+            for (var i = Values.Count - 1; i >= 0; i--)
             {
                 var subject = predicate(Values[i]);
 
-                if (subject)
-                {
-                    return Values[i];
-                }
+                if (subject) return Values[i];
             }
 
-            return default(T);
+            return default;
         }
 
         public IEnumerable<T> QueryAll(Predicate<T> predicate)
         {
-            for (int i = Values.Count - 1; i >= 0; i--)
-            {
+            for (var i = Values.Count - 1; i >= 0; i--)
                 if (i < Values.Count)
                 {
                     var subject = predicate(Values[i % Math.Max(i, Values.Count)]);
 
-                    if (subject)
-                    {
-                        yield return Values[i];
-                    }
+                    if (subject) yield return Values[i];
                 }
-            }
         }
 
         public void Add(T obj)
@@ -73,21 +76,14 @@ namespace Darkages.Network.Object
 
         public void Delete(T obj)
         {
-            for (int i = Values.Count - 1; i >= 0; i--)
+            for (var i = Values.Count - 1; i >= 0; i--)
             {
-                var subject   = (obj as Sprite);
-                var predicate = (Values[i] as Sprite);
+                var subject = obj as Sprite;
+                var predicate = Values[i] as Sprite;
 
-                if (subject == predicate)
-                {
-                    Values.RemoveAt(i);
-                }
+                if (subject == predicate) Values.RemoveAt(i);
             }
         }
-
-        public IEnumerator<T> GetEnumerator()   => Values.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     public sealed class ObjectService
@@ -97,51 +93,39 @@ namespace Darkages.Network.Object
 
         public ObjectService()
         {
-
             foreach (var map in ServerContext.GlobalMapCache.Values)
-            {
-                _spriteCollections.Add(map.ID, new Dictionary<Type, object>()
-                {  
-                    {  typeof(Monster), new SpriteCollection<Monster>(Enumerable.Empty<Monster>()) },
-                    {  typeof(Aisling), new SpriteCollection<Aisling>(Enumerable.Empty<Aisling>()) },
-                    {  typeof(Mundane), new SpriteCollection<Mundane>(Enumerable.Empty<Mundane>()) },
-                    {  typeof(Item),    new SpriteCollection<Item>(Enumerable.Empty<Item>()) },
-                    {  typeof(Money),   new SpriteCollection<Money>(Enumerable.Empty<Money>()) },
+                _spriteCollections.Add(map.ID, new Dictionary<Type, object>
+                {
+                    {typeof(Monster), new SpriteCollection<Monster>(Enumerable.Empty<Monster>())},
+                    {typeof(Aisling), new SpriteCollection<Aisling>(Enumerable.Empty<Aisling>())},
+                    {typeof(Mundane), new SpriteCollection<Mundane>(Enumerable.Empty<Mundane>())},
+                    {typeof(Item), new SpriteCollection<Item>(Enumerable.Empty<Item>())},
+                    {typeof(Money), new SpriteCollection<Money>(Enumerable.Empty<Money>())}
                 });
-            }
         }
-    
 
 
-        public T Query<T>(Area map, Predicate<T> predicate) where T: Sprite
+        public T Query<T>(Area map, Predicate<T> predicate) where T : Sprite
         {
             if (map == null)
             {
-                var values = _spriteCollections.Select(i => (SpriteCollection<T>)i.Value[typeof(T)]);
+                var values = _spriteCollections.Select(i => (SpriteCollection<T>) i.Value[typeof(T)]);
 
                 foreach (var obj in values)
-                {
                     if (obj.Any())
-                    {
                         return obj.Query(predicate);
-                    }
-                }
             }
             else
             {
-
                 if (!_spriteCollections.ContainsKey(map.ID))
                 {
                     var _cachemap = ServerContext.GlobalMapCache.Select(i => i.Value)
                         .Where(n => n.Name.Equals(map.Name) && n.Number != map.Number).FirstOrDefault();
 
-                    if (_cachemap != null)
-                    {
-                        map = _cachemap;
-                    }
+                    if (_cachemap != null) map = _cachemap;
                 }
 
-                var obj = (SpriteCollection<T>)_spriteCollections[map.ID][typeof(T)];
+                var obj = (SpriteCollection<T>) _spriteCollections[map.ID][typeof(T)];
                 var queryResult = obj.Query(predicate);
                 {
                     return queryResult;
@@ -151,38 +135,31 @@ namespace Darkages.Network.Object
             return null;
         }
 
-        public IEnumerable<T> QueryAll<T>(Area map, Predicate<T> predicate) where T: Sprite
+        public IEnumerable<T> QueryAll<T>(Area map, Predicate<T> predicate) where T : Sprite
         {
             if (map == null)
             {
-                var values = _spriteCollections.Select(i => (SpriteCollection<T>)i.Value[typeof(T)]);
-                var stack  = new List<T>();
+                var values = _spriteCollections.Select(i => (SpriteCollection<T>) i.Value[typeof(T)]);
+                var stack = new List<T>();
 
                 foreach (var obj in values)
-                {
                     if (obj.Any())
-                    {
                         stack.AddRange(obj.QueryAll(predicate));
-                    }
-                }
 
                 return stack;
             }
-            else
+
             {
                 if (!_spriteCollections.ContainsKey(map.ID))
                 {
                     var _cachemap = ServerContext.GlobalMapCache.Select(i => i.Value)
                         .Where(n => n.Name.Equals(map.Name) && n.Number != map.Number).FirstOrDefault();
 
-                    if (_cachemap != null)
-                    {
-                        map = _cachemap;
-                    }
+                    if (_cachemap != null) map = _cachemap;
                 }
 
 
-                var obj = (SpriteCollection<T>)_spriteCollections[map.ID][typeof(T)];
+                var obj = (SpriteCollection<T>) _spriteCollections[map.ID][typeof(T)];
                 var queryResult = obj.QueryAll(predicate);
                 {
                     return queryResult;
@@ -203,10 +180,9 @@ namespace Darkages.Network.Object
         {
             if (_spriteCollections.ContainsKey(obj.CurrentMapId))
             {
-                var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
+                var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
                 objCollection.Add(obj);
                 obj.Map?.Update(obj.XPos, obj.YPos, obj);
-
             }
         }
 
@@ -214,7 +190,7 @@ namespace Darkages.Network.Object
         {
             if (_spriteCollections.ContainsKey(obj.CurrentMapId))
             {
-                var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
+                var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
                 obj.Map?.Update(obj.XPos, obj.YPos, obj, true);
                 objCollection.Delete(obj);
             }

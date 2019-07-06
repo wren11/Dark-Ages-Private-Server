@@ -15,9 +15,10 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
 using Darkages.Network.Object;
 using Newtonsoft.Json;
-using System;
 
 namespace Darkages.Network.Game
 {

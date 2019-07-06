@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System;
 
 namespace Darkages.Types
@@ -25,6 +26,6 @@ namespace Darkages.Types
         Inventory = 0,
         Spells = 1,
         Skills = 2,
-        Tools = 3,
+        Tools = 3
     }
 }

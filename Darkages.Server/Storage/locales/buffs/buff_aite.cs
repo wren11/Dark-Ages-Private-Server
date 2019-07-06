@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 
@@ -26,13 +27,9 @@ namespace Darkages.Storage.locales.Buffs
         ///     This name MUST match and correspond the name in the type BUFF.
         /// </summary>
         public override string Name => "aite";
-        public override int  Length => 3000;
-        public override byte Icon  => 11;
 
-        public buff_aite()
-        {
-
-        }
+        public override int Length => 3000;
+        public override byte Icon => 11;
 
         public override void OnApplied(Sprite Affected, Buff buff)
         {
@@ -46,9 +43,9 @@ namespace Darkages.Storage.locales.Buffs
 
         public override void OnDurationUpdate(Sprite Affected, Buff buff)
         {
-            Affected.Show(Scope.NearbyAislings, 
-                new ServerFormat29((uint)Affected.Serial,
-                (uint)Affected.Serial, 168, 168, 100));
+            Affected.Show(Scope.NearbyAislings,
+                new ServerFormat29((uint) Affected.Serial,
+                    (uint) Affected.Serial, 168, 168, 100));
 
             base.OnDurationUpdate(Affected, buff);
         }

@@ -15,10 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat18 : NetworkFormat
     {
+        public byte Slot;
+
         public ServerFormat18(byte slot) : this()
         {
             Slot = slot;
@@ -29,8 +32,6 @@ namespace Darkages.Network.ServerFormats
             Secured = true;
             Command = 0x18;
         }
-
-        public byte Slot;
 
         public override void Serialize(NetworkPacketReader reader)
         {

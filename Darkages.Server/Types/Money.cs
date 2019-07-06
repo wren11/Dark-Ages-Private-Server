@@ -15,9 +15,10 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
 using Darkages.Common;
 using Darkages.Network.ServerFormats;
-using System;
 
 namespace Darkages.Types
 {
@@ -64,9 +65,9 @@ namespace Darkages.Types
             money.YPos = location.Y;
 
 
-            var mt = (int)money.Type;
+            var mt = (int) money.Type;
 
-            if (mt > 0) money.Image = (ushort)(mt + 0x8000);
+            if (mt > 0) money.Image = (ushort) (mt + 0x8000);
 
             Parent.AddObject(money);
         }

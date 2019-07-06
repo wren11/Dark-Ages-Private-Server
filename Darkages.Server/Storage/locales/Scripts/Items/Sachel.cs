@@ -15,9 +15,10 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
 
 namespace Darkages.Storage.locales.Scripts.Items
 {
@@ -30,7 +31,6 @@ namespace Darkages.Storage.locales.Scripts.Items
 
         public override void Equipped(Sprite sprite, byte displayslot)
         {
-
         }
 
         public override void OnUse(Sprite sprite, byte slot)
@@ -48,10 +48,7 @@ namespace Darkages.Storage.locales.Scripts.Items
 
                 if (name.Trim().Equals(client.Aisling.Username, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (client.Aisling.Remains.ReaperBag != null)
-                    {
-                        client.Aisling.Remains.RecoverItems(client.Aisling);
-                    }
+                    if (client.Aisling.Remains.ReaperBag != null) client.Aisling.Remains.RecoverItems(client.Aisling);
                 }
                 else
                 {
@@ -59,14 +56,14 @@ namespace Darkages.Storage.locales.Scripts.Items
                     client.SendStats(StatusFlags.All);
 
                     client.SendMessage(Scope.All, 0x02,
-                        string.Format("{0} broke open {1}'s Cursed Sachel. (Granted +50 hp!)", client.Aisling.Username, name));
+                        string.Format("{0} broke open {1}'s Cursed Sachel. (Granted +50 hp!)", client.Aisling.Username,
+                            name));
                 }
             }
         }
 
         public override void UnEquipped(Sprite sprite, byte displayslot)
         {
-
         }
     }
 }

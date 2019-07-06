@@ -1,7 +1,7 @@
-﻿using Darkages.Scripting;
-using Darkages.Types;
-using System;
+﻿using System;
 using System.Linq;
+using Darkages.Scripting;
+using Darkages.Types;
 
 namespace Darkages.Assets.locales.Scripts.Reactors
 {
@@ -11,7 +11,7 @@ namespace Darkages.Assets.locales.Scripts.Reactors
         public ExampleReactor2(Reactor reactor) : base(reactor)
         {
             Reactor
-                 = reactor;
+                = reactor;
         }
 
         //up
@@ -39,7 +39,6 @@ namespace Darkages.Assets.locales.Scripts.Reactors
 
         public override void OnNext(Aisling aisling)
         {
-
             if (aisling.ActiveReactor == null)
             {
                 aisling.ReactorActive = false;
@@ -57,7 +56,6 @@ namespace Darkages.Assets.locales.Scripts.Reactors
                 aisling.ActiveReactor.Index--;
                 SequenceComplete(aisling, null);
             }
-
         }
 
         public override void OnTriggered(Aisling aisling)
@@ -75,7 +73,7 @@ namespace Darkages.Assets.locales.Scripts.Reactors
             }
         }
 
-        void SequenceComplete(Aisling aisling, DialogSequence sequence)
+        private void SequenceComplete(Aisling aisling, DialogSequence sequence)
         {
             if (aisling.ReactedWith(Reactor.Name))
                 return;
@@ -92,10 +90,9 @@ namespace Darkages.Assets.locales.Scripts.Reactors
 
                 if (Reactor.Quest != null)
                     Reactor.Quest.Rewards(aisling, false);
-                
+
                 if (Reactor.PostScript != null)
                     Reactor.PostScript.OnTriggered(aisling);
-
             }
         }
     }

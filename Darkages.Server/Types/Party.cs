@@ -15,10 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Game;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Network.Game;
 
 namespace Darkages.Types
 {
@@ -102,7 +103,7 @@ namespace Darkages.Types
                 !disbanded ? string.Format("{0} has left the party.", User.Username) : "Party Disbanded.");
             User.Client.SendMessage(0x02,
                 !disbanded ? string.Format("{0} has left the party.", prmParty.Creator.Username) : "Party Disbanded.");
-            
+
 
             if (!disbanded && prmParty.LengthExcludingSelf == 0)
             {
@@ -111,8 +112,8 @@ namespace Darkages.Types
                 User.LeaderPrivleges = false;
                 User.InvitePrivleges = true;
 
-                Party.Reform(User.Client);
-                Party.Reform(prmParty.Creator.Client);
+                Reform(User.Client);
+                Reform(prmParty.Creator.Client);
             }
 
             return true;

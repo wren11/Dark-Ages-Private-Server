@@ -15,13 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Security;
 
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat00 : NetworkFormat
     {
-
         public ServerFormat00()
         {
             Secured = false;

@@ -15,12 +15,13 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.Threading.Tasks;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using Newtonsoft.Json;
-using System;
-using System.Threading.Tasks;
 
 namespace Darkages
 {
@@ -69,7 +70,6 @@ namespace Darkages
                 client.Aisling.CurrentMapId = DestinationMap;
                 client.Refresh();
                 ShowFieldMap(client);
-                return;
             }
             else
             {
@@ -82,7 +82,7 @@ namespace Darkages
                         client.LeaveArea(true, true);
                         client.Refresh();
 
-                        Task.Delay(150).ContinueWith((s) =>
+                        Task.Delay(150).ContinueWith(s =>
                         {
                             client.Aisling.XPos = X >= 0 ? X : ServerContext.Config.TransitionPointX;
                             client.Aisling.YPos = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
@@ -93,8 +93,6 @@ namespace Darkages
                             client.Aisling.PortalSession = null;
                         });
                     }
-
-
                 }
             }
         }

@@ -15,19 +15,20 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat11 : NetworkFormat
     {
+        public byte Direction;
+
+        public int Serial;
+
         public ServerFormat11()
         {
             Secured = true;
             Command = 0x11;
         }
-
-        public byte Direction;
-
-        public int Serial;
 
         public override void Serialize(NetworkPacketReader reader)
         {

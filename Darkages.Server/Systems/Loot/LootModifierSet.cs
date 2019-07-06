@@ -15,23 +15,24 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System.Collections.Generic;
 using Darkages.Systems.Loot.Interfaces;
 using Darkages.Types;
-using System.Collections.Generic;
 
 namespace Darkages.Systems.Loot
 {
     public class LootModifierSet : Template, IModifierSet
     {
-        public double Weight { get; set; }
-        public ICollection<IModifier> Modifiers { get; }
-
         public LootModifierSet(string name, int weight)
         {
             Name = name;
             Weight = weight;
             Modifiers = new List<IModifier>();
         }
+
+        public double Weight { get; set; }
+        public ICollection<IModifier> Modifiers { get; }
 
         public void ModifyItem(object item)
         {

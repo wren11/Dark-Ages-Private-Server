@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System;
 
 namespace Darkages.Systems.Loot.Modifiers
@@ -22,11 +23,10 @@ namespace Darkages.Systems.Loot.Modifiers
     [Serializable]
     public class NumericModifier : BaseModifier
     {
-        public Operation Operation { get; set; }
-        public double Min { get; set; }
-        public double Max { get; set; }
+        public NumericModifier()
+        {
+        }
 
-        public NumericModifier() { }
         public NumericModifier(string propertyName, double min, double max, Operation operation)
             : base(propertyName)
         {
@@ -34,6 +34,10 @@ namespace Darkages.Systems.Loot.Modifiers
             Max = max;
             Operation = operation;
         }
+
+        public Operation Operation { get; set; }
+        public double Min { get; set; }
+        public double Max { get; set; }
 
         public override void Apply(object itemToModify)
         {
@@ -72,23 +76,27 @@ namespace Darkages.Systems.Loot.Modifiers
     public enum Operation
     {
         /// <summary>
-        /// Adds the selected value to the property.
+        ///     Adds the selected value to the property.
         /// </summary>
         Add,
+
         /// <summary>
-        /// Subtracts the selected value from the property.
+        ///     Subtracts the selected value from the property.
         /// </summary>
         Subtract,
+
         /// <summary>
-        /// Divides the property by the selected value.
+        ///     Divides the property by the selected value.
         /// </summary>
         Divide,
+
         /// <summary>
-        /// Multiplies the property by selected value.
+        ///     Multiplies the property by selected value.
         /// </summary>
         Multiply,
+
         /// <summary>
-        /// Sets the property to the selected value.
+        ///     Sets the property to the selected value.
         /// </summary>
         Equal
     }

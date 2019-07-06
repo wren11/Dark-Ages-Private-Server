@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System;
 
 namespace Darkages.Types
@@ -23,6 +24,6 @@ namespace Darkages.Types
     public enum SpawnQualifer
     {
         Random = 1 << 1,
-        Defined = 1 << 2,
+        Defined = 1 << 2
     }
 }

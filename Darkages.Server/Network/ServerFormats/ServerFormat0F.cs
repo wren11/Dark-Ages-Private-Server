@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Types;
 
 namespace Darkages.Network.ServerFormats
@@ -42,14 +43,14 @@ namespace Darkages.Network.ServerFormats
         public override void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(Item.Slot);
-            writer.Write((ushort)Item.DisplayImage);
+            writer.Write(Item.DisplayImage);
             writer.Write(Item.Color);
             writer.WriteStringA(Item.DisplayName);
-            writer.Write((uint)Item.Stacks);
-            writer.Write((byte)Item.Stacks > 1);
+            writer.Write((uint) Item.Stacks);
+            writer.Write((byte) Item.Stacks > 1);
             writer.Write(Item.Template.MaxDurability);
             writer.Write(Item.Durability);
-            writer.Write((uint)0x00);
+            writer.Write((uint) 0x00);
         }
     }
 }

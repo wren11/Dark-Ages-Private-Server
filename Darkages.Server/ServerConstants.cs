@@ -15,32 +15,31 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System.ComponentModel;
 using Darkages.Storage;
 using Darkages.Types;
 using Newtonsoft.Json;
-using System.ComponentModel;
 
 namespace Darkages
 {
     public class ServerConstants
     {
-        [JsonProperty] public string GameMaster = "lol";
+        [JsonProperty] public Position[] Alters =
+        {
+            new Position(31, 52, 1001),
+            new Position(31, 53, 1001)
+        };
 
         [JsonProperty] public bool AssailsCancelSpells = true;
 
         [JsonProperty] public string BadRequestMessage = "(Invalid Request)";
 
-        [JsonProperty] public string SomethingWentWrong = "Something went wrong.";
-
         [JsonProperty]
         /// <summary>
         /// WHat is the starting base armor class?
         /// </summary>
-        public byte BaseAC = 0;
-
-
-        [JsonProperty]
-        public byte MaxAC  = 200;
+        public byte BaseAC;
 
 
         [JsonProperty] public byte BaseMR = 70;
@@ -48,6 +47,12 @@ namespace Darkages
         [JsonProperty] public byte BaseStatAttribute = 3;
 
         [JsonProperty] public bool CancelCastingWhenWalking = true;
+
+        [JsonProperty] public bool CancelWalkingIfRefreshing;
+
+        [JsonProperty] public bool CanMoveDuringReap;
+
+        [JsonProperty] public string CantAttack = "Can't Attack.";
 
         [JsonProperty] public string CantCarryMoreMsg = "You can't carry more.";
 
@@ -59,10 +64,7 @@ namespace Darkages
 
         [JsonProperty] public string CantUseThat = "You can't use that.";
 
-        [JsonProperty] public bool CanMoveDuringReap = false;
-
-        [JsonProperty] public string ReapMessageDuringAction = "You can't do that, you are about to die!";
-        [JsonProperty] public string ReapMessage  = "You are dying|You better find some help|You are about to die!|You are skulled, Barron has taken your soul.";
+        [JsonProperty] public string CantWearYetMessage = "You can't equip this until you are stronger.";
 
 
         [JsonProperty]
@@ -80,9 +82,7 @@ namespace Darkages
 
         [JsonProperty] public int ConnectionCapacity = 300;
 
-        [JsonProperty] public string WrongClassMessage = "This is best suited for somebody else.";
-
-        [JsonProperty] public string CantWearYetMessage = "You can't equip this until you are stronger.";
+        [JsonProperty] public string CursedItemMessage = "You reach for it, But something holds you back.";
 
         [JsonProperty]
         /// <summary>
@@ -124,11 +124,21 @@ namespace Darkages
 
         [JsonProperty] public int ERRORCAP = 15;
 
+        [JsonProperty] public double FasNadurStrength = 3.00;
+        [JsonProperty] public string GameMaster = "lol";
+
         [JsonProperty]
         /// <summary>
         /// Ms between 0 cooldown based skills.
         /// </summary>
         public double GlobalBaseSkillDelay = 350;
+
+        [JsonProperty] public string[] GlobalScripts =
+        {
+            "Tut",
+            "Reactors",
+            "WishingWell"
+        };
 
         [JsonProperty]
         /// <summary>
@@ -138,6 +148,8 @@ namespace Darkages
         /// By default,and to keep things lowcpu usage, i would not go below 1000ms.
         /// </summary>
         public double GlobalSpawnTimer = 2000.0f;
+
+        [JsonProperty] public double GroupExpBonus = 5.0;
 
         [JsonProperty] public string GroupRequestDeclinedMsg = "noname does not wish to join your group.";
 
@@ -152,6 +164,8 @@ namespace Darkages
 
         [JsonProperty] public string HelperMenuTemplateKey = "Lorule Helper";
 
+        [JsonProperty] public int HpGainFactor = 5;
+
         [JsonProperty] public string IntAddedMessage = "Your mind expands.";
 
         [JsonProperty] public string LevelUpMessage = "You have reached level {0}";
@@ -162,7 +176,35 @@ namespace Darkages
         /// </summary>
         public double LingerState = 1000;
 
+        [JsonProperty] public int LootTableStackSize = 3;
+
+
+        [JsonProperty] public byte MaxAC = 200;
+
         [JsonProperty] public int MaxCarryGold = 100000000;
+
+        [JsonProperty] public string MerchantBuy = "Buy";
+
+        [JsonProperty] public string MerchantBuyMessage = "What you looking for?";
+
+        [JsonProperty] public string MerchantCancelMessage = "No Thanks.";
+
+        [JsonProperty] public string MerchantConfirmMessage = "Yes Please!";
+
+        [JsonProperty] public string MerchantDefaultMessage = "Ok, Good Bye then.";
+
+        [JsonProperty] public string MerchantRefuseTradeMessage = "I don't want to buy that.";
+
+        [JsonProperty] public string MerchantSell = "Sell";
+
+        [JsonProperty] public string MerchantStackErrorMessage = "You don't even have that many.";
+
+        [JsonProperty] public string MerchantTradeCompletedMessage = "Thanks for your business.";
+
+        [JsonProperty] public string MerchantTradeErrorMessage = "You should probably fuck off.";
+
+        [JsonProperty]
+        public string MerchantWarningMessage = "Hey you don't even have the money!! don't waste my time.";
 
         [JsonProperty]
         /// <summary>
@@ -180,6 +222,10 @@ namespace Darkages
 
         [JsonProperty] public int MonsterSpellSuccessRate = 30;
 
+        [JsonProperty] public double MorFasNadurStrength = 4.50;
+
+        [JsonProperty] public int MpGainFactor = 5;
+
         [JsonProperty]
         /// <summary>
         /// This controls how often we check for dead mundanes,
@@ -190,30 +236,9 @@ namespace Darkages
         /// </summary>
         public double MundaneRespawnInterval = 10.0;
 
-        [JsonProperty] public string NotEnoughGoldToDropMsg = "You wish you had that much.";
+        [JsonProperty] public string NoManaMessage = "Your will is too weak.";
 
-        [JsonProperty]
-        public string MerchantBuyMessage = "What you looking for?";
-        [JsonProperty]
-        public string MerchantBuy  = "Buy";
-        [JsonProperty]
-        public string MerchantSell = "Sell";
-        [JsonProperty]
-        public string MerchantTradeErrorMessage  = "You should probably fuck off.";
-        [JsonProperty]
-        public string MerchantStackErrorMessage  = "You don't even have that many.";
-        [JsonProperty]
-        public string MerchantRefuseTradeMessage = "I don't want to buy that.";
-        [JsonProperty]
-        public string MerchantCancelMessage = "No Thanks.";
-        [JsonProperty]
-        public string MerchantConfirmMessage = "Yes Please!";
-        [JsonProperty]
-        public string MerchantTradeCompletedMessage = "Thanks for your business.";
-        [JsonProperty]
-        public string MerchantDefaultMessage = "Ok, Good Bye then.";
-        [JsonProperty]
-        public string MerchantWarningMessage = "Hey you don't even have the money!! don't waste my time.";
+        [JsonProperty] public string NotEnoughGoldToDropMsg = "You wish you had that much.";
 
         [JsonProperty]
         /// <summary>
@@ -223,6 +248,13 @@ namespace Darkages
         /// and auto-saves will also occur on this interval.
         /// </summary>
         public double PingInterval = 10.0;
+
+        [JsonProperty] public int PlayerLevelCap = 99;
+
+        [JsonProperty] public string ReapMessage =
+            "You are dying|You better find some help|You are about to die!|You are skulled, Barron has taken your soul.";
+
+        [JsonProperty] public string ReapMessageDuringAction = "You can't do that, you are about to die!";
 
         [JsonProperty] public bool RefreshOnWalkCollision = true;
 
@@ -239,6 +271,8 @@ namespace Darkages
         /// </summary>
         public int RegenRate = 5000;
 
+        [JsonProperty] public string RepairItemMessage = "You can't wear somethin' that fucked. Go repair it first.";
+
         [JsonProperty]
         /// <summary>
         /// In Seconds, How often should we have active aislings?
@@ -252,6 +286,19 @@ namespace Darkages
         [JsonProperty]
         public string ServerWelcomeMessage = "Welcome to Lorule, If you need help, Please use The [F1] menu.";
 
+        [JsonProperty] public GameSetting[] Settings =
+        {
+            new GameSetting("Loot Mode  :Single", "Loot Mode  :Multi", true),
+            new GameSetting("PVP  :ON", "PVP  :OFF", true),
+            new GameSetting("AUTO LOOT GOLD  :Toggle", "AUTO LOOT GOLD  :Toggled")
+        };
+
+        [JsonProperty] public int SkullLength = 10;
+
+        [JsonProperty] public string SomethingWentWrong = "Something went wrong.";
+
+        [JsonProperty] public string SpellFailedMessage = "failed.";
+
         [JsonProperty] public int StartingMap = 100;
 
         [JsonProperty] public Position StartingPosition = new Position(6, 6);
@@ -262,6 +309,8 @@ namespace Darkages
         /// Recommended to keep it below 255.
         /// </summary>
         public byte StatCap = 255;
+
+        [JsonProperty] public int StatsPerLevel = 2;
 
         [JsonProperty] public string StrAddedMessage = "You become stronger.";
 
@@ -277,78 +326,28 @@ namespace Darkages
 
         [JsonProperty] public int VeryNearByProximity = 7;
 
+
+        [JsonProperty]
+        [DefaultValue(200)]
+        [Description(
+            "WarpCheckRate, This Value determines the amount of time to wait for async operations to complete before updating the aislingss position. default is 200.")]
+        public int WarpCheckRate = 200;
+
         [JsonProperty] public double WeightIncreaseModifer = 3.5;
 
         [JsonProperty] public string WisAddedMessage = "Your will increases.";
 
         [JsonProperty] public int WithinRangeProximity = 12;
 
+        [JsonProperty] public string WrongClassMessage = "This is best suited for somebody else.";
+
         [JsonProperty] public string YouDroppedGoldMsg = "you dropped some gold.";
 
-        [JsonProperty] public int LootTableStackSize = 3;
-
-        [JsonProperty] public int HpGainFactor = 5;
-
-        [JsonProperty] public int MpGainFactor = 5;
-
-        [JsonProperty] public int StatsPerLevel = 2;
-
-        [JsonProperty] public string NoManaMessage = "Your will is too weak.";
-
-        [JsonProperty] public double FasNadurStrength = 3.00;
-
-        [JsonProperty] public double MorFasNadurStrength = 4.50;
-
-        [JsonProperty] public string CantAttack = "Can't Attack.";
-
-        [JsonProperty] public int SkullLength = 10;
-
-        [JsonProperty] public double GroupExpBonus = 5.0;
-
-        [JsonProperty] public int PlayerLevelCap = 99;
-
-
-        [JsonProperty]
-        public Position[] Alters = new Position[]
+        public override string ToString()
         {
-            new Position(31, 52, 1001),
-            new Position(31, 53, 1001),
-        };
-
-        [JsonProperty]
-        public string[] GlobalScripts = new string[]
-        {
-            "Tut",
-            "Reactors",
-            "WishingWell"
-        };
-
-        [JsonProperty]
-        public string CursedItemMessage = "You reach for it, But something holds you back.";
-
-        [JsonProperty]
-        public GameSetting[] Settings = new GameSetting[]
-        {
-            new GameSetting("Loot Mode  :Single", "Loot Mode  :Multi", true),
-            new GameSetting("PVP  :ON", "PVP  :OFF", true),
-            new GameSetting("AUTO LOOT GOLD  :Toggle", "AUTO LOOT GOLD  :Toggled", false)
-        };
-
-        [JsonProperty]
-        public string SpellFailedMessage = "failed.";
-
-        [JsonProperty]
-        public string RepairItemMessage = "You can't wear somethin' that fucked. Go repair it first.";
-
-        [JsonProperty]
-        public bool CancelWalkingIfRefreshing = false;
-
-
-
-        [JsonProperty]
-        [DefaultValue(200)]
-        [Description("WarpCheckRate, This Value determines the amount of time to wait for async operations to complete before updating the aislingss position. default is 200.")]
-        public int WarpCheckRate = 200;
+            return StorageManager.Save(this)
+                   ?? string.Empty;
+        }
 
         public struct GameSetting
         {
@@ -361,12 +360,6 @@ namespace Darkages
                 SettingOff = _SettingOff;
                 Enabled = _Enabled;
             }
-        }
-
-        public override string ToString()
-        {
-            return StorageManager.Save(this)
-                   ?? string.Empty;
         }
     }
 }

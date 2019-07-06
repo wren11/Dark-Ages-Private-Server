@@ -15,15 +15,16 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Game;
-using Darkages.Network.ServerFormats;
-using Darkages.Scripting;
-using Darkages.Types;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Darkages.Network.Game;
+using Darkages.Network.ServerFormats;
+using Darkages.Scripting;
+using Darkages.Types;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -37,7 +38,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             Mundane.Template.QuestKey = "Benson_quest";
 
-            SequenceMenu.DisplayImage = (ushort)Mundane.Template.Image;
+            SequenceMenu.DisplayImage = (ushort) Mundane.Template.Image;
             SequenceMenu.Sequences.Add(new DialogSequence
             {
                 Title = Mundane.Template.Name,
@@ -80,7 +81,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             if (message.Contains("pussy"))
             {
                 Mundane.Show(Scope.NearbyAislings,
-                    new ServerFormat0D { Text = "Oh shit!", Type = 0x00, Serial = Mundane.Serial });
+                    new ServerFormat0D {Text = "Oh shit!", Type = 0x00, Serial = Mundane.Serial});
 
                 new TaskFactory().StartNew(() =>
                 {
@@ -94,7 +95,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 {
                     Thread.Sleep(1000);
                     Mundane.Show(Scope.NearbyAislings,
-                        new ServerFormat0D { Text = "I was just joking!!", Type = 0x00, Serial = Mundane.Serial });
+                        new ServerFormat0D {Text = "I was just joking!!", Type = 0x00, Serial = Mundane.Serial});
                 });
             }
         }
@@ -131,13 +132,13 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             if (quest == null)
             {
-                quest = new Quest { Name = Mundane.Template.QuestKey };
+                quest = new Quest {Name = Mundane.Template.QuestKey};
                 quest.LegendRewards.Add(new Legend.LegendItem
                 {
                     Category = "Quest",
-                    Color    = (byte)LegendColor.Blue,
-                    Icon     = (byte)LegendIcon.Victory,
-                    Value    = "Helped Benson start a fight."
+                    Color = (byte) LegendColor.Blue,
+                    Icon = (byte) LegendIcon.Victory,
+                    Value = "Helped Benson start a fight."
                 });
 
                 client.Aisling.Quests.Add(quest);
@@ -145,8 +146,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             quest.QuestStages = new List<QuestStep<Template>>();
 
-            var q1 = new QuestStep<Template> { Type = QuestType.Accept };
-            var q2 = new QuestStep<Template> { Type = QuestType.Gossip };
+            var q1 = new QuestStep<Template> {Type = QuestType.Accept};
+            var q2 = new QuestStep<Template> {Type = QuestType.Gossip};
 
             q2.Prerequisites.Add(new QuestRequirement
             {
@@ -220,7 +221,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     case ushort.MaxValue:
                         if (SequenceMenu.CanMoveBack)
                         {
-                            var idx = (ushort)(SequenceMenu.SequenceIndex - 1);
+                            var idx = (ushort) (SequenceMenu.SequenceIndex - 1);
 
                             SequenceMenu.SequenceIndex = idx;
                             client.DlgSession.Sequence = idx;

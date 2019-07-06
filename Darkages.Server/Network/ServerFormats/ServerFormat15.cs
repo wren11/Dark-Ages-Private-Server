@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat15 : NetworkFormat
@@ -38,13 +39,13 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((ushort)Area.Number);
-            writer.Write((byte)Area.Cols); // W
-            writer.Write((byte)Area.Rows); // H
-            writer.Write((byte)Area.Flags);
+            writer.Write((ushort) Area.Number);
+            writer.Write((byte) Area.Cols); // W
+            writer.Write((byte) Area.Rows); // H
+            writer.Write((byte) Area.Flags);
             writer.Write(ushort.MinValue);
-            writer.Write((byte)(Area.Hash % 256));
-            writer.Write((byte)(Area.Hash / 256));
+            writer.Write((byte) (Area.Hash % 256));
+            writer.Write((byte) (Area.Hash / 256));
             writer.WriteStringA(Area.Name);
         }
     }

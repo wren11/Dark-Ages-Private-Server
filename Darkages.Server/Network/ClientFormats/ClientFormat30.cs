@@ -15,15 +15,16 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Types;
 
 namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat30 : NetworkFormat
     {
-        public Pane PaneType;
         public byte MovingFrom;
         public byte MovingTo;
+        public Pane PaneType;
 
         public ClientFormat30()
         {
@@ -33,7 +34,7 @@ namespace Darkages.Network.ClientFormats
 
         public override void Serialize(NetworkPacketReader reader)
         {
-            PaneType = (Pane)reader.ReadByte();
+            PaneType = (Pane) reader.ReadByte();
             MovingFrom = reader.ReadByte();
             MovingTo = reader.ReadByte();
         }

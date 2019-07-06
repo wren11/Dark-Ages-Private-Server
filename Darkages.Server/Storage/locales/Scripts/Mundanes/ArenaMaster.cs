@@ -15,11 +15,12 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System.Collections.Generic;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -65,16 +66,16 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 client.HPRegenTimer.Disabled = false;
                 client.MPRegenTimer.Disabled = false;
 
-                client.LeaveArea(true, false);
+                client.LeaveArea(true);
                 client.EnterArea();
                 client.SendStats(StatusFlags.All);
 
-                client.Aisling.PortalSession = new PortalSession { IsMapOpen = false };
+                client.Aisling.PortalSession = new PortalSession {IsMapOpen = false};
                 client.Aisling.PortalSession.TransitionToMap(client);
                 client.CloseDialog();
             }
 
-           
+
             if (responseID == 0x0001)
             {
                 if (client.Aisling.CurrentMapId == 508)

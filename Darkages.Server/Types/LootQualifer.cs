@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using System;
 
 namespace Darkages.Types
@@ -28,5 +29,4 @@ namespace Darkages.Types
         Gold = 1 << 5,
         None = 256
     }
-
 }

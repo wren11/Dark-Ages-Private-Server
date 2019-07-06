@@ -15,11 +15,11 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Spells
 {
@@ -32,7 +32,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
         public override void OnFailed(Sprite sprite, Sprite target)
         {
-
         }
 
         public override void OnSuccess(Sprite sprite, Sprite target)
@@ -67,7 +66,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     var action = new ServerFormat1A
                     {
                         Serial = sprite.Serial,
-                        Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
+                        Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                            client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                         Speed = 30
                     };
 
@@ -88,20 +88,15 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-
                 var debuff = new debuff_fasnadur();
 
-                if (target.HasDebuff("mor fas nadur") || target.HasDebuff("fas nadur"))
-                {
-                    return;
-                }
+                if (target.HasDebuff("mor fas nadur") || target.HasDebuff("fas nadur")) return;
 
                 if (!target.HasDebuff(debuff.Name))
                 {
                     debuff.OnApplied(target, debuff);
 
                     if (target is Aisling)
-                    {
                         (target as Aisling).Client
                             .SendMessage(0x02,
                                 string.Format("{0} Casts {1} on you. Elements augmented.",
@@ -109,7 +104,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
                                         ? (sprite as Monster).Template.Name
                                         : (sprite as Mundane).Template.Name) ?? "Monster",
                                     Spell.Template.Name));
-                    }
 
                     target.SendAnimation(126, target, sprite);
 
@@ -136,15 +130,13 @@ namespace Darkages.Storage.locales.Scripts.Spells
         public override void OnUse(Sprite sprite, Sprite target)
         {
             if (sprite.CurrentMp - Spell.Template.ManaCost > 0)
+            {
                 sprite.CurrentMp -= Spell.Template.ManaCost;
+            }
             else
             {
-                if (sprite is Aisling)
-                {
-                    (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
-                }
+                if (sprite is Aisling) (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
                 return;
-
             }
 
             if (sprite.CurrentMp < 0)

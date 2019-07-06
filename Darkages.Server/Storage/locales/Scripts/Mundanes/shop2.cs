@@ -15,13 +15,14 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -72,143 +73,146 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                     break;
                 case 0x0030:
+                {
+                    if (client.PendingItemSessions != null)
                     {
-                        if (client.PendingItemSessions != null)
+                        if (ServerContext.GlobalItemTemplateCache.ContainsKey(client.PendingItemSessions.Name))
                         {
-                            if (ServerContext.GlobalItemTemplateCache.ContainsKey(client.PendingItemSessions.Name))
-                            {
-                                var item = client.Aisling.Inventory.Get(i => i != null && i.Template.Name == client.PendingItemSessions.Name).FirstOrDefault();
-
-                                if (item != null)
-                                {
-                                    if (client.Aisling.GiveGold(client.PendingItemSessions.Offer))
-                                    {
-                                        client.Aisling.Inventory.RemoveRange(client, item, client.PendingItemSessions.Removing);
-                                        client.PendingItemSessions = null;
-                                        TopMenu(client);
-
-                                        return;
-                                    }
-                                }
-                            }
-
-                            client.PendingItemSessions = null;
-                            TopMenu(client);
-                        }
-                    } break;
-                case 0x0000:
-                    {
-
-                        if (string.IsNullOrEmpty(args))
-                            return;
-
-                        int.TryParse(args, out var amount);
-
-                        if (amount > 0 && client.PendingItemSessions != null)
-                        {
-                            client.PendingItemSessions.Quantity = amount;
-
-                            var item = client.Aisling.Inventory.Get(i => i != null && i.Template.Name == client.PendingItemSessions.Name).FirstOrDefault();
+                            var item = client.Aisling.Inventory
+                                .Get(i => i != null && i.Template.Name == client.PendingItemSessions.Name)
+                                .FirstOrDefault();
 
                             if (item != null)
-                            {
-                                var offer = Convert.ToString((int)(item.Template.Value / 1.6));
-
-                                if (item.Stacks >= amount)
+                                if (client.Aisling.GiveGold(client.PendingItemSessions.Offer))
                                 {
-                                    if (client.Aisling.GoldPoints + Convert.ToInt32(offer) <= ServerContext.Config.MaxCarryGold)
-                                    {
-                                        client.PendingItemSessions.Offer = Convert.ToInt32(offer) * amount;
-                                        client.PendingItemSessions.Removing = amount;
-
-
-                                        var opts2 = new List<OptionsDataItem>();
-                                        opts2.Add(new OptionsDataItem(0x0030, ServerContext.Config.MerchantConfirmMessage));
-                                        opts2.Add(new OptionsDataItem(0x0020, ServerContext.Config.MerchantCancelMessage));
-
-                                        client.SendOptionsDialog(Mundane, string.Format(
-                                            "I will give offer you {0} gold for {1} of those ({2} Gold Each), Deal?",
-                                            client.PendingItemSessions.Offer,
-                                            amount, client.PendingItemSessions.Offer / amount, item.Template.Name), opts2.ToArray());
-                                    }
-                                }
-                                else
-                                {
+                                    client.Aisling.Inventory.RemoveRange(client, item,
+                                        client.PendingItemSessions.Removing);
                                     client.PendingItemSessions = null;
-                                    client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantStackErrorMessage);
+                                    TopMenu(client);
+
                                     return;
                                 }
-                            }
+                        }
 
-                        }
-                        else
-                        {
-                            client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantTradeErrorMessage);
-                            return;
-                        }
-                    } break;
-                case 0x0500:
+                        client.PendingItemSessions = null;
+                        TopMenu(client);
+                    }
+                }
+                    break;
+                case 0x0000:
+                {
+                    if (string.IsNullOrEmpty(args))
+                        return;
+
+                    int.TryParse(args, out var amount);
+
+                    if (amount > 0 && client.PendingItemSessions != null)
                     {
-                        var item = client.Aisling.Inventory.Get(i => i != null && i.Slot == Convert.ToInt32(args))
-                            .FirstOrDefault();
-                        var offer = Convert.ToString((int)(item.Template.Value / 1.6));
+                        client.PendingItemSessions.Quantity = amount;
 
-                        if (offer == "0")
-                        {
-                            client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantRefuseTradeMessage);
-                            return;
-                        }
+                        var item = client.Aisling.Inventory
+                            .Get(i => i != null && i.Template.Name == client.PendingItemSessions.Name).FirstOrDefault();
 
-                        if (item.Stacks > 1 && item.Template.CanStack)
+                        if (item != null)
                         {
-                            client.PendingItemSessions = new PendingSell()
+                            var offer = Convert.ToString((int) (item.Template.Value / 1.6));
+
+                            if (item.Stacks >= amount)
                             {
-                                Name     = item.Template.Name,
-                                Quantity = 0
-                            };
+                                if (client.Aisling.GoldPoints + Convert.ToInt32(offer) <=
+                                    ServerContext.Config.MaxCarryGold)
+                                {
+                                    client.PendingItemSessions.Offer = Convert.ToInt32(offer) * amount;
+                                    client.PendingItemSessions.Removing = amount;
 
-                            client.Send(new ServerFormat2F(Mundane, string.Format("How many [{0}] do you want to sell?", item.Template.Name), new TextInputData()));
-                        }
-                        else
-                        {
 
-                            var opts2 = new List<OptionsDataItem>();
-                            opts2.Add(new OptionsDataItem(0x0019, ServerContext.Config.MerchantConfirmMessage));
-                            opts2.Add(new OptionsDataItem(0x0020, ServerContext.Config.MerchantCancelMessage));
+                                    var opts2 = new List<OptionsDataItem>();
+                                    opts2.Add(new OptionsDataItem(0x0030, ServerContext.Config.MerchantConfirmMessage));
+                                    opts2.Add(new OptionsDataItem(0x0020, ServerContext.Config.MerchantCancelMessage));
 
-                            client.SendOptionsDialog(Mundane, string.Format(
-                                "I will give offer you {0} gold for that {1}, Deal?",
-                                offer, item.Template.Name), item.Template.Name, opts2.ToArray());
+                                    client.SendOptionsDialog(Mundane, string.Format(
+                                            "I will give offer you {0} gold for {1} of those ({2} Gold Each), Deal?",
+                                            client.PendingItemSessions.Offer,
+                                            amount, client.PendingItemSessions.Offer / amount, item.Template.Name),
+                                        opts2.ToArray());
+                                }
+                            }
+                            else
+                            {
+                                client.PendingItemSessions = null;
+                                client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantStackErrorMessage);
+                            }
                         }
                     }
+                    else
+                    {
+                        client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantTradeErrorMessage);
+                    }
+                }
+                    break;
+                case 0x0500:
+                {
+                    var item = client.Aisling.Inventory.Get(i => i != null && i.Slot == Convert.ToInt32(args))
+                        .FirstOrDefault();
+                    var offer = Convert.ToString((int) (item.Template.Value / 1.6));
+
+                    if (offer == "0")
+                    {
+                        client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantRefuseTradeMessage);
+                        return;
+                    }
+
+                    if (item.Stacks > 1 && item.Template.CanStack)
+                    {
+                        client.PendingItemSessions = new PendingSell
+                        {
+                            Name = item.Template.Name,
+                            Quantity = 0
+                        };
+
+                        client.Send(new ServerFormat2F(Mundane,
+                            string.Format("How many [{0}] do you want to sell?", item.Template.Name),
+                            new TextInputData()));
+                    }
+                    else
+                    {
+                        var opts2 = new List<OptionsDataItem>();
+                        opts2.Add(new OptionsDataItem(0x0019, ServerContext.Config.MerchantConfirmMessage));
+                        opts2.Add(new OptionsDataItem(0x0020, ServerContext.Config.MerchantCancelMessage));
+
+                        client.SendOptionsDialog(Mundane, string.Format(
+                            "I will give offer you {0} gold for that {1}, Deal?",
+                            offer, item.Template.Name), item.Template.Name, opts2.ToArray());
+                    }
+                }
                     break;
 
                 case 0x0019:
+                {
+                    var v = args;
+                    var item = client.Aisling.Inventory.Get(i => i != null && i.Template.Name == v)
+                        .FirstOrDefault();
+
+                    if (item == null)
+                        return;
+
+                    var offer = Convert.ToString((int) (item.Template.Value / 1.6));
+
+                    if (Convert.ToInt32(offer) <= 0)
+                        return;
+
+                    if (Convert.ToInt32(offer) > item.Template.Value)
+                        return;
+
+                    if (client.Aisling.GoldPoints + Convert.ToInt32(offer) <= ServerContext.Config.MaxCarryGold)
                     {
-                        var v = args;
-                        var item = client.Aisling.Inventory.Get(i => i != null && i.Template.Name == v)
-                            .FirstOrDefault();
+                        client.Aisling.GoldPoints += Convert.ToInt32(offer);
+                        client.Aisling.EquipmentManager.RemoveFromInventory(item, true);
+                        client.SendStats(StatusFlags.StructC);
 
-                        if (item == null)
-                            return;
-
-                        var offer = Convert.ToString((int)(item.Template.Value / 1.6));
-
-                        if (Convert.ToInt32(offer) <= 0)
-                            return;
-
-                        if (Convert.ToInt32(offer) > item.Template.Value)
-                            return;
-
-                        if (client.Aisling.GoldPoints + Convert.ToInt32(offer) <= ServerContext.Config.MaxCarryGold)
-                        {
-                            client.Aisling.GoldPoints += Convert.ToInt32(offer);
-                            client.Aisling.EquipmentManager.RemoveFromInventory(item, true);
-                            client.SendStats(StatusFlags.StructC);
-
-                            client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantTradeCompletedMessage);
-                        }
+                        client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantTradeCompletedMessage);
                     }
+                }
                     break;
 
                 #region Buy
@@ -234,71 +238,76 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     {
                         client.SendOptionsDialog(Mundane, "You have nothing that needs repairing.");
                     }
+
                     break;
 
                 case 0x0014:
-                    {
-                        var gear = client.Aisling.EquipmentManager.Equipment.Where(i => i.Value != null).Select(i => i.Value.Item);
+                {
+                    var gear = client.Aisling.EquipmentManager.Equipment.Where(i => i.Value != null)
+                        .Select(i => i.Value.Item);
 
-                        client.RepairEquipment(gear);
+                    client.RepairEquipment(gear);
 
-                        client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantTradeCompletedMessage);
-                    }
+                    client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantTradeCompletedMessage);
+                }
                     break;
 
                 case 0x0015:
                     client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantCancelMessage);
                     break;
                 case 0x0020:
-                    {
-                        client.PendingItemSessions = null;
-                        client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantCancelMessage);
-                    } break;
+                {
+                    client.PendingItemSessions = null;
+                    client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantCancelMessage);
+                }
+                    break;
                 case 0x0004:
-                    {
-                        if (string.IsNullOrEmpty(args))
-                            return;
+                {
+                    if (string.IsNullOrEmpty(args))
+                        return;
 
-                        if (!ServerContext.GlobalItemTemplateCache.ContainsKey(args))
-                            return;
+                    if (!ServerContext.GlobalItemTemplateCache.ContainsKey(args))
+                        return;
 
-                        var template = ServerContext.GlobalItemTemplateCache[args];
-                        if (template != null)
-                            if (client.Aisling.GoldPoints >= template.Value)
+                    var template = ServerContext.GlobalItemTemplateCache[args];
+                    if (template != null)
+                        if (client.Aisling.GoldPoints >= template.Value)
+                        {
+                            //Create Item:
+                            var item = Item.Create(client.Aisling, template);
+
+                            if (item.GiveTo(client.Aisling))
                             {
-                                //Create Item:
-                                var item = Item.Create(client.Aisling, template);
+                                client.Aisling.GoldPoints -= (int) template.Value;
 
-                                if (item.GiveTo(client.Aisling, true))
-                                {
-                                    client.Aisling.GoldPoints -= (int)template.Value;
+                                if (client.Aisling.GoldPoints < 0)
+                                    client.Aisling.GoldPoints = 0;
 
-                                    if (client.Aisling.GoldPoints < 0)
-                                        client.Aisling.GoldPoints = 0;
-
-                                    client.SendStats(StatusFlags.All);
-                                    client.SendOptionsDialog(Mundane, string.Format("You have a brand new {0}", args));
-                                }
-                                else
-                                {
-                                    client.SendMessage(0x02, "You could not buy this item, because you can't physically hold it.");
-                                    return;
-                                }
+                                client.SendStats(StatusFlags.All);
+                                client.SendOptionsDialog(Mundane, string.Format("You have a brand new {0}", args));
                             }
                             else
                             {
-                                if (ServerContext.GlobalSpellTemplateCache.ContainsKey("ard cradh"))
-                                {
-                                    var script = ScriptManager.Load<SpellScript>("ard cradh", Spell.Create(1, ServerContext.GlobalSpellTemplateCache["ard cradh"]));
-                                    {
-                                        script.OnUse(Mundane, client.Aisling);
-                                    }
-                                    client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantWarningMessage);
-                                }
+                                client.SendMessage(0x02,
+                                    "You could not buy this item, because you can't physically hold it.");
                             }
-                    }
+                        }
+                        else
+                        {
+                            if (ServerContext.GlobalSpellTemplateCache.ContainsKey("ard cradh"))
+                            {
+                                var script = ScriptManager.Load<SpellScript>("ard cradh",
+                                    Spell.Create(1, ServerContext.GlobalSpellTemplateCache["ard cradh"]));
+                                {
+                                    script.OnUse(Mundane, client.Aisling);
+                                }
+                                client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantWarningMessage);
+                            }
+                        }
+                }
                     break;
-                    #endregion Buy
+
+                #endregion Buy
             }
         }
     }

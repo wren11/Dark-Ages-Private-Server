@@ -15,29 +15,35 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Darkages.Network;
 using Darkages.Network.Game;
 using Darkages.Storage;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace Darkages.Types
 {
     public class Board : NetworkFormat
     {
+        public static string StoragePath = $@"{ServerContext.StoragePath}\Community\Boards";
+
+        public List<PostFormat> Posts = new List<PostFormat>();
+
+        static Board()
+        {
+            if (!Directory.Exists(StoragePath))
+                Directory.CreateDirectory(StoragePath);
+        }
+
         public Board()
         {
             Secured = true;
             Command = 0x31;
         }
-
-        public ushort Index { get; set; }
-        public bool IsMail { get; set; }
-
-        [JsonIgnore]
-        public GameClient Client { get; set; }
 
         public Board(string name, ushort index, bool isMail = false)
         {
@@ -46,47 +52,42 @@ namespace Darkages.Types
             IsMail = isMail;
         }
 
+        public ushort Index { get; set; }
+        public bool IsMail { get; set; }
+
+        [JsonIgnore] public GameClient Client { get; set; }
+
         public string Subject { get; set; }
 
         public ushort LetterId { get; set; }
 
-        public List<PostFormat> Posts = new List<PostFormat>();
-
-        public override void Serialize(NetworkPacketReader reader) { }
+        public override void Serialize(NetworkPacketReader reader)
+        {
+        }
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)(IsMail ? 0x04 : 0x02));
-            writer.Write((byte)0x01);
-            writer.Write((ushort)(IsMail ? 0x00 : LetterId));
-            writer.WriteStringA((IsMail ? "Diary" : Subject));
+            writer.Write((byte) (IsMail ? 0x04 : 0x02));
+            writer.Write((byte) 0x01);
+            writer.Write((ushort) (IsMail ? 0x00 : LetterId));
+            writer.WriteStringA(IsMail ? "Diary" : Subject);
 
 
             if (IsMail && Client != null)
-            {
                 Posts = Posts.Where(i => i.Recipient != null &&
-                    i.Recipient.Equals(Client.Aisling.Username,
-                    System.StringComparison.OrdinalIgnoreCase)).ToList();
-            }
+                                         i.Recipient.Equals(Client.Aisling.Username,
+                                             StringComparison.OrdinalIgnoreCase)).ToList();
 
-            writer.Write((byte)Posts.Count);
+            writer.Write((byte) Posts.Count);
             foreach (var post in Posts)
             {
-                writer.Write((byte)(post.Read ? 0 : 1));
+                writer.Write((byte) (post.Read ? 0 : 1));
                 writer.Write(post.PostId);
                 writer.WriteStringA(post.Sender);
-                writer.Write((byte)post.DatePosted.Month);
-                writer.Write((byte)post.DatePosted.Day);
+                writer.Write((byte) post.DatePosted.Month);
+                writer.Write((byte) post.DatePosted.Day);
                 writer.WriteStringA(post.Subject);
             }
-        }
-
-        public static string StoragePath = $@"{ServerContext.StoragePath}\Community\Boards";
-
-        static Board()
-        {
-            if (!Directory.Exists(StoragePath))
-                Directory.CreateDirectory(StoragePath);
         }
 
 

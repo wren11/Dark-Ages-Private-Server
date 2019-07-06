@@ -15,20 +15,22 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat60 : NetworkFormat
     {
+        public byte[] Data;
+        public uint Hash;
+        public ushort Size;
+
+        public byte Type;
+
         public ServerFormat60()
         {
             Secured = true;
             Command = 0x60;
         }
-
-        public byte Type;
-        public uint Hash;
-        public byte[] Data;
-        public ushort Size;
 
 
         public override void Serialize(NetworkPacketReader reader)

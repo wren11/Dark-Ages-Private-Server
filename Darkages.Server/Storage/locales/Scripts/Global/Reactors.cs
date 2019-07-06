@@ -15,18 +15,20 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-using Darkages.Network.Game;
-using Darkages.Scripting;
-using Darkages.Types;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Network.Game;
+using Darkages.Scripting;
+using Darkages.Types;
 
 namespace Darkages.Storage.locales.Scripts.Global
 {
-    [Script("Reactors",  author: "Dean")]
+    [Script("Reactors", "Dean")]
     public class Reactors : GlobalScript
     {
+        public string LastKey;
         public List<ReactorScript> Scripts = new List<ReactorScript>();
 
         public Reactors(GameClient client) : base(client)
@@ -35,14 +37,11 @@ namespace Darkages.Storage.locales.Scripts.Global
             LoadReactorScripts();
         }
 
-        public string LastKey;
-
         public void LoadReactorScripts()
         {
-
             foreach (var scripttemplate in ServerContext.GlobalReactorCache.Select(i => i.Value))
             {
-                ReactorScript scp = ScriptManager.Load<ReactorScript>(scripttemplate.ScriptKey, scripttemplate);
+                var scp = ScriptManager.Load<ReactorScript>(scripttemplate.ScriptKey, scripttemplate);
 
                 if (scp != null && scp.Reactor != null)
                 {
@@ -113,17 +112,13 @@ namespace Darkages.Storage.locales.Scripts.Global
                             continue;
 
                         #region Update Map Reactors
-                        if (script.Reactor.CallerType == Types.ReactorQualifer.Map)
-                        {
+
+                        if (script.Reactor.CallerType == ReactorQualifer.Map)
                             if (script.Reactor.MapId == Client.Aisling.CurrentMapId)
-                            {
                                 if (script.Reactor.Location.X == Client.Aisling.XPos &&
                                     script.Reactor.Location.Y == Client.Aisling.YPos)
-                                {
                                     script.Reactor.Update(Client);
-                                }
-                            }
-                        }
+
                         #endregion
                     }
                 }
@@ -149,7 +144,7 @@ namespace Darkages.Storage.locales.Scripts.Global
             if (Client.Aisling.CurrentMapId == 300 && Client.Aisling.YPos == 2)
             {
                 Client.SendMessage(0x02, "This zone is governed by law. A guard has let you pass, this time.");
-                Client.TransitionToMap(300, new Types.Position(3, 5));
+                Client.TransitionToMap(300, new Position(3, 5));
             }
         }
     }
