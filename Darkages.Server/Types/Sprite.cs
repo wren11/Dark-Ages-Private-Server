@@ -20,6 +20,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -28,6 +29,7 @@ using Darkages.Network;
 using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
+using LiteDB;
 using Newtonsoft.Json;
 using static Darkages.Types.ElementManager;
 
@@ -35,11 +37,19 @@ namespace Darkages.Types
 {
     public abstract class Sprite : ObjectManager, INotifyPropertyChanged
     {
-        public readonly Random rnd = new Random();
+        private readonly Random _rnd = new Random();
 
-        [JsonIgnore] public byte LastDirection;
+        [JsonIgnore]
+        [BsonIgnore]
+        public Random rnd
+        {
+            get => _rnd;
+        }
 
-        [JsonIgnore] public Position LastPosition;
+
+        [JsonIgnore] [BsonIgnore] public byte LastDirection;
+
+        [JsonIgnore] [BsonIgnore] public Position LastPosition;
 
 
         #region Sprite Constructor
@@ -73,32 +83,34 @@ namespace Darkages.Types
 
         #endregion
 
-        [JsonIgnore] public GameClient Client { get; set; }
 
-        [JsonIgnore]
+        [JsonIgnore] [BsonIgnore] public GameClient Client { get; set; }
+
+        [JsonIgnore] [BsonIgnore]
         public Area Map => ServerContext.GlobalMapCache.ContainsKey(CurrentMapId)
             ? ServerContext.GlobalMapCache[CurrentMapId] ?? null
             : null;
 
-        [JsonIgnore] public TileContent EntityType { get; set; }
 
-        [JsonIgnore] public Sprite Target { get; set; }
+        [JsonIgnore] [BsonIgnore] public TileContent EntityType { get; set; }
 
-        [JsonIgnore] public Position Position => new Position(XPos, YPos);
+        [JsonIgnore] [BsonIgnore] public Sprite Target { get; set; }
 
-        [JsonIgnore] public bool Attackable => this is Monster || this is Aisling || this is Mundane;
+        [JsonIgnore] [BsonIgnore] public Position Position => new Position(XPos, YPos);
 
-        [JsonIgnore] public bool Alive => CurrentHp > 0;
+        [JsonIgnore] [BsonIgnore] public bool Attackable => this is Monster || this is Aisling || this is Mundane;
 
-        [JsonIgnore] public DateTime AbandonedDate { get; set; }
+        [JsonIgnore] [BsonIgnore] public bool Alive => CurrentHp > 0;
 
-        [JsonIgnore] public DateTime LastUpdated { get; set; }
+        [JsonIgnore] [BsonIgnore] public DateTime AbandonedDate { get; set; }
 
-        [JsonIgnore] public DateTime LastTargetAcquired { get; set; }
+        [JsonIgnore] [BsonIgnore] public DateTime LastUpdated { get; set; }
 
-        [JsonIgnore] public DateTime LastMovementChanged { get; set; }
+        [JsonIgnore] [BsonIgnore] public DateTime LastTargetAcquired { get; set; }
 
-        [JsonIgnore]
+        [JsonIgnore] [BsonIgnore] public DateTime LastMovementChanged { get; set; }
+
+        [JsonIgnore] [BsonIgnore]
         public int Level => EntityType == TileContent.Aisling ? (this as Aisling).ExpLevel
             : EntityType == TileContent.Monster ? (this as Monster).Template.Level
             : EntityType == TileContent.Mundane ? (this as Mundane).Template.Level
@@ -122,11 +134,11 @@ namespace Darkages.Types
         public int Amplified { get; set; }
 
 
-        [JsonIgnore] public bool CanMove => !(IsFrozen || IsSleeping || IsParalyzed);
+        [JsonIgnore] [BsonIgnore] public bool CanMove => !(IsFrozen || IsSleeping || IsParalyzed);
 
-        [JsonIgnore] public bool CanCast => !(IsFrozen || IsSleeping);
+        [JsonIgnore] [BsonIgnore] public bool CanCast => !(IsFrozen || IsSleeping);
 
-        [JsonIgnore] public bool EmpoweredAssail { get; set; }
+        [JsonIgnore] [BsonIgnore] public bool EmpoweredAssail { get; set; }
 
         public bool Immunity { get; set; }
 
@@ -139,13 +151,14 @@ namespace Darkages.Types
 
         #region Identification & Position
 
+        [BsonId]
         public int Serial { get; set; }
 
         public int X;
 
         public int Y;
 
-        [JsonIgnore]
+        [JsonIgnore] [BsonIgnore]
         public int XPos
         {
             get => X;
@@ -159,7 +172,7 @@ namespace Darkages.Types
             }
         }
 
-        [JsonIgnore]
+        [JsonIgnore] [BsonIgnore]
         public int YPos
         {
             get => Y;
@@ -203,13 +216,13 @@ namespace Darkages.Types
 
         public int _Regen { get; set; }
 
-        [JsonIgnore] public int Regen => (_Regen + BonusRegen).Clamp(0, 300);
+        [JsonIgnore] [BsonIgnore] public int Regen => (_Regen + BonusRegen).Clamp(0, 300);
 
-        [JsonIgnore] public int MaximumHp => _MaximumHp + BonusHp;
+        [JsonIgnore] [BsonIgnore] public int MaximumHp => _MaximumHp + BonusHp;
 
-        [JsonIgnore] public int MaximumMp => _MaximumMp + BonusMp;
+        [JsonIgnore] [BsonIgnore] public int MaximumMp => _MaximumMp + BonusMp;
 
-        [JsonIgnore]
+        [JsonIgnore] [BsonIgnore]
         public byte Str
         {
             get
@@ -222,7 +235,7 @@ namespace Darkages.Types
             }
         }
 
-        [JsonIgnore]
+        [JsonIgnore] [BsonIgnore]
         public byte Int
         {
             get
@@ -235,7 +248,7 @@ namespace Darkages.Types
             }
         }
 
-        [JsonIgnore]
+        [JsonIgnore] [BsonIgnore]
         public byte Wis
         {
             get
@@ -248,7 +261,7 @@ namespace Darkages.Types
             }
         }
 
-        [JsonIgnore]
+        [JsonIgnore] [BsonIgnore]
         public byte Con
         {
             get
@@ -261,7 +274,7 @@ namespace Darkages.Types
             }
         }
 
-        [JsonIgnore]
+        [JsonIgnore] [BsonIgnore]
         public byte Dex
         {
             get
@@ -274,7 +287,7 @@ namespace Darkages.Types
             }
         }
 
-        [JsonIgnore]
+        [JsonIgnore] [BsonIgnore]
         public int Ac
         {
             get
@@ -287,60 +300,60 @@ namespace Darkages.Types
         }
 
 
-        [JsonIgnore] public byte Mr => (byte) (_Mr + BonusMr).Clamp(0, 70);
+        [JsonIgnore] [BsonIgnore] public byte Mr => (byte) (_Mr + BonusMr).Clamp(0, 70);
 
-        [JsonIgnore] public byte Dmg => (byte) (_Dmg + BonusDmg).Clamp(0, byte.MaxValue);
+        [JsonIgnore] [BsonIgnore] public byte Dmg => (byte) (_Dmg + BonusDmg).Clamp(0, byte.MaxValue);
 
-        [JsonIgnore] public byte Hit => (byte) (_Hit + BonusHit).Clamp(0, byte.MaxValue);
+        [JsonIgnore] [BsonIgnore] public byte Hit => (byte) (_Hit + BonusHit).Clamp(0, byte.MaxValue);
 
-        [JsonIgnore] public int BonusStr { get; set; }
+        [JsonIgnore] [BsonIgnore] public int BonusStr { get; set; }
 
-        [JsonIgnore] public int BonusInt { get; set; }
+        [JsonIgnore] [BsonIgnore] public int BonusInt { get; set; }
 
-        [JsonIgnore] public int BonusWis { get; set; }
+        [JsonIgnore] [BsonIgnore] public int BonusWis { get; set; }
 
-        [JsonIgnore] public int BonusCon { get; set; }
+        [JsonIgnore] [BsonIgnore] public int BonusCon { get; set; }
 
-        [JsonIgnore] public int BonusDex { get; set; }
+        [JsonIgnore] [BsonIgnore] public int BonusDex { get; set; }
 
-        [JsonIgnore] public byte BonusMr { get; set; }
+        [JsonIgnore] [BsonIgnore] public byte BonusMr { get; set; }
 
-        [JsonIgnore] public int BonusAc { get; set; }
+        [JsonIgnore] [BsonIgnore] public int BonusAc { get; set; }
 
-        [JsonIgnore] public byte BonusHit { get; set; }
+        [JsonIgnore] [BsonIgnore] public byte BonusHit { get; set; }
 
-        [JsonIgnore] public byte BonusDmg { get; set; }
+        [JsonIgnore] [BsonIgnore] public byte BonusDmg { get; set; }
 
-        [JsonIgnore] public int BonusHp { get; set; }
+        [JsonIgnore] [BsonIgnore] public int BonusHp { get; set; }
 
-        [JsonIgnore] public int BonusMp { get; set; }
+        [JsonIgnore] [BsonIgnore] public int BonusMp { get; set; }
 
-        [JsonIgnore] public int BonusRegen { get; set; }
+        [JsonIgnore] [BsonIgnore] public int BonusRegen { get; set; }
 
         #endregion
 
         #region Status
 
-        [JsonIgnore] public bool IsAited => HasBuff("aite");
+        [JsonIgnore] [BsonIgnore] public bool IsAited => HasBuff("aite");
 
-        [JsonIgnore] public bool IsSleeping => HasDebuff("sleep");
+        [JsonIgnore] [BsonIgnore] public bool IsSleeping => HasDebuff("sleep");
 
-        [JsonIgnore] public bool IsFrozen => HasDebuff("frozen");
+        [JsonIgnore] [BsonIgnore] public bool IsFrozen => HasDebuff("frozen");
 
-        [JsonIgnore] public bool IsPoisoned => HasDebuff(i => i.Name.ToLower().Contains("puinsein"));
+        [JsonIgnore] [BsonIgnore] public bool IsPoisoned => HasDebuff(i => i.Name.ToLower().Contains("puinsein"));
 
-        [JsonIgnore] public bool IsCursed => HasDebuff(i => i.Name.ToLower().Contains("cradh"));
+        [JsonIgnore] [BsonIgnore] public bool IsCursed => HasDebuff(i => i.Name.ToLower().Contains("cradh"));
 
-        [JsonIgnore] public bool IsBleeding => HasDebuff("bleeding");
+        [JsonIgnore] [BsonIgnore] public bool IsBleeding => HasDebuff("bleeding");
 
-        [JsonIgnore] public bool IsBlind => HasDebuff("blind");
+        [JsonIgnore] [BsonIgnore] public bool IsBlind => HasDebuff("blind");
 
-        [JsonIgnore] public bool IsConfused => HasDebuff("confused");
+        [JsonIgnore] [BsonIgnore] public bool IsConfused => HasDebuff("confused");
 
-        [JsonIgnore]
+        [JsonIgnore] [BsonIgnore]
         public bool IsParalyzed => HasDebuff("paralyze") || HasDebuff(i => i.Name.ToLower().Contains("beag suain"));
 
-        [JsonIgnore]
+        [JsonIgnore] [BsonIgnore]
         public int[][] Directions { get; } =
         {
             new[] {+0, -1},
@@ -349,7 +362,7 @@ namespace Darkages.Types
             new[] {-1, +0}
         };
 
-        [JsonIgnore]
+        [JsonIgnore] [BsonIgnore]
         public int[][] DirectionTable { get; } =
         {
             new[] {-1, +3, -1},
@@ -357,7 +370,7 @@ namespace Darkages.Types
             new[] {-1, +1, -1}
         };
 
-        [JsonIgnore] public bool Exists => GetObject(Map, i => i.Serial == Serial, Get.All) != null;
+        [JsonIgnore] [BsonIgnore] public bool Exists => GetObject(Map, i => i.Serial == Serial, Get.All) != null;
 
         #endregion
 

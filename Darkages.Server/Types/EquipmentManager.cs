@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
+using LiteDB;
 using Newtonsoft.Json;
 
 namespace Darkages.Types
@@ -35,9 +36,9 @@ namespace Darkages.Types
                 Equipment[i] = null;
         }
 
-        [JsonIgnore] public GameClient Client { get; set; }
+        [BsonIgnore]  [JsonIgnore] public GameClient Client { get; set; }
 
-        [JsonIgnore] public int Length => Equipment?.Count ?? 0;
+        [BsonIgnore] [JsonIgnore] public int Length => Equipment?.Count ?? 0;
 
         public Dictionary<int, EquipmentSlot> Equipment { get; set; }
 

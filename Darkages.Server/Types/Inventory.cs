@@ -62,7 +62,7 @@ namespace Darkages.Types
 
         public Item Has(Predicate<Item> prediate)
         {
-            return Items.Values.Where(i => i != null && prediate(i)).FirstOrDefault();
+            return Items.Values.FirstOrDefault(i => i != null && prediate(i));
         }
 
         public void Set(Item s)
@@ -110,10 +110,7 @@ namespace Darkages.Types
 
             var anyItem = items.FirstOrDefault();
 
-            if (anyItem == null)
-                return 0;
-
-            if (anyItem.Template == null)
+            if (anyItem?.Template == null)
                 return 0;
 
             var result = anyItem.Template.CanStack ? items.Sum(i => i.Stacks) : items.Count;

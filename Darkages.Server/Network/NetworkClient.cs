@@ -25,6 +25,7 @@ using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
+using LiteDB;
 
 namespace Darkages.Network
 {
@@ -46,6 +47,7 @@ namespace Darkages.Network
 
         public NetworkPacketWriter Writer { get; set; }
 
+        [BsonIgnore]
         public NetworkSocket ServerSocket { get; set; }
 
         public SecurityProvider Encryption { get; set; }

@@ -31,6 +31,8 @@ namespace Darkages
             new Position(31, 53, 1001)
         };
 
+        [JsonProperty] public string DBName = "LorDB";
+
         [JsonProperty] public bool AssailsCancelSpells = true;
 
         [JsonProperty] public string BadRequestMessage = "(Invalid Request)";

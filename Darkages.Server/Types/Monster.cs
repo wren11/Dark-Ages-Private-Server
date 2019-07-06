@@ -68,7 +68,19 @@ namespace Darkages.Types
 
         public bool Aggressive { get; set; }
 
-        [JsonIgnore] public Position CurrentWaypoint => Template.Waypoints[WaypointIndex] ?? null;
+        [JsonIgnore]
+        public Position CurrentWaypoint
+        {
+            get
+            {
+                if (Template?.Waypoints != null)
+                {
+                    return Template.Waypoints[WaypointIndex];
+                }
+
+                return null;
+            }
+        }
 
         [JsonIgnore] public LootTable LootTable { get; set; }
 

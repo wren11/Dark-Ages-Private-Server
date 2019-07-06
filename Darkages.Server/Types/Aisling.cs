@@ -38,6 +38,7 @@ using Darkages.Network;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
+using LiteDB;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -115,7 +116,7 @@ namespace Darkages
         ///     Gets or sets the game settings.
         /// </summary>
         /// <value>The game settings.</value>
-        public List<ClientGameSettings> GameSettings { get; set; }
+        [BsonIgnore] public List<ClientGameSettings> GameSettings { get; set; }
 
         /// <summary>
         ///     Gets or sets the <strong>bank</strong> manager.

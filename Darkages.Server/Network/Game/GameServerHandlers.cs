@@ -1577,8 +1577,8 @@ namespace Darkages.Network.Game
             if (!client.Aisling.LoggedIn)
                 return;
 
-            if (client.IsRefreshing)
-                return;
+            //if (client.IsRefreshing)
+            //    return;
 
             #endregion
 

@@ -62,7 +62,7 @@ namespace Darkages.Network.Game
         ///     This is done by Checking that the lastUpdate took less then the specified length of time. By Default this is
         ///     one second.
         /// </remarks>
-        public bool ServerHealthy => DateTime.UtcNow - lastHeavyUpdate < new TimeSpan(0, 0, 0, 1);
+        public bool ServerHealthy => DateTime.UtcNow - lastHeavyUpdate < new TimeSpan(0, 0, 0, 2);
 
         private void AutoSave(GameClient client)
         {
@@ -119,13 +119,14 @@ namespace Darkages.Network.Game
         {
             Components = new Dictionary<Type, GameServerComponent>
             {
-                [typeof(MonolithComponent)] = new MonolithComponent(this),
-                [typeof(DaytimeComponent)] = new DaytimeComponent(this),
-                [typeof(MundaneComponent)] = new MundaneComponent(this),
-                [typeof(MessageComponent)] = new MessageComponent(this),
-                [typeof(PingComponent)] = new PingComponent(this),
-                [typeof(Save)] = new Save(this),
-                [typeof(ObjectComponent)] = new ObjectComponent(this)
+                [typeof(MonolithComponent)]    = new MonolithComponent(this),
+                [typeof(DaytimeComponent)]     = new DaytimeComponent(this),
+                [typeof(MundaneComponent)]     = new MundaneComponent(this),
+                [typeof(MessageComponent)]     = new MessageComponent(this),
+                [typeof(PingComponent)]        = new PingComponent(this),
+                [typeof(Save)]                 = new Save(this),
+                [typeof(ObjectComponent)]      = new ObjectComponent(this),
+                [typeof(ClientTickComponent)]  = new ClientTickComponent(this)
             };
         }
 
