@@ -40,7 +40,7 @@ namespace Darkages.Network.Game
     /// Implements the <see cref="Darkages.Network.NetworkClient{Darkages.Network.Game.GameClient}" />
     /// </summary>
     /// <seealso cref="Darkages.Network.NetworkClient{Darkages.Network.Game.GameClient}" />
-    public class GameClient : NetworkClient<GameClient>
+    public class GameClient : NetworkClient<GameClient>, IDisposable
     {
         /// <summary>
         /// The global scripts
@@ -510,6 +510,11 @@ namespace Darkages.Network.Game
         }
 
         /// <summary>
+        /// The map updating
+        /// </summary>
+        public bool MapUpdating;
+
+        /// <summary>
         /// Gets or sets the pending item sessions.
         /// </summary>
         /// <value>The pending item sessions.</value>
@@ -529,10 +534,6 @@ namespace Darkages.Network.Game
                 TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate));
         }
 
-        /// <summary>
-        /// The map updating
-        /// </summary>
-        public bool MapUpdating;
 
         [Verb]
 
@@ -1705,6 +1706,9 @@ namespace Darkages.Network.Game
                             obj.Client.SendMessage(type, text);
                     }
                     break;
+                default:
+                    // do the default action
+                    break;
             }
         }
 
@@ -2133,5 +2137,36 @@ namespace Darkages.Network.Game
                  SendPopupDialog(popup, nextitem.Text, options.ToArray());
             }
         }
+
+        #region IDisposable Implementation
+
+        protected bool disposed;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            lock (this)
+            {
+                // Do nothing if the object has already been disposed of.
+                if (disposed)
+                    return;
+
+                if (disposing)
+                {
+
+                    if (_server != null)
+                        _server.Dispose();
+                }
+                disposed = true;
+            }
+        }
+
+        public virtual void Dispose()
+        {
+            Dispose(true);
+            // Unregister object for finalization.
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 }

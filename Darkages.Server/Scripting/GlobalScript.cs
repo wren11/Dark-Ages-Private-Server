@@ -15,21 +15,23 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
+using System;
 using Darkages.Network.Game;
 using Darkages.Network.Object;
-using System;
 
 namespace Darkages.Scripting
 {
     public abstract class GlobalScript : ObjectManager
     {
         public GameClient Client;
-        public GameServerTimer Timer { get; set; }
 
         public GlobalScript(GameClient client)
         {
-            this.Client = client;
+            Client = client;
         }
+
+        public GameServerTimer Timer { get; set; }
 
         public abstract void Update(TimeSpan elapsedTime);
 
