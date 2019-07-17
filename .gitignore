@@ -20,7 +20,8 @@ aislings
 aislings\*
 .git
 git\*
-
+.gitbook
+.gitbook\*
 
 
 
