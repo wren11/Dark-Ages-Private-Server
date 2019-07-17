@@ -19,7 +19,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
+using Darkages.Scripting.Scripts.Skills;
 using Darkages.Types;
+using LiteDB;
 using Newtonsoft.Json;
 
 namespace Darkages.Storage
@@ -117,15 +120,21 @@ namespace Darkages.Storage
             var tmp = new T();
 
             var results = new List<T>();
-            var asset_names = Directory.GetFiles(
+            var assetNames = Directory.GetFiles(
                 StoragePath,
                 "*.json",
                 tmp is MonsterTemplate ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
 
-            if (asset_names.Length == 0)
+            if (assetNames.Length == 0)
                 return;
 
-            foreach (var asset in asset_names)
+            foreach (var obj in assetNames)
+            {
+                var asset = obj;
+
+                
+
+
                 if (tmp is SkillTemplate)
                 {
                     var template =
@@ -174,6 +183,7 @@ namespace Darkages.Storage
                         StorageManager.WorldMapBucket.Load<WorldMapTemplate>(Path.GetFileNameWithoutExtension(asset));
                     ServerContext.GlobalWorldMapTemplateCache[template.FieldNumber] = template;
                 }
+            }
         }
 
 #pragma warning disable CS0693 

@@ -49,6 +49,7 @@ namespace Darkages.Network.ClientFormats
 
             if (Type == 0x01)
             {
+                Name = reader.ReadStringB();
             }
 
             #endregion

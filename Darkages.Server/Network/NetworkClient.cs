@@ -98,15 +98,16 @@ namespace Darkages.Network
             {
                 if (_sendBuffer != null)
                 {
-                    var data = _sendBuffer.SelectMany(i => i);
+                    var data       = _sendBuffer.SelectMany(i => i);
+                    var enumerable = data.ToArray();
 
-                    if (!data.Any())
+                    if (!enumerable.Any())
                         return;
 
                     _sendReset.WaitOne();
                     _sendReset.Reset();
 
-                    var packet = data.ToArray();
+                    var packet = enumerable;
                     if (packet.Length > 0 && packet[0] == 0xAA) Send(ServerSocket, packet, 0, packet.Length, 5000);
 
                     EmptyBuffers();

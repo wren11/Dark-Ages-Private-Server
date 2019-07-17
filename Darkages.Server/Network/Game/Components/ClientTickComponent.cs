@@ -1,11 +1,9 @@
-﻿using System;
-using System.Drawing;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Darkages.Types;
+﻿using Darkages.Types;
 using LiteDB;
 using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Darkages.Network.Game.Components
 {
@@ -26,7 +24,7 @@ namespace Darkages.Network.Game.Components
 
             if (timer.Elapsed)
             {
-                UpdateDatabase();
+                //UpdateDatabase();
                 timer.Reset();
             }
         }
@@ -38,35 +36,32 @@ namespace Darkages.Network.Game.Components
             public string Data;
 
             public DateTime Updated;
+            public string UserName;
 
             [BsonId] public int Serial { get; set; }
         }
 
         private void UpdateDatabase()
         {
-            Task.Run(() =>
+            using (var db = new LiteDatabase(ServerContext.StoragePath
+                                             + "\\" + ServerContext.Config.DBName))
             {
-                using (var db = new LiteDatabase(ServerContext.StoragePath 
-                                                 + "\\" + ServerContext.Config.DBName))
+                lock (ServerContext.SyncObj)
                 {
-                    db.DropCollection("ObjectCollection");
-
-                    var dbSprites = db.GetCollection<EntityObj>("ObjectCollection");
-                    var objects = GetObjects(null, sprite => sprite != null, Get.All)
-                        .ToArray();
-
-
+                    var dbSprites = db.GetCollection<EntityObj>("LorTemp");
+                    var objects   = GetObjects(null, sprite => sprite != null, Get.All).ToArray();
 
                     foreach (var obj in objects)
                     {
-
                         var bObj = new EntityObj
                         {
-                            Serial = obj.Serial,
-                            Data = JsonConvert.SerializeObject(obj),
-                            RefType = obj.GetType(),
-                            Updated = DateTime.UtcNow
+                            Serial    = obj.Serial,
+                            Data      = JsonConvert.SerializeObject(obj),
+                            RefType   = obj.GetType(),
+                            Updated   = DateTime.UtcNow,
+                            UserName  = (obj is Aisling o) ? o.Username : string.Empty,
                         };
+                        
 
                         if (obj is Monster)
                             bObj.Name = "Monster";
@@ -79,10 +74,23 @@ namespace Darkages.Network.Game.Components
 
                         try
                         {
-                            dbSprites.Insert(bObj);
 
+                            if (obj is Aisling aisling)
+                            {
+                                if (!dbSprites.Exists(i => i.UserName == aisling.Username))
+                                {
+                                    dbSprites.Insert(bObj);
+                                }
+                            }
+                            else
+                            {
+                                if (!dbSprites.Exists(i => i.Serial == obj.Serial))
+                                {
+                                    dbSprites.Insert(bObj);
+                                }
+                            }
                         }
-                        catch
+                        catch (Exception)
                         {
                         }
 
@@ -90,7 +98,7 @@ namespace Darkages.Network.Game.Components
 
                     dbSprites.EnsureIndex(i => i.Serial);
                 }
-            });
+            }
         }
     }
 }

@@ -1,17 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : Darkages.Server
-// Author           : Dean
-// Created          : 03-07-2019
-//
-// Last Modified By : Dean
-// Last Modified On : 07-05-2019
-// ***********************************************************************
-// <copyright file="Aisling.cs" company="">
-//     Copyright ©  2017
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
-///************************************************************************
+﻿// ************************************************************************
 //Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
@@ -27,7 +14,7 @@
 //
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+// *************************************************************************/
 
 using System;
 using System.Collections.Generic;
