@@ -79,11 +79,11 @@ namespace Darkages.Network
 
                 headerOffset += bytes;
 
-                if (HeaderComplete)
-                {
-                    packetLength = (header[1] << 8) | header[2];
-                    packetOffset = 0;
-                }
+                if (!HeaderComplete)
+                    return bytes;
+
+                packetLength = (header[1] << 8) | header[2];
+                packetOffset = 0;
 
                 return bytes;
             }
@@ -105,11 +105,11 @@ namespace Darkages.Network
 
             packetOffset += bytes;
 
-            if (PacketComplete)
-            {
-                headerLength = 3;
-                headerOffset = 0;
-            }
+            if (!PacketComplete)
+                return bytes;
+
+            headerLength = 3;
+            headerOffset = 0;
 
             return bytes;
         }

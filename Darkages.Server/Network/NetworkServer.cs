@@ -36,7 +36,7 @@ namespace Darkages.Network
 
         public TClient[] Clients;
 
-        private readonly Cache<byte, NetworkFormat> FormatCache = new Cache<byte, NetworkFormat>();
+        private readonly Cache<byte, NetworkFormat> _formatCache = new Cache<byte, NetworkFormat>();
 
         protected NetworkServer(int capacity)
         {
@@ -57,76 +57,75 @@ namespace Darkages.Network
 
         private void EndConnectClient(IAsyncResult result)
         {
-            var _handler = Listener.EndAccept(result);
+            var handler = Listener.EndAccept(result);
 
             if (Listener == null || !_listening)
                 return;
 
-            if (_listening)
+            if (!_listening)
+                return;
+
+            handler.UseOnlyOverlappedIO = true;
+
+            var client = new TClient
             {
-                _handler.UseOnlyOverlappedIO = true;
+                ServerSocket = new NetworkSocket(handler)
+            };
 
-                var client = new TClient
+            if (client.ServerSocket.Connected)
+            {
+                if (AddClient(client))
                 {
-                    ServerSocket = new NetworkSocket(_handler)
-                };
+                    ClientConnected(client);
 
-                if (client.ServerSocket.Connected)
-                {
-                    if (AddClient(client))
+                    lock (Generator.Random)
                     {
-                        ClientConnected(client);
-
-                        lock (Generator.Random)
-                        {
-                            client.Serial = Generator.GenerateNumber();
-                        }
-
-                        client.ServerSocket.BeginReceiveHeader(EndReceiveHeader, out var error, client);
-
-                        if (error != SocketError.Success)
-                            ClientDisconnected(client);
+                        client.Serial = Generator.GenerateNumber();
                     }
-                    else
-                    {
+
+                    client.ServerSocket.BeginReceiveHeader(EndReceiveHeader, out var error, client);
+
+                    if (error != SocketError.Success)
                         ClientDisconnected(client);
-                    }
                 }
-
-
-                Listener.BeginAccept(EndConnectClient, Listener);
+                else
+                {
+                    ClientDisconnected(client);
+                }
             }
+
+
+            Listener.BeginAccept(EndConnectClient, Listener);
         }
 
         private void EndReceiveHeader(IAsyncResult result)
         {
             try
             {
-                if (result.AsyncState is TClient client)
+                if (!(result.AsyncState is TClient client))
+                    return;
+
+                var bytes = client.ServerSocket.EndReceiveHeader(result, out var error);
+
+                if (bytes == 0 ||
+                    error != SocketError.Success)
                 {
-                    var bytes = client.ServerSocket.EndReceiveHeader(result, out var error);
+                    ClientDisconnected(client);
+                    return;
+                }
 
-                    if (bytes == 0 ||
-                        error != SocketError.Success)
-                    {
-                        ClientDisconnected(client);
-                        return;
-                    }
-
-                    if (client.ServerSocket.HeaderComplete)
-                        client.ServerSocket.BeginReceivePacket(EndReceivePacket, out error, client);
-                    else
-                        client.ServerSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                if (client.ServerSocket.HeaderComplete)
+                {
+                    client.ServerSocket.BeginReceivePacket(EndReceivePacket, out error, client);
+                }
+                else
+                {
+                    client.ServerSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
                 }
             }
-            catch (SocketException)
+            catch (Exception)
             {
-            }
-            catch (NullReferenceException)
-            {
-            }
-            catch (IndexOutOfRangeException)
-            {
+                //Ignore
             }
         }
 
@@ -134,37 +133,32 @@ namespace Darkages.Network
         {
             try
             {
-                if (result.AsyncState is TClient client)
+                if (!(result.AsyncState is TClient client))
+                    return;
+
+                var bytes = client.ServerSocket.EndReceivePacket(result, out var error);
+
+                if (bytes == 0 ||
+                    error != SocketError.Success)
                 {
-                    var bytes = client.ServerSocket.EndReceivePacket(result, out var error);
+                    ClientDisconnected(client);
+                    return;
+                }
 
-                    if (bytes == 0 ||
-                        error != SocketError.Success)
-                    {
-                        ClientDisconnected(client);
-                        return;
-                    }
+                if (client.ServerSocket.PacketComplete)
+                {
+                    ClientDataReceived(client, client.ServerSocket.ToPacket());
 
-                    if (client.ServerSocket.PacketComplete)
-                    {
-                        ClientDataReceived(client, client.ServerSocket.ToPacket());
-
-                        client.ServerSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
-                    }
-                    else
-                    {
-                        client.ServerSocket.BeginReceivePacket(EndReceivePacket, out error, client);
-                    }
+                    client.ServerSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                }
+                else
+                {
+                    client.ServerSocket.BeginReceivePacket(EndReceivePacket, out error, client);
                 }
             }
-            catch (SocketException)
+            catch (Exception)
             {
-            }
-            catch (NullReferenceException)
-            {
-            }
-            catch (IndexOutOfRangeException)
-            {
+                //ignore
             }
         }
 
@@ -172,17 +166,22 @@ namespace Darkages.Network
         {
             var index = -1;
 
-            for (var i = Clients.Length - 1; i >= 0; i--)
-                if (Clients[i] == null)
-                {
-                    index = i;
-                    break;
-                }
+            lock (Clients)
+            {
+                for (var i = Clients.Length - 1; i >= 0; i--)
+                    if (Clients[i] == null)
+                    {
+                        index = i;
+                        break;
+                    }
 
-            if (index == -1)
-                return false;
 
-            Clients[index] = client;
+                if (index == -1)
+                    return false;
+
+                Clients[index] = client;
+            }
+
             return true;
         }
 
@@ -232,7 +231,12 @@ namespace Darkages.Network
             };
             {
                 Listener.Bind(new IPEndPoint(IPAddress.Any, port));
-                Listener.Listen(Clients.Length);
+
+                lock (Clients)
+                {
+                    Listener.Listen(Clients.Length);
+                }
+
                 Listener.BeginAccept(EndConnectClient, null);
             }
         }
@@ -256,40 +260,34 @@ namespace Darkages.Network
 
             NetworkFormat format;
 
-            if (FormatCache.Exists(packet.Command))
+            if (_formatCache.Exists(packet.Command))
             {
-                format = FormatCache.Get(packet.Command);
+                format = _formatCache.Get(packet.Command);
             }
             else
             {
                 format = NetworkFormatManager.GetClientFormat(packet.Command);
-                FormatCache.AddOrUpdate(packet.Command, format, Timeout.Infinite);
+                _formatCache.AddOrUpdate(packet.Command, format, Timeout.Infinite);
             }
 
-            if (format != null)
-                try
-                {
-                    client.Read(packet, format);
+            if (format == null)
+                return;
 
-                    _handlers[format.Command]?.Invoke(this,
-                        new object[]
-                        {
-                            client,
-                            format
-                        });
-                }
-                catch (NullReferenceException)
-                {
-                }
-                catch (OverflowException)
-                {
-                }
-                catch (ArithmeticException)
-                {
-                }
-                catch (IndexOutOfRangeException)
-                {
-                }
+            try
+            {
+                client.Read(packet, format);
+
+                _handlers[format.Command]?.Invoke(this,
+                    new object[]
+                    {
+                        client,
+                        format
+                    });
+            }
+            catch (Exception)
+            {
+                //Ignore
+            }
         }
 
         public virtual void ClientDisconnected(TClient client)
@@ -321,10 +319,8 @@ namespace Darkages.Network
 
                 if (disposing)
                 {
-                    if (FormatCache != null)
-                        FormatCache.Dispose();
-                    if (Listener != null)
-                        Listener.Dispose();
+                    _formatCache?.Dispose();
+                    Listener?.Dispose();
                 }
 
                 disposed = true;

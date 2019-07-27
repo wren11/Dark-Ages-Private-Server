@@ -47,7 +47,7 @@ namespace Darkages.Network.ClientFormats
 
             #region Type 1
 
-            if (Type == 0x01)
+            if (Type == 0x01 && reader.Packet.Data.Length > 2)
             {
                 Name = reader.ReadStringB();
             }

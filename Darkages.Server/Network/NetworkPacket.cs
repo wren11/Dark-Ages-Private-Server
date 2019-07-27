@@ -31,9 +31,10 @@ namespace Darkages.Network
         {
             Command = array[0];
             Ordinal = array[1];
-            Data = count - 2 > 0 ? new byte[count - 2] : new byte[count];
+            Data    = count - 2 > 0 ? new byte[count - 2] : new byte[count];
 
-            if (Data.Length != 0) Buffer.BlockCopy(array, 2, Data, 0, Data.Length);
+            if (Data.Length != 0)
+                Buffer.BlockCopy(array, 2, Data, 0, Data.Length);
         }
 
         public byte[] ToArray()
@@ -46,7 +47,10 @@ namespace Darkages.Network
             buffer[3] = Command;
             buffer[4] = Ordinal;
 
-            for (var i = 0; i < Data.Length; i++) buffer[i + 5] = Data[i];
+            for (var i = 0; i < Data.Length; i++)
+            {
+                buffer[i + 5] = Data[i];
+            }
 
             return buffer;
         }

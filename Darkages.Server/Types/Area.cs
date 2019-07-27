@@ -239,12 +239,15 @@ namespace Darkages
                 UpdateTimer.Reset();
             }
 
-            WarpTimer.Update(elapsedTime);
-
-            if (WarpTimer.Elapsed)
+            if (ServerContext.Config.ShowWarpAnimation)
             {
-                UpdateWarps();
-                WarpTimer.Reset();
+                WarpTimer.Update(elapsedTime);
+
+                if (WarpTimer.Elapsed)
+                {
+                    UpdateWarps();
+                    WarpTimer.Reset();
+                }
             }
         }
 
@@ -264,9 +267,11 @@ namespace Darkages
                     continue;
 
                 foreach (var warpObj in warp.Activations)
-                foreach (var obj in nearby)
-                    if (obj.WithinRangeOf(warpObj.Location.X, warpObj.Location.Y, 16))
-                        DisplayWarpTo(warpObj, obj);
+                {
+                    foreach (var obj in nearby)
+                        if (obj.WithinRangeOf(warpObj.Location.X, warpObj.Location.Y, 16))
+                            DisplayWarpTo(warpObj, obj);
+                }
             }
         }
 
@@ -274,7 +279,7 @@ namespace Darkages
         {
             if (obj.Position.WithinSquare(warpObj.Location, 10))
                 obj.Show(Scope.Self, new ServerFormat29(
-                    295,
+                    ServerContext.Config.WarpNumber,
                     warpObj.Location.X, warpObj.Location.Y));
         }
 

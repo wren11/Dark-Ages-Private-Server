@@ -345,6 +345,10 @@ namespace Darkages
 
         [JsonProperty] public string YouDroppedGoldMsg = "you dropped some gold.";
 
+        [JsonProperty] public bool ShowWarpAnimation = false;
+
+        [JsonProperty] public ushort WarpNumber = 295;
+
         public override string ToString()
         {
             return StorageManager.Save(this)

@@ -40,7 +40,7 @@ namespace Darkages.Network
             Encryption = new SecurityProvider();
 
             _sendReset = new ManualResetEvent(true);
-            _sendBuffer = new ConcurrentQueue<byte[]>();
+            SendBuffer = new ConcurrentQueue<byte[]>();
         }
 
         public NetworkPacketReader Reader { get; set; }
@@ -57,7 +57,7 @@ namespace Darkages.Network
         public int Serial { get; set; }
 
 
-        private ConcurrentQueue<byte[]> _sendBuffer { get; set; }
+        private ConcurrentQueue<byte[]> SendBuffer { get; set; }
 
         public void Read(NetworkPacket packet, NetworkFormat format)
         {
@@ -92,24 +92,36 @@ namespace Darkages.Network
 
         public void FlushBuffers()
         {
-            if (!ServerSocket.Connected) return;
+            if (!ServerSocket.Connected)
+                return;
 
-            lock (_sendBuffer)
+            lock (SendBuffer)
             {
-                if (_sendBuffer != null)
+                if (SendBuffer == null)
+                    return;
+
+                var data       = SendBuffer.SelectMany(i => i);
+                var enumerable = data.ToArray();
+
+                if (!enumerable.Any())
+                    return;
+
+                _sendReset.WaitOne();
+                _sendReset.Reset();
+
+                var packet = enumerable;
+
+                try
                 {
-                    var data       = _sendBuffer.SelectMany(i => i);
-                    var enumerable = data.ToArray();
-
-                    if (!enumerable.Any())
-                        return;
-
-                    _sendReset.WaitOne();
-                    _sendReset.Reset();
-
-                    var packet = enumerable;
-                    if (packet.Length > 0 && packet[0] == 0xAA) Send(ServerSocket, packet, 0, packet.Length, 5000);
-
+                    if (packet.Length > 0 && packet[0] == 0xAA)
+                        Send(ServerSocket, packet, 0, packet.Length, 5000);
+                }
+                catch (Exception)
+                {
+                    //Ignore
+                }
+                finally
+                {
                     EmptyBuffers();
                 }
             }
@@ -144,7 +156,7 @@ namespace Darkages.Network
         public void EmptyBuffers()
         {
             _sendReset.Set();
-            _sendBuffer = new ConcurrentQueue<byte[]>();
+            SendBuffer = new ConcurrentQueue<byte[]>();
         }
 
         public void FlushAndSend(NetworkFormat format)
@@ -190,10 +202,10 @@ namespace Darkages.Network
 
             if (format.Secured) Encryption.Transform(packet);
 
-            lock (_sendBuffer)
+            lock (SendBuffer)
             {
                 var array = packet.ToArray();
-                _sendBuffer.Enqueue(array);
+                SendBuffer.Enqueue(array);
             }
         }
 
@@ -202,10 +214,10 @@ namespace Darkages.Network
             var packet = lpData.ToPacket();
             Encryption.Transform(packet);
 
-            lock (_sendBuffer)
+            lock (SendBuffer)
             {
                 var array = packet.ToArray();
-                _sendBuffer.Enqueue(array);
+                SendBuffer.Enqueue(array);
             }
         }
 
@@ -222,9 +234,9 @@ namespace Darkages.Network
 
                 Encryption.Transform(packet);
 
-                lock (_sendBuffer)
+                lock (SendBuffer)
                 {
-                    _sendBuffer.Enqueue(packet.ToArray());
+                    SendBuffer.Enqueue(packet.ToArray());
                 }
             }
         }
@@ -242,7 +254,9 @@ namespace Darkages.Network
             value.Data[5] ^= (byte) (P(value) + 0x29);
 
             for (var i = 0; i < value.Data.Length - 6; i++)
+            {
                 value.Data[6 + i] ^= (byte) (((byte) (P(value) + 0x28) + i + 2) % 256);
+            }
         }
 
         public void SendMessageBox(byte code, string text)
