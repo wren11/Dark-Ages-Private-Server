@@ -20,11 +20,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using ConsoleExtender;
 using Darkages.Interops;
 using Darkages.Network.Game;
 using Darkages.Network.Login;
@@ -110,22 +112,23 @@ namespace Darkages
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
 
-        public static IPAddress Ipaddress => IPAddress.Parse(File.ReadAllText("server.tbl"));
+        public static IPAddress IPADDR { get; } = IPAddress.Parse(File.ReadAllText("server.tbl"));
 
         public static string GlobalMessage { get; internal set; }
 
-        [field: JsonIgnore] public static ServerInformation ILog { get; set; } = new ServerInformation();
+        [field: JsonIgnore]
+        public static ServerInformation SrvLog { get; set; } = new ServerInformation();
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var error = (Exception) e.ExceptionObject;
-            ILog?.Error("Unhandled Exception", error);
+            SrvLog?.Error("Unhandled Exception", error);
         }
 
         public static void Log(string message, params object[] args)
         {
-            if (ILog != null)
-                ILog.Info(message, args);
+            if (SrvLog != null)
+                SrvLog.Info(message, args);
             else
                 Console.WriteLine(message, args);
         }
@@ -133,49 +136,55 @@ namespace Darkages
         public static void LoadSkillTemplates()
         {
             StorageManager.SkillBucket.CacheFromStorage();
-            ILog?.Debug("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
+            SrvLog?.Debug("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
         }
 
         public static void LoadSpellTemplates()
         {
             StorageManager.SpellBucket.CacheFromStorage();
-            ILog?.Debug("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
+            SrvLog?.Debug("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
         }
 
         public static void LoadItemTemplates()
         {
             StorageManager.ItemBucket.CacheFromStorage();
-            ILog?.Debug("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
+            SrvLog?.Debug("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
         }
 
         public static void LoadMonsterTemplates()
         {
             StorageManager.MonsterBucket.CacheFromStorage();
-            ILog?.Debug("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
+            SrvLog?.Debug("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
         }
 
         public static void LoadMundaneTemplates()
         {
             StorageManager.MundaneBucket.CacheFromStorage();
-            ILog?.Debug("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
+            SrvLog?.Debug("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
         }
 
         public static void LoadWarpTemplates()
         {
             StorageManager.WarpBucket.CacheFromStorage();
-            ILog?.Debug("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
+            SrvLog?.Debug("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
         }
 
         public static void LoadWorldMapTemplates()
         {
             StorageManager.WorldMapBucket.CacheFromStorage();
-            ILog?.Debug("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
+            SrvLog?.Debug("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
+        }
+
+        public static void LoadPopupTemplates()
+        {
+            StorageManager.PopupBucket.CacheFromStorage();
+            SrvLog?.Debug("Popup Templates Loaded: {0}", GlobalPopupCache.Count);
         }
 
         public static void LoadMaps()
         {
             StorageManager.AreaBucket.CacheFromStorage();
-            ILog?.Debug("Map Templates Loaded: {0}", GlobalMapCache.Count);
+            SrvLog?.Debug("Map Templates Loaded: {0}", GlobalMapCache.Count);
         }
 
         private static void StartServers()
@@ -234,7 +243,8 @@ namespace Darkages
 
         public static void Startup()
         {
-            Log(Config.SERVER_TITLE + " Server: Starting up...");
+            Log("");
+            Log("{0} Initializing...", Config.SERVER_TITLE);
             Log("----------------------------------------------");
             {
                 try
@@ -249,8 +259,6 @@ namespace Darkages
                     Log("Startup Error.");
                 }
             }
-            Log("----------------------------------------------");
-            Log("{0} World Server: Online.", Config.SERVER_TITLE);
         }
 
 
@@ -268,6 +276,7 @@ namespace Darkages
             GlobalReactorCache = new Dictionary<string, Reactor>();
             GlobalBuffCache = new Dictionary<string, Buff>();
             GlobalDeBuffCache = new Dictionary<string, Debuff>();
+            GlobalPopupCache = new List<PopupTemplate>();
             GlobalBoardCache = new Dictionary<string, List<Board>>();
         }
 
@@ -319,7 +328,8 @@ namespace Darkages
                 tmp = new List<Board>(Community);
             }
 
-            foreach (var asset in tmp) asset.Save("Personal");
+            foreach (var asset in tmp)
+                asset.Save("Personal");
         }
 
         public static void CacheCommunityAssets()
@@ -344,7 +354,10 @@ namespace Darkages
                     tmplBoards[dir.Name].AddRange(boards);
                 }
 
-                Community = tmplBoards["Personal"].OrderBy(i => i.Index).ToArray();
+                lock (Community)
+                {
+                    Community = tmplBoards["Personal"].OrderBy(i => i.Index).ToArray();
+                }
 
                 foreach (var obj in tmplBoards)
                 {
@@ -359,7 +372,12 @@ namespace Darkages
         public static void LoadAndCacheStorage()
         {
             Paused = true;
+
             EmptyCacheCollectors();
+
+
+            SrvLog?.Info(string.Format(""));
+            SrvLog?.Warning(string.Format("Loading Server Templates..."));
 
             lock (SyncObj)
             {
@@ -370,6 +388,7 @@ namespace Darkages
                 LoadMonsterTemplates();
                 LoadMundaneTemplates();
                 LoadWarpTemplates();
+                LoadPopupTemplates();
                 LoadWorldMapTemplates();
                 CacheCommunityAssets();
                 BindTemplates();
@@ -377,66 +396,14 @@ namespace Darkages
                 LoadExtensions();
             }
 
-            var template = new UserClickPopup
-            {
-                Description = "A user Click Popup",
-                Ephemeral = true,
-                SpriteId = 0x4005,
-                Timeout = 200,
-                Name = "Woodlands Guard",
-                X = 31,
-                Y = 23,
-                MapId = 200,
-                YamlKey = "Woodlands Guard"
-            };
-
-            GlobalPopupCache.Add(template);
-
-            var user_drop = new ItemDropPopup
-            {
-                Description = "Polish a gem and hopefully improve it's quality.",
-                Ephemeral = true,
-                ItemName = "Raw Beryl",
-                Name = "Polish Gem",
-                Group = "Popups",
-                SpriteId = 33000,
-                Timeout = 15,
-                YamlKey = "gem_polishing"
-            };
-
-            var user_pickup_drop = new ItemPickupPopup
-            {
-                Description = "Drop [ItemName] onto the reactor [gem_polishing] invoke the gem_polishing yaml script.",
-                Ephemeral = true,
-                ItemName = "Raw Beryl",
-                Name = "Polish Gem",
-                Group = "Popups",
-                SpriteId = 33000,
-                Timeout = 15,
-                YamlKey = "gem_polishing"
-            };
-
-
-            var user_walk = new UserWalkPopup
-            {
-                Description = "Call yaml script when user walks to X, Y on MapId.",
-                MapId = 301,
-                X = 10,
-                Y = 8,
-                SpriteId = 0x4032,
-                Group = "Popups",
-                Name = "Crazy Quest",
-                YamlKey = "gem_polishing"
-            };
-
-            //GlobalPopupCache.Add(user_drop);
-            GlobalPopupCache.Add(user_pickup_drop);
-            GlobalPopupCache.Add(user_walk);
             Paused = false;
         }
 
         private static void LoadExtensions()
         {
+            SrvLog?.Info(string.Format(""));
+            SrvLog?.Warning(string.Format("Loading Extensions..."));
+
             CacheBuffs();
             Log("Building Buff Cache: {0} loaded.", GlobalBuffCache.Count);
             CacheDebuffs();

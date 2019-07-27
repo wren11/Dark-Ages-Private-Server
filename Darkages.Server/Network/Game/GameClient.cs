@@ -1907,7 +1907,7 @@ namespace Darkages.Network.Game
                         continue;
 
                     options.Add(new OptionsDataItem((short) ans.Id, ans.Text));
-                    ServerContext.ILog.Debug($"{ans.Id}. {ans.Text}");
+                    ServerContext.SrvLog.Debug($"{ans.Id}. {ans.Text}");
                 }
 
                 SendOptionsDialog(obj as Mundane, nextitem.Text, options.ToArray());
@@ -1951,7 +1951,7 @@ namespace Darkages.Network.Game
                         continue;
 
                     options.Add(new OptionsDataItem((short) ans.Id, ans.Text));
-                    ServerContext.ILog.Debug($"{ans.Id}. {ans.Text}");
+                    ServerContext.SrvLog.Debug($"{ans.Id}. {ans.Text}");
                 }
 
                 SendPopupDialog(popup, nextitem.Text, options.ToArray());

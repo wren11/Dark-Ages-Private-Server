@@ -123,7 +123,7 @@ namespace Darkages.Types
 
         public static Popup Get(Predicate<Popup> predicate)
         {
-            return Popups.Find(i => predicate(i));
+            return Popups.Find(predicate);
         }
 
         public static Popup GetById(uint id)
@@ -156,7 +156,7 @@ namespace Darkages.Types
                 Owner = client.Aisling.Serial
             };
 
-            var users = client.Aisling.AislingsNearby().Where(i => i.Serial != client.Aisling.Serial);
+            var users   = client.Aisling.AislingsNearby().Where(i => i.Serial != client.Aisling.Serial);
             popup.Users = new List<int>(users.Select(i => i.Serial));
 
             Add(popup);

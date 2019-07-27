@@ -52,7 +52,7 @@ namespace Darkages.Interops
         public void Info(string message, params object[] args)
         {
             var color = (object) Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.White;
             Write(string.Format(message, args), LogType.Info);
             Console.ForegroundColor = (ConsoleColor) color;
         }
@@ -60,7 +60,7 @@ namespace Darkages.Interops
         public void Info(string message)
         {
             var color = (object) Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.White;
             Write(string.Format(message), LogType.Info);
             Console.ForegroundColor = (ConsoleColor) color;
         }
@@ -68,7 +68,7 @@ namespace Darkages.Interops
         public void Debug(string message, params object[] args)
         {
             var color = (object) Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.ForegroundColor = ConsoleColor.White;
             Write(string.Format(message, args), LogType.Debug);
             Console.ForegroundColor = (ConsoleColor) color;
         }
@@ -76,7 +76,7 @@ namespace Darkages.Interops
         public void Warning(string message, params object[] args)
         {
             var color = (object) Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.ForegroundColor = ConsoleColor.Cyan;
             Write(string.Format(message, args), LogType.Warning);
             Console.ForegroundColor = (ConsoleColor) color;
         }

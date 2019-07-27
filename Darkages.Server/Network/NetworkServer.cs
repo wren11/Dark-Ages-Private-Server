@@ -42,7 +42,7 @@ namespace Darkages.Network
         {
             var type = typeof(NetworkServer<TClient>);
 
-            Address = ServerContext.Ipaddress;
+            Address = ServerContext.IPADDR;
             Clients = new TClient[capacity];
 
             _handlers = new MethodInfo[256];
@@ -243,7 +243,7 @@ namespace Darkages.Network
 
         public virtual void ClientConnected(TClient client)
         {
-            ServerContext.ILog?.Warning("Connection From {0} Established.",
+            ServerContext.SrvLog?.Warning("Connection From {0} Established.",
                 client.ServerSocket.RemoteEndPoint.ToString());
         }
 

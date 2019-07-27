@@ -99,7 +99,7 @@ namespace Darkages.Network.Game
                 }
                 catch (Exception error)
                 {
-                    ServerContext.ILog?.Error("Error In Heavy Worker", error);
+                    ServerContext.SrvLog?.Error("Error In Heavy Worker", error);
                 }
                 finally
                 {
@@ -111,8 +111,6 @@ namespace Darkages.Network.Game
         public void InitializeGameServer()
         {
             InitComponentCache();
-
-            ServerContext.ILog?.Info(string.Format("[Lorule] {0} Server Components loaded.", Components.Count));
         }
 
         private void InitComponentCache()
@@ -128,6 +126,14 @@ namespace Darkages.Network.Game
                 [typeof(ObjectComponent)]      = new ObjectComponent(this),
                 [typeof(ClientTickComponent)]  = new ClientTickComponent(this)
             };
+
+            ServerContext.SrvLog?.Info("");
+            ServerContext.SrvLog?.Warning(string.Format("Loading {0} Components...", Components.Count));
+
+            foreach (var component in Components)
+            {
+                ServerContext.SrvLog?.Info(string.Format("Component '{0}' loaded.", component.Key.Name));
+            }
         }
 
         public void ExecuteClientWork(TimeSpan elapsedTime)
@@ -138,7 +144,7 @@ namespace Darkages.Network.Game
             }
             catch (Exception err)
             {
-                ServerContext.ILog.Error("Error: ExecuteClientWork", err);
+                ServerContext.SrvLog.Error("Error: ExecuteClientWork", err);
             }
         }
 
@@ -150,7 +156,7 @@ namespace Darkages.Network.Game
             }
             catch (Exception err)
             {
-                ServerContext.ILog.Error("Error: ExecuteServerWork", err);
+                ServerContext.SrvLog.Error("Error: ExecuteServerWork", err);
             }
         }
 
@@ -162,7 +168,7 @@ namespace Darkages.Network.Game
             }
             catch (Exception err)
             {
-                ServerContext.ILog.Error("Error: ExecuteObjectWork", err);
+                ServerContext.SrvLog.Error("Error: ExecuteObjectWork", err);
             }
         }
 
@@ -177,7 +183,7 @@ namespace Darkages.Network.Game
             }
             catch (Exception err)
             {
-                ServerContext.ILog.Error("Error: UpdateComponents", err);
+                ServerContext.SrvLog.Error("Error: UpdateComponents", err);
             }
         }
 
@@ -214,7 +220,7 @@ namespace Darkages.Network.Game
                         }
                         catch (Exception err)
                         {
-                            ServerContext.ILog.Error("Error: UpdateClients", err);
+                            ServerContext.SrvLog.Error("Error: UpdateClients", err);
                         }
                         finally
                         {
@@ -234,7 +240,7 @@ namespace Darkages.Network.Game
                 try
                 {
                     client.Save();
-                    ServerContext.ILog.Warning("{0} has disconnected from server.", client.Aisling.Username);
+                    ServerContext.SrvLog.Warning("Player {0} has disconnected from server.", client.Aisling.Username);
 
                     client.Aisling.LoggedIn = false;
                     client.Aisling.Remove(true);
@@ -273,7 +279,8 @@ namespace Darkages.Network.Game
                 var __tmpl = new Thread(Update)
                 {
                     IsBackground = true,
-                    Name = ServerContext.Config.SERVER_TITLE
+                    Name = ServerContext.Config.SERVER_TITLE,
+                    Priority = ThreadPriority.Highest
                 };
 
                 __tmpl.Start();
@@ -282,6 +289,11 @@ namespace Darkages.Network.Game
                 Thread.MemoryBarrier();
                 _thread = __tmpl;
             }
+
+
+
+
+            ServerContext.SrvLog.Info("{0} Servers Online!", ServerContext.Config.SERVER_TITLE);
         }
 
         private void ServerGuard()
@@ -290,7 +302,8 @@ namespace Darkages.Network.Game
             {
                 if (!ServerHealthy)
                 {
-                    ServerContext.ILog.Warning("Starting Main Server Threads.");
+                    ServerContext.SrvLog.Info("");
+                    ServerContext.SrvLog.Warning("Starting Main Server Threads.");
                     Launch();
                 }
 

@@ -1,0 +1,15 @@
+{
+  "$type": "Darkages.Types.UserWalkPopup, Darkages.Server",
+  "X": 10,
+  "Y": 8,
+  "MapId": 301,
+  "YamlKey": "gem_polishing",
+  "Timeout": 0,
+  "Ephemeral": false,
+  "SpriteId": 16434,
+  "TypeOfTrigger": 3,
+  "ID": 0,
+  "Name": "Crazy Quest",
+  "Description": "Call yaml script when user walks to X, Y on MapId.",
+  "Group": "Popups"
+}

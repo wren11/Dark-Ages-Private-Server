@@ -27,7 +27,7 @@ namespace Darkages.Storage
         public static JsonSerializerSettings Settings = new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.All,
-            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full,
             Formatting = Formatting.Indented
         };
 
@@ -41,6 +41,7 @@ namespace Darkages.Storage
         public static TemplateStorage<MonsterTemplate> MonsterBucket = new TemplateStorage<MonsterTemplate>();
         public static TemplateStorage<MundaneTemplate> MundaneBucket = new TemplateStorage<MundaneTemplate>();
         public static TemplateStorage<WorldMapTemplate> WorldMapBucket = new TemplateStorage<WorldMapTemplate>();
+        public static TemplateStorage<PopupTemplate> PopupBucket = new TemplateStorage<PopupTemplate>();
         public static TemplateStorage<Reactor> ReactorBucket = new TemplateStorage<Reactor>();
 
         static StorageManager()

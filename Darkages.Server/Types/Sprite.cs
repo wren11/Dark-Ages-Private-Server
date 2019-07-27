@@ -374,6 +374,12 @@ namespace Darkages.Types
 
         #endregion
 
+        public TSprite Cast<TSprite>()
+            where TSprite : Sprite
+        {
+            return this as TSprite;
+        }
+
         #region Sprite Methods
 
         public bool TrapsAreNearby()
@@ -428,7 +434,8 @@ namespace Darkages.Types
                 return string.Empty;
 
             return Debuffs.Select(i => i.Value)
-                .FirstOrDefault(p).Name;
+                .FirstOrDefault(p)
+                ?.Name;
         }
 
         public bool RemoveBuff(string buff)
@@ -468,11 +475,12 @@ namespace Darkages.Types
         {
             if (this is Monster || this is Mundane)
             {
-                var mod = 0.0;
+                var mod  = 0.0;
                 var diff = 0;
 
                 if (target is Aisling obj)
                     diff = Level + 1 - obj.ExpLevel;
+
                 if (target is Monster tmon)
                     diff = Level + 1 - tmon.Template.Level;
 
@@ -495,14 +503,16 @@ namespace Darkages.Types
 
         public void RemoveAllBuffs()
         {
-            foreach (var buff in Buffs)
-                RemoveBuff(buff.Key);
+            if (Buffs != null)
+                foreach (var buff in Buffs)
+                    RemoveBuff(buff.Key);
         }
 
         public void RemoveAllDebuffs()
         {
-            foreach (var debuff in Debuffs)
-                RemoveDebuff(debuff.Key);
+            if (Debuffs != null)
+                foreach (var debuff in Debuffs)
+                    RemoveDebuff(debuff.Key);
         }
 
         public void RemoveBuffsAndDebuffs()
@@ -511,10 +521,7 @@ namespace Darkages.Types
             RemoveAllDebuffs();
         }
 
-        public void ApplyDamage(Sprite source,
-            int dmg,
-            Element element,
-            byte sound = 1)
+        public void ApplyDamage(Sprite source, int dmg, Element element, byte sound = 1)
         {
             element = CheckRandomElement(element);
 
@@ -534,87 +541,46 @@ namespace Darkages.Types
             return element;
         }
 
-        public void ApplyDamage(Sprite Source, int dmg,
-            bool truedamage = false,
-            byte sound = 1,
-            Action<int> dmgcb = null, bool forceTarget = false)
+        public void ApplyDamage(Sprite source, int dmg,  bool penetrating = false, byte sound = 1, Action<int> dmgcb = null, bool forceTarget = false)
         {
-            #region Prefabs for Damage
-
-            if (!WithinRangeOf(Source))
+            if (!WithinRangeOf(source))
                 return;
-
-            if (!(this is Aisling))
-                if (AislingsNearby().Length == 0)
-                    return;
-
 
             if (!Attackable)
                 return;
 
-            if (!CanBeAttackedHere(Source))
+            if (!CanBeAttackedHere(source))
                 return;
 
-            if (!CanAcceptTarget(Source))
-            {
-                if (Source is Aisling)
-                    (Source as Aisling)
-                        .Client?
-                        .SendMessage(0x02, ServerContext.Config.CantAttack);
-
-                if (!forceTarget)
-                    return;
-            }
-
-            if (forceTarget)
-            {
-                Target = Source;
-            }
-            else
-            {
-                if (Target == null)
-                    Target = Source;
-            }
-
-            if (Target == null)
+            if (CannotTagTarget(source, forceTarget))
                 return;
 
-            if (this is Monster)
-            {
-                (this as Monster)?.AppendTags(Source);
-                (this as Monster)?.Script?.OnAttacked(Source?.Client);
-            }
+            dmg = ApplyWeaponBonuses(source, dmg);
 
-            if (Source is Aisling)
-            {
-                var client = Source as Aisling;
+            if (dmg > 0)
+                ApplyEquipmentDurability(dmg);
 
-                if (!client.LoggedIn)
-                    return;
-
-                if (client.EquipmentManager.Weapon != null
-                    && client.EquipmentManager.Weapon.Item != null && client.Weapon > 0)
-                {
-                    var weapon = client.EquipmentManager.Weapon.Item;
-
-                    lock (rnd)
-                    {
-                        dmg += rnd.Next(weapon.Template.DmgMin + 1, weapon.Template.DmgMax + 5) +
-                               client.BonusDmg * 10 / 100;
-                    }
-                }
-            }
-
-            if (this is Aisling)
-                if (this is Aisling client && client.DamageCounter++ % 2 == 0 && dmg > 0)
-                    client.EquipmentManager.DecreaseDurability();
-
-            #endregion
-
-            if (!WithinRangeOf(Source))
+            if (!DamageTarget(ref dmg, penetrating, sound, dmgcb))
                 return;
 
-            if (truedamage)
+            OnDamaged(source, dmg);
+        }
+
+        private void OnDamaged(Sprite source, int dmg)
+        {
+            (this as Aisling)?.Client.SendStats(StatusFlags.StructB);
+            (source as Aisling)?.Client.SendStats(StatusFlags.StructB);
+
+            if (!(this is Monster))
+                return;
+
+            if (source is Aisling aisling)
+                (this as Monster)?.Script?.OnDamaged(aisling?.Client, dmg);
+        }
+
+        private bool DamageTarget(ref int dmg, bool penetrating, byte sound, Action<int> dmgcb)
+        {
+            if (penetrating)
             {
                 var empty = new ServerFormat13
                 {
@@ -642,7 +608,7 @@ namespace Darkages.Types
                     };
 
                     Show(Scope.VeryNearbyAislings, empty);
-                    return;
+                    return false;
                 }
 
                 if (HasDebuff("sleep"))
@@ -650,8 +616,8 @@ namespace Darkages.Types
 
                 RemoveDebuff("sleep");
 
-                //split damage by one third, if aited.
-                if (IsAited && dmg > 5) dmg /= 3;
+                if (IsAited && dmg > 5)
+                    dmg /= 3;
 
                 var amplifier = GetElementalModifier(Target);
                 {
@@ -660,37 +626,97 @@ namespace Darkages.Types
                 }
             }
 
-            (this as Aisling)?.Client.SendStats(StatusFlags.StructB);
-            (Source as Aisling)?.Client.SendStats(StatusFlags.StructB);
-
-            if (this is Monster)
-                if (Source is Aisling)
-                    (this as Monster)?.Script?.OnDamaged((Source as Aisling)?.Client, dmg);
+            return true;
         }
 
-        private double GetElementalModifier(Sprite Source)
+        private bool CannotTagTarget(Sprite source, bool forceTarget)
         {
-            if (Source == null)
+            if (!CanAcceptTarget(source))
+            {
+                if (source is Aisling aisling)
+                    aisling.Client?.SendMessage(0x02, ServerContext.Config.CantAttack);
+
+                if (!forceTarget)
+                    return true;
+            }
+
+            if (forceTarget)
+            {
+                Target = source;
+            }
+            else
+            {
+                if (Target == null)
+                    Target = source;
+            }
+
+            if (Target == null)
+                return true;
+
+            if (!(this is Monster monster))
+                return false;
+
+            monster.AppendTags(source);
+            monster.Script?.OnAttacked(source?.Client);
+
+            return false;
+        }
+
+        private int ApplyWeaponBonuses(Sprite source, int dmg)
+        {
+            if (source is Aisling aisling)
+            {
+                if (aisling.EquipmentManager.Weapon?.Item != null && aisling.Weapon > 0)
+                {
+                    var weapon = aisling.EquipmentManager.Weapon.Item;
+
+                    lock (rnd)
+                    {
+                        dmg += rnd.Next(
+                                   weapon.Template.DmgMin + 1, 
+                                   weapon.Template.DmgMax + 5) + aisling.BonusDmg * 10 / 100;
+                    }
+                }
+            }
+
+            return dmg;
+        }
+
+        private void ApplyEquipmentDurability(int dmg)
+        {
+            if (this is Aisling aisling && aisling.DamageCounter++ % 2 == 0 && dmg > 0)
+                aisling.EquipmentManager.DecreaseDurability();
+        }
+
+        private double GetElementalModifier(Sprite source)
+        {
+            if (source == null)
                 return 1;
 
             var amplifier = 1.00;
 
-            if (Source.OffenseElement != Element.None)
+            if (source.OffenseElement != Element.None)
             {
-                var element = CheckRandomElement(Source.OffenseElement);
+                var element = CheckRandomElement(source.OffenseElement);
 
-                amplifier = CalcaluteElementalAmplifier(element, amplifier);
+                amplifier  = CalcaluteElementalAmplifier(element);
+
                 amplifier *=
                     Amplified == 1 ? ServerContext.Config.FasNadurStrength + 10 :
                     Amplified == 2 ? ServerContext.Config.MorFasNadurStrength + 30 : 1.00;
 
-                if (element == Element.None && DefenseElement != Element.None) amplifier = 0.25;
+                if (element == Element.None && DefenseElement != Element.None)
+                    amplifier = 0.25;
 
-                if (DefenseElement == Element.None && element != Element.None) return 5.75;
-
-                if (DefenseElement == Element.None && element == Element.None) return 0.25;
-
-                return amplifier;
+                switch (DefenseElement)
+                {
+                    case Element.None when element != Element.None:
+                        return 5.75;
+                    case Element.None when element == Element.None:
+                        return 0.25;
+                    default:
+                        return amplifier;
+                }
             }
 
             return 0.20;
@@ -753,106 +779,63 @@ namespace Darkages.Types
             return true;
         }
 
-        private double CalcaluteElementalAmplifier(Element element, double amplifier)
+        private double CalcaluteElementalAmplifier(Element element)
         {
-            //Fire -> Wind
-            if (element == Element.Fire)
-            {
-                if (DefenseElement == Element.Wind)
-                    amplifier = 1.75;
-                else
-                    amplifier = 0.25;
+            double damage_mod = 0.25;
 
-                return amplifier;
-            }
-
-            //Wind -> Earth
-            if (element == Element.Wind)
-            {
-                if (DefenseElement == Element.Earth)
-                    amplifier = 1.75;
-                else
-                    amplifier = 0.25;
-
-                return amplifier;
-            }
-
-            //Water -> Fire
-            if (element == Element.Water)
-            {
-                if (DefenseElement == Element.Fire)
-                    amplifier = 1.75;
-                else
-                    amplifier = 0.25;
-
-                return amplifier;
-            }
-
-            //Earth -> Water
-            if (element == Element.Earth)
-            {
-                if (DefenseElement == Element.Water)
-                    amplifier = 1.75;
-                else
-                    amplifier = 0.25;
-
-                return amplifier;
-            }
-
-            //Dark -> All
-            if (element == Element.Dark)
-            {
-                if (DefenseElement == Element.Light)
-                    amplifier = 1.75;
-                else
-                    amplifier = 0.20;
-
-                return amplifier;
-            }
-
-            //Light -> All
-            if (element == Element.Light)
-            {
-                amplifier = 0.10;
-                return amplifier;
-            }
-
-
-            //Light -> All
-            if (element != Element.Dark)
-            {
-                if (DefenseElement == Element.Light)
-                    amplifier = 1.75;
-                else
-                    amplifier = 0.25;
-
-                return amplifier;
-            }
-
-            //All -> Light
-            if (element != Element.Light)
-            {
-                if (DefenseElement == Element.Dark)
-                    amplifier = 1.75;
-                else
-                    amplifier = 0.25;
-
-                return amplifier;
-            }
-
-            //Counter
             if (element == DefenseElement)
             {
-                if (DefenseElement == Element.None && element != Element.None)
-                    amplifier = 1.75;
-                else
-                    amplifier = 0.25;
+                damage_mod = DefenseElement == Element.None && element != Element.None ? 1.75 : 0.25;
 
-                return amplifier;
+                return damage_mod;
             }
 
+            switch (element)
+            {
+                //Fire -> Wind
+                case Element.Fire:
+                    damage_mod = DefenseElement == Element.Wind ? 1.75 : 0.25;
 
-            return 0.25;
+                    return damage_mod;
+                //Wind -> Earth
+                case Element.Wind:
+                {
+                    damage_mod = DefenseElement == Element.Earth ? 1.75 : 0.25;
+
+                    return damage_mod;
+                }
+
+                //Water -> Fire
+                case Element.Water:
+                {
+                    damage_mod = DefenseElement == Element.Fire ? 1.75 : 0.25;
+
+                    return damage_mod;
+                }
+
+                //Earth -> Water
+                case Element.Earth:
+                {
+                    damage_mod = DefenseElement == Element.Water ? 1.75 : 0.25;
+
+                    return damage_mod;
+                }
+
+                //Dark -> All
+                case Element.Dark:
+                {
+                    damage_mod = DefenseElement == Element.Light ? 2.75 : 0.25;
+
+                    return damage_mod;
+                }
+
+                //Light -> All
+                case Element.Light:
+                    damage_mod = DefenseElement == Element.Light ? 2.75 : 0.25;
+                    return damage_mod;
+            }
+
+            return damage_mod;
         }
 
         private int CompleteDamageApplication(int dmg, byte sound, Action<int> dmgcb, double amplifier)
@@ -1067,7 +1050,7 @@ namespace Darkages.Types
             }
             catch (Exception err)
             {
-                ServerContext.ILog.Error("Error in Show<T>", err);
+                ServerContext.SrvLog.Error("Error in Show<T>", err);
             }
         }
 
