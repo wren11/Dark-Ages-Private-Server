@@ -242,9 +242,9 @@ namespace Darkages.Network.Login
                 var redirect = new Redirect
                 {
                     Serial = Convert.ToString(client.Serial),
-                    Salt = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
-                    Seed = Convert.ToString(client.Encryption.Parameters.Seed),
-                    Name = "socket[" + client.Serial + "]"
+                    Salt   = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
+                    Seed   = Convert.ToString(client.Encryption.Parameters.Seed),
+                    Name   = "socket[" + client.Serial + "]"
                 };
 
                 client.Send(new ServerFormat03
@@ -271,17 +271,23 @@ namespace Darkages.Network.Login
         protected override void Format7BHandler(LoginClient client, ClientFormat7B format)
         {
             if (format.Type == 0x00)
-                client.Send(new ServerFormat6F
+            {
+                Console.WriteLine("Client Requested Metafile: {0}", format.Name);
+
+                client.FlushAndSend(new ServerFormat6F
                 {
                     Type = 0x00,
                     Name = format.Name
                 });
+            }
 
             if (format.Type == 0x01)
-                client.Send(new ServerFormat6F
+            {
+                client.FlushAndSend(new ServerFormat6F
                 {
                     Type = 0x01
                 });
+            }
         }
 
         public override bool AddClient(LoginClient client)

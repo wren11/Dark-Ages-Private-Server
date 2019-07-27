@@ -27,58 +27,15 @@ namespace Darkages.Types
     {
         private static readonly MetafileCollection metafiles;
 
-        //TODO : finish implementation.
-        //Note to self: remove *.defalted, uncomment the save and use this to handle the meta information.
         static MetafileManager()
         {
-            var path = new FileInfo(Path.Combine(ServerContext.StoragePath, "metafile")).FullName;
+            var files = Directory.GetFiles(Path.Combine(ServerContext.StoragePath, "metafile"));
+            metafiles = new MetafileCollection(files.Length);
 
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-
-            var files = Directory.GetFiles(path, "*.deflated", SearchOption.TopDirectoryOnly);
-            if (files.Length > 0)
+            foreach (var file in files)
             {
-                metafiles = new MetafileCollection(files.Length);
-                {
-                    foreach (var file in files)
-                    {
-                        var mf = CompressableObject.Load<Metafile>(file);
-                        mf.Name = mf.Name.Replace(".deflated", string.Empty).Trim();
-
-                        if (mf.Name.StartsWith("NationDesc"))
-                            mf.Nodes = new Collection<MetafileNode>
-                            {
-                                new MetafileNode("nation_1", "Lorule"),
-                                new MetafileNode("nation_2", "Lividia"),
-                                new MetafileNode("nation_3", "Exiles")
-                            };
-
-                        if (mf.Name.StartsWith("SClass"))
-                        {
-                            mf.Nodes = new Collection<MetafileNode>
-                            {
-                                new MetafileNode("Skill")
-                            };
-
-                            foreach (var skill in ServerContext.GlobalSkillTemplateCache)
-                                if (skill.Value.Prerequisites != null)
-                                {
-                                    var nmf = new MetafileNode(skill.Key, skill.Value.Prerequisites.MetaData);
-                                    mf.Nodes.Add(nmf);
-                                }
-
-                            mf.Nodes.Add(new MetafileNode("Skill_End"));
-                            mf.Nodes.Add(new MetafileNode(""));
-                        }
-
-
-                        //CompressableObject.Save(file, mf);
-
-                        metafiles.Add(mf);
-                    }
-                }
+                metafiles.Add(
+                    CompressableObject.Load<Metafile>(file, true));
             }
         }
 

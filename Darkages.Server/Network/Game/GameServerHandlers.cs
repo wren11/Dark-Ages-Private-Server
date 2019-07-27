@@ -2727,20 +2727,23 @@ namespace Darkages.Network.Game
         /// </summary>
         protected override void Format7BHandler(GameClient client, ClientFormat7B format)
         {
-            if (client != null && client.Aisling != null)
+            if (format.Type == 0x00)
             {
-                if (format.Type == 0x00)
-                    client.Send(new ServerFormat6F
-                    {
-                        Type = 0x00,
-                        Name = format.Name
-                    });
+                Console.WriteLine("Client Requested Metafile: {0}", format.Name);
 
-                if (format.Type == 0x01)
-                    client.Send(new ServerFormat6F
-                    {
-                        Type = 0x01
-                    });
+                client.FlushAndSend(new ServerFormat6F
+                {
+                    Type = 0x00,
+                    Name = format.Name
+                });
+            }
+
+            if (format.Type == 0x01)
+            {
+                client.FlushAndSend(new ServerFormat6F
+                {
+                    Type = 0x01
+                });
             }
         }
 

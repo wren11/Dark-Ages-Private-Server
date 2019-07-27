@@ -39,18 +39,19 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write(Type);
+            writer.Write(this.Type);
 
-            if (string.IsNullOrWhiteSpace(Name))
-                return;
-
-            if (Type == 0x00)
+            if (this.Type == 0x00)
+            {
                 writer.Write(
-                    MetafileManager.GetMetafile(Name));
+                    MetafileManager.GetMetafile(this.Name));
+            }
 
-            if (Type == 0x01)
+            if (this.Type == 0x01)
+            {
                 writer.Write(
                     MetafileManager.GetMetafiles());
+            }
         }
     }
 }
