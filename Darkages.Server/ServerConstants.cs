@@ -131,9 +131,9 @@ namespace Darkages
 
         [JsonProperty]
         /// <summary>
-        /// Ms between 0 cooldown based skills.
+        /// Ms between 0 cooldown based skills. Default and recommended is 500.
         /// </summary>
-        public double GlobalBaseSkillDelay = 350;
+        public double GlobalBaseSkillDelay = 500;
 
         [JsonProperty] public string[] GlobalScripts =
         {

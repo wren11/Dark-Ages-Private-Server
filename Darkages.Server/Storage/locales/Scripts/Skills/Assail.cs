@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
+using System;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 
@@ -66,11 +67,9 @@ namespace Darkages.Scripting.Scripts.Skills
                 if (enemy != null)
                 {
                     var imp = 10 + Skill.Level;
-
                     var dmg = client.Aisling.Str * 4 + client.Aisling.Dex * 2;
 
-
-                    dmg = imp * dmg / 3;
+                    dmg += (dmg * imp / 100);
 
                     if (sprite.EmpoweredAssail)
                     {
@@ -78,10 +77,6 @@ namespace Darkages.Scripting.Scripts.Skills
                         {
                             if ((sprite as Aisling).Weapon == 0)
                                 dmg *= 3;
-                        }
-                        else
-                        {
-                            dmg *= 2;
                         }
                     }
 
@@ -130,26 +125,25 @@ namespace Darkages.Scripting.Scripts.Skills
             }
         }
 
+
         public override void OnUse(Sprite sprite)
         {
-            if (sprite is Aisling)
+            if (sprite is Aisling aisling)
             {
-                var client = (sprite as Aisling).Client;
+                if (Skill.Level < Skill.Template.MaxLevel)
+                    aisling.Client.TrainSkill(Skill);
 
-                client.TrainSkill(Skill);
-                if (Skill.Ready)
+                if (aisling.Invisible)
                 {
-                    if (client.Aisling.Invisible)
-                    {
-                        client.Aisling.Flags = AislingFlags.Normal;
-                        client.Refresh();
-                    }
-
-                    OnSuccess(sprite);
+                    aisling.Flags = AislingFlags.Normal;
+                    aisling.Client.Refresh();
                 }
+
+                OnSuccess(sprite);
             }
             else
             {
+
                 if (!Skill.Ready)
                     return;
 
@@ -182,7 +176,7 @@ namespace Darkages.Scripting.Scripts.Skills
 
                         var dmg = sprite.GetBaseDamage(Target, MonsterDamageType.Physical);
                         {
-                            i.ApplyDamage(sprite, dmg);
+                            i.ApplyDamage(sprite, dmg, sprite.OffenseElement, 1);
                         }
 
                         if (Skill.Template.TargetAnimation > 0)

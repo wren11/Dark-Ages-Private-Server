@@ -33,8 +33,6 @@ namespace Darkages.Scripting.Scripts.Skills
             _skill = skill;
         }
 
-        public int Damage => 150 * _skill.Level / 100;
-
         public override void OnFailed(Sprite sprite)
         {
             if (sprite is Aisling)
@@ -107,8 +105,20 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (client.Aisling.Serial == i.Serial)
                             continue;
 
+                        var imp = 300 + Skill.Level;
+                        var dmg = client.Aisling.Str * 4 + client.Aisling.Dex * 2;
 
-                        var dmg = Damage;
+                        dmg += (dmg * imp / 100);
+
+                        if (sprite.EmpoweredAssail)
+                        {
+                            if (sprite is Aisling)
+                            {
+                                if ((sprite as Aisling).Weapon == 0)
+                                    dmg *= 3;
+                            }
+                        }
+
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
                         i.Target = client.Aisling;
 

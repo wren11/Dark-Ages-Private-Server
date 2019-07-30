@@ -58,8 +58,6 @@ namespace Darkages.Scripting.Scripts.Skills
                 Speed = 20
             };
 
-            var steps = 0;
-
             for (var i = 0; i < 7; i++)
             {
                 var targets = sprite.GetInfront(i, true);
@@ -72,8 +70,19 @@ namespace Darkages.Scripting.Scripts.Skills
 
                     if (target != null)
                     {
-                        var imp = Skill.Level * 5 / 100;
-                        var dmg = 15 * (sprite.Str * steps + sprite.Dex * imp);
+                        var imp = (200 * hits) + Skill.Level;
+                        var dmg = sprite.Str * 5 + sprite.Con * 5;
+
+                        dmg += (dmg * imp / 100);
+
+                        if (sprite.EmpoweredAssail)
+                        {
+                            if (sprite is Aisling)
+                            {
+                                if ((sprite as Aisling).Weapon == 0)
+                                    dmg *= 3;
+                            }
+                        }
 
                         target.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
                         {

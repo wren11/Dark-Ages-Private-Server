@@ -76,12 +76,19 @@ namespace Darkages.Scripting.Scripts.Skills
                         Target = i;
 
 
-                        var imp = Skill.Level * sprite.Level + 1 / 70;
-                        var dmg = client.Aisling.Str * 4 + client.Aisling.Dex * 2;
+                        var imp = 20 + Skill.Level;
+                        var dmg = client.Aisling.Str * 4 + client.Aisling.Con * 2;
 
-                        var s = (int) (imp * 0.03);
+                        dmg += (dmg * imp / 100);
 
-                        dmg *= s;
+                        if (sprite.EmpoweredAssail)
+                        {
+                            if (sprite is Aisling)
+                            {
+                                if ((sprite as Aisling).Weapon == 0)
+                                    dmg *= 3;
+                            }
+                        }
 
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
 

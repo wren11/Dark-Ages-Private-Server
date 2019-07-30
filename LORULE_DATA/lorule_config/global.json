@@ -17,6 +17,7 @@
       }
     ]
   },
+  "DBName": "LorDB",
   "AssailsCancelSpells": true,
   "BadRequestMessage": "(Invalid Request)",
   "BaseAC": 0,
@@ -152,5 +153,7 @@
   "WisAddedMessage": "Your will increases.",
   "WithinRangeProximity": 12,
   "WrongClassMessage": "This is best suited for somebody else.",
-  "YouDroppedGoldMsg": "you dropped some gold."
+  "YouDroppedGoldMsg": "you dropped some gold.",
+  "ShowWarpAnimation": false,
+  "WarpNumber": 295
 }

@@ -46,11 +46,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     LoadSkillScript(skillscriptstr);
         }
 
-        public SkillScript DefaultSkill
-        {
-            get { return SkillScripts.Find(i => i.IsScriptDefault) ?? null; }
-        }
-
         public SpellScript DefaultSpell
         {
             get { return SpellScripts.Find(i => i.IsScriptDefault) ?? null; }
@@ -408,14 +403,12 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                             skill.NextAvailableUse = DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
                         else
                             skill.NextAvailableUse =
-                                DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
+                                DateTime.UtcNow.AddMilliseconds(1000);
                     }
 
                     skill.InUse = false;
                 }
             }
-
-            if (Monster != null && DefaultSkill != null) DefaultSkill.OnUse(Monster);
         }
 
         private void ClearTarget()

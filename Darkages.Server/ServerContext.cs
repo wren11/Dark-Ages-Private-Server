@@ -49,6 +49,7 @@ namespace Darkages
     public class ServerContext : ObjectManager
     {
         internal static object SyncObj = new object();
+        internal static DateTime GlobalMonsterCoolDown { get; set; }
 
         internal static Evaluator EVALUATOR;
 

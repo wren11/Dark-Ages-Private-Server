@@ -69,19 +69,19 @@ namespace Darkages.Network.Object
                 TypeNameHandling = TypeNameHandling.All
             });
 
-            if (source as Item != null)
+            if (source is Item)
                 (obj as Item).Template = (source as Item).Template;
 
-            if (source as Skill != null)
+            if (source is Skill)
                 (obj as Skill).Template = (source as Skill).Template;
 
-            if (source as Spell != null)
+            if (source is Spell)
                 (obj as Spell).Template = (source as Spell).Template;
 
-            if (source as Monster != null)
+            if (source is Monster)
                 (obj as Monster).Template = (source as Monster).Template;
 
-            if (source as Mundane != null)
+            if (source is Mundane)
                 (obj as Mundane).Template = (source as Mundane).Template;
 
             return obj;

@@ -75,7 +75,12 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (i is Money)
                             continue;
 
-                        var dmg = client.Aisling.Invisible ? 2 : 1 * client.Aisling.Str * 20 * Skill.Level;
+                        var imp = 50 + Skill.Level;
+                        var dmg = client.Aisling.Str * 10 + client.Aisling.Dex * 5;
+
+                        dmg += (dmg * imp / 100);
+
+
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
 
                         if (i is Monster) (i as Monster).Target = client.Aisling;

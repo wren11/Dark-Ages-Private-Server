@@ -241,13 +241,14 @@ namespace Darkages.Network.Game
         {
             lpSkill.InUse = true;
 
-            if (optExecuteScript) lpSkill.Script.OnUse(lpClient.Aisling);
+            if (optExecuteScript)
+                lpSkill.Script.OnUse(lpClient.Aisling);
 
 
             if (lpSkill.Template.Cooldown > 0)
                 lpSkill.NextAvailableUse = DateTime.UtcNow.AddSeconds(lpSkill.Template.Cooldown);
             else
-                lpSkill.NextAvailableUse = DateTime.UtcNow.AddMilliseconds(600);
+                lpSkill.NextAvailableUse = DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
 
             lpSkill.InUse = false;
         }
