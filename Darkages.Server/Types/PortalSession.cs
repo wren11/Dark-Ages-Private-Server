@@ -42,8 +42,10 @@ namespace Darkages
 
         public void ShowFieldMap(GameClient client)
         {
-            lock (client)
+            lock (ServerContext.SyncObj)
             {
+                client.InMapTransition = true;
+
                 client.FlushBuffers();
                 client.FlushAndSend(new ServerFormat2E(client.Aisling));
 
@@ -54,58 +56,60 @@ namespace Darkages
                         IsMapOpen = true,
                         DateOpened = DateTime.UtcNow
                     };
+
+                client.DateMapOpened = DateTime.UtcNow;
             }
         }
 
-        public void TransitionToMap(GameClient client,
-            short X = -1, short Y = -1, int DestinationMap = 0)
+        public void TransitionToMap(GameClient client, short X = -1, short Y = -1, int DestinationMap = 0)
         {
             if (DestinationMap == 0)
             {
                 client.LeaveArea(true, true);
 
-                DestinationMap      = ServerContext.Config.TransitionZone;
-                var targetMap       = ServerContext.GlobalMapCache[DestinationMap];
+                DestinationMap = ServerContext.Config.TransitionZone;
+
                 client.Aisling.XPos = X >= 0 ? X : ServerContext.Config.TransitionPointX;
                 client.Aisling.YPos = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
                 client.Aisling.CurrentMapId = DestinationMap;
+
                 client.Refresh();
 
-                while (client.IsWarping)
-                {
-                    Task.Delay(10);
-                }
+                //while (client.IsWarping)
+                //{
+                //    Task.Delay(10);
+                //}
 
                 lock (ServerContext.SyncObj)
                 {
                     ShowFieldMap(client);
                 }
-
             }
             else
             {
                 if (ServerContext.GlobalMapCache.ContainsKey(DestinationMap))
                 {
-                    var targetMap = ServerContext.GlobalMapCache[DestinationMap];
-
-                    if (client.Aisling.AreaID != DestinationMap)
+                    lock (ServerContext.SyncObj)
                     {
                         client.LeaveArea(true, true);
                         client.Refresh();
 
-                        Task.Delay(150).ContinueWith(s =>
-                        {
-                            client.Aisling.XPos = X >= 0 ? X : ServerContext.Config.TransitionPointX;
-                            client.Aisling.YPos = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
-                            client.Aisling.CurrentMapId = DestinationMap;
-                            client.EnterArea();
-                            client.Refresh();
+                        
+                        client.Aisling.XPos = X >= 0 ? X : ServerContext.Config.TransitionPointX;
+                        client.Aisling.YPos = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
+                        client.Aisling.CurrentMapId = DestinationMap;
 
-                            client.Aisling.PortalSession = null;
-                        });
+                        client.EnterArea();
+
+                        if (client.Aisling.AreaID == DestinationMap)
+                            client.FlushAndSend(new ServerFormat15(client.Aisling.Map));
+
+                        client.Refresh();
+
+                        client.Aisling.PortalSession = null;
                     }
                 }
             }
-        }
+        }    
     }
 }

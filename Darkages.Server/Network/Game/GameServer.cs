@@ -45,7 +45,7 @@ namespace Darkages.Network.Game
 
         public GameServer(int capacity) : base(capacity)
         {
-            HeavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
+            HeavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 20);
 
             InitializeGameServer();
         }
@@ -93,9 +93,12 @@ namespace Darkages.Network.Game
                     if (ServerContext.Paused)
                         continue;
 
-                    ExecuteClientWork(delta);
-                    ExecuteServerWork(delta);
-                    ExecuteObjectWork(delta);
+                    lock (ServerContext.SyncObj)
+                    {
+                        ExecuteClientWork(delta);
+                        ExecuteServerWork(delta);
+                        ExecuteObjectWork(delta);
+                    }
                 }
                 catch (Exception error)
                 {
@@ -200,6 +203,7 @@ namespace Darkages.Network.Game
             lock (Clients)
             {
                 foreach (var client in Clients)
+                {
                     if (client != null && client.Aisling != null)
                     {
                         __msync.WaitOne();
@@ -207,15 +211,36 @@ namespace Darkages.Network.Game
 
                         try
                         {
-                            if (!client.IsWarping)
+                            if (!client.IsWarping && !client.InMapTransition && !client.MapOpen)
                             {
-                                client.Update(elapsedTime);
-                                client.FlushBuffers();
+                                Pulse(elapsedTime, client);
                             }
-                            else
+                            else if (client.IsWarping && !client.InMapTransition)
                             {
                                 if (client.CanSendLocation && !client.IsRefreshing)
                                     client.SendLocation();
+                            }
+                            else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
+                            {
+                                client.MapOpen = false;
+
+                                if (client.InMapTransition && !client.MapOpen)
+                                {
+                                    if ((DateTime.UtcNow - client.DateMapOpened) > TimeSpan.FromSeconds(0.2))
+                                    {
+                                        client.MapOpen         = true;
+                                        client.InMapTransition = false;
+                                    }
+                                }
+                            }
+
+
+                            if (client.MapOpen)
+                            {
+                                if (!client.IsWarping && !client.IsRefreshing)
+                                {
+                                    Pulse(elapsedTime, client);
+                                }
                             }
                         }
                         catch (Exception err)
@@ -227,7 +252,18 @@ namespace Darkages.Network.Game
                             __msync.Set();
                         }
                     }
+                }
             }
+        }
+
+        private static void Pulse(TimeSpan elapsedTime, GameClient client)
+        {
+            if (client == null)
+                return;
+
+
+            client.Update(elapsedTime);
+            client.FlushBuffers();
         }
 
         public override void ClientDisconnected(GameClient client)
@@ -279,8 +315,8 @@ namespace Darkages.Network.Game
                 var __tmpl = new Thread(Update)
                 {
                     IsBackground = true,
-                    Name = ServerContext.Config.SERVER_TITLE,
-                    Priority = ThreadPriority.Highest
+                    Name         = ServerContext.Config.SERVER_TITLE,
+                    Priority     = ThreadPriority.Highest
                 };
 
                 __tmpl.Start();

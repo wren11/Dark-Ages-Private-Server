@@ -163,6 +163,32 @@ namespace Darkages.Network.Game
 
             MPRegenTimer = new GameServerTimer(
                 TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate));
+
+            PropertyChanged += GameClient_PropertyChanged;
+        }
+
+        private void GameClient_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.Equals("SelectedNodeIndex"))
+            {
+                var node = SelectedNodeIndex;
+
+                if (node > 0 && MapOpen) {
+
+                    LastSelectedNodeIndex = node;
+
+                    FlushBuffers();
+
+                    MapOpen         = false;
+                    LastWarp        = DateTime.UtcNow;
+                    ShouldUpdateMap = true;
+
+                    lock (ServerContext.SyncObj)
+                    {
+                        GameServer.HandleMapNodeSelection(this, node);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -364,7 +390,7 @@ namespace Darkages.Network.Game
         /// </summary>
         /// <value><c>true</c> if this instance can send location; otherwise, <c>false</c>.</value>
         public bool CanSendLocation =>
-            DateTime.UtcNow - LastLocationSent < new TimeSpan(0, 0, 0, 1);
+            DateTime.UtcNow - LastLocationSent < new TimeSpan(0, 0, 0, 2);
 
 
         public bool WasUpdatingMapRecently =>
@@ -899,7 +925,7 @@ namespace Darkages.Network.Game
         /// <summary>
         ///     Handles the time outs.
         /// </summary>
-        private void HandleTimeOuts()
+        public void HandleTimeOuts()
         {
             if (Aisling.Exchange != null)
                 if (Aisling.Exchange.Trader != null)
@@ -907,10 +933,16 @@ namespace Darkages.Network.Game
                         || !Aisling.WithinRangeOf(Aisling.Exchange.Trader))
                         Aisling.CancelExchange();
 
-            if (Aisling.PortalSession != null && (DateTime.UtcNow - Aisling.PortalSession.DateOpened).TotalSeconds > 10)
+            if (Aisling.PortalSession != null)
             {
-                if (Aisling.PortalSession.IsMapOpen) Aisling.GoHome();
-                Aisling.PortalSession = null;
+                if ((DateTime.UtcNow - Aisling.PortalSession.DateOpened).TotalSeconds > 10)
+                {
+                    if (LastSelectedNodeIndex > 0)
+                    {
+                        GameServer.HandleMapNodeSelection(this, LastSelectedNodeIndex);
+                        FlushBuffers();
+                    }
+                }
             }
         }
 
@@ -966,7 +998,6 @@ namespace Darkages.Network.Game
                 ).ContinueWith(ct =>
                 {
                     SendStats(StatusFlags.All);
-                    Thread.Sleep(100);
                     return true;
                 });
             }
@@ -984,8 +1015,10 @@ namespace Darkages.Network.Game
         /// <returns>GameClient.</returns>
         private GameClient SetAislingStartupVariables()
         {
-            LastSave = DateTime.UtcNow;
-            LastPingResponse = DateTime.UtcNow;
+            InMapTransition     = false;
+            MapOpen             = false;
+            LastSave            = DateTime.UtcNow;
+            LastPingResponse    = DateTime.UtcNow;
             PendingItemSessions = null;
 
             BoardOpened = DateTime.UtcNow;
@@ -1334,7 +1367,10 @@ namespace Darkages.Network.Game
         /// <param name="delete">if set to <c>true</c> [delete].</param>
         public void LeaveArea(bool update = false, bool delete = false)
         {
-            if (Aisling.LastMapId == short.MaxValue) Aisling.LastMapId = Aisling.CurrentMapId;
+            if (Aisling.LastMapId == short.MaxValue)
+            {
+                Aisling.LastMapId = Aisling.CurrentMapId;
+            }
 
             Aisling.Remove(update, delete);
         }

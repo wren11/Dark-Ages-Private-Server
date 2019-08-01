@@ -1,5 +1,4 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+﻿//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -16,6 +15,8 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
+using System.Linq;
+///************************************************************************
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat2E : NetworkFormat
@@ -39,22 +40,24 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            if (User == null || User.PortalSession == null)
+            if (User == null)
                 return;
 
             var portal = ServerContext.GlobalWorldMapTemplateCache[User.PortalSession?.FieldNumber ?? 1];
-            var name = string.Format("field{0:000}", portal.FieldNumber);
+            var name   = string.Format("field{0:000}", portal.FieldNumber);
 
             writer.WriteStringA(name);
             writer.Write((byte) portal.Portals.Count);
             writer.Write((byte) portal.FieldNumber);
+
+            if (!portal.Portals.Any())
+                return;
 
             foreach (var warps in portal.Portals)
             {
                 if (warps == null || warps.Destination == null)
                     continue;
 
-                //silly americans!
                 writer.Write(warps.PointY);
                 writer.Write(warps.PointX);
 

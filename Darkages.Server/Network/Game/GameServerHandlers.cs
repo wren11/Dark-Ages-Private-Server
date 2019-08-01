@@ -2073,6 +2073,54 @@ namespace Darkages.Network.Game
             skill.InUse = false;
         }
 
+        public static void HandleMapNodeSelection(GameClient client, int nodeIndex)
+        {
+            try
+            {
+                var worldmap = client.Aisling.PortalSession?.Template;
+
+                if (worldmap == null)
+                {
+                    client.Aisling.PortalSession = new PortalSession { FieldNumber = 1, IsMapOpen = true };
+                    worldmap = client.Aisling.PortalSession.Template;
+                }
+
+                if (worldmap == null)
+                    return;
+
+                var node = worldmap.Portals
+                    .Find(i => i.Destination != null &&
+                               i.Destination.AreaID == nodeIndex);
+
+                if (node == null)
+                    return;
+
+                if (client.Aisling.PortalSession == null)
+                {
+                    client.Aisling.GoHome();
+                    return;
+                }
+
+
+                if (client.Aisling.PortalSession != null)
+                {
+                    client.Aisling.PortalSession.DateOpened = DateTime.UtcNow;
+                    client.Aisling.PortalSession.TransitionToMap(client,
+                        (short)node.Destination.Location.X,
+                        (short)node.Destination.Location.Y, node.Destination.AreaID);
+                }
+            }
+            catch
+            {
+                client.Aisling.GoHome();
+            }
+            finally
+            {
+                client.MapOpen           = false;
+                client.SelectedNodeIndex = 0;
+            }
+        }
+
         /// <summary>
         ///     World Map
         /// </summary>
@@ -2085,45 +2133,7 @@ namespace Darkages.Network.Game
             if (maxIdx <= 0)
                 return;
 
-            var worldmap = client.Aisling.PortalSession?.Template;
-
-            if (worldmap == null)
-            {
-                client.Aisling.PortalSession = new PortalSession {FieldNumber = 1, IsMapOpen = true};
-                worldmap = client.Aisling.PortalSession.Template;
-            }
-
-            if (worldmap == null)
-                return;
-
-            var node = worldmap.Portals
-                .Find(i => i.Destination != null &&
-                           i.Destination.AreaID == maxIdx);
-
-            if (node == null)
-                return;
-
-            try
-            {
-                if (client.Aisling.PortalSession == null)
-                {
-                    client.Aisling.GoHome();
-                    return;
-                }
-
-
-                if (client.Aisling.PortalSession != null)
-                {
-                    client.Aisling.PortalSession.DateOpened = DateTime.UtcNow;
-                    client.Aisling.PortalSession.TransitionToMap(client,
-                        (short) node.Destination.Location.X,
-                        (short) node.Destination.Location.Y, node.Destination.AreaID);
-                }
-            }
-            catch
-            {
-                client.Aisling.GoHome();
-            }
+            client.SelectedNodeIndex = maxIdx;
         }
 
         /// <summary>

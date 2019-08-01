@@ -18,8 +18,10 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
@@ -29,10 +31,19 @@ using LiteDB;
 
 namespace Darkages.Network
 {
-    public abstract class NetworkClient<TClient> : ObjectManager
+    public abstract class NetworkClient<TClient> : ObjectManager, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private readonly ManualResetEvent _sendReset;
 
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
         protected NetworkClient()
         {
             Reader = new NetworkPacketReader();
@@ -56,6 +67,47 @@ namespace Darkages.Network
 
         public int Serial { get; set; }
 
+        public DateTime DateMapOpened { get; set; }
+
+        public bool MapOpen { get; set; } = false;
+
+        public int LastSelectedNodeIndex { get; set; } = 0;
+
+        private int _SelectedNodeIndex;
+
+        public int SelectedNodeIndex
+        {
+            get
+            {
+                return _SelectedNodeIndex;
+            }
+            set
+            {
+                if (value != _SelectedNodeIndex)
+                {
+                    _SelectedNodeIndex = value;
+                    NotifyPropertyChanged(propertyName: "SelectedNodeIndex");
+                }
+            }
+        }
+
+        private bool _InMapTransition;
+
+        public bool InMapTransition
+        {
+            get
+            {
+                return _InMapTransition;
+            }
+            set
+            {
+                if (value != _InMapTransition)
+                {
+                    _InMapTransition = value;
+                    NotifyPropertyChanged(propertyName: "InMapTransition");
+                }
+            }
+        }
 
         private ConcurrentQueue<byte[]> SendBuffer { get; set; }
 

@@ -28,7 +28,7 @@
   "MaximumMP": 0,
   "SpawnerID": 0,
   "AreaID": 307,
-  "MovementSpeed": 2000,
+  "MovementSpeed": 600,
   "CastSpeed": 6500,
   "IsBoss": false,
   "SpawnMax": 70,

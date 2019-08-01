@@ -403,7 +403,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                             skill.NextAvailableUse = DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
                         else
                             skill.NextAvailableUse =
-                                DateTime.UtcNow.AddMilliseconds(1000);
+                                DateTime.UtcNow.AddMilliseconds(Monster.Template.AttackSpeed > 0 ? Monster.Template.AttackSpeed : 500);
                     }
 
                     skill.InUse = false;
