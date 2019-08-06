@@ -741,8 +741,6 @@ namespace Darkages.Types
                 if (obj.Template == null)
                     return;
 
-                lock (ServerContext.SyncObj)
-                {
                     var template = (ItemTemplate) StorageManager.ItemBucket.LoadFromStorage(obj.Template);
                     if (template == null)
                         return;
@@ -786,7 +784,6 @@ namespace Darkages.Types
                     obj.Template.Value = template.Value;
                     obj.Template.Weight = template.Weight;
                     obj.Template.WisModifer = template.WisModifer;
-                }
 
                 if (obj.Upgrades > 0)
                 {
@@ -846,7 +843,7 @@ namespace Darkages.Types
             }
             catch (Exception error)
             {
-                ServerContext.SrvLog?.Error("Error: ItemAddQuality.", error);
+                ServerContext.logger?.Error("Error: ItemAddQuality.", error);
             }
         }
 

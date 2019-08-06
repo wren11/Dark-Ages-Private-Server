@@ -173,20 +173,18 @@ namespace Darkages.Network.Game
             {
                 var node = SelectedNodeIndex;
 
-                if (node > 0 && MapOpen) {
+                if (node > 0)
+                {
 
                     LastSelectedNodeIndex = node;
 
                     FlushBuffers();
 
-                    MapOpen         = false;
-                    LastWarp        = DateTime.UtcNow;
+                    MapOpen = false;
+                    LastWarp = DateTime.UtcNow;
                     ShouldUpdateMap = true;
 
-                    lock (ServerContext.SyncObj)
-                    {
-                        GameServer.HandleMapNodeSelection(this, node);
-                    }
+                    GameServer.HandleMapNodeSelection(this, node);
                 }
             }
         }
@@ -403,7 +401,7 @@ namespace Darkages.Network.Game
         /// <value>The last location sent.</value>
         public DateTime LastLocationSent { get; set; }
 
-        public DateTime LastMapUpdated   { get; set; }
+        public DateTime LastMapUpdated { get; set; }
 
         /// <summary>
         ///     Gets or sets the last board activated.
@@ -525,8 +523,28 @@ namespace Darkages.Network.Game
             for (var i = 0; i < r; i++)
             {
                 Aisling.SendAnimation(n, Aisling, Aisling);
+
+                foreach (var obj in Aisling.MonstersNearby())
+                {
+                    obj.SendAnimation(n, obj.Position);
+                }
                 await Task.Delay(d);
             }
+        }
+
+        [Verb]
+        public void stress()
+        {
+            Task.Run(async () =>
+            {
+                for (int n = 0; n < 5000; n++)
+                {
+                    for (byte i = 0; i < 100; i++)
+                    {
+                        await eff(i, 500);
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -578,15 +596,12 @@ namespace Darkages.Network.Game
         [Verb]
         public void reload(bool all = false)
         {
-            lock (ServerContext.SyncObj)
-            {
                 var objs = GetObjects(null, i => i != null && i.Serial != Aisling.Serial,
                     all ? Get.All : Get.Items | Get.Money | Get.Monsters | Get.Mundanes);
 
                 foreach (var obj in objs) obj.Remove();
 
                 ServerContext.LoadAndCacheStorage();
-            }
         }
 
         /// <summary>
@@ -1020,6 +1035,7 @@ namespace Darkages.Network.Game
             LastSave            = DateTime.UtcNow;
             LastPingResponse    = DateTime.UtcNow;
             PendingItemSessions = null;
+            LastLocationSent    = DateTime.UtcNow;
 
             BoardOpened = DateTime.UtcNow;
             {
@@ -1474,6 +1490,7 @@ namespace Darkages.Network.Game
             {
                 Aisling.View.Clear();
             }
+
         }
 
 
@@ -1502,16 +1519,13 @@ namespace Darkages.Network.Game
         /// </summary>
         public void Save()
         {
-            lock (ServerContext.SyncObj)
+            ThreadPool.QueueUserWorkItem(state =>
             {
-                ThreadPool.QueueUserWorkItem(state =>
+                StorageManager.AislingBucket.Save(Aisling);
                 {
-                    StorageManager.AislingBucket.Save(Aisling);
-                    {
-                        LastSave = DateTime.UtcNow;
-                    }
-                });
-            }
+                    LastSave = DateTime.UtcNow;
+                }
+            });
         }
 
         /// <summary>
@@ -1943,7 +1957,7 @@ namespace Darkages.Network.Game
                         continue;
 
                     options.Add(new OptionsDataItem((short) ans.Id, ans.Text));
-                    ServerContext.SrvLog.Debug($"{ans.Id}. {ans.Text}");
+                    ServerContext.logger.Debug($"{ans.Id}. {ans.Text}");
                 }
 
                 SendOptionsDialog(obj as Mundane, nextitem.Text, options.ToArray());
@@ -1987,8 +2001,9 @@ namespace Darkages.Network.Game
                         continue;
 
                     options.Add(new OptionsDataItem((short) ans.Id, ans.Text));
-                    ServerContext.SrvLog.Debug($"{ans.Id}. {ans.Text}");
+                    ServerContext.logger.Debug($"{ans.Id}. {ans.Text}");
                 }
+
 
                 SendPopupDialog(popup, nextitem.Text, options.ToArray());
             }

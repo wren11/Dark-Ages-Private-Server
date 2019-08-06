@@ -1050,7 +1050,7 @@ namespace Darkages.Types
             }
             catch (Exception err)
             {
-                ServerContext.SrvLog.Error("Error in Show<T>", err);
+                ServerContext.logger.Error("Error in Show<T>", err);
             }
         }
 

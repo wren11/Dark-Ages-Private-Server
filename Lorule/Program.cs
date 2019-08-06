@@ -21,6 +21,7 @@ using System.Drawing;
 using Darkages;
 using System.Threading;
 using ConsoleExtender;
+using System.Windows.Forms;
 
 namespace Lorule
 {
@@ -31,6 +32,7 @@ namespace Lorule
 
         private static void Main()
         {
+
             using (Mutex _oneInstanceMutex = new Mutex(true, OneInstanceMutexName, out var firstInstance))
             {
                 if (firstInstance)
@@ -38,9 +40,14 @@ namespace Lorule
                     _Server = new Instance();
                     _Server.Start();
 
-                    Thread.Sleep(Timeout.Infinite);
+                    Thread.CurrentThread.Join();
                 }
             }
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+
         }
 
         public class Instance : ServerContext
