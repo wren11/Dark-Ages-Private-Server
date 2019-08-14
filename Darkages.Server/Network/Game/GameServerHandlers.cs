@@ -256,9 +256,9 @@ namespace Darkages.Network.Game
         /// <summary>
         ///     Enter Game
         /// </summary>
-        private void EnterGame(GameClient client, ClientFormat10 format)
+        private async void EnterGame(GameClient client, ClientFormat10 format)
         {
-            LoadPlayerAsync(client, format);
+            await LoadPlayerAsync(client, format);
         }
 
         private async Task<Aisling> LoadPlayerAsync(GameClient client, ClientFormat10 format)
@@ -2250,11 +2250,11 @@ namespace Darkages.Network.Game
                             if (client.MenuInterpter != null)
                                 client.ShowCurrentMenu(obj as Mundane, null, client.MenuInterpter.GetCurrentStep());
                         }
-                        catch (Exception err)
+                        catch (Exception)
                         {
                             ServerContext.logger.Error(
                                 string.Format(CultureInfo.CurrentCulture, "Error in Menu Handler : {0}",
-                                    obj.GetType().FullName), err);
+                                    obj.GetType().FullName));
                         }
                     }
                         break;

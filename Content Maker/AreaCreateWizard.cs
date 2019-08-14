@@ -117,9 +117,8 @@ namespace Content_Maker
                     ServerContext.LoadAndCacheStorage();
                 }
             }
-            catch (Exception error)
+            catch (Exception)
             {
-                ServerContext.Logger?.Error("Error creating area", error);
             }
         }
 

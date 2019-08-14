@@ -841,9 +841,9 @@ namespace Darkages.Types
                         obj.Template.LevelRequired = 1;
                 }
             }
-            catch (Exception error)
+            catch (Exception)
             {
-                ServerContext.logger?.Error("Error: ItemAddQuality.", error);
+                ServerContext.logger?.Error("Error: ItemAddQuality.");
             }
         }
 
