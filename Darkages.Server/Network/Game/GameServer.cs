@@ -38,6 +38,12 @@ namespace Darkages.Network.Game
 
         public ObjectService ObjectFactory = new ObjectService();
 
+        private readonly ManualResetEvent __msync = new ManualResetEvent(true);
+
+        private static bool InitialStartup = true;
+
+        private Thread _thread;
+
         public GameServer(int capacity) : base(capacity)
         {
             HeavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
@@ -76,12 +82,21 @@ namespace Darkages.Network.Game
             {
                 var delta = DateTime.UtcNow - lastHeavyUpdate;
 
-                ExecuteClientWork(delta);
-                ExecuteServerWork(delta);
-                ExecuteObjectWork(delta);
-
-                lastHeavyUpdate = DateTime.UtcNow;
-                Thread.Sleep(HeavyUpdateSpan);
+                try
+                {
+                    ExecuteClientWork(delta);
+                    ExecuteServerWork(delta);
+                    ExecuteObjectWork(delta);
+                }
+                catch (Exception err)
+                {
+                    ServerContext.logger.Error("GameServer Exception Raised.", err.Message, err.StackTrace);
+                }
+                finally
+                {
+                    lastHeavyUpdate = DateTime.UtcNow;
+                    Thread.Sleep(HeavyUpdateSpan);
+                }
             }
         }
 
@@ -146,41 +161,58 @@ namespace Darkages.Network.Game
 
         public void UpdateClients(TimeSpan elapsedTime)
         {
-
-            foreach (var client in Clients)
+            lock (Clients)
             {
-                if (client != null && client.Aisling != null)
+                foreach (var client in Clients)
                 {
-                    if (!client.IsWarping && !client.InMapTransition && !client.MapOpen)
-                    {
-                        Pulse(elapsedTime, client);
-                    }
-                    else if (client.IsWarping && !client.InMapTransition)
-                    {
-                        if (client.CanSendLocation && !client.IsRefreshing)
-                            client.SendLocation();
-                    }
-                    else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
-                    {
-                        client.MapOpen = false;
+                    __msync.WaitOne();
+                    __msync.Reset();
 
-                        if (client.InMapTransition && !client.MapOpen)
+                    try
+                    {
+
+                        if (client != null && client.Aisling != null)
                         {
-                            if ((DateTime.UtcNow - client.DateMapOpened) > TimeSpan.FromSeconds(0.2))
+                            if (!client.IsWarping && !client.InMapTransition && !client.MapOpen)
                             {
-                                client.MapOpen = true;
-                                client.InMapTransition = false;
+                                Pulse(elapsedTime, client);
+                            }
+                            else if (client.IsWarping && !client.InMapTransition)
+                            {
+                                if (client.CanSendLocation && !client.IsRefreshing)
+                                    client.SendLocation();
+                            }
+                            else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
+                            {
+                                client.MapOpen = false;
+
+                                if (client.InMapTransition && !client.MapOpen)
+                                {
+                                    if ((DateTime.UtcNow - client.DateMapOpened) > TimeSpan.FromSeconds(0.2))
+                                    {
+                                        client.MapOpen = true;
+                                        client.InMapTransition = false;
+                                    }
+                                }
+                            }
+
+                            if (client.MapOpen)
+                            {
+                                if (!client.IsWarping && !client.IsRefreshing)
+                                    Pulse(elapsedTime, client);
                             }
                         }
                     }
-
-                    if (client.MapOpen)
+                    catch (Exception err)
                     {
-                        if (!client.IsWarping && !client.IsRefreshing)
-                            Pulse(elapsedTime, client);
+                        ServerContext.logger.Error("Error: UpdateClients", err.Message, err.StackTrace);
+                    }
+                    finally
+                    {
+                        __msync.Set();
                     }
                 }
-            }            
+            }
         }
 
         private static void Pulse(TimeSpan elapsedTime, GameClient client)
@@ -222,7 +254,47 @@ namespace Darkages.Network.Game
         {
             base.Start(port);
 
-            Task.Run(Update);
+            new TaskFactory().StartNew(ServerGuard);
+        }
+
+
+        public void Launch()
+        {
+            var thread = _thread;
+            Thread.MemoryBarrier();
+
+            if (thread == null || thread.ThreadState == ThreadState.Stopped)
+            {
+                var __tmpl = new Thread(Update)
+                {
+                    IsBackground = true,
+                    Name = ServerContext.Config.SERVER_TITLE
+                };
+
+                __tmpl.Start();
+
+
+                Thread.MemoryBarrier();
+                _thread = __tmpl;
+            }
+        }
+
+        private void ServerGuard()
+        {
+            while (true)
+            {
+                if (!ServerHealthy)
+                {
+                    ServerContext.logger.Warn(InitialStartup ? "Game Servers Running." : "Resyncing Game Server.");
+
+                    Launch();
+                    {
+                        InitialStartup = false;
+                    }
+                }
+
+                Thread.Sleep(5000);
+            }
         }
     }
 }

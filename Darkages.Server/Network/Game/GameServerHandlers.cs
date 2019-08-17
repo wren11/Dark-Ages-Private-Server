@@ -398,7 +398,11 @@ namespace Darkages.Network.Game
 
             if (client.MapUpdating || client.Aisling.CurrentMapId == ServerContext.Config.TransitionZone)
             {
-                SendMapData(client);
+                if (client.Aisling.Map.Data != null)
+                {
+                    SendMapData(client);
+                }
+
                 client.MapUpdating = false;
             }
         }

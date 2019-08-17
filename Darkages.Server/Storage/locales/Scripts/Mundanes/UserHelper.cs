@@ -21,6 +21,7 @@ using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using Darkages.Common;
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -35,9 +36,14 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             var options = new List<OptionsDataItem>
             {
-                new OptionsDataItem(0x0001, "Return Home.")
+                new OptionsDataItem(0x0001, "Return Home."),
+                new OptionsDataItem(0x0020, "Enter Instance!"),
             };
-            if (!client.Aisling.TutorialCompleted) options.Add(new OptionsDataItem(0x0003, "Skip Tutorial."));
+
+            if (!client.Aisling.TutorialCompleted)
+                options.Add(new OptionsDataItem(0x0003, "Skip Tutorial."));
+
+
             client.SendOptionsDialog(Mundane, "What do you need?", options.ToArray());
         }
 
@@ -45,6 +51,33 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             switch (responseID)
             {
+                case 0x0020:
+                    {
+
+                        //clone the users current area
+                        var currentMap = ServerContext.GlobalMapCache[client.Aisling.CurrentMapId];
+                        var area       = Clone<Area>(currentMap);
+
+                        //copy data 
+                        area.Data      = new byte[currentMap.Data.Length];
+                        currentMap.Data.CopyTo(area.Data, 0);
+
+                        //generate a random id for it.
+                        area.Number = Generator.GenerateNumber();                        
+                        area.OnLoaded(client.Aisling);
+
+                        //assign to user
+                        client.Aisling.Instance       = area;
+                        client.Aisling.InsideInstance = true;
+                        client.Aisling.CurrentMapId   = area.Number;
+
+
+                        client.Spawn("Undead", 8, 10, 30);
+
+                        //get all alive users on the current map.
+                        GetObjects(client.Aisling.Map, i => i.Alive, Get.Monsters);
+
+                    } break;
                 case 0x0001:
                 {
                     if (client.Aisling.TutorialCompleted)

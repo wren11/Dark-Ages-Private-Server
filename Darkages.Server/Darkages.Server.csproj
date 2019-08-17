@@ -232,6 +232,7 @@
     <Compile Include="Network\NetworkPacketWriter.cs" />
     <Compile Include="Network\NetworkServer.cs" />
     <Compile Include="Network\NetworkSocket.cs" />
+    <Compile Include="Network\Object\IObjectManager.cs" />
     <Compile Include="Network\Object\ObjectEvent.cs" />
     <Compile Include="Network\Object\ObjectManager.cs" />
     <Compile Include="Network\Object\ObjectService.cs" />

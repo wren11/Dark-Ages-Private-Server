@@ -76,13 +76,15 @@ namespace Darkages.Network.Login
             }
 
             //create aisling from default template.
-            var template = Aisling.Create();
-            template.Display = (BodySprite) (format.Gender * 16);
-            template.Username = client.CreateInfo.AislingUsername;
-            template.Password = client.CreateInfo.AislingPassword;
-            template.Gender = (Gender) format.Gender;
-            template.HairColor = format.HairColor;
-            template.HairStyle = format.HairStyle;
+            var template       = Aisling.Create();
+            {
+                template.Display   = (BodySprite)(format.Gender * 16);
+                template.Username  = client.CreateInfo.AislingUsername;
+                template.Password  = client.CreateInfo.AislingPassword;
+                template.Gender    = (Gender)format.Gender;
+                template.HairColor = format.HairColor;
+                template.HairStyle = format.HairStyle;
+            }
 
             ServerContext.logger?.Info("New character Created: " + template.Username);
 
@@ -127,6 +129,16 @@ namespace Darkages.Network.Login
                 return;
             }
 
+            if (!ServerContext.Config.MultiUserLogin)
+            {
+                var aislings = GetObjects<Aisling>(null,
+                    i => i.Username.ToLower() == format.Username.ToLower()
+                    && format.Password == i.Password);
+
+                foreach (var aisling in aislings)
+                    aisling.Client.Server.ClientDisconnected(aisling.Client);
+            }
+
             LoginAsAisling(client, _aisling);
         }
 
@@ -134,12 +146,13 @@ namespace Darkages.Network.Login
         {
             if (_aisling != null)
             {
+
                 var redirect = new Redirect
                 {
                     Serial = Convert.ToString(client.Serial),
-                    Salt = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
-                    Seed = Convert.ToString(client.Encryption.Parameters.Seed),
-                    Name = _aisling.Username
+                    Salt   = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
+                    Seed   = Convert.ToString(client.Encryption.Parameters.Seed),
+                    Name   = _aisling.Username
                 };
 
                 if (_aisling.Username.Equals(ServerContext.Config.GameMaster, StringComparison.OrdinalIgnoreCase))

@@ -43,6 +43,7 @@ namespace Darkages
         /// </summary>
         public byte BaseAC;
 
+        [JsonProperty] public bool MultiUserLogin = false;
 
         [JsonProperty] public byte BaseMR = 70;
 
