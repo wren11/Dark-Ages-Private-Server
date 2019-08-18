@@ -32,8 +32,6 @@ namespace Lorule
 
         private static void Main()
         {
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             using (Mutex _oneInstanceMutex = new Mutex(true, OneInstanceMutexName, out var firstInstance))
             {

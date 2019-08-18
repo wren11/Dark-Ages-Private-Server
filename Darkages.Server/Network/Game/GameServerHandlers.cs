@@ -256,9 +256,9 @@ namespace Darkages.Network.Game
         /// <summary>
         ///     Enter Game
         /// </summary>
-        private async void EnterGame(GameClient client, ClientFormat10 format)
+        private void EnterGame(GameClient client, ClientFormat10 format)
         {
-            await LoadPlayerAsync(client, format);
+            LoadPlayerAsync(client, format);
         }
 
         private async Task<Aisling> LoadPlayerAsync(GameClient client, ClientFormat10 format)
@@ -398,11 +398,7 @@ namespace Darkages.Network.Game
 
             if (client.MapUpdating || client.Aisling.CurrentMapId == ServerContext.Config.TransitionZone)
             {
-                if (client.Aisling.Map.Data != null)
-                {
-                    SendMapData(client);
-                }
-
+                SendMapData(client);
                 client.MapUpdating = false;
             }
         }
@@ -2254,11 +2250,11 @@ namespace Darkages.Network.Game
                             if (client.MenuInterpter != null)
                                 client.ShowCurrentMenu(obj as Mundane, null, client.MenuInterpter.GetCurrentStep());
                         }
-                        catch (Exception)
+                        catch (Exception err)
                         {
                             ServerContext.logger.Error(
                                 string.Format(CultureInfo.CurrentCulture, "Error in Menu Handler : {0}",
-                                    obj.GetType().FullName));
+                                    obj.GetType().FullName), err);
                         }
                     }
                         break;

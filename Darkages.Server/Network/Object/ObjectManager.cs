@@ -24,7 +24,7 @@ using Newtonsoft.Json;
 
 namespace Darkages.Network.Object
 {
-    public class ObjectManager : IObjectManager
+    public class ObjectManager
     {
         [Flags]
         public enum Get

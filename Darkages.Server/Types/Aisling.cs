@@ -1428,6 +1428,7 @@ namespace Darkages
         /// </summary>
         /// <value>The redirect.</value>
         public Redirect Redirect { get; set; }
+
         #endregion
     }
 }

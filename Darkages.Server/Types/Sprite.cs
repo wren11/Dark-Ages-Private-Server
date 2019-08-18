@@ -86,32 +86,11 @@ namespace Darkages.Types
 
         [JsonIgnore] [BsonIgnore] public GameClient Client { get; set; }
 
-        [JsonIgnore]
-        [BsonIgnore]
-        public Area Map
-        {
-            get
-            {
+        [JsonIgnore] [BsonIgnore]
+        public Area Map => ServerContext.GlobalMapCache.ContainsKey(CurrentMapId)
+            ? ServerContext.GlobalMapCache[CurrentMapId] ?? null
+            : null;
 
-                if (!InsideInstance)
-                {
-                    return ServerContext.GlobalMapCache.ContainsKey(CurrentMapId) ? ServerContext.GlobalMapCache[CurrentMapId] ?? null : null;
-                }
-                else
-                {
-                    if (Instance != null)
-                    {
-                        ServerContext.logger.Debug("Map {0} Instance: Unique", CurrentMapId);
-                        return Instance;
-                    }
-                }
-
-                return null;
-            }
-        }
-
-        [JsonProperty]
-        public Area Instance { get; set; }
 
         [JsonIgnore] [BsonIgnore] public TileContent EntityType { get; set; }
 
@@ -169,8 +148,6 @@ namespace Darkages.Types
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        public bool InsideInstance { get; set; } = false;
 
         #region Identification & Position
 
@@ -1071,9 +1048,9 @@ namespace Darkages.Types
                         break;
                 }
             }
-            catch (Exception)
+            catch (Exception err)
             {
-                ServerContext.logger.Error("Error in Show<T>");
+                ServerContext.logger.Error("Error in Show<T>", err);
             }
         }
 
