@@ -46,55 +46,58 @@ namespace Darkages.Network.Game.Components
             using (var db = new LiteDatabase(ServerContext.StoragePath
                                              + "\\" + ServerContext.Config.DBName))
             {
-                var dbSprites = db.GetCollection<EntityObj>("LorTemp");
-                var objects = GetObjects(null, sprite => sprite != null, Get.All).ToArray();
-
-                foreach (var obj in objects)
+                lock (ServerContext.SyncObj)
                 {
-                    var bObj = new EntityObj
+                    var dbSprites = db.GetCollection<EntityObj>("LorTemp");
+                    var objects   = GetObjects(null, sprite => sprite != null, Get.All).ToArray();
+
+                    foreach (var obj in objects)
                     {
-                        Serial = obj.Serial,
-                        Data = JsonConvert.SerializeObject(obj),
-                        RefType = obj.GetType(),
-                        Updated = DateTime.UtcNow,
-                        UserName = (obj is Aisling o) ? o.Username : string.Empty,
-                    };
-
-
-                    if (obj is Monster)
-                        bObj.Name = "Monster";
-                    if (obj is Aisling)
-                        bObj.Name = "Aisling";
-                    if (obj is Item)
-                        bObj.Name = "Item";
-                    if (obj is Mundane)
-                        bObj.Name = "Mundane";
-
-                    try
-                    {
-
-                        if (obj is Aisling aisling)
+                        var bObj = new EntityObj
                         {
-                            if (!dbSprites.Exists(i => i.UserName == aisling.Username))
+                            Serial    = obj.Serial,
+                            Data      = JsonConvert.SerializeObject(obj),
+                            RefType   = obj.GetType(),
+                            Updated   = DateTime.UtcNow,
+                            UserName  = (obj is Aisling o) ? o.Username : string.Empty,
+                        };
+                        
+
+                        if (obj is Monster)
+                            bObj.Name = "Monster";
+                        if (obj is Aisling)
+                            bObj.Name = "Aisling";
+                        if (obj is Item)
+                            bObj.Name = "Item";
+                        if (obj is Mundane)
+                            bObj.Name = "Mundane";
+
+                        try
+                        {
+
+                            if (obj is Aisling aisling)
                             {
-                                dbSprites.Insert(bObj);
+                                if (!dbSprites.Exists(i => i.UserName == aisling.Username))
+                                {
+                                    dbSprites.Insert(bObj);
+                                }
+                            }
+                            else
+                            {
+                                if (!dbSprites.Exists(i => i.Serial == obj.Serial))
+                                {
+                                    dbSprites.Insert(bObj);
+                                }
                             }
                         }
-                        else
+                        catch (Exception)
                         {
-                            if (!dbSprites.Exists(i => i.Serial == obj.Serial))
-                            {
-                                dbSprites.Insert(bObj);
-                            }
                         }
-                    }
-                    catch (Exception)
-                    {
+
                     }
 
+                    dbSprites.EnsureIndex(i => i.Serial);
                 }
-
-                dbSprites.EnsureIndex(i => i.Serial);
             }
         }
     }

@@ -116,7 +116,6 @@ namespace Darkages.Network
             if (packet == null)
                 return;
 
-
             if (format.Secured)
             {
                 Encryption.Transform(packet);
@@ -167,7 +166,7 @@ namespace Darkages.Network
                 try
                 {
                     if (packet.Length > 0 && packet[0] == 0xAA)
-                        ServerSocket.Send(packet, 0, packet.Length, SocketFlags.None);
+                        Send(ServerSocket, packet, 0, packet.Length, 5000);
                 }
                 catch (Exception)
                 {
@@ -214,9 +213,6 @@ namespace Darkages.Network
 
         public void FlushAndSend(NetworkFormat format)
         {
-            _sendReset.WaitOne();
-            _sendReset.Reset();
-
             lock (Writer)
             {
                 Writer.Position = 0;
@@ -234,8 +230,6 @@ namespace Darkages.Network
 
                 var array = packet.ToArray();
                 ServerSocket.Send(array, SocketFlags.None);
-
-                _sendReset.Set();
             }
         }
 
@@ -247,26 +241,23 @@ namespace Darkages.Network
                 return;
             }
 
-            lock (Writer)
+            Writer.Position = 0;
+            Writer.Write(format.Command);
+
+            if (format.Secured) Writer.Write(Ordinal++);
+
+            format.Serialize(Writer);
+
+            var packet = Writer.ToPacket();
+            if (packet == null)
+                return;
+
+            if (format.Secured) Encryption.Transform(packet);
+
+            lock (SendBuffer)
             {
-                Writer.Position = 0;
-                Writer.Write(format.Command);
-
-                if (format.Secured) Writer.Write(Ordinal++);
-
-                format.Serialize(Writer);
-
-                var packet = Writer.ToPacket();
-                if (packet == null)
-                    return;
-
-                if (format.Secured) Encryption.Transform(packet);
-
-                lock (SendBuffer)
-                {
-                    var array = packet.ToArray();
-                    SendBuffer.Enqueue(array);
-                }
+                var array = packet.ToArray();
+                SendBuffer.Enqueue(array);
             }
         }
 

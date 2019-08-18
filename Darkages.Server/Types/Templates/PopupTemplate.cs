@@ -94,7 +94,10 @@ namespace Darkages.Types
             {
                 List<Popup> tmpl;
 
-                tmpl = new List<Popup>(_popups).ToList();
+                lock (ServerContext.SyncObj)
+                {
+                    tmpl = new List<Popup>(_popups).ToList();
+                }
 
                 return tmpl;
             }
@@ -130,12 +133,18 @@ namespace Darkages.Types
 
         public static void Add(Popup obj)
         {
-            _popups.Add(obj);
+            lock (ServerContext.SyncObj)
+            {
+                _popups.Add(obj);
+            }
         }
 
         public static void Remove(Popup obj)
         {
-            _popups.RemoveWhere(i => i.Id == obj.Id);
+            lock (ServerContext.SyncObj)
+            {
+                _popups.RemoveWhere(i => i.Id == obj.Id);
+            }
         }
 
 

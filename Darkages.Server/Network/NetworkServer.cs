@@ -38,8 +38,6 @@ namespace Darkages.Network
 
         private readonly Cache<byte, NetworkFormat> _formatCache = new Cache<byte, NetworkFormat>();
 
-        private AutoResetEvent _receivingStarted = new AutoResetEvent(false);
-
         protected NetworkServer(int capacity)
         {
             var type = typeof(NetworkServer<TClient>);
@@ -72,11 +70,6 @@ namespace Darkages.Network
             var client = new TClient
             {
                 ServerSocket = new NetworkSocket(handler)
-                {
-                    SendBufferSize      = 4096,
-                    ReceiveBufferSize   = 4096,
-                    UseOnlyOverlappedIO = true,
-                }
             };
 
             if (client.ServerSocket.Connected)
@@ -107,8 +100,6 @@ namespace Darkages.Network
 
         private void EndReceiveHeader(IAsyncResult result)
         {
-            _receivingStarted.Set();
-
             try
             {
                 if (!(result.AsyncState is TClient client))
@@ -157,6 +148,7 @@ namespace Darkages.Network
                 if (client.ServerSocket.PacketComplete)
                 {
                     ClientDataReceived(client, client.ServerSocket.ToPacket());
+
                     client.ServerSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
                 }
                 else
@@ -226,7 +218,7 @@ namespace Darkages.Network
             }
         }
 
-        public virtual void Start(int port)
+        public virtual void StartAsync(int port)
         {
             if (_listening)
                 return;
@@ -240,7 +232,10 @@ namespace Darkages.Network
             {
                 Listener.Bind(new IPEndPoint(IPAddress.Any, port));
 
-                Listener.Listen(Clients.Length);
+                lock (Clients)
+                {
+                    Listener.Listen(Clients.Length);
+                }
 
                 Listener.BeginAccept(EndConnectClient, null);
             }
@@ -248,7 +243,7 @@ namespace Darkages.Network
 
         public virtual void ClientConnected(TClient client)
         {
-            ServerContext.logger?.Trace("Connection From {0} Established.",
+            ServerContext.SrvLog?.Warning("Connection From {0} Established.",
                 client.ServerSocket.RemoteEndPoint.ToString());
         }
 
@@ -280,17 +275,14 @@ namespace Darkages.Network
 
             try
             {
-                _receivingStarted.WaitOne();
                 client.Read(packet, format);
 
-                if (_handlers[format.Command]?.Invoke(this,
+                _handlers[format.Command]?.Invoke(this,
                     new object[]
                     {
                         client,
                         format
-                    }) != null)
-                {
-                }
+                    });
             }
             catch (Exception)
             {
@@ -320,16 +312,19 @@ namespace Darkages.Network
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposed)
-                return;
-
-            if (disposing)
+            lock (this)
             {
-                _formatCache?.Dispose();
-                Listener?.Dispose();
-            }
+                if (disposed)
+                    return;
 
-            disposed = true;
+                if (disposing)
+                {
+                    _formatCache?.Dispose();
+                    Listener?.Dispose();
+                }
+
+                disposed = true;
+            }
         }
 
         public virtual void Dispose()

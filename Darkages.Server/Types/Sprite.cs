@@ -1073,7 +1073,11 @@ namespace Darkages.Types
             }
             catch (Exception)
             {
+<<<<<<< HEAD
                 ServerContext.logger.Error("Error in Show<T>");
+=======
+                ServerContext.SrvLog.Error("Error in Show<T>", err);
+>>>>>>> parent of 3e08817... Performance Changes
             }
         }
 

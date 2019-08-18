@@ -21,7 +21,6 @@ using System.Drawing;
 using Darkages;
 using System.Threading;
 using ConsoleExtender;
-using System.Windows.Forms;
 
 namespace Lorule
 {
@@ -32,9 +31,12 @@ namespace Lorule
 
         private static void Main()
         {
+<<<<<<< HEAD
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
+=======
+>>>>>>> parent of 3e08817... Performance Changes
             using (Mutex _oneInstanceMutex = new Mutex(true, OneInstanceMutexName, out var firstInstance))
             {
                 if (firstInstance)
@@ -42,14 +44,9 @@ namespace Lorule
                     _Server = new Instance();
                     _Server.Start();
 
-                    Thread.CurrentThread.Join();
+                    Thread.Sleep(Timeout.Infinite);
                 }
             }
-        }
-
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-
         }
 
         public class Instance : ServerContext

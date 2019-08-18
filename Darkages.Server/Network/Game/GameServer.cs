@@ -18,10 +18,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Darkages.Network.Game.Components;
 using Darkages.Network.Object;
 
@@ -29,12 +27,19 @@ namespace Darkages.Network.Game
 {
     public partial class GameServer
     {
+        private readonly ManualResetEvent __msync = new ManualResetEvent(true);
+
+        private Thread _thread;
+
+        private readonly ReaderWriterLock _writerLock = new ReaderWriterLock();
 
         public Dictionary<Type, GameServerComponent> Components;
 
         private readonly TimeSpan HeavyUpdateSpan;
 
+
         private DateTime lastHeavyUpdate = DateTime.UtcNow;
+
 
         public ObjectService ObjectFactory = new ObjectService();
 
@@ -46,7 +51,7 @@ namespace Darkages.Network.Game
 
         public GameServer(int capacity) : base(capacity)
         {
-            HeavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
+            HeavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 20);
 
             InitializeGameServer();
         }
@@ -67,10 +72,18 @@ namespace Darkages.Network.Game
 
         private void AutoSave(GameClient client)
         {
-            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContext.Config.SaveRate)
+            lock (Clients)
             {
-                client.Save();
-            }            
+                if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContext.Config.SaveRate)
+                {
+                    _writerLock.AcquireWriterLock(Timeout.Infinite);
+                    {
+                        client.Save();
+                    }
+
+                    if (_writerLock.IsWriterLockHeld) _writerLock.ReleaseWriterLock();
+                }
+            }
         }
 
         private void Update()
@@ -78,10 +91,12 @@ namespace Darkages.Network.Game
             lastHeavyUpdate = DateTime.UtcNow;
             ServerContext.Running = true;
 
-            while (true)
-            {
-                var delta = DateTime.UtcNow - lastHeavyUpdate;
+            while (ServerContext.Running)
+                try
+                {
+                    var delta = DateTime.UtcNow - lastHeavyUpdate;
 
+<<<<<<< HEAD
                 try
                 {
                     ExecuteClientWork(delta);
@@ -91,13 +106,31 @@ namespace Darkages.Network.Game
                 catch (Exception err)
                 {
                     ServerContext.logger.Error("GameServer Exception Raised.", err.Message, err.StackTrace);
+=======
+                    if (ServerContext.Paused)
+                        continue;
+
+                    lock (ServerContext.SyncObj)
+                    {
+                        ExecuteClientWork(delta);
+                        ExecuteServerWork(delta);
+                        ExecuteObjectWork(delta);
+                    }
+                }
+                catch (Exception error)
+                {
+                    ServerContext.SrvLog?.Error("Error In Heavy Worker", error);
+>>>>>>> parent of 3e08817... Performance Changes
                 }
                 finally
                 {
                     lastHeavyUpdate = DateTime.UtcNow;
                     Thread.Sleep(HeavyUpdateSpan);
                 }
+<<<<<<< HEAD
             }
+=======
+>>>>>>> parent of 3e08817... Performance Changes
         }
 
         public void InitializeGameServer()
@@ -109,53 +142,81 @@ namespace Darkages.Network.Game
         {
             Components = new Dictionary<Type, GameServerComponent>
             {
-                [typeof(Save)]                 = new Save(this),
-                [typeof(ObjectComponent)]      = new ObjectComponent(this),
-                [typeof(ClientTickComponent)]  = new ClientTickComponent(this),
                 [typeof(MonolithComponent)]    = new MonolithComponent(this),
                 [typeof(DaytimeComponent)]     = new DaytimeComponent(this),
                 [typeof(MundaneComponent)]     = new MundaneComponent(this),
                 [typeof(MessageComponent)]     = new MessageComponent(this),
                 [typeof(PingComponent)]        = new PingComponent(this),
+                [typeof(Save)]                 = new Save(this),
+                [typeof(ObjectComponent)]      = new ObjectComponent(this),
+                [typeof(ClientTickComponent)]  = new ClientTickComponent(this)
             };
 
-            ServerContext.logger?.Info("");
-            ServerContext.logger?.Trace(string.Format("Loading {0} Components...", Components.Count));
+            ServerContext.SrvLog?.Info("");
+            ServerContext.SrvLog?.Warning(string.Format("Loading {0} Components...", Components.Count));
 
             foreach (var component in Components)
             {
-                ServerContext.logger?.Info(string.Format("Component '{0}' loaded.", component.Key.Name));
+                ServerContext.SrvLog?.Info(string.Format("Component '{0}' loaded.", component.Key.Name));
             }
         }
 
         public void ExecuteClientWork(TimeSpan elapsedTime)
         {
-            UpdateClients(elapsedTime);
+            try
+            {
+                UpdateClients(elapsedTime);
+            }
+            catch (Exception err)
+            {
+                ServerContext.SrvLog.Error("Error: ExecuteClientWork", err);
+            }
         }
 
         public void ExecuteServerWork(TimeSpan elapsedTime)
         {
-            UpdateComponents(elapsedTime);
+            try
+            {
+                UpdateComponents(elapsedTime);
+            }
+            catch (Exception err)
+            {
+                ServerContext.SrvLog.Error("Error: ExecuteServerWork", err);
+            }
         }
 
         public void ExecuteObjectWork(TimeSpan elapsedTime)
         {
-            UpdateAreas(elapsedTime);
+            try
+            {
+                UpdateAreas(elapsedTime);
+            }
+            catch (Exception err)
+            {
+                ServerContext.SrvLog.Error("Error: ExecuteObjectWork", err);
+            }
         }
 
         private void UpdateComponents(TimeSpan elapsedTime)
         {
-            foreach (var component in Components.Values)
-                component.Update(elapsedTime);
+            try
+            {
+                lock (Components)
+                {
+                    foreach (var component in Components.Values) component.Update(elapsedTime);
+                }
+            }
+            catch (Exception err)
+            {
+                ServerContext.SrvLog.Error("Error: UpdateComponents", err);
+            }
         }
 
         private void UpdateAreas(TimeSpan elapsedTime)
         {
-            var values = ServerContext.GlobalMapCache.Select(i => i.Value).ToArray();
-
-            foreach (var area in values)
+            lock (Clients)
             {
-                area.Update(elapsedTime);
+                foreach (var area in ServerContext.GlobalMapCache.Values) area.Update(elapsedTime);
             }
         }
 
@@ -165,6 +226,7 @@ namespace Darkages.Network.Game
             {
                 foreach (var client in Clients)
                 {
+<<<<<<< HEAD
                     __msync.WaitOne();
                     __msync.Reset();
 
@@ -184,12 +246,33 @@ namespace Darkages.Network.Game
                             }
                             else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
                             {
+=======
+                    if (client != null && client.Aisling != null)
+                    {
+                        __msync.WaitOne();
+                        __msync.Reset();
+
+                        try
+                        {
+                            if (!client.IsWarping && !client.InMapTransition && !client.MapOpen)
+                            {
+                                Pulse(elapsedTime, client);
+                            }
+                            else if (client.IsWarping && !client.InMapTransition)
+                            {
+                                if (client.CanSendLocation && !client.IsRefreshing)
+                                    client.SendLocation();
+                            }
+                            else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
+                            {
+>>>>>>> parent of 3e08817... Performance Changes
                                 client.MapOpen = false;
 
                                 if (client.InMapTransition && !client.MapOpen)
                                 {
                                     if ((DateTime.UtcNow - client.DateMapOpened) > TimeSpan.FromSeconds(0.2))
                                     {
+<<<<<<< HEAD
                                         client.MapOpen = true;
                                         client.InMapTransition = false;
                                     }
@@ -210,6 +293,31 @@ namespace Darkages.Network.Game
                     finally
                     {
                         __msync.Set();
+=======
+                                        client.MapOpen         = true;
+                                        client.InMapTransition = false;
+                                    }
+                                }
+                            }
+
+
+                            if (client.MapOpen)
+                            {
+                                if (!client.IsWarping && !client.IsRefreshing)
+                                {
+                                    Pulse(elapsedTime, client);
+                                }
+                            }
+                        }
+                        catch (Exception err)
+                        {
+                            ServerContext.SrvLog.Error("Error: UpdateClients", err);
+                        }
+                        finally
+                        {
+                            __msync.Set();
+                        }
+>>>>>>> parent of 3e08817... Performance Changes
                     }
                 }
             }
@@ -217,30 +325,37 @@ namespace Darkages.Network.Game
 
         private static void Pulse(TimeSpan elapsedTime, GameClient client)
         {
+            if (client == null)
+                return;
+
+
             client.Update(elapsedTime);
             client.FlushBuffers();
         }
 
         public override void ClientDisconnected(GameClient client)
         {
-            if (client?.Aisling == null)
-                return;
+            lock (Clients)
+            {
+                if (client?.Aisling == null)
+                    return;
 
-            try
-            {
-                client.Save();
-                ServerContext.logger.Trace("Player {0} has disconnected from server.", client.Aisling.Username);
+                try
+                {
+                    client.Save();
+                    ServerContext.SrvLog.Warning("Player {0} has disconnected from server.", client.Aisling.Username);
 
-                client.Aisling.LoggedIn = false;
-                client.Aisling.Remove(true);
-            }
-            catch (Exception)
-            {
-                //Ignore
-            }
-            finally
-            {
-                base.ClientDisconnected(client);
+                    client.Aisling.LoggedIn = false;
+                    client.Aisling.Remove(true);
+                }
+                catch (Exception)
+                {
+                    //Ignore
+                }
+                finally
+                {
+                    base.ClientDisconnected(client);
+                }
             }
         }
 
@@ -250,10 +365,28 @@ namespace Darkages.Network.Game
         }
 
 
-        public override void Start(int port)
+        public override async void StartAsync(int port)
         {
-            base.Start(port);
+            base.StartAsync(port);
 
+            await new TaskFactory().StartNew(ServerGuard);
+        }
+
+        public void Launch()
+        {
+            var thread = _thread;
+            Thread.MemoryBarrier();
+
+            if (thread == null || thread.ThreadState == ThreadState.Stopped)
+            {
+                var __tmpl = new Thread(Update)
+                {
+                    IsBackground = true,
+                    Name         = ServerContext.Config.SERVER_TITLE,
+                    Priority     = ThreadPriority.Highest
+                };
+
+<<<<<<< HEAD
             new TaskFactory().StartNew(ServerGuard);
         }
 
@@ -271,12 +404,22 @@ namespace Darkages.Network.Game
                     Name = ServerContext.Config.SERVER_TITLE
                 };
 
+=======
+>>>>>>> parent of 3e08817... Performance Changes
                 __tmpl.Start();
 
 
                 Thread.MemoryBarrier();
                 _thread = __tmpl;
             }
+<<<<<<< HEAD
+=======
+
+
+
+
+            ServerContext.SrvLog.Info("{0} Servers Online!", ServerContext.Config.SERVER_TITLE);
+>>>>>>> parent of 3e08817... Performance Changes
         }
 
         private void ServerGuard()
@@ -285,12 +428,18 @@ namespace Darkages.Network.Game
             {
                 if (!ServerHealthy)
                 {
+<<<<<<< HEAD
                     ServerContext.logger.Warn(InitialStartup ? "Game Servers Running." : "Resyncing Game Server.");
 
                     Launch();
                     {
                         InitialStartup = false;
                     }
+=======
+                    ServerContext.SrvLog.Info("");
+                    ServerContext.SrvLog.Warning("Starting Main Server Threads.");
+                    Launch();
+>>>>>>> parent of 3e08817... Performance Changes
                 }
 
                 Thread.Sleep(5000);

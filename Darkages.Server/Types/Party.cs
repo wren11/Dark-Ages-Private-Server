@@ -25,6 +25,7 @@ namespace Darkages.Types
 {
     public class Party
     {
+        public static object SyncObj = new object();
 
         public Party(Aisling User)
         {
@@ -51,7 +52,11 @@ namespace Darkages.Types
         public static void DisbandParty(Party prmParty)
         {
             List<Aisling> tmpCopy;
-            tmpCopy = new List<Aisling>(prmParty.Members);
+
+            lock (SyncObj)
+            {
+                tmpCopy = new List<Aisling>(prmParty.Members);
+            }
 
             foreach (var member in tmpCopy)
             {
@@ -89,7 +94,10 @@ namespace Darkages.Types
             User.LeaderPrivleges = false;
             User.InvitePrivleges = true;
 
+            lock (SyncObj)
+            {
                 prmParty.Members.RemoveAt(idx);
+            }
 
             prmParty.Creator.Client.SendMessage(0x02,
                 !disbanded ? string.Format("{0} has left the party.", User.Username) : "Party Disbanded.");

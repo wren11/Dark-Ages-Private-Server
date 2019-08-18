@@ -27,7 +27,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                     client.MenuInterpter.OnMovedToNextStep += MenuInterpreter_OnMovedToNextStep;
 
-                    ServerContext.logger.Debug("Script Interpreter Created for Mundane: {0}", Mundane.Template.Name);
+                    ServerContext.SrvLog.Debug("Script Interpreter Created for Mundane: {0}", Mundane.Template.Name);
                 }
         }
 

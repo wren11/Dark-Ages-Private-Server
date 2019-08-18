@@ -27,6 +27,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using ConsoleExtender;
+using Darkages.Interops;
 using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
@@ -36,7 +37,6 @@ using Darkages.Types;
 using LiteDB;
 using Mono.CSharp;
 using Newtonsoft.Json;
-using NLog;
 
 namespace Darkages
 {
@@ -48,6 +48,7 @@ namespace Darkages
     /// <seealso cref="Darkages.Network.Object.ObjectManager" />
     public class ServerContext : ObjectManager
     {
+        internal static object SyncObj = new object();
         internal static DateTime GlobalMonsterCoolDown { get; set; }
 
         internal static Evaluator EVALUATOR;
@@ -109,7 +110,7 @@ namespace Darkages
 
         static ServerContext()
         {
-            logger = LogManager.GetCurrentClassLogger();
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
 
         public static IPAddress IPADDR { get; } = IPAddress.Parse(File.ReadAllText("server.tbl"));
@@ -117,12 +118,18 @@ namespace Darkages
         public static string GlobalMessage { get; internal set; }
 
         [field: JsonIgnore]
-        public static NLog.Logger logger { get; set; }
+        public static ServerInformation SrvLog { get; set; } = new ServerInformation();
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var error = (Exception) e.ExceptionObject;
+            SrvLog?.Error("Unhandled Exception", error);
+        }
 
         public static void Log(string message, params object[] args)
         {
-            if (logger != null)
-                logger.Info(message, args);
+            if (SrvLog != null)
+                SrvLog.Info(message, args);
             else
                 Console.WriteLine(message, args);
         }
@@ -130,55 +137,55 @@ namespace Darkages
         public static void LoadSkillTemplates()
         {
             StorageManager.SkillBucket.CacheFromStorage();
-            logger?.Debug("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
+            SrvLog?.Debug("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
         }
 
         public static void LoadSpellTemplates()
         {
             StorageManager.SpellBucket.CacheFromStorage();
-            logger?.Debug("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
+            SrvLog?.Debug("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
         }
 
         public static void LoadItemTemplates()
         {
             StorageManager.ItemBucket.CacheFromStorage();
-            logger?.Debug("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
+            SrvLog?.Debug("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
         }
 
         public static void LoadMonsterTemplates()
         {
             StorageManager.MonsterBucket.CacheFromStorage();
-            logger?.Debug("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
+            SrvLog?.Debug("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
         }
 
         public static void LoadMundaneTemplates()
         {
             StorageManager.MundaneBucket.CacheFromStorage();
-            logger?.Debug("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
+            SrvLog?.Debug("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
         }
 
         public static void LoadWarpTemplates()
         {
             StorageManager.WarpBucket.CacheFromStorage();
-            logger?.Debug("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
+            SrvLog?.Debug("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
         }
 
         public static void LoadWorldMapTemplates()
         {
             StorageManager.WorldMapBucket.CacheFromStorage();
-            logger?.Debug("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
+            SrvLog?.Debug("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
         }
 
         public static void LoadPopupTemplates()
         {
             StorageManager.PopupBucket.CacheFromStorage();
-            logger?.Debug("Popup Templates Loaded: {0}", GlobalPopupCache.Count);
+            SrvLog?.Debug("Popup Templates Loaded: {0}", GlobalPopupCache.Count);
         }
 
         public static void LoadMaps()
         {
             StorageManager.AreaBucket.CacheFromStorage();
-            logger?.Debug("Map Templates Loaded: {0}", GlobalMapCache.Count);
+            SrvLog?.Debug("Map Templates Loaded: {0}", GlobalMapCache.Count);
         }
 
         private static void StartServers()
@@ -194,10 +201,10 @@ namespace Darkages
                 try
                 {
                     Game = new GameServer(Config.ConnectionCapacity);
-                    Game.Start(DefaultPort);
+                    Game.StartAsync(DefaultPort);
 
                     Lobby = new LoginServer(Config.ConnectionCapacity);
-                    Lobby.Start(2610);
+                    Lobby.StartAsync(2610);
                 }
                 catch (SocketException)
                 {
@@ -370,30 +377,33 @@ namespace Darkages
             EmptyCacheCollectors();
 
 
-            logger?.Info(string.Format(""));
-            logger?.Trace(string.Format("Loading Server Templates..."));
+            SrvLog?.Info(string.Format(""));
+            SrvLog?.Warning(string.Format("Loading Server Templates..."));
 
-            LoadMaps();
-            LoadSkillTemplates();
-            LoadSpellTemplates();
-            LoadItemTemplates();
-            LoadMonsterTemplates();
-            LoadMundaneTemplates();
-            LoadWarpTemplates();
-            LoadPopupTemplates();
-            LoadWorldMapTemplates();
-            CacheCommunityAssets();
-            BindTemplates();
-            LoadMetaDatabase();
-            LoadExtensions();
+            lock (SyncObj)
+            {
+                LoadMaps();
+                LoadSkillTemplates();
+                LoadSpellTemplates();
+                LoadItemTemplates();
+                LoadMonsterTemplates();
+                LoadMundaneTemplates();
+                LoadWarpTemplates();
+                LoadPopupTemplates();
+                LoadWorldMapTemplates();
+                CacheCommunityAssets();
+                BindTemplates();
+                LoadMetaDatabase();
+                LoadExtensions();
+            }
 
             Paused = false;
         }
 
         private static void LoadExtensions()
         {
-            logger?.Info(string.Format(""));
-            logger?.Trace(string.Format("Loading Extensions..."));
+            SrvLog?.Info(string.Format(""));
+            SrvLog?.Warning(string.Format("Loading Extensions..."));
 
             CacheBuffs();
             Log("Building Buff Cache: {0} loaded.", GlobalBuffCache.Count);
@@ -417,6 +427,7 @@ namespace Darkages
 
             return EVALUATOR.Run(@"
                     using Darkages.Common;
+                    using Darkages.Interops;
                     using Darkages.Network.Game;
                     using Darkages.Network.Object;
                     using Darkages.Script.Context;

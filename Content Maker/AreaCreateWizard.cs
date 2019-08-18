@@ -119,6 +119,10 @@ namespace Content_Maker
             }
             catch (Exception)
             {
+<<<<<<< HEAD
+=======
+                ServerContext.SrvLog?.Error("Error creating area", error);
+>>>>>>> parent of 3e08817... Performance Changes
             }
         }
 
