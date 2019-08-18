@@ -42,23 +42,20 @@ namespace Darkages
 
         public void ShowFieldMap(GameClient client)
         {
-            lock (ServerContext.SyncObj)
-            {
                 client.InMapTransition = true;
 
                 client.FlushBuffers();
-                client.FlushAndSend(new ServerFormat2E(client.Aisling));
+                client.Send(new ServerFormat2E(client.Aisling));
 
                 client.Aisling.PortalSession
                     = new PortalSession
                     {
-                        FieldNumber = 1,
-                        IsMapOpen = true,
-                        DateOpened = DateTime.UtcNow
+                        FieldNumber  = 1,
+                        IsMapOpen    = true,
+                        DateOpened   = DateTime.UtcNow
                     };
 
                 client.DateMapOpened = DateTime.UtcNow;
-            }
         }
 
         public void TransitionToMap(GameClient client, short X = -1, short Y = -1, int DestinationMap = 0)
@@ -75,39 +72,32 @@ namespace Darkages
 
                 client.Refresh();
 
-                //while (client.IsWarping)
-                //{
-                //    Task.Delay(10);
-                //}
-
-                lock (ServerContext.SyncObj)
+                while (client.IsWarping)
                 {
-                    ShowFieldMap(client);
+                    Task.Delay(10);
                 }
+
+                ShowFieldMap(client);
             }
             else
             {
                 if (ServerContext.GlobalMapCache.ContainsKey(DestinationMap))
                 {
-                    lock (ServerContext.SyncObj)
-                    {
-                        client.LeaveArea(true, true);
-                        client.Refresh();
+                    client.LeaveArea(true, true);
+                    client.Refresh();
 
-                        
-                        client.Aisling.XPos = X >= 0 ? X : ServerContext.Config.TransitionPointX;
-                        client.Aisling.YPos = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
-                        client.Aisling.CurrentMapId = DestinationMap;
 
-                        client.EnterArea();
+                    client.Aisling.XPos = X >= 0 ? X : ServerContext.Config.TransitionPointX;
+                    client.Aisling.YPos = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
+                    client.Aisling.CurrentMapId = DestinationMap;
 
-                        if (client.Aisling.AreaID == DestinationMap)
-                            client.FlushAndSend(new ServerFormat15(client.Aisling.Map));
+                    client.EnterArea();
 
-                        client.Refresh();
+                    if (client.Aisling.AreaID == DestinationMap)
+                        client.FlushAndSend(new ServerFormat15(client.Aisling.Map));
 
-                        client.Aisling.PortalSession = null;
-                    }
+                    client.Refresh();
+                    client.Aisling.PortalSession = null;
                 }
             }
         }    

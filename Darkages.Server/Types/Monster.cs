@@ -159,8 +159,13 @@ namespace Darkages.Types
             DistributeExperience(player, exp);
 
             foreach (var party in player.PartyMembers.Where(i => i.Serial != player.Serial))
+            {
                 if (party.WithinRangeOf(player))
+                {
                     DistributeExperience(party, exp);
+                    party.Client?.SendStats(StatusFlags.StructC);
+                }
+            }
         }
 
         public static void DistributeExperience(Aisling player, double exp)
@@ -172,7 +177,7 @@ namespace Darkages.Types
                 exp += bonus;
 
             player.ExpTotal += (int) exp;
-            player.ExpNext -= (int) exp;
+            player.ExpNext  -= (int) exp;
             player.Client.SendMessage(0x02, string.Format("You received {0} Experience!.", (int) exp));
 
             var seed = player.ExpLevel * 0.1 + 0.5;

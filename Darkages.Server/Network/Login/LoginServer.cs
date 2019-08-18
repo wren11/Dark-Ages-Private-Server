@@ -86,7 +86,7 @@ namespace Darkages.Network.Login
                 template.HairStyle = format.HairStyle;
             }
 
-            ServerContext.SrvLog?.Info("New character Created: " + template.Username);
+            ServerContext.logger?.Info("New character Created: " + template.Username);
 
             StorageManager.AislingBucket.Save(template);
             client.SendMessageBox(0x00, "\0");
@@ -158,19 +158,16 @@ namespace Darkages.Network.Login
                 if (_aisling.Username.Equals(ServerContext.Config.GameMaster, StringComparison.OrdinalIgnoreCase))
                 {
                     _aisling.GameMaster = true;
-                    ServerContext.SrvLog.Debug("GameMaster Entering Game: {0}", _aisling.Username);
+                    ServerContext.logger.Debug("GameMaster Entering Game: {0}", _aisling.Username);
                 }
                 else
                 {
-                    ServerContext.SrvLog?.Debug("Player Entering Game: {0}", _aisling.Username);
+                    ServerContext.logger?.Debug("Player Entering Game: {0}", _aisling.Username);
                 }
 
                 _aisling.Redirect = redirect;
 
-                lock (ServerContext.SyncObj)
-                {
-                    StorageManager.AislingBucket.Save(_aisling);
-                }
+                StorageManager.AislingBucket.Save(_aisling);
 
                 client.SendMessageBox(0x00, "\0");
                 client.Send(new ServerFormat03
@@ -287,7 +284,7 @@ namespace Darkages.Network.Login
             {
                 Console.WriteLine("Client Requested Metafile: {0}", format.Name);
 
-                client.FlushAndSend(new ServerFormat6F
+                client.Send(new ServerFormat6F
                 {
                     Type = 0x00,
                     Name = format.Name
@@ -296,7 +293,7 @@ namespace Darkages.Network.Login
 
             if (format.Type == 0x01)
             {
-                client.FlushAndSend(new ServerFormat6F
+                client.Send(new ServerFormat6F
                 {
                     Type = 0x01
                 });

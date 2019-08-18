@@ -73,7 +73,7 @@ namespace Darkages.Storage.locales.Scripts.Global
                 }
             }
 
-            ServerContext.SrvLog?.Info("[{0}] Reactor Scripts Loaded: {1}", Client.Aisling.Username, Scripts.Count);
+            ServerContext.logger?.Info("[{0}] Reactor Scripts Loaded: {1}", Client.Aisling.Username, Scripts.Count);
         }
 
         public override void Run(GameClient client)

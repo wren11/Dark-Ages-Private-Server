@@ -41,8 +41,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
         public override void OnUse(Sprite sprite, Sprite target)
         {
-            lock (ServerContext.SyncObj)
-            {
                 ServerContext.GlobalItemTemplateCache
                     = new Dictionary<string, ItemTemplate>();
 
@@ -83,21 +81,20 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     var exists = ServerContext.GlobalItemTemplateCache.Keys.FirstOrDefault(i
                         => i.Equals(spellArgs, StringComparison.OrdinalIgnoreCase));
 
-                    if (exists != null)
+                if (exists != null)
+                {
+                    var template = ServerContext.GlobalItemTemplateCache[exists];
+                    var offset = template.DisplayImage - 0x8000;
+                    var item = Item.Create(sprite, template);
                     {
-                        var template = ServerContext.GlobalItemTemplateCache[exists];
-                        var offset = template.DisplayImage - 0x8000;
-                        var item = Item.Create(sprite, template);
-                        {
-                            item.Upgrades = Upgrades;
-                        }
+                        item.Upgrades = Upgrades;
+                    }
 
-                        Item.ApplyQuality(item);
+                    Item.ApplyQuality(item);
 
-                        item.Template = template;
-                        {
-                            item.Release(sprite, sprite.Position);
-                        }
+                    item.Template = template;
+                    {
+                        item.Release(sprite, sprite.Position);
                     }
                 }
             }
