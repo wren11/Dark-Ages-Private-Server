@@ -38,7 +38,6 @@ namespace Darkages.Network
 
         private readonly Cache<byte, NetworkFormat> _formatCache = new Cache<byte, NetworkFormat>();
 
-        private AutoResetEvent _receivingStarted = new AutoResetEvent(false);
 
         protected NetworkServer(int capacity)
         {
@@ -107,8 +106,6 @@ namespace Darkages.Network
 
         private void EndReceiveHeader(IAsyncResult result)
         {
-            _receivingStarted.Set();
-
             try
             {
                 if (!(result.AsyncState is TClient client))
@@ -280,7 +277,6 @@ namespace Darkages.Network
 
             try
             {
-                _receivingStarted.WaitOne();
                 client.Read(packet, format);
 
                 if (_handlers[format.Command]?.Invoke(this,
