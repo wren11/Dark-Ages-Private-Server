@@ -1048,9 +1048,9 @@ namespace Darkages.Types
                         break;
                 }
             }
-            catch (Exception err)
+            catch (Exception)
             {
-                ServerContext.Logger.Error("Error in Show<T>", err);
+                ServerContext.Logger.Error("Error in Show<T>");
             }
         }
 

@@ -76,9 +76,16 @@ namespace Darkages.Network.Game
             {
                 var delta = DateTime.UtcNow - lastHeavyUpdate;
 
-                ExecuteClientWork(delta);
-                ExecuteServerWork(delta);
-                ExecuteObjectWork(delta);
+                try
+                {
+                    ExecuteClientWork(delta);
+                    ExecuteServerWork(delta);
+                    ExecuteObjectWork(delta);
+                }
+                catch
+                {
+
+                }
 
                 lastHeavyUpdate = DateTime.UtcNow;
                 Thread.Sleep(HeavyUpdateSpan);

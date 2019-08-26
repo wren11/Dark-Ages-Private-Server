@@ -35,8 +35,6 @@ namespace Darkages.Network
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly ManualResetEvent _sendReset;
-
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             if (PropertyChanged != null)
@@ -50,7 +48,6 @@ namespace Darkages.Network
             Writer = new NetworkPacketWriter();
             Encryption = new SecurityProvider();
 
-            _sendReset = new ManualResetEvent(true);
             SendBuffer = new ConcurrentQueue<byte[]>();
         }
 
@@ -159,9 +156,6 @@ namespace Darkages.Network
                 if (!enumerable.Any())
                     return;
 
-                _sendReset.WaitOne();
-                _sendReset.Reset();
-
                 var packet = enumerable;
 
                 try
@@ -208,14 +202,11 @@ namespace Darkages.Network
 
         public void EmptyBuffers()
         {
-            _sendReset.Set();
             SendBuffer = new ConcurrentQueue<byte[]>();
         }
 
         public void FlushAndSend(NetworkFormat format)
         {
-            _sendReset.WaitOne();
-            _sendReset.Reset();
 
             lock (Writer)
             {
@@ -237,7 +228,6 @@ namespace Darkages.Network
                 var array = packet.ToArray();
                 ServerSocket.Send(array, SocketFlags.None);
 
-                _sendReset.Set();
             }
         }
 
