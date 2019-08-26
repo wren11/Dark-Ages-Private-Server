@@ -80,7 +80,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                             }
                     });
 
-                    ServerContext.logger.Debug("Script Interpreter Created for Mundane: {0}", Mundane.Template.Name);
+                    ServerContext.Logger.Debug("Script Interpreter Created for Mundane: {0}", Mundane.Template.Name);
                 }
         }
 

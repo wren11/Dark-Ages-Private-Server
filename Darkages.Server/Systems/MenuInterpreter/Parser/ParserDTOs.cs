@@ -12,6 +12,7 @@ namespace MenuInterpreter.Parser
         public int? sequence { get; set; }
         public int? menu { get; set; }
         public int? checkpoint { get; set; }
+        public int? quest { get; set; }
     }
 
     public class Answer : Link
@@ -47,6 +48,14 @@ namespace MenuInterpreter.Parser
         public IList<Option> options { get; set; }
     }
 
+    public class QuestEvent
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public Link accepted { get; set; }
+    }
+
+
     public class Checkpoint
     {
         public int id { get; set; }
@@ -55,6 +64,7 @@ namespace MenuInterpreter.Parser
         public int amount { get; set; }
         public Link success { get; set; }
         public Link fail { get; set; }
+
     }
 
     public class ParseResult
@@ -63,5 +73,7 @@ namespace MenuInterpreter.Parser
         public IList<Sequence> sequences { get; set; }
         public IList<Menu> menus { get; set; }
         public IList<Checkpoint> checkpoints { get; set; }
+
+        public IList<QuestEvent> quests { get; set; }
     }
 }

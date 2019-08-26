@@ -4,6 +4,7 @@
     {
         Step = 1,
         Menu = 2,
-        Checkpoint = 3
+        Checkpoint = 3,
+        Quest = 4
     }
 }

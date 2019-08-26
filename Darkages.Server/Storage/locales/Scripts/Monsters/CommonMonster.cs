@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Darkages.Network.Game;
+using Darkages.Network.Game.Components;
 using Darkages.Scripting;
 using Darkages.Types;
 
@@ -147,11 +148,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (Monster.Target != null)
                 if (Monster.Target is Aisling)
                     Monster.GenerateRewards(Monster.Target as Aisling);
-
-            Monster.Template.SpawnCount--;
-
-            if (Monster.Template.SpawnCount < 0)
-                Monster.Template.SpawnCount = 0;
 
             Monster.Remove();
             Monster.Target = null;

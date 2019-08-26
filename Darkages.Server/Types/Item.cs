@@ -843,7 +843,7 @@ namespace Darkages.Types
             }
             catch (Exception error)
             {
-                ServerContext.logger?.Error("Error: ItemAddQuality.", error);
+                ServerContext.Logger?.Error("Error: ItemAddQuality.", error);
             }
         }
 

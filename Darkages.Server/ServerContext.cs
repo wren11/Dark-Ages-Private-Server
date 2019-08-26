@@ -109,7 +109,7 @@ namespace Darkages
 
         static ServerContext()
         {
-            logger = LogManager.GetCurrentClassLogger();
+            Logger = LogManager.GetCurrentClassLogger();
         }
 
         public static IPAddress IPADDR { get; } = IPAddress.Parse(File.ReadAllText("server.tbl"));
@@ -117,12 +117,12 @@ namespace Darkages
         public static string GlobalMessage { get; internal set; }
 
         [field: JsonIgnore]
-        public static NLog.Logger logger { get; set; }
+        public static NLog.Logger Logger { get; set; }
 
         public static void Log(string message, params object[] args)
         {
-            if (logger != null)
-                logger.Info(message, args);
+            if (Logger != null)
+                Logger.Info(message, args);
             else
                 Console.WriteLine(message, args);
         }
@@ -130,55 +130,55 @@ namespace Darkages
         public static void LoadSkillTemplates()
         {
             StorageManager.SkillBucket.CacheFromStorage();
-            logger?.Debug("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
+            Logger?.Debug("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
         }
 
         public static void LoadSpellTemplates()
         {
             StorageManager.SpellBucket.CacheFromStorage();
-            logger?.Debug("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
+            Logger?.Debug("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
         }
 
         public static void LoadItemTemplates()
         {
             StorageManager.ItemBucket.CacheFromStorage();
-            logger?.Debug("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
+            Logger?.Debug("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
         }
 
         public static void LoadMonsterTemplates()
         {
             StorageManager.MonsterBucket.CacheFromStorage();
-            logger?.Debug("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
+            Logger?.Debug("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
         }
 
         public static void LoadMundaneTemplates()
         {
             StorageManager.MundaneBucket.CacheFromStorage();
-            logger?.Debug("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
+            Logger?.Debug("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
         }
 
         public static void LoadWarpTemplates()
         {
             StorageManager.WarpBucket.CacheFromStorage();
-            logger?.Debug("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
+            Logger?.Debug("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
         }
 
         public static void LoadWorldMapTemplates()
         {
             StorageManager.WorldMapBucket.CacheFromStorage();
-            logger?.Debug("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
+            Logger?.Debug("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
         }
 
         public static void LoadPopupTemplates()
         {
             StorageManager.PopupBucket.CacheFromStorage();
-            logger?.Debug("Popup Templates Loaded: {0}", GlobalPopupCache.Count);
+            Logger?.Debug("Popup Templates Loaded: {0}", GlobalPopupCache.Count);
         }
 
         public static void LoadMaps()
         {
             StorageManager.AreaBucket.CacheFromStorage();
-            logger?.Debug("Map Templates Loaded: {0}", GlobalMapCache.Count);
+            Logger?.Debug("Map Templates Loaded: {0}", GlobalMapCache.Count);
         }
 
         private static void StartServers()
@@ -370,8 +370,8 @@ namespace Darkages
             EmptyCacheCollectors();
 
 
-            logger?.Info(string.Format(""));
-            logger?.Trace(string.Format("Loading Server Templates..."));
+            Logger?.Info(string.Format(""));
+            Logger?.Trace(string.Format("Loading Server Templates..."));
 
             LoadMaps();
             LoadSkillTemplates();
@@ -392,8 +392,8 @@ namespace Darkages
 
         private static void LoadExtensions()
         {
-            logger?.Info(string.Format(""));
-            logger?.Trace(string.Format("Loading Extensions..."));
+            Logger?.Info(string.Format(""));
+            Logger?.Trace(string.Format("Loading Extensions..."));
 
             CacheBuffs();
             Log("Building Buff Cache: {0} loaded.", GlobalBuffCache.Count);

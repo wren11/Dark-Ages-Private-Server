@@ -53,9 +53,13 @@ namespace Darkages.Types
         public StatusOperator Operator { get; set; }
     }
 
+    public delegate void QuestDelegate(Quest q);
+
     public class Quest
     {
         [JsonIgnore] public readonly int Id;
+
+        public event QuestDelegate OnQuestCompleted = null;
 
         public List<uint> ExpRewards = new List<uint>();
 
@@ -93,6 +97,8 @@ namespace Darkages.Types
 
         public void OnCompleted(Aisling user, bool equipLoot = false)
         {
+            OnQuestCompleted?.Invoke(this);
+
             GiveRewards(user, equipLoot);
         }
 
@@ -216,9 +222,9 @@ namespace Darkages.Types
                 user.LegendBook.AddLegend(new Legend.LegendItem
                 {
                     Category = "Quest Reward",
-                    Color = legends.Color,
-                    Icon = legends.Icon,
-                    Value = legends.Value
+                    Color    = legends.Color,
+                    Icon     = legends.Icon,
+                    Value    = legends.Value
                 });
 
 

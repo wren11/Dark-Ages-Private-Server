@@ -1,5 +1,12 @@
 ﻿namespace MenuInterpreter
 {
+
+    public class QuestHanderArgs
+    {
+        public string QuestName { get; set; }
+        public bool IsMet { get; set; }
+    }
+
     public class CheckpointHandlerArgs
     {
         /// <summary>

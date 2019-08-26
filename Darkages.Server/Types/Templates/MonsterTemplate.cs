@@ -105,8 +105,6 @@ namespace Darkages.Types
 
         [JsonIgnore] public DateTime NextAvailableSpawn { get; set; }
 
-        [JsonIgnore] public int SpawnCount { get; set; }
-
         [JsonIgnore] public bool Ready => DateTime.UtcNow > NextAvailableSpawn;
 
         public string BaseName { get; set; }

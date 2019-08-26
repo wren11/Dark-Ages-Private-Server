@@ -146,8 +146,11 @@ namespace Darkages.Network.ServerFormats
 
             foreach (var option in this)
             {
-                writer.WriteStringA(option.Text);
-                writer.Write(option.Step);
+                if (option.Text != null)
+                {
+                    writer.WriteStringA(option.Text);
+                    writer.Write(option.Step);
+                }
             }
         }
     }

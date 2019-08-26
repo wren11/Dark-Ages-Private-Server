@@ -81,11 +81,13 @@ namespace MenuInterpreter.Parser
                     if (menu.id <= 0)
                         throw new Exception($"Menu id must be greater than zero. Found id {menu.id}");
 
-                    var answers = menu.options.Select(opt =>
+                    var answers = menu.options?.Select(opt =>
                         new MenuInterpreter.Answer(opt.id, opt.text, GetLinkedId(opt)));
 
                     var newId = GetIdForMenu(menu.id);
-                    items.Add(new MenuItem(newId, MenuItemType.Menu, menu.text, answers.ToArray()));
+
+                    if (answers != null)
+                        items.Add(new MenuItem(newId, MenuItemType.Menu, menu.text, answers.ToArray()));
                 }
 
             // parse checkpoints

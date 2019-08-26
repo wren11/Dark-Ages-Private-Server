@@ -633,7 +633,9 @@ namespace Darkages
         /// <returns><c>true</c> if the specified Quest Exists; otherwise, <c>false</c>.</returns>
         public bool HasQuest(string lpName)
         {
-            return Quests.Any(i => i.Name == lpName);
+            var result = Quests.Any(i => i.Name == lpName);
+
+            return result;
         }
 
         /// <summary>
@@ -673,6 +675,7 @@ namespace Darkages
         {
             return Quests.FirstOrDefault(i => i.Name == name);
         }
+
 
         /// <summary>
         ///     Accepts the quest.

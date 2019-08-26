@@ -25,6 +25,8 @@ namespace Darkages
 {
     public class ServerConstants
     {
+        [JsonProperty] public bool MultiUserLogin = false;
+
         [JsonProperty] public Position[] Alters =
         {
             new Position(31, 52, 1001),

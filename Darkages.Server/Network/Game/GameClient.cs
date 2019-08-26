@@ -495,6 +495,67 @@ namespace Darkages.Network.Game
             }
         }
 
+        [Verb]
+        public void learnall()
+        {
+            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values)
+            {
+                Skill.GiveTo(Aisling, skill.Name, 100);
+            }
+
+            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Values)
+            {
+                Spell.GiveTo(Aisling, spell.Name, 100);
+            }
+
+            LoadSkillBook();
+            LoadSpellBook();
+        }
+
+
+        /// <summary>
+        /// Dropskill - Removes the specified skill from the skillBook.
+        /// </summary
+        /// <param name="s">The skill to drop.</param>
+        [Verb]
+        public void dropskill(string s)
+        {
+            var subject = Aisling.SkillBook.Skills.Values
+                .FirstOrDefault(i => i != null 
+                && i.Template != null
+                && !string.IsNullOrEmpty(i.Template.Name) && i.Template.Name.ToLower() == s.ToLower());
+
+            if (subject != null)
+            {
+                Aisling.SkillBook.Remove(subject.Slot);
+                {
+                    Send(new ServerFormat2D(subject.Slot));
+                }
+            }
+            LoadSkillBook();
+        }
+
+        /// <summary>
+        /// Dropspell - Removes the specified spell from the spellbook.
+        /// </summary>
+        /// <param name="s">The spell to drop from spellbook.</param>
+        public void dropspell(string s)
+        {
+            var subject = Aisling.SpellBook.Spells.Values
+                .FirstOrDefault(i => i != null
+                && i.Template != null
+                && !string.IsNullOrEmpty(i.Template.Name)
+                && i.Template.Name.ToLower() == s.ToLower());
+
+            if (subject != null)
+            {
+                Aisling.SpellBook.Remove(subject.Slot);
+                {
+                    Send(new ServerFormat18(subject.Slot));
+                }
+            }
+            LoadSpellBook();
+        }
 
         /// <summary>
         ///     Add Exp
@@ -502,7 +563,7 @@ namespace Darkages.Network.Game
         /// <param name="a">Ammount of exp to give</param>
         /// Example Chat command: addExp -a:10000
         [Verb]
-        public void Addexp(int a)
+        public void exp(int a)
         {
             Monster.DistributeExperience(Aisling, a);
         }
@@ -1957,7 +2018,7 @@ namespace Darkages.Network.Game
                         continue;
 
                     options.Add(new OptionsDataItem((short) ans.Id, ans.Text));
-                    ServerContext.logger.Debug($"{ans.Id}. {ans.Text}");
+                    ServerContext.Logger.Debug($"{ans.Id}. {ans.Text}");
                 }
 
                 SendOptionsDialog(obj as Mundane, nextitem.Text, options.ToArray());
@@ -2001,7 +2062,7 @@ namespace Darkages.Network.Game
                         continue;
 
                     options.Add(new OptionsDataItem((short) ans.Id, ans.Text));
-                    ServerContext.logger.Debug($"{ans.Id}. {ans.Text}");
+                    ServerContext.Logger.Debug($"{ans.Id}. {ans.Text}");
                 }
 
 

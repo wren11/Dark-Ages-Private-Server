@@ -496,6 +496,7 @@
     <Compile Include="Types\ItemFlags.cs" />
     <Compile Include="Types\ItemPending.cs" />
     <Compile Include="Types\ItemSlots.cs" />
+    <Compile Include="Types\QuestChain.cs" />
     <Compile Include="Types\Templates\ItemTemplate.cs" />
     <Compile Include="Types\LearningPredicate.cs" />
     <Compile Include="Types\Legend.cs" />

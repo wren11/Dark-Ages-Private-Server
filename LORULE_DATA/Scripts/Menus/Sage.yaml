@@ -1,32 +1,60 @@
-# NPC START #
-#################################################################################################
+﻿
 start:
-    sequence: 1
-    step: 1
+  menu: 1
+
+
+menus:
+  - id: 1
+    text: "Have you slayed the terror of the crypt?"
+    options:
+      - id: 1
+        text: "%index%"
+        checkpoint: 1
+
+
+checkpoints:
+  - id: 1
+    type: Call
+    value: >               
+            var q = user.GetQuest("Terror1");                             
+
+            if (q != null) {
+
+              q.HandleQuest(client);
+              result = q.QuestCompleted;
+            }
+
+    success:
+
+    fail:
+      step: 1
+      sequence: 2 
+
+
+#check what the most recent "terror quest they are on"
+checkpoints:
+  - id: 1
+    type: Call
+    value: >  
+            var keys = new Dictionary<string, string>();
+            var result = false;  
+
+            var q = user.Quests.FindLast(i => !i.Completed && i.Name.ToLower().StartsWith("terror"));
+
+            if (q != null) {
+               result = true;
+            }
+
+    success:
+      checkpoint: 2
+    fail:
+      checkpoint: 2
+
+  - id: 2
+    type: Call
+    value: >  
+           var result = true;
+           keys["Terror1"] = result;
 
 
 
-# SEQUENCES START
-#################################################################################################    
-
-sequences:
-#Sequence 1 - START --------------------------------------------
-  - id: 1                                  
-    steps:                           
-    - id: 1                                
-      text: "I once pushed my nuts back up into my pouch..."          
-      answers:                            
-      - id: 1                              
-        text: next   
-        step: 2
-        sequence: 1        
-    - id: 2
-      text: "then finger banged my ballsac."
-      answers:                            
-      - id: 1                              
-        text: next
-        step: 3
-        sequence: 1               
-    - id: 3
-      text: "oh... wait a second.... huh?"        
-#Sequence 1 - END ----------------------------------------------    

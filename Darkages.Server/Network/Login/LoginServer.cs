@@ -84,7 +84,7 @@ namespace Darkages.Network.Login
             template.HairColor = format.HairColor;
             template.HairStyle = format.HairStyle;
 
-            ServerContext.logger?.Info("New character Created: " + template.Username);
+            ServerContext.Logger?.Info("New character Created: " + template.Username);
 
             StorageManager.AislingBucket.Save(template);
             client.SendMessageBox(0x00, "\0");
@@ -127,6 +127,16 @@ namespace Darkages.Network.Login
                 return;
             }
 
+            if (!ServerContext.Config.MultiUserLogin)
+            {
+                var aislings = GetObjects<Aisling>(null,
+                    i => i.Username.ToLower() == format.Username.ToLower()
+                    && format.Password == i.Password);
+
+                foreach (var aisling in aislings)
+                    aisling.Client.Server.ClientDisconnected(aisling.Client);
+            }
+
             LoginAsAisling(client, _aisling);
         }
 
@@ -145,11 +155,11 @@ namespace Darkages.Network.Login
                 if (_aisling.Username.Equals(ServerContext.Config.GameMaster, StringComparison.OrdinalIgnoreCase))
                 {
                     _aisling.GameMaster = true;
-                    ServerContext.logger.Debug("GameMaster Entering Game: {0}", _aisling.Username);
+                    ServerContext.Logger.Debug("GameMaster Entering Game: {0}", _aisling.Username);
                 }
                 else
                 {
-                    ServerContext.logger?.Debug("Player Entering Game: {0}", _aisling.Username);
+                    ServerContext.Logger?.Debug("Player Entering Game: {0}", _aisling.Username);
                 }
 
                 _aisling.Redirect = redirect;

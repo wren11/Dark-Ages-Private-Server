@@ -222,7 +222,8 @@ namespace Darkages.Network
                 Writer.Position = 0;
                 Writer.Write(format.Command);
 
-                if (format.Secured) Writer.Write(Ordinal++);
+                if (format.Secured)
+                    Writer.Write(Ordinal++);
 
                 format.Serialize(Writer);
 
@@ -230,7 +231,8 @@ namespace Darkages.Network
                 if (packet == null)
                     return;
 
-                if (format.Secured) Encryption.Transform(packet);
+                if (format.Secured)
+                    Encryption.Transform(packet);
 
                 var array = packet.ToArray();
                 ServerSocket.Send(array, SocketFlags.None);

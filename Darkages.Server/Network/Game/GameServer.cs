@@ -104,12 +104,12 @@ namespace Darkages.Network.Game
                 [typeof(PingComponent)]        = new PingComponent(this),
             };
 
-            ServerContext.logger?.Info("");
-            ServerContext.logger?.Trace(string.Format("Loading {0} Components...", Components.Count));
+            ServerContext.Logger?.Info("");
+            ServerContext.Logger?.Trace(string.Format("Loading {0} Components...", Components.Count));
 
             foreach (var component in Components)
             {
-                ServerContext.logger?.Info(string.Format("Component '{0}' loaded.", component.Key.Name));
+                ServerContext.Logger?.Info(string.Format("Component '{0}' loaded.", component.Key.Name));
             }
         }
 
@@ -197,7 +197,7 @@ namespace Darkages.Network.Game
             try
             {
                 client.Save();
-                ServerContext.logger.Trace("Player {0} has disconnected from server.", client.Aisling.Username);
+                ServerContext.Logger.Trace("Player {0} has disconnected from server.", client.Aisling.Username);
 
                 client.Aisling.LoggedIn = false;
                 client.Aisling.Remove(true);

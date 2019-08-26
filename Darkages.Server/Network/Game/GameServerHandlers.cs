@@ -86,30 +86,63 @@ namespace Darkages.Network.Game
                 if (lpClient.MenuInterpter == null)
                 {
                     lpClient.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
-                    lpClient.MenuInterpter.Client = lpClient;
 
+                    lpClient.MenuInterpter.Client = lpClient;
                     lpClient.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
 
                     lpClient.MenuInterpter.RegisterCheckpointHandler("QuestCompleted", (_client, res) =>
                     {
+                        _Interop.Storage["user"] = lpClient.Aisling;
+                        {
+                            "var client = (GameClient) _Interop.Storage[\"client\"];".Run();
+                            "var user   = (Aisling)    _Interop.Storage[\"user\"];".Run();
+                        }
+
                         if (_client.Aisling.HasQuest(res.Value))
                             res.Result = _client.Aisling.HasCompletedQuest(res.Value);
+                    });
+
+                    lpClient.MenuInterpter.RegisterCheckpointHandler("CompleteQuest", (_client, res) =>
+                    {
+                        _Interop.Storage["user"] = lpClient.Aisling;
+                        {
+                            "var client = (GameClient) _Interop.Storage[\"client\"];".Run();
+                            "var user   = (Aisling)    _Interop.Storage[\"user\"];".Run();
+                        }
+
+                        if (_client.Aisling.HasQuest(res.Value))
+                        {
+                            var q = _client.Aisling.GetQuest(res.Value);
+
+                            if (q != null)
+                            {
+                                if (!q.Completed)
+                                {
+                                    q.HandleQuest(_client, null,
+                                        completed =>
+                                        {
+                                            res.Result = completed;
+                                        });
+                                }
+                            }
+                        }
                     });
 
                     lpClient.MenuInterpter.RegisterCheckpointHandler("Call", (_client, res) =>
                     {
                         _Interop.Storage["client"] = lpClient;
-                        _Interop.Storage["user"] = lpClient.Aisling;
+                        _Interop.Storage["user"]   = lpClient.Aisling;
 
                         {
                             "var client = (GameClient) _Interop.Storage[\"client\"];".Run();
                             "var user   = (Aisling)    _Interop.Storage[\"user\"];".Run();
                         }
+
                         res.Value.Run();
                         res.Result = (bool) ServerContext.EVALUATOR.Evaluate("result");
                     });
 
-                    ServerContext.logger.Debug("Script Interpreter Created for Mundane: {0}", lpName);
+                    ServerContext.Logger.Debug("Script Interpreter Created for Mundane: {0}", lpName);
                 }
 
                 return;
@@ -1619,7 +1652,6 @@ namespace Darkages.Network.Game
 
                         if (selected_answer != null)
                         {
-                            ServerContext.logger.Debug("User Answer: {0}", selected_answer.Text);
                             client.ShowCurrentMenu(obj, null, menu.Move(selected_answer.Id));
                         }
                     }
@@ -2150,7 +2182,7 @@ namespace Darkages.Network.Game
             if (format.Type == 3)
             {
                 var popTemplate = ServerContext.GlobalPopupCache
-                    .OfType<UserClickPopup>().FirstOrDefault(i => i.X == format.X && i.Y == format.Y);
+                    .OfType<UserClickPopup>().FirstOrDefault(i => i.X == format.X && i.Y == format.Y && i.MapId == client.Aisling.CurrentMapId);
 
                 if (popTemplate != null)
                 {
@@ -2219,43 +2251,43 @@ namespace Darkages.Network.Game
                         break;
                     case Mundane _:
                     {
-                        try
-                        {
-                            //try and call script first
-                            (obj as Mundane)?.Script?.OnClick(this, client);
-
-                            if (client.MenuInterpter != null)
+                            try
                             {
-                                client.MenuInterpter = null;
-                                client.CloseDialog();
-                            }
+                                //try and call script first
+                                (obj as Mundane)?.Script?.OnClick(this, client);
 
-                            //if call does not produce it's own interpreter. Assume default role.
-                            if (client.MenuInterpter == null)
+                                if (client.MenuInterpter != null)
+                                {
+                                    client.MenuInterpter = null;
+                                    client.CloseDialog();
+                                }
+
+                                //if call does not produce it's own interpreter. Assume default role.
+                                if (client.MenuInterpter == null)
+                                {
+                                    CreateInterpreterFromMenuFile(client, (obj as Mundane).Template.Name);
+
+                                    if (client.MenuInterpter != null) client.MenuInterpter.Start();
+
+                                    ServerContext.Logger.Debug("Interpreter - Using Default Role: {0}",
+                                        (obj as Mundane).Template.Name);
+                                }
+                                else
+                                {
+                                    ServerContext.Logger.Debug("Interpreter - Using Defined Role: {0}",
+                                        (obj as Mundane).Template.Name);
+                                    return;
+                                }
+
+                                if (client.MenuInterpter != null)
+                                    client.ShowCurrentMenu(obj as Mundane, null, client.MenuInterpter.GetCurrentStep());
+                            }
+                            catch (Exception)
                             {
-                                CreateInterpreterFromMenuFile(client, (obj as Mundane).Template.Name);
-
-                                if (client.MenuInterpter != null) client.MenuInterpter.Start();
-
-                                ServerContext.logger.Debug("Interpreter - Using Default Role: {0}",
-                                    (obj as Mundane).Template.Name);
+                                ServerContext.Logger.Error(
+                                    string.Format(CultureInfo.CurrentCulture, "Error in Menu Handler : {0}",
+                                        obj.GetType().FullName));
                             }
-                            else
-                            {
-                                ServerContext.logger.Debug("Interpreter - Using Defined Role: {0}",
-                                    (obj as Mundane).Template.Name);
-                                return;
-                            }
-
-                            if (client.MenuInterpter != null)
-                                client.ShowCurrentMenu(obj as Mundane, null, client.MenuInterpter.GetCurrentStep());
-                        }
-                        catch (Exception err)
-                        {
-                            ServerContext.logger.Error(
-                                string.Format(CultureInfo.CurrentCulture, "Error in Menu Handler : {0}",
-                                    obj.GetType().FullName), err);
-                        }
                     }
                         break;
                 }

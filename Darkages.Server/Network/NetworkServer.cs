@@ -248,7 +248,7 @@ namespace Darkages.Network
 
         public virtual void ClientConnected(TClient client)
         {
-            ServerContext.logger?.Trace("Connection From {0} Established.",
+            ServerContext.Logger?.Trace("Connection From {0} Established.",
                 client.ServerSocket.RemoteEndPoint.ToString());
         }
 

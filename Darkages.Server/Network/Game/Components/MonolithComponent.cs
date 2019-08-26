@@ -25,9 +25,13 @@ namespace Darkages.Network.Game.Components
 {
     public class MonolithComponent : GameServerComponent
     {
+        public object SyncObj = new object();
+
         private readonly GameServerTimer _timer;
 
         public Dictionary<int, Spawn> _spawns = new Dictionary<int, Spawn>();
+
+        public bool Updating { get; set; } = true;
 
         public MonolithComponent(GameServer server)
             : base(server)
@@ -37,39 +41,47 @@ namespace Darkages.Network.Game.Components
 
         public override void Update(TimeSpan elapsedTime)
         {
-            _timer.Update(elapsedTime);
-
-            if (_timer.Elapsed)
+            if (Updating)
             {
-                _timer.Reset();
+                _timer.Update(elapsedTime);
 
-                var templates = ServerContext.GlobalMonsterTemplateCache;
-                if (templates.Count == 0)
-                    return;
-
-                foreach (var map in ServerContext.GlobalMapCache.Values)
+                if (_timer.Elapsed)
                 {
-                    if (map == null || map.Rows == 0 || map.Cols == 0)
+                    _timer.Reset();
+
+                    var templates = ServerContext.GlobalMonsterTemplateCache;
+                    if (templates.Count == 0)
                         return;
 
-                    var temps = templates.Where(i => i.AreaID == map.ID);
+                    foreach (var map in ServerContext.GlobalMapCache.Values)
+                    {
+                        if (map == null || map.Rows == 0 || map.Cols == 0)
+                            return;
 
-                    foreach (var template in temps)
-                        if (template.ReadyToSpawn())
+                        var temps = templates.Where(i => i.AreaID == map.ID);
+
+
+                        foreach (var template in temps)
                         {
-                            var spawn = new Spawn
-                            {
-                                Capacity = template.SpawnMax,
-                                TotalSpawned = 0,
-                                LastSpawned = DateTime.UtcNow
-                            };
+                            var Count = GetObjects<Monster>(map, i => i.Template != null && i.Template.Name == template.Name
+                                            && i.Template.AreaID == map.ID).Count();
 
-                            if (template.SpawnCount < template.SpawnMax)
+                            if (template.ReadyToSpawn())
                             {
-                                CreateFromTemplate(template, map);
-                                template.SpawnCount++;
+                                var spawn = new Spawn
+                                {
+                                    Capacity = template.SpawnMax,
+                                    TotalSpawned = 0,
+                                    LastSpawned = DateTime.UtcNow
+                                };
+
+                                if (Count < template.SpawnMax)
+                                {
+                                    CreateFromTemplate(template, map);
+                                }
                             }
                         }
+                    }
                 }
             }
         }
