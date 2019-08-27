@@ -2,7 +2,7 @@
   "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
   "Icon": 75,
   "MaxLevel": 100,
-  "ScriptKey": "mspg",
+  "ScriptKey": "MSPG",
   "MinLines": 0,
   "MaxLines": 9,
   "ManaCost": 0,

@@ -419,6 +419,7 @@
     <Compile Include="Storage\locales\Scripts\Spells\curses\mor_cradh.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\elemental\aoe_Spells.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\elemental\MassElementalSpell.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\elemental\mspg.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\elemental\SingleElementalSpell.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\elemental\wizard_Spells.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\heals\beagioc.cs" />

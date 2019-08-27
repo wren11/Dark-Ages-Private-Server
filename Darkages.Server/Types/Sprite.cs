@@ -560,7 +560,7 @@ namespace Darkages.Types
             if (dmg > 0)
                 ApplyEquipmentDurability(dmg);
 
-            if (!DamageTarget(ref dmg, penetrating, sound, dmgcb))
+            if (!DamageTarget(source, ref dmg, penetrating, sound, dmgcb))
                 return;
 
             OnDamaged(source, dmg);
@@ -578,7 +578,7 @@ namespace Darkages.Types
                 (this as Monster)?.Script?.OnDamaged(aisling?.Client, dmg);
         }
 
-        private bool DamageTarget(ref int dmg, bool penetrating, byte sound, Action<int> dmgcb)
+        private bool DamageTarget(Sprite source, ref int dmg, bool penetrating, byte sound, Action<int> dmgcb)
         {
             if (penetrating)
             {
@@ -619,7 +619,7 @@ namespace Darkages.Types
                 if (IsAited && dmg > 5)
                     dmg /= 3;
 
-                var amplifier = GetElementalModifier(Target);
+                var amplifier = GetElementalModifier(source);
                 {
                     dmg = ComputeDmgFromAc(dmg, Target);
                     dmg = CompleteDamageApplication(dmg, sound, dmgcb, amplifier);
@@ -695,7 +695,7 @@ namespace Darkages.Types
 
             var amplifier = 1.00;
 
-            if (source.OffenseElement != Element.None)
+            if (OffenseElement != Element.None)
             {
                 var element = CheckRandomElement(source.OffenseElement);
 
@@ -824,7 +824,7 @@ namespace Darkages.Types
                 //Dark -> All
                 case Element.Dark:
                 {
-                    damage_mod = DefenseElement == Element.Light ? 2.75 : 0.25;
+                    damage_mod = DefenseElement == Element.Light ? 2.75 : 0.95;
 
                     return damage_mod;
                 }

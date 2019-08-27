@@ -75,8 +75,6 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (!i.Attackable)
                             continue;
 
-                        if (!sprite.CanHitTarget(i))
-                            continue;
 
                         Target = i;
 
