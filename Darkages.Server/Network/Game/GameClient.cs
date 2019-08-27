@@ -608,6 +608,18 @@ namespace Darkages.Network.Game
             });
         }
 
+        [Verb]
+        public void scar()
+        {
+            Aisling.LegendBook.AddLegend(new Legend.LegendItem
+            {
+                Category = "Event",
+                Color = (byte)LegendColor.Brown,
+                Icon = (byte)LegendIcon.Rogue,
+                Value = "Sgrios Scar"
+            });
+        }
+
         /// <summary>
         ///     Lifes the specified u.
         /// </summary>

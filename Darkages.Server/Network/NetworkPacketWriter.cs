@@ -104,8 +104,6 @@ namespace Darkages.Network
 
         public void WriteStringA(string value)
         {
-            if (string.IsNullOrEmpty(value))
-                return;
 
             var count = encoding.GetByteCount(value);
 

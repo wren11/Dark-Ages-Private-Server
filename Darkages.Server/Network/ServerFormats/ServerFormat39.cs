@@ -17,6 +17,7 @@
 //*************************************************************************/
 
 using System;
+using System.Linq;
 using Darkages.Types;
 
 namespace Darkages.Network.ServerFormats
@@ -86,13 +87,28 @@ namespace Darkages.Network.ServerFormats
 
             packet.WriteStringA(Aisling.Clan);
 
-            packet.Write((byte) Aisling.LegendBook.LegendMarks.Count);
-            foreach (var legend in Aisling.LegendBook.LegendMarks)
+
+            var legendSubjects = from subject in Aisling.LegendBook.LegendMarks
+                    group subject by subject into g
+                    let count = g.Count()
+                    orderby count descending
+                    select new {
+                        Value = Aisling.LegendBook.LegendMarks.Find(i => i.Value == g.Key.Value),
+                        Count = Aisling.LegendBook.LegendMarks.Count(i => i.Value == g.Key.Value) };
+
+
+
+            var exactCount = legendSubjects.Distinct().Count();
+            packet.Write((byte)exactCount);
+
+            foreach (var obj in legendSubjects.Distinct().ToList())
             {
+                var legend = obj.Value;
                 packet.Write(legend.Icon);
                 packet.Write(legend.Color);
                 packet.WriteStringA(legend.Category);
-                packet.WriteStringA(legend.Value + string.Format(" - {0}", DateTime.UtcNow.ToShortDateString()));
+                packet.WriteStringA(string.Format("{0} {1}", legend.Value, obj.Count > 1 ? "(" + (obj.Count).ToString() + ")" : ""));
+
             }
 
             packet.Write((byte) 0x00);

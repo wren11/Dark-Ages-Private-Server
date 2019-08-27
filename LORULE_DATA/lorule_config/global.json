@@ -1,5 +1,6 @@
 {
   "$type": "Darkages.ServerConstants, Darkages.Server",
+  "MultiUserLogin": false,
   "Alters": {
     "$type": "Darkages.Types.Position[], Darkages.Server",
     "$values": [
@@ -42,7 +43,7 @@
   "DayTimeInterval": 30.0,
   "DeathHPPenalty": 50,
   "DeathMap": 88888,
-  "DebugMode": true,
+  "DebugMode": false,
   "DefaultItemColor": 13,
   "DefaultItemDurability": 1000,
   "DefaultItemValue": 500,
@@ -53,7 +54,7 @@
   "ERRORCAP": 15,
   "FasNadurStrength": 3.0,
   "GameMaster": "lol",
-  "GlobalBaseSkillDelay": 350.0,
+  "GlobalBaseSkillDelay": 500.0,
   "GlobalScripts": {
     "$type": "System.String[], mscorlib",
     "$values": [
@@ -100,7 +101,7 @@
   "ReapMessageDuringAction": "You can't do that, you are about to die!",
   "RefreshOnWalkCollision": true,
   "RefreshRate": 300,
-  "RegenRate": 15000,
+  "RegenRate": 5000,
   "RepairItemMessage": "You can't wear somethin' that fucked. Go repair it first.",
   "SaveRate": 25.0,
   "SERVER_PORT": 2615,

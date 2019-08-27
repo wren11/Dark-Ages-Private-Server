@@ -32,7 +32,8 @@ namespace Darkages.Types
 
         public void AddLegend(LegendItem legend)
         {
-            if (!LegendMarks.Contains(legend)) LegendMarks.Add(legend);
+            if (!LegendMarks.Contains(legend))
+                LegendMarks.Add(legend);
         }
 
         public void Remove(LegendItem legend)
