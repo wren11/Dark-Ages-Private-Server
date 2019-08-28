@@ -1173,12 +1173,8 @@ namespace Darkages
                 LastPosition = Position;
 
                 Client.CloseDialog();
-                Client.Aisling.Flags = AislingFlags.Dead;
-                Client.HPRegenTimer.Disabled = true;
-                Client.MPRegenTimer.Disabled = true;
+                Client.Ghost();
 
-                Client.LeaveArea(true);
-                Client.EnterArea();
 
                 return true;
             }

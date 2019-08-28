@@ -40,7 +40,7 @@ namespace Darkages.Network.Game
     ///     Implements the <see cref="Darkages.Network.NetworkClient{Darkages.Network.Game.GameClient}" />
     /// </summary>
     /// <seealso cref="Darkages.Network.NetworkClient{Darkages.Network.Game.GameClient}" />
-    public class GameClient : NetworkClient<GameClient>, IDisposable
+    public partial class GameClient : NetworkClient<GameClient>, IDisposable
     {
         /// <summary>
         ///     The aisling
@@ -223,7 +223,7 @@ namespace Darkages.Network.Game
         ///     Gets or sets the hp regen timer.
         /// </summary>
         /// <value>The hp regen timer.</value>
-        public GameServerTimer HPRegenTimer
+        private GameServerTimer HPRegenTimer
         {
             get => _hpRegenTimer;
             set => _hpRegenTimer = value;
@@ -441,245 +441,7 @@ namespace Darkages.Network.Game
         public PendingSell PendingItemSessions { get; set; }
 
 
-        [Verb]
-        /// <summary>
-        /// Ports the specified i.
-        /// </summary>
-        /// <param name="i">The i.</param>
-        /// <param name="x">The x.</param>
-        /// <param name="y">The y.</param>
-        /// This Chat command ports the user to a location.
-        /// Example chat command: 'port -i:100 -x:5 -y:5'
-        public void Port(int i, int x = 0, int y = 0)
-        {
-            TransitionToMap(i, new Position(x, y));
 
-            SystemMessage("Port: Success.");
-        }
-
-        /// <summary>
-        ///     This chat command spawns a monster.
-        /// </summary>
-        /// <param name="t">Name of Monster, Case Sensitive.</param>
-        /// <param name="x">X Location to Spawn.</param>
-        /// <param name="y">Y Location to Spawn.</param>
-        /// <param name="c">The c.</param>
-        /// <usage>spawnMonster -t:Undead -x:43 -y:16 -c:10</usage>
-        [Verb]
-        public void Spawn(string t, int x, int y, int c)
-        {
-            var name = t.Replace("-", string.Empty).Trim();
-
-            var obj = ServerContext.GlobalMonsterTemplateCache
-                .FirstOrDefault(i => i.Name.Equals(name, StringComparison.CurrentCulture));
-
-            if (obj != null)
-            {
-                for (var i = 0; i < c; i++)
-                {
-                    var mon = Monster.Create(obj, Aisling.Map);
-                    if (mon != null)
-                    {
-                        mon.XPos = x;
-                        mon.YPos = y;
-
-                        AddObject(mon);
-                    }
-                }
-
-                SystemMessage("spawnMonster: Success.");
-            }
-            else
-            {
-                SystemMessage("spawnMonster: Failed.");
-            }
-        }
-
-        [Verb]
-        public void learnall()
-        {
-            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values)
-            {
-                Skill.GiveTo(Aisling, skill.Name, 100);
-            }
-
-            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Values)
-            {
-                Spell.GiveTo(Aisling, spell.Name, 100);
-            }
-
-            LoadSkillBook();
-            LoadSpellBook();
-        }
-
-
-        /// <summary>
-        /// Dropskill - Removes the specified skill from the skillBook.
-        /// </summary
-        /// <param name="s">The skill to drop.</param>
-        [Verb]
-        public void dropskill(string s)
-        {
-            var subject = Aisling.SkillBook.Skills.Values
-                .FirstOrDefault(i => i != null 
-                && i.Template != null
-                && !string.IsNullOrEmpty(i.Template.Name) && i.Template.Name.ToLower() == s.ToLower());
-
-            if (subject != null)
-            {
-                Aisling.SkillBook.Remove(subject.Slot);
-                {
-                    Send(new ServerFormat2D(subject.Slot));
-                }
-            }
-            LoadSkillBook();
-        }
-
-        /// <summary>
-        /// Dropspell - Removes the specified spell from the spellbook.
-        /// </summary>
-        /// <param name="s">The spell to drop from spellbook.</param>
-        public void dropspell(string s)
-        {
-            var subject = Aisling.SpellBook.Spells.Values
-                .FirstOrDefault(i => i != null
-                && i.Template != null
-                && !string.IsNullOrEmpty(i.Template.Name)
-                && i.Template.Name.ToLower() == s.ToLower());
-
-            if (subject != null)
-            {
-                Aisling.SpellBook.Remove(subject.Slot);
-                {
-                    Send(new ServerFormat18(subject.Slot));
-                }
-            }
-            LoadSpellBook();
-        }
-
-        /// <summary>
-        ///     Add Exp
-        /// </summary>
-        /// <param name="a">Ammount of exp to give</param>
-        /// Example Chat command: addExp -a:10000
-        [Verb]
-        public void exp(int a)
-        {
-            Monster.DistributeExperience(Aisling, a);
-        }
-
-        /// <summary>
-        ///     Effs the specified n.
-        /// </summary>
-        /// <param name="n">The n.</param>
-        /// <param name="d">The d.</param>
-        /// <param name="r">The r.</param>
-        /// <returns>Task.</returns>
-        [Verb]
-        public async Task eff(ushort n, int d = 1000, int r = 1)
-        {
-            if (r <= 0)
-                r = 1;
-
-            for (var i = 0; i < r; i++)
-            {
-                Aisling.SendAnimation(n, Aisling, Aisling);
-
-                foreach (var obj in Aisling.MonstersNearby())
-                {
-                    obj.SendAnimation(n, obj.Position);
-                }
-                await Task.Delay(d);
-            }
-        }
-
-        [Verb]
-        public void stress()
-        {
-            Task.Run(async () =>
-            {
-                for (int n = 0; n < 5000; n++)
-                {
-                    for (byte i = 0; i < 100; i++)
-                    {
-                        await eff(i, 500);
-                    }
-                }
-            });
-        }
-
-        [Verb]
-        public void scar()
-        {
-            Aisling.LegendBook.AddLegend(new Legend.LegendItem
-            {
-                Category = "Event",
-                Color = (byte)LegendColor.Brown,
-                Icon = (byte)LegendIcon.Rogue,
-                Value = "Sgrios Scar"
-            });
-        }
-
-        /// <summary>
-        ///     Lifes the specified u.
-        /// </summary>
-        /// <param name="u">The u.</param>
-        [Verb]
-        public void life(string u)
-        {
-            var user = GetObject<Aisling>(null, i => i.Username.Equals(u, StringComparison.OrdinalIgnoreCase));
-
-            if (user != null) user.Client.Revive();
-        }
-
-        /// <summary>
-        ///     Deathes the specified u.
-        /// </summary>
-        /// <param name="u">The u.</param>
-        [Verb]
-        public void death(string u)
-        {
-            var user = GetObject<Aisling>(null, i => i.Username.Equals(u, StringComparison.OrdinalIgnoreCase));
-
-            if (user != null) user.CurrentHp = 0;
-        }
-
-        /// <summary>
-        ///     Boards the specified n.
-        /// </summary>
-        /// <param name="n">The n.</param>
-        [Verb]
-        public void board(string n)
-        {
-            if (ServerContext.GlobalBoardCache.ContainsKey(n))
-            {
-                var boardListObj = ServerContext.GlobalBoardCache[n];
-
-                if (boardListObj != null && boardListObj.Any()) Send(new BoardList(boardListObj));
-            }
-        }
-
-
-        /// <summary>
-        ///     This chat command reloads all objects.
-        /// </summary>
-        /// <param name="all">[Optional] all objects | true or false</param>
-        /// <usage>reload -all:true|false</usage>
-        /// <usage>reload</usage>
-        [Verb]
-        public void reload(bool all = false)
-        {
-                var objs = GetObjects(null, i => i != null && i.Serial != Aisling.Serial,
-                    all ? Get.All : Get.Items | Get.Money | Get.Monsters | Get.Mundanes);
-
-                foreach (var obj in objs) obj.Remove();
-
-                ServerContext.LoadAndCacheStorage();
-        }
-
-        /// <summary>
-        ///     Builds the settings.
-        /// </summary>
         public void BuildSettings()
         {
             if (ServerContext.Config.Settings == null || ServerContext.Config.Settings.Length == 0)
@@ -1271,6 +1033,17 @@ namespace Darkages.Network.Game
 
 
             return this;
+        }
+
+        public void Ghost()
+        {
+            Aisling.Flags = AislingFlags.Dead;
+            {
+                HPRegenTimer.Disabled = true;
+                MPRegenTimer.Disabled = true;
+            }
+
+            Refresh();
         }
 
         /// <summary>

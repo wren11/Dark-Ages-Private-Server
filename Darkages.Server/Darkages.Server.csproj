@@ -216,6 +216,7 @@
     <Compile Include="Network\Game\Components\PingComponent.cs" />
     <Compile Include="Network\Game\Components\SaveComponent.cs" />
     <Compile Include="Network\Game\GameClient.cs" />
+    <Compile Include="Network\Game\GameClientAPI.cs" />
     <Compile Include="Network\Game\GameServer.cs" />
     <Compile Include="Network\Game\GameServerComponent.cs" />
     <Compile Include="Network\Game\GameServerHandlers.cs" />

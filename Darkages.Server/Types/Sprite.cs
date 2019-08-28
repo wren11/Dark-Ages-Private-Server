@@ -806,7 +806,7 @@ namespace Darkages.Types
                 }
 
                 //Water -> Fire
-                case Element.Water:
+                case Element.Water:  
                 {
                     damage_mod = DefenseElement == Element.Fire ? 1.75 : 0.25;
 

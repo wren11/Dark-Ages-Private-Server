@@ -351,6 +351,8 @@ namespace Darkages
 
         [JsonProperty] public ushort WarpNumber = 295;
 
+        [JsonProperty] public int MaxHP = 500000;
+
         public override string ToString()
         {
             return StorageManager.Save(this)

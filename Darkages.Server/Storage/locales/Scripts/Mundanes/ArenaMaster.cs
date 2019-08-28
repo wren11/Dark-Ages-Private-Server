@@ -61,14 +61,9 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             if (responseID == 0x0060)
             {
-                client.Aisling.CurrentHp = client.Aisling.MaximumHp;
-                client.Aisling.Flags = AislingFlags.Normal;
-                client.HPRegenTimer.Disabled = false;
-                client.MPRegenTimer.Disabled = false;
-
-                client.LeaveArea(true);
-                client.EnterArea();
+                client.Revive();
                 client.SendStats(StatusFlags.All);
+                client.Refresh();
 
                 client.Aisling.PortalSession = new PortalSession {IsMapOpen = false};
                 client.Aisling.PortalSession.TransitionToMap(client);
