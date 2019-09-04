@@ -1,5 +1,4 @@
-﻿using CLAP;
-using Darkages.Network.ServerFormats;
+﻿using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,6 @@ namespace Darkages.Network.Game
 {
     public partial class GameClient : NetworkClient<GameClient>, IDisposable
     {
-        [Verb]
         /// <summary>
         /// Ports the specified i.
         /// </summary>
@@ -35,7 +33,6 @@ namespace Darkages.Network.Game
         /// <param name="y">Y Location to Spawn.</param>
         /// <param name="c">The c.</param>
         /// <usage>spawnMonster -t:Undead -x:43 -y:16 -c:10</usage>
-        [Verb]
         public void Spawn(string t, int x, int y, int c)
         {
             var name = t.Replace("-", string.Empty).Trim();
@@ -65,7 +62,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        [Verb]
         public void LearnEverything()
         {
             foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values)
@@ -82,7 +78,6 @@ namespace Darkages.Network.Game
             LoadSpellBook();
         }
 
-        [Verb]
         public void ForgetSkill(string s)
         {
             var subject = Aisling.SkillBook.Skills.Values
@@ -119,17 +114,14 @@ namespace Darkages.Network.Game
         }
 
 
-        [Verb]
         public void GiveExp(int a)
         {
             Monster.DistributeExperience(Aisling, a);
         }
 
-        [Verb]
         public void Recover() => Revive();
 
 
-        [Verb]
         public void GiveStr(byte v = 1)
         {
             Aisling._Str += v;
@@ -140,7 +132,6 @@ namespace Darkages.Network.Game
             SendStats(StatusFlags.All);
         }
 
-        [Verb]
         public void GiveInt(byte v = 1)
         {
             Aisling._Int += v;
@@ -151,7 +142,6 @@ namespace Darkages.Network.Game
             SendStats(StatusFlags.All);
         }
 
-        [Verb]
         public void GiveWis(byte v = 1)
         {
             Aisling._Wis += v;
@@ -162,7 +152,6 @@ namespace Darkages.Network.Game
             SendStats(StatusFlags.All);
         }
 
-        [Verb]
         public void GiveCon(byte v = 1)
         {
             Aisling._Wis += v;
@@ -173,7 +162,6 @@ namespace Darkages.Network.Game
             SendStats(StatusFlags.All);
         }
 
-        [Verb]
         public void GiveDex(byte v = 1)
         {
             Aisling._Dex += v;
@@ -184,7 +172,6 @@ namespace Darkages.Network.Game
             SendStats(StatusFlags.All);
         }
 
-        [Verb]
         public void GiveHp(int v = 1)
         {
             Aisling._MaximumHp += v;
@@ -195,7 +182,6 @@ namespace Darkages.Network.Game
             SendStats(StatusFlags.All);
         }
 
-        [Verb]
         public void GiveMp(int v = 1)
         {
             Aisling._MaximumMp += v;
@@ -206,7 +192,6 @@ namespace Darkages.Network.Game
             SendStats(StatusFlags.All);
         }
 
-        [Verb]
         public async Task Effect(ushort n, int d = 1000, int r = 1)
         {
             if (r <= 0)
@@ -224,7 +209,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        [Verb]
         public void StressTest()
         {
             Task.Run(async () =>
@@ -239,7 +223,6 @@ namespace Darkages.Network.Game
             });
         }
 
-        [Verb]
         public void GiveScar()
         {
             Aisling.LegendBook.AddLegend(new Legend.LegendItem
@@ -251,7 +234,6 @@ namespace Darkages.Network.Game
             });
         }
 
-        [Verb]
         public void RevivePlayer(string u)
         {
             var user = GetObject<Aisling>(null, i => i.Username.Equals(u, StringComparison.OrdinalIgnoreCase));
@@ -260,7 +242,6 @@ namespace Darkages.Network.Game
                 user.Client.Revive();
         }
 
-        [Verb]
         public void KillPlayer(string u)
         {
             var user = GetObject<Aisling>(null, i => i.Username.Equals(u, StringComparison.OrdinalIgnoreCase));
@@ -269,7 +250,6 @@ namespace Darkages.Network.Game
                 user.CurrentHp = 0;
         }
 
-        [Verb]
         public void OpenBoard(string n)
         {
             if (ServerContext.GlobalBoardCache.ContainsKey(n))
@@ -281,7 +261,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        [Verb]
         public void ReloadObjects(bool all = false)
         {
             var objs = GetObjects(null, i => i != null && i.Serial != Aisling.Serial,

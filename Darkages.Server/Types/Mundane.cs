@@ -165,7 +165,7 @@ namespace Darkages.Types
 
         public void OnDeath()
         {
-            Map.Update(XPos, YPos, this, true);
+            Map.Update(XPos, YPos);
 
             RemoveActiveTargets();
 

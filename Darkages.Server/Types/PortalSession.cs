@@ -71,12 +71,6 @@ namespace Darkages
                 client.Aisling.CurrentMapId = DestinationMap;
 
                 client.Refresh();
-
-                while (client.IsWarping)
-                {
-                    Task.Delay(10);
-                }
-
                 ShowFieldMap(client);
             }
             else

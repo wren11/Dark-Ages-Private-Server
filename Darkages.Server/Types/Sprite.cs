@@ -1419,45 +1419,24 @@ namespace Darkages.Types
 
         public virtual bool Walk()
         {
-            var savedX = XPos;
-            var savedY = YPos;
+            var savedX   = XPos;
+            var savedY   = YPos;
 
             var pendingX = XPos;
             var pendingY = YPos;
 
-            var result = false;
-
-
-            if (result = TryWalk(pendingX, pendingY, savedX, savedY))
-            {
-                Map.MapNodes[savedX, savedY].Remove(this);
-            }
-            else
-            {
-                Map.MapNodes[savedX, savedY].Add(this);
-                Map.MapNodes[pendingX, pendingY].Remove(this);
-
-                if (this is Aisling aisling) aisling.Client.Refresh();
-            }
-
-
+            var result   = TryWalk(pendingX, pendingY, savedX, savedY);
+            
             return result;
         }
 
         public bool TryWalk(int pendingX, int pendingY, int savedX, int savedY)
         {
-            if (!CanUpdate())
-            {
-                if (this is Aisling aisling) aisling.Client.Refresh();
-
-                return false;
-            }
-
             if (Direction == 0)
             {
-                if (this is Aisling
-                    ? Map.IsWall(this as Aisling, XPos, YPos - 1)
-                    : Map.IsWall(this, XPos, YPos - 1))
+                var canWalk = this is Aisling ? !Map.IsWall(this as Aisling, XPos, YPos - 1) : !Map.IsWall(this, XPos, YPos - 1);
+
+                if (!canWalk)
                     return false;
 
                 pendingY--;
@@ -1465,9 +1444,9 @@ namespace Darkages.Types
 
             if (Direction == 1)
             {
-                if (this is Aisling
-                    ? Map.IsWall(this as Aisling, XPos + 1, YPos)
-                    : Map.IsWall(this, XPos + 1, YPos))
+                var canWalk = this is Aisling ? !Map.IsWall(this as Aisling, XPos + 1, YPos) : !Map.IsWall(this, XPos + 1, YPos);
+
+                if (!canWalk)
                     return false;
 
                 pendingX++;
@@ -1475,9 +1454,9 @@ namespace Darkages.Types
 
             if (Direction == 2)
             {
-                if (this is Aisling
-                    ? Map.IsWall(this as Aisling, XPos, YPos + 1)
-                    : Map.IsWall(this, XPos, YPos + 1))
+                var canWalk = this is Aisling ? !Map.IsWall(this as Aisling, XPos, YPos + 1) : !Map.IsWall(this, XPos, YPos + 1);
+
+                if (!canWalk)
                     return false;
 
                 pendingY++;
@@ -1485,30 +1464,31 @@ namespace Darkages.Types
 
             if (Direction == 3)
             {
-                if (this is Aisling
-                    ? Map.IsWall(this as Aisling, XPos - 1, YPos)
-                    : Map.IsWall(this, XPos - 1, YPos))
+                var canWalk = this is Aisling ? !Map.IsWall(this as Aisling, XPos - 1, YPos) : !Map.IsWall(this, XPos - 1, YPos);
+
+                if (!canWalk)
                     return false;
 
                 pendingX--;
             }
 
-            pendingX = pendingX.Clamp(pendingX, Map.Cols - 1);
-            pendingY = pendingY.Clamp(pendingY, Map.Rows - 1);
+            pendingX = pendingX.Clamp(0, Map.Cols - 1);
+            pendingY = pendingY.Clamp(0, Map.Rows - 1);
 
             LastPosition = new Position(savedX, savedY);
-            {
-                Map.MapNodes[pendingX, pendingY].Add(this);
-
+            {                
                 if (CompleteWalk(pendingX, pendingY, savedX, savedY))
                 {
-                    var response = new ServerFormat0C
+                    var response  = new ServerFormat0C
                     {
                         Direction = Direction,
-                        Serial = Serial,
-                        X = (short) savedX,
-                        Y = (short) savedY
+                        Serial    = Serial,
+                        X         = (short) savedX,
+                        Y         = (short) savedY
                     };
+
+                    XPos = pendingX;
+                    YPos = pendingY;
 
                     Show(Scope.NearbyAislingsExludingSelf, response);
                     return true;
@@ -1520,55 +1500,23 @@ namespace Darkages.Types
 
         private bool CompleteWalk(int pendingX, int pendingY, int savedX, int savedY)
         {
-            if (new Position(savedX, savedY).DistanceFrom(new Position(pendingX, pendingY)) > 1) return false;
+            if (new Position(savedX, savedY).DistanceFrom(new Position(pendingX, pendingY)) > 1)
+                return false;
 
             TriggerNearbyTraps();
 
             if (this is Aisling)
             {
-                if (Map.MapNodes[pendingX, pendingY].SpotVacant(this))
+                Client.Send(new ServerFormat0B
                 {
-                    var result = false;
-                    foreach (var spriteObj in Map.MapNodes[pendingX, pendingY].Sprites)
-                        if (spriteObj.Serial == Serial)
-                        {
-                            if (spriteObj.XPos != pendingX || spriteObj.YPos != pendingY)
-                            {
-                                spriteObj.XPos = pendingX;
-                                spriteObj.YPos = pendingY;
+                    Direction = Direction,
+                    LastX     = (ushort) savedX,
+                    LastY     = (ushort) savedY
+                });
 
-                                result = true;
-                            }
-
-                            break;
-                        }
-
-                    Client.Send(new ServerFormat0B
-                    {
-                        Direction = Direction,
-                        LastX = (ushort) savedX,
-                        LastY = (ushort) savedY
-                    });
-
-
-                    return result;
-                }
-            }
-            else
-            {
-                if (Map.MapNodes[pendingX, pendingY].SpotVacant(this))
-                {
-                    if (XPos != pendingX)
-                        XPos = pendingX;
-
-                    if (YPos != pendingY)
-                        YPos = pendingY;
-                }
-
-                return true;
             }
 
-            return false;
+            return true;
         }
 
         public Aisling SendAnimation(ushort Animation, Sprite To, Sprite From, byte speed = 100)
@@ -1668,18 +1616,14 @@ namespace Darkages.Types
 
         public void WarpTo(Position newLocation)
         {
-            Map.Update(X, Y, this, true);
-            {
-                var location = new Position(newLocation.X, newLocation.Y);
+            var location = new Position(newLocation.X, newLocation.Y);
 
-                X = location.X;
-                Y = location.Y;
-            }
+            X = location.X;
+            Y = location.Y;
 
-            Map.Update(X, Y, this);
+            Map.Update(X, Y);
             Update();
         }
-
         #endregion
     }
 }

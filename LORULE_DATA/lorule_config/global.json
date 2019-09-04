@@ -156,5 +156,6 @@
   "WrongClassMessage": "This is best suited for somebody else.",
   "YouDroppedGoldMsg": "you dropped some gold.",
   "ShowWarpAnimation": false,
-  "WarpNumber": 295
+  "WarpNumber": 295,
+  "MaxHP": 500000
 }

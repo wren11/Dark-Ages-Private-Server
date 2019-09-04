@@ -24,7 +24,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using CLAP;
 using Darkages.Common;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.ServerFormats;
@@ -858,26 +857,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.GameMaster)
             {
-                var result = -1;
 
-                try
-                {
-                    var index = format.Text.IndexOf('/');
-
-                    if (index == 0)
-                    {
-                        var command = format.Text.Remove(index, 1);
-
-                        result = Parser.Run
-                            (command.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries), client);
-                    }
-                }
-                catch
-                {
-                    //ignore error
-                }
-
-                if (result == 0) return;
             }
 
             IEnumerable<Aisling> audience;
@@ -886,18 +866,18 @@ namespace Darkages.Network.Game
             {
                 case 0x00:
                     response.Text = $"{client.Aisling.Username}: {format.Text}";
-                    audience = client.GetObjects<Aisling>(client.Aisling.Map,
-                        n => client.Aisling.WithinRangeOf(n, false));
+                    audience      = client.GetObjects<Aisling>(null,
+                                  n => client.Aisling.WithinRangeOf(n, false));
                     break;
                 case 0x01:
                     response.Text = $"{client.Aisling.Username}! {format.Text}";
-                    audience = client.GetObjects<Aisling>(client.Aisling.Map,
-                        n => client.Aisling.CurrentMapId == n.CurrentMapId);
+                    audience      = client.GetObjects<Aisling>(client.Aisling.Map,
+                                  n => client.Aisling.CurrentMapId == n.CurrentMapId);
                     break;
                 case 0x02:
                     response.Text = format.Text;
-                    audience = client.GetObjects<Aisling>(client.Aisling.Map,
-                        n => client.Aisling.WithinRangeOf(n, false));
+                    audience      = client.GetObjects<Aisling>(client.Aisling.Map,
+                                  n => client.Aisling.WithinRangeOf(n, false));
                     break;
                 default:
                     ClientDisconnected(client);

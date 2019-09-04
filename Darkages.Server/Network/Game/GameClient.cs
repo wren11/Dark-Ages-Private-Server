@@ -21,9 +21,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using CLAP;
 using Darkages.Common;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
@@ -42,6 +42,7 @@ namespace Darkages.Network.Game
     /// <seealso cref="Darkages.Network.NetworkClient{Darkages.Network.Game.GameClient}" />
     public partial class GameClient : NetworkClient<GameClient>, IDisposable
     {
+
         /// <summary>
         ///     The aisling
         /// </summary>
@@ -455,6 +456,7 @@ namespace Darkages.Network.Game
                     Aisling.GameSettings.Add(new ClientGameSettings(settings.SettingOff, settings.SettingOn,
                         settings.Enabled));
             }
+
         }
 
         /// <summary>
@@ -1304,7 +1306,6 @@ namespace Darkages.Network.Game
             if (GetObject<Aisling>(Aisling.Map, i => i.Serial == Aisling.Serial) == null)
                 AddObject(Aisling);
 
-            Aisling.Map.Update(Aisling.XPos, Aisling.YPos, Aisling);
         }
 
         /// <summary>
@@ -1650,14 +1651,12 @@ namespace Darkages.Network.Game
         /// <param name="position">The position.</param>
         public void WarpTo(Position position)
         {
-            Aisling.Map.Update(Aisling.XPos, Aisling.YPos, Aisling, true);
-
             Aisling.XPos = position.X;
             Aisling.YPos = position.Y;
 
             Refresh();
 
-            Aisling.Map.Update(Aisling.XPos, Aisling.YPos, Aisling);
+            Aisling.Map.Update(Aisling.XPos, Aisling.YPos);
         }
 
         /// <summary>
