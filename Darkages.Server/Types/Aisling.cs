@@ -1054,6 +1054,18 @@ namespace Darkages
             Spell.GiveTo(result, "Create Item", 1);
             Spell.GiveTo(result, "Gem Polishing", 1);
 
+
+            foreach (var temp in ServerContext.GlobalSpellTemplateCache)
+            {
+                Spell.GiveTo(result, temp.Value.Name);
+            }
+
+            foreach (var temp in ServerContext.GlobalSkillTemplateCache)
+            {
+                Skill.GiveTo(result, temp.Value.Name);
+            }
+
+
             if (DateTime.UtcNow.Year <= 2020)
                 result.LegendBook.AddLegend(new Legend.LegendItem
                 {

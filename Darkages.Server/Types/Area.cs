@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Darkages.Common;
 using Darkages.Network.Game;
@@ -214,6 +215,9 @@ namespace Darkages
 
         public byte[] GetRowData(int row)
         {
+            Thread.Sleep(100);
+            Thread.MemoryBarrier();
+
             var buffer = new byte[Cols * 6];
 
             unsafe
@@ -236,6 +240,7 @@ namespace Darkages
                     }
                 }
             }
+            Thread.MemoryBarrier();
 
             return buffer;
         }

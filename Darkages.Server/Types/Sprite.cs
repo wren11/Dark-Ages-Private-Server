@@ -555,6 +555,12 @@ namespace Darkages.Types
             if (CannotTagTarget(source, forceTarget))
                 return;
 
+            if (dmg == -1)
+            {
+                dmg          = CurrentHp;
+                penetrating = true;
+            }
+
             dmg = ApplyWeaponBonuses(source, dmg);
 
             if (dmg > 0)
@@ -586,7 +592,7 @@ namespace Darkages.Types
                 {
                     Serial = Serial,
                     Health = byte.MaxValue,
-                    Sound = sound
+                    Sound  = sound
                 };
 
                 Show(Scope.VeryNearbyAislings, empty);

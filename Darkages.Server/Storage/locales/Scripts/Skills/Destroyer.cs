@@ -68,7 +68,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 var action = new ServerFormat1A
                 {
                     Serial = client.Aisling.Serial,
-                    Number = 0x02,
+                      Number = 0x02,
                     Speed = 40
                 };
 
@@ -80,7 +80,7 @@ namespace Darkages.Scripting.Scripts.Skills
                     (obj as Monster).GenerateRewards(client.Aisling);
 
                     client.SendAnimation(301, obj, client.Aisling);
-                    obj.ApplyDamage(client.Aisling, 999999, false, 40);
+                    obj.ApplyDamage(client.Aisling, -1, false, 40);
                 }
             });
         }

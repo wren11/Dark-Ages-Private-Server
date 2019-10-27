@@ -6,7 +6,7 @@
       "rat shit"
     ]
   },
-  "Image": 16391,
+  "Image": 0x42EC,
   "ScriptName": "Common Monster",
   "DefinedX": 31,
   "DefinedY": 25,
@@ -19,9 +19,9 @@
   "MaximumHP": 200,
   "MaximumMP": 200,
   "AreaID": 100,
-  "MovementSpeed": 450,
+  "MovementSpeed": 750,
   "CastSpeed": 1000,
-  "SpawnMax": 12,
+  "SpawnMax": 200,
   "SpawnRate": 1,
   "SpawnSize": 6,
   "AttackSpeed": 1600,

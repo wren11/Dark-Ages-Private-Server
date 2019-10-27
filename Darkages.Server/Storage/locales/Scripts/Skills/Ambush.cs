@@ -88,6 +88,11 @@ namespace Darkages.Storage.locales.Scripts.Skills
                                 return;
                             }
 
+                        if (selection == null)
+                        {
+                            targetPosition = sprite.Position;
+                        }
+
                         targetPosition = selection.Position;
                     }
 

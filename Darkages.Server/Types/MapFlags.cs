@@ -23,21 +23,22 @@ namespace Darkages.Types
     /// </summary>
     public enum MapFlags : uint
     {
-        ArenaTeam = 8192,
-        CanLocate = 512,
-        CanSummon = 256,
+        Snow        = 1,
+        Rain        = 2,
+        NoMap       = 64,
+        Winter      = 128,
+        CanSummon   = 256,
+        CanLocate   = 512,
         CanTeleport = 1024,
         CanUseSkill = 2048,
         CanUseSpell = 4096,
-        Darkness = Snow | Rain,
-        Default = CanSummon | CanLocate | CanTeleport | CanUseSkill | CanUseSpell | SendToHell | ShouldComa,
+        ArenaTeam   = 8192,
+        PlayerKill  = 16384,
+        SendToHell  = 32768,
+        ShouldComa  = 65536,
         HasDayNight = 131072,
-        NoMap = 64,
-        PlayerKill = 16384,
-        Rain = 2,
-        SendToHell = 32768,
-        ShouldComa = 65536,
-        Snow = 1,
-        Winter = 128
+
+        Darkness    = Snow | Rain,
+        Default     = CanSummon | CanLocate | CanTeleport | CanUseSkill | CanUseSpell | SendToHell | ShouldComa,
     }
 }

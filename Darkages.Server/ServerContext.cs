@@ -387,6 +387,27 @@ namespace Darkages
             LoadMetaDatabase();
             LoadExtensions();
 
+
+
+            var newAreaTemplate = new Area()
+            {
+                 Cols   = 10,              // width
+                 Rows   = 10,              // height
+                 Name   = "test Area",     // name of the new Area
+                 Number = 100,             // using \maps\lod100.map
+                 Flags  = MapFlags.Default // default map Flags                  
+            };
+
+            //map file location (assuming you have the .map file added to the Storage\maps folder.
+            var mapFile = Path.Combine(StoragePath, "maps") + $"\\lod{newAreaTemplate.Number}.map";
+
+            if (File.Exists(mapFile))
+            {
+                //Load it into the context.
+                AreaStorage.LoadMap(newAreaTemplate, mapFile, true);
+            }
+
+
             Paused = false;
         }
 
