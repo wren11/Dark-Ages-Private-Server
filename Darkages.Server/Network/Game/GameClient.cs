@@ -389,7 +389,7 @@ namespace Darkages.Network.Game
         /// </summary>
         /// <value><c>true</c> if this instance can send location; otherwise, <c>false</c>.</value>
         public bool CanSendLocation =>
-            DateTime.UtcNow - LastLocationSent < new TimeSpan(0, 0, 0, 2);
+            DateTime.UtcNow - LastLocationSent < new TimeSpan(0, 0, 0, 0, 200);
 
 
         public bool WasUpdatingMapRecently =>
@@ -667,7 +667,7 @@ namespace Darkages.Network.Game
                 Aisling.LastPosition.X = (ushort) Aisling.XPos;
                 Aisling.LastPosition.Y = (ushort) Aisling.YPos;
 
-                Refresh();
+                //Refresh();
                 return;
             }
 
