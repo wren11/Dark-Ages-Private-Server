@@ -87,11 +87,11 @@ namespace Darkages.Storage.locales.Scripts.Skills
                                 (sprite as Aisling).Client.SendMessageBox(0x02, ServerContext.Config.CantDoThat);
                                 return;
                             }
+                            else
+                            {
+                                return;
+                            }
 
-                        if (selection == null)
-                        {
-                            targetPosition = sprite.Position;
-                        }
 
                         targetPosition = selection.Position;
                     }

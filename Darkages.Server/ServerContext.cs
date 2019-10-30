@@ -303,13 +303,11 @@ namespace Darkages
 
         public static void LoadMetaDatabase()
         {
-            Log("Loading Meta Database");
-            {
-                var files = MetafileManager.GetMetafiles();
+            var files = MetafileManager.GetMetafiles();
 
-                if (files.Count > 0)
-                    GlobalMetaCache.AddRange(files);
-            }
+            if (files.Count > 0)
+                GlobalMetaCache.AddRange(files);
+
             Log("Building Meta Cache: {0} loaded.", GlobalMetaCache.Count);
         }
 
@@ -368,9 +366,11 @@ namespace Darkages
             Paused = true;
 
             EmptyCacheCollectors();
+            {
+                Logger?.Info(string.Format("Clearing Cache... Success"));
+                Logger?.Info(string.Format(""));
+            }
 
-
-            Logger?.Info(string.Format(""));
             Logger?.Trace(string.Format("Loading Server Templates..."));
 
             LoadMaps();

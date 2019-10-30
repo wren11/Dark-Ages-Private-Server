@@ -157,13 +157,13 @@ namespace Darkages
         ///     Gets or sets the exp total.
         /// </summary>
         /// <value>The exp total.</value>
-        public int ExpTotal { get; set; }
+        public uint ExpTotal { get; set; }
 
         /// <summary>
         ///     Gets or sets the exp next.
         /// </summary>
         /// <value>The exp next.</value>
-        public int ExpNext { get; set; }
+        public uint ExpNext { get; set; }
 
         /// <summary>
         ///     Gets or sets the title.

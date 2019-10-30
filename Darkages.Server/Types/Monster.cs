@@ -138,7 +138,7 @@ namespace Darkages.Types
         }
 
 
-        private void GenerateExperience(Aisling player)
+        private void GenerateExperience(Aisling player, bool canCrit = false)
         {
             var exp = 0;
             var seed = Template.Level * 0.1 + 1.5;
@@ -146,13 +146,15 @@ namespace Darkages.Types
                 exp = (int) (Template.Level * seed * 300);
             }
 
-            lock (Generator.Random)
+            if (canCrit)
             {
-                var critical = Math.Abs(GenerateNumber() % 100);
-                if (critical >= 30 && critical <= 32)
+                lock (Generator.Random)
                 {
-                    player.SendAnimation(341, player, this);
-                    exp *= 2;
+                    var critical = Math.Abs(GenerateNumber() % 100);
+                    if (critical >= 85)
+                    {
+                        exp *= 2;
+                    }
                 }
             }
 
@@ -163,45 +165,83 @@ namespace Darkages.Types
                 if (party.WithinRangeOf(player))
                 {
                     DistributeExperience(party, exp);
-                    party.Client?.SendStats(StatusFlags.StructC);
+
+                    party.Client.SendStats(StatusFlags.StructC);
+                    party.Client.SendMessage(0x02, string.Format("You received {0} Experience!.", (int)exp));
                 }
             }
+
+            player.Client.SendStats(StatusFlags.StructC);
+            player.Client.SendMessage(0x02, string.Format("You received {0} Experience!.", (int)exp));
         }
 
         public static void DistributeExperience(Aisling player, double exp)
         {
-            //Formula BoilerPlate: 1000 * E7 * 10 /100
-            var bonus = exp * player.GroupParty.LengthExcludingSelf * Config.GroupExpBonus / 100;
+            var chunks = exp / 1000;
+
+            if (chunks <= 1)
+                HandleExp(player, exp);
+            else
+            {
+                for (int i = 0; i < chunks; i++)
+                {
+                    HandleExp(player, 1000);
+                }
+            }
+        }
+
+        private static void HandleExp(Aisling player, double exp)
+        {
+            if (exp <= 0)
+                exp = 1;
+
+            var bonus = exp * (1 + player.GroupParty.LengthExcludingSelf) * Config.GroupExpBonus / 100;
 
             if (bonus > 0)
                 exp += bonus;
 
-            player.ExpTotal += (int) exp;
-            player.ExpNext  -= (int) exp;
-            player.Client.SendMessage(0x02, string.Format("You received {0} Experience!.", (int) exp));
+            if (player.ExpTotal <= uint.MaxValue)
+            {
+                player.ExpTotal += (uint)exp;
+            }
+            else
+            {
+                player.ExpTotal = uint.MaxValue;
+            }
+
+
+
+            player.ExpNext -= (uint)exp;
+
+            if (player.ExpNext >= int.MaxValue)
+            {
+                player.ExpNext = 0;
+            }
 
             var seed = player.ExpLevel * 0.1 + 0.5;
             {
-                if (player.ExpLevel >= Config.PlayerLevelCap) return;
+                if (player.ExpLevel >= Config.PlayerLevelCap)
+                    return;
             }
 
             while (player.ExpNext <= 0 && player.ExpLevel < 99)
             {
-                player.ExpNext = (int) (player.ExpLevel * seed * 5000);
+                player.ExpNext = (uint)(player.ExpLevel * seed * 5000);
 
-                if (player.ExpLevel == 99) break;
+                if (player.ExpLevel == 99)
+                    break;
 
                 if (player.ExpTotal <= 0)
-                    player.ExpTotal = int.MaxValue;
+                    player.ExpTotal = uint.MaxValue;
 
-                if (player.ExpTotal > int.MaxValue)
-                    player.ExpTotal = int.MaxValue;
+                if (player.ExpTotal > uint.MaxValue)
+                    player.ExpTotal = uint.MaxValue;
 
                 if (player.ExpNext <= 0)
                     player.ExpNext = 1;
 
-                if (player.ExpNext > int.MaxValue)
-                    player.ExpNext = int.MaxValue;
+                if (player.ExpNext > uint.MaxValue)
+                    player.ExpNext = uint.MaxValue;
 
                 Levelup(player);
             }
