@@ -213,34 +213,57 @@ namespace Darkages
             return IsWall(x, y);
         }
 
+        //public byte[] GetRowData(int row)
+        //{
+        //    var buffer = new byte[Cols * 6];
+
+        //    unsafe
+        //    {
+        //        fixed (byte* lpData = buffer, lpTile = &Data[row * Cols * 6])
+        //        {
+        //            var lpD = lpData;
+        //            var lpT = lpTile;
+
+        //            for (var i = 0; i < Cols; i++, lpD += 6, lpT += 6)
+        //            {
+        //                lpD[0] = lpT[1];
+        //                lpD[1] = lpT[0];
+
+        //                lpD[2] = lpT[3];
+        //                lpD[3] = lpT[2];
+
+        //                lpD[4] = lpT[5];
+        //                lpD[5] = lpT[4];
+        //            }
+        //        }
+        //    }
+
+        //    var a = GewRowDataSafe(row);
+        //    return buffer;
+        //}
+
         public byte[] GetRowData(int row)
         {
-            Thread.Sleep(100);
-            Thread.MemoryBarrier();
-
             var buffer = new byte[Cols * 6];
 
-            unsafe
+            int b_pos = 0;
+
+            int d_pos = (row * Cols * 6);
+
+            for (var i = 0; i < Cols; i++, b_pos += 6, d_pos += 6)
             {
-                fixed (byte* lpData = buffer, lpTile = &Data[row * Cols * 6])
-                {
-                    var lpD = lpData;
-                    var lpT = lpTile;
+                buffer[b_pos + 0] = Data[d_pos + 1];
 
-                    for (var i = 0; i < Cols; i++, lpD += 6, lpT += 6)
-                    {
-                        lpD[0] = lpT[1];
-                        lpD[1] = lpT[0];
+                buffer[b_pos + 1] = Data[d_pos + 0];
 
-                        lpD[2] = lpT[3];
-                        lpD[3] = lpT[2];
+                buffer[b_pos + 2] = Data[d_pos + 3];
 
-                        lpD[4] = lpT[5];
-                        lpD[5] = lpT[4];
-                    }
-                }
+                buffer[b_pos + 3] = Data[d_pos + 2];
+
+                buffer[b_pos + 4] = Data[d_pos + 5];
+
+                buffer[b_pos + 5] = Data[d_pos + 4];
             }
-            Thread.MemoryBarrier();
 
             return buffer;
         }

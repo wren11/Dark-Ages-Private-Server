@@ -389,7 +389,7 @@ namespace Darkages.Network.Game
         /// </summary>
         /// <value><c>true</c> if this instance can send location; otherwise, <c>false</c>.</value>
         public bool CanSendLocation =>
-            DateTime.UtcNow - LastLocationSent < new TimeSpan(0, 0, 0, 0, 200);
+            DateTime.UtcNow - LastLocationSent < new TimeSpan(0, 0, 0, 2);
 
 
         public bool WasUpdatingMapRecently =>
@@ -661,13 +661,13 @@ namespace Darkages.Network.Game
 
             var distance = Aisling.Position.DistanceFrom(Aisling.LastPosition);
 
-            if (distance > 2)
+            if (distance > 1)
             {
                 LastWarp = DateTime.UtcNow;
                 Aisling.LastPosition.X = (ushort) Aisling.XPos;
                 Aisling.LastPosition.Y = (ushort) Aisling.YPos;
-
-                //Refresh();
+                LastLocationSent       = DateTime.UtcNow;
+                Refresh();
                 return;
             }
 
