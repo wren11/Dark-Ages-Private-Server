@@ -42,12 +42,15 @@ namespace Darkages.Network
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        private NetworkStream _serverBuffer;
+
         protected NetworkClient()
         {
             Reader = new NetworkPacketReader();
             Writer = new NetworkPacketWriter();
-            Encryption = new SecurityProvider();
 
+            Encryption = new SecurityProvider();
             SendBuffer = new ConcurrentQueue<byte[]>();
         }
 
@@ -226,25 +229,31 @@ namespace Darkages.Network
                     Encryption.Transform(packet);
 
                 var array = packet.ToArray();
-                ServerSocket.Send(array, SocketFlags.None);
+                //ServerSocket.Send(array, SocketFlags.None);
 
+                if (_serverBuffer == null) {
+                    _serverBuffer = new NetworkStream(ServerSocket, System.IO.FileAccess.Write);
+                }
+
+                _serverBuffer.WriteAsync(array, 0, array.Length);
             }
         }
 
         public void Send(NetworkFormat format)
         {
-            if (this is LoginClient)
-            {
-                FlushAndSend(format);
-                return;
-            }
+            //if (this is LoginClient)
+            //{
+            //    FlushAndSend(format);
+            //    return;
+            //}
 
             lock (Writer)
             {
                 Writer.Position = 0;
                 Writer.Write(format.Command);
 
-                if (format.Secured) Writer.Write(Ordinal++);
+                if (format.Secured)
+                    Writer.Write(Ordinal++);
 
                 format.Serialize(Writer);
 
@@ -252,13 +261,22 @@ namespace Darkages.Network
                 if (packet == null)
                     return;
 
-                if (format.Secured) Encryption.Transform(packet);
+                if (format.Secured)
+                    Encryption.Transform(packet);
 
-                lock (SendBuffer)
+                //lock (SendBuffer)
+                //{
+                //    var array = packet.ToArray();
+                //    SendBuffer.Enqueue(array);
+                //}
+
+                if (_serverBuffer == null)
                 {
-                    var array = packet.ToArray();
-                    SendBuffer.Enqueue(array);
+                    _serverBuffer = new NetworkStream(ServerSocket, System.IO.FileAccess.Write);
                 }
+
+                var array = packet.ToArray();
+                _serverBuffer.WriteAsync(array, 0, array.Length);
             }
         }
 

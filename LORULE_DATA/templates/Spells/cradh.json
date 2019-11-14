@@ -17,6 +17,8 @@
   "DamageExponent": 0.0,
   "Pane": 0,
   "ElementalProperty": 0,
+  "Pane": 3,
+  "Cooldown": 3,  
   "Prerequisites": {
     "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
     "Quests_Completed_Required": {

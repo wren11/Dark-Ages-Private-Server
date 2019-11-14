@@ -49,6 +49,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public override void OnSuccess(Sprite sprite)
         {
+
             var targets = sprite.GetInfront(3, true).ToList();
             var prev = sprite.Position;
 

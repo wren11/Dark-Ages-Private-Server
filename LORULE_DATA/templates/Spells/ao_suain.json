@@ -15,7 +15,8 @@
   "Sound": 8,
   "Animation": 2,
   "DamageExponent": 0.0,
-  "Pane": 1,
+  "Pane": 0,
+  "Cooldown": 10,
   "ElementalProperty": 0,
   "Prerequisites": {
     "$type": "Darkages.Types.LearningPredicate, Darkages.Server",

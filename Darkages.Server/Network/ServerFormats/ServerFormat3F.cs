@@ -43,9 +43,9 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write(Pane);
-            writer.Write(Slot);
-            writer.Write(Time);
+            writer.Write((byte)Pane);
+            writer.Write((byte)Slot);
+            writer.Write((int)Time);
         }
     }
 }

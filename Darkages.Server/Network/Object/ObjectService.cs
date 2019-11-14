@@ -178,6 +178,12 @@ namespace Darkages.Network.Object
 
         public void AddGameObject<T>(T obj) where T : Sprite
         {
+            if (obj.XPos >= byte.MaxValue)
+                return;
+
+            if (obj.YPos >= byte.MaxValue)
+                return;
+
             if (_spriteCollections.ContainsKey(obj.CurrentMapId))
             {
                 var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];

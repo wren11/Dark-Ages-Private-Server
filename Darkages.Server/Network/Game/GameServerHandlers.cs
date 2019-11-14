@@ -74,7 +74,7 @@ namespace Darkages.Network.Game
         /// </exception>
         /// <param name="lpClient">A valid GameClient</param>
         /// <param name="lpName">The yaml Script excluding the .yaml extension.</param>
-        public void CreateInterpreterFromMenuFile(GameClient lpClient, string lpName)
+        public void CreateInterpreterFromMenuFile(GameClient lpClient, string lpName, Sprite obj = null)
         {
             var parser = new YamlMenuParser();
             var yamlPath = ServerContext.StoragePath +
@@ -84,29 +84,42 @@ namespace Darkages.Network.Game
             {
                 if (lpClient.MenuInterpter == null)
                 {
-                    lpClient.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
+                    lpClient.MenuInterpter         = parser.CreateInterpreterFromFile(yamlPath);
+                    lpClient.MenuInterpter.Actor   = obj;
+                    lpClient.MenuInterpter.Client  = lpClient;
 
-                    lpClient.MenuInterpter.Client = lpClient;
                     lpClient.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
 
                     lpClient.MenuInterpter.RegisterCheckpointHandler("QuestCompleted", (_client, res) =>
                     {
-                        _Interop.Storage["user"] = lpClient.Aisling;
+                        _Interop.Storage["client"] = lpClient;
+                        _Interop.Storage["actor"]  = lpClient.MenuInterpter.Actor;
+                        _Interop.Storage["user"]   = lpClient.Aisling;
                         {
-                            "var client = (GameClient) _Interop.Storage[\"client\"];".Run();
-                            "var user   = (Aisling)    _Interop.Storage[\"user\"];".Run();
+                            "var client  = (GameClient) _Interop.Storage[\"client\"];".Run();
+                            "var user    = (Aisling)    _Interop.Storage[\"user\"];".Run();
+                            "var actor   = (Sprite)    _Interop.Storage[\"actor\"];".Run();
                         }
+
+
 
                         if (_client.Aisling.HasQuest(res.Value))
                             res.Result = _client.Aisling.HasCompletedQuest(res.Value);
                     });
 
+
+                    
+                    
+
                     lpClient.MenuInterpter.RegisterCheckpointHandler("CompleteQuest", (_client, res) =>
                     {
+                        _Interop.Storage["client"] = lpClient;
+                        _Interop.Storage["actor"] = lpClient.MenuInterpter.Actor;
                         _Interop.Storage["user"] = lpClient.Aisling;
                         {
-                            "var client = (GameClient) _Interop.Storage[\"client\"];".Run();
-                            "var user   = (Aisling)    _Interop.Storage[\"user\"];".Run();
+                            "var client  = (GameClient) _Interop.Storage[\"client\"];".Run();
+                            "var user    = (Aisling)    _Interop.Storage[\"user\"];".Run();
+                            "var actor   = (Sprite)    _Interop.Storage[\"actor\"];".Run();
                         }
 
                         if (_client.Aisling.HasQuest(res.Value))
@@ -130,11 +143,12 @@ namespace Darkages.Network.Game
                     lpClient.MenuInterpter.RegisterCheckpointHandler("Call", (_client, res) =>
                     {
                         _Interop.Storage["client"] = lpClient;
-                        _Interop.Storage["user"]   = lpClient.Aisling;
-
+                        _Interop.Storage["actor"] = lpClient.MenuInterpter.Actor;
+                        _Interop.Storage["user"] = lpClient.Aisling;
                         {
-                            "var client = (GameClient) _Interop.Storage[\"client\"];".Run();
-                            "var user   = (Aisling)    _Interop.Storage[\"user\"];".Run();
+                            "var client  = (GameClient) _Interop.Storage[\"client\"];".Run();
+                            "var user    = (Aisling)    _Interop.Storage[\"user\"];".Run();
+                            "var actor   = (Sprite)     _Interop.Storage[\"actor\"];".Run();
                         }
 
                         res.Value.Run();
@@ -155,7 +169,8 @@ namespace Darkages.Network.Game
             if (client.MenuInterpter == null)
                 return;
 
-            if (client.MenuInterpter.IsFinished) client.MenuInterpter = null;
+            if (client.MenuInterpter.IsFinished)
+                client.MenuInterpter = null;
         }
 
         // ActivateAssails
@@ -2245,7 +2260,7 @@ namespace Darkages.Network.Game
                                 //if call does not produce it's own interpreter. Assume default role.
                                 if (client.MenuInterpter == null)
                                 {
-                                    CreateInterpreterFromMenuFile(client, (obj as Mundane).Template.Name);
+                                    CreateInterpreterFromMenuFile(client, (obj as Mundane).Template.Name, obj);
 
                                     if (client.MenuInterpter != null) client.MenuInterpter.Start();
 

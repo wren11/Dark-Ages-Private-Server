@@ -534,7 +534,7 @@
     <Compile Include="Types\SkillModifiers.cs" />
     <Compile Include="Types\SkillPane.cs" />
     <Compile Include="Types\SkillScope.cs" />
-    <Compile Include="Types\SkillTemplate.cs" />
+    <Compile Include="Types\Templates\SkillTemplate.cs" />
     <Compile Include="Types\SpawnQualifer.cs" />
     <Compile Include="Types\Spell.cs" />
     <Compile Include="Types\SpellBook.cs" />

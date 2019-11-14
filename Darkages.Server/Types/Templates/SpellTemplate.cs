@@ -53,15 +53,12 @@ namespace Darkages.Types
         public ushort Animation { get; set; }
         public double DamageExponent { get; set; }
         public Pane Pane { get; set; }
+        public int Cooldown { get; set; } = 0;
         public ElementManager.Element ElementalProperty { get; set; }
         public LearningPredicate Prerequisites { get; set; }
-
-        public string NpcKey { get; set; }
-
         public Tier TierLevel { get; set; }
-
+        public string NpcKey { get; set; }
         public ushort TargetAnimation { get; set; }
-
         public bool IsTrap { get; set; }
     }
 }

@@ -166,6 +166,7 @@ namespace Darkages.Network.Game
                     {
                         if (client.CanSendLocation && !client.IsRefreshing && client.Aisling.CurrentMapId == 509)
                             client.SendLocation();
+
                     }
                     else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
                     {

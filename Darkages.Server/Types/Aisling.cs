@@ -958,8 +958,16 @@ namespace Darkages
                 }
             }
 
-            spell.NextAvailableUse = DateTime.UtcNow.AddSeconds(info.SpellLines > 0 ? 1 : 0.3);
+            spell.NextAvailableUse = DateTime.UtcNow.AddSeconds(info.SpellLines > 0 ? 1 : 0.2);
             spell.InUse = false;
+
+            if (spell.Template.Cooldown > 0)
+            {
+                Client.Send(new ServerFormat3F((byte)0,
+                    spell.Slot,
+                    spell.Template.Cooldown));
+            }
+
         }
 
         /// <summary>

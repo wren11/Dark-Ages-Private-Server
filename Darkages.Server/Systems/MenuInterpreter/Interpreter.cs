@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Darkages;
 using Darkages.Network.Game;
+using Darkages.Types;
 
 namespace MenuInterpreter
 {
@@ -80,6 +81,8 @@ namespace MenuInterpreter
         ///     Sequence is finished
         /// </summary>
         public bool IsFinished { get; private set; }
+
+        public Sprite Actor { get; internal set; }
 
         /// <summary>
         ///     Invoked every time when Move call leads to current step changed

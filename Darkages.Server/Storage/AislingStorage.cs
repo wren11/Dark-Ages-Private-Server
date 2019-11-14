@@ -61,24 +61,23 @@ namespace Darkages.Storage
             if (ServerContext.Paused)
                 return;
 
+            if (Saving)
+                return;
+
             try
             {
-                Task.Run(() =>
+                var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Username.ToLower()));
+
+                if (!IsFileLocked(path, 1))
                 {
-                    var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Username.ToLower()));
-
-                    if (!IsFileLocked(path, 1))
+                    var objString = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
                     {
-                        var objString = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
-                        {
-                            TypeNameHandling = TypeNameHandling.All
-                        });
+                        TypeNameHandling = TypeNameHandling.All
+                    });
 
-                        Saving = true;
-
-                        File.WriteAllText(path, objString);
-                    }
-                });
+                    Saving = true;
+                    File.WriteAllText(path, objString);
+                }
             }
             catch (Exception)
             {
