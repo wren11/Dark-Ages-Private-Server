@@ -1070,8 +1070,7 @@ namespace Darkages.Network.Game
                         }
                     }
 
-                spell.InUse = false;
-                spell.NextAvailableUse = DateTime.UtcNow;
+
                 spell.Lines = spell.Template.BaseLines;
 
                 Spell.AttachScript(Aisling, spell);
@@ -1080,7 +1079,23 @@ namespace Darkages.Network.Game
                 }
 
                 Send(new ServerFormat17(spell));
+
+
+                Task.Delay(1000).ContinueWith((ct) =>
+                {
+
+                    var delta = (int)Math.Abs((DateTime.UtcNow - spell.NextAvailableUse).TotalSeconds);
+                    var offset = (int)Math.Abs(spell.Template.Cooldown - delta);
+
+                    if (delta <= spell.Template.Cooldown)
+                    {
+                        Send(new ServerFormat3F((byte)0,
+                            spell.Slot,
+                            delta));
+                    }
+                });
             }
+            
 
             return this;
         }

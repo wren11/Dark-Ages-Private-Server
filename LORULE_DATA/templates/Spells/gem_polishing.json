@@ -6,7 +6,7 @@
   "MinLines": 0,
   "MaxLines": 9,
   "ManaCost": 1,
-  "Cooldown": 10,
+  "Cooldown": 100,
   "Text": "\u0000",
   "TargetType": 5,
   "BaseLines": 0,
