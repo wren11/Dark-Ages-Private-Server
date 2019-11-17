@@ -1,0 +1,15 @@
+{
+  "$type": "Darkages.Types.UserClickPopup, Darkages.Server",
+  "X": 10,
+  "Y": 17,
+  "MapId": 1009,
+  "YamlKey": "ApplyDeduff_Test",
+  "Timeout": 200,
+  "Ephemeral": true,
+  "SpriteId": 16389,
+  "TypeOfTrigger": 3,
+  "ID": 0,
+  "Name": "ApplyDebuff_Test",
+  "Description": "A user Click Popup",
+  "Group": null
+}

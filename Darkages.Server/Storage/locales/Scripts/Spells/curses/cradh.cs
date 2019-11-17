@@ -63,7 +63,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     if (!target.HasDebuff(debuff.Name))
                     {
                         debuff.OnApplied(target, debuff);
-
+                    
+                    
                         if (target is Aisling)
                             (target as Aisling).Client
                                 .SendMessage(0x02,

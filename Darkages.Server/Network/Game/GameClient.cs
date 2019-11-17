@@ -1381,13 +1381,8 @@ namespace Darkages.Network.Game
         /// </summary>
         public void Save()
         {
-            ThreadPool.QueueUserWorkItem(state =>
-            {
-                StorageManager.AislingBucket.Save(Aisling);
-                {
-                    LastSave = DateTime.UtcNow;
-                }
-            });
+            StorageManager.AislingBucket.Save(Aisling);
+            LastSave = DateTime.UtcNow;
         }
 
         /// <summary>

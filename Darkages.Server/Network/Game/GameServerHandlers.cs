@@ -409,7 +409,11 @@ namespace Darkages.Network.Game
 
             client.Aisling.LoggedIn = false;
 
-            client.Save();
+            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
+            {
+                client.Save();
+            }
+
             client.Aisling.Remove(true);
 
             client.FlushAndSend(new ServerFormat03
@@ -579,9 +583,16 @@ namespace Darkages.Network.Game
                             CreateInterpreterFromMenuFile(client, popup.Template.YamlKey);
 
                             if (client.MenuInterpter != null)
-                            {
-                                client.MenuInterpter.Start();
-                                client.ShowCurrentMenu(popup, null, client.MenuInterpter.GetCurrentStep());
+                            {                                
+                                if (client.MenuInterpter != null)
+                                {
+                                    client.MenuInterpter.Start();
+
+                                    var next = client.MenuInterpter?.GetCurrentStep();
+
+                                    if (next != null)
+                                        client.ShowCurrentMenu(popup, null, next);
+                                }
                             }
                         }
                 }

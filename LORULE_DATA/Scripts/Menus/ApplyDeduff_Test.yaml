@@ -1,0 +1,24 @@
+start:
+    checkpoint: 1
+        
+sequences:
+  - id: 1                                  
+    name: "Sequence 1"                  
+    steps:                          
+    - id: 1                                
+      text: "owe!"    
+
+checkpoints:      
+  - id: 1
+    type: Call
+    value: >               
+            user.ApplyDebuff("debuff_cradh");  
+
+            var result = true;
+    success:
+      step: 1
+      sequence: 1
+    fail:
+      step: 1
+      sequence: 2
+            

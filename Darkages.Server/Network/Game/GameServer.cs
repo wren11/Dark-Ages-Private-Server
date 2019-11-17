@@ -204,7 +204,11 @@ namespace Darkages.Network.Game
 
             try
             {
-                client.Save();
+                if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
+                {
+                    client.Save();
+                }
+
                 ServerContext.Logger.Trace("Player {0} has disconnected from server.", client.Aisling.Username);
 
                 client.Aisling.LoggedIn = false;

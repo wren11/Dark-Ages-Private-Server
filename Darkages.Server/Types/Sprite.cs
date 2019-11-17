@@ -1609,7 +1609,7 @@ namespace Darkages.Types
         {
             if (ServerContext.GlobalDeBuffCache.ContainsKey(debuff))
             {
-                var Debuff = Clone<Debuff>(ServerContext.GlobalBuffCache[debuff]);
+                var Debuff = Clone<Debuff>(ServerContext.GlobalDeBuffCache[debuff]);
                 if (!HasDebuff(Debuff.Name)) Debuff.OnApplied(this, Debuff);
             }
         }
