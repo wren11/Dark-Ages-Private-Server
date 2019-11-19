@@ -372,6 +372,11 @@ namespace Darkages.Types
 
         [JsonIgnore] [BsonIgnore] public bool Exists => GetObject(Map, i => i.Serial == Serial, Get.All) != null;
 
+        /// <summary>
+        /// New Buff Property, Let's persist a value to track our reflect spell condition.
+        /// </summary>
+        public bool SpellReflect { get; set; }
+
         #endregion
 
         public TSprite Cast<TSprite>()
@@ -1058,6 +1063,8 @@ namespace Darkages.Types
             {
                 ServerContext.Logger.Error("Error in Show<T>");
             }
+
+            Client?.FlushBuffers();
         }
 
         public Aisling Aisling(Sprite obj)
@@ -1431,7 +1438,14 @@ namespace Darkages.Types
             var pendingX = XPos;
             var pendingY = YPos;
 
+            if (this is Aisling _aisling && _aisling.Client.IsMoving)
+            {                
+                return false;
+            }
+
             var result   = TryWalk(pendingX, pendingY, savedX, savedY);
+
+
             
             return result;
         }
@@ -1481,34 +1495,34 @@ namespace Darkages.Types
             pendingX = pendingX.Clamp(0, Map.Cols - 1);
             pendingY = pendingY.Clamp(0, Map.Rows - 1);
 
-            LastPosition = new Position(savedX, savedY);
-            {                
-                if (CompleteWalk(pendingX, pendingY, savedX, savedY))
-                {
-                    var response  = new ServerFormat0C
-                    {
-                        Direction = Direction,
-                        Serial    = Serial,
-                        X         = (short) savedX,
-                        Y         = (short) savedY
-                    };
 
-                    XPos = pendingX;
-                    YPos = pendingY;
+            CompleteWalk(pendingX, pendingY, savedX, savedY);
 
-                    Show(Scope.NearbyAislingsExludingSelf, response);
-                    return true;
-                }
 
-                return false;
-            }
+            var response = new ServerFormat0C
+            {
+                Direction = Direction,
+                Serial = Serial,
+                X = (short)savedX,
+                Y = (short)savedY
+            };
+
+            XPos = pendingX;
+            YPos = pendingY;
+
+            Show(Scope.NearbyAislingsExludingSelf, response);
+
+            if (LastPosition.X != XPos)
+                LastPosition.X = (ushort)XPos;
+
+            if (LastPosition.Y != YPos)
+                LastPosition.Y = (ushort)YPos;
+
+            return true;
         }
 
         private bool CompleteWalk(int pendingX, int pendingY, int savedX, int savedY)
         {
-            if (new Position(savedX, savedY).DistanceFrom(new Position(pendingX, pendingY)) > 1)
-                return false;
-
             TriggerNearbyTraps();
 
             if (this is Aisling)
@@ -1521,6 +1535,8 @@ namespace Darkages.Types
                 });
 
             }
+
+            //LastPosition = new Position(savedX, savedY);
 
             return true;
         }
@@ -1592,26 +1608,32 @@ namespace Darkages.Types
             Show(Scope.NearbyAislings, new ServerFormat29(v, position.X, position.Y));
         }
 
-        public void ApplyBuff(string buff)
+        public Sprite ApplyBuff(string buff)
         {
             if (ServerContext.GlobalBuffCache.ContainsKey(buff))
             {
                 var Buff = Clone<Buff>(ServerContext.GlobalBuffCache[buff]);
 
                 if (Buff == null || string.IsNullOrEmpty(Buff.Name))
-                    return;
+                    return null;
 
-                if (!HasBuff(Buff.Name)) Buff.OnApplied(this, Buff);
+                if (!HasBuff(Buff.Name))
+                    Buff.OnApplied(this, Buff);
             }
+
+            return this;
         }
 
-        public void ApplyDebuff(string debuff)
+        public Sprite ApplyDebuff(string debuff)
         {
             if (ServerContext.GlobalDeBuffCache.ContainsKey(debuff))
             {
                 var Debuff = Clone<Debuff>(ServerContext.GlobalDeBuffCache[debuff]);
-                if (!HasDebuff(Debuff.Name)) Debuff.OnApplied(this, Debuff);
+                if (!HasDebuff(Debuff.Name))
+                    Debuff.OnApplied(this, Debuff);
             }
+
+            return this;
         }
 
         public void RefreshStats()

@@ -307,6 +307,7 @@
     <Compile Include="Storage\locales\buffs\buff_clawfist.cs" />
     <Compile Include="Storage\locales\buffs\buff_dion.cs" />
     <Compile Include="Storage\locales\buffs\buff_mordion.cs" />
+    <Compile Include="Storage\locales\buffs\buff_spell_reflect.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_ardcradh.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_beagcradh.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_beagsuain.cs" />
@@ -394,6 +395,7 @@
     <Compile Include="Storage\locales\Scripts\Spells\affilictions\morpuinsein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\affilictions\pramh.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\affilictions\puinsein.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\attributes\spellreflect.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\attributes\aite.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\attributes\armachd.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\attributes\clawfist.cs" />

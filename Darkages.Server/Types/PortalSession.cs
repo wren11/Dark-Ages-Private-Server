@@ -43,17 +43,16 @@ namespace Darkages
         public void ShowFieldMap(GameClient client)
         {
                 client.InMapTransition = true;
-
-                client.FlushBuffers();
                 client.Send(new ServerFormat2E(client.Aisling));
+                client.FlushBuffers();
 
                 client.Aisling.PortalSession
-                    = new PortalSession
-                    {
-                        FieldNumber  = 1,
-                        IsMapOpen    = true,
-                        DateOpened   = DateTime.UtcNow
-                    };
+                        = new PortalSession
+                        {
+                            FieldNumber  = 1,
+                            IsMapOpen    = true,
+                            DateOpened   = DateTime.UtcNow
+                        };
 
                 client.DateMapOpened = DateTime.UtcNow;
         }
@@ -78,7 +77,7 @@ namespace Darkages
                 if (ServerContext.GlobalMapCache.ContainsKey(DestinationMap))
                 {
                     client.LeaveArea(true, true);
-                    client.Refresh();
+                    //client.Refresh();
 
 
                     client.Aisling.XPos = X >= 0 ? X : ServerContext.Config.TransitionPointX;
@@ -87,10 +86,10 @@ namespace Darkages
 
                     client.EnterArea();
 
-                    if (client.Aisling.AreaID == DestinationMap)
-                        client.FlushAndSend(new ServerFormat15(client.Aisling.Map));
+                    //if (client.Aisling.AreaID == DestinationMap)
+                   //     client.FlushAndSend(new ServerFormat15(client.Aisling.Map));
 
-                    client.Refresh();
+                    //client.Refresh();
                     client.Aisling.PortalSession = null;
                 }
             }

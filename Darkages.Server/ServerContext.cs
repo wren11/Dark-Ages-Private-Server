@@ -408,6 +408,58 @@ namespace Darkages
             }
 
 
+            var spell = new SpellTemplate()
+            {
+                Animation = 271,
+                BaseLines = 3,
+                MinLines = 0,
+                MaxLines = 9,
+                ScriptKey = "spell_reflect",
+                Cooldown = 3,
+                Description = "Reflect Spells",
+                Group = "Defensive",
+                Icon = 54,
+                LevelRate = 0.08,
+                ManaCost = 300,
+                Name = "deireas faileas",
+                TargetType = SpellTemplate.SpellUseType.NoTarget,
+                NpcKey = "Etaen",
+                MaxLevel = 100,
+                Pane = Pane.Spells,
+                Sound = 30,
+                TierLevel = Tier.Tier1,
+                ElementalProperty = ElementManager.Element.None,
+                Prerequisites = new LearningPredicate()
+                {
+                    ExpLevel_Required = 75,
+                    Class_Required    = Types.Class.Priest,
+                    Int_Required      = 40,
+                    Wis_Required      = 80,
+                    Dex_Required      = 30,
+                    Gold_Required     = 2000000,
+                    Items_Required = new List<ItemPredicate>()
+                    {
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 3,
+                             Item           = "Ruby Ring"
+                        },
+                        new ItemPredicate()
+                        {
+                             AmountRequired = 5,
+                             Item           = "Holy Diana"
+                        }
+                    },
+                    Spell_Level_Required = 60,
+                    Spell_Required = "mor dion",
+                    Stage_Required = ClassStage.Class
+                },
+
+
+            };
+
+            GlobalSpellTemplateCache.Add("deireas faileas", spell);
+
             Paused = false;
         }
 

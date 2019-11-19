@@ -944,10 +944,17 @@ namespace Darkages
                 {
                     if (target != null)
                     {
-                        if (target is Aisling)
+                        if (target is Aisling tobj)
+                        {
+                            spell.Script.OnUse(this, target as Aisling);                            
+                        }
+
+                        if (target is Monster aobj)
+                        {
                             spell.Script.OnUse(this, target as Aisling);
-                        if (target is Monster)
-                            spell.Script.OnUse(this, target as Monster);
+                        }
+
+
                         if (target is Mundane)
                             spell.Script.OnUse(this, target as Mundane);
                     }

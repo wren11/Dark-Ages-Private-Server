@@ -163,8 +163,12 @@ namespace Darkages.Network
 
                 try
                 {
-                    if (packet.Length > 0 && packet[0] == 0xAA)
-                        ServerSocket.Send(packet, 0, packet.Length, SocketFlags.None);
+                    if (_serverBuffer == null)
+                    {
+                        _serverBuffer = new NetworkStream(ServerSocket, System.IO.FileAccess.Write);
+                    }
+
+                    _serverBuffer.Write(packet, 0, packet.Length);
                 }
                 catch (Exception)
                 {
@@ -175,32 +179,6 @@ namespace Darkages.Network
                     EmptyBuffers();
                 }
             }
-        }
-
-        public static void Send(Socket socket, byte[] buffer, int offset, int size, int timeout)
-        {
-            var startTickCount = Environment.TickCount;
-            var sent = 0;
-
-            do
-            {
-                if (Environment.TickCount > startTickCount + timeout)
-                    throw new Exception("Timeout.");
-
-                try
-                {
-                    sent += socket.Send(buffer, offset + sent, size - sent, SocketFlags.None);
-                }
-                catch (SocketException ex)
-                {
-                    if (ex.SocketErrorCode == SocketError.WouldBlock ||
-                        ex.SocketErrorCode == SocketError.IOPending ||
-                        ex.SocketErrorCode == SocketError.NoBufferSpaceAvailable)
-                        Thread.Sleep(30);
-                    else
-                        throw ex;
-                }
-            } while (sent < size);
         }
 
         public void EmptyBuffers()
@@ -229,23 +207,23 @@ namespace Darkages.Network
                     Encryption.Transform(packet);
 
                 var array = packet.ToArray();
-                //ServerSocket.Send(array, SocketFlags.None);
+                ServerSocket.Send(array, SocketFlags.None);
 
                 if (_serverBuffer == null) {
                     _serverBuffer = new NetworkStream(ServerSocket, System.IO.FileAccess.Write);
                 }
 
-                _serverBuffer.WriteAsync(array, 0, array.Length);
+                //_serverBuffer.WriteAsync(array, 0, array.Length);
             }
         }
 
         public void Send(NetworkFormat format)
         {
-            //if (this is LoginClient)
-            //{
-            //    FlushAndSend(format);
-            //    return;
-            //}
+            if (this is LoginClient)
+            {
+                FlushAndSend(format);
+                return;
+            }
 
             lock (Writer)
             {
@@ -264,19 +242,11 @@ namespace Darkages.Network
                 if (format.Secured)
                     Encryption.Transform(packet);
 
-                //lock (SendBuffer)
-                //{
-                //    var array = packet.ToArray();
-                //    SendBuffer.Enqueue(array);
-                //}
-
-                if (_serverBuffer == null)
+                lock (SendBuffer)
                 {
-                    _serverBuffer = new NetworkStream(ServerSocket, System.IO.FileAccess.Write);
+                    var array = packet.ToArray();
+                    SendBuffer.Enqueue(array);
                 }
-
-                var array = packet.ToArray();
-                _serverBuffer.WriteAsync(array, 0, array.Length);
             }
         }
 

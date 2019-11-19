@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Darkages.Common;
 using Darkages.Network.ClientFormats;
@@ -540,7 +541,6 @@ namespace Darkages.Network.Game
             client.Aisling.CanReact = true;
             client.MenuInterpter = null;
 
-
             if (client.Aisling.Skulled)
             {
                 if (!ServerContext.Config.CanMoveDuringReap)
@@ -557,9 +557,9 @@ namespace Darkages.Network.Game
             if (client.Aisling.Direction != format.Direction)
                 client.Aisling.Direction = format.Direction;
 
-            if (client.Aisling.Walk())
-            {
-                //ObjectComponent.UpdateClientObjects(client.Aisling);
+            client.Aisling.Walk();
+            
+                client.LastMovement = DateTime.UtcNow;
 
                 if (client.Aisling.AreaID == ServerContext.Config.TransitionZone)
                 {
@@ -597,35 +597,29 @@ namespace Darkages.Network.Game
                         }
                 }
 
-                foreach (var warps in ServerContext.GlobalWarpTemplateCache)
-                {
-                    if (warps.ActivationMapId != client.Aisling.CurrentMapId)
-                        continue;
-
-                    foreach (var o in warps.Activations)
-                        if (o.Location.DistanceFrom(client.Aisling.Position) <= warps.WarpRadius)
-                        {
-                            if (warps.WarpType == WarpType.Map)
-                            {
-                                client.WarpTo(warps);
-                            }
-                            else if (warps.WarpType == WarpType.World)
-                            {
-                                if (!ServerContext.GlobalWorldMapTemplateCache.ContainsKey(warps.To.PortalKey)) return;
-
-                                client.Aisling.PortalSession = new PortalSession
-                                {
-                                    FieldNumber = warps.To.PortalKey
-                                };
-                                client.Aisling.PortalSession.TransitionToMap(client);
-                            }
-                        }
-                }
-            }
-            else
+            foreach (var warps in ServerContext.GlobalWarpTemplateCache)
             {
-                if (ServerContext.Config.RefreshOnWalkCollision)
-                    client.Refresh();
+                if (warps.ActivationMapId != client.Aisling.CurrentMapId)
+                    continue;
+
+                foreach (var o in warps.Activations)
+                    if (o.Location.DistanceFrom(client.Aisling.Position) <= warps.WarpRadius)
+                    {
+                        if (warps.WarpType == WarpType.Map)
+                        {
+                            client.WarpTo(warps);
+                        }
+                        else if (warps.WarpType == WarpType.World)
+                        {
+                            if (!ServerContext.GlobalWorldMapTemplateCache.ContainsKey(warps.To.PortalKey)) return;
+
+                            client.Aisling.PortalSession = new PortalSession
+                            {
+                                FieldNumber = warps.To.PortalKey
+                            };
+                            client.Aisling.PortalSession.TransitionToMap(client);
+                        }
+                    }
             }
         }
 
@@ -881,18 +875,13 @@ namespace Darkages.Network.Game
                 Text = string.Empty
             };
 
-            if (client.Aisling.GameMaster)
-            {
-
-            }
-
             IEnumerable<Aisling> audience;
 
             switch (format.Type)
             {
                 case 0x00:
                     response.Text = $"{client.Aisling.Username}: {format.Text}";
-                    audience      = client.GetObjects<Aisling>(null,
+                    audience      = client.GetObjects<Aisling>(client.Aisling.Map,
                                   n => client.Aisling.WithinRangeOf(n, false));
                     break;
                 case 0x01:
@@ -959,7 +948,7 @@ namespace Darkages.Network.Game
                 if (client.Aisling.ActiveSpellInfo != null)
                 {
                     client.Aisling.ActiveSpellInfo.Slot = format.Index;
-                    client.Aisling.ActiveSpellInfo.Target = format.Serial;
+                    client.Aisling.ActiveSpellInfo.Target = GetSpellTarget(client, format);
                     client.Aisling.ActiveSpellInfo.Position = format.Point;
                     client.Aisling.ActiveSpellInfo.Data = format.Data;
 
@@ -999,6 +988,23 @@ namespace Darkages.Network.Game
             {
                 CancelIfCasting(client);
             }
+        }
+
+        private uint GetSpellTarget(GameClient client, ClientFormat0F format)
+        {
+            var obj = GetObject(client.Aisling.Map, i => i.Serial == format.Serial, Get.Monsters | Get.Aislings);
+
+            if (obj != null && obj.SpellReflect)
+            {
+                var n = client.Aisling.rnd.Next(100) > 30;  // 70% chance to reflect a spell
+
+                if (n)
+                {
+                    return (uint)obj.Serial;
+                }
+            }
+
+            return format.Serial;
         }
 
         /// <summary>
@@ -1612,7 +1618,10 @@ namespace Darkages.Network.Game
 
             #endregion
 
-            client.Refresh(client.IsRefreshing);
+
+            client.LeaveArea(true, false);
+            client.EnterArea();
+
             client.LastClientRefresh = DateTime.UtcNow;
         }
 

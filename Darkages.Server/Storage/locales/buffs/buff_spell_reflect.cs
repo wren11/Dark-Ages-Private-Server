@@ -16,47 +16,39 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
-using Darkages.Network.ServerFormats;
 using Darkages.Types;
 
 namespace Darkages.Storage.locales.Buffs
 {
-
-    public class buff_aite : Buff
+    public class buff_spell_reflect : Buff
     {
-        /// <summary>
-        ///     This name MUST match and correspond the name in the type BUFF.
-        /// </summary>
-        public override string Name => "aite";
+        public override string Name => "deireas faileas";
 
-        public override int Length => 3000;
-        public override byte Icon => 11;
+        public override byte Icon   => 54;
+
+        public override int Length  => 12;
 
         public override void OnApplied(Sprite Affected, Buff buff)
         {
-            if (Affected is Aisling)
-                (Affected as Aisling)
-                    .Client
-                    .SendMessage(0x02, "Aite! You are empowered. You glow like gold.");
+            Affected.SpellReflect = true;
 
             base.OnApplied(Affected, buff);
         }
 
         public override void OnDurationUpdate(Sprite Affected, Buff buff)
         {
-            Affected.Show(Scope.NearbyAislings,
-                new ServerFormat29((uint) Affected.Serial,
-                    (uint) Affected.Serial, 168, 168, 100));
-
             base.OnDurationUpdate(Affected, buff);
         }
 
         public override void OnEnded(Sprite Affected, Buff buff)
         {
+            Affected.SpellReflect = false;
+
+
             if (Affected is Aisling)
                 (Affected as Aisling)
                     .Client
-                    .SendMessage(0x02, "Aite is gone. Your armor returns to normal.");
+                    .SendMessage(0x02, "Spells attacking you now stop reflecting.");
 
             base.OnEnded(Affected, buff);
         }

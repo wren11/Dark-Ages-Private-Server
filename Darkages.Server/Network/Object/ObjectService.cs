@@ -69,9 +69,25 @@ namespace Darkages.Network.Object
                 }
         }
 
-        public void Add(T obj)
+        public bool Add(T obj)
         {
-            Values.Add(obj);
+            if (Values.Any(i => i.Serial == obj.Serial))
+            {
+                var eobj = Values.FindIndex(idx => idx.Serial == obj.Serial);
+
+                if (eobj >= 0)
+                {
+                    Values[eobj] = obj;
+                    return false;
+                }
+            }
+            else
+            {
+                Values.Add(obj);
+                return true;
+            }
+
+            return false;
         }
 
         public void Delete(T obj)

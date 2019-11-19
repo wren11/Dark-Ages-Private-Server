@@ -91,7 +91,8 @@ namespace Darkages.Network.Object
         {
             if (p != null && p(obj))
                 ServerContext.Game.ObjectFactory.AddGameObject(obj);
-            else if (p == null) ServerContext.Game.ObjectFactory.AddGameObject(obj);
+            else if (p == null)
+                ServerContext.Game.ObjectFactory.AddGameObject(obj);
         }
 
         public IEnumerable<Sprite> GetObjects(Area map, Predicate<Sprite> p, Get selections)

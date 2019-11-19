@@ -124,6 +124,11 @@ namespace Darkages.Network.Game
         private DateTime _lastWarp;
 
         /// <summary>
+        ///     The last walk detected
+        /// </summary>
+        private DateTime _lastmovement;
+
+        /// <summary>
         ///     The last whisper message sent
         /// </summary>
         private DateTime _lastWhisperMessageSent;
@@ -370,12 +375,37 @@ namespace Darkages.Network.Game
             set => _lastClientRefresh = value;
         }
 
+        public DateTime LastMovement
+        {
+            get => _lastmovement;
+            set => _lastmovement = value;
+        }
+
         /// <summary>
         ///     Gets a value indicating whether this instance is refreshing.
         /// </summary>
         /// <value><c>true</c> if this instance is refreshing; otherwise, <c>false</c>.</value>
         public bool IsRefreshing =>
             DateTime.UtcNow - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContext.Config.RefreshRate);
+
+        public bool IsMoving =>
+            DateTime.UtcNow - LastMovement < new TimeSpan(0, 0, 0, 0, GetMovementSpeed());
+
+        private int GetMovementSpeed()
+        {
+            var warps = ServerContext.GlobalWarpTemplateCache.Where(o => o.ActivationMapId == Aisling.CurrentMapId).ToList();
+
+
+            var warpsNearby = warps.Any(i => i.Activations.Any(o => o.Location.DistanceFrom(Aisling.Position) <= 0));
+
+            if (warpsNearby)
+            {
+                Thread.Sleep(100);
+                //SendLocation();
+            }
+
+            return 250;
+        }
 
         /// <summary>
         ///     Gets a value indicating whether this instance is warping.
@@ -598,9 +628,15 @@ namespace Darkages.Network.Game
             if (area.ID != Aisling.CurrentMapId)
             {
                 LeaveArea(true);
+
+                Aisling.LastPosition = new Position(Aisling.X, Aisling.Y);
                 Aisling.XPos = position.X;
                 Aisling.YPos = position.Y;
-                Aisling.CurrentMapId = area.ID;
+                Aisling.CurrentMapId   = area.ID;
+
+
+
+
                 EnterArea();
             }
             else
@@ -624,7 +660,8 @@ namespace Darkages.Network.Game
             if (ServerContext.GlobalMapCache.ContainsKey(area))
             {
                 var target = ServerContext.GlobalMapCache[area];
-                if (target != null) TransitionToMap(target, position);
+                if (target != null)
+                    TransitionToMap(target, position);
             }
         }
 
@@ -664,9 +701,9 @@ namespace Darkages.Network.Game
             if (distance > 1)
             {
                 LastWarp = DateTime.UtcNow;
-                Aisling.LastPosition.X = (ushort) Aisling.XPos;
-                Aisling.LastPosition.Y = (ushort) Aisling.YPos;
-                LastLocationSent       = DateTime.UtcNow;
+                Aisling.LastPosition.X = (ushort)Aisling.XPos;
+                Aisling.LastPosition.Y = (ushort)Aisling.YPos;
+                LastLocationSent = DateTime.UtcNow;
                 Refresh();
                 return;
             }
@@ -1080,20 +1117,27 @@ namespace Darkages.Network.Game
 
                 Send(new ServerFormat17(spell));
 
-
-                Task.Delay(1000).ContinueWith((ct) =>
+                if (spell.NextAvailableUse.Year > 1)
                 {
 
-                    var delta = (int)Math.Abs((DateTime.UtcNow - spell.NextAvailableUse).TotalSeconds);
-                    var offset = (int)Math.Abs(spell.Template.Cooldown - delta);
-
-                    if (delta <= spell.Template.Cooldown)
+                    Task.Delay(1000).ContinueWith((ct) =>
                     {
-                        Send(new ServerFormat3F((byte)0,
-                            spell.Slot,
-                            delta));
-                    }
-                });
+
+                        var delta = (int)Math.Abs((DateTime.UtcNow - spell.NextAvailableUse).TotalSeconds);
+                        var offset = (int)Math.Abs(spell.Template.Cooldown - delta);
+
+                        if (delta <= spell.Template.Cooldown)
+                        {
+                            Send(new ServerFormat3F((byte)0,
+                                spell.Slot,
+                                delta));
+                        }
+                    });
+                }
+                else
+                {
+                    spell.NextAvailableUse = DateTime.UtcNow;
+                }
             }
             
 
@@ -1271,8 +1315,9 @@ namespace Darkages.Network.Game
             SendSerial();
             Insert();
             RefreshMap();
-            SendLocation();
             UpdateDisplay();
+            SendLocation();
+            FlushBuffers();
 
             return this;
         }
@@ -1306,21 +1351,10 @@ namespace Darkages.Network.Game
             Aisling.Show(scope, empty);
         }
 
-        /// <summary>
-        ///     Client.Insert: if map is ready (loaded), Inserts an Aisling onto the map in question.
-        ///     condition: if it's not present in the object manager.
-        ///     true: inserts the object into the object manager, then updates the Map tile location.
-        ///     false: does not insert the object into the object manager.
-        ///     Note: It will update the map object grid regardless of the above condition.
-        /// </summary>
+
         public void Insert()
         {
-            if (!Aisling.Map.Ready)
-                return;
-
-            if (GetObject<Aisling>(Aisling.Map, i => i.Serial == Aisling.Serial) == null)
-                AddObject(Aisling);
-
+            AddObject(Aisling);
         }
 
         /// <summary>
@@ -1367,19 +1401,18 @@ namespace Darkages.Network.Game
         /// <summary>
         ///     Sends the location.
         /// </summary>
-        public  void SendLocation()
+        public void SendLocation()
         {
+            Send(new ServerFormat04(Aisling));
+            LastLocationSent = DateTime.UtcNow;
+
             CloseDialog();
-            {
-                Send(new ServerFormat04(Aisling));
-                LastLocationSent = DateTime.UtcNow;
-            }
         }
 
-        /// <summary>
-        ///     Saves this instance.
-        /// </summary>
-        public void Save()
+            /// <summary>
+            ///     Saves this instance.
+            /// </summary>
+            public void Save()
         {
             StorageManager.AislingBucket.Save(Aisling);
             LastSave = DateTime.UtcNow;
@@ -1392,7 +1425,7 @@ namespace Darkages.Network.Game
         /// <param name="text">The text.</param>
         public void SendMessage(byte type, string text)
         {
-            Send(new ServerFormat0A(type, text));
+            FlushAndSend(new ServerFormat0A(type, text));
             LastMessageSent = DateTime.UtcNow;
         }
 
