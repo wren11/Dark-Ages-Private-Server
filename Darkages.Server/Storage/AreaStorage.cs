@@ -73,7 +73,7 @@ namespace Darkages.Storage
                 return;
 
 
-            var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Name.ToLower()));
+            var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.ContentName.ToLower()));
             var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
             File.WriteAllText(path, objString);
         }
@@ -92,13 +92,13 @@ namespace Darkages.Storage
                 if (mapObj == null)
                     continue;
 
-                var mapFile = Directory.GetFiles($@"{ServerContext.StoragePath}\maps", $"lod{mapObj.Number}.map",
+                var mapFile = Directory.GetFiles($@"{ServerContext.StoragePath}\maps", $"lod{mapObj.ID}.map",
                     SearchOption.TopDirectoryOnly).FirstOrDefault();
 
                 if (mapFile != null && File.Exists(mapFile))
                 {
                     LoadMap(mapObj, mapFile, true);
-                    ServerContext.GlobalMapCache[mapObj.Number] = mapObj;
+                    ServerContext.GlobalMapCache[mapObj.ID] = mapObj;
                 }
             }
         }

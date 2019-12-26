@@ -134,6 +134,9 @@ namespace Darkages.Types
 
         public static bool GiveTo(Aisling aisling, string args, int level = 100)
         {
+            if (!ServerContext.GlobalSkillTemplateCache.ContainsKey(args))
+                return false;
+
             var skillTemplate = ServerContext.GlobalSkillTemplateCache[args];
             var slot = aisling.SkillBook.FindEmpty();
 

@@ -27,16 +27,19 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using ConsoleExtender;
+using Darkages.Assets.locales.Scripts.Spells.utility;
 using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Script.Context;
+using Darkages.Scripting;
 using Darkages.Storage;
 using Darkages.Types;
 using LiteDB;
 using Mono.CSharp;
 using Newtonsoft.Json;
 using NLog;
+
 
 namespace Darkages
 {
@@ -387,80 +390,30 @@ namespace Darkages
             LoadMetaDatabase();
             LoadExtensions();
 
-
-
-            var newAreaTemplate = new Area()
-            {
-                 Cols   = 10,              // width
-                 Rows   = 10,              // height
-                 Name   = "test Area",     // name of the new Area
-                 Number = 100,             // using \maps\lod100.map
-                 Flags  = MapFlags.Default // default map Flags                  
-            };
-
-            //map file location (assuming you have the .map file added to the Storage\maps folder.
-            var mapFile = Path.Combine(StoragePath, "maps") + $"\\lod{newAreaTemplate.Number}.map";
-
-            if (File.Exists(mapFile))
-            {
-                //Load it into the context.
-                AreaStorage.LoadMap(newAreaTemplate, mapFile, true);
-            }
-
-
-            var spell = new SpellTemplate()
-            {
-                Animation = 271,
-                BaseLines = 3,
-                MinLines = 0,
-                MaxLines = 9,
-                ScriptKey = "spell_reflect",
-                Cooldown = 3,
-                Description = "Reflect Spells",
-                Group = "Defensive",
-                Icon = 54,
-                LevelRate = 0.08,
-                ManaCost = 300,
-                Name = "deireas faileas",
-                TargetType = SpellTemplate.SpellUseType.NoTarget,
-                NpcKey = "Etaen",
-                MaxLevel = 100,
-                Pane = Pane.Spells,
-                Sound = 30,
-                TierLevel = Tier.Tier1,
-                ElementalProperty = ElementManager.Element.None,
-                Prerequisites = new LearningPredicate()
-                {
-                    ExpLevel_Required = 75,
-                    Class_Required    = Types.Class.Priest,
-                    Int_Required      = 40,
-                    Wis_Required      = 80,
-                    Dex_Required      = 30,
-                    Gold_Required     = 2000000,
-                    Items_Required = new List<ItemPredicate>()
-                    {
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 3,
-                             Item           = "Ruby Ring"
-                        },
-                        new ItemPredicate()
-                        {
-                             AmountRequired = 5,
-                             Item           = "Holy Diana"
-                        }
-                    },
-                    Spell_Level_Required = 60,
-                    Spell_Required = "mor dion",
-                    Stage_Required = ClassStage.Class
-                },
-
-
-            };
-
-            GlobalSpellTemplateCache.Add("deireas faileas", spell);
-
             Paused = false;
+
+
+
+
+            //var popup = new UserWalkPopup()
+            //{
+            //     Description   = "Tutorial : 1 Introduction, Popup.",
+            //     Ephemeral     = false,
+            //     MapId         = 3029,
+            //     SpriteId      = ushort.MinValue,
+            //     Name          = "Tutorial_1_Welcome",
+            //     TypeOfTrigger = TriggerType.MapLocation,
+            //     X             = 26,
+            //     Y             = 47,
+            //     Group         = "Tutorial Popups",
+            //     YamlKey       = "tutorial_1_welcome_popup"                 
+            //};
+
+            //StorageManager.PopupBucket.Save(popup, true);
+
+
+
+            Logger?.Trace(string.Format("Server Ready!, Listening for Connections..."));
         }
 
         private static void LoadExtensions()
@@ -504,7 +457,16 @@ namespace Darkages
                     using System.Linq;
                     using System.Net;
                     using System.Reflection;
-                    using Darkages;");
+                    using Darkages;
+                    using Darkages.Assets.locales.Scripts;
+                    using Darkages.Assets.locales.Scripts.Spells;
+                    using Darkages.Assets.locales.Scripts.Spells.utility;");
+
+
+
+
+
+
         }
 
         private static void CacheDebuffs()

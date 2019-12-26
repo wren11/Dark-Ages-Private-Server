@@ -136,7 +136,7 @@ namespace Darkages.Network.Object
                 if (!_spriteCollections.ContainsKey(map.ID))
                 {
                     var _cachemap = ServerContext.GlobalMapCache.Select(i => i.Value)
-                        .Where(n => n.Name.Equals(map.Name) && n.Number != map.Number).FirstOrDefault();
+                        .Where(n => n.Name.Equals(map.Name) && n.ID != map.ID).FirstOrDefault();
 
                     if (_cachemap != null) map = _cachemap;
                 }
@@ -169,7 +169,7 @@ namespace Darkages.Network.Object
                 if (!_spriteCollections.ContainsKey(map.ID))
                 {
                     var _cachemap = ServerContext.GlobalMapCache.Select(i => i.Value)
-                        .Where(n => n.Name.Equals(map.Name) && n.Number != map.Number).FirstOrDefault();
+                        .Where(n => n.Name.Equals(map.Name) && n.ID != map.ID).FirstOrDefault();
 
                     if (_cachemap != null) map = _cachemap;
                 }

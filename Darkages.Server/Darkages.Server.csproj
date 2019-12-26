@@ -306,6 +306,7 @@
     <Compile Include="Storage\locales\buffs\buff_armachd.cs" />
     <Compile Include="Storage\locales\buffs\buff_clawfist.cs" />
     <Compile Include="Storage\locales\buffs\buff_dion.cs" />
+    <Compile Include="Storage\locales\buffs\buff_hide.cs" />
     <Compile Include="Storage\locales\buffs\buff_mordion.cs" />
     <Compile Include="Storage\locales\buffs\buff_spell_reflect.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_ardcradh.cs" />
@@ -363,9 +364,6 @@
     <Compile Include="Storage\locales\Scripts\Mundanes\sunup.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\TowerDefenseHandler.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\UserHelper.cs" />
-    <Compile Include="Storage\locales\Scripts\Reactors\DefaultResponseHandler.cs" />
-    <Compile Include="Storage\locales\Scripts\Reactors\ExampleReactor.cs" />
-    <Compile Include="Storage\locales\Scripts\Reactors\ExampleReactor2.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Ambush.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Assail.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\beagsuain.cs" />
@@ -428,6 +426,7 @@
     <Compile Include="Storage\locales\Scripts\Spells\rogue\PoisonTrap.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\rogue\StilettoTrap.cs" />
     <Compile Include="Storage\locales\Scripts\Skills\Rogue\Inspect.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\tests\Hide.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\utility\Create.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\utility\fasspoirad.cs" />
     <Compile Include="Storage\locales\Scripts\Weapons\SnowSecret.cs" />

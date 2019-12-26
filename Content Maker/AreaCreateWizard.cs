@@ -84,7 +84,7 @@ namespace Content_Maker
         private void Button3_Click(object sender, EventArgs e)
         {
             if (ServerContext.GlobalMapCache.Count(i => i.Value.Name.Equals(textBox4.Text, StringComparison.OrdinalIgnoreCase)
-                || i.Value.Number == Convert.ToInt32(textBox3.Text)) > 0)
+                || i.Value.ID == Convert.ToInt32(textBox3.Text)) > 0)
             {
                 MessageBox.Show("This map appears to exist already.");
                 return;
@@ -96,21 +96,21 @@ namespace Content_Maker
                 var map = new Area
                 {
                     Name = textBox4.Text,
+                    ContentName = textBox6.Text,
                     Rows = Convert.ToUInt16(textBox2.Text),
                     Cols = Convert.ToUInt16(textBox1.Text),
                     ID = Convert.ToInt32(textBox3.Text),
                     Music = Convert.ToInt32(textBox5.Text)
                 };
-                map.Number = map.ID;
                 map.Ready = false;
 
                 map.Flags = radioButton2.Checked ? Darkages.Types.MapFlags.Default : Darkages.Types.MapFlags.PlayerKill;
                 {
-                    var path = Path.GetFullPath(ServerContext.StoragePath + string.Format(@"\maps\lod{0}.map", map.Number));
+                    var path = Path.GetFullPath(ServerContext.StoragePath + string.Format(@"\maps\lod{0}.map", map.ID));
 
                     if (!File.Exists(path))
                     {
-                        File.Move(SelectedMap, path);
+                        File.Copy(SelectedMap, path);
                     }
 
                     StorageManager.AreaBucket.Save(map);

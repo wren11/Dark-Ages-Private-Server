@@ -16,9 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
-using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
-using Darkages.Storage.locales.Buffs;
 using Darkages.Types;
 
 namespace Darkages.Storage.locales.Scripts.Spells
@@ -41,34 +39,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
         public override void OnSuccess(Sprite sprite, Sprite target)
         {
-            if (sprite is Aisling)
-            {
-                var client = (sprite as Aisling).Client;
-                var buff  = new buff_spell_reflect();
 
-                client.TrainSpell(Spell);
-
-                if (!target.HasBuff(buff.Name))
-                {
-                    buff.OnApplied(target, buff);
-
-                    var action = new ServerFormat1A
-                    {
-                        Serial = sprite.Serial,
-                        Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 : client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
-                        Speed = 30
-                    };
-
-                    client.SendAnimation(Spell.Template.Animation, target, client.Aisling);
-                    client.Aisling.Show(Scope.NearbyAislings, action);
-                    client.SendMessage(0x02, "you cast " + Spell.Template.Name + ".");
-                    client.SendStats(StatusFlags.All);
-                }
-                else
-                {
-                    client.SendMessage(0x02, "That target is already empowered.");
-                }
-            }
         }
 
         public override void OnUse(Sprite sprite, Sprite target)

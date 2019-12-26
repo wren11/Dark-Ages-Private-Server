@@ -39,7 +39,7 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((ushort) Area.Number);
+            writer.Write((ushort) Area.ID);
             writer.Write((byte) Area.Cols); // W
             writer.Write((byte) Area.Rows); // H
             writer.Write((byte) Area.Flags);

@@ -129,7 +129,13 @@ namespace Darkages
         [JsonProperty] public int ERRORCAP = 15;
 
         [JsonProperty] public double FasNadurStrength = 3.00;
-        [JsonProperty] public string GameMaster = "lol";
+
+        [JsonProperty] public string GameMaster    = "lol"; // add the character name of who will have in-game GM Power.
+
+        [JsonProperty] public string ServerDev     = ""; //add your name here so people know who is running this server.
+
+        [JsonProperty] public string ProjectDev    = "Wren"; //you can decide if you want to change this.
+
 
         [JsonProperty]
         /// <summary>
@@ -303,9 +309,9 @@ namespace Darkages
 
         [JsonProperty] public string SpellFailedMessage = "failed.";
 
-        [JsonProperty] public int StartingMap = 100;
+        [JsonProperty] public int StartingMap = 3029; // tutorial : 1, as per USDA Live Server
 
-        [JsonProperty] public Position StartingPosition = new Position(6, 6);
+        [JsonProperty] public Position StartingPosition = new Position(26, 48);
 
         [JsonProperty]
         /// <summary>

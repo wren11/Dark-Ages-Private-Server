@@ -1,4 +1,5 @@
 ﻿using Darkages.Network.ServerFormats;
+using Darkages.Scripting;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
@@ -248,6 +249,92 @@ namespace Darkages.Network.Game
 
             if (user != null)
                 user.CurrentHp = 0;
+        }
+
+        public bool GiveItem(string itemName)
+        {
+            var item = Item.Create(Aisling, itemName);
+
+            if (item != null)
+            {
+                return item.GiveTo(Aisling, true);
+            }
+
+            return false;
+        }
+
+        public bool GiveTutorialArmor()
+        {
+            var item = Aisling.Gender == Gender.Male ? "Shirt" : "Blouse";
+            return GiveItem(item);
+        }
+
+        public bool CastSpell(string spellName, Sprite caster, Sprite target)
+        {
+            if (ServerContext.GlobalSpellTemplateCache.ContainsKey(spellName))
+            {
+                var script = ScriptManager.Load<SpellScript>(spellName,
+                    Spell.Create(1, ServerContext.GlobalSpellTemplateCache[spellName]));
+                {
+                    script.OnUse(caster, target);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool PlayerUseSpell(string spellname, Sprite target)
+        {
+            var spell = Aisling.SpellBook.Get(i => i.Template.Name.Equals(spellname, StringComparison.OrdinalIgnoreCase))
+                .FirstOrDefault();
+
+            if (spell != null)
+            {
+                spell.Script?.OnUse(Aisling, target);
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool PlayerUseSkill(string spellname)
+        {
+            var skill = Aisling.SkillBook.Get(i => i.Template.Name.Equals(spellname, StringComparison.OrdinalIgnoreCase))
+                .FirstOrDefault();
+
+            if (skill != null)
+            {
+                skill.Script?.OnUse(Aisling);
+                return true;
+            }
+
+            return false;
+        }
+
+
+        public bool TakeAwayItem(string item)
+        {
+            var itemObj = Aisling.Inventory.Has(i => i.Template.Name.Equals(item, StringComparison.OrdinalIgnoreCase));
+
+            if (itemObj != null)
+            {
+                Aisling.Inventory.Remove(this, itemObj);
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool TakeAwayItem(Item item)
+        {
+            if (item != null)
+            {
+                Aisling.Inventory.Remove(this, item);
+                return true;
+            }
+
+            return false;
         }
 
         public void OpenBoard(string n)

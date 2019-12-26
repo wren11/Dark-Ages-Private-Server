@@ -24,6 +24,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Darkages.Assets.locales.Scripts.Spells.utility;
 using Darkages.Common;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
@@ -1350,7 +1351,6 @@ namespace Darkages.Network.Game
 
             Aisling.Show(scope, empty);
         }
-
 
         public void Insert()
         {

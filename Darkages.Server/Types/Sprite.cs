@@ -1237,7 +1237,6 @@ namespace Darkages.Types
             return GetObjects<Mundane>(Map, i => i != null && i.WithinRangeOf(this)).ToArray();
         }
 
-
         /// <summary>
         ///     Use this to Remove Sprites
         ///     It will remove them from ingame to who those effected.

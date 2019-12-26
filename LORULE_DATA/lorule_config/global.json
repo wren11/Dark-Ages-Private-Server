@@ -43,7 +43,7 @@
   "DayTimeInterval": 30.0,
   "DeathHPPenalty": 50,
   "DeathMap": 88888,
-  "DebugMode": true,
+  "DebugMode": false,
   "DefaultItemColor": 13,
   "DefaultItemDurability": 1000,
   "DefaultItemValue": 500,
@@ -54,6 +54,8 @@
   "ERRORCAP": 15,
   "FasNadurStrength": 3.0,
   "GameMaster": "lol",
+  "ServerDev": "",
+  "ProjectDev": "Wren",
   "GlobalBaseSkillDelay": 500.0,
   "GlobalScripts": {
     "$type": "System.String[], mscorlib",
@@ -133,12 +135,12 @@
   "SkullLength": 10,
   "SomethingWentWrong": "Something went wrong.",
   "SpellFailedMessage": "failed.",
-  "StartingMap": 100,
+  "StartingMap": 3029,
   "StartingPosition": {
     "$type": "Darkages.Types.Position, Darkages.Server",
     "AreaID": 0,
-    "X": 6,
-    "Y": 6
+    "X": 26,
+    "Y": 48
   },
   "StatCap": 255,
   "StatsPerLevel": 2,

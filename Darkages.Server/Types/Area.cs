@@ -49,8 +49,10 @@ namespace Darkages
         private readonly GameServerTimer WarpTimer =
             new GameServerTimer(TimeSpan.FromSeconds(1.1));
 
+        [JsonIgnore]
         public GameServerTimer _Reaper = new GameServerTimer(TimeSpan.FromSeconds(2));
 
+        [JsonIgnore]
         public Cache<Sprite[]> AreaObjectCache = new Cache<Sprite[]>();
 
 
@@ -72,11 +74,15 @@ namespace Darkages
 
         public ushort Cols { get; set; }
 
-        public int Number { get; set; }
-
         public int ID { get; set; }
 
+        public int ContentOrder { get; set; }
+
+        public string ContentDescription { get; set; }
+
         public string Name { get; set; }
+
+        public string ContentName { get; set; }
 
         public MapFlags Flags { get; set; }
 

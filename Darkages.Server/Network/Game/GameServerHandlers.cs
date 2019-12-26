@@ -948,7 +948,7 @@ namespace Darkages.Network.Game
                 if (client.Aisling.ActiveSpellInfo != null)
                 {
                     client.Aisling.ActiveSpellInfo.Slot = format.Index;
-                    client.Aisling.ActiveSpellInfo.Target = GetSpellTarget(client, format);
+                    client.Aisling.ActiveSpellInfo.Target = format.Serial;
                     client.Aisling.ActiveSpellInfo.Position = format.Point;
                     client.Aisling.ActiveSpellInfo.Data = format.Data;
 
