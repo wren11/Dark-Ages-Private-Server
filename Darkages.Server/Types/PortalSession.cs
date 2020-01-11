@@ -49,7 +49,7 @@ namespace Darkages
                 client.Aisling.PortalSession
                         = new PortalSession
                         {
-                            FieldNumber  = 1,
+                            FieldNumber  = client.Aisling.World,
                             IsMapOpen    = true,
                             DateOpened   = DateTime.UtcNow
                         };

@@ -43,7 +43,7 @@
   "DayTimeInterval": 30.0,
   "DeathHPPenalty": 50,
   "DeathMap": 88888,
-  "DebugMode": false,
+  "DebugMode": true,
   "DefaultItemColor": 13,
   "DefaultItemDurability": 1000,
   "DefaultItemValue": 500,

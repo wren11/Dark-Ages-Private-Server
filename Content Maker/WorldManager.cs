@@ -243,7 +243,8 @@ namespace Content_Maker
 
                 template.To = new Warp()
                 {
-                    AreaID    = 0
+                     AreaID    = 0,
+                     PortalKey = (int)numericUpDown1.Value
                 };
 
                 template.ActivationMapId = SelectedArea.ID;

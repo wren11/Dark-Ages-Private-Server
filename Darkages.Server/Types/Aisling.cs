@@ -377,6 +377,11 @@ namespace Darkages
         public DateTime LastLogged { get; set; }
 
         /// <summary>
+        /// What World we are currently on.
+        /// </summary>
+        public int World { get; set; } = 1;
+
+        /// <summary>
         ///     Gets or sets the flags.
         /// </summary>
         /// <value>The flags.</value>
@@ -988,7 +993,6 @@ namespace Darkages
 
             ActiveReactor = null;
             ReactorActive = false;
-            Actor = null;
         }
 
         /// <summary>
@@ -1062,7 +1066,7 @@ namespace Darkages
                 XPos = ServerContext.Config.StartingPosition.X,
                 YPos = ServerContext.Config.StartingPosition.Y,
                 Nation = (byte) randomFraction,
-                AnimalForm = AnimalForm.None
+                AnimalForm = AnimalForm.None,                
             };
 
             Skill.GiveTo(result, "Assail", 1);

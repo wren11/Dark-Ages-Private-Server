@@ -608,16 +608,30 @@ namespace Darkages.Network.Game
                         if (warps.WarpType == WarpType.Map)
                         {
                             client.WarpTo(warps);
+                            break;
                         }
                         else if (warps.WarpType == WarpType.World)
                         {
-                            if (!ServerContext.GlobalWorldMapTemplateCache.ContainsKey(warps.To.PortalKey)) return;
+                            if (!ServerContext.GlobalWorldMapTemplateCache.ContainsKey(warps.To.PortalKey))
+                                return;
 
                             client.Aisling.PortalSession = new PortalSession
                             {
                                 FieldNumber = warps.To.PortalKey
                             };
+
+
+                            if (client.Aisling.World != warps.To.PortalKey)
+                            {
+                                ServerContext.Log("Transition for {0}: World: {1}  / {2}", client.Aisling.Username, client.Aisling.World, o.PortalKey);
+                                client.Aisling.World = warps.To.PortalKey;
+                            }
+
+                            ServerContext.Log("{0}: World: {1}  / {2}", client.Aisling.Username, client.Aisling.World, o.PortalKey);
                             client.Aisling.PortalSession.TransitionToMap(client);
+
+                            break;
+
                         }
                     }
             }
@@ -2118,7 +2132,7 @@ namespace Darkages.Network.Game
 
                 if (worldmap == null)
                 {
-                    client.Aisling.PortalSession = new PortalSession { FieldNumber = 1, IsMapOpen = true };
+                    client.Aisling.PortalSession = new PortalSession { FieldNumber = client.Aisling.World, IsMapOpen = true };
                     worldmap = client.Aisling.PortalSession.Template;
                 }
 

@@ -205,7 +205,7 @@ namespace Darkages.Storage
                         var template =
                             StorageManager.WorldMapBucket.Load<WorldMapTemplate>(Path.GetFileNameWithoutExtension(asset));
                         if (template != null)
-                            ServerContext.GlobalWorldMapTemplateCache[template.FieldNumber] = template;
+                            ServerContext.GlobalWorldMapTemplateCache[template.WorldIndex] = template;
                         break;
                     }
 

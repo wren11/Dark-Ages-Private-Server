@@ -27,6 +27,8 @@ namespace Darkages.Types
         public Warp Transition { get; set; }
 
         public int FieldNumber { get; set; }
+
+        public int WorldIndex  { get; set; } = 1;
     }
 
     public class WorldPortal

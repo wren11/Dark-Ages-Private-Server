@@ -43,7 +43,7 @@ namespace Darkages.Network.ServerFormats
             if (User == null)
                 return;
 
-            var portal = ServerContext.GlobalWorldMapTemplateCache[User.PortalSession?.FieldNumber ?? 1];
+            var portal = ServerContext.GlobalWorldMapTemplateCache[User.Client.Aisling.World];
             var name   = string.Format("field{0:000}", portal.FieldNumber);
 
             writer.WriteStringA(name);

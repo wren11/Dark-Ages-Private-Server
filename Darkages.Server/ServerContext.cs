@@ -34,6 +34,7 @@ using Darkages.Network.Object;
 using Darkages.Script.Context;
 using Darkages.Scripting;
 using Darkages.Storage;
+using Darkages.Storage.locales.Buffs;
 using Darkages.Types;
 using LiteDB;
 using Mono.CSharp;
@@ -393,7 +394,25 @@ namespace Darkages
             Paused = false;
 
 
+            var assailTemplate = new SkillTemplate()
+            {
+                 Icon = 1,
+                 Buff = new buff_dion(),
+                 Type = SkillScope.Assail,
+                 Description = "Attack something in front of you.",
+                 LevelRate = 0.5,
+                 MaxLevel = 100,
+                 TierLevel = Tier.Tier1,
+                 ScriptName = "Assail",
+                 Sound = 1,
+                 TargetAnimation =  203,
+                 Pane  = Pane.Skills,
+                 Name  = "Assail",
+                 PostQualifers = PostQualifer.BreakInvisible | PostQualifer.IgnoreDefense,                 
+            };
 
+
+           // StorageManager.SkillBucket.Save(assailTemplate, true);
 
             //var popup = new UserWalkPopup()
             //{

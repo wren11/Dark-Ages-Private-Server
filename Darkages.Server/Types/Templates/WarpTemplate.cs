@@ -40,6 +40,9 @@ namespace Darkages.Types
         public WarpType WarpType { get; set; }
 
         [JsonProperty] public int ActivationMapId { get; set; }
+
+        public int WorldTransionWarpId { get; set; }
+        public int WorldResetWarpId    { get; set; }
     }
 
     public enum WarpType

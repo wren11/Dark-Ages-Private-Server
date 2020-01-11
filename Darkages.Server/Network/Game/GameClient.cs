@@ -392,6 +392,8 @@ namespace Darkages.Network.Game
         public bool IsMoving =>
             DateTime.UtcNow - LastMovement < new TimeSpan(0, 0, 0, 0, GetMovementSpeed());
 
+
+
         private int GetMovementSpeed()
         {
             var warps = ServerContext.GlobalWarpTemplateCache.Where(o => o.ActivationMapId == Aisling.CurrentMapId).ToList();
@@ -510,6 +512,31 @@ namespace Darkages.Network.Game
                             warps.LevelRequired)
                         : string.Format(CultureInfo.CurrentCulture,
                             "Nightmarish visions of your own death repel you. ({0} Req)", warps.LevelRequired));
+
+
+                    //Teleport the user away the warp.
+                    var nearestActivation = warps.Activations.OrderBy(i => i.Location - Aisling.Position).FirstOrDefault();
+
+                    if (nearestActivation != null)
+                    {
+                        LeaveArea(true);
+
+                        var nearby = nearestActivation.Location.SurroundingContent(Aisling.Map);
+
+                        foreach (var near in nearby)
+                        {
+                            if (near.Content != TileContent.Wall && near.Content != TileContent.Warp)
+                            {
+                                Aisling.XPos = near.Position.X;
+                                Aisling.YPos = near.Position.Y;
+                                break;
+                            }
+                        }
+
+
+                        EnterArea();
+                    }
+
                     return;
                 }
 
