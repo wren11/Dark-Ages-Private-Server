@@ -1,0 +1,59 @@
+{
+  "$type": "Darkages.Types.SkillTemplate, Darkages.Server",
+  "ID": 9,
+  "Icon": 36,
+  "ScriptName": "Kelberoth Strike",
+  "LevelRate": 0.03,
+  "Cooldown": 10,
+  "MaxLevel": 100,
+  "MissAnimation": 0,
+  "TargetAnimation": 48,
+  "FailMessage": null,
+  "Type": 1,
+  "Pane": 1,
+  "PostQualifers": 3,
+  "Sound": 17,
+  "Debuff": null,
+  "Buff": null,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Fairy's Wing",
+          "AmountRequired": 5
+        }
+      ]
+    },
+    "Stage_Required": 0,
+    "Class_Required": 5,
+    "ExpLevel_Required": 0,
+    "Str_Required": 63,
+    "Int_Required": 0,
+    "Wis_Required": 0,
+    "Dex_Required": 13,
+    "Con_Required": 0,
+    "Gold_Required": 5000,
+    "Skill_Required": "Wolf Fang Fist",
+    "Skill_Level_Required": 100,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": null,
+    "Spell_Level_Required": 0,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": "Martial Arts Trainer",
+  "TierLevel": 0,
+  "Name": "Kelberoth Strike",
+  "Description": "Damage a target using 30% of your current HP as direct true damage.",
+  "Group": null
+}

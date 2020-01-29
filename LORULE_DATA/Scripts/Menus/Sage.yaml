@@ -1,0 +1,32 @@
+# NPC START #
+#################################################################################################
+start:
+    sequence: 1
+    step: 1
+
+
+
+# SEQUENCES START
+#################################################################################################    
+
+sequences:
+#Sequence 1 - START --------------------------------------------
+  - id: 1                                  
+    steps:                           
+    - id: 1                                
+      text: "I once pushed my nuts back up into my pouch..."          
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 1        
+    - id: 2
+      text: "then finger banged my ballsac."
+      answers:                            
+      - id: 1                              
+        text: next
+        step: 3
+        sequence: 1               
+    - id: 3
+      text: "oh... wait a second.... huh?"        
+#Sequence 1 - END ----------------------------------------------    

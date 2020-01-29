@@ -1,0 +1,57 @@
+{
+  "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
+  "Icon": 43,
+  "MaxLevel": 100,
+  "ScriptKey": "Generic Elemental Single",
+  "MinLines": 1,
+  "MaxLines": 9,
+  "ManaCost": 15,
+  "Text": "",
+  "Debuff": null,
+  "Buff": null,
+  "TargetType": 2,
+  "BaseLines": 1,
+  "LevelRate": 0.03,
+  "Sound": 8,
+  "Animation": 15,
+  "DamageExponent": 5.0,
+  "Pane": 1,
+  "ElementalProperty": 3,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": []
+    },
+    "Stage_Required": 0,
+    "Class_Required": 3,
+    "ExpLevel_Required": 3,
+    "Str_Required": 0,
+    "Int_Required": 0,
+    "Wis_Required": 0,
+    "Dex_Required": 0,
+    "Con_Required": 0,
+    "Gold_Required": 500,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": null,
+    "Spell_Level_Required": 0,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": "Dar",
+  "TierLevel": 9,
+  "TargetAnimation": 0,
+  "IsTrap": false,
+  "Name": "beag athar",
+  "Description": null,
+  "Group": null
+}

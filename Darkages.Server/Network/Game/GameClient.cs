@@ -1801,6 +1801,11 @@ namespace Darkages.Network.Game
                     message = ServerContext.Config.CantWearYetMessage;
             }
 
+            if (!item.Template.Class.HasFlag(client.Aisling.Path) && !(item.Template.Class == Class.Peasant))
+            {
+                message = "You are forbidden to wear that.";
+            }
+
             if (!(message != null && string.IsNullOrEmpty(message)))
             {
                 client.SendMessage(0x02, message);

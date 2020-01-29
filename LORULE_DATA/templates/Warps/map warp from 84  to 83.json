@@ -1,0 +1,41 @@
+{
+  "LevelRequired": 3,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 24,
+        "Y": 39
+      },
+      "AreaID": 84,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 24,
+        "Y": 38
+      },
+      "AreaID": 84,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 23,
+        "Y": 39
+      },
+      "AreaID": 84,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": {
+      "X": 10,
+      "Y": 14
+    },
+    "AreaID": 83,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 84,
+  "Name": "Map Warp from 84 to 83"
+}

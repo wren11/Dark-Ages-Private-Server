@@ -1,0 +1,79 @@
+{
+  "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
+  "Icon": 119,
+  "MaxLevel": 70,
+  "ScriptKey": "mor fas nadur",
+  "MinLines": 0,
+  "MaxLines": 0,
+  "ManaCost": 10,
+  "Text": "\u0000",
+  "Debuff": {
+    "$type": "Darkages.Types.Debuff, Darkages.Server",
+    "Name": "mor fas nadur",
+    "Length": 320,
+    "Icon": 119,
+    "Cancelled": false
+  },
+  "Buff": null,
+  "TargetType": 2,
+  "BaseLines": 4,
+  "LevelRate": 0.01,
+  "Sound": 20,
+  "Animation": 126,
+  "DamageExponent": 0.0,
+  "Pane": 1,
+  "ElementalProperty": 0,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Goblin's Skull",
+          "AmountRequired": 5
+        },
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Magus Diana",
+          "AmountRequired": 5
+        },
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Hag's Replica Girdle",
+          "AmountRequired": 1
+        }
+      ]
+    },
+    "Stage_Required": 0,
+    "Class_Required": 3,
+    "ExpLevel_Required": 30,
+    "Str_Required": 30,
+    "Int_Required": 30,
+    "Wis_Required": 30,
+    "Dex_Required": 30,
+    "Con_Required": 30,
+    "Gold_Required": 500000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": "fas nadur",
+    "Spell_Level_Required": 100,
+    "Spell_Tier_Required": 1
+  },
+  "NpcKey": "Dar",
+  "TierLevel": 9,
+  "TargetAnimation": 0,
+  "IsTrap": false,
+  "Name": "mor fas nadur",
+  "Description": "Moderately amplifies a target's element.",
+  "Group": null
+}

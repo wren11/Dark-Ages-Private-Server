@@ -1,0 +1,64 @@
+{
+  "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
+  "Icon": 11,
+  "MaxLevel": 100,
+  "ScriptKey": "aite",
+  "MinLines": 1,
+  "MaxLines": 4,
+  "ManaCost": 500,
+  "Text": "\u0000",
+  "Debuff": null,
+  "Buff": {
+    "$type": "Darkages.Types.Buff, Darkages.Server",
+    "Name": "aite",
+    "Length": 3000,
+    "Icon": 11,
+    "value": 0,
+    "Cancelled": false
+  },
+  "TargetType": 2,
+  "BaseLines": 4,
+  "LevelRate": 1.5,
+  "Sound": 8,
+  "Animation": 383,
+  "DamageExponent": 0.0,
+  "Pane": 1,
+  "ElementalProperty": 0,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": []
+    },
+    "Stage_Required": 1,
+    "Class_Required": 4,
+    "ExpLevel_Required": 99,
+    "Str_Required": 0,
+    "Int_Required": 71,
+    "Wis_Required": 109,
+    "Dex_Required": 0,
+    "Con_Required": 0,
+    "Gold_Required": 10000000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": null,
+    "Spell_Level_Required": 0,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": "etaen",
+  "TierLevel": 9,
+  "TargetAnimation": 0,
+  "IsTrap": false,
+  "Name": "ia naomh aite",
+  "Description": "Greatly Reduces the amount of incoming damage.",
+  "Group": null
+}

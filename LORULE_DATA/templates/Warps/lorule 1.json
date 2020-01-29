@@ -1,0 +1,28 @@
+{
+  "$type": "Darkages.Types.WarpTemplate, Darkages.Server",
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": {
+    "$type": "System.Collections.Generic.List`1[[Darkages.Types.Warp, Darkages.Server]], mscorlib",
+    "$values": [
+      {
+        "$type": "Darkages.Types.Warp, Darkages.Server",
+        "Location": {
+          "$type": "Darkages.Types.Position, Darkages.Server",
+          "X": 27,
+          "Y": 42
+        },
+        "AreaID": 200,
+        "PortalKey": 0
+      }
+    ]
+  },
+  "To": {
+    "$type": "Darkages.Types.Warp, Darkages.Server",
+    "AreaID": 0,
+    "PortalKey": 1
+  },
+  "WarpType": 1,
+  "ActivationMapId": 200,
+  "Name": "Lorule 1"
+}

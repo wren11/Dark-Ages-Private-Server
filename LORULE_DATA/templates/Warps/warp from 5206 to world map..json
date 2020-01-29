@@ -1,0 +1,34 @@
+{
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 25,
+        "Y": 25,
+        "AreaID": 0
+      },
+      "AreaID": 5206,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 26,
+        "Y": 25,
+        "AreaID": 0
+      },
+      "AreaID": 5206,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": null,
+    "AreaID": 0,
+    "PortalKey": 1
+  },
+  "WarpType": 1,
+  "ActivationMapId": 5206,
+  "Name": "Warp from 5206 to World Map.",
+  "Description": null,
+  "Group": null
+}

@@ -1,0 +1,57 @@
+{
+  "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
+  "Icon": 181,
+  "MaxLevel": 100,
+  "ScriptKey": "ao sith",
+  "MinLines": 0,
+  "MaxLines": 2,
+  "ManaCost": 200,
+  "Text": "\u0000",
+  "Debuff": null,
+  "Buff": null,
+  "TargetType": 2,
+  "BaseLines": 1,
+  "LevelRate": 0.2,
+  "Sound": 8,
+  "Animation": 232,
+  "DamageExponent": 0.0,
+  "Pane": 1,
+  "ElementalProperty": 0,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": []
+    },
+    "Stage_Required": 0,
+    "Class_Required": 4,
+    "ExpLevel_Required": 0,
+    "Str_Required": 0,
+    "Int_Required": 50,
+    "Wis_Required": 9,
+    "Dex_Required": 0,
+    "Con_Required": 0,
+    "Gold_Required": 30000000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": "ao suain",
+    "Spell_Level_Required": 100,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": "etaen",
+  "TierLevel": 9,
+  "TargetAnimation": 0,
+  "IsTrap": false,
+  "Name": "ao sith",
+  "Description": "Removes all effects from a target.",
+  "Group": null
+}

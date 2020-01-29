@@ -277,22 +277,35 @@ namespace Darkages.Types
                     }
                     else
                     {
-                        if (ir.AmountRequired > 1)
+
+                        if (item.CanStack)
                         {
-                            if (item_obtained.Length + 1 >= ir.AmountRequired)
+                            var total_stacks = item_obtained.Sum(i => i.Stacks);
+
+                            if (total_stacks >= ir.AmountRequired)
+                            {
                                 result[n] = new Tuple<bool, object>(true, "The right amount!. Thank you.");
-                            else
-                                result[n] = new Tuple<bool, object>(false,
-                                    string.Format("You don't have enough ({0}). You have {1}. but {2} is required.",
-                                        ir.Item, item_obtained.Length > 0 ? item_obtained.Length + 1 : 0,
-                                        ir.AmountRequired));
+                            }
                         }
                         else
                         {
-                            if (item_obtained.Length + 1 > 1 && ir.AmountRequired <= 1)
-                                result[n] = new Tuple<bool, object>(true, "Thank you.");
+                            if (ir.AmountRequired > 1)
+                            {
+                                if (item_obtained.Length + 1 >= ir.AmountRequired)
+                                    result[n] = new Tuple<bool, object>(true, "The right amount!. Thank you.");
+                                else
+                                    result[n] = new Tuple<bool, object>(false,
+                                        string.Format("You don't have enough ({0}). You have {1}. but {2} is required.",
+                                            ir.Item, item_obtained.Length > 0 ? item_obtained.Length + 1 : 0,
+                                            ir.AmountRequired));
+                            }
                             else
-                                result[n] = new Tuple<bool, object>(false, "You lack the items required.");
+                            {
+                                if (item_obtained.Length + 1 > 1 && ir.AmountRequired <= 1)
+                                    result[n] = new Tuple<bool, object>(true, "Thank you.");
+                                else
+                                    result[n] = new Tuple<bool, object>(false, "You lack the items required.");
+                            }
                         }
                     }
 

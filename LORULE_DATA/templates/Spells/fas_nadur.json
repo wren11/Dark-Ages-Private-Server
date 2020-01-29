@@ -1,0 +1,84 @@
+{
+  "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
+  "Icon": 119,
+  "MaxLevel": 70,
+  "ScriptKey": "fas nadur",
+  "MinLines": 0,
+  "MaxLines": 0,
+  "ManaCost": 10,
+  "Text": "\u0000",
+  "Debuff": {
+    "$type": "Darkages.Types.Debuff, Darkages.Server",
+    "Name": "fas nadur",
+    "Length": 90,
+    "Icon": 119,
+    "Cancelled": false
+  },
+  "Buff": null,
+  "TargetType": 2,
+  "BaseLines": 4,
+  "LevelRate": 0.01,
+  "Sound": 20,
+  "Animation": 126,
+  "DamageExponent": 0.0,
+  "Pane": 1,
+  "ElementalProperty": 0,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Viper's Gland",
+          "AmountRequired": 3
+        },
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Scorpions's Gland",
+          "AmountRequired": 3
+        },
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Goblin's Skull",
+          "AmountRequired": 3
+        },
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Wolf's Teeth",
+          "AmountRequired": 3
+        }
+      ]
+    },
+    "Stage_Required": 0,
+    "Class_Required": 3,
+    "ExpLevel_Required": 10,
+    "Str_Required": 8,
+    "Int_Required": 8,
+    "Wis_Required": 8,
+    "Dex_Required": 8,
+    "Con_Required": 8,
+    "Gold_Required": 10000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": null,
+    "Spell_Level_Required": 0,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": "Dar",
+  "TierLevel": 9,
+  "TargetAnimation": 0,
+  "IsTrap": false,
+  "Name": "fas nadur",
+  "Description": "Slightly amplifies a target's element.",
+  "Group": null
+}

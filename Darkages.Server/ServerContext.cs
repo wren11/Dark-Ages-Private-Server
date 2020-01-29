@@ -412,7 +412,8 @@ namespace Darkages
             };
 
 
-           // StorageManager.SkillBucket.Save(assailTemplate, true);
+
+            // StorageManager.SkillBucket.Save(assailTemplate, true);
 
             //var popup = new UserWalkPopup()
             //{

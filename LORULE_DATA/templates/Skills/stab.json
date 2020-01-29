@@ -1,0 +1,64 @@
+{
+  "$type": "Darkages.Types.SkillTemplate, Darkages.Server",
+  "ID": 77,
+  "Icon": 5,
+  "ScriptName": "Stab",
+  "LevelRate": 0.3,
+  "Cooldown": 5,
+  "MaxLevel": 100,
+  "MissAnimation": 68,
+  "TargetAnimation": 70,
+  "FailMessage": "You failed to stab.",
+  "Type": 1,
+  "Pane": 1,
+  "PostQualifers": 1,
+  "Sound": 31,
+  "Debuff": null,
+  "Buff": null,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Raw Beryl",
+          "AmountRequired": 3
+        },
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Raw Ruby",
+          "AmountRequired": 1
+        }
+      ]
+    },
+    "Stage_Required": 0,
+    "Class_Required": 2,
+    "ExpLevel_Required": 9,
+    "Str_Required": 6,
+    "Int_Required": 8,
+    "Wis_Required": 5,
+    "Dex_Required": 15,
+    "Con_Required": 0,
+    "Gold_Required": 15000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": null,
+    "Spell_Level_Required": 0,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": "Bullop",
+  "TierLevel": 0,
+  "Name": "Stab",
+  "Description": "Stab an target, dealing heavy damage. and weaken the target.",
+  "Group": null
+}

@@ -956,9 +956,8 @@ namespace Darkages
 
                         if (target is Monster aobj)
                         {
-                            spell.Script.OnUse(this, target as Aisling);
+                            spell.Script.OnUse(this, aobj);
                         }
-
 
                         if (target is Mundane)
                             spell.Script.OnUse(this, target as Mundane);

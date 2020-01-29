@@ -1,0 +1,49 @@
+{
+  "LevelRequired": 97,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 17,
+        "Y": 34
+      },
+      "AreaID": 1010,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 18,
+        "Y": 34
+      },
+      "AreaID": 1010,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 19,
+        "Y": 34
+      },
+      "AreaID": 1010,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 20,
+        "Y": 34
+      },
+      "AreaID": 1010,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": {
+      "X": 9,
+      "Y": 2
+    },
+    "AreaID": 1009,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 1010,
+  "Name": "Map Warp from 1010 to 1009"
+}
