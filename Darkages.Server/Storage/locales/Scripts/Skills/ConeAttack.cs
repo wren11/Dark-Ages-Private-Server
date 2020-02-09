@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Darkages.Network.ServerFormats;
@@ -42,39 +43,6 @@ namespace Darkages.Scripting.Scripts.Skills
                 client.SendMessage(0x02,
                     string.IsNullOrEmpty(Skill.Template.FailMessage) ? Skill.Template.FailMessage : "failed.");
             }
-        }
-
-        public List<Sprite> GetInCone(Sprite sprite, int distance)
-        {
-            var result = new List<Sprite>();
-            var objects = GetObjects(sprite.Map, i => i.WithinRangeOf(sprite, distance),
-                Get.Aislings | Get.Monsters | Get.Mundanes);
-            foreach (var obj in objects)
-                if (sprite.Position.DistanceSquared(obj.Position) <= distance)
-                {
-                    if ((Direction) sprite.Direction == Direction.North)
-                    {
-                        if (obj.YPos <= sprite.YPos)
-                            result.Add(obj);
-                    }
-                    else if ((Direction) sprite.Direction == Direction.South)
-                    {
-                        if (obj.YPos >= sprite.YPos)
-                            result.Add(obj);
-                    }
-                    else if ((Direction) sprite.Direction == Direction.East)
-                    {
-                        if (obj.XPos >= sprite.XPos)
-                            result.Add(obj);
-                    }
-                    else if ((Direction) sprite.Direction == Direction.West)
-                    {
-                        if (obj.XPos <= sprite.XPos)
-                            result.Add(obj);
-                    }
-                }
-
-            return result;
         }
 
         public override void OnSuccess(Sprite sprite)
@@ -181,6 +149,29 @@ namespace Darkages.Scripting.Scripts.Skills
                         }
                     }
             }
+        }
+
+        private Sprite[] GetInCone(Sprite sprite, int v)
+        {
+            List<Sprite> objs = new List<Sprite>();
+            var front = sprite.GetInfront(v);
+
+            if (front.Any())
+            {
+                objs.AddRange(objs);
+
+                foreach(var obj in front)
+                {
+                    var valid_target = (sprite.GetObject<Monster>(sprite.Map, i => i != null && i.Alive && i.Position.IsNextTo(obj.Position) && i.Serial != obj.Serial && i.Serial != sprite.Serial));
+
+                    if (valid_target != null)
+                    {
+                        objs.Add(valid_target);
+                    }
+                }
+            }
+
+            return objs.ToArray();
         }
     }
 }

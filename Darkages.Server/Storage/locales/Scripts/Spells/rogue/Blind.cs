@@ -25,7 +25,7 @@ namespace Darkages.Storage.locales.Scripts.Spells.rogue
 
         public override void OnSuccess(Sprite sprite, Sprite target)
         {
-            var targets = target.MonstersNearby().Where(i => i.Position.DistanceSquared(target.Position) < 8);
+            var targets = target.MonstersNearby().Where(i => i.WithinRangeOf(target, 4) && i.Serial != target.Serial);
 
             foreach (var obj in targets)
             {

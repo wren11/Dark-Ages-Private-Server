@@ -27,11 +27,6 @@ namespace Darkages
     {
         [JsonProperty] public bool MultiUserLogin = false;
 
-        [JsonProperty] public Position[] Alters =
-        {
-            new Position(31, 52, 1001),
-            new Position(31, 53, 1001)
-        };
 
         [JsonProperty] public string DBName = "LorDB";
 

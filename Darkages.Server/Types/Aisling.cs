@@ -714,15 +714,6 @@ namespace Darkages
         }
 
         /// <summary>
-        ///     Nearests trap.
-        /// </summary>
-        /// <returns>Returns the Nearest Trap Closest to the Aisling</returns>
-        public Trap NearestTrap()
-        {
-            return MyTraps.OrderBy(i => Position.DistanceFrom(i.Location)).FirstOrDefault();
-        }
-
-        /// <summary>
         ///     Determines whether this instance is dead.
         /// </summary>
         /// <returns><c>true</c> if this instance is dead; otherwise, <c>false</c>.</returns>

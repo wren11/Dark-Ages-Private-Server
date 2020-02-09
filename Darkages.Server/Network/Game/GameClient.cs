@@ -389,26 +389,6 @@ namespace Darkages.Network.Game
         public bool IsRefreshing =>
             DateTime.UtcNow - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContext.Config.RefreshRate);
 
-        public bool IsMoving =>
-            DateTime.UtcNow - LastMovement < new TimeSpan(0, 0, 0, 0, GetMovementSpeed());
-
-
-
-        private int GetMovementSpeed()
-        {
-            var warps = ServerContext.GlobalWarpTemplateCache.Where(o => o.ActivationMapId == Aisling.CurrentMapId).ToList();
-
-
-            var warpsNearby = warps.Any(i => i.Activations.Any(o => o.Location.DistanceFrom(Aisling.Position) <= 0));
-
-            if (warpsNearby)
-            {
-                Thread.Sleep(100);
-                //SendLocation();
-            }
-
-            return 250;
-        }
 
         /// <summary>
         ///     Gets a value indicating whether this instance is warping.
@@ -724,7 +704,7 @@ namespace Darkages.Network.Game
 
             #region Warping Sanity Check
 
-            var distance = Aisling.Position.DistanceFrom(Aisling.LastPosition);
+            var distance = Aisling.Position.DistanceFrom(Aisling.LastPosition.X, Aisling.LastPosition.Y);
 
             if (distance > 1)
             {

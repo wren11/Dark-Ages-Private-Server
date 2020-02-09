@@ -255,7 +255,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                                 Monster.Template.MoodType == MoodQualifer.VeryAggressive
                                     ? Get.Aislings | Get.Monsters
                                     : Get.Aislings)
-                            .OrderBy(v => v.Position.DistanceFrom(Monster.Position)).FirstOrDefault();
+                            .OrderBy(v => v.Position.DistanceFrom(Monster.Position.X, Monster.Position.Y)).FirstOrDefault();
 
                     if (Monster.Target != null && Monster.Target.CurrentHp <= 0) Monster.Target = null;
 

@@ -539,7 +539,7 @@ namespace Darkages.Network.Game
             }
 
             client.Aisling.CanReact = true;
-            client.MenuInterpter = null;
+            client.MenuInterpter    = null;
 
             if (client.Aisling.Skulled)
             {
@@ -557,45 +557,45 @@ namespace Darkages.Network.Game
             if (client.Aisling.Direction != format.Direction)
                 client.Aisling.Direction = format.Direction;
 
+
             client.Aisling.Walk();
-            
-                client.LastMovement = DateTime.UtcNow;
+            client.LastMovement = DateTime.UtcNow;
 
-                if (client.Aisling.AreaID == ServerContext.Config.TransitionZone)
-                {
-                    client.Aisling.PortalSession = new PortalSession {IsMapOpen = false};
-                    client.Aisling.PortalSession.TransitionToMap(client);
-                    return;
-                }
+            if (client.Aisling.AreaID == ServerContext.Config.TransitionZone)
+            {
+                client.Aisling.PortalSession = new PortalSession { IsMapOpen = false };
+                client.Aisling.PortalSession.TransitionToMap(client);
+                return;
+            }
 
-                var popupTemplate = ServerContext.GlobalPopupCache
-                    .OfType<UserWalkPopup>().FirstOrDefault(i => i.MapId == client.Aisling.CurrentMapId);
+            var popupTemplate = ServerContext.GlobalPopupCache
+                .OfType<UserWalkPopup>().FirstOrDefault(i => i.MapId == client.Aisling.CurrentMapId);
 
-                if (popupTemplate != null && client.Aisling.X == popupTemplate.X && client.Aisling.Y == popupTemplate.Y)
-                {
-                    popupTemplate.SpriteId = popupTemplate.SpriteId;
+            if (popupTemplate != null && client.Aisling.X == popupTemplate.X && client.Aisling.Y == popupTemplate.Y)
+            {
+                popupTemplate.SpriteId = popupTemplate.SpriteId;
 
-                    var popup = Popup.Create(client, popupTemplate);
+                var popup = Popup.Create(client, popupTemplate);
 
-                    if (popup != null)
-                        if (client.MenuInterpter == null)
+                if (popup != null)
+                    if (client.MenuInterpter == null)
+                    {
+                        CreateInterpreterFromMenuFile(client, popup.Template.YamlKey);
+
+                        if (client.MenuInterpter != null)
                         {
-                            CreateInterpreterFromMenuFile(client, popup.Template.YamlKey);
-
                             if (client.MenuInterpter != null)
-                            {                                
-                                if (client.MenuInterpter != null)
-                                {
-                                    client.MenuInterpter.Start();
+                            {
+                                client.MenuInterpter.Start();
 
-                                    var next = client.MenuInterpter?.GetCurrentStep();
+                                var next = client.MenuInterpter?.GetCurrentStep();
 
-                                    if (next != null)
-                                        client.ShowCurrentMenu(popup, null, next);
-                                }
+                                if (next != null)
+                                    client.ShowCurrentMenu(popup, null, next);
                             }
                         }
-                }
+                    }
+            }
 
             foreach (var warps in ServerContext.GlobalWarpTemplateCache)
             {
@@ -788,17 +788,7 @@ namespace Darkages.Network.Game
 
             var item_position = new Position(format.X, format.Y);
 
-            if (item_position.OnAlter(client))
-            {
-                item.XPos = item_position.X;
-                item.YPos = item_position.Y;
-
-                client.LastItemDropped = item;
-                return;
-            }
-
-
-            if (client.Aisling.Position.DistanceFrom(item_position) > 2)
+            if (client.Aisling.Position.DistanceFrom(item_position.X, item_position.Y) > 2)
             {
                 client.SendMessage(Scope.Self, 0x02, ServerContext.Config.CantDoThat);
                 return;

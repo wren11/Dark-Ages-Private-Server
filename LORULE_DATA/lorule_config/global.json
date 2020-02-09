@@ -1,23 +1,6 @@
 {
   "$type": "Darkages.ServerConstants, Darkages.Server",
   "MultiUserLogin": false,
-  "Alters": {
-    "$type": "Darkages.Types.Position[], Darkages.Server",
-    "$values": [
-      {
-        "$type": "Darkages.Types.Position, Darkages.Server",
-        "AreaID": 1001,
-        "X": 31,
-        "Y": 52
-      },
-      {
-        "$type": "Darkages.Types.Position, Darkages.Server",
-        "AreaID": 1001,
-        "X": 31,
-        "Y": 53
-      }
-    ]
-  },
   "DBName": "LorDB",
   "AssailsCancelSpells": true,
   "BadRequestMessage": "(Invalid Request)",
@@ -138,7 +121,6 @@
   "StartingMap": 3029,
   "StartingPosition": {
     "$type": "Darkages.Types.Position, Darkages.Server",
-    "AreaID": 0,
     "X": 26,
     "Y": 48
   },

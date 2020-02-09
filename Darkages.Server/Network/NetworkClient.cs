@@ -23,6 +23,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
@@ -148,11 +149,11 @@ namespace Darkages.Network
             if (!ServerSocket.Connected)
                 return;
 
-            lock (SendBuffer)
-            {
-                if (SendBuffer == null)
-                    return;
+            if (SendBuffer == null)
+                return;
 
+            Task.Run(async () =>
+            {
                 var data       = SendBuffer.SelectMany(i => i);
                 var enumerable = data.ToArray();
 
@@ -168,7 +169,7 @@ namespace Darkages.Network
                         _serverBuffer = new NetworkStream(ServerSocket, System.IO.FileAccess.Write);
                     }
 
-                    _serverBuffer.Write(packet, 0, packet.Length);
+                    await _serverBuffer.WriteAsync(packet, 0, packet.Length, new CancellationToken());
                 }
                 catch (Exception)
                 {
@@ -178,7 +179,7 @@ namespace Darkages.Network
                 {
                     EmptyBuffers();
                 }
-            }
+            });
         }
 
         public void EmptyBuffers()

@@ -546,18 +546,19 @@ namespace Darkages.Types
             return element;
         }
 
-        public void ApplyDamage(Sprite source, int dmg,  bool penetrating = false, byte sound = 1, Action<int> dmgcb = null, bool forceTarget = false)
+        
+        public void ApplyDamage(Sprite damageDealingSprite, int dmg,  bool penetrating = false, byte sound = 1, Action<int> dmgcb = null, bool forceTarget = false)
         {
-            if (!WithinRangeOf(source))
+            if (!WithinRangeOf(damageDealingSprite))
                 return;
 
             if (!Attackable)
                 return;
 
-            if (!CanBeAttackedHere(source))
+            if (!CanBeAttackedHere(damageDealingSprite))
                 return;
 
-            if (CannotTagTarget(source, forceTarget))
+            if (CannotTagTarget(damageDealingSprite, forceTarget))
                 return;
 
             if (dmg == -1)
@@ -566,15 +567,15 @@ namespace Darkages.Types
                 penetrating = true;
             }
 
-            dmg = ApplyWeaponBonuses(source, dmg);
+            dmg = ApplyWeaponBonuses(damageDealingSprite, dmg);
 
             if (dmg > 0)
                 ApplyEquipmentDurability(dmg);
 
-            if (!DamageTarget(source, ref dmg, penetrating, sound, dmgcb))
+            if (!DamageTarget(damageDealingSprite, ref dmg, penetrating, sound, dmgcb))
                 return;
 
-            OnDamaged(source, dmg);
+            OnDamaged(damageDealingSprite, dmg);
         }
 
         private void OnDamaged(Sprite source, int dmg)
@@ -589,7 +590,7 @@ namespace Darkages.Types
                 (this as Monster)?.Script?.OnDamaged(aisling?.Client, dmg);
         }
 
-        private bool DamageTarget(Sprite source, ref int dmg, bool penetrating, byte sound, Action<int> dmgcb)
+        private bool DamageTarget(Sprite damageDealingSprite, ref int dmg, bool penetrating, byte sound, Action<int> dmgcb)
         {
             if (penetrating)
             {
@@ -630,7 +631,7 @@ namespace Darkages.Types
                 if (IsAited && dmg > 5)
                     dmg /= 3;
 
-                var amplifier = GetElementalModifier(source);
+                var amplifier = GetElementalModifier(damageDealingSprite);
                 {
                     dmg = ComputeDmgFromAc(dmg, Target);
                     dmg = CompleteDamageApplication(dmg, sound, dmgcb, amplifier);
@@ -699,18 +700,18 @@ namespace Darkages.Types
                 aisling.EquipmentManager.DecreaseDurability();
         }
 
-        private double GetElementalModifier(Sprite source)
+        private double GetElementalModifier(Sprite damageDealingSprite)
         {
-            if (source == null)
+            if (damageDealingSprite == null)
                 return 1;
 
             var amplifier = 1.00;
 
             if (OffenseElement != Element.None)
             {
-                var element = CheckRandomElement(source.OffenseElement);
+                var element = CheckRandomElement(damageDealingSprite.OffenseElement);
 
-                amplifier  = CalcaluteElementalAmplifier(element);
+                amplifier   = CalcaluteElementalAmplifier(element);
 
                 amplifier *=
                     Amplified == 1 ? ServerContext.Config.FasNadurStrength + 10 :
@@ -792,61 +793,121 @@ namespace Darkages.Types
 
         private double CalcaluteElementalAmplifier(Element element)
         {
-            double damage_mod = 0.25;
-
-            if (element == DefenseElement)
+            //no belt? 100% damage regardless, else 50% damage.
+            if (DefenseElement ==  Element.None && element != Element.None)
             {
-                damage_mod = DefenseElement == Element.None && element != Element.None ? 1.75 : 0.25;
-
-                return damage_mod;
+                return 1.00;
+            }
+            //50% damage.
+            else if (DefenseElement == Element.None && element == Element.None)
+            {
+                return 0.50;
             }
 
-            switch (element)
+            //fire belt
+            if (DefenseElement == Element.Fire)
             {
-                //Fire -> Wind
-                case Element.Fire:
-                    damage_mod = DefenseElement == Element.Wind ? 1.75 : 0.25;
-
-                    return damage_mod;
-                //Wind -> Earth
-                case Element.Wind:
-                {
-                    damage_mod = DefenseElement == Element.Earth ? 1.75 : 0.25;
-
-                    return damage_mod;
-                }
-
-                //Water -> Fire
-                case Element.Water:  
-                {
-                    damage_mod = DefenseElement == Element.Fire ? 1.75 : 0.25;
-
-                    return damage_mod;
-                }
-
-                //Earth -> Water
-                case Element.Earth:
-                {
-                    damage_mod = DefenseElement == Element.Water ? 1.75 : 0.25;
-
-                    return damage_mod;
-                }
-
-                //Dark -> All
-                case Element.Dark:
-                {
-                    damage_mod = DefenseElement == Element.Light ? 2.75 : 0.95;
-
-                    return damage_mod;
-                }
-
-                //Light -> All
-                case Element.Light:
-                    damage_mod = DefenseElement == Element.Light ? 2.75 : 0.25;
-                    return damage_mod;
+                if (element == Element.Fire) 
+                    return 0.50;
+                if (element == Element.Water)
+                    return 0.85;
+                if (element == Element.Wind)
+                    return 0.55;
+                if (element == Element.Earth)
+                    return 0.65;
+                if (element ==  Element.Dark)
+                    return 0.75;
+                if (element == Element.Light)
+                    return 0.55;
+                if (element == Element.None)
+                    return 0.40;
             }
 
-            return damage_mod;
+            //wind belt
+            if (DefenseElement == Element.Wind)
+            {
+                if (element == Element.Wind)
+                    return 0.50;
+                if (element == Element.Fire)
+                    return 0.85;
+                if (element == Element.Water)
+                    return 0.65;
+                if (element == Element.Earth)
+                    return 0.55;
+                if (element == Element.Dark)
+                    return 0.75;
+                if (element == Element.Light)
+                    return 0.55;
+                if (element == Element.None)
+                    return 0.40;
+            }
+
+            //earth belt
+            if (DefenseElement == Element.Earth)
+            {
+                if (element == Element.Wind)
+                    return 0.85;
+                if (element == Element.Fire)
+                    return 0.65;
+                if (element == Element.Water)
+                    return 0.55;
+                if (element == Element.Earth)
+                    return 0.50;
+                if (element == Element.Dark)
+                    return 0.75;
+                if (element == Element.Light)
+                    return 0.55;
+                if (element == Element.None)
+                    return 0.40;
+            }
+
+
+            //water belt
+            if (DefenseElement == Element.Water)
+            {
+                if (element == Element.Wind)
+                    return 0.65;
+                if (element == Element.Fire)
+                    return 0.55;
+                if (element == Element.Water)
+                    return 0.50;
+                if (element == Element.Earth)
+                    return 0.85;
+                if (element == Element.Dark)
+                    return 0.75;
+                if (element == Element.Light)
+                    return 0.55;
+                if (element == Element.None)
+                    return 0.40;
+            }
+
+            //dark belt
+            if (DefenseElement == Element.Dark)
+            {
+                if (element == Element.Dark)
+                    return 0.50;
+                if (element == Element.Light)
+                    return 0.80;
+                if (element == Element.None)
+                    return 0.40;
+
+                return 0.60;
+            }
+
+            //light Belt
+            if (DefenseElement == Element.Light)
+            {
+                if (element == Element.Dark)
+                    return 0.80;
+                if (element == Element.Light)
+                    return 0.50;
+                if (element == Element.None)
+                    return 0.40;
+
+                return 0.65;
+            }
+
+            return 0.00;
         }
 
         private int CompleteDamageApplication(int dmg, byte sound, Action<int> dmgcb, double amplifier)
@@ -1433,19 +1494,10 @@ namespace Darkages.Types
         {
             var savedX   = XPos;
             var savedY   = YPos;
-
             var pendingX = XPos;
             var pendingY = YPos;
-
-            if (this is Aisling _aisling && _aisling.Client.IsMoving)
-            {                
-                return false;
-            }
-
             var result   = TryWalk(pendingX, pendingY, savedX, savedY);
 
-
-            
             return result;
         }
 

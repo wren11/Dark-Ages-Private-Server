@@ -162,6 +162,18 @@ namespace Darkages
             if (yPos < 0)
                 yPos = 0;
 
+
+
+            if (yPos >= MapNodes.GetUpperBound(1))
+            {
+                return;
+            }
+
+            if (xPos >= MapNodes.GetUpperBound(0))
+            {
+                return;
+            }
+
             MapNodes[xPos, yPos].Empty();
             {
                 if (BaseMap[xPos, yPos] == TileContent.Wall)
@@ -275,12 +287,12 @@ namespace Darkages
         }
 
 
-        public async Task<IEnumerable<Sprite>> GetAreaObjects()
+        public Sprite[] GetAreaObjects()
         {
-            return await Task.Run(() => GetObjects(this, i => i != null && i.CurrentMapId == ID, Get.All));
+            return GetObjects(this, i => i != null, Get.All).ToArray();
         }
 
-        public async void ObjectUpdate(TimeSpan elapsedTime)
+        public void ObjectUpdate(TimeSpan elapsedTime)
         {
             var users = ServerContext.Game.Clients.Where(i => i != null &&
                                                               i.Aisling != null && i.Aisling.CurrentMapId == ID)
@@ -290,9 +302,11 @@ namespace Darkages
 
             if (!AreaObjectCache.Exists(Name))
             {
-                ObjectCache = (await GetAreaObjects()).ToArray();
+                ObjectCache = GetAreaObjects();
+
+                if (ObjectCache.Length > 0)
                 {
-                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 1);
+                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 3);
                 }
             }
             else
@@ -304,9 +318,9 @@ namespace Darkages
             {
                 if (users.Length > 0)
                 {
-                    UpdateMonsterObjects(elapsedTime, ObjectCache.OfType<Monster>());
-                    UpdateMundaneObjects(elapsedTime, ObjectCache.OfType<Mundane>());
-                    UpdateItemObjects(elapsedTime, ObjectCache.OfType<Money>().Concat<Sprite>(ObjectCache.OfType<Item>()));
+                    UpdateMonsterObjects (elapsedTime, ObjectCache.OfType<Monster>());
+                    UpdateMundaneObjects (elapsedTime, ObjectCache.OfType<Mundane>());
+                    UpdateItemObjects    (elapsedTime, ObjectCache.OfType<Money>().Concat<Sprite>(ObjectCache.OfType<Item>()));
                 }
             }
         }
@@ -359,10 +373,12 @@ namespace Darkages
 
         public void DisplayWarpTo(Warp warpObj, Aisling obj)
         {
-            if (obj.Position.WithinSquare(warpObj.Location, 10))
+            if (obj.WithinRangeOf(warpObj.Location.X, warpObj.Location.Y, 10))
+            {
                 obj.Show(Scope.Self, new ServerFormat29(
                     ServerContext.Config.WarpNumber,
                     warpObj.Location.X, warpObj.Location.Y));
+            }
         }
 
         public void UpdateMonsterObjects(TimeSpan elapsedTime, IEnumerable<Monster> objects)

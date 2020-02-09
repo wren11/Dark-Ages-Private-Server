@@ -17,6 +17,7 @@
 //*************************************************************************/
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
@@ -42,19 +43,21 @@ namespace Darkages
 
         public void ShowFieldMap(GameClient client)
         {
-                client.InMapTransition = true;
-                client.Send(new ServerFormat2E(client.Aisling));
-                client.FlushBuffers();
+            Thread.Sleep(50);
+            client.InMapTransition = true;
+            client.Send(new ServerFormat2E(client.Aisling));
+            client.FlushBuffers();
 
-                client.Aisling.PortalSession
-                        = new PortalSession
-                        {
-                            FieldNumber  = client.Aisling.World,
-                            IsMapOpen    = true,
-                            DateOpened   = DateTime.UtcNow
-                        };
+            client.Aisling.PortalSession
+                    = new PortalSession
+                    {
+                        FieldNumber = client.Aisling.World,
+                        IsMapOpen = true,
+                        DateOpened = DateTime.UtcNow
+                    };
 
-                client.DateMapOpened = DateTime.UtcNow;
+            client.DateMapOpened = DateTime.UtcNow;
+            Thread.Sleep(25);
         }
 
         public void TransitionToMap(GameClient client, short X = -1, short Y = -1, int DestinationMap = 0)
@@ -76,20 +79,12 @@ namespace Darkages
             {
                 if (ServerContext.GlobalMapCache.ContainsKey(DestinationMap))
                 {
-                    client.LeaveArea(true, true);
-                    //client.Refresh();
-
-
                     client.Aisling.XPos = X >= 0 ? X : ServerContext.Config.TransitionPointX;
                     client.Aisling.YPos = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
                     client.Aisling.CurrentMapId = DestinationMap;
-
+                    client.LeaveArea(true, true);
                     client.EnterArea();
 
-                    //if (client.Aisling.AreaID == DestinationMap)
-                   //     client.FlushAndSend(new ServerFormat15(client.Aisling.Map));
-
-                    //client.Refresh();
                     client.Aisling.PortalSession = null;
                 }
             }

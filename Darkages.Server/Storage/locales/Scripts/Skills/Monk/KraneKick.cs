@@ -46,39 +46,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
             }
         }
 
-        public List<Sprite> GetInCone(Sprite sprite, int distance)
-        {
-            var result = new List<Sprite>();
-            var objects = GetObjects(sprite.Map, i => i.WithinRangeOf(sprite, distance),
-                Get.Aislings | Get.Monsters | Get.Mundanes);
-            foreach (var obj in objects)
-                if (sprite.Position.DistanceSquared(obj.Position) <= distance)
-                {
-                    if ((Direction) sprite.Direction == Direction.North)
-                    {
-                        if (obj.YPos <= sprite.YPos)
-                            result.Add(obj);
-                    }
-                    else if ((Direction) sprite.Direction == Direction.South)
-                    {
-                        if (obj.YPos >= sprite.YPos)
-                            result.Add(obj);
-                    }
-                    else if ((Direction) sprite.Direction == Direction.East)
-                    {
-                        if (obj.XPos >= sprite.XPos)
-                            result.Add(obj);
-                    }
-                    else if ((Direction) sprite.Direction == Direction.West)
-                    {
-                        if (obj.XPos <= sprite.XPos)
-                            result.Add(obj);
-                    }
-                }
-
-            return result;
-        }
-
         public override void OnSuccess(Sprite sprite)
         {
             if (sprite is Aisling)

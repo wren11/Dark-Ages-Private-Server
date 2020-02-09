@@ -25,7 +25,6 @@ namespace Darkages.Types
 {
     public class Position
     {
-        public ushort AreaID;
         public ushort X, Y;
 
         public Position(ushort x, ushort y)
@@ -34,63 +33,32 @@ namespace Darkages.Types
             Y = y;
         }
 
-        public Position(ushort x, ushort y, ushort areaid) : this(x, y)
-        {
-            AreaID = areaid;
-        }
-
-        public Position(byte x, byte y) : this(x, (ushort) y)
-        {
-        }
-
         public Position(int x, int y) : this((ushort) x, (ushort) y)
         {
         }
 
         public Position() : this(0, 0)
         {
-        }
 
-        public static Position Null => new Position(0, 0);
-
-        public int DistanceFrom(Position other)
-        {
-            return DistanceFrom(other.X, other.Y);
         }
 
         public int DistanceFrom(ushort X, ushort Y)
         {
             double XDiff = Math.Abs(X - this.X);
             double YDiff = Math.Abs(Y - this.Y);
+
             return (int) (XDiff > YDiff ? XDiff : YDiff);
         }
 
-        public double DistanceSquared(Position a, Position b)
+        public int DistanceFrom(Position pos)
         {
-            return Math.Sqrt(Math.Pow(b.X - a.X, 2) + Math.Pow(b.Y - a.Y, 2));
+            return DistanceFrom(pos.X, pos.Y);
         }
 
-        public double DistanceSquared(Position a)
-        {
-            return Math.Sqrt(Math.Pow(a.X - X, 2) + Math.Pow(a.Y - Y, 2));
-        }
 
         public bool IsNearby(Position pos)
         {
             return pos.DistanceFrom(X, Y) <= ServerContext.Config.VeryNearByProximity;
-        }
-
-        public bool WithinSquare(Position loc, int num)
-        {
-            return Math.Abs(X - loc.X) <= num && Math.Abs(Y - loc.Y) <= num;
-        }
-
-        public bool OnAlter(GameClient client)
-        {
-            var locations = ServerContext.Config.Alters;
-
-            return locations.Any(location =>
-                location.X == X && location.Y == Y && client.Aisling.AreaID == location.AreaID);
         }
 
         public static Position operator +(Position a, Direction b)
