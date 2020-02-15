@@ -152,8 +152,7 @@ namespace Darkages.Network
             if (SendBuffer == null)
                 return;
 
-            Task.Run(async () =>
-            {
+           
                 var data       = SendBuffer.SelectMany(i => i);
                 var enumerable = data.ToArray();
 
@@ -162,24 +161,20 @@ namespace Darkages.Network
 
                 var packet = enumerable;
 
-                try
-                {
-                    if (_serverBuffer == null)
-                    {
-                        _serverBuffer = new NetworkStream(ServerSocket, System.IO.FileAccess.Write);
-                    }
+            try
+            {
 
-                    await _serverBuffer.WriteAsync(packet, 0, packet.Length, new CancellationToken());
-                }
-                catch (Exception)
-                {
-                    //Ignore
-                }
-                finally
-                {
-                    EmptyBuffers();
-                }
-            });
+                ServerSocket.Send(packet, packet.Length, SocketFlags.None);
+            }
+            catch (Exception)
+            {
+                //Ignore
+            }
+            finally
+            {
+                EmptyBuffers();
+            }
+    
         }
 
         public void EmptyBuffers()

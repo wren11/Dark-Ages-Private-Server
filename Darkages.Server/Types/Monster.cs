@@ -340,13 +340,21 @@ namespace Darkages.Types
                                     if (rolled_item.Template.Enchantable)
                                     {
                                         var variance = DetermineVariance();
-                                        if (variance != Variance.None) rolled_item.ItemVariance = variance;
+
+                                        if (!ServerContext.Config.UseLoruleVariants)
+                                            variance = Variance.None;
+
+                                        if (variance != Variance.None) 
+                                            rolled_item.ItemVariance = variance;
                                     }
 
                                     if (rolled_item == null)
                                         return;
 
                                     if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
+                                        upgrade = null;
+
+                                    if (!ServerContext.Config.UseLoruleItemRarity)
                                         upgrade = null;
 
                                     rolled_item.Upgrades = upgrade?.Upgrade ?? 0;

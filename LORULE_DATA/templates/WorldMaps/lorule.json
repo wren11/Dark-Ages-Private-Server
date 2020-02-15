@@ -19,7 +19,24 @@
           "AreaID": 3052,
           "PortalKey": 1
         }
-      }
+      },
+	  {
+        "$type": "Darkages.Types.WorldPortal, Darkages.Server",
+        "DisplayName": "Lorule Arena",
+        "PointX": 225,
+        "PointY": 330,
+        "Destination": {
+          "$type": "Darkages.Types.Warp, Darkages.Server",
+          "Location": {
+            "$type": "Darkages.Types.Position, Darkages.Server",
+            "X": 7,
+            "Y": 13,
+            "AreaID": 0
+          },
+          "AreaID": 508,
+          "PortalKey": 1
+        }
+      },
     ]
   },
   "Transition": {

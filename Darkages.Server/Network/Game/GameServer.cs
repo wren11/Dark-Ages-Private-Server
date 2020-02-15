@@ -40,7 +40,7 @@ namespace Darkages.Network.Game
 
         public GameServer(int capacity) : base(capacity)
         {
-            HeavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
+            HeavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 60);
 
             InitializeGameServer();
         }

@@ -354,6 +354,10 @@ namespace Darkages
 
         [JsonProperty] public int MaxHP = 500000;
 
+        [JsonProperty] public bool UseLoruleVariants { get; set; } = false;
+
+        [JsonProperty] public bool UseLoruleItemRarity { get; set; } = false;
+
         public override string ToString()
         {
             return StorageManager.Save(this)

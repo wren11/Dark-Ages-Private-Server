@@ -71,11 +71,6 @@ namespace Darkages.Network
             var client = new TClient
             {
                 ServerSocket = new NetworkSocket(handler)
-                {
-                    SendBufferSize      = 4096,
-                    ReceiveBufferSize   = 4096,
-                    UseOnlyOverlappedIO = true,
-                }
             };
 
             if (client.ServerSocket.Connected)

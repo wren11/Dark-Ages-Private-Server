@@ -1,4 +1,8 @@
-﻿///************************************************************************
+﻿using Darkages.Network.Game;
+using Darkages.Network.ServerFormats;
+using Darkages.Types;
+using Newtonsoft.Json;
+///************************************************************************
 //Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
@@ -18,11 +22,6 @@
 
 using System;
 using System.Threading;
-using System.Threading.Tasks;
-using Darkages.Network.Game;
-using Darkages.Network.ServerFormats;
-using Darkages.Types;
-using Newtonsoft.Json;
 
 namespace Darkages
 {
@@ -43,7 +42,6 @@ namespace Darkages
 
         public void ShowFieldMap(GameClient client)
         {
-            Thread.Sleep(50);
             client.InMapTransition = true;
             client.Send(new ServerFormat2E(client.Aisling));
             client.FlushBuffers();
@@ -57,11 +55,12 @@ namespace Darkages
                     };
 
             client.DateMapOpened = DateTime.UtcNow;
-            Thread.Sleep(25);
         }
 
         public void TransitionToMap(GameClient client, short X = -1, short Y = -1, int DestinationMap = 0)
         {
+            client.FlushBuffers();
+            client.InMapTransition = true;
             if (DestinationMap == 0)
             {
                 client.LeaveArea(true, true);
@@ -88,6 +87,8 @@ namespace Darkages
                     client.Aisling.PortalSession = null;
                 }
             }
+
+            client.InMapTransition = false;
         }    
     }
 }
