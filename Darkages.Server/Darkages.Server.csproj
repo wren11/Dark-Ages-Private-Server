@@ -95,7 +95,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="ClassDiagram2.cd" />
     <None Include="packages.config" />
     <None Include="server.tbl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
