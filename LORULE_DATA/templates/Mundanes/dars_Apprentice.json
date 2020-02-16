@@ -18,9 +18,9 @@
     "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
     "$values": []
   },
-  "X": 5,
-  "Y": 10,
-  "AreaID": 1014,
+  "X": 41,
+  "Y": 36,
+  "AreaID": 3029,
   "Direction": 1,
   "MaximumHp": 5000,
   "MaximumMp": 2000,

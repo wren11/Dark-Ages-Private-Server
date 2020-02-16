@@ -18,13 +18,14 @@ namespace Darkages.Network.Game.Components
                 TimeSpan.FromSeconds(30));
         }
 
+        public bool IsUpdating { get; set; } = false;
+
         public override void Update(TimeSpan elapsedTime)
         {
             timer.Update(elapsedTime);
 
             if (timer.Elapsed)
             {
-                //UpdateDatabase();
                 timer.Reset();
             }
         }
@@ -38,64 +39,7 @@ namespace Darkages.Network.Game.Components
             public DateTime Updated;
             public string UserName;
 
-            [BsonId] public int Serial { get; set; }
-        }
-
-        private void UpdateDatabase()
-        {
-            using (var db = new LiteDatabase(ServerContext.StoragePath
-                                             + "\\" + ServerContext.Config.DBName))
-            {
-                var dbSprites = db.GetCollection<EntityObj>("LorTemp");
-                var objects = GetObjects(null, sprite => sprite != null, Get.All).ToArray();
-
-                foreach (var obj in objects)
-                {
-                    var bObj = new EntityObj
-                    {
-                        Serial = obj.Serial,
-                        Data = JsonConvert.SerializeObject(obj),
-                        RefType = obj.GetType(),
-                        Updated = DateTime.UtcNow,
-                        UserName = (obj is Aisling o) ? o.Username : string.Empty,
-                    };
-
-
-                    if (obj is Monster)
-                        bObj.Name = "Monster";
-                    if (obj is Aisling)
-                        bObj.Name = "Aisling";
-                    if (obj is Item)
-                        bObj.Name = "Item";
-                    if (obj is Mundane)
-                        bObj.Name = "Mundane";
-
-                    try
-                    {
-
-                        if (obj is Aisling aisling)
-                        {
-                            if (!dbSprites.Exists(i => i.UserName == aisling.Username))
-                            {
-                                dbSprites.Insert(bObj);
-                            }
-                        }
-                        else
-                        {
-                            if (!dbSprites.Exists(i => i.Serial == obj.Serial))
-                            {
-                                dbSprites.Insert(bObj);
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-                    }
-
-                }
-
-                dbSprites.EnsureIndex(i => i.Serial);
-            }
+            [BsonId] public int Hash { get; set; }
         }
     }
 }

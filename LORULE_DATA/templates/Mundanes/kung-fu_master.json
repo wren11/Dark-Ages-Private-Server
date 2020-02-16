@@ -21,9 +21,9 @@
       "let me show you hand to hand combat."
     ]
   },
-  "X": 18,
-  "Y": 18,
-  "AreaID": 200,
+  "X": 40,
+  "Y": 27,
+  "AreaID": 3029,
   "Direction": 1,
   "MaximumHp": 0,
   "MaximumMp": 0,

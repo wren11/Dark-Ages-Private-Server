@@ -25,9 +25,15 @@ namespace Darkages
 {
     public class ServerConstants
     {
+
+        /// <summary>
+        /// Can we allow the same player to enter the server more then once?
+        /// </summary>
         [JsonProperty] public bool MultiUserLogin = false;
 
-
+        /// <summary>
+        /// The Name of the LorDB persistance file.
+        /// </summary>
         [JsonProperty] public string DBName = "LorDB";
 
         [JsonProperty] public bool AssailsCancelSpells = true;

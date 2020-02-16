@@ -770,14 +770,21 @@ namespace Darkages
         /// <param name="item">The item.</param>
         /// <param name="count">The count.</param>
         /// <returns><c>true</c> if [has in inventory] [the specified item]; otherwise, <c>false</c>.</returns>
-        public bool HasInInventory(string item, int count)
+        public bool HasInInventory(string item, int count, out int found)
         {
             var template = ServerContext.GlobalItemTemplateCache[item];
+            found        = 0;
 
             if (!ServerContext.GlobalItemTemplateCache.ContainsKey(item))
                 return false;
 
-            if (template != null) return Inventory.Has(template) >= count;
+            if (template != null)
+            {
+                found = Inventory.Has(template);
+
+
+                return count == found;
+            }
 
             return false;
         }
