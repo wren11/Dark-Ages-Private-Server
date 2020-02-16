@@ -34,6 +34,9 @@ namespace Darkages.Network
 {
     public abstract class NetworkClient<TClient> : ObjectManager, INotifyPropertyChanged
     {
+
+        private object syncLock = new object();
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -57,7 +60,7 @@ namespace Darkages.Network
 
         public NetworkPacketReader Reader { get; set; }
 
-        public NetworkPacketWriter Writer { get; set; }
+        private NetworkPacketWriter Writer { get; set; }
 
         [BsonIgnore]
         public NetworkSocket ServerSocket { get; set; }
@@ -185,7 +188,7 @@ namespace Darkages.Network
         public void FlushAndSend(NetworkFormat format)
         {
 
-            lock (Writer)
+            lock (syncLock)
             {
                 Writer.Position = 0;
                 Writer.Write(format.Command);
@@ -221,7 +224,7 @@ namespace Darkages.Network
                 return;
             }
 
-            lock (Writer)
+            lock (syncLock)
             {
                 Writer.Position = 0;
                 Writer.Write(format.Command);
@@ -251,7 +254,7 @@ namespace Darkages.Network
             var packet = lpData.ToPacket();
             Encryption.Transform(packet);
 
-            lock (SendBuffer)
+            lock (syncLock)
             {
                 var array = packet.ToArray();
                 SendBuffer.Enqueue(array);
@@ -260,7 +263,7 @@ namespace Darkages.Network
 
         public void Send(byte[] data)
         {
-            lock (Writer)
+            lock (syncLock)
             {
                 Writer.Position = 0;
                 Writer.Write(data);
@@ -271,10 +274,7 @@ namespace Darkages.Network
 
                 Encryption.Transform(packet);
 
-                lock (SendBuffer)
-                {
-                    SendBuffer.Enqueue(packet.ToArray());
-                }
+                SendBuffer.Enqueue(packet.ToArray());
             }
         }
 

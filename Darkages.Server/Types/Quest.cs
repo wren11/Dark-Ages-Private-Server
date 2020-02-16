@@ -102,6 +102,8 @@ namespace Darkages.Types
             GiveRewards(user, equipLoot);
         }
 
+
+
         public void GiveRewards(Aisling user, bool equipLoot)
         {
             Rewarded = true;
@@ -110,7 +112,7 @@ namespace Darkages.Types
 
             user.SendAnimation(22, user, user);
 
-            lock (QuestStages)
+            lock (syncLock)
             {
                 var completeStages = QuestStages.Where(i => i.StepComplete).SelectMany(i => i.Prerequisites).ToArray();
 
@@ -247,11 +249,13 @@ namespace Darkages.Types
             user.Client.SendStats(StatusFlags.All);
         }
 
+        private static object syncLock = new object();
+
         private static void EquipRewards(Aisling user)
         {
             var items = new List<Item>();
 
-            lock (user.Inventory)
+            lock (syncLock)
             {
                 items = new List<Item>(user
                     .Inventory

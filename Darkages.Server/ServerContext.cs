@@ -315,11 +315,13 @@ namespace Darkages
             Log("Building Meta Cache: {0} loaded.", GlobalMetaCache.Count);
         }
 
+        private static object syncLock = new object();
+
         public static void SaveCommunityAssets()
         {
             List<Board> tmp;
 
-            lock (Community)
+            lock (syncLock)
             {
                 tmp = new List<Board>(Community);
             }
@@ -350,7 +352,7 @@ namespace Darkages
                     tmplBoards[dir.Name].AddRange(boards);
                 }
 
-                lock (Community)
+                lock (syncLock)
                 {
                     Community = tmplBoards["Personal"].OrderBy(i => i.Index).ToArray();
                 }

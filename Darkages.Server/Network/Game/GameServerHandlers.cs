@@ -999,8 +999,8 @@ namespace Darkages.Network.Game
             var obj = GetObject(client.Aisling.Map, i => i.Serial == format.Serial, Get.Monsters | Get.Aislings);
 
             if (obj != null && obj.SpellReflect)
-            {
-                var n = client.Aisling.rnd.Next(100) > 30;  // 70% chance to reflect a spell
+            {                
+                var n = Generator.Random.Next(100) > 30;  // 70% chance to reflect a spell
 
                 if (n)
                 {

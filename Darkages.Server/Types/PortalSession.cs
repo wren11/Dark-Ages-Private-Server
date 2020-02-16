@@ -59,8 +59,6 @@ namespace Darkages
 
         public void TransitionToMap(GameClient client, short X = -1, short Y = -1, int DestinationMap = 0)
         {
-            client.FlushBuffers();
-            client.InMapTransition = true;
             if (DestinationMap == 0)
             {
                 client.LeaveArea(true, true);
@@ -87,8 +85,6 @@ namespace Darkages
                     client.Aisling.PortalSession = null;
                 }
             }
-
-            client.InMapTransition = false;
         }    
     }
 }

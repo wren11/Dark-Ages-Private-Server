@@ -269,12 +269,11 @@ namespace Darkages.Types
 
             var sum = 0;
 
-            lock (rnd)
-            {
-                sum = rnd.Next(
-                    Template.Level * 500,
-                    Template.Level * 1000);
-            }
+
+            sum = Generator.Random.Next(
+                Template.Level * 500,
+                Template.Level * 1000);
+
 
             if (sum > 0)
                 Money.Create(this, sum, new Position(XPos, YPos));
@@ -282,7 +281,7 @@ namespace Darkages.Types
 
         private List<string> DetermineDrop()
         {
-            return LootManager.Drop(LootTable, rnd.Next(Config.LootTableStackSize))
+            return LootManager.Drop(LootTable, Generator.Random.Next(Config.LootTableStackSize))
                 .Select(i => i?.Name).ToList();
         }
 
@@ -295,10 +294,8 @@ namespace Darkages.Types
         {
             var idx = 0;
             if (Template.Drops.Count > 0)
-                lock (rnd)
-                {
-                    idx = rnd.Next(Template.Drops.Count);
-                }
+                    idx = Generator.Random.Next(Template.Drops.Count);
+
 
             var rndSelector = Template.Drops[idx];
             if (GlobalItemTemplateCache.ContainsKey(rndSelector))
@@ -306,10 +303,9 @@ namespace Darkages.Types
                 var item = Item.Create(this, GlobalItemTemplateCache[rndSelector], true);
                 var chance = 0.00;
 
-                lock (rnd)
-                {
-                    chance = Math.Round(rnd.NextDouble(), 2);
-                }
+
+                chance = Math.Round(Generator.Random.NextDouble(), 2);
+
 
                 if (chance <= item.Template.DropRate)
                     item.Release(this, Position);
@@ -323,70 +319,68 @@ namespace Darkages.Types
                 if (LootTable == null || LootManager == null)
                     return;
 
-                lock (rnd)
+
+                DetermineDrop().ForEach(i =>
                 {
-                    DetermineDrop().ForEach(i =>
-                    {
-                        if (i != null)
-                            if (GlobalItemTemplateCache.ContainsKey(i))
+                    if (i != null)
+                        if (GlobalItemTemplateCache.ContainsKey(i))
+                        {
+                            var rolled_item = Item.Create(this, GlobalItemTemplateCache[i]);
+                            if (rolled_item != GlobalLastItemRoll)
                             {
-                                var rolled_item = Item.Create(this, GlobalItemTemplateCache[i]);
-                                if (rolled_item != GlobalLastItemRoll)
+                                GlobalLastItemRoll = rolled_item;
+
+                                var upgrade = DetermineQuality();
+
+                                if (rolled_item.Template.Enchantable)
                                 {
-                                    GlobalLastItemRoll = rolled_item;
+                                    var variance = DetermineVariance();
 
-                                    var upgrade = DetermineQuality();
+                                    if (!ServerContext.Config.UseLoruleVariants)
+                                        variance = Variance.None;
 
-                                    if (rolled_item.Template.Enchantable)
+                                    if (variance != Variance.None)
+                                        rolled_item.ItemVariance = variance;
+                                }
+
+                                if (rolled_item == null)
+                                    return;
+
+                                if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
+                                    upgrade = null;
+
+                                if (!ServerContext.Config.UseLoruleItemRarity)
+                                    upgrade = null;
+
+                                rolled_item.Upgrades = upgrade?.Upgrade ?? 0;
+
+                                if (rolled_item.Upgrades > 0)
+                                {
+                                    ApplyQuality(rolled_item);
+
+                                    if (rolled_item.Upgrades > 2)
                                     {
-                                        var variance = DetermineVariance();
+                                        var user = Target ?? null;
 
-                                        if (!ServerContext.Config.UseLoruleVariants)
-                                            variance = Variance.None;
-
-                                        if (variance != Variance.None) 
-                                            rolled_item.ItemVariance = variance;
-                                    }
-
-                                    if (rolled_item == null)
-                                        return;
-
-                                    if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
-                                        upgrade = null;
-
-                                    if (!ServerContext.Config.UseLoruleItemRarity)
-                                        upgrade = null;
-
-                                    rolled_item.Upgrades = upgrade?.Upgrade ?? 0;
-
-                                    if (rolled_item.Upgrades > 0)
-                                    {
-                                        ApplyQuality(rolled_item);
-
-                                        if (rolled_item.Upgrades > 2)
+                                        if (user is Aisling aisling)
                                         {
-                                            var user = Target ?? null;
+                                            var party = aisling.GroupParty.Members;
 
-                                            if (user is Aisling aisling)
-                                            {
-                                                var party = aisling.GroupParty.Members;
+                                            foreach (var player in party)
+                                                player.Client.SendMessage(0x03,
+                                                    string.Format("Special Drop: {0}", rolled_item.DisplayName));
 
-                                                foreach (var player in party)
-                                                    player.Client.SendMessage(0x03,
-                                                        string.Format("Special Drop: {0}", rolled_item.DisplayName));
-
-                                                Task.Delay(500).ContinueWith(ct => { rolled_item.Animate(160, 200); });
-                                            }
+                                            Task.Delay(500).ContinueWith(ct => { rolled_item.Animate(160, 200); });
                                         }
                                     }
-
-                                    rolled_item.Cursed = true;
-                                    rolled_item.AuthenticatedAislings = GetTaggedAislings();
-                                    rolled_item.Release(this, Position);
                                 }
+
+                                rolled_item.Cursed = true;
+                                rolled_item.AuthenticatedAislings = GetTaggedAislings();
+                                rolled_item.Release(this, Position);
                             }
-                    });
-                }
+                        }
+                });
             }
             else if (Template.LootType.HasFlag(LootQualifer.Random))
             {

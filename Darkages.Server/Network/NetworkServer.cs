@@ -36,6 +36,8 @@ namespace Darkages.Network
 
         public TClient[] Clients;
 
+        private object syncLock = new object();
+
         private readonly Cache<byte, NetworkFormat> _formatCache = new Cache<byte, NetworkFormat>();
 
 
@@ -166,7 +168,7 @@ namespace Darkages.Network
         {
             var index = -1;
 
-            lock (Clients)
+            lock (syncLock)
             {
                 for (var i = Clients.Length - 1; i >= 0; i--)
                     if (Clients[i] == null)
@@ -187,7 +189,7 @@ namespace Darkages.Network
 
         public void RemoveClient(int lpSerial)
         {
-            lock (Clients)
+            lock (syncLock)
             {
                 for (var i = Clients.Length - 1; i >= 0; i--)
                     if (Clients[i] != null &&
@@ -203,7 +205,7 @@ namespace Darkages.Network
         {
             _listening = false;
 
-            lock (Clients)
+            lock (syncLock)
             {
                 foreach (var client in Clients)
                     if (client != null)

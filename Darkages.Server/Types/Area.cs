@@ -123,9 +123,11 @@ namespace Darkages
 
             public bool CanSpawnMonster() => !HasMonsters && !HasMundanes;
 
+            private object syncLock = new object();
+
             public void Add(TileContent content)
             {
-                lock (Content)
+                lock (syncLock)
                 {
                     Content.Push(content);
                 }
@@ -450,13 +452,14 @@ namespace Darkages
             }
         }
 
+        private object syncLock = new object();
 
         public void OnLoaded()
         {
             MapNodes = new Tile[Cols, Rows];
             BaseMap = new TileContent[Cols, Rows];
 
-            lock (MapNodes)
+            lock (syncLock)
             {
                 using (var stream = new MemoryStream(Data))
                 {

@@ -41,7 +41,7 @@ namespace Darkages.Types
 
         [JsonIgnore]
         [BsonIgnore]
-        public Random rnd
+        private Random rnd
         {
             get => _rnd;
         }
@@ -120,6 +120,7 @@ namespace Darkages.Types
 
         public ConcurrentDictionary<string, Buff> Buffs { get; set; }
 
+       private object syncLock = new object();
 
         public Element OffenseElement { get; set; }
 
@@ -1128,23 +1129,21 @@ namespace Darkages.Types
             return null;
         }
 
+
+        /// <summary>
+        /// See Formula Applied : DarkAges-Lorule-Server\Tools\ACDamageFormula.xlsx"
+        /// </summary>
         private int ComputeDmgFromAc(int dmg)
         {
-            var armor = Ac;
+            var armor          = Ac;
+            var calculated_dmg = dmg * Math.Abs(armor + 101) / 99;
 
+            if (calculated_dmg < 0)
+                calculated_dmg = 1;
 
-            var a = dmg * Math.Abs(armor + 1) / 140;
-            var b = (int) (dmg * Math.Abs(armor + 1) * 0.01);
+            var diff = Math.Abs(dmg - calculated_dmg);
 
-
-            if (armor < 0)
-                dmg += a;
-            else
-                dmg += b;
-
-            dmg = Math.Abs(dmg);
-
-            return dmg;
+            return calculated_dmg + diff;
         }
 
 
@@ -1315,7 +1314,7 @@ namespace Darkages.Types
         {
             Buff[] buff_Copy;
 
-            lock (Buffs)
+            lock (syncLock)
             {
                 buff_Copy = new List<Buff>(Buffs.Values).ToArray();
             }
@@ -1338,7 +1337,7 @@ namespace Darkages.Types
             if (Debuffs.Count == 0)
                 return;
 
-            lock (Debuffs)
+            lock (syncLock)
             {
                 debuff_Copy = new List<Debuff>(Debuffs.Values).ToArray();
             }

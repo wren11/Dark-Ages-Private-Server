@@ -401,6 +401,8 @@ namespace Darkages
         /// <value>The quests.</value>
         public List<Quest> Quests { get; set; }
 
+        private object syncLock = new object();
+
         /// <summary>
         ///     Gets or sets the stage.
         /// </summary>
@@ -700,7 +702,7 @@ namespace Darkages
         /// </example>
         public bool AcceptQuest(Quest lpQuest)
         {
-            lock (Quests)
+            lock (syncLock)
             {
                 if (!Quests.Any(i => i.Name == lpQuest.Name))
                 {
