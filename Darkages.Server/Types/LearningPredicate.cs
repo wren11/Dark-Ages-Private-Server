@@ -264,8 +264,7 @@ namespace Darkages.Types
                 {
                     if (!ServerContext.GlobalItemTemplateCache.ContainsKey(ir.Item))
                     {
-                        result[n] = new Tuple<bool, object>(false,
-                            string.Format("You don't have the items i need ({0}).", ir.Item));
+                        result[n] = new Tuple<bool, object>(false, "come back when you have the items required.");
 
                         break;
                     }
@@ -275,10 +274,7 @@ namespace Darkages.Types
 
                     if (item == null)
                     {
-                        result[n] = new Tuple<bool, object>(false,
-                            string.Format("You don't have enough {0}'s. You have {1} of {2} required.",
-                                ir.Item, "none of ", ir.AmountRequired));
-
+                        result[n] = new Tuple<bool, object>(false, "come back when you have the items required.");
                         break;
                     }
 
@@ -309,8 +305,7 @@ namespace Darkages.Types
                     }
                     else
                     {
-                        result[n] = new Tuple<bool, object>(false,
-                            string.Format("You lack the items required. (One {0} Required)", ir.Item));
+                        result[n] = new Tuple<bool, object>(false, "come back when you have the items required.");
                     }
                    
 
