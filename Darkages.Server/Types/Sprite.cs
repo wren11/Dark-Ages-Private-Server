@@ -395,13 +395,15 @@ namespace Darkages.Types
 
         public bool TriggerNearbyTraps()
         {
-            var trap = Trap.Traps.Select(i => i.Value).FirstOrDefault(i => i.Owner.Serial != Serial
-                                                                           && Position.DistanceFrom(i.Location) <=
-                                                                           i.Radius);
+            var trap = Trap.Traps.Select(i => i.Value).FirstOrDefault(i => i.Owner.Serial != Serial && i.CurrentMapId == CurrentMapId);
 
             if (trap != null)
-                Trap.Activate(trap, this);
-
+            {
+                if (LastPosition.X == trap.Location.X && LastPosition.Y == trap.Location.Y)
+                {
+                    Trap.Activate(trap, this);
+                }
+            }
             return false;
         }
 
@@ -1109,8 +1111,6 @@ namespace Darkages.Types
             {
                 ServerContext.Logger.Error("Error in Show<T>");
             }
-
-            Client?.FlushBuffers();
         }
 
         public Aisling Aisling(Sprite obj)
@@ -1481,6 +1481,7 @@ namespace Darkages.Types
             var pendingY = YPos;
             var result   = TryWalk(pendingX, pendingY, savedX, savedY);
 
+            TriggerNearbyTraps();
             return result;
         }
 
@@ -1557,8 +1558,6 @@ namespace Darkages.Types
 
         private bool CompleteWalk(int pendingX, int pendingY, int savedX, int savedY)
         {
-            TriggerNearbyTraps();
-
             if (this is Aisling)
             {
                 Client.Send(new ServerFormat0B
@@ -1569,8 +1568,6 @@ namespace Darkages.Types
                 });
 
             }
-
-            //LastPosition = new Position(savedX, savedY);
 
             return true;
         }

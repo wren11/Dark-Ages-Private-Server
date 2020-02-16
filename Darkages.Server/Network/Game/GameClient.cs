@@ -706,7 +706,7 @@ namespace Darkages.Network.Game
 
             var distance = Aisling.Position.DistanceFrom(Aisling.LastPosition.X, Aisling.LastPosition.Y);
 
-            if (distance > 1)
+            if (distance > 1 && !MapOpen && !IsWarping && (DateTime.UtcNow - LastMapUpdated).TotalMilliseconds > 2000)
             {
                 LastWarp = DateTime.UtcNow;
                 Aisling.LastPosition.X = (ushort)Aisling.XPos;

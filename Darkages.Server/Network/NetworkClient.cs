@@ -206,13 +206,7 @@ namespace Darkages.Network
                     Encryption.Transform(packet);
 
                 var array = packet.ToArray();
-                ServerSocket.Send(array, SocketFlags.None);
-
-                if (_serverBuffer == null) {
-                    _serverBuffer = new NetworkStream(ServerSocket, System.IO.FileAccess.Write);
-                }
-
-                //_serverBuffer.WriteAsync(array, 0, array.Length);
+                ServerSocket.Send(array, array.Length, SocketFlags.None);
             }
         }
 
@@ -241,11 +235,10 @@ namespace Darkages.Network
                 if (format.Secured)
                     Encryption.Transform(packet);
 
-                lock (SendBuffer)
-                {
-                    var array = packet.ToArray();
-                    SendBuffer.Enqueue(array);
-                }
+
+                var array = packet.ToArray();
+                SendBuffer.Enqueue(array);
+                FlushBuffers();
             }
         }
 
