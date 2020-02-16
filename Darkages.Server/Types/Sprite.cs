@@ -633,7 +633,7 @@ namespace Darkages.Types
 
                 var amplifier = GetElementalModifier(damageDealingSprite);
                 {
-                    dmg = ComputeDmgFromAc(dmg, Target);
+                    dmg = ComputeDmgFromAc(dmg);
                     dmg = CompleteDamageApplication(dmg, sound, dmgcb, amplifier);
                 }
             }
@@ -705,33 +705,17 @@ namespace Darkages.Types
             if (damageDealingSprite == null)
                 return 1;
 
-            var amplifier = 1.00;
 
-            if (OffenseElement != Element.None)
-            {
-                var element = CheckRandomElement(damageDealingSprite.OffenseElement);
+                var element  = CheckRandomElement(damageDealingSprite.OffenseElement);
 
-                amplifier   = CalcaluteElementalAmplifier(element);
+                var amplifier = CalcaluteElementalAmplifier(element);
 
                 amplifier *=
                     Amplified == 1 ? ServerContext.Config.FasNadurStrength + 10 :
                     Amplified == 2 ? ServerContext.Config.MorFasNadurStrength + 30 : 1.00;
 
-                if (element == Element.None && DefenseElement != Element.None)
-                    amplifier = 0.25;
+                return amplifier;
 
-                switch (DefenseElement)
-                {
-                    case Element.None when element != Element.None:
-                        return 5.75;
-                    case Element.None when element == Element.None:
-                        return 0.25;
-                    default:
-                        return amplifier;
-                }
-            }
-
-            return 0.20;
         }
 
         public bool CanAcceptTarget(Sprite source)
@@ -808,7 +792,7 @@ namespace Darkages.Types
             if (DefenseElement == Element.Fire)
             {
                 if (element == Element.Fire) 
-                    return 0.50;
+                    return 0.05;
                 if (element == Element.Water)
                     return 0.85;
                 if (element == Element.Wind)
@@ -820,14 +804,14 @@ namespace Darkages.Types
                 if (element == Element.Light)
                     return 0.55;
                 if (element == Element.None)
-                    return 0.40;
+                    return 0.01;
             }
 
             //wind belt
             if (DefenseElement == Element.Wind)
             {
                 if (element == Element.Wind)
-                    return 0.50;
+                    return 0.05;
                 if (element == Element.Fire)
                     return 0.85;
                 if (element == Element.Water)
@@ -839,7 +823,7 @@ namespace Darkages.Types
                 if (element == Element.Light)
                     return 0.55;
                 if (element == Element.None)
-                    return 0.40;
+                    return 0.01;
             }
 
             //earth belt
@@ -852,13 +836,13 @@ namespace Darkages.Types
                 if (element == Element.Water)
                     return 0.55;
                 if (element == Element.Earth)
-                    return 0.50;
+                    return 0.05;
                 if (element == Element.Dark)
                     return 0.75;
                 if (element == Element.Light)
                     return 0.55;
                 if (element == Element.None)
-                    return 0.40;
+                    return 0.01;
             }
 
 
@@ -870,7 +854,7 @@ namespace Darkages.Types
                 if (element == Element.Fire)
                     return 0.55;
                 if (element == Element.Water)
-                    return 0.50;
+                    return 0.05;
                 if (element == Element.Earth)
                     return 0.85;
                 if (element == Element.Dark)
@@ -878,18 +862,18 @@ namespace Darkages.Types
                 if (element == Element.Light)
                     return 0.55;
                 if (element == Element.None)
-                    return 0.40;
+                    return 0.01;
             }
 
             //dark belt
             if (DefenseElement == Element.Dark)
             {
                 if (element == Element.Dark)
-                    return 0.50;
+                    return 0.10;
                 if (element == Element.Light)
                     return 0.80;
                 if (element == Element.None)
-                    return 0.40;
+                    return 0.01;
 
                 return 0.60;
             }
@@ -900,9 +884,9 @@ namespace Darkages.Types
                 if (element == Element.Dark)
                     return 0.80;
                 if (element == Element.Light)
-                    return 0.50;
+                    return 0.10;
                 if (element == Element.None)
-                    return 0.40;
+                    return 0.01;
 
                 return 0.65;
             }
@@ -1144,7 +1128,7 @@ namespace Darkages.Types
             return null;
         }
 
-        private int ComputeDmgFromAc(int dmg, Sprite target)
+        private int ComputeDmgFromAc(int dmg)
         {
             var armor = Ac;
 

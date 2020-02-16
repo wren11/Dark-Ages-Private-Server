@@ -141,5 +141,8 @@
   "YouDroppedGoldMsg": "you dropped some gold.",
   "ShowWarpAnimation": false,
   "WarpNumber": 295,
-  "MaxHP": 500000
+  "MaxHP": 500000,
+  "UseLoruleVariants": false,
+  "UseLoruleItemRarity": false,
+  "ItemNotRequiredMsg": "Come back when you have the items required. \n{=q"
 }
