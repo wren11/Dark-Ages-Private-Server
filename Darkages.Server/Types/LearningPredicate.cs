@@ -237,19 +237,19 @@ namespace Darkages.Types
         private int CHeckAttributePredicates(Aisling player, Dictionary<int, Tuple<bool, object>> result, int n)
         {
             result[n++] = new Tuple<bool, object>(player.ExpLevel >= ExpLevel_Required,
-                string.Format("Go level more. (Level {0} Required.)", ExpLevel_Required));
+                string.Format("Go level more. (Level {0} Required)", ExpLevel_Required));
             result[n++] = new Tuple<bool, object>(player.Str >= Str_Required,
-                string.Format("You are not strong enough. ({0} Str Required.).", Str_Required));
+                string.Format("You are not strong enough. ({0} Str Required)", Str_Required));
             result[n++] = new Tuple<bool, object>(player.Int >= Int_Required,
-                string.Format("You are not smart enough.  ({0} Int Required.).", Int_Required));
+                string.Format("You are not smart enough.  ({0} Int Required)", Int_Required));
             result[n++] = new Tuple<bool, object>(player.Wis >= Wis_Required,
-                string.Format("You are not wise enough. ({0} Wis Required.).", Wis_Required));
+                string.Format("You are not wise enough. ({0} Wis Required)", Wis_Required));
             result[n++] = new Tuple<bool, object>(player.Con >= Con_Required,
-                string.Format("You lack stamina. ({0} Con Required.).", Con_Required));
+                string.Format("You lack stamina. ({0} Con Required)", Con_Required));
             result[n++] = new Tuple<bool, object>(player.Dex >= Dex_Required,
-                string.Format("You are not nimble enough. ({0} Dex Required.).", Dex_Required));
+                string.Format("You are not nimble enough. ({0} Dex Required)", Dex_Required));
             result[n++] = new Tuple<bool, object>(player.GoldPoints >= Gold_Required,
-                string.Format("You best come back when you got the cash. ({0} Gold Required.).", Gold_Required));
+                string.Format("You best come back when you got the cash. ({0} Gold Required)", Gold_Required));
             result[n++] = new Tuple<bool, object>(player.Stage == Stage_Required, "You must transcend further first");
             result[n++] =
                 new Tuple<bool, object>(player.Path == Class_Required, "You should not be here, " + player.Path);
@@ -260,11 +260,25 @@ namespace Darkages.Types
         private int CheckItemPredicates(Aisling player, Dictionary<int, Tuple<bool, object>> result, int n)
         {
             if (Items_Required != null && Items_Required.Count > 0)
+            {
+                var msg = new StringBuilder(ServerContext.Config.ItemNotRequiredMsg);
+
+                var items = Items_Required.Select(i => string.Format("{0} ({1}) ", i.Item, i.AmountRequired));
+
+                foreach (var itemstrs in items)
+                {
+                    msg.Append(itemstrs);
+                }
+
+                var errorMsg = msg.ToString();
+
+                var formatted = errorMsg.Replace(") ", "), ").TrimEnd(new char[] { ',', ' ' });
+
                 foreach (var ir in Items_Required)
                 {
                     if (!ServerContext.GlobalItemTemplateCache.ContainsKey(ir.Item))
                     {
-                        result[n] = new Tuple<bool, object>(false, "come back when you have the items required.");
+                        result[n] = new Tuple<bool, object>(false, formatted);
 
                         break;
                     }
@@ -274,7 +288,7 @@ namespace Darkages.Types
 
                     if (item == null)
                     {
-                        result[n] = new Tuple<bool, object>(false, "come back when you have the items required.");
+                        result[n] = new Tuple<bool, object>(false, formatted);
                         break;
                     }
 
@@ -301,16 +315,17 @@ namespace Darkages.Types
 
                     if (item_total >= ir.AmountRequired)
                     {
-                        result[n] = new Tuple<bool, object>(true, "You have the items required.");
+                        result[n] = new Tuple<bool, object>(true, string.Empty);
                     }
                     else
                     {
-                        result[n] = new Tuple<bool, object>(false, "come back when you have the items required.");
+                        result[n] = new Tuple<bool, object>(false, formatted);
                     }
-                   
+
 
                     n++;
                 }
+            }
 
             return n;
         }
@@ -336,8 +351,11 @@ namespace Darkages.Types
 
             var sb = string.Empty;
             {
+
+                var errorCaps = result.Select(i => i.Value).Distinct();
+
                 sb += "{=sYou are not worthy., \n{=u";
-                foreach (var predicate in result.Select(i => i.Value))
+                foreach (var predicate in errorCaps)
                     if (predicate != null && !predicate.Item1)
                         sb += (string) predicate.Item2 + "\n";
             }

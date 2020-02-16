@@ -360,9 +360,12 @@ namespace Darkages
 
         [JsonProperty] public int MaxHP = 500000;
 
-        [JsonProperty] public bool UseLoruleVariants { get; set; } = false;
+        [JsonProperty] public bool UseLoruleVariants = false;
 
-        [JsonProperty] public bool UseLoruleItemRarity { get; set; } = false;
+        [JsonProperty] public bool UseLoruleItemRarity = false;
+
+        [JsonProperty]
+        public string ItemNotRequiredMsg = "Come back when you have the items required. \n{=q";
 
         public override string ToString()
         {
