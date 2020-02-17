@@ -14,7 +14,7 @@ namespace DAClient
             { 
                 var _client = new Client("lol", "lol");
                 //_client.Connect("127.0.0.1", 2610);
-                _client.Connect("54.213.128.251", 2610);
+                _client.Connect("174.87.2.164", 2610);
 
                 Thread.Sleep(300);
             }

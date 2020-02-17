@@ -570,6 +570,14 @@ namespace Darkages.Types
                 penetrating = true;
             }
 
+            if (this is Monster _m)
+            {
+                if (_m.Template.BaseName == "Scorpion")
+                {
+
+                }
+            }
+
             dmg = ApplyWeaponBonuses(damageDealingSprite, dmg);
 
             if (dmg > 0)
@@ -780,6 +788,11 @@ namespace Darkages.Types
 
         private double CalcaluteElementalAmplifier(Element element)
         {
+            while (DefenseElement == Element.Random)
+            {
+                DefenseElement = CheckRandomElement(DefenseElement);
+            }
+
             //no belt? 100% damage regardless, else 50% damage.
             if (DefenseElement ==  Element.None && element != Element.None)
             {
