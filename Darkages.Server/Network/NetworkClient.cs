@@ -47,8 +47,6 @@ namespace Darkages.Network
             }
         }
 
-        private NetworkStream _serverBuffer;
-
         protected NetworkClient()
         {
             Reader = new NetworkPacketReader();

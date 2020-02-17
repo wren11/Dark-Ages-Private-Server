@@ -17,6 +17,8 @@
 //*************************************************************************/
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
@@ -27,6 +29,17 @@ namespace Darkages.Storage.locales.Scripts.Monsters
     [Script("Training Dummy")]
     public class TrainingDummy : MonsterScript
     {
+
+        public HashSet<dmgTable> dmgtbl = new HashSet<dmgTable>();
+
+        public struct dmgTable
+        {
+            public int Damage    { get; set; }
+            public string What   { get; set; }
+        }
+
+        public dmgTable incoming;
+
         public TrainingDummy(Monster monster, Area map) : base(monster, map)
         {
             Monster.BonusMr = 0;
@@ -43,16 +56,37 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void OnAttacked(GameClient client)
         {
+
         }
 
-        public override void OnDamaged(GameClient client, int dmg)
+        public override void OnDamaged(GameClient client, int dmg, Sprite source)
         {
+            var frames = new StackTrace().GetFrames();
+            var cls    = "unknown";
+            foreach (var frame in frames)
+            {
+                var mth = frame.GetMethod();
+
+                if (mth.Name == "OnSuccess")
+                {
+                    cls = mth.ReflectedType.Name;
+                    break;
+                }
+            }
+
+            incoming.Damage = dmg;
+            incoming.What   = cls;
+
+            dmgtbl.Add(incoming);
+
             Monster.Show(Scope.NearbyAislings,
                 new ServerFormat0D
                 {
-                    Serial = Monster.Serial, Text = string.Format("{0} dealt {1}", client.Aisling.Username, dmg),
-                    Type = 0x01
+                    Serial = Monster.Serial, Text = string.Format("{0}'s {1}: {2} DMG.\n", client.Aisling.Username, cls, dmg),
+                    Type   = 0x01
                 });
+
+
         }
 
         public override void OnCast(GameClient client)

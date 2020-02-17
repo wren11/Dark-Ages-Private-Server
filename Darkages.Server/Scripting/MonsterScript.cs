@@ -43,7 +43,7 @@ namespace Darkages.Scripting
         public abstract void OnLeave(GameClient client);
         public abstract void Update(TimeSpan elapsedTime);
 
-        public virtual void OnDamaged(GameClient client, int dmg)
+        public virtual void OnDamaged(GameClient client, int dmg, Sprite source)
         {
         }
 

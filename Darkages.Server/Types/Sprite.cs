@@ -598,7 +598,9 @@ namespace Darkages.Types
                 return;
 
             if (source is Aisling aisling)
-                (this as Monster)?.Script?.OnDamaged(aisling?.Client, dmg);
+            {
+                (this as Monster)?.Script?.OnDamaged(aisling?.Client, dmg, source);
+            }
         }
 
         private bool DamageTarget(Sprite damageDealingSprite, ref int dmg, bool penetrating, byte sound, Action<int> dmgcb)
@@ -717,16 +719,18 @@ namespace Darkages.Types
                 return 1;
 
 
-                var element  = CheckRandomElement(damageDealingSprite.OffenseElement);
+            var element = CheckRandomElement(damageDealingSprite.OffenseElement);
+            var saved = DefenseElement;
+            var amplifier = CalcaluteElementalAmplifier(element);
+            {
+                DefenseElement = saved;
+            }
 
-                var amplifier = CalcaluteElementalAmplifier(element);
+            amplifier *=
+                Amplified == 1 ? ServerContext.Config.FasNadurStrength + 10 :
+                Amplified == 2 ? ServerContext.Config.MorFasNadurStrength + 30 : 1.00;
 
-                amplifier *=
-                    Amplified == 1 ? ServerContext.Config.FasNadurStrength + 10 :
-                    Amplified == 2 ? ServerContext.Config.MorFasNadurStrength + 30 : 1.00;
-
-                return amplifier;
-
+            return amplifier;
         }
 
         public bool CanAcceptTarget(Sprite source)

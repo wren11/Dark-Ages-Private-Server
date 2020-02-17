@@ -291,7 +291,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         }
 
 
-        public override void OnDamaged(GameClient client, int dmg)
+        public override void OnDamaged(GameClient client, int dmg, Sprite source)
         {
             if (Monster.Target == null || Monster.Target != client.Aisling)
                 if (Monster.CanAcceptTarget(client.Aisling))
