@@ -37,6 +37,9 @@ namespace Darkages.Types
         Upgradeable = 1 << 12,
         TwoHanded = 1 << 13,
         LongRanged = 1 << 14,
+        PerishesOnDeath = 1 << 15,
+        PerishesOnDropped = 1 << 16,
+        PerishesOnBroken = 1 << 17,
 
 
         NormalEquipment = Equipable | Repairable | Tradeable | Sellable | Bankable | Dropable,

@@ -73,10 +73,26 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (!i.Attackable)
                             continue;
 
-                        if (i is Monster) (i as Monster).TaggedAislings = new ConcurrentDictionary<int, Sprite>();
+                        //this should ensure we remove everyone from the tag list except me or group members.
+                        if (i is Monster _monster)
+                        {
+                            if (sprite is Aisling _player)
+                            {
+                                if (_player.GroupParty.MembersExcludingSelfMapWide.Count > 0)
+                                {
+                                    var nearbyTags = _player.GroupParty.MembersExcludingSelfMapWide.ToArray();
+                                    var removed    = 0;
+
+                                    foreach (var obj in nearbyTags)
+                                    {
+                                        removed += _monster.TaggedAislings.RemoveWhere(n => n != obj.Serial);
+                                    }
+                                }
+                            }
+                        }
 
                         Target = i;
-                        i.ApplyDamage(sprite, 0, true, Skill.Template.Sound);
+                        i.ApplyDamage(sprite, 0, true, Skill.Template.Sound, null, true);
 
                         if (i is Aisling)
                         {

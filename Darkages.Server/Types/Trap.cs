@@ -37,7 +37,7 @@ namespace Darkages.Types
                     Radius = _radius,
                     Duration = _duration,
                     CurrentMapId = obj.CurrentMapId,
-                    Location = new Position(obj.Position.X, obj.Position.Y),
+                    Location = new Position(obj.LastPosition.X, obj.LastPosition.Y),
                     Owner = obj,
                     Tripped = cb,
                     Serial = id

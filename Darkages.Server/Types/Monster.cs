@@ -44,7 +44,7 @@ namespace Darkages.Types
             CastEnabled = false;
             WalkEnabled = false;
             WaypointIndex = 0;
-            TaggedAislings = new ConcurrentDictionary<int, Sprite>();
+            TaggedAislings = new HashSet<int>();
         }
 
         [JsonIgnore] public MonsterScript Script { get; set; }
@@ -84,7 +84,7 @@ namespace Darkages.Types
 
         [JsonIgnore] public LootTable LootTable { get; set; }
 
-        [JsonIgnore] public ConcurrentDictionary<int, Sprite> TaggedAislings { get; set; }
+        [JsonIgnore] public HashSet<int> TaggedAislings { get; set; }
 
         [JsonIgnore] public LootTable UpgradeTable { get; set; }
 
@@ -128,6 +128,8 @@ namespace Darkages.Types
             Rewarded = true;
             player.UpdateStats();
         }
+
+        public Sprite LastTargetSprite { get; internal set; }
 
         private void UpdateCounters(Aisling player)
         {
@@ -376,7 +378,7 @@ namespace Darkages.Types
                                 }
 
                                 rolled_item.Cursed = true;
-                                rolled_item.AuthenticatedAislings = GetTaggedAislings();
+                                rolled_item.AuthenticatedAislings = GetTaggedAislings().Cast<Sprite>().ToArray();
                                 rolled_item.Release(this, Position);
                             }
                         }
@@ -393,27 +395,39 @@ namespace Darkages.Types
             return RandomEnumValue<Variance>();
         }
 
-        private Sprite[] GetTaggedAislings()
+        public List<Aisling> GetTaggedAislings()
         {
-            var tagged = TaggedAislings.Select(i => i.Value).ToArray();
-            return tagged;
+            if (TaggedAislings.Any())
+            {
+                return TaggedAislings.Select(b => GetObject<Aisling>(Map, n => n.Serial == b)).Where(i => i != null)
+                    .ToList();
+            }
+
+            return new List<Aisling>();
         }
 
         public void AppendTags(Sprite target)
         {
             if (TaggedAislings == null)
-                TaggedAislings = new ConcurrentDictionary<int, Sprite>();
+                TaggedAislings = new HashSet<int>();
 
             if (target is Aisling)
             {
                 var aisling = target as Aisling;
 
-                if (!TaggedAislings.ContainsKey(aisling.Serial)) TaggedAislings.TryAdd(aisling.Serial, aisling);
+                if (!TaggedAislings.Contains(aisling.Serial)) 
+                    TaggedAislings.Add(aisling.Serial);
 
                 if (aisling.GroupParty.LengthExcludingSelf > 0)
+                {
                     foreach (var member in aisling.GroupParty.MembersExcludingSelf)
-                        if (!TaggedAislings.ContainsKey(member.Serial))
-                            TaggedAislings.TryAdd(member.Serial, member);
+                    {
+                        if (!TaggedAislings.Contains(member.Serial))
+                        {
+                            TaggedAislings.Add(member.Serial);
+                        }
+                    }
+                }
             }
         }
 
@@ -439,7 +453,7 @@ namespace Darkages.Types
                 BashTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.AttackSpeed)),
                 WalkTimer = new GameServerTimer(TimeSpan.FromMilliseconds(1 + template.MovementSpeed)),
                 CastEnabled = template.MaximumMP > 0,
-                TaggedAislings = new ConcurrentDictionary<int, Sprite>()
+                TaggedAislings = new HashSet<int>()
             };
 
             if (obj.Template.Grow)

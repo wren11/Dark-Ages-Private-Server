@@ -39,7 +39,7 @@ namespace Darkages.Storage.locales.debuffs
             /* GM Character's don't die. */
             if (Affected is Aisling)
                 if ((Affected as Aisling).GameMaster)
-                    return;
+                   return;
 
 
             base.OnApplied(Affected, debuff);

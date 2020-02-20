@@ -167,7 +167,6 @@ namespace Darkages.Types
                 //delete the item from inventory.
                 Owner.EquipmentManager.RemoveFromInventory(obj, true);
 
-
                 if (obj.Durability > 0)
                 {
                     var copy = ObjectManager.Clone<Item>(obj);
@@ -178,6 +177,12 @@ namespace Darkages.Types
 
         private void Add(Item obj)
         {
+            if (obj == null || obj.Template == null)
+                return;
+         
+            if (obj.Template.Flags.HasFlag(ItemFlags.Perishable))
+                return;
+
             lock (Items)
             {
                 Items.Add(obj);

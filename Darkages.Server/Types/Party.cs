@@ -38,6 +38,10 @@ namespace Darkages.Types
 
         public List<Aisling> MembersExcludingSelf => Members.FindAll(i => i.Serial != Creator.Serial);
 
+        public List<Aisling> MembersExcludingSelfNearby => Members.FindAll(i => i.Serial != Creator.Serial && Creator.WithinRangeOf(i));
+
+        public List<Aisling> MembersExcludingSelfMapWide => Members.FindAll(i => i.Serial != Creator.Serial && i.CurrentMapId == Creator.CurrentMapId);
+
         public int Length => Members.Count;
 
         public int LengthExcludingSelf => Members.Count(i => i.Serial != Creator?.Serial);

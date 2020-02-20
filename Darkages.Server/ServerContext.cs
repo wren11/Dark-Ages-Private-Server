@@ -414,6 +414,8 @@ namespace Darkages
             };
 
 
+            var belt = GlobalItemTemplateCache["Dark Belt"];
+
             // StorageManager.SkillBucket.Save(assailTemplate, true);
 
             //var popup = new UserWalkPopup()

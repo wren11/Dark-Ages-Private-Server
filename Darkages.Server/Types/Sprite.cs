@@ -399,17 +399,12 @@ namespace Darkages.Types
 
             if (trap != null)
             {
-                if (LastPosition.X == trap.Location.X && LastPosition.Y == trap.Location.Y)
+                if (X == trap.Location.X && Y == trap.Location.Y)
                 {
                     Trap.Activate(trap, this);
                 }
             }
             return false;
-        }
-
-        public bool CanHitTarget(Sprite target)
-        {
-            return true;
         }
 
         public bool HasBuff(string buff)
@@ -549,6 +544,64 @@ namespace Darkages.Types
             return element;
         }
 
+        public bool CanTag(Aisling AttackingPlayer, bool force = false)
+        {
+            bool canTag = false;
+
+            if (!(this is Monster monster))
+                return false;
+
+            if (monster.TaggedAislings.Any(i => i == AttackingPlayer.Serial))
+                canTag = true;
+
+            if (monster.TaggedAislings.Count == 0)
+                canTag = true;
+
+            List<int> tagstoRemove = new List<int>();
+            foreach (var userId in monster.TaggedAislings.Where(i => i != AttackingPlayer.Serial))
+            {
+                var taggeduser = GetObject<Aisling>(Map, i => i.Serial == userId);
+
+                if (taggeduser != null)
+                {
+                    if (taggeduser.WithinRangeOf(this))
+                    {
+                        canTag = AttackingPlayer.GroupParty.Has(taggeduser);
+                    }
+                    else
+                    {
+                        tagstoRemove.Add(taggeduser.Serial);
+                        canTag = true;
+                    }
+                }
+            }
+
+            var lostTags = monster.AislingsNearby().Where(i => monster.TaggedAislings.Contains(i.Serial));
+
+            if (!lostTags.Any())
+            {
+                canTag = true;
+            }
+            
+
+            monster.TaggedAislings.RemoveWhere(n => tagstoRemove.Contains(n));
+
+
+            if (canTag)
+            {
+                monster.AppendTags(AttackingPlayer);
+
+                if (monster.Target == null)
+                    monster.Target = AttackingPlayer;
+            }
+
+            if (force)
+            {
+                canTag = false;
+            }
+
+            return canTag;
+        }
         
         public void ApplyDamage(Sprite damageDealingSprite, int dmg,  bool penetrating = false, byte sound = 1, Action<int> dmgcb = null, bool forceTarget = false)
         {
@@ -560,22 +613,11 @@ namespace Darkages.Types
 
             if (!CanBeAttackedHere(damageDealingSprite))
                 return;
-
-            if (CannotTagTarget(damageDealingSprite, forceTarget))
-                return;
-
+            
             if (dmg == -1)
             {
-                dmg          = CurrentHp;
+                dmg         = CurrentHp;
                 penetrating = true;
-            }
-
-            if (this is Monster _m)
-            {
-                if (_m.Template.BaseName == "Scorpion")
-                {
-
-                }
             }
 
             dmg = ApplyWeaponBonuses(damageDealingSprite, dmg);
@@ -583,7 +625,8 @@ namespace Darkages.Types
             if (dmg > 0)
                 ApplyEquipmentDurability(dmg);
 
-            if (!DamageTarget(damageDealingSprite, ref dmg, penetrating, sound, dmgcb))
+
+            if (!DamageTarget(damageDealingSprite, ref dmg, penetrating, sound, dmgcb, forceTarget))
                 return;
 
             OnDamaged(damageDealingSprite, dmg);
@@ -603,7 +646,7 @@ namespace Darkages.Types
             }
         }
 
-        private bool DamageTarget(Sprite damageDealingSprite, ref int dmg, bool penetrating, byte sound, Action<int> dmgcb)
+        private bool DamageTarget(Sprite damageDealingSprite, ref int dmg, bool penetrating, byte sound, Action<int> dmgcb, bool forced)
         {
             if (penetrating)
             {
@@ -620,16 +663,27 @@ namespace Darkages.Types
 
                 if (CurrentHp < 0)
                     CurrentHp = 0;
+
+                return true;
             }
             else
             {
+                if (damageDealingSprite is Aisling _aisling)
+                {
+                    if (!CanTag(_aisling, forced))
+                    {
+                        _aisling.Client.SendMessage(0x02, ServerContext.Config.CantAttack);
+                        return false;
+                    }
+                }
+
                 if (Immunity)
                 {
                     var empty = new ServerFormat13
                     {
                         Serial = Serial,
                         Health = byte.MaxValue,
-                        Sound = sound
+                        Sound  = sound
                     };
 
                     Show(Scope.VeryNearbyAislings, empty);
@@ -652,39 +706,6 @@ namespace Darkages.Types
             }
 
             return true;
-        }
-
-        private bool CannotTagTarget(Sprite source, bool forceTarget)
-        {
-            if (!CanAcceptTarget(source))
-            {
-                if (source is Aisling aisling)
-                    aisling.Client?.SendMessage(0x02, ServerContext.Config.CantAttack);
-
-                if (!forceTarget)
-                    return true;
-            }
-
-            if (forceTarget)
-            {
-                Target = source;
-            }
-            else
-            {
-                if (Target == null)
-                    Target = source;
-            }
-
-            if (Target == null)
-                return true;
-
-            if (!(this is Monster monster))
-                return false;
-
-            monster.AppendTags(source);
-            monster.Script?.OnAttacked(source?.Client);
-
-            return false;
         }
 
         private int ApplyWeaponBonuses(Sprite source, int dmg)
@@ -732,64 +753,7 @@ namespace Darkages.Types
 
             return amplifier;
         }
-
-        public bool CanAcceptTarget(Sprite source)
-        {
-            if (source == null ||
-                !WithinRangeOf(source) ||
-                !source.WithinRangeOf(this))
-                return false;
-
-            if (this is Monster)
-                if (source is Aisling)
-                {
-                    var monster = this as Monster;
-                    var aisling = source as Aisling;
-
-                    if (monster.TaggedAislings.Count > 0)
-                    {
-                        var taggedalready = false;
-                        foreach (var obj in monster.TaggedAislings)
-                            //check if the user attacking is in the tagged list.
-                            if (obj.Key == source.Serial)
-                            {
-                                taggedalready = true;
-                                break;
-                            }
-
-                        //monster has been attacked by this user before.
-                        if (taggedalready) return true;
-
-                        //check if any tagged users are in the same group as this user.
-                        foreach (var tagg in monster.TaggedAislings)
-                            if (tagg.Value is Aisling obj)
-                                if (obj.GroupParty.Has(aisling)
-                                    && obj.WithinRangeOf(aisling)
-                                    && monster.WithinRangeOf(monster))
-                                    return true;
-
-                        var abandoned = false;
-
-                        //check if any tagged users are still near this monster or online.
-                        foreach (var tagg in monster.TaggedAislings)
-                            if (tagg.Value is Aisling obj)
-                            {
-                                if (!monster.WithinRangeOf(tagg.Value) || !(tagg.Value as Aisling).LoggedIn)
-                                    abandoned = true;
-                                else
-                                    abandoned = false;
-                            }
-
-                        return !abandoned;
-                    }
-
-                    return true;
-                }
-
-
-            return true;
-        }
-
+        
         private double CalcaluteElementalAmplifier(Element element)
         {
             while (DefenseElement == Element.Random)
@@ -802,6 +766,7 @@ namespace Darkages.Types
             {
                 return 1.00;
             }
+
             //50% damage.
             else if (DefenseElement == Element.None && element == Element.None)
             {
@@ -1376,13 +1341,15 @@ namespace Darkages.Types
                 return;
 
             if (LastDirection != Direction)
+            {
                 LastDirection = Direction;
 
-            Show(Scope.NearbyAislings, new ServerFormat11
-            {
-                Direction = Direction,
-                Serial = Serial
-            });
+                Show(Scope.NearbyAislings, new ServerFormat11
+                {
+                    Direction = Direction,
+                    Serial = Serial
+                });
+            }
         }
 
         public void WalkTo(int x, int y, bool ignoreWalls = false)

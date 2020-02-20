@@ -715,6 +715,7 @@ namespace Darkages
             return false;
         }
 
+
         /// <summary>
         ///     Determines whether this instance is dead.
         /// </summary>
