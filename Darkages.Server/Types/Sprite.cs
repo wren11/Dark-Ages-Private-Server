@@ -747,9 +747,12 @@ namespace Darkages.Types
                 DefenseElement = saved;
             }
 
-            amplifier *=
-                Amplified == 1 ? ServerContext.Config.FasNadurStrength + 10 :
-                Amplified == 2 ? ServerContext.Config.MorFasNadurStrength + 30 : 1.00;
+            if (Amplified > 0)
+            {
+                amplifier *=
+                    Amplified == 1 ? ServerContext.Config.FasNadurStrength + 10 :
+                    Amplified == 2 ? ServerContext.Config.MorFasNadurStrength + 30 : 1.00;
+            }
 
             return amplifier;
         }
