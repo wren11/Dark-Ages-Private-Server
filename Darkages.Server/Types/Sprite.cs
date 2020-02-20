@@ -749,9 +749,8 @@ namespace Darkages.Types
 
             if (Amplified > 0)
             {
-                amplifier *=
-                    Amplified == 1 ? ServerContext.Config.FasNadurStrength + 10 :
-                    Amplified == 2 ? ServerContext.Config.MorFasNadurStrength + 30 : 1.00;
+                amplifier *= Amplified == 1 ? ServerContext.Config.FasNadurStrength + 10
+                    : ServerContext.Config.MorFasNadurStrength + 30;
             }
 
             return amplifier;
