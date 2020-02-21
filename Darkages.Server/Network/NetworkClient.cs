@@ -28,7 +28,6 @@ using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
-using LiteDB;
 
 namespace Darkages.Network
 {
@@ -60,7 +59,6 @@ namespace Darkages.Network
 
         private NetworkPacketWriter Writer { get; set; }
 
-        [BsonIgnore]
         public NetworkSocket ServerSocket { get; set; }
 
         public SecurityProvider Encryption { get; set; }
@@ -167,8 +165,9 @@ namespace Darkages.Network
 
                 ServerSocket.Send(packet, packet.Length, SocketFlags.None);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                ServerContext.Report(e);
                 //Ignore
             }
             finally

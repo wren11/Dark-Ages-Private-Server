@@ -146,6 +146,7 @@ namespace Darkages.Storage
                             StorageManager.SkillBucket.Load<SkillTemplate>(Path.GetFileNameWithoutExtension(asset));
                         if (template != null)
                             ServerContext.GlobalSkillTemplateCache[template.Name] = template;
+
                         break;
                     }
 
@@ -255,7 +256,9 @@ namespace Darkages.Storage
             {
                 using (var f = new StreamReader(s))
                 {
-                    return JsonConvert.DeserializeObject<TD>(f.ReadToEnd(), StorageManager.Settings);
+                    var obj = JsonConvert.DeserializeObject<TD>(f.ReadToEnd(), StorageManager.Settings);
+                    ServerContext.Report<TD>(obj);
+                    return obj;
                 }
             }
         }

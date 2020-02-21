@@ -33,6 +33,7 @@ using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
 using MenuInterpreter;
 using Newtonsoft.Json;
+using ServiceStack.Text;
 
 namespace Darkages.Network.Game
 {
@@ -898,8 +899,9 @@ namespace Darkages.Network.Game
                     return true;
                 });
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException e)
             {
+                ServerContext.Report(e);
                 return false;
             }
 
@@ -926,7 +928,7 @@ namespace Darkages.Network.Game
                 Aisling.LastMapId = short.MaxValue;
             }
             BuildSettings();
-
+            ServerContext.Report(string.Format("[GameSettings Loaded by {0} ({1})]", Aisling.Username, Aisling.GameSettings.Dump()));
             return this;
         }
 
@@ -939,6 +941,8 @@ namespace Darkages.Network.Game
             foreach (var script in ServerContext.Config.GlobalScripts)
                 GlobalScripts.Add(ScriptManager.Load<GlobalScript>(script, this));
 
+
+            ServerContext.Report(string.Format("[GlobalScripts Loaded by {0} ({1})]", Aisling.Username, GlobalScripts));
             return this;
         }
 
@@ -954,10 +958,13 @@ namespace Darkages.Network.Game
             if (Aisling.Wis > Aisling.ExpLevel + 1)
                 MPRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate / 2);
 
-            HPRegenTimer.Update(elapsedTime);
-            MPRegenTimer.Update(elapsedTime);
+            if (!HPRegenTimer.Disabled)
+                HPRegenTimer.Update(elapsedTime);
 
-            if (HPRegenTimer.Elapsed)
+            if (!MPRegenTimer.Disabled)
+                MPRegenTimer.Update(elapsedTime);
+
+            if (HPRegenTimer.Elapsed && !HPRegenTimer.Disabled)
             {
                 HPRegenTimer.Reset();
 
@@ -970,7 +977,7 @@ namespace Darkages.Network.Game
                 SendStats(StatusFlags.StructB);
             }
 
-            if (MPRegenTimer.Elapsed)
+            if (MPRegenTimer.Elapsed && !MPRegenTimer.Disabled)
             {
                 MPRegenTimer.Reset();
 
@@ -982,6 +989,7 @@ namespace Darkages.Network.Game
                 Aisling.CurrentMp = (Aisling.CurrentMp + (int) mpRegenAmount).Clamp(0, Aisling.MaximumMp);
                 SendStats(StatusFlags.StructB);
             }
+
         }
 
         /// <summary>
@@ -1005,7 +1013,8 @@ namespace Darkages.Network.Game
                     debuff.Display(Aisling);
                 }
             }
-
+            ServerContext.Report(string.Format("[SpellBar [Buffs] Loaded by {0} ({1})]", Aisling.Username, Aisling.Buffs.Dump()));
+            ServerContext.Report(string.Format("[SpellBar [Debuffs] Loaded by {0} ({1})]", Aisling.Username, Aisling.Debuffs.Dump()));
             return this;
         }
 
@@ -1079,6 +1088,7 @@ namespace Darkages.Network.Game
                 Aisling.Client.Send(format);
 
 
+            ServerContext.Report(string.Format("[Equipment Loaded by {0} ({1})]", Aisling.Username, Aisling.EquipmentManager.Dump()));
             return this;
         }
 
@@ -1090,7 +1100,8 @@ namespace Darkages.Network.Game
                 MPRegenTimer.Disabled = true;
             }
 
-            Refresh();
+            ServerContext.Report(string.Format("[Ghost Called by {0} ({1})]", Aisling.Username, Aisling.Flags.Dump()));
+            Refresh(true);
         }
 
         /// <summary>
@@ -1147,8 +1158,8 @@ namespace Darkages.Network.Game
                     spell.NextAvailableUse = DateTime.UtcNow;
                 }
             }
-            
 
+            ServerContext.Report(string.Format("[Spellbook Loaded: ({0})]", Aisling.SpellBook.Dump()));
             return this;
         }
 
@@ -1185,6 +1196,9 @@ namespace Darkages.Network.Game
 
                 skill.Script = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
                 Aisling.SkillBook.Set(skill, false);
+
+                ServerContext.Report(string.Format("[Skillbook Loaded: ({0})]", Aisling.SkillBook.Dump()));
+
             }
 
             return this;
@@ -1250,6 +1264,7 @@ namespace Darkages.Network.Game
                 }
             }
 
+            ServerContext.Report(string.Format("[Inventory Loaded: ({0})]", Aisling.Inventory.Dump()));
             return this;
         }
 
@@ -1327,6 +1342,7 @@ namespace Darkages.Network.Game
             SendLocation();
             FlushBuffers();
 
+            ServerContext.Report(string.Format("[Player entered lorule. {0} ({1})]", Aisling.Username, Aisling.Dump()));
             return this;
         }
 
@@ -1340,6 +1356,8 @@ namespace Darkages.Network.Game
                 0x19, 0x00, 0xFF,
                 (byte) Aisling.Map.Music
             });
+
+            ServerContext.Report(string.Format("[Music Sent to player {0} {1}]", Aisling.Username, Aisling.Map.Music));
         }
 
         /// <summary>
@@ -1403,6 +1421,8 @@ namespace Darkages.Network.Game
         private void SendSerial()
         {
             Send(new ServerFormat05(Aisling));
+
+            ServerContext.Report(string.Format("[Player Serial Assigned to {0} Serial: {1}]", Aisling.Username, Aisling.Serial));
         }
 
         /// <summary>
@@ -1423,6 +1443,8 @@ namespace Darkages.Network.Game
         {
             StorageManager.AislingBucket.Save(Aisling);
             LastSave = DateTime.UtcNow;
+
+            ServerContext.Report(string.Format("[Player data saved. {0}]", Aisling.Username));
         }
 
         /// <summary>
@@ -1434,6 +1456,9 @@ namespace Darkages.Network.Game
         {
             FlushAndSend(new ServerFormat0A(type, text));
             LastMessageSent = DateTime.UtcNow;
+
+
+            ServerContext.Report(string.Format("[Player message: {0} ({1} type {2})]", Aisling.Username, text, type));
         }
 
         /// <summary>
@@ -1487,6 +1512,8 @@ namespace Darkages.Network.Game
                 }
                     break;
             }
+
+            ServerContext.Report(string.Format("[Player system message: {0} ({1})]", Aisling.Username, text));
         }
 
         /// <summary>
@@ -1552,6 +1579,8 @@ namespace Darkages.Network.Game
         public void SendOptionsDialog(Mundane mundane, string text, params OptionsDataItem[] options)
         {
             Send(new ServerFormat2F(mundane, text, new OptionsData(options)));
+
+            ServerContext.Report(string.Format("[Popup Sent to Player {0} ({1}) From ({2})]", Aisling.Username, options.Dump(), mundane.Dump()));
         }
 
         /// <summary>
@@ -1563,6 +1592,8 @@ namespace Darkages.Network.Game
         public void SendPopupDialog(Popup popup, string text, params OptionsDataItem[] options)
         {
             Send(new PopupFormat(popup, text, new OptionsData(options)));
+
+            ServerContext.Report(string.Format("[Popup Sent to Player {0} ({1}) From ({2})]", Aisling.Username, options.Dump(), popup.Dump()));
         }
 
         /// <summary>
@@ -1575,6 +1606,7 @@ namespace Darkages.Network.Game
         public void SendOptionsDialog(Mundane mundane, string text, string args, params OptionsDataItem[] options)
         {
             Send(new ServerFormat2F(mundane, text, new OptionsPlusArgsData(options, args)));
+            ServerContext.Report(string.Format("[Options Sent to Player {0} ({1}) From ({2})]", Aisling.Username, options.Dump(), mundane.Dump()));
         }
 
         /// <summary>
@@ -1587,6 +1619,8 @@ namespace Darkages.Network.Game
         public void SendSkillLearnDialog(Mundane mundane, string text, ushort step, IEnumerable<SkillTemplate> skills)
         {
             Send(new ServerFormat2F(mundane, text, new SkillAcquireData(step, skills)));
+
+            ServerContext.Report(string.Format("[Dialog Sent to Player {0} ({1})]", Aisling.Username, text));
         }
 
         /// <summary>
@@ -1599,6 +1633,8 @@ namespace Darkages.Network.Game
         public void SendSpellLearnDialog(Mundane mundane, string text, ushort step, IEnumerable<SpellTemplate> spells)
         {
             Send(new ServerFormat2F(mundane, text, new SpellAcquireData(step, spells)));
+
+            ServerContext.Report(string.Format("[Dialog Sent to Player {0} ({1})]", Aisling.Username, text));
         }
 
         /// <summary>
@@ -1610,6 +1646,8 @@ namespace Darkages.Network.Game
         public void SendSkillForgetDialog(Mundane mundane, string text, ushort step)
         {
             Send(new ServerFormat2F(mundane, text, new SkillForfeitData(step)));
+
+            ServerContext.Report(string.Format("[Dialog Sent to Player {0} ({1})]", Aisling.Username, text));
         }
 
         /// <summary>
@@ -1621,6 +1659,8 @@ namespace Darkages.Network.Game
         public void SendSpellForgetDialog(Mundane mundane, string text, ushort step)
         {
             Send(new ServerFormat2F(mundane, text, new SpellForfeitData(step)));
+
+            ServerContext.Report(string.Format("[Dialog Sent to Player {0} ({1})]", Aisling.Username, text));
         }
 
         /// <summary>
@@ -1638,6 +1678,7 @@ namespace Darkages.Network.Game
         public void SendProfileUpdate()
         {
             Send(new byte[] {73, 0x00});
+            ServerContext.Report(string.Format("[Profile Update Sent by {0} ({1})]", Aisling.Username, Aisling.ProfileMessage.Dump()));
         }
 
         /// <summary>
@@ -1656,6 +1697,8 @@ namespace Darkages.Network.Game
                     Send(new ServerFormat17(spell));
                     SendMessage(0x02,
                         string.Format(CultureInfo.CurrentCulture, "{0} has improved.", spell.Template.Name));
+
+                    ServerContext.Report(string.Format("[Spell improved by Player {0} ({1})]", Aisling.Username, spell.Dump()));
                 }
             }
         }
@@ -1857,7 +1900,7 @@ namespace Darkages.Network.Game
                         continue;
 
                     options.Add(new OptionsDataItem((short) ans.Id, ans.Text));
-                    ServerContext.Logger.Debug($"{ans.Id}. {ans.Text}");
+                    ServerContext.Log($"{ans.Id}. {ans.Text}");
                 }
 
                 SendOptionsDialog(obj as Mundane, nextitem.Text, options.ToArray());
@@ -1901,7 +1944,7 @@ namespace Darkages.Network.Game
                         continue;
 
                     options.Add(new OptionsDataItem((short) ans.Id, ans.Text));
-                    ServerContext.Logger.Debug($"{ans.Id}. {ans.Text}");
+                    ServerContext.Log($"{ans.Id}. {ans.Text}");
                 }
 
 

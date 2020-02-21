@@ -72,8 +72,8 @@ namespace Darkages.Scripting
 
             if (scripts.TryGetValue(name, out script))
             {
-                var instance = Activator.CreateInstance(script, args) as TScript;
-                return instance;
+                var instance = (Activator.CreateInstance(script, args));
+                return instance as TScript;
             }
 
             return null;

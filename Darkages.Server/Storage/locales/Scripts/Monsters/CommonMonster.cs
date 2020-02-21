@@ -72,8 +72,9 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                ServerContext.Report(e);
                 //ignore
             }
         }
@@ -95,8 +96,9 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                ServerContext.Report(e);
                 //ignore
             }
         }
@@ -214,8 +216,9 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     if (Monster.WalkEnabled) Walk();
                 }
             }
-            catch
+            catch (Exception e)
             {
+                ServerContext.Report(e);
                 //ignore
             }
         }

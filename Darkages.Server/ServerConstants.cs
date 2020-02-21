@@ -367,6 +367,12 @@ namespace Darkages
         [JsonProperty]
         public string ItemNotRequiredMsg = "Come back when you have the items required. \n{=q";
 
+        [JsonProperty]
+        public string AppInsightsKey = "MWVhMDJhMTgtZjU2My00OTgzLTgyNTMtOTVjYjRmZjIzMWZm";
+
+        [JsonProperty]
+        public bool ErrorReporting = true;
+
         public override string ToString()
         {
             return StorageManager.Save(this)

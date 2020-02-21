@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Darkages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -70,8 +71,9 @@ public class Cache<K, T> : IDisposable
                 foreach (var t in timers.Values)
                     t.Dispose();
             }
-            catch
+            catch (Exception e)
             {
+                ServerContext.Report(e);
             }
 
             timers.Clear();

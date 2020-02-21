@@ -668,12 +668,15 @@ namespace Darkages.Types
             }
             else
             {
-                if (damageDealingSprite is Aisling _aisling)
+                if (this is Monster)
                 {
-                    if (!CanTag(_aisling, forced))
+                    if (damageDealingSprite is Aisling _aisling)
                     {
-                        _aisling.Client.SendMessage(0x02, ServerContext.Config.CantAttack);
-                        return false;
+                        if (!CanTag(_aisling, forced))
+                        {
+                            _aisling.Client.SendMessage(0x02, ServerContext.Config.CantAttack);
+                            return false;
+                        }
                     }
                 }
 
@@ -747,11 +750,10 @@ namespace Darkages.Types
                 DefenseElement = saved;
             }
 
-            if (Amplified > 0)
-            {
-                amplifier *= Amplified == 1 ? ServerContext.Config.FasNadurStrength + 10
-                    : ServerContext.Config.MorFasNadurStrength + 30;
-            }
+
+            amplifier *= Amplified == 1 ? ServerContext.Config.FasNadurStrength + 10
+                : ServerContext.Config.MorFasNadurStrength + 30;
+
 
             return amplifier;
         }
@@ -1091,9 +1093,10 @@ namespace Darkages.Types
                         break;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                ServerContext.Logger.Error("Error in Show<T>");
+                ServerContext.Log("Error in Show<T>");
+                ServerContext.Report(e);
             }
         }
 
@@ -1407,8 +1410,9 @@ namespace Darkages.Types
                 if (!Walk())
                     return;
             }
-            catch
+            catch (Exception e)
             {
+                ServerContext.Report(e);
                 // ignored
             }
         }

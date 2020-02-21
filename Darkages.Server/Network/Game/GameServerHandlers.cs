@@ -156,7 +156,7 @@ namespace Darkages.Network.Game
                         res.Result = (bool) ServerContext.EVALUATOR.Evaluate("result");
                     });
 
-                    ServerContext.Logger.Debug("Script Interpreter Created for Mundane: {0}", lpName);
+                    ServerContext.Log("Script Interpreter Created for Mundane: {0}", lpName);
                 }
 
                 return;
@@ -2051,8 +2051,9 @@ namespace Darkages.Network.Game
                     client.Send(new ForumCallback(ServerContext.Config.CantDoThat, 0x07, true));
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                ServerContext.Report(e);
                 //ignore
             }
         }
@@ -2151,8 +2152,9 @@ namespace Darkages.Network.Game
                         (short)node.Destination.Location.Y, node.Destination.AreaID);
                 }
             }
-            catch
+            catch (Exception e)
             {
+                ServerContext.Report(e);
                 client.Aisling.GoHome();
             }
             finally
@@ -2222,8 +2224,9 @@ namespace Darkages.Network.Game
                                 }
                             }
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
+                            ServerContext.Report(e);
                             client.MenuInterpter = null;
                         }
 
@@ -2288,12 +2291,12 @@ namespace Darkages.Network.Game
 
                                     if (client.MenuInterpter != null) client.MenuInterpter.Start();
 
-                                    ServerContext.Logger.Debug("Interpreter - Using Default Role: {0}",
+                                    ServerContext.Log("Interpreter - Using Default Role: {0}",
                                         (obj as Mundane).Template.Name);
                                 }
                                 else
                                 {
-                                    ServerContext.Logger.Debug("Interpreter - Using Defined Role: {0}",
+                                    ServerContext.Log("Interpreter - Using Defined Role: {0}",
                                         (obj as Mundane).Template.Name);
                                     return;
                                 }
@@ -2301,13 +2304,14 @@ namespace Darkages.Network.Game
                                 if (client.MenuInterpter != null)
                                     client.ShowCurrentMenu(obj as Mundane, null, client.MenuInterpter.GetCurrentStep());
                             }
-                            catch (Exception)
+                            catch (Exception e)
                             {
-                                ServerContext.Logger.Error(
+                                ServerContext.Log(
                                     string.Format(CultureInfo.CurrentCulture, "Error in Menu Handler : {0}",
                                         obj.GetType().FullName));
+                                ServerContext.Report(e);
                             }
-                    }
+                        }
                         break;
                 }
             }

@@ -86,10 +86,13 @@ namespace Darkages.Network
 
                 return bytes;
             }
-            catch
+            catch (Exception e)
             {
                 error = SocketError.SocketError;
+                ServerContext.Report(e);
+                ServerContext.Report(error);
             }
+
 
             return 0;
         }

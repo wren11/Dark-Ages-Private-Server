@@ -126,8 +126,9 @@ namespace Darkages.Network
                     client.ServerSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                ServerContext.Report(e);
                 //Ignore
             }
         }
@@ -158,11 +159,13 @@ namespace Darkages.Network
                     client.ServerSocket.BeginReceivePacket(EndReceivePacket, out error, client);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                ServerContext.Report(e);
                 //ignore
             }
         }
+
 
         public virtual bool AddClient(TClient client)
         {
@@ -242,7 +245,7 @@ namespace Darkages.Network
 
         public virtual void ClientConnected(TClient client)
         {
-            ServerContext.Logger?.Trace("Connection From {0} Established.",
+            ServerContext.Log("Connection From {0} Established.",
                 client.ServerSocket.RemoteEndPoint.ToString());
         }
 
@@ -285,8 +288,9 @@ namespace Darkages.Network
                 {
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                ServerContext.Report(e);
                 //Ignore
             }
         }

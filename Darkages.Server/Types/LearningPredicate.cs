@@ -151,11 +151,13 @@ namespace Darkages.Types
                 n = CheckItemPredicates(player, result, n);
                 n = CheckQuestPredicates(player, result, n);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 player.Client.CloseDialog();
                 player.Client.SendMessage(0x02, "You cannot learn that yet. Not even close!");
                 player.SendAnimation(94, player, player);
+
+                ServerContext.Report(e);
 
                 //ignore
                 return false;

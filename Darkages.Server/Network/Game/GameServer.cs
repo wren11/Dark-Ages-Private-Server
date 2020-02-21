@@ -82,13 +82,15 @@ namespace Darkages.Network.Game
                     ExecuteServerWork(delta);
                     ExecuteObjectWork(delta);
                 }
-                catch
+                catch (Exception e)
                 {
-
+                    ServerContext.Report(e);
                 }
-
-                lastHeavyUpdate = DateTime.UtcNow;
-                Thread.Sleep(HeavyUpdateSpan);
+                finally
+                {
+                    lastHeavyUpdate = DateTime.UtcNow;
+                    Thread.Sleep(HeavyUpdateSpan);
+                }
             }
         }
 
@@ -111,12 +113,12 @@ namespace Darkages.Network.Game
                 [typeof(PingComponent)]        = new PingComponent(this),
             };
 
-            ServerContext.Logger?.Info("");
-            ServerContext.Logger?.Trace(string.Format("Loading {0} Components...", Components.Count));
+
+            ServerContext.Log(string.Format("Loading {0} Components...", Components.Count));
 
             foreach (var component in Components)
             {
-                ServerContext.Logger?.Info(string.Format("Component '{0}' loaded.", component.Key.Name));
+                ServerContext.Log(string.Format("Component '{0}' loaded.", component.Key.Name));
             }
         }
 
@@ -210,13 +212,14 @@ namespace Darkages.Network.Game
                     client.Save();
                 }
 
-                ServerContext.Logger.Trace("Player {0} has disconnected from server.", client.Aisling.Username);
+                ServerContext.Log("Player {0} has disconnected from server.", client.Aisling.Username);
 
                 client.Aisling.LoggedIn = false;
                 client.Aisling.Remove(true);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                ServerContext.Report(e);
                 //Ignore
             }
             finally

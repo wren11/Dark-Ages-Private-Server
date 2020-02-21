@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
+using System;
 using System.IO;
 using zlib;
 
@@ -23,6 +24,8 @@ namespace Darkages.Compression
 {
     public static class CompressionProvider
     {
+
+
         private static void CopyStream(Stream src, Stream dst)
         {
             var buffer = new byte[4096];
@@ -65,8 +68,10 @@ namespace Darkages.Compression
 
                     return oStream.ToArray();
                 }
-                catch
+                catch (Exception e)
                 {
+                    ServerContext.Report(e);
+
                     return null;
                 }
             }

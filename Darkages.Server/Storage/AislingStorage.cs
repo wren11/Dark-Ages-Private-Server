@@ -74,8 +74,9 @@ namespace Darkages.Storage
                 File.WriteAllText(path, objString);
 
             }
-            catch
+            catch (Exception e)
             {
+                ServerContext.Report(e);
                 /* Ignore */
             }
         }

@@ -79,6 +79,7 @@ namespace Darkages.Compression
             InflatedData = CompressionProvider.Inflate(DeflatedData);
         }
 
+
         public virtual void Load(MemoryStream stream)
         {
         }

@@ -1,4 +1,5 @@
-﻿///************************************************************************
+﻿using Darkages;
+///************************************************************************
 //Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
@@ -17,14 +18,7 @@
 //*************************************************************************/
 
 using System;
-using System.Drawing;
-using Darkages;
 using System.Threading;
-using ConsoleExtender;
-using System.Windows.Forms;
-using System.Linq;
-using ServiceStack.Text;
-using System.IO;
 
 namespace Lorule
 {

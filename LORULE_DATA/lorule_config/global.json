@@ -144,5 +144,7 @@
   "MaxHP": 500000,
   "UseLoruleVariants": false,
   "UseLoruleItemRarity": false,
-  "ItemNotRequiredMsg": "Come back when you have the items required. \n{=q"
+  "ItemNotRequiredMsg": "Come back when you have the items required. \n{=q",
+  "AppInsightsKey": "MWVhMDJhMTgtZjU2My00OTgzLTgyNTMtOTVjYjRmZjIzMWZm",
+  "ErrorReporting": true
 }

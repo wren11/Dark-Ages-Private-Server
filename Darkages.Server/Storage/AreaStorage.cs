@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
+using System;
 using System.IO;
 using System.Linq;
 using Darkages.IO;
@@ -58,10 +59,14 @@ namespace Darkages.Storage
                 {
                     var obj = JsonConvert.DeserializeObject<Area>(content, settings);
 
+                    ServerContext.Report(obj);
+
+
                     return obj;
                 }
-                catch
+                catch (Exception e)
                 {
+                    ServerContext.Report(e);
                     return null;
                 }
             }
@@ -76,6 +81,8 @@ namespace Darkages.Storage
             var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.ContentName.ToLower()));
             var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
             File.WriteAllText(path, objString);
+
+            ServerContext.Report(obj);
         }
 
         public void CacheFromStorage()

@@ -84,7 +84,7 @@ namespace Darkages.Network.Login
             template.HairColor = format.HairColor;
             template.HairStyle = format.HairStyle;
 
-            ServerContext.Logger?.Info("New character Created: " + template.Username);
+            ServerContext.Log("New character Created: " + template.Username);
 
             StorageManager.AislingBucket.Save(template);
             client.SendMessageBox(0x00, "\0");
@@ -118,12 +118,15 @@ namespace Darkages.Network.Login
                     return;
                 }
             }
-            catch
+            catch (Exception e)
             {
                 client.SendMessageBox(0x02,
                     string.Format(
                         "{0} is not supported by the new server. Please remake your character. This will not happen when the server goes to beta.",
                         format.Username));
+
+                ServerContext.Report(e);
+
                 return;
             }
 
@@ -155,11 +158,11 @@ namespace Darkages.Network.Login
                 if (_aisling.Username.Equals(ServerContext.Config.GameMaster, StringComparison.OrdinalIgnoreCase))
                 {
                     _aisling.GameMaster = true;
-                    ServerContext.Logger.Debug("GameMaster Entering Game: {0}", _aisling.Username);
+                    ServerContext.Log("GameMaster Entering Game: {0}", _aisling.Username);
                 }
                 else
                 {
-                    ServerContext.Logger?.Debug("Player Entering Game: {0}", _aisling.Username);
+                    ServerContext.Log("Player Entering Game: {0}", _aisling.Username);
                 }
 
                 _aisling.Redirect = redirect;

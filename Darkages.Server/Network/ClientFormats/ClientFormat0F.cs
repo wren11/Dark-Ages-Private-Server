@@ -49,9 +49,9 @@ namespace Darkages.Network.ClientFormats
                 if (reader.Position + 4 < reader.Packet.Data.Length)
                     Point = reader.ReadPosition();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //ignore
+                ServerContext.Report(e);
             }
             finally
             {

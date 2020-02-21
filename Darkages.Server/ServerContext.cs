@@ -17,30 +17,30 @@
 // *************************************************************************
 
 
+using Darkages.Network.Game;
+using Darkages.Network.Login;
+using Darkages.Network.Object;
+using Darkages.Script.Context;
+using Darkages.Storage;
+using Darkages.Types;
+using LiteDB;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DependencyCollector;
+using Microsoft.ApplicationInsights.Extensibility;
+using Mono.CSharp;
+using Newtonsoft.Json;
+using NLog;
+using ServiceStack.Text;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
-using ConsoleExtender;
-using Darkages.Assets.locales.Scripts.Spells.utility;
-using Darkages.Network.Game;
-using Darkages.Network.Login;
-using Darkages.Network.Object;
-using Darkages.Script.Context;
-using Darkages.Scripting;
-using Darkages.Storage;
-using Darkages.Storage.locales.Buffs;
-using Darkages.Types;
-using LiteDB;
-using Mono.CSharp;
-using Newtonsoft.Json;
-using NLog;
-
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Darkages
 {
@@ -52,6 +52,9 @@ namespace Darkages
     /// <seealso cref="Darkages.Network.Object.ObjectManager" />
     public class ServerContext : ObjectManager
     {
+        [field: JsonIgnore]
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         internal static DateTime GlobalMonsterCoolDown { get; set; }
 
         internal static Evaluator EVALUATOR;
@@ -68,6 +71,7 @@ namespace Darkages
 
         public static string StoragePath = @"..\..\..\LORULE_DATA";
 
+        #region Collections
         public static List<Metafile> GlobalMetaCache = new List<Metafile>();
 
         public static Dictionary<int, Area> GlobalMapCache =
@@ -108,27 +112,69 @@ namespace Darkages
 
         public static Board[] Community = new Board[7];
 
-        public static Dictionary<string, List<Board>> GlobalBoardCache
-            = new Dictionary<string, List<Board>>();
+        public static Dictionary<string, List<Board>> GlobalBoardCache = new Dictionary<string, List<Board>>();
+        #endregion
 
-        static ServerContext()
-        {
-            Logger = LogManager.GetCurrentClassLogger();
-        }
+        [field: JsonIgnore]
+        public static TelemetryConfiguration configuration = TelemetryConfiguration.CreateDefault();
 
+        [property: JsonIgnore]
         public static IPAddress IPADDR { get; } = IPAddress.Parse(File.ReadAllText("server.tbl"));
 
         public static string GlobalMessage { get; internal set; }
 
         [field: JsonIgnore]
-        public static NLog.Logger Logger { get; set; }
+        public static TelemetryClient AIContext = null;
 
         public static void Log(string message, params object[] args)
         {
             if (Logger != null)
-                Logger.Info(message, args);
+                Report(string.Format(message, args));
             else
                 Console.WriteLine(message, args);
+        }
+
+        public static void Report(string lpMessage, [CallerMemberName] string callerName = "", [CallerFilePath] string callerFile = "")
+        {
+            if (!ServerContext.Config.ErrorReporting)
+                return;
+
+            if (lpMessage.ToLower().Contains("error"))
+            {
+                AIContext.TrackTrace(lpMessage, Microsoft.ApplicationInsights.DataContracts.SeverityLevel.Error);
+            }
+            else
+            {
+                AIContext?.TrackTrace(lpMessage);
+            }
+        }
+
+        public static void Report(Exception exception, [CallerMemberName] string callerName = "", [CallerFilePath] string callerFile = "")
+        {
+            if (!ServerContext.Config.ErrorReporting)
+                return;
+
+            var msg = exception.Dump();
+
+            if (!string.IsNullOrEmpty(msg))
+            {
+                Report(string.Format("[{0} -> {1}] ({2})", callerFile, callerName, msg));
+
+                AIContext?.TrackException(exception, new Dictionary<string, string>() { { "Invoker", callerName }, { "Stack", exception.StackTrace }, { "SourceFile", callerFile } });
+            }
+        }
+
+        public static void Report<T>(T obj, [CallerMemberName] string callerName = "", [CallerFilePath] string callerFile = "")
+        {
+            if (!ServerContext.Config.ErrorReporting)
+                return;
+
+            var msg = obj.Dump();
+
+            if (!string.IsNullOrEmpty(msg))
+            {
+                Report(string.Format("[{0} -> {1}] ({2})", callerFile, callerName, msg));
+            }
         }
 
         public static void LoadSkillTemplates()
@@ -203,8 +249,9 @@ namespace Darkages
                     Lobby = new LoginServer(Config.ConnectionCapacity);
                     Lobby.Start(2610);
                 }
-                catch (SocketException)
+                catch (SocketException e)
                 {
+                    Report(e);
                     {
                         ++DefaultPort;
                         Errors++;
@@ -217,6 +264,29 @@ namespace Darkages
         public virtual void Start()
         {
             Startup();
+        }
+
+        private static void SetupTelemetrics()
+        {
+            if (Config.ErrorReporting)
+            {
+                configuration                    = TelemetryConfiguration.CreateDefault();
+                configuration.InstrumentationKey = ASCIIEncoding.ASCII.GetString(Convert.FromBase64String(Config.AppInsightsKey));
+
+                var module = new DependencyTrackingTelemetryModule();
+
+                module.ExcludeComponentCorrelationHttpHeadersOnDomains.Add("core.windows.net");
+                module.IncludeDiagnosticSourceActivities.Add("Microsoft.Azure.ServiceBus");
+                module.IncludeDiagnosticSourceActivities.Add("Microsoft.Azure.EventHubs");
+
+                configuration.TelemetryInitializers.Add(new ApplicationInsightsInitializer(configuration.InstrumentationKey));
+                configuration.TelemetryInitializers.Add(new OperationCorrelationTelemetryInitializer());
+                configuration.TelemetryInitializers.Add(new HttpDependenciesParsingTelemetryInitializer());
+
+                module.Initialize(configuration);
+
+                AIContext = new TelemetryClient(configuration);
+            }
         }
 
         public virtual void Shutdown()
@@ -241,6 +311,8 @@ namespace Darkages
 
         public static void Startup()
         {
+            SetupTelemetrics();
+
             Log("");
             Log("{0} Initializing...", Config.SERVER_TITLE);
             Log("----------------------------------------------");
@@ -252,11 +324,14 @@ namespace Darkages
                     InitScriptEvaluators();
                     StartServers();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     Log("Startup Error.");
+                    Report(e);
                 }
             }
+
+            Logger?.Debug("Server Online.");
         }
 
 
@@ -394,47 +469,6 @@ namespace Darkages
             LoadExtensions();
 
             Paused = false;
-
-
-            var assailTemplate = new SkillTemplate()
-            {
-                 Icon = 1,
-                 Buff = new buff_dion(),
-                 Type = SkillScope.Assail,
-                 Description = "Attack something in front of you.",
-                 LevelRate = 0.5,
-                 MaxLevel = 100,
-                 TierLevel = Tier.Tier1,
-                 ScriptName = "Assail",
-                 Sound = 1,
-                 TargetAnimation =  203,
-                 Pane  = Pane.Skills,
-                 Name  = "Assail",
-                 PostQualifers = PostQualifer.BreakInvisible | PostQualifer.IgnoreDefense,                 
-            };
-
-
-            var belt = GlobalItemTemplateCache["Dark Belt"];
-
-            // StorageManager.SkillBucket.Save(assailTemplate, true);
-
-            //var popup = new UserWalkPopup()
-            //{
-            //     Description   = "Tutorial : 1 Introduction, Popup.",
-            //     Ephemeral     = false,
-            //     MapId         = 3029,
-            //     SpriteId      = ushort.MinValue,
-            //     Name          = "Tutorial_1_Welcome",
-            //     TypeOfTrigger = TriggerType.MapLocation,
-            //     X             = 26,
-            //     Y             = 47,
-            //     Group         = "Tutorial Popups",
-            //     YamlKey       = "tutorial_1_welcome_popup"                 
-            //};
-
-            //StorageManager.PopupBucket.Save(popup, true);
-
-
 
             Logger?.Trace(string.Format("Server Ready!, Listening for Connections..."));
         }

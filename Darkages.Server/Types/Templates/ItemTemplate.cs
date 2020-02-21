@@ -213,8 +213,9 @@ namespace Darkages.Types
             {
                 MiniScript.Run();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                ServerContext.Report(e);
                 //ingore
             }
         }

@@ -25,7 +25,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             //Sanity Check
             if (!proceed)
             {
-                ServerContext.Logger.Trace("[{0}] OnClick: unexpected result occured in Script: {1}",
+                ServerContext.Log("[{0}] OnClick: unexpected result occured in Script: {1}",
                     Mundane.Template.ScriptKey,
                     client.Aisling.Username);
 
@@ -197,8 +197,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 {
                     //start the quest.
                     if (!client.Aisling.AcceptQuest(Actor.Quest))
-                        //for some reason he already has the quest.
-                        ServerContext.Logger.Trace("Script Issue: {0} failed to receive quest {1}",
+                            //for some reason he already has the quest.
+                            ServerContext.Log("Script Issue: {0} failed to receive quest {1}",
                             client.Aisling.Username,
                             Mundane.Template.ScriptKey);
 

@@ -1,6 +1,7 @@
 ﻿using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using ServiceStack.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -277,6 +278,9 @@ namespace Darkages.Network.Game
                     Spell.Create(1, ServerContext.GlobalSpellTemplateCache[spellName]));
                 {
                     script.OnUse(caster, target);
+
+                    ServerContext.Report(string.Format("[Spell {0} Casted By {1} At Target {2}]", spellName, caster.Serial, target.Serial));
+
                     return true;
                 }
             }
