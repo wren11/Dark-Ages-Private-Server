@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Darkages.Network.Object;
+using ServiceStack.Text;
 
 namespace Darkages.Types
 {
@@ -153,6 +154,8 @@ namespace Darkages.Types
                 inv = new List<Item>(batch);
             }
 
+            ServerContext.Log("Player {0} Died, Items Before Reep {1}", Owner.Username, inv.Dump());
+
             foreach (var item in inv)
             {
                 var obj = item;
@@ -173,18 +176,25 @@ namespace Darkages.Types
                     Add(copy);
                 }
             }
+
+            ServerContext.Log("Player {0} Died, Items Inside Cursed_Sachel {1}", Owner.Username, Items.Dump());
+
         }
 
         private void Add(Item obj)
         {
             if (obj == null || obj.Template == null)
                 return;
-         
+
             if (obj.Template.Flags.HasFlag(ItemFlags.Perishable))
+            {
+                ServerContext.Log("Player {0} Item's Perished {1}", Owner.Username, obj.Dump());
                 return;
+            }
 
             lock (Items)
             {
+                ServerContext.Log("Player {0} Item Added to Sachel. ItemObj = {1}", Owner.Username, obj.Template.Name);
                 Items.Add(obj);
             }
         }

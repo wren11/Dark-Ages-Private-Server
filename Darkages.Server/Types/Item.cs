@@ -24,6 +24,7 @@ using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage;
 using Newtonsoft.Json;
+using ServiceStack.Text;
 
 namespace Darkages.Types
 {
@@ -732,6 +733,10 @@ namespace Darkages.Types
             obj.Script = ScriptManager.Load<ItemScript>(template.ScriptName, obj);
             if (!string.IsNullOrEmpty(obj.Template.WeaponScript))
                 obj.WeaponScript = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
+
+
+            ServerContext.Log("Item Created by {0} Item is {1}", Owner.Aisling(Owner)?.Username ?? Owner.Serial.ToString(), obj.Dump());
+
             return obj;
         }
 
