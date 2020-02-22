@@ -589,7 +589,7 @@ namespace Darkages
         ///     Gets or sets the remains.
         /// </summary>
         /// <value>The remains.</value>
-        [JsonIgnore]
+
         public CursedSachel Remains { get; set; }
 
         /// <summary>

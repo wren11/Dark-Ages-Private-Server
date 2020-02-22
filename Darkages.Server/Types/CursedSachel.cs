@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Darkages.Network.Object;
+using Darkages.Storage;
+using Newtonsoft.Json;
 using ServiceStack.Text;
 
 namespace Darkages.Types
@@ -33,14 +35,22 @@ namespace Darkages.Types
         }
 
         public ISet<Item> Items { get; set; }
-        public Aisling Owner { get; set; }
+        public string OwnerName { get; set; }
         public DateTime DateReleased { get; set; }
         public Position Location { get; set; }
         public int MapId { get; set; }
         public Item ReaperBag { get; set; }
 
+        [JsonIgnore]
+        public Aisling Owner { get; set; }
+
         public void GenerateReeper()
         {
+            FindOwner();
+
+            if (Owner == null)
+                return;
+
             var itemTemplate = new ItemTemplate
             {
                 Name = string.Format("{0}'s Lost Sachel.", Owner?.Username),
@@ -61,8 +71,21 @@ namespace Darkages.Types
             ReaperBag?.Release(Owner, Owner.Position);
         }
 
+        private void FindOwner()
+        {
+            if (Owner == null)
+            {
+                Owner = StorageManager.AislingBucket.Load(OwnerName);
+            }
+        }
+
         public void RecoverItems(Aisling Owner)
         {
+            FindOwner();
+
+            if (Owner == null)
+                return;
+
             foreach (var item in Items)
             {
                 var nitem = ObjectManager.Clone<Item>(item);
@@ -84,6 +107,11 @@ namespace Darkages.Types
 
         public void ReepItems(List<Item> items = null)
         {
+            FindOwner();
+
+            if (Owner == null)
+                return;
+
             Items = items != null ? new HashSet<Item>(items) : new HashSet<Item>();
             {
                 Location = new Position(Owner.XPos, Owner.YPos);
