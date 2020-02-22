@@ -32,14 +32,12 @@ namespace Darkages.Types
         Repairable = 1 << 6,
         Stackable = 1 << 7,
         Consumable = 1 << 8,
+        PerishIFEquipped = 1  << 9,
         Elemental = 1 << 10,
         QuestRelated = 1 << 11,
         Upgradeable = 1 << 12,
         TwoHanded = 1 << 13,
         LongRanged = 1 << 14,
-        PerishesOnDeath = 1 << 15,
-        PerishesOnDropped = 1 << 16,
-        PerishesOnBroken = 1 << 17,
 
 
         NormalEquipment = Equipable | Repairable | Tradeable | Sellable | Bankable | Dropable,

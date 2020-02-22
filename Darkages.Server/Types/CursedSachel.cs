@@ -122,7 +122,7 @@ namespace Darkages.Types
                 ReepGold();
                 GenerateReeper();
 
-                Owner.Client.SendMessage(0x02, "Everyone is a bad ass, til they meet one.");
+                Owner.Client.SendMessage(0x02, ServerContext.Config.DeathReepingMessage);
                 Owner.Client.SendStats(StatusFlags.All);
             }
         }
@@ -165,7 +165,7 @@ namespace Darkages.Types
                     if (obj.Durability > 0)
                     {
                         var copy = ObjectManager.Clone<Item>(obj);
-                        Add(copy);
+                        Add(copy, true);
                     }
                 }
             }
@@ -209,15 +209,26 @@ namespace Darkages.Types
 
         }
 
-        private void Add(Item obj)
+        private void Add(Item obj, bool wasEquipped = false)
         {
             if (obj == null || obj.Template == null)
                 return;
 
-            if (obj.Template.Flags.HasFlag(ItemFlags.Perishable))
+            if (wasEquipped)
             {
-                ServerContext.Log("Player {0} Item's Perished {1}", Owner.Username, obj.Dump());
-                return;
+                if (obj.Template.Flags.HasFlag(ItemFlags.PerishIFEquipped))
+                {
+                    ServerContext.Log("Player {0} Item's Perished because it was equipped. {1}", Owner.Username, obj.Dump());
+                    return;
+                }
+            }
+            else
+            {
+                if (obj.Template.Flags.HasFlag(ItemFlags.Perishable))
+                {
+                    ServerContext.Log("Player {0} Item's Perished {1}", Owner.Username, obj.Dump());
+                    return;
+                }
             }
 
             lock (Items)

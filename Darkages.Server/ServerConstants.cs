@@ -373,6 +373,9 @@ namespace Darkages
         [JsonProperty]
         public bool ErrorReporting = true;
 
+        [JsonProperty]
+        public string DeathReepingMessage = "You have been scared for life.";
+
         public override string ToString()
         {
             return StorageManager.Save(this)
