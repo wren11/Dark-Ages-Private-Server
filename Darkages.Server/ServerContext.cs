@@ -53,7 +53,7 @@ namespace Darkages
     public class ServerContext : ObjectManager
     {
         [field: JsonIgnore]
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger;
 
         internal static DateTime GlobalMonsterCoolDown { get; set; }
 
@@ -114,6 +114,11 @@ namespace Darkages
 
         public static Dictionary<string, List<Board>> GlobalBoardCache = new Dictionary<string, List<Board>>();
         #endregion
+
+        static ServerContext()
+        {
+            Logger = NLog.LogManager.GetCurrentClassLogger();
+        }
 
         [field: JsonIgnore]
         public static TelemetryConfiguration configuration = TelemetryConfiguration.CreateDefault();
@@ -359,7 +364,6 @@ namespace Darkages
 
             if (_config_ == null)
             {
-                Log("No config found. Generating defaults.");
                 Config = new ServerConstants();
                 StorageManager.Save(Config);
             }
