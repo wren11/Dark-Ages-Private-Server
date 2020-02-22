@@ -356,25 +356,61 @@ namespace Darkages
 
         [JsonProperty] public bool ShowWarpAnimation = false;
 
+        /// <summary>
+        /// This is the Warp Animation ID what is displayed if ShowWarpAnimation is set to True.
+        /// A warp Animation is the visual animation displayed on Map Warp Locations.
+        /// </summary>
         [JsonProperty] public ushort WarpNumber = 295;
 
+        /// <summary>
+        /// This setting is the HP Cap ceiling. You can cap this to whatever ceiling you think reasonable.
+        /// </summary>
         [JsonProperty] public int MaxHP = 500000;
 
+        /// <summary>
+        /// This setting allows the internal base to Auto Determine item Variants
+        /// Such as Fio, Lua, Gramail ect god variants. "Gramail Boots +10 mr" ect.
+        /// </summary>
         [JsonProperty] public bool UseLoruleVariants = false;
 
+        /// <summary>
+        /// This Setting Enables The Internal Loot/Rarity System. Makes items have a change to be of better quality then normal,
+        /// IE: Rare, Epic, Legendary, Forsaken, ect.
+        /// </summary>
         [JsonProperty] public bool UseLoruleItemRarity = false;
 
+        /// <summary>
+        /// This Message is displayed to the player if they don't meet item Requirements during a Learn Spell/Skill script.
+        /// </summary>
         [JsonProperty]
         public string ItemNotRequiredMsg = "Come back when you have the items required. \n{=q";
 
+
+        /// <summary>
+        /// This should not be changed. This is your instrument key. this is used for error reporting.
+        /// </summary>
         [JsonProperty]
         public string AppInsightsKey = "MWVhMDJhMTgtZjU2My00OTgzLTgyNTMtOTVjYjRmZjIzMWZm";
 
+
+        /// <summary>
+        /// This setting should only be used for debugging purposes.
+        /// </summary>
         [JsonProperty]
         public bool ErrorReporting = true;
 
+
+        [Description("Death Handling Message on Death")]
         [JsonProperty]
         public string DeathReepingMessage = "You have been scared for life.";
+
+        [Description("Death Handling X Coordinate")]
+        [JsonProperty]
+        public int DeathMapX = 21;
+
+        [Description("Death Handling Y Coordinate")]
+        [JsonProperty]
+        public int DeathMapY = 21;
 
         public override string ToString()
         {

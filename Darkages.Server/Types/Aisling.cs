@@ -1243,8 +1243,8 @@ namespace Darkages
                 RemoveBuffsAndDebuffs();
 
             Client.LeaveArea(true, true);
-            XPos = 21;
-            YPos = 21;
+            XPos = ServerContext.Config.DeathMapX;
+            YPos = ServerContext.Config.DeathMapY;
             Direction = 0;
             Client.Aisling.CurrentMapId = ServerContext.Config.DeathMap;
             Client.EnterArea();
