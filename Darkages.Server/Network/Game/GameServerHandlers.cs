@@ -35,6 +35,7 @@ using Darkages.Storage.locales.Scripts.Mundanes;
 using Darkages.Types;
 using MenuInterpreter;
 using MenuInterpreter.Parser;
+using ServiceStack.Text;
 
 namespace Darkages.Network.Game
 {
@@ -83,82 +84,94 @@ namespace Darkages.Network.Game
 
             if (File.Exists(yamlPath))
             {
-                if (lpClient.MenuInterpter == null)
+
+                var ycontent = File.ReadAllText(yamlPath);
+
+                ServerContext.Log("[Interpreter] => ({0})", ycontent);
+
+                try
                 {
-                    lpClient.MenuInterpter         = parser.CreateInterpreterFromFile(yamlPath);
-                    lpClient.MenuInterpter.Actor   = obj;
-                    lpClient.MenuInterpter.Client  = lpClient;
-
-                    lpClient.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
-
-                    lpClient.MenuInterpter.RegisterCheckpointHandler("QuestCompleted", (_client, res) =>
+                    if (lpClient.MenuInterpter == null)
                     {
-                        _Interop.Storage["client"] = lpClient;
-                        _Interop.Storage["actor"]  = lpClient.MenuInterpter.Actor;
-                        _Interop.Storage["user"]   = lpClient.Aisling;
+                        lpClient.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
+                        lpClient.MenuInterpter.Actor = obj;
+                        lpClient.MenuInterpter.Client = lpClient;
+
+                        lpClient.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
+
+                        lpClient.MenuInterpter.RegisterCheckpointHandler("QuestCompleted", (_client, res) =>
                         {
-                            "var client  = (GameClient) _Interop.Storage[\"client\"];".Run();
-                            "var user    = (Aisling)    _Interop.Storage[\"user\"];".Run();
-                            "var actor   = (Sprite)    _Interop.Storage[\"actor\"];".Run();
-                        }
-
-
-
-                        if (_client.Aisling.HasQuest(res.Value))
-                            res.Result = _client.Aisling.HasCompletedQuest(res.Value);
-                    });
-
-
-                    
-                    
-
-                    lpClient.MenuInterpter.RegisterCheckpointHandler("CompleteQuest", (_client, res) =>
-                    {
-                        _Interop.Storage["client"] = lpClient;
-                        _Interop.Storage["actor"] = lpClient.MenuInterpter.Actor;
-                        _Interop.Storage["user"] = lpClient.Aisling;
-                        {
-                            "var client  = (GameClient) _Interop.Storage[\"client\"];".Run();
-                            "var user    = (Aisling)    _Interop.Storage[\"user\"];".Run();
-                            "var actor   = (Sprite)    _Interop.Storage[\"actor\"];".Run();
-                        }
-
-                        if (_client.Aisling.HasQuest(res.Value))
-                        {
-                            var q = _client.Aisling.GetQuest(res.Value);
-
-                            if (q != null)
+                            _Interop.Storage["client"] = lpClient;
+                            _Interop.Storage["actor"] = lpClient.MenuInterpter.Actor;
+                            _Interop.Storage["user"] = lpClient.Aisling;
                             {
-                                if (!q.Completed)
+                                "var client  = (GameClient) _Interop.Storage[\"client\"];".Run();
+                                "var user    = (Aisling)    _Interop.Storage[\"user\"];".Run();
+                                "var actor   = (Sprite)    _Interop.Storage[\"actor\"];".Run();
+                            }
+
+
+
+                            if (_client.Aisling.HasQuest(res.Value))
+                                res.Result = _client.Aisling.HasCompletedQuest(res.Value);
+                        });
+
+
+
+
+
+                        lpClient.MenuInterpter.RegisterCheckpointHandler("CompleteQuest", (_client, res) =>
+                        {
+                            _Interop.Storage["client"] = lpClient;
+                            _Interop.Storage["actor"] = lpClient.MenuInterpter.Actor;
+                            _Interop.Storage["user"] = lpClient.Aisling;
+                            {
+                                "var client  = (GameClient) _Interop.Storage[\"client\"];".Run();
+                                "var user    = (Aisling)    _Interop.Storage[\"user\"];".Run();
+                                "var actor   = (Sprite)    _Interop.Storage[\"actor\"];".Run();
+                            }
+
+                            if (_client.Aisling.HasQuest(res.Value))
+                            {
+                                var q = _client.Aisling.GetQuest(res.Value);
+
+                                if (q != null)
                                 {
-                                    q.HandleQuest(_client, null,
-                                        completed =>
-                                        {
-                                            res.Result = completed;
-                                        });
+                                    if (!q.Completed)
+                                    {
+                                        q.HandleQuest(_client, null,
+                                            completed =>
+                                            {
+                                                res.Result = completed;
+                                            });
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
 
-                    lpClient.MenuInterpter.RegisterCheckpointHandler("Call", (_client, res) =>
-                    {
-                        _Interop.Storage["client"] = lpClient;
-                        _Interop.Storage["actor"] = lpClient.MenuInterpter.Actor;
-                        _Interop.Storage["user"] = lpClient.Aisling;
+                        lpClient.MenuInterpter.RegisterCheckpointHandler("Call", (_client, res) =>
                         {
-                            "var client  = (GameClient) _Interop.Storage[\"client\"];".Run();
-                            "var user    = (Aisling)    _Interop.Storage[\"user\"];".Run();
-                            "var actor   = (Sprite)     _Interop.Storage[\"actor\"];".Run();
-                        }
+                            _Interop.Storage["client"] = lpClient;
+                            _Interop.Storage["actor"] = lpClient.MenuInterpter.Actor;
+                            _Interop.Storage["user"] = lpClient.Aisling;
+                            {
+                                "var client  = (GameClient) _Interop.Storage[\"client\"];".Run();
+                                "var user    = (Aisling)    _Interop.Storage[\"user\"];".Run();
+                                "var actor   = (Sprite)     _Interop.Storage[\"actor\"];".Run();
+                            }
 
-                        res.Value.Run();
-                        res.Result = (bool) ServerContext.EVALUATOR.Evaluate("result");
-                    });
+                            res.Value.Run();
+                            res.Result = (bool)ServerContext.EVALUATOR.Evaluate("result");
+                        });
 
-                    ServerContext.Log("Script Interpreter Created for Mundane: {0}", lpName);
+                        ServerContext.Log("Script Interpreter Created for Mundane: {0}", lpName);
+                    }
+
                 }
-
+                catch (Exception err)
+                {
+                    ServerContext.Report(err);
+                }
                 return;
             }
 
@@ -539,7 +552,7 @@ namespace Darkages.Network.Game
             }
 
             client.Aisling.CanReact = true;
-            client.MenuInterpter    = null;
+            client.MenuInterpter = null;
 
             if (client.Aisling.Skulled)
             {
@@ -568,35 +581,12 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            var popupTemplate = ServerContext.GlobalPopupCache
-                .OfType<UserWalkPopup>().FirstOrDefault(i => i.MapId == client.Aisling.CurrentMapId);
+            CheckWalkOverPopups  (client);
+            CheckWarpTransitions (client);
+        }
 
-            if (popupTemplate != null && client.Aisling.X == popupTemplate.X && client.Aisling.Y == popupTemplate.Y)
-            {
-                popupTemplate.SpriteId = popupTemplate.SpriteId;
-
-                var popup = Popup.Create(client, popupTemplate);
-
-                if (popup != null)
-                    if (client.MenuInterpter == null)
-                    {
-                        CreateInterpreterFromMenuFile(client, popup.Template.YamlKey);
-
-                        if (client.MenuInterpter != null)
-                        {
-                            if (client.MenuInterpter != null)
-                            {
-                                client.MenuInterpter.Start();
-
-                                var next = client.MenuInterpter?.GetCurrentStep();
-
-                                if (next != null)
-                                    client.ShowCurrentMenu(popup, null, next);
-                            }
-                        }
-                    }
-            }
-
+        private static void CheckWarpTransitions(GameClient client)
+        {
             foreach (var warps in ServerContext.GlobalWarpTemplateCache)
             {
                 if (warps.ActivationMapId != client.Aisling.CurrentMapId)
@@ -634,6 +624,43 @@ namespace Darkages.Network.Game
 
                         }
                     }
+            }
+        }
+
+        private void CheckWalkOverPopups(GameClient client)
+        {
+            var popupTemplates = ServerContext.GlobalPopupCache
+                .OfType<UserWalkPopup>().Where(i => i.MapId == client.Aisling.CurrentMapId);
+
+            foreach (var popupTemplate in popupTemplates)
+            {
+                if (popupTemplate != null && client.Aisling.X == popupTemplate.X && client.Aisling.Y == popupTemplate.Y)
+                {
+                    popupTemplate.SpriteId = popupTemplate.SpriteId;
+
+                    var popup = Popup.Create(client, popupTemplate);
+
+                    if (popup != null)
+                    {
+                        if (client.MenuInterpter == null)
+                        {
+                            CreateInterpreterFromMenuFile(client, popup.Template.YamlKey);
+
+                            if (client.MenuInterpter != null)
+                            {
+                                if (client.MenuInterpter != null)
+                                {
+                                    client.MenuInterpter.Start();
+
+                                    var next = client.MenuInterpter?.GetCurrentStep();
+
+                                    if (next != null)
+                                        client.ShowCurrentMenu(popup, null, next);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 

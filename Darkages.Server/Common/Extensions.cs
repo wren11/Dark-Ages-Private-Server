@@ -27,6 +27,9 @@ namespace Darkages.Common
         public static bool Run(this string str)
         {
             var result = ServerContext.EVALUATOR.Run(str);
+
+            ServerContext.Log("[[Script] => {0} [Result] => {1}]", str, result);
+
             return result;
         }
 

@@ -134,7 +134,12 @@ namespace Darkages
         public static void Log(string message, params object[] args)
         {
             if (Logger != null)
-                Report(string.Format(message, args));
+            {
+                var msg = string.Format(message, args);
+
+                Logger.Log(LogLevel.Trace, msg);
+                Report(msg);
+            }
             else
                 Console.WriteLine(message, args);
         }
@@ -146,10 +151,12 @@ namespace Darkages
 
             if (lpMessage.ToLower().Contains("error"))
             {
+                Logger.Error(lpMessage);
                 AIContext.TrackTrace(lpMessage, Microsoft.ApplicationInsights.DataContracts.SeverityLevel.Error);
             }
             else
             {
+                Logger.Trace(lpMessage);
                 AIContext?.TrackTrace(lpMessage);
             }
         }
@@ -475,6 +482,20 @@ namespace Darkages
             Paused = false;
 
             Logger?.Trace(string.Format("Server Ready!, Listening for Connections..."));
+
+            ServerContext.Log("Loaded {0} Boards Loaded from Cache ({1})", GlobalBoardCache.Count, GlobalBoardCache.Dump());
+            ServerContext.Log("Loaded {0} Monster Templates Loaded from Cache ({1})", GlobalMonsterTemplateCache.Count, GlobalMonsterTemplateCache.Dump());
+            ServerContext.Log("Loaded {0} Item Templates Loaded from Cache ({1})", GlobalItemTemplateCache.Count, GlobalItemTemplateCache.Count);
+            ServerContext.Log("Loaded {0} Mundane Templates Loaded from Cache ({1})", GlobalMundaneTemplateCache, GlobalMundaneTemplateCache.Dump());
+            ServerContext.Log("Loaded {0} Warp Templates Loaded from Cache ({1})", GlobalWarpTemplateCache.Count, GlobalWarpTemplateCache.Dump());
+            ServerContext.Log("Loaded {0} Area Templates Loaded from Cache ({1})", GlobalMapCache.Count, GlobalMapCache.Dump());
+            ServerContext.Log("Loaded {0} Popup Templates Loaded from Cache ({1})", GlobalPopupCache.Count, GlobalPopupCache.Dump());
+            ServerContext.Log("Loaded {0} Buff Templates Loaded from Cache ({1})", GlobalBuffCache.Count, GlobalBuffCache.Dump());
+            ServerContext.Log("Loaded {0} DeBuff Templates Loaded from Cache ({1})", GlobalDeBuffCache.Count, GlobalDeBuffCache.Dump());
+            ServerContext.Log("Loaded {0} Skill Templates Loaded from Cache ({1})", GlobalSkillTemplateCache.Count, GlobalSkillTemplateCache.Dump());
+            ServerContext.Log("Loaded {0} Spell Templates Loaded from Cache ({1})", GlobalSpellTemplateCache.Count, GlobalSpellTemplateCache.Dump());
+            ServerContext.Log("Loaded {0} WorldMap Templates Loaded from Cache ({1})", GlobalWorldMapTemplateCache.Count, GlobalWorldMapTemplateCache.Dump());
+            ServerContext.Log("Loaded {0} Reactor Templates Loaded from Cache ({1})", GlobalReactorCache.Count, GlobalReactorCache.Dump());
         }
 
         private static void LoadExtensions()

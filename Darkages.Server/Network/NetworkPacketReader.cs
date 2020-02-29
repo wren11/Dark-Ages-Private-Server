@@ -60,12 +60,15 @@ namespace Darkages.Network
 
         public byte ReadByte()
         {
-            byte b;
+            byte b = (0);
 
             if (Position == -1)
                 b = Packet.Ordinal;
             else
-                b = Packet.Data[Position];
+            {
+                if (Position < Packet.Data.Length)
+                    b = Packet.Data[Position];
+            }
 
             Position++;
 
