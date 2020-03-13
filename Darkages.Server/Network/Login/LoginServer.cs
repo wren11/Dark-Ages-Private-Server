@@ -60,7 +60,19 @@ namespace Darkages.Network.Login
         {
             //save information to memory.
             client.CreateInfo = format;
-            client.SendMessageBox(0x00, "\0");
+
+            var _aisling = StorageManager.AislingBucket.Load(format.AislingUsername);
+
+            if (_aisling == null)
+            {
+                client.SendMessageBox(0x00, "\0");
+            }
+            else
+            {
+                client.SendMessageBox(0x03, "Character Already Exists.\0");
+                client.CreateInfo = null;
+                return;
+            }
         }
 
         /// <summary>

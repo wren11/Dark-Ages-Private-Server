@@ -319,10 +319,10 @@ namespace Darkages.Network.Game
         /// </summary>
         private void EnterGame(GameClient client, ClientFormat10 format)
         {
-            Task.Run(async () =>  await LoadPlayerAsync(client, format));
+            LoadPlayer(client, format);
         }
 
-        private async Task<Aisling> LoadPlayerAsync(GameClient client, ClientFormat10 format)
+        private async Task<Aisling> LoadPlayer(GameClient client, ClientFormat10 format)
         {
             var aisling = StorageManager.AislingBucket.Load(format.Name);
 

@@ -149,14 +149,14 @@ namespace Darkages.Network
                     return;
                 }
 
-                if (client.ServerSocket.PacketComplete)
+                if (client.ServerSocket?.PacketComplete ?? false)
                 {
-                    ClientDataReceived(client, client.ServerSocket.ToPacket());
-                    client.ServerSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                    ClientDataReceived(client, client.ServerSocket?.ToPacket());
+                    client.ServerSocket?.BeginReceiveHeader(EndReceiveHeader, out error, client);
                 }
                 else
                 {
-                    client.ServerSocket.BeginReceivePacket(EndReceivePacket, out error, client);
+                    client.ServerSocket?.BeginReceivePacket(EndReceivePacket, out error, client);
                 }
             }
             catch (Exception e)
