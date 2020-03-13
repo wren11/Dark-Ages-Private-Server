@@ -63,6 +63,23 @@ namespace Darkages.Types
         public int MapId { get; set; }
     }
 
+    public class ItemClickPopup : PopupTemplate
+    {
+        /// <summary>
+        /// The Name that will map to a Template Name.
+        /// </summary>
+        public string ItemTemplateName { get; set; }
+
+        /// <summary>
+        /// Will the Item be consumed on trigger?
+        /// </summary>
+        public bool ConsumeItem { get; set; }
+
+        public ItemClickPopup()
+        {
+            TypeOfTrigger = TriggerType.ItemOnUse;
+        }
+    }
 
     public enum TriggerType
     {
@@ -71,7 +88,10 @@ namespace Darkages.Types
         MapRandom,
         MapLocation,
         UserGossip,
-        ItemPickup
+        ItemPickup,
+        ItemOnUse,
+        SkillOnUse,
+        SpellOnUse
     }
 
     public class Popup

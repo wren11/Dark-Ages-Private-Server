@@ -16,15 +16,6 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using Darkages.Assets.locales.Scripts.Spells.utility;
 using Darkages.Common;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
@@ -34,6 +25,12 @@ using Darkages.Types;
 using MenuInterpreter;
 using Newtonsoft.Json;
 using ServiceStack.Text;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
@@ -44,6 +41,7 @@ namespace Darkages.Network.Game
     /// <seealso cref="Darkages.Network.NetworkClient{Darkages.Network.Game.GameClient}" />
     public partial class GameClient : NetworkClient<GameClient>, IDisposable
     {
+        private readonly object SyncObj = new object();
 
         /// <summary>
         ///     The aisling
@@ -186,7 +184,7 @@ namespace Darkages.Network.Game
 
                     LastSelectedNodeIndex = node;
 
-                    FlushBuffers();
+                    Task.Run(async () => await FlushBuffers());
 
                     MapOpen = false;
                     LastWarp = DateTime.UtcNow;
@@ -542,7 +540,7 @@ namespace Darkages.Network.Game
         /// <param name="Source">The source.</param>
         /// <param name="subject">The subject.</param>
         /// <param name="message">The message.</param>
-        public void LearnSpell(Mundane Source, SpellTemplate subject, string message)
+        public GameClient LearnSpell(Mundane Source, SpellTemplate subject, string message)
         {
             if (PayPrerequisites(subject.Prerequisites))
             {
@@ -554,6 +552,8 @@ namespace Darkages.Network.Game
                         subject?.TargetAnimation ?? 124,
                         subject?.TargetAnimation ?? 124, 100));
             }
+
+            return this;
         }
 
         /// <summary>
@@ -562,7 +562,7 @@ namespace Darkages.Network.Game
         /// <param name="Source">The source.</param>
         /// <param name="subject">The subject.</param>
         /// <param name="message">The message.</param>
-        public void LearnSkill(Mundane Source, SkillTemplate subject, string message)
+        public GameClient LearnSkill(Mundane Source, SkillTemplate subject, string message)
         {
             if (PayPrerequisites(subject.Prerequisites))
             {
@@ -574,6 +574,8 @@ namespace Darkages.Network.Game
                         subject?.TargetAnimation ?? 124,
                         subject?.TargetAnimation ?? 124, 100));
             }
+
+            return this;
         }
 
         /// <summary>
@@ -603,9 +605,10 @@ namespace Darkages.Network.Game
         ///     Pays the item prerequisites.
         /// </summary>
         /// <param name="prerequisites">The prerequisites.</param>
-        private void PayItemPrerequisites(LearningPredicate prerequisites)
+        public GameClient PayItemPrerequisites(LearningPredicate prerequisites)
         {
             if (prerequisites.Items_Required != null && prerequisites.Items_Required.Count > 0)
+            {
                 foreach (var retainer in prerequisites.Items_Required)
                 {
                     var item = Aisling.Inventory.Get(i => i.Template.Name == retainer.Item);
@@ -622,6 +625,9 @@ namespace Darkages.Network.Game
                             break;
                         }
                 }
+            }
+
+            return this;
         }
 
         /// <summary>
@@ -629,10 +635,10 @@ namespace Darkages.Network.Game
         /// </summary>
         /// <param name="area">The area.</param>
         /// <param name="position">The position.</param>
-        public void TransitionToMap(Area area, Position position)
+        public GameClient TransitionToMap(Area area, Position position)
         {
             if (area == null)
-                return;
+                return null;
 
             if (area.ID != Aisling.CurrentMapId)
             {
@@ -642,9 +648,6 @@ namespace Darkages.Network.Game
                 Aisling.XPos = position.X;
                 Aisling.YPos = position.Y;
                 Aisling.CurrentMapId   = area.ID;
-
-
-
 
                 EnterArea();
             }
@@ -657,6 +660,8 @@ namespace Darkages.Network.Game
             }
 
             Aisling.Client.CloseDialog();
+
+            return this;
         }
 
         /// <summary>
@@ -664,7 +669,7 @@ namespace Darkages.Network.Game
         /// </summary>
         /// <param name="area">The area.</param>
         /// <param name="position">The position.</param>
-        public void TransitionToMap(int area, Position position)
+        public GameClient TransitionToMap(int area, Position position)
         {
             if (ServerContext.GlobalMapCache.ContainsKey(area))
             {
@@ -672,15 +677,19 @@ namespace Darkages.Network.Game
                 if (target != null)
                     TransitionToMap(target, position);
             }
+
+            return this;
         }
 
         /// <summary>
         ///     Closes the dialog.
         /// </summary>
-        public void CloseDialog()
+        public GameClient CloseDialog()
         {
             Send(new byte[] {0x30, 0x00, 0x0A, 0x00});
             MenuInterpter = null;
+
+            return this;
         }
 
 
@@ -725,13 +734,14 @@ namespace Darkages.Network.Game
             UpdateStatusBar(elapsedTime);
             UpdateGlobalScripts(elapsedTime);
             UpdateReactors(elapsedTime);
+            Task.Run(async () => await FlushBuffers());
         }
 
         /// <summary>
         ///     Updates the reactors.
         /// </summary>
         /// <param name="elapsedTime">The elapsed time.</param>
-        private void UpdateReactors(TimeSpan elapsedTime)
+        public GameClient UpdateReactors(TimeSpan elapsedTime)
         {
             var Inactive = new List<EphemeralReactor>();
 
@@ -751,15 +761,18 @@ namespace Darkages.Network.Game
             foreach (var reactor in Inactive)
                 if (Aisling.ActiveReactors.ContainsKey(reactor.YamlKey))
                     Aisling.ActiveReactors.Remove(reactor.YamlKey);
+
+            return this;
         }
 
         /// <summary>
         ///     Systems the message.
         /// </summary>
         /// <param name="lpmessage">The lpmessage.</param>
-        public void SystemMessage(string lpmessage)
+        public GameClient SystemMessage(string lpmessage)
         {
             SendMessage(0x02, lpmessage);
+            return this;
         }
 
         /// <summary>
@@ -823,7 +836,7 @@ namespace Darkages.Network.Game
         /// <summary>
         ///     Handles the time outs.
         /// </summary>
-        public void HandleTimeOuts()
+        public GameClient HandleTimeOuts()
         {
             if (Aisling.Exchange != null)
                 if (Aisling.Exchange.Trader != null)
@@ -838,74 +851,75 @@ namespace Darkages.Network.Game
                     if (LastSelectedNodeIndex > 0)
                     {
                         GameServer.HandleMapNodeSelection(this, LastSelectedNodeIndex);
-                        FlushBuffers();
+                        Task.Run(async () => await FlushBuffers());
                     }
                 }
             }
+
+            return this;
         }
 
         /// <summary>
         ///     Updates the status bar.
         /// </summary>
         /// <param name="elapsedTime">The elapsed time.</param>
-        public void UpdateStatusBar(TimeSpan elapsedTime)
+        public GameClient UpdateStatusBar(TimeSpan elapsedTime)
         {
-            lock (Aisling)
+            lock (SyncObj)
             {
                 Aisling.UpdateBuffs(elapsedTime);
                 Aisling.UpdateDebuffs(elapsedTime);
             }
+
+            return this;
         }
 
         /// <summary>
         ///     Updates the global scripts.
         /// </summary>
         /// <param name="elapsedTime">The elapsed time.</param>
-        public void UpdateGlobalScripts(TimeSpan elapsedTime)
+        public GameClient UpdateGlobalScripts(TimeSpan elapsedTime)
         {
-            lock (GlobalScripts)
+            lock (SyncObj)
             {
                 foreach (var globalscript in GlobalScripts)
                     globalscript?.Update(elapsedTime);
             }
+
+            return this;
         }
 
         /// <summary>
         ///     load as an asynchronous operation.
         /// </summary>
         /// <returns>Task&lt;System.Boolean&gt;.</returns>
-        public async Task<bool> LoadAsync()
+        public GameClient Load()
         {
             if (Aisling == null || Aisling.AreaID == 0)
-                return false;
+                return null;
             if (!ServerContext.GlobalMapCache.ContainsKey(Aisling.AreaID))
-                return false;
+                return null;
 
             SetAislingStartupVariables();
 
             try
-            {
-                await Task.Run(() =>
-                    LoadGlobalScripts()
-                        .InitSpellBar()
-                        .LoadInventory()
-                        .LoadSkillBook()
-                        .LoadSpellBook()
-                        .LoadEquipment()
-                        .SendProfileUpdate()
-                ).ContinueWith(ct =>
-                {
-                    SendStats(StatusFlags.All);
-                    return true;
-                });
+            {             
+                return LoadGlobalScripts()
+                    .InitSpellBar()
+                    .LoadInventory()
+                    .LoadSkillBook()
+                    .LoadSpellBook()
+                    .LoadEquipment()
+                    .SendProfileUpdate()
+                    .SendStats(StatusFlags.All);
+
             }
             catch (NullReferenceException e)
             {
                 ServerContext.Report(e);
-                return false;
             }
 
-            return true;
+            return null;
         }
 
         /// <summary>
@@ -950,7 +964,7 @@ namespace Darkages.Network.Game
         ///     Regens the specified elapsed time.
         /// </summary>
         /// <param name="elapsedTime">The elapsed time.</param>
-        private void Regen(TimeSpan elapsedTime)
+        public GameClient Regen(TimeSpan elapsedTime)
         {
             if (Aisling.Con > Aisling.ExpLevel + 1)
                 HPRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContext.Config.RegenRate / 2);
@@ -990,31 +1004,37 @@ namespace Darkages.Network.Game
                 SendStats(StatusFlags.StructB);
             }
 
+            return this;
         }
 
         /// <summary>
         ///     Initializes the spell bar.
         /// </summary>
         /// <returns>GameClient.</returns>
-        private GameClient InitSpellBar()
+        public GameClient InitSpellBar()
         {
-            foreach (var buff in Aisling.Buffs.Select(i => i.Value))
+            lock (SyncObj)
             {
-                buff.OnApplied(Aisling, buff);
+                foreach (var buff in Aisling.Buffs.Select(i => i.Value))
                 {
-                    buff.Display(Aisling);
+                    buff.OnApplied(Aisling, buff);
+                    {
+                        buff.Display(Aisling);
+                    }
                 }
+
+                foreach (var debuff in Aisling.Debuffs.Select(i => i.Value))
+                {
+                    debuff.OnApplied(Aisling, debuff);
+                    {
+                        debuff.Display(Aisling);
+                    }
+                }
+
+                ServerContext.Report(string.Format("[SpellBar [Buffs] Loaded by {0} ({1})]", Aisling.Username, Aisling.Buffs.Dump()));
+                ServerContext.Report(string.Format("[SpellBar [Debuffs] Loaded by {0} ({1})]", Aisling.Username, Aisling.Debuffs.Dump()));
             }
 
-            foreach (var debuff in Aisling.Debuffs.Select(i => i.Value))
-            {
-                debuff.OnApplied(Aisling, debuff);
-                {
-                    debuff.Display(Aisling);
-                }
-            }
-            ServerContext.Report(string.Format("[SpellBar [Buffs] Loaded by {0} ({1})]", Aisling.Username, Aisling.Buffs.Dump()));
-            ServerContext.Report(string.Format("[SpellBar [Debuffs] Loaded by {0} ({1})]", Aisling.Username, Aisling.Debuffs.Dump()));
             return this;
         }
 
@@ -1022,66 +1042,70 @@ namespace Darkages.Network.Game
         ///     Loads the equipment.
         /// </summary>
         /// <returns>GameClient.</returns>
-        private GameClient LoadEquipment()
+        public GameClient LoadEquipment()
         {
             var formats = new List<NetworkFormat>();
 
-            foreach (var item in Aisling.EquipmentManager.Equipment)
+            lock (SyncObj)
             {
-                var equipment = item.Value;
+                foreach (var item in Aisling.EquipmentManager.Equipment)
+                {
+                    var equipment = item.Value;
 
-                if (equipment == null || equipment.Item == null || equipment.Item.Template == null)
-                    continue;
+                    if (equipment == null || equipment.Item == null || equipment.Item.Template == null)
+                        continue;
 
-                if (equipment.Item.Template != null)
-                    if (ServerContext.GlobalItemTemplateCache.ContainsKey(equipment.Item.Template.Name))
+                    if (equipment.Item.Template != null)
                     {
-                        var template = ServerContext.GlobalItemTemplateCache[equipment.Item.Template.Name];
+                        if (ServerContext.GlobalItemTemplateCache.ContainsKey(equipment.Item.Template.Name))
                         {
-                            item.Value.Item.Template = template;
+                            var template = ServerContext.GlobalItemTemplateCache[equipment.Item.Template.Name];
+                            {
+                                item.Value.Item.Template = template;
 
-                            if (item.Value.Item.Upgrades > 0)
-                                Item.ApplyQuality(item.Value.Item);
+                                if (item.Value.Item.Upgrades > 0)
+                                    Item.ApplyQuality(item.Value.Item);
+                            }
                         }
                     }
 
+                    equipment.Item.Script =
+                        ScriptManager.Load<ItemScript>(equipment.Item.Template.ScriptName, equipment.Item);
+                    if (!string.IsNullOrEmpty(equipment.Item.Template.WeaponScript))
+                        equipment.Item.WeaponScript =
+                            ScriptManager.Load<WeaponScript>(equipment.Item.Template.WeaponScript, equipment.Item);
 
-                equipment.Item.Script =
-                    ScriptManager.Load<ItemScript>(equipment.Item.Template.ScriptName, equipment.Item);
-                if (!string.IsNullOrEmpty(equipment.Item.Template.WeaponScript))
-                    equipment.Item.WeaponScript =
-                        ScriptManager.Load<WeaponScript>(equipment.Item.Template.WeaponScript, equipment.Item);
+                    equipment.Item.Script?.Equipped(Aisling, (byte)equipment.Slot);
 
-                equipment.Item.Script?.Equipped(Aisling, (byte) equipment.Slot);
-
-                if (equipment.Item.CanCarry(Aisling))
-                {
-                    //apply weight to items that are equipped.
-                    Aisling.CurrentWeight += equipment.Item.Template.CarryWeight;
-
-                    formats.Add(new ServerFormat37(equipment.Item, (byte) equipment.Slot));
-                }
-                //for some reason, Aisling is out of Weight!
-                else
-                {
-                    //clone and release item
-                    var nitem = Clone<Item>(item.Value.Item);
-                    nitem.Release(Aisling, Aisling.Position);
-
-                    //display message
-                    SendMessage(0x02,
-                        string.Format(CultureInfo.CurrentCulture, "{0} is too heavy to hold.", nitem.Template.Name));
-
-                    continue;
-                }
-
-                if ((equipment.Item.Template.Flags & ItemFlags.Equipable) == ItemFlags.Equipable)
-                    for (var i = 0; i < Aisling.SpellBook.Spells.Count; i++)
+                    if (equipment.Item.CanCarry(Aisling))
                     {
-                        var spell = Aisling.SpellBook.FindInSlot(i);
-                        if (spell != null && spell.Template != null)
-                            equipment.Item.UpdateSpellSlot(this, spell.Slot);
+                        //apply weight to items that are equipped.
+                        Aisling.CurrentWeight += equipment.Item.Template.CarryWeight;
+
+                        formats.Add(new ServerFormat37(equipment.Item, (byte)equipment.Slot));
                     }
+                    //for some reason, Aisling is out of Weight!
+                    else
+                    {
+                        //clone and release item
+                        var nitem = Clone<Item>(item.Value.Item);
+                        nitem.Release(Aisling, Aisling.Position);
+
+                        //display message
+                        SendMessage(0x02,
+                            string.Format(CultureInfo.CurrentCulture, "{0} is too heavy to hold.", nitem.Template.Name));
+
+                        continue;
+                    }
+
+                    if ((equipment.Item.Template.Flags & ItemFlags.Equipable) == ItemFlags.Equipable)
+                        for (var i = 0; i < Aisling.SpellBook.Spells.Count; i++)
+                        {
+                            var spell = Aisling.SpellBook.FindInSlot(i);
+                            if (spell != null && spell.Template != null)
+                                equipment.Item.UpdateSpellSlot(this, spell.Slot);
+                        }
+                }
             }
 
             foreach (var format in formats)
@@ -1092,7 +1116,7 @@ namespace Darkages.Network.Game
             return this;
         }
 
-        public void Ghost()
+        public GameClient AislingToGhostForm()
         {
             Aisling.Flags = AislingFlags.Dead;
             {
@@ -1102,60 +1126,79 @@ namespace Darkages.Network.Game
 
             ServerContext.Report(string.Format("[Ghost Called by {0} ({1})]", Aisling.Username, Aisling.Flags.Dump()));
             Refresh(true);
+
+            return this;
+        }
+
+        public GameClient GhostFormToAisling()
+        {
+            Aisling.Flags = AislingFlags.Normal;
+            {
+                HPRegenTimer.Disabled = false;
+                MPRegenTimer.Disabled = false;
+            }
+
+            ServerContext.Report(string.Format("[Back to Normal -> From Ghost Called by {0} ({1})]", Aisling.Username, Aisling.Flags.Dump()));
+            Refresh(true);
+
+            return this;
         }
 
         /// <summary>
         ///     Loads the spell book.
         /// </summary>
         /// <returns>GameClient.</returns>
-        private GameClient LoadSpellBook()
+        public GameClient LoadSpellBook()
         {
-            var spells_Available = Aisling.SpellBook.Spells.Values
-                .Where(i => i != null && i.Template != null).ToArray();
-
-            for (var i = 0; i < spells_Available.Length; i++)
+            lock (SyncObj)
             {
-                var spell = spells_Available[i];
+                var spells_Available = Aisling.SpellBook.Spells.Values
+                    .Where(i => i != null && i.Template != null).ToArray();
 
-                if (spell.Template != null)
-                    if (ServerContext.GlobalSpellTemplateCache.ContainsKey(spell.Template.Name))
-                    {
-                        var template = ServerContext.GlobalSpellTemplateCache[spell.Template.Name];
+                for (var i = 0; i < spells_Available.Length; i++)
+                {
+                    var spell = spells_Available[i];
+
+                    if (spell.Template != null)
+                        if (ServerContext.GlobalSpellTemplateCache.ContainsKey(spell.Template.Name))
                         {
-                            spell.Template = template;
+                            var template = ServerContext.GlobalSpellTemplateCache[spell.Template.Name];
+                            {
+                                spell.Template = template;
+                            }
                         }
+
+
+                    spell.Lines = spell.Template.BaseLines;
+
+                    Spell.AttachScript(Aisling, spell);
+                    {
+                        Aisling.SpellBook.Set(spell, false);
                     }
 
+                    Send(new ServerFormat17(spell));
 
-                spell.Lines = spell.Template.BaseLines;
-
-                Spell.AttachScript(Aisling, spell);
-                {
-                    Aisling.SpellBook.Set(spell, false);
-                }
-
-                Send(new ServerFormat17(spell));
-
-                if (spell.NextAvailableUse.Year > 1)
-                {
-
-                    Task.Delay(1000).ContinueWith((ct) =>
+                    if (spell.NextAvailableUse.Year > 1)
                     {
 
-                        var delta = (int)Math.Abs((DateTime.UtcNow - spell.NextAvailableUse).TotalSeconds);
-                        var offset = (int)Math.Abs(spell.Template.Cooldown - delta);
-
-                        if (delta <= spell.Template.Cooldown)
+                        Task.Delay(1000).ContinueWith((ct) =>
                         {
-                            Send(new ServerFormat3F((byte)0,
-                                spell.Slot,
-                                delta));
-                        }
-                    });
-                }
-                else
-                {
-                    spell.NextAvailableUse = DateTime.UtcNow;
+
+                            var delta = (int)Math.Abs((DateTime.UtcNow - spell.NextAvailableUse).TotalSeconds);
+                            var offset = (int)Math.Abs(spell.Template.Cooldown - delta);
+
+                            if (delta <= spell.Template.Cooldown)
+                            {
+                                Send(new ServerFormat3F((byte)0,
+                                    spell.Slot,
+                                    delta));
+                            }
+                        });
+                    }
+                    else
+                    {
+                        spell.NextAvailableUse = DateTime.UtcNow;
+                    }
                 }
             }
 
@@ -1169,36 +1212,39 @@ namespace Darkages.Network.Game
         /// <returns>GameClient.</returns>
         private GameClient LoadSkillBook()
         {
-            var skills_Available = Aisling.SkillBook.Skills.Values
-                .Where(i => i != null && i.Template != null).ToArray();
-
-            var formats = new List<NetworkFormat>();
-
-            for (var i = 0; i < skills_Available.Length; i++)
+            lock (SyncObj)
             {
-                var skill = skills_Available[i];
+                var skills_Available = Aisling.SkillBook.Skills.Values
+                    .Where(i => i != null && i.Template != null).ToArray();
 
-                if (skill.Template != null)
-                    if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skill.Template.Name))
-                    {
-                        var template = ServerContext.GlobalSkillTemplateCache[skill.Template.Name];
+                var formats = new List<NetworkFormat>();
+
+                for (var i = 0; i < skills_Available.Length; i++)
+                {
+                    var skill = skills_Available[i];
+
+                    if (skill.Template != null)
+                        if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skill.Template.Name))
                         {
-                            skill.Template = template;
+                            var template = ServerContext.GlobalSkillTemplateCache[skill.Template.Name];
+                            {
+                                skill.Template = template;
+                            }
                         }
-                    }
 
-                skill.InUse = false;
-                skill.NextAvailableUse = DateTime.UtcNow;
+                    skill.InUse = false;
+                    skill.NextAvailableUse = DateTime.UtcNow;
 
-                Send(new ServerFormat2C(skill.Slot,
-                    skill.Icon,
-                    skill.Name));
+                    Send(new ServerFormat2C(skill.Slot,
+                        skill.Icon,
+                        skill.Name));
 
-                skill.Script = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
-                Aisling.SkillBook.Set(skill, false);
+                    skill.Script = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
+                    Aisling.SkillBook.Set(skill, false);
 
-                ServerContext.Report(string.Format("[Skillbook Loaded: ({0})]", Aisling.SkillBook.Dump()));
+                    ServerContext.Report(string.Format("[Skillbook Loaded: ({0})]", Aisling.SkillBook.Dump()));
 
+                }
             }
 
             return this;
@@ -1210,55 +1256,58 @@ namespace Darkages.Network.Game
         /// <returns>GameClient.</returns>
         private GameClient LoadInventory()
         {
-            var items_Available = Aisling.Inventory.Items.Values
-                .Where(i => i != null && i.Template != null).ToArray();
-
-            for (var i = 0; i < items_Available.Length; i++)
+            lock (SyncObj)
             {
-                var item = items_Available[i];
+                var items_Available = Aisling.Inventory.Items.Values
+                    .Where(i => i != null && i.Template != null).ToArray();
 
-                if (string.IsNullOrEmpty(item.Template.Name))
-                    continue;
-
-
-                item.Script = ScriptManager.Load<ItemScript>(item.Template.ScriptName, item);
-
-                if (!string.IsNullOrEmpty(item.Template.WeaponScript))
-                    item.WeaponScript = ScriptManager.Load<WeaponScript>(item.Template.WeaponScript, item);
-
-                if (ServerContext.GlobalItemTemplateCache.ContainsKey(item.Template.Name))
+                for (var i = 0; i < items_Available.Length; i++)
                 {
-                    var template = ServerContext.GlobalItemTemplateCache[item.Template.Name];
-                    {
-                        item.Template = template;
-                    }
+                    var item = items_Available[i];
 
-                    if (item.Upgrades > 0)
-                        Item.ApplyQuality(item);
-                }
+                    if (string.IsNullOrEmpty(item.Template.Name))
+                        continue;
 
-                if (item.Template != null)
-                {
-                    if (Aisling.CurrentWeight + item.Template.CarryWeight < Aisling.MaximumWeight)
-                    {
-                        var format = new ServerFormat0F(item);
-                        Send(format);
 
-                        Aisling.Inventory.Set(item, false);
-                        Aisling.CurrentWeight += item.Template.CarryWeight;
-                    }
-                    //for some reason, Aisling is out of Weight!
-                    else
+                    item.Script = ScriptManager.Load<ItemScript>(item.Template.ScriptName, item);
+
+                    if (!string.IsNullOrEmpty(item.Template.WeaponScript))
+                        item.WeaponScript = ScriptManager.Load<WeaponScript>(item.Template.WeaponScript, item);
+
+                    if (ServerContext.GlobalItemTemplateCache.ContainsKey(item.Template.Name))
                     {
-                        //clone and release item
-                        var copy = Clone<Item>(item);
+                        var template = ServerContext.GlobalItemTemplateCache[item.Template.Name];
                         {
-                            copy.Release(Aisling, Aisling.Position);
+                            item.Template = template;
+                        }
 
-                            //display message
-                            SendMessage(0x02,
-                                string.Format(CultureInfo.CurrentCulture, "You stumble and drop {0}",
-                                    item.Template.Name));
+                        if (item.Upgrades > 0)
+                            Item.ApplyQuality(item);
+                    }
+
+                    if (item.Template != null)
+                    {
+                        if (Aisling.CurrentWeight + item.Template.CarryWeight < Aisling.MaximumWeight)
+                        {
+                            var format = new ServerFormat0F(item);
+                            Send(format);
+
+                            Aisling.Inventory.Set(item, false);
+                            Aisling.CurrentWeight += item.Template.CarryWeight;
+                        }
+                        //for some reason, Aisling is out of Weight!
+                        else
+                        {
+                            //clone and release item
+                            var copy = Clone<Item>(item);
+                            {
+                                copy.Release(Aisling, Aisling.Position);
+
+                                //display message
+                                SendMessage(0x02,
+                                    string.Format(CultureInfo.CurrentCulture, "You stumble and drop {0}",
+                                        item.Template.Name));
+                            }
                         }
                     }
                 }
@@ -1300,10 +1349,12 @@ namespace Darkages.Network.Game
         ///     Refreshes the specified delete.
         /// </summary>
         /// <param name="delete">if set to <c>true</c> [delete].</param>
-        public void Refresh(bool delete = false)
+        public GameClient Refresh(bool delete = false)
         {
             LeaveArea(delete);
             EnterArea();
+
+            return this;
         }
 
         /// <summary>
@@ -1311,7 +1362,7 @@ namespace Darkages.Network.Game
         /// </summary>
         /// <param name="update">if set to <c>true</c> [update].</param>
         /// <param name="delete">if set to <c>true</c> [delete].</param>
-        public void LeaveArea(bool update = false, bool delete = false)
+        public GameClient LeaveArea(bool update = false, bool delete = false)
         {
             if (Aisling.LastMapId == short.MaxValue)
             {
@@ -1319,14 +1370,16 @@ namespace Darkages.Network.Game
             }
 
             Aisling.Remove(update, delete);
+
+            return this;
         }
 
         /// <summary>
         ///     Enters the area.
         /// </summary>
-        public void EnterArea()
+        public GameClient EnterArea()
         {
-            Enter();
+            return Enter();
         }
 
         /// <summary>
@@ -1340,7 +1393,7 @@ namespace Darkages.Network.Game
             RefreshMap();
             UpdateDisplay();
             SendLocation();
-            FlushBuffers();
+            Task.Run(async () => await FlushBuffers());
 
             ServerContext.Report(string.Format("[Player entered lorule. {0} ({1})]", Aisling.Username, Aisling.Dump()));
             return this;
@@ -1349,7 +1402,7 @@ namespace Darkages.Network.Game
         /// <summary>
         ///     Sends the music.
         /// </summary>
-        public void SendMusic()
+        public GameClient SendMusic()
         {
             Aisling.Client.Send(new byte[]
             {
@@ -1358,6 +1411,7 @@ namespace Darkages.Network.Game
             });
 
             ServerContext.Report(string.Format("[Music Sent to player {0} {1}]", Aisling.Username, Aisling.Map.Music));
+            return this;
         }
 
         /// <summary>
@@ -1365,7 +1419,7 @@ namespace Darkages.Network.Game
         /// </summary>
         /// <param name="sound">The sound.</param>
         /// <param name="scope">The scope.</param>
-        public void SendSound(byte sound, Scope scope = Scope.Self)
+        public GameClient SendSound(byte sound, Scope scope = Scope.Self)
         {
             var empty = new ServerFormat13
             {
@@ -1375,17 +1429,19 @@ namespace Darkages.Network.Game
             };
 
             Aisling.Show(scope, empty);
+            return this;
         }
 
-        public void Insert()
+        public GameClient Insert()
         {
             AddObject(Aisling);
+            return this;
         }
 
         /// <summary>
         ///     Refreshes the map.
         /// </summary>
-        public void RefreshMap()
+        public GameClient RefreshMap()
         {
             ShouldUpdateMap = false;
 
@@ -1412,39 +1468,44 @@ namespace Darkages.Network.Game
                 Aisling.View.Clear();
             }
 
+            return this;
         }
 
 
         /// <summary>
         ///     Sends the serial.
         /// </summary>
-        private void SendSerial()
+        public GameClient SendSerial()
         {
             Send(new ServerFormat05(Aisling));
 
             ServerContext.Report(string.Format("[Player Serial Assigned to {0} Serial: {1}]", Aisling.Username, Aisling.Serial));
+
+            return this;
         }
 
         /// <summary>
         ///     Sends the location.
         /// </summary>
-        public void SendLocation()
+        public GameClient SendLocation()
         {
             Send(new ServerFormat04(Aisling));
             LastLocationSent = DateTime.UtcNow;
-
-            CloseDialog();
+            
+            return CloseDialog();
         }
 
-            /// <summary>
-            ///     Saves this instance.
-            /// </summary>
-            public void Save()
+        /// <summary>
+        ///     Saves this instance.
+        /// </summary>
+        public GameClient Save()
         {
             StorageManager.AislingBucket.Save(Aisling);
             LastSave = DateTime.UtcNow;
 
             ServerContext.Report(string.Format("[Player data saved. {0}]", Aisling.Username));
+
+            return this;
         }
 
         /// <summary>
@@ -1452,14 +1513,28 @@ namespace Darkages.Network.Game
         /// </summary>
         /// <param name="type">The type.</param>
         /// <param name="text">The text.</param>
-        public void SendMessage(byte type, string text)
+        public GameClient SendMessage(byte type, string text)
         {
             FlushAndSend(new ServerFormat0A(type, text));
             LastMessageSent = DateTime.UtcNow;
 
 
             ServerContext.Report(string.Format("[Player message: {0} ({1} type {2})]", Aisling.Username, text, type));
+
+            return this;
         }
+
+        public GameClient SendMessage(string text)
+        {
+            FlushAndSend(new ServerFormat0A(0x02, text));
+            LastMessageSent = DateTime.UtcNow;
+
+            ServerContext.Report(string.Format("[Player message: {0} ({1} type {2})]", Aisling.Username, text, 0x02));
+
+            return this;
+        }
+
+
 
         /// <summary>
         ///     Sends the message.
@@ -1667,18 +1742,22 @@ namespace Darkages.Network.Game
         ///     Sends the stats.
         /// </summary>
         /// <param name="flags">The flags.</param>
-        public void SendStats(StatusFlags flags)
+        public GameClient SendStats(StatusFlags flags)
         {
             Send(new ServerFormat08(Aisling, flags));
+
+            return this;
         }
 
         /// <summary>
         ///     Sends the profile update.
         /// </summary>
-        public void SendProfileUpdate()
+        public GameClient SendProfileUpdate()
         {
             Send(new byte[] {73, 0x00});
             ServerContext.Report(string.Format("[Profile Update Sent by {0} ({1})]", Aisling.Username, Aisling.ProfileMessage.Dump()));
+
+            return this;
         }
 
         /// <summary>

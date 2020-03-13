@@ -322,7 +322,7 @@ namespace Darkages.Network.Game
             LoadPlayer(client, format);
         }
 
-        private async Task<Aisling> LoadPlayer(GameClient client, ClientFormat10 format)
+        private Aisling LoadPlayer(GameClient client, ClientFormat10 format)
         {
             var aisling = StorageManager.AislingBucket.Load(format.Name);
 
@@ -365,24 +365,13 @@ namespace Darkages.Network.Game
             client.Aisling.InvitePrivleges = true;
             client.Aisling.LeaderPrivleges = false;
 
-
             Party.Reform(client);
 
-            if (await client.LoadAsync())
-            {
-                client.SendStats(StatusFlags.All);
-                ;
-                client.SendMessage(0x02, ServerContext.Config.ServerWelcomeMessage);
-                client.EnterArea();
-                client.Aisling.LoggedIn = true;
-            }
-            else
-            {
-                ClientDisconnected(client);
-            }
-
-
-            return aisling;
+            return client.Load()
+                .SendStats(StatusFlags.All)
+                .SendMessage(0x02, ServerContext.Config.ServerWelcomeMessage)
+                .EnterArea()
+                .LoggedIn(true).Aisling;
         }
 
         /// <summary>

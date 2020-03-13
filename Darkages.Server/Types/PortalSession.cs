@@ -22,6 +22,7 @@ using Newtonsoft.Json;
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Darkages
 {
@@ -44,7 +45,7 @@ namespace Darkages
         {
             client.InMapTransition = true;
             client.Send(new ServerFormat2E(client.Aisling));
-            client.FlushBuffers();
+            Task.Run(async () => await client.FlushBuffers());
 
             client.Aisling.PortalSession
                     = new PortalSession

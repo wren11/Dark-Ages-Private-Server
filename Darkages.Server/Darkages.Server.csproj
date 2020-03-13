@@ -194,7 +194,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationInsightsInitializer.cs" />
-    <Compile Include="AttrCache.cs" />
     <Compile Include="Common\Cache.cs" />
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\Generator.cs" />

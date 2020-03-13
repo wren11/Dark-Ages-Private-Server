@@ -67,20 +67,24 @@ namespace Darkages.Network.Game
             }            
         }
 
-        private void Update()
+        private async void Update()
         {
             lastHeavyUpdate = DateTime.UtcNow;
             ServerContext.Running = true;
 
             while (true)
             {
-                var delta = DateTime.UtcNow - lastHeavyUpdate;
+                var elapsedTime = DateTime.UtcNow - lastHeavyUpdate;
 
                 try
                 {
-                    ExecuteClientWork(delta);
-                    ExecuteServerWork(delta);
-                    ExecuteObjectWork(delta);
+                    await Task.WhenAll(
+                        UpdateClients(elapsedTime),
+                        UpdateComponents(elapsedTime),
+                        UpdateAreas(elapsedTime)
+                        ).ContinueWith((cw) => {
+                            lastHeavyUpdate = DateTime.UtcNow;
+                        });                        
                 }
                 catch (Exception e)
                 {
@@ -89,7 +93,7 @@ namespace Darkages.Network.Game
                 finally
                 {
                     lastHeavyUpdate = DateTime.UtcNow;
-                    Thread.Sleep(HeavyUpdateSpan);
+                    await Task.Delay(HeavyUpdateSpan);
                 }
             }
         }
@@ -122,82 +126,75 @@ namespace Darkages.Network.Game
             }
         }
 
-        public void ExecuteClientWork(TimeSpan elapsedTime)
-        {
-            UpdateClients(elapsedTime);
-        }
 
-        public void ExecuteServerWork(TimeSpan elapsedTime)
+        private Task UpdateComponents(TimeSpan elapsedTime)
         {
-            UpdateComponents(elapsedTime);
-        }
-
-        public void ExecuteObjectWork(TimeSpan elapsedTime)
-        {
-            UpdateAreas(elapsedTime);
-        }
-
-        private void UpdateComponents(TimeSpan elapsedTime)
-        {
-            foreach (var component in Components.Values)
-                component.Update(elapsedTime);
-        }
-
-        private void UpdateAreas(TimeSpan elapsedTime)
-        {
-            var values = ServerContext.GlobalMapCache.Select(i => i.Value).ToArray();
-
-            foreach (var area in values)
+            return Task.Run(() =>
             {
-                area.Update(elapsedTime);
-            }
+                foreach (var component in Components.Values)
+                    component.Update(elapsedTime);
+            });
         }
 
-        public void UpdateClients(TimeSpan elapsedTime)
+        private Task UpdateAreas(TimeSpan elapsedTime)
         {
-
-            foreach (var client in Clients)
+            return Task.Run(() =>
             {
-                if (client != null && client.Aisling != null)
+                var values = ServerContext.GlobalMapCache.Select(i => i.Value).ToArray();
+
+                foreach (var area in values)
                 {
-                    if (!client.IsWarping && !client.InMapTransition && !client.MapOpen)
-                    {
-                        Pulse(elapsedTime, client);
-                    }
-                    else if (client.IsWarping && !client.InMapTransition)
-                    {
-                        if (client.CanSendLocation && !client.IsRefreshing && client.Aisling.CurrentMapId == 509)
-                            client.SendLocation();
+                    area.Update(elapsedTime);
+                }
+            });
+        }
 
-                    }
-                    else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
+        public Task UpdateClients(TimeSpan elapsedTime)
+        {
+            return Task.Run(() =>
+            {
+                foreach (var client in Clients)
+                {
+                    if (client != null && client.Aisling != null)
                     {
-                        client.MapOpen = false;
-
-                        if (client.InMapTransition && !client.MapOpen)
+                        if (!client.IsWarping && !client.InMapTransition && !client.MapOpen)
                         {
-                            if ((DateTime.UtcNow - client.DateMapOpened) > TimeSpan.FromSeconds(0.2))
+                            Pulse(elapsedTime, client);
+                        }
+                        else if (client.IsWarping && !client.InMapTransition)
+                        {
+                            if (client.CanSendLocation && !client.IsRefreshing && client.Aisling.CurrentMapId == 509)
+                                client.SendLocation();
+                        }
+                        else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
+                        {
+                            client.MapOpen = false;
+
+                            if (client.InMapTransition && !client.MapOpen)
                             {
-                                client.MapOpen = true;
-                                client.InMapTransition = false;
+                                if ((DateTime.UtcNow - client.DateMapOpened) > TimeSpan.FromSeconds(0.2))
+                                {
+                                    client.MapOpen = true;
+                                    client.InMapTransition = false;
+                                }
                             }
                         }
-                    }
 
-                    if (client.MapOpen)
-                    {
-                        if (!client.IsWarping && !client.IsRefreshing)
-                            Pulse(elapsedTime, client);
+                        if (client.MapOpen)
+                        {
+                            if (!client.IsWarping && !client.IsRefreshing)
+                                Pulse(elapsedTime, client);
+                        }
                     }
                 }
-            }            
+            });
         }
 
         private static void Pulse(TimeSpan elapsedTime, GameClient client)
         {
-            client.FlushBuffers();
+            //client.FlushBuffers();
             client.Update(elapsedTime);
-            client.FlushBuffers();
+            //client.FlushBuffers();
         }
 
         public override void ClientDisconnected(GameClient client)

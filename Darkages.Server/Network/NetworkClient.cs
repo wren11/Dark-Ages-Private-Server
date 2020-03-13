@@ -18,12 +18,14 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
@@ -34,7 +36,7 @@ namespace Darkages.Network
     public abstract class NetworkClient<TClient> : ObjectManager, INotifyPropertyChanged
     {
 
-        private object syncLock = new object();
+        private readonly object syncLock = new object();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -143,7 +145,7 @@ namespace Darkages.Network
             Reader.Position = -1;
         }
 
-        public void FlushBuffers()
+        public async Task FlushBuffers()
         {
             if (!ServerSocket.Connected)
                 return;
@@ -151,35 +153,33 @@ namespace Darkages.Network
             if (SendBuffer == null)
                 return;
 
-           
-                var data       = SendBuffer.SelectMany(i => i);
-                var enumerable = data.ToArray();
 
-                if (!enumerable.Any())
-                    return;
-
-                var packet = enumerable;
+            var data = SendBuffer.Select(i => new ArraySegment<byte>(i)).ToList();
 
             try
             {
-
-                ServerSocket.Send(packet, packet.Length, SocketFlags.None);
+                if (data.Any())
+                    await ServerSocket.SendAsync(data, SocketFlags.None).ContinueWith((cw) => EmptyBuffers(cw.Result));
             }
             catch (Exception e)
             {
                 ServerContext.Report(e);
-                //Ignore
             }
             finally
             {
-                EmptyBuffers();
+                EmptyBuffers(0);
             }
-    
         }
 
-        public void EmptyBuffers()
+        public void EmptyBuffers(int bytes)
         {
-            SendBuffer = new ConcurrentQueue<byte[]>();
+            lock (syncLock)
+            {
+                if (bytes > 0)
+                {
+                    SendBuffer = new ConcurrentQueue<byte[]>();
+                }
+            }
         }
 
         public void FlushAndSend(NetworkFormat format)
@@ -207,12 +207,12 @@ namespace Darkages.Network
             }
         }
 
-        public void Send(NetworkFormat format)
+        public NetworkClient<TClient> Send(NetworkFormat format)
         {
             if (this is LoginClient)
             {
                 FlushAndSend(format);
-                return;
+                return this;
             }
 
             lock (syncLock)
@@ -227,7 +227,7 @@ namespace Darkages.Network
 
                 var packet = Writer.ToPacket();
                 if (packet == null)
-                    return;
+                    return null;
 
                 if (format.Secured)
                     Encryption.Transform(packet);
@@ -235,8 +235,10 @@ namespace Darkages.Network
 
                 var array = packet.ToArray();
                 SendBuffer.Enqueue(array);
-                FlushBuffers();
+                //FlushBuffers();
             }
+
+            return this;
         }
 
         public void Send(NetworkPacketWriter lpData)

@@ -1205,7 +1205,7 @@ namespace Darkages
                 LastPosition = Position;
 
                 Client.CloseDialog();
-                Client.Ghost();
+                Client.AislingToGhostForm();
 
 
                 return true;

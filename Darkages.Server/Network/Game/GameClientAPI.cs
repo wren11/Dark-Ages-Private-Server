@@ -361,5 +361,12 @@ namespace Darkages.Network.Game
 
             ServerContext.LoadAndCacheStorage();
         }
+
+        public GameClient LoggedIn(bool state)
+        {
+            Aisling.LoggedIn = state;
+
+            return this;
+        }
     }
 }
