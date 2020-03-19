@@ -1,4 +1,8 @@
-﻿///************************************************************************
+﻿using Darkages.Network.Login;
+using Darkages.Network.Object;
+using Darkages.Network.ServerFormats;
+using Darkages.Security;
+///************************************************************************
 //Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
@@ -23,13 +27,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
-using Darkages.Network.Game;
-using Darkages.Network.Login;
-using Darkages.Network.Object;
-using Darkages.Network.ServerFormats;
-using Darkages.Security;
 
 namespace Darkages.Network
 {
@@ -145,6 +143,8 @@ namespace Darkages.Network
             Reader.Position = -1;
         }
 
+        public bool _sending = false;
+
         public async Task FlushBuffers()
         {
             if (!ServerSocket.Connected)
@@ -153,33 +153,24 @@ namespace Darkages.Network
             if (SendBuffer == null)
                 return;
 
-
-            var data = SendBuffer.Select(i => new ArraySegment<byte>(i)).ToList();
-
-            try
-            {
-                if (data.Any())
-                    await ServerSocket.SendAsync(data, SocketFlags.None).ContinueWith((cw) => EmptyBuffers(cw.Result));
+            if (_sending)
+            { 
+                return;
             }
-            catch (Exception e)
-            {
-                ServerContext.Report(e);
-            }
-            finally
-            {
-                EmptyBuffers(0);
-            }
-        }
 
-        public void EmptyBuffers(int bytes)
-        {
-            lock (syncLock)
+            await Task.Run(() =>
             {
-                if (bytes > 0)
+                while (SendBuffer.Any())
                 {
-                    SendBuffer = new ConcurrentQueue<byte[]>();
+                    _sending = true;
+                    if (SendBuffer.TryDequeue(out var data))
+                    {
+                        ServerSocket.Send(data, 0, data.Length, SocketFlags.None);
+                    }
                 }
-            }
+
+                _sending = false;
+            });
         }
 
         public void FlushAndSend(NetworkFormat format)
@@ -235,7 +226,6 @@ namespace Darkages.Network
 
                 var array = packet.ToArray();
                 SendBuffer.Enqueue(array);
-                //FlushBuffers();
             }
 
             return this;

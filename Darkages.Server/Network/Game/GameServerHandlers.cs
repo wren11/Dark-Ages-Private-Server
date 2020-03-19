@@ -571,8 +571,6 @@ namespace Darkages.Network.Game
 
             CheckWalkOverPopups(client);
             CheckWarpTransitions(client);
-
-            client.MenuInterpter?.Start();
         }
 
         private static void CheckWarpTransitions(GameClient client)

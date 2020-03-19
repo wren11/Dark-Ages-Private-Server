@@ -193,15 +193,23 @@ namespace Darkages.Types
             if (IsConfused || IsFrozen || IsParalyzed || IsSleeping)
                 return;
 
-            if (Target != null && !WithinRangeOf(Target)) Target = null;
+            if (Target != null && !WithinRangeOf(Target))
+                Target = null;
+
+            var nearby = GetObjects<Aisling>(Map, i => i.WithinRangeOf(this));
+
+            if (!nearby.Any())
+            {
+                return;
+            }
 
             if (Template.ChatTimer != null)
             {
                 Template.ChatTimer.Update(update);
 
-                if (Template.ChatTimer.Elapsed)
+                if (Template.ChatTimer.Elapsed && nearby.Any())
                 {
-                    var nearby = GetObjects<Aisling>(Map, i => i.WithinRangeOf(this));
+
                     foreach (var obj in nearby)
                         if (Template.Speech.Count > 0)
                         {

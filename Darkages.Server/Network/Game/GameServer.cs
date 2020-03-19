@@ -189,6 +189,9 @@ namespace Darkages.Network.Game
         {
             await client.FlushBuffers();
             await client.Update(elapsedTime);
+            await client.FlushBuffers();
+
+            ObjectComponent.UpdateClientObjects(client.Aisling);
         }
 
         public override void ClientDisconnected(GameClient client)

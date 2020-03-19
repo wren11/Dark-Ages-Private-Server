@@ -727,7 +727,7 @@ namespace Darkages.Network.Game
 
             #endregion
 
-            await Task.Run(() => DoUpdate(elapsedTime));
+            await DoUpdate(elapsedTime).FlushBuffers();
         }
 
         public GameClient DoUpdate(TimeSpan elapsedTime)
@@ -857,14 +857,8 @@ namespace Darkages.Network.Game
                     if (LastSelectedNodeIndex > 0)
                     {
                         GameServer.HandleMapNodeSelection(this, LastSelectedNodeIndex);
-                        Task.Run(async () => await FlushBuffers());
                     }
                 }
-            }
-
-            if ((DateTime.UtcNow - Aisling.LastMovementChanged) > (DateTime.UtcNow - Aisling.LastMenuInvoked).Add(TimeSpan.FromSeconds(3)))
-            {
-                CloseDialog();
             }
 
             return this;

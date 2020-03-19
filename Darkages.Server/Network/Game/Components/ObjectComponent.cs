@@ -83,11 +83,14 @@ namespace Darkages.Network.Game.Components
                             //if the subject to show is dead, and I'm not dead, Don't display the subject.
                             if ((obj as Aisling).Dead && !client.Dead)
                                 continue;
+
                             //both are dead, let them see each other.
                             if ((obj as Aisling).Dead && client.Dead)
                                 obj.ShowTo(client);
+
                             //subject is not dead, display it as normal.
-                            else if (!(obj as Aisling).Dead) obj.ShowTo(client);
+                            else if (!(obj as Aisling).Dead)
+                                obj.ShowTo(client);
                         }
                         else
                         {
