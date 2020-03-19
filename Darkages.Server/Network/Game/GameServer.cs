@@ -72,7 +72,7 @@ namespace Darkages.Network.Game
             lastHeavyUpdate = DateTime.UtcNow;
             ServerContext.Running = true;
 
-            while (true)
+            while (ServerContext.Running)
             {
                 var elapsedTime = DateTime.UtcNow - lastHeavyUpdate;
 
@@ -81,20 +81,15 @@ namespace Darkages.Network.Game
                     await Task.WhenAll(
                         UpdateClients(elapsedTime),
                         UpdateComponents(elapsedTime),
-                        UpdateAreas(elapsedTime)
-                        ).ContinueWith((cw) => {
-                            lastHeavyUpdate = DateTime.UtcNow;
-                        });                        
+                        UpdateAreas(elapsedTime));
                 }
                 catch (Exception e)
                 {
                     ServerContext.Report(e);
                 }
-                finally
-                {
-                    lastHeavyUpdate = DateTime.UtcNow;
-                    await Task.Delay(HeavyUpdateSpan);
-                }
+
+                lastHeavyUpdate = DateTime.UtcNow;
+                await Task.Delay(HeavyUpdateSpan);
             }
         }
 
@@ -149,9 +144,9 @@ namespace Darkages.Network.Game
             });
         }
 
-        public Task UpdateClients(TimeSpan elapsedTime)
+        public async Task UpdateClients(TimeSpan elapsedTime)
         {
-            return Task.Run(() =>
+            await Task.Run(async () =>
             {
                 foreach (var client in Clients)
                 {
@@ -159,7 +154,7 @@ namespace Darkages.Network.Game
                     {
                         if (!client.IsWarping && !client.InMapTransition && !client.MapOpen)
                         {
-                            Pulse(elapsedTime, client);
+                            await Pulse(elapsedTime, client);
                         }
                         else if (client.IsWarping && !client.InMapTransition)
                         {
@@ -183,18 +178,17 @@ namespace Darkages.Network.Game
                         if (client.MapOpen)
                         {
                             if (!client.IsWarping && !client.IsRefreshing)
-                                Pulse(elapsedTime, client);
+                                await Pulse(elapsedTime, client);
                         }
                     }
                 }
             });
         }
 
-        private static void Pulse(TimeSpan elapsedTime, GameClient client)
+        private static async Task Pulse(TimeSpan elapsedTime, GameClient client)
         {
-            //client.FlushBuffers();
-            client.Update(elapsedTime);
-            //client.FlushBuffers();
+            await client.FlushBuffers();
+            await client.Update(elapsedTime);
         }
 
         public override void ClientDisconnected(GameClient client)

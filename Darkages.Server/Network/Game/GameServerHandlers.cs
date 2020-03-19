@@ -541,7 +541,6 @@ namespace Darkages.Network.Game
             }
 
             client.Aisling.CanReact = true;
-            client.MenuInterpter = null;
 
             if (client.Aisling.Skulled)
             {
@@ -570,8 +569,10 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            CheckWalkOverPopups  (client);
-            CheckWarpTransitions (client);
+            CheckWalkOverPopups(client);
+            CheckWarpTransitions(client);
+
+            client.MenuInterpter?.Start();
         }
 
         private static void CheckWarpTransitions(GameClient client)

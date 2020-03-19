@@ -110,6 +110,8 @@ namespace Darkages.Types
 
         [JsonIgnore] [BsonIgnore] public DateTime LastMovementChanged { get; set; }
 
+        [JsonIgnore] [BsonIgnore] public DateTime LastMenuInvoked { get; set; } = DateTime.UtcNow;
+
         [JsonIgnore] [BsonIgnore]
         public int Level => EntityType == TileContent.Aisling ? (this as Aisling).ExpLevel
             : EntityType == TileContent.Monster ? (this as Monster).Template.Level
@@ -1537,11 +1539,25 @@ namespace Darkages.Types
 
             Show(Scope.NearbyAislingsExludingSelf, response);
 
+
+            bool changed = false;
+
             if (LastPosition.X != XPos)
+            {
                 LastPosition.X = (ushort)XPos;
+                changed = true;
+            }
 
             if (LastPosition.Y != YPos)
+            {
                 LastPosition.Y = (ushort)YPos;
+                changed = true;
+            }
+
+            if (changed)
+            {
+                LastMovementChanged = DateTime.UtcNow;
+            }
 
             return true;
         }

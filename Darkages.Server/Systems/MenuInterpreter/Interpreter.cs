@@ -178,6 +178,13 @@ namespace MenuInterpreter
 
         public void Start()
         {
+            if (Client == null)
+                return;
+            if (Client.Aisling == null)
+                return;
+
+            Client.Aisling.LastMenuInvoked = DateTime.UtcNow;
+
             // perform state cleanup
             IsFinished = false;
 

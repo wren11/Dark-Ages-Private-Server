@@ -452,8 +452,7 @@ namespace Darkages.Network.Game
         /// <value>The pending item sessions.</value>
         [JsonIgnore]
         public PendingSell PendingItemSessions { get; set; }
-
-
+        public TimeSpan LastMenuStarted { get; private set; }
 
         public void BuildSettings()
         {
@@ -697,7 +696,7 @@ namespace Darkages.Network.Game
         ///     Updates the specified elapsed time.
         /// </summary>
         /// <param name="elapsedTime">The elapsed time.</param>
-        public void Update(TimeSpan elapsedTime)
+        public async Task Update(TimeSpan elapsedTime)
         {
             #region Sanity Checks
 
@@ -728,13 +727,17 @@ namespace Darkages.Network.Game
 
             #endregion
 
-            HandleTimeOuts();
-            StatusCheck();
-            Regen(elapsedTime);
-            UpdateStatusBar(elapsedTime);
-            UpdateGlobalScripts(elapsedTime);
-            UpdateReactors(elapsedTime);
-            Task.Run(async () => await FlushBuffers());
+            await Task.Run(() => DoUpdate(elapsedTime));
+        }
+
+        public GameClient DoUpdate(TimeSpan elapsedTime)
+        {
+            return HandleTimeOuts()
+                .StatusCheck()
+                .Regen(elapsedTime)
+                .UpdateStatusBar(elapsedTime)
+                .UpdateGlobalScripts(elapsedTime)
+                .UpdateReactors(elapsedTime);
         }
 
         /// <summary>
@@ -778,7 +781,7 @@ namespace Darkages.Network.Game
         /// <summary>
         ///     Statuses the check.
         /// </summary>
-        private void StatusCheck()
+        private GameClient StatusCheck()
         {
             var proceed = false;
 
@@ -817,13 +820,14 @@ namespace Darkages.Network.Game
                             Aisling.Username + " has been killed, somehow.");
                     }
 
-                    return;
+                    return this;
                 }
 
 
                 if (!Aisling.Skulled)
                 {
-                    if (Aisling.CurrentMapId == ServerContext.Config.DeathMap) return;
+                    if (Aisling.CurrentMapId == ServerContext.Config.DeathMap)
+                        return this;
 
                     var debuff = new debuff_reeping();
                     {
@@ -831,6 +835,8 @@ namespace Darkages.Network.Game
                     }
                 }
             }
+
+            return this;
         }
 
         /// <summary>
@@ -854,6 +860,11 @@ namespace Darkages.Network.Game
                         Task.Run(async () => await FlushBuffers());
                     }
                 }
+            }
+
+            if ((DateTime.UtcNow - Aisling.LastMovementChanged) > (DateTime.UtcNow - Aisling.LastMenuInvoked).Add(TimeSpan.FromSeconds(3)))
+            {
+                CloseDialog();
             }
 
             return this;
@@ -1491,7 +1502,8 @@ namespace Darkages.Network.Game
         {
             Send(new ServerFormat04(Aisling));
             LastLocationSent = DateTime.UtcNow;
-            
+
+
             return CloseDialog();
         }
 

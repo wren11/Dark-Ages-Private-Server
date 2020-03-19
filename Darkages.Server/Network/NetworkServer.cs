@@ -40,7 +40,6 @@ namespace Darkages.Network
 
         private readonly Cache<byte, NetworkFormat> _formatCache = new Cache<byte, NetworkFormat>();
 
-
         protected NetworkServer(int capacity)
         {
             var type = typeof(NetworkServer<TClient>);
@@ -103,6 +102,7 @@ namespace Darkages.Network
 
         private void EndReceiveHeader(IAsyncResult result)
         {
+
             try
             {
                 if (!(result.AsyncState is TClient client))
@@ -148,6 +148,8 @@ namespace Darkages.Network
                     ClientDisconnected(client);
                     return;
                 }
+
+
 
                 if (client.ServerSocket?.PacketComplete ?? false)
                 {
