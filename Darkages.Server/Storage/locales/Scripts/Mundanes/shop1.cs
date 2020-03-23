@@ -53,12 +53,16 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
         {
+            var defaultbag = Mundane.Template.DefaultMerchantStock.Select(i =>
+                ServerContext.GlobalItemTemplateCache.ContainsKey(i) ? ServerContext.GlobalItemTemplateCache[i] : null);
+
+
             switch (responseID)
             {
                 case 0x0001:
                     client.SendItemShopDialog(Mundane, "Have a browse!", 0x0004,
                         ServerContext.GlobalItemTemplateCache.Values.Where(i => i.NpcKey == Mundane.Template.Name)
-                            .ToList());
+                            .ToList().Concat(defaultbag.Where(n => n != null)));
                     break;
 
                 case 0x0002:

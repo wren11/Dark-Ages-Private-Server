@@ -78,6 +78,8 @@ namespace Darkages.Types
         [JsonProperty] public PathQualifer PathQualifer { get; set; }
 
         [JsonProperty] public ViewQualifer ViewingQualifer { get; set; }
+
+        public List<string> DefaultMerchantStock { get; set; } = new List<string>();
     }
 
     [Flags]
