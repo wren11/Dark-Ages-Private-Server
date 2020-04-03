@@ -19,6 +19,8 @@
 using System.Linq;
 using Darkages.Scripting;
 using Darkages.Types;
+using ServiceStack.Text;
+using static Darkages.Network.ServerFormats.ServerFormat0A;
 
 namespace Darkages.Storage.locales.Scripts.Skills
 {
@@ -83,6 +85,8 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     }
                 }
             }
+
+            OnSuccess(sprite);
         }
 
         public override void OnFailed(Sprite sprite)
@@ -91,6 +95,24 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public override void OnSuccess(Sprite sprite)
         {
+
+            if (sprite is Aisling aisling)
+            {
+
+                var msg = " Current Items\n";
+
+                foreach (var iter in aisling.Inventory.Items)
+                {
+                    var item = iter.Value;
+                    if (item == null)
+                        continue;
+
+                    msg += item.DisplayName + "\n";
+                }
+
+                aisling.Client.SendMessage(0x08, msg);
+
+            }
         }
     }
 }

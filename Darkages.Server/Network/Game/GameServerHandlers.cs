@@ -718,7 +718,8 @@ namespace Darkages.Network.Game
                             .OfType<ItemPickupPopup>().FirstOrDefault(i => i.ItemName == (obj as Item)?.Template.Name);
 
                         if (popupTemplate != null && client.Aisling.ActiveReactors.ContainsKey(popupTemplate.YamlKey))
-                            if (item.Owner == client.Aisling.Serial)
+                            if (item.Position.X == client.Aisling.X && item.Position.Y == client.Aisling.Y
+                                && item.Owner ==  client.Aisling.Serial)
                             {
                                 popupTemplate.SpriteId = item.Template.DisplayImage;
 
@@ -1936,7 +1937,7 @@ namespace Darkages.Network.Game
             {
                 if (format.Type == 0x01)
                 {
-                    client.Send(new BoardList(ServerContext.Community));
+                    client.FlushAndSend(new BoardList(ServerContext.Community));
                     return;
                 }
 
@@ -1947,7 +1948,7 @@ namespace Darkages.Network.Game
                         var clone = Clone<Board>(ServerContext.Community[format.BoardIndex]);
                         {
                             clone.Client = client;
-                            client.Send(clone);
+                            client.FlushAndSend(clone);
                         }
                         return;
                     }
@@ -1957,7 +1958,7 @@ namespace Darkages.Network.Game
                         .FirstOrDefault();
 
                     if (boards != null)
-                        client.Send(boards);
+                        client.FlushAndSend(boards);
 
 
                     return;
@@ -1975,11 +1976,11 @@ namespace Darkages.Network.Game
                         boards.Posts.Count > index)
                     {
                         var post = boards.Posts[index];
-                        client.Send(post);
+                        client.FlushAndSend(post);
                         return;
                     }
 
-                    client.Send(new ForumCallback("Unable to retrieve more.", 0x06, true));
+                    client.FlushAndSend(new ForumCallback("Unable to retrieve more.", 0x06, true));
                     return;
                 }
 
@@ -2005,7 +2006,7 @@ namespace Darkages.Network.Game
                         np.Associate(client.Aisling.Username);
                         boards.Posts.Add(np);
                         ServerContext.SaveCommunityAssets();
-                        client.Send(new ForumCallback("Message Delivered.", 0x06, true));
+                        client.FlushAndSend(new ForumCallback("Message Delivered.", 0x06, true));
                     }
 
                     return;
@@ -2034,7 +2035,7 @@ namespace Darkages.Network.Game
 
                         boards.Posts.Add(np);
                         ServerContext.SaveCommunityAssets();
-                        client.Send(new ForumCallback("Post Added.", 0x06, true));
+                        client.FlushAndSend(new ForumCallback("Post Added.", 0x06, true));
                     }
 
                     return;
@@ -2053,17 +2054,24 @@ namespace Darkages.Network.Game
                                 : community.Posts[format.TopicIndex - 1].Sender
                             ).Equals(client.Aisling.Username, StringComparison.OrdinalIgnoreCase))
                         {
+                            client.FlushAndSend(new ForumCallback("\0", 0x07, true));
+                            client.FlushAndSend(new BoardList(ServerContext.Community));
+                            client.FlushAndSend(new ForumCallback("Post Deleted.", 0x07, true));
+
                             community.Posts.RemoveAt(format.TopicIndex - 1);
                             ServerContext.SaveCommunityAssets();
-                            client.Send(new ForumCallback("Post has been deleted.", 0x07, true));
+
+                            client.FlushAndSend(new ForumCallback("Post Deleted.", 0x07, true));
+
+
                             return;
                         }
 
-                        client.Send(new ForumCallback(ServerContext.Config.CantDoThat, 0x07, true));
+                        client.FlushAndSend(new ForumCallback(ServerContext.Config.CantDoThat, 0x07, true));
                         return;
                     }
 
-                    client.Send(new ForumCallback(ServerContext.Config.CantDoThat, 0x07, true));
+                    //client.FlushAndSend(new ForumCallback(ServerContext.Config.CantDoThat, 0x07, true));
                 }
             }
             catch (Exception e)

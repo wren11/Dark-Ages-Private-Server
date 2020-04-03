@@ -496,6 +496,9 @@ namespace Darkages
             ServerContext.Log("Loaded {0} Spell Templates Loaded from Cache ({1})", GlobalSpellTemplateCache.Count, GlobalSpellTemplateCache.Dump());
             ServerContext.Log("Loaded {0} WorldMap Templates Loaded from Cache ({1})", GlobalWorldMapTemplateCache.Count, GlobalWorldMapTemplateCache.Dump());
             ServerContext.Log("Loaded {0} Reactor Templates Loaded from Cache ({1})", GlobalReactorCache.Count, GlobalReactorCache.Dump());
+
+
+
         }
 
         private static void LoadExtensions()

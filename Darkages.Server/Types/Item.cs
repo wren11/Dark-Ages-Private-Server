@@ -191,6 +191,7 @@ namespace Darkages.Types
                         (sprite as Aisling).Client.SendStats(StatusFlags.StructA);
                     }
 
+                    Owner = (uint)sprite.Serial;
                     return true;
                 }
 

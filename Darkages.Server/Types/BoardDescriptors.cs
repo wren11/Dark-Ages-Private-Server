@@ -23,11 +23,6 @@ using Darkages.Network;
 
 namespace Darkages.Types
 {
-    public enum ForumConstraints
-    {
-        Private = 0,
-        Public = 1
-    }
 
     public class ForumCallback : BoardDescriptors
     {
@@ -56,6 +51,7 @@ namespace Darkages.Types
 
     public class PostFormat : BoardDescriptors
     {
+
         public PostFormat(ushort boardId, ushort topicId)
         {
             BoardId = boardId;
@@ -84,8 +80,16 @@ namespace Darkages.Types
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte) 0x03);
-            writer.Write((byte) 0x01);
+            if (BoardId == 0)
+            {
+                writer.Write((byte)0x03);
+                writer.Write((byte)0x00);
+            }
+            else
+            {
+                writer.Write((byte)0x05);
+                writer.Write((byte)0x03);
+            }
             writer.Write((byte) 0x00);
             writer.Write(PostId);
             writer.WriteStringA(Sender);

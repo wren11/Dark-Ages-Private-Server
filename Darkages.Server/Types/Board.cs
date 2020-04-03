@@ -70,7 +70,7 @@ namespace Darkages.Types
             writer.Write((byte) (IsMail ? 0x04 : 0x02));
             writer.Write((byte) 0x01);
             writer.Write((ushort) (IsMail ? 0x00 : LetterId));
-            writer.WriteStringA(IsMail ? "Diary" : Subject);
+            writer.WriteStringA(IsMail ? "Mail" : Subject);
 
 
             if (IsMail && Client != null)
@@ -81,7 +81,7 @@ namespace Darkages.Types
             writer.Write((byte) Posts.Count);
             foreach (var post in Posts)
             {
-                writer.Write((byte) (post.Read ? 0 : 1));
+                writer.Write((byte) (!post.Read ? 0 : 1));
                 writer.Write(post.PostId);
                 writer.WriteStringA(post.Sender);
                 writer.Write((byte) post.DatePosted.Month);

@@ -29,7 +29,8 @@ namespace Darkages.Network.ServerFormats
             Guild = 12,
             Message = 1,
             Party = 11,
-            Whisper = 0
+            Whisper = 0,
+            Test = 8,
         }
 
         public ServerFormat0A(byte type, string text) : this()
