@@ -123,6 +123,9 @@ namespace Darkages.Types
         {
             if (sprite is Aisling)
             {
+                Owner = (uint)sprite.Serial;
+
+
                 #region stackable items 
 
                 if (Template.Flags.HasFlag(ItemFlags.Stackable))
@@ -191,7 +194,6 @@ namespace Darkages.Types
                         (sprite as Aisling).Client.SendStats(StatusFlags.StructA);
                     }
 
-                    Owner = (uint)sprite.Serial;
                     return true;
                 }
 

@@ -1398,7 +1398,7 @@ namespace Darkages.Network.Game
                 return;
 
             var player = GetObject<Aisling>(client.Aisling.Map, i =>
-                i.Username.ToLower(CultureInfo.CurrentCulture) == format.Name
+                i.Username.ToLower() == format.Name.ToLower()
                 && i.WithinRangeOf(client.Aisling));
 
             if (player == null)

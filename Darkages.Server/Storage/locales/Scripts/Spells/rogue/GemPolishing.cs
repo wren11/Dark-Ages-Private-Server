@@ -18,7 +18,8 @@ namespace Darkages.Storage.locales.Scripts.Spells.rogue
         {
             if (sprite is Aisling aisling)
             {
-                aisling.MakeReactor("gem_polishing", 30);
+                aisling.MakeReactor("GramailPrayer", 30);
+                //aisling.MakeReactor("gem_polishing", 30);
                 aisling.Client.SystemMessage(string.Format("You cast {0}.", Spell.Template.Name));
             }
         }
