@@ -273,10 +273,14 @@ namespace Darkages.Types
                         obj
                     );
 
-                    obj.Script = ScriptManager.Load<ItemScript>(obj.Template.ScriptName, obj);
+                    obj.Scripts = ScriptManager.Load<ItemScript>(obj.Template.ScriptName, obj);
                     if (!string.IsNullOrEmpty(obj.Template.WeaponScript))
-                        obj.WeaponScript = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
-                    obj.Script?.Equipped(user, (byte) obj.Template.EquipmentSlot);
+                    {
+                        obj.WeaponScripts = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
+                        
+                        foreach (var script in obj.Scripts?.Values)
+                            script.Equipped(user, (byte)obj.Template.EquipmentSlot);
+                    }
                 }
         }
 

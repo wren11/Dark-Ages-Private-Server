@@ -60,15 +60,17 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             {
                 if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skillscriptstr))
                 {
-                    var script = ScriptManager.Load<SkillScript>(skillscriptstr,
+                    var scripts = ScriptManager.Load<SkillScript>(skillscriptstr,
                         Skill.Create(1, ServerContext.GlobalSkillTemplateCache[skillscriptstr]));
 
-
-                    if (script != null)
+                    foreach (var script in scripts.Values)
                     {
-                        script.Skill.NextAvailableUse = DateTime.UtcNow;
-                        script.IsScriptDefault = primary;
-                        SkillScripts.Add(script);
+                        if (script != null)
+                        {
+                            script.Skill.NextAvailableUse = DateTime.UtcNow;
+                            script.IsScriptDefault = primary;
+                            SkillScripts.Add(script);
+                        }
                     }
                 }
             }
@@ -85,14 +87,16 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             {
                 if (ServerContext.GlobalSpellTemplateCache.ContainsKey(spellscriptstr))
                 {
-                    var script = ScriptManager.Load<SpellScript>(spellscriptstr,
+                    var scripts = ScriptManager.Load<SpellScript>(spellscriptstr,
                         Spell.Create(1, ServerContext.GlobalSpellTemplateCache[spellscriptstr]));
 
-
-                    if (script != null)
+                    foreach (var script in scripts.Values)
                     {
-                        script.IsScriptDefault = primary;
-                        SpellScripts.Add(script);
+                        if (script != null)
+                        {
+                            script.IsScriptDefault = primary;
+                            SpellScripts.Add(script);
+                        }
                     }
                 }
             }

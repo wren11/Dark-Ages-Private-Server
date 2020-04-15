@@ -62,7 +62,7 @@ namespace Darkages.Scripting
             }
         }
 
-        public static TScript Load<TScript>(string name, params object[] args)
+        public static TScript LoadEach<TScript>(string name, params object[] args)
             where TScript : class
         {
             if (string.IsNullOrEmpty(name))
@@ -77,6 +77,41 @@ namespace Darkages.Scripting
             }
 
             return null;
+        }
+
+        public static Dictionary<string, TScript> Load<TScript>(string values, params object[] args)
+            where TScript : class
+        {
+            if (values == null)
+                return null;
+
+            var names = values.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            Dictionary<string, TScript> data = new Dictionary<string, TScript>();
+
+
+            foreach (var name in names)
+            {
+                
+
+                if (string.IsNullOrEmpty(name))
+                    continue;
+
+                Type script;
+
+                if (scripts.TryGetValue(name, out script))
+                {
+                    var instance = (Activator.CreateInstance(script, args));
+                    data[name] = (instance as TScript);
+                }
+            }
+
+            if (data.Count == 2)
+            {
+
+            }
+
+            return data;
         }
     }
 }

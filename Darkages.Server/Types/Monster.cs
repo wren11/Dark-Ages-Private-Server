@@ -47,7 +47,7 @@ namespace Darkages.Types
             TaggedAislings = new HashSet<int>();
         }
 
-        [JsonIgnore] public MonsterScript Script { get; set; }
+        [JsonIgnore] public Dictionary<string, MonsterScript> Scripts { get; set; }
 
         public GameServerTimer BashTimer { get; set; }
         public GameServerTimer CastTimer { get; set; }
@@ -580,7 +580,7 @@ namespace Darkages.Types
                     : template.Image;
             }
 
-            obj.Script = ScriptManager.Load<MonsterScript>(template.ScriptName, obj, map);
+            obj.Scripts = ScriptManager.Load<MonsterScript>(template.ScriptName, obj, map);
 
             if (obj.Template.LootType.HasFlag(LootQualifer.Table))
             {

@@ -53,7 +53,7 @@ namespace Darkages.Types
 
         [JsonIgnore] public DialogSequence Current => Sequences[Index] ?? null;
 
-        [JsonIgnore] public ReactorScript Decorator { get; set; }
+        [JsonIgnore] public Dictionary<string, ReactorScript> Decorators { get; set; }
 
         public string DecoratorScript { get; set; }
 
@@ -73,7 +73,9 @@ namespace Darkages.Types
             {
                 client.Aisling.CanReact = false;
 
-                if (Decorator != null) Decorator.OnTriggered(client.Aisling);
+                if (Decorators != null) 
+                    foreach (var script in Decorators.Values)
+                        script?.OnTriggered(client.Aisling);
             }
         }
 

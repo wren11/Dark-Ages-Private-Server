@@ -644,7 +644,8 @@ namespace Darkages.Types
 
             if (source is Aisling aisling)
             {
-                (this as Monster)?.Script?.OnDamaged(aisling?.Client, dmg, source);
+                foreach (var script in (this as Monster)?.Scripts?.Values)
+                    script?.OnDamaged(aisling?.Client, dmg, source);
             }
         }
 
@@ -1280,7 +1281,10 @@ namespace Darkages.Types
             var nearby = GetObjects<Aisling>(Map, i => i.WithinRangeOf(this));
             var response = new ServerFormat0E(Serial);
 
-            foreach (var o in nearby) o?.Client?.Send(response);
+            foreach (var o in nearby)
+            {
+                o?.Client?.Send(response);
+            }
 
             DeleteObject();
         }

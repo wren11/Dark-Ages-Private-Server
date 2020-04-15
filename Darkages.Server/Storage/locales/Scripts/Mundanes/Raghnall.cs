@@ -117,7 +117,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             client.Aisling.ActiveReactor = Clone<Reactor>(reactor);
             client.Aisling.ActiveReactor.Sequences = new List<DialogSequence>(reactor.Sequences);
-            client.Aisling.ActiveReactor.Decorator =
+            client.Aisling.ActiveReactor.Decorators =
                 ScriptManager.Load<ReactorScript>("Default Response Handler", reactor);
 
             client.Aisling.ActiveReactor.Update(client);

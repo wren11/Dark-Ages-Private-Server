@@ -265,49 +265,51 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 }
                     break;
                 case 0x0004:
-                {
-                    if (string.IsNullOrEmpty(args))
-                        return;
+                    {
+                        if (string.IsNullOrEmpty(args))
+                            return;
 
-                    if (!ServerContext.GlobalItemTemplateCache.ContainsKey(args))
-                        return;
+                        if (!ServerContext.GlobalItemTemplateCache.ContainsKey(args))
+                            return;
 
-                    var template = ServerContext.GlobalItemTemplateCache[args];
-                    if (template != null)
-                        if (client.Aisling.GoldPoints >= template.Value)
-                        {
-                            //Create Item:
-                            var item = Item.Create(client.Aisling, template);
-
-                            if (item.GiveTo(client.Aisling))
+                        var template = ServerContext.GlobalItemTemplateCache[args];
+                        if (template != null)
+                            if (client.Aisling.GoldPoints >= template.Value)
                             {
-                                client.Aisling.GoldPoints -= (int) template.Value;
+                                //Create Item:
+                                var item = Item.Create(client.Aisling, template);
 
-                                if (client.Aisling.GoldPoints < 0)
-                                    client.Aisling.GoldPoints = 0;
+                                if (item.GiveTo(client.Aisling))
+                                {
+                                    client.Aisling.GoldPoints -= (int)template.Value;
 
-                                client.SendStats(StatusFlags.All);
-                                client.SendOptionsDialog(Mundane, string.Format("You have a brand new {0}", args));
+                                    if (client.Aisling.GoldPoints < 0)
+                                        client.Aisling.GoldPoints = 0;
+
+                                    client.SendStats(StatusFlags.All);
+                                    client.SendOptionsDialog(Mundane, string.Format("You have a brand new {0}", args));
+                                }
+                                else
+                                {
+                                    client.SendMessage(0x02,
+                                        "You could not buy this item, because you can't physically hold it.");
+                                }
                             }
                             else
                             {
-                                client.SendMessage(0x02,
-                                    "You could not buy this item, because you can't physically hold it.");
-                            }
-                        }
-                        else
-                        {
-                            if (ServerContext.GlobalSpellTemplateCache.ContainsKey("ard cradh"))
-                            {
-                                var script = ScriptManager.Load<SpellScript>("ard cradh",
-                                    Spell.Create(1, ServerContext.GlobalSpellTemplateCache["ard cradh"]));
+                                if (ServerContext.GlobalSpellTemplateCache.ContainsKey("ard cradh"))
                                 {
-                                    script.OnUse(Mundane, client.Aisling);
+                                    var scripts = ScriptManager.Load<SpellScript>("ard cradh",
+                                        Spell.Create(1, ServerContext.GlobalSpellTemplateCache["ard cradh"]));
+
+                                    foreach (var script in scripts.Values)
+                                        script.OnUse(Mundane, client.Aisling);
+
+
+                                    client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantWarningMessage);
                                 }
-                                client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantWarningMessage);
                             }
-                        }
-                }
+                    }
                     break;
 
                 #endregion Buy

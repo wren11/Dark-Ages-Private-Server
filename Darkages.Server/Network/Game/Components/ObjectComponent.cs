@@ -76,7 +76,10 @@ namespace Darkages.Network.Game.Components
                 if (!client.View.Contains(obj))
                     if (client.View.Add(obj))
                     {
-                        if (obj is Monster) (obj as Monster).Script?.OnApproach(client.Client);
+                        if (obj is Monster) 
+                            
+                            foreach (var script in (obj as Monster).Scripts?.Values)
+                                script.OnApproach(client.Client);
 
                         if (obj is Aisling)
                         {
@@ -165,7 +168,10 @@ namespace Darkages.Network.Game.Components
                 if (client.View.Contains(obj))
                     if (client.View.Remove(obj))
                     {
-                        if (obj is Monster) (obj as Monster).Script?.OnLeave(client.Client);
+                        if (obj is Monster)
+                            foreach (var script in (obj as Monster).Scripts?.Values)
+                                script.OnLeave(client.Client);
+
                         obj.HideFrom(client);
                     }
             }

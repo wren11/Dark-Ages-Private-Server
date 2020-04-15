@@ -184,10 +184,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         {
                             if (ServerContext.GlobalSpellTemplateCache.ContainsKey("beag cradh"))
                             {
-                                var script = ScriptManager.Load<SpellScript>("beag cradh",
+                                var scripts = ScriptManager.Load<SpellScript>("beag cradh",
                                     Spell.Create(1, ServerContext.GlobalSpellTemplateCache["beag cradh"]));
                                 {
-                                    script.OnUse(Mundane, client.Aisling);
+                                        foreach (var script in scripts.Values)
+                                            script.OnUse(Mundane, client.Aisling);
                                 }
                                 client.SendOptionsDialog(Mundane, "You trying to rip me off?! go away.");
                             }

@@ -83,7 +83,9 @@ namespace Darkages.Types
             if (Equipment[displayslot] == null)
                 return;
 
-            Equipment[displayslot].Item?.Script?.UnEquipped(Client.Aisling, displayslot);
+            foreach (var script in Equipment[displayslot].Item?.Scripts.Values)
+                script.UnEquipped(Client.Aisling, displayslot);
+
             Equipment[displayslot].Item.Equipped = false;
 
             Client.SendStats(StatusFlags.All);
@@ -92,7 +94,9 @@ namespace Darkages.Types
 
         private void OnEquipmentAdded(byte displayslot)
         {
-            Equipment[displayslot].Item?.Script?.Equipped(Client.Aisling, displayslot);
+            foreach (var script in Equipment[displayslot].Item?.Scripts.Values)
+                script.Equipped(Client.Aisling, displayslot);
+
             Equipment[displayslot].Item.Equipped = true;
 
             Client.SendStats(StatusFlags.All);
@@ -272,7 +276,7 @@ namespace Darkages.Types
                 return true;
             }
 
-            return false;
+            return true;
         }
 
         #endregion

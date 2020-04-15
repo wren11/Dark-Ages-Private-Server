@@ -166,9 +166,12 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 return;
             }
 
-            Actor.Decorator = ScriptManager.Load<ReactorScript>(Actor.ScriptKey, Actor);
-            if (Actor != null && Actor.Decorator != null)
-                Actor.Decorator.OnTriggered(client.Aisling);
+            Actor.Decorators = ScriptManager.Load<ReactorScript>(Actor.ScriptKey, Actor);
+            if (Actor != null && Actor.Decorators != null)
+            {
+                foreach (var script in Actor.Decorators.Values)
+                    script.OnTriggered(client.Aisling);
+            }
         }
 
         private void QuestCompleted(Aisling aisling, DialogSequence b)
@@ -194,36 +197,37 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             switch (responseID)
             {
                 case 0x002A:
-                {
-                    //start the quest.
-                    if (!client.Aisling.AcceptQuest(Actor.Quest))
+                    {
+                        //start the quest.
+                        if (!client.Aisling.AcceptQuest(Actor.Quest))
                             //for some reason he already has the quest.
                             ServerContext.Log("Script Issue: {0} failed to receive quest {1}",
                             client.Aisling.Username,
                             Mundane.Template.ScriptKey);
 
-                    client.SendOptionsDialog(Mundane,
-                        "Alright now we're talking. I am going to need some materials. Bring me 2 pieces of Wolf's Teeth, 1 Silver Earrings, and 2 Pieces of Spider's Silk. I will do the rest.",
-                        new OptionsDataItem(0x006A, "Continue"));
-                }
+                        client.SendOptionsDialog(Mundane,
+                            "Alright now we're talking. I am going to need some materials. Bring me 2 pieces of Wolf's Teeth, 1 Silver Earrings, and 2 Pieces of Spider's Silk. I will do the rest.",
+                            new OptionsDataItem(0x006A, "Continue"));
+                    }
                     break;
                 case 0x006A:
-                {
-                    client.SendOptionsDialog(Mundane,
-                        "You can find Wolf's Teeth from the Wolves in the Woodlands,\nsome Spider's Silk from the Spiders here in Mileth Crypt,\nand the Silver Earrings from the Armory in Mileth. Come back when you have the items.");
-                }
+                    {
+                        client.SendOptionsDialog(Mundane,
+                            "You can find Wolf's Teeth from the Wolves in the Woodlands,\nsome Spider's Silk from the Spiders here in Mileth Crypt,\nand the Silver Earrings from the Armory in Mileth. Come back when you have the items.");
+                    }
                     break;
                 case 0x001B:
-                {
-                    client.Aisling.DestroyReactor(Actor);
-                    client.SendOptionsDialog(Mundane, "So be it. Goodluck Aisling.");
-                }
+                    {
+                        client.Aisling.DestroyReactor(Actor);
+                        client.SendOptionsDialog(Mundane, "So be it. Goodluck Aisling.");
+                    }
                     break;
 
                 case 0x004A:
-                {
-                    Actor.Decorator.OnTriggered(client.Aisling);
-                }
+                    {
+                        foreach (var script in Actor.Decorators.Values)
+                            script.OnTriggered(client.Aisling);
+                    }
                     break;
             }
         }

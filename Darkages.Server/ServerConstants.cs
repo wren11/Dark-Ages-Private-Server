@@ -144,13 +144,6 @@ namespace Darkages
         /// </summary>
         public double GlobalBaseSkillDelay = 500;
 
-        [JsonProperty] public string[] GlobalScripts =
-        {
-            "Tut",
-            "Reactors",
-            "WishingWell"
-        };
-
         [JsonProperty]
         /// <summary>
         /// What is the rate we invoke the Monolith?

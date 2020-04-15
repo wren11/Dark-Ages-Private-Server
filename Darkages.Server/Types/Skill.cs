@@ -17,6 +17,7 @@
 //*************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Darkages.Common;
 using Darkages.Network.Game;
@@ -29,7 +30,7 @@ namespace Darkages.Types
 {
     public class Skill
     {
-        [JsonIgnore] public SkillScript Script { get; set; }
+        [JsonIgnore] public Dictionary<string, SkillScript> Scripts { get; set; }
 
         public SkillTemplate Template { get; set; }
 
@@ -109,7 +110,7 @@ namespace Darkages.Types
             var skill = Create(slot, skillTemplate);
             skill.Template = skillTemplate;
 
-            skill.Script = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
+            skill.Scripts = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
             {
                 skill.Level = 1;
                 client.Aisling.SkillBook.Assign(skill);
@@ -126,7 +127,7 @@ namespace Darkages.Types
             var skill = Create(slot, skillTemplate);
             {
                 skill.Level = level;
-                skill.Script = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
+                skill.Scripts = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
                 aisling.SkillBook.Assign(skill);
             }
             return true;
@@ -145,7 +146,7 @@ namespace Darkages.Types
 
             var skill = Create(slot, skillTemplate);
             skill.Level = level;
-            skill.Script = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
+            skill.Scripts = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
             aisling.SkillBook.Assign(skill);
             aisling.SkillBook.Set(skill, false);
 

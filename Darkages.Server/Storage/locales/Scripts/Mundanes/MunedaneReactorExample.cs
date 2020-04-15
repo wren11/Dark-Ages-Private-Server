@@ -110,9 +110,11 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
                 }
             };
 
-            reactor.Decorator = ScriptManager.Load<ReactorScript>(reactor.ScriptKey, reactor);
-            if (reactor != null && reactor.Decorator != null)
-                reactor.Decorator.OnTriggered(client.Aisling);
+            reactor.Decorators = ScriptManager.Load<ReactorScript>(reactor.ScriptKey, reactor);
+            if (reactor != null && reactor.Decorators != null)
+
+                foreach (var script in reactor.Decorators.Values)
+                    script.OnTriggered(client.Aisling);
         }
 
         public override void OnGossip(GameServer server, GameClient client, string message)

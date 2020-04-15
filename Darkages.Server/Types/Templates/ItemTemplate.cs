@@ -192,6 +192,8 @@ namespace Darkages.Types
 
         [Category("Item Properties")] public bool Enchantable { get; set; }
 
+        [Category("Script")] public ActivationTrigger activationTrigger { get; set; } = ActivationTrigger.OnUse;
+
         [JsonIgnore]
         [Browsable(false)]
         public double Weight

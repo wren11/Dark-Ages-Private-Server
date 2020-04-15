@@ -59,11 +59,6 @@ namespace Darkages.Network.Game
         private DialogSession _dlgSession;
 
         /// <summary>
-        ///     The global scripts
-        /// </summary>
-        private Collection<GlobalScript> _globalScripts = new Collection<GlobalScript>();
-
-        /// <summary>
         ///     The hp regen timer
         /// </summary>
         private GameServerTimer _hpRegenTimer;
@@ -195,15 +190,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        /// <summary>
-        ///     Gets or sets the global scripts.
-        /// </summary>
-        /// <value>The global scripts.</value>
-        public Collection<GlobalScript> GlobalScripts
-        {
-            get => _globalScripts;
-            set => _globalScripts = value;
-        }
 
         /// <summary>
         ///     Gets or sets the server.
@@ -736,7 +722,6 @@ namespace Darkages.Network.Game
                 .StatusCheck()
                 .Regen(elapsedTime)
                 .UpdateStatusBar(elapsedTime)
-                .UpdateGlobalScripts(elapsedTime)
                 .UpdateReactors(elapsedTime);
         }
 
@@ -879,20 +864,6 @@ namespace Darkages.Network.Game
             return this;
         }
 
-        /// <summary>
-        ///     Updates the global scripts.
-        /// </summary>
-        /// <param name="elapsedTime">The elapsed time.</param>
-        public GameClient UpdateGlobalScripts(TimeSpan elapsedTime)
-        {
-            lock (SyncObj)
-            {
-                foreach (var globalscript in GlobalScripts)
-                    globalscript?.Update(elapsedTime);
-            }
-
-            return this;
-        }
 
         /// <summary>
         ///     load as an asynchronous operation.
@@ -907,21 +878,23 @@ namespace Darkages.Network.Game
 
             SetAislingStartupVariables();
 
-            try
-            {             
-                return LoadGlobalScripts()
-                    .InitSpellBar()
-                    .LoadInventory()
-                    .LoadSkillBook()
-                    .LoadSpellBook()
-                    .LoadEquipment()
-                    .SendProfileUpdate()
-                    .SendStats(StatusFlags.All);
-
-            }
-            catch (NullReferenceException e)
+            lock (SyncObj)
             {
-                ServerContext.Report(e);
+                try
+                {
+                    return InitSpellBar()
+                        .LoadInventory()
+                        .LoadSkillBook()
+                        .LoadSpellBook()
+                        .LoadEquipment()
+                        .SendProfileUpdate()
+                        .SendStats(StatusFlags.All);
+
+                }
+                catch (NullReferenceException e)
+                {
+                    ServerContext.Report(e);
+                }
             }
 
             return null;
@@ -948,20 +921,6 @@ namespace Darkages.Network.Game
             }
             BuildSettings();
             ServerContext.Report(string.Format("[GameSettings Loaded by {0} ({1})]", Aisling.Username, Aisling.GameSettings.Dump()));
-            return this;
-        }
-
-        /// <summary>
-        ///     Loads the global scripts.
-        /// </summary>
-        /// <returns>GameClient.</returns>
-        private GameClient LoadGlobalScripts()
-        {
-            foreach (var script in ServerContext.Config.GlobalScripts)
-                GlobalScripts.Add(ScriptManager.Load<GlobalScript>(script, this));
-
-
-            ServerContext.Report(string.Format("[GlobalScripts Loaded by {0} ({1})]", Aisling.Username, GlobalScripts));
             return this;
         }
 
@@ -1074,13 +1033,14 @@ namespace Darkages.Network.Game
                         }
                     }
 
-                    equipment.Item.Script =
+                    equipment.Item.Scripts =
                         ScriptManager.Load<ItemScript>(equipment.Item.Template.ScriptName, equipment.Item);
                     if (!string.IsNullOrEmpty(equipment.Item.Template.WeaponScript))
-                        equipment.Item.WeaponScript =
+                        equipment.Item.WeaponScripts =
                             ScriptManager.Load<WeaponScript>(equipment.Item.Template.WeaponScript, equipment.Item);
 
-                    equipment.Item.Script?.Equipped(Aisling, (byte)equipment.Slot);
+                    foreach (var script in equipment.Item.Scripts?.Values)
+                        script.Equipped(Aisling, (byte)equipment.Slot);
 
                     if (equipment.Item.CanCarry(Aisling))
                     {
@@ -1244,7 +1204,7 @@ namespace Darkages.Network.Game
                         skill.Icon,
                         skill.Name));
 
-                    skill.Script = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
+                    skill.Scripts = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
                     Aisling.SkillBook.Set(skill, false);
 
                     ServerContext.Report(string.Format("[Skillbook Loaded: ({0})]", Aisling.SkillBook.Dump()));
@@ -1274,10 +1234,10 @@ namespace Darkages.Network.Game
                         continue;
 
 
-                    item.Script = ScriptManager.Load<ItemScript>(item.Template.ScriptName, item);
+                    item.Scripts = ScriptManager.Load<ItemScript>(item.Template.ScriptName, item);
 
                     if (!string.IsNullOrEmpty(item.Template.WeaponScript))
-                        item.WeaponScript = ScriptManager.Load<WeaponScript>(item.Template.WeaponScript, item);
+                        item.WeaponScripts = ScriptManager.Load<WeaponScript>(item.Template.WeaponScript, item);
 
                     if (ServerContext.GlobalItemTemplateCache.ContainsKey(item.Template.Name))
                     {

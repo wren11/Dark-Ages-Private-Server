@@ -392,25 +392,38 @@ namespace Darkages
                 _Reaper.Reset();
 
                 foreach (var obj in objects)
-                    if (obj != null && obj.Map != null && obj.Script != null)
+                    if (obj != null && obj.Map != null && obj.Scripts != null)
                         if (obj.CurrentHp <= 0)
                             if (obj.Target != null)
-                                obj.Script?.OnDeath(obj.Target.Client);
+                            {
+                                foreach (var script in obj.Scripts.Values)
+                                    script.OnDeath(obj.Target.Client);
+                            }
             }
 
 
             foreach (var obj in objects)
-                if (obj != null && obj.Map != null && obj.Script != null)
+                if (obj != null && obj.Map != null && obj.Scripts != null)
                 {
                     if (obj.CurrentHp <= 0)
+                    {
                         if (obj.Target != null)
+                        {
                             if (!obj.Skulled)
                             {
-                                obj.Script?.OnSkulled(obj.Target.Client);
+                                foreach (var script in obj.Scripts.Values)
+                                {
+                                    script.OnSkulled(obj.Target.Client);
+                                }
                                 obj.Skulled = true;
                             }
+                        }
+                    }
+                    foreach (var script in obj.Scripts.Values)
+                    {
+                        script.Update(elapsedTime);
+                    }
 
-                    obj.Script.Update(elapsedTime);
                     obj.UpdateBuffs(elapsedTime);
                     obj.UpdateDebuffs(elapsedTime);
                     obj.LastUpdated = DateTime.UtcNow;

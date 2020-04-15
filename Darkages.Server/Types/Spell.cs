@@ -17,6 +17,7 @@
 //*************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Darkages.Common;
 using Darkages.Network.Game;
@@ -33,7 +34,7 @@ namespace Darkages.Types
         public int Casts = 0;
         public int ID { get; set; }
 
-        [JsonIgnore] public SpellScript Script { get; set; }
+        [JsonIgnore] public Dictionary<string, SpellScript> Scripts { get; set; }
 
         public SpellTemplate Template { get; set; }
 
@@ -114,7 +115,7 @@ namespace Darkages.Types
 
         public static void AttachScript(Aisling Aisling, Spell spell)
         {
-            spell.Script = ScriptManager.Load<SpellScript>(spell.Template.ScriptKey, spell);
+            spell.Scripts = ScriptManager.Load<SpellScript>(spell.Template.ScriptKey, spell);
         }
 
         public static bool GiveTo(Aisling Aisling, string spellname, byte slot)

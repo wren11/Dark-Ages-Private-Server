@@ -940,32 +940,42 @@ namespace Darkages
             if (info != null)
             {
                 if (!string.IsNullOrEmpty(info.Data))
-                    spell.Script.Arguments = info.Data;
+                {
+                    //setup arguments
+                    foreach (var script in spell.Scripts.Values)
+                    {
+                        script.Arguments = info.Data;
+                    }
+                }
 
                 var target = GetObject(Map, i => i.Serial == info.Target, Get.Monsters | Get.Aislings | Get.Mundanes);
                 spell.InUse = true;
 
 
-                if (spell.Script != null)
+                if (spell.Scripts != null)
                 {
                     if (target != null)
                     {
                         if (target is Aisling tobj)
                         {
-                            spell.Script.OnUse(this, target as Aisling);                            
+                            foreach (var script in spell.Scripts.Values)
+                                script.OnUse(this, target as Aisling);                            
                         }
 
                         if (target is Monster aobj)
                         {
-                            spell.Script.OnUse(this, aobj);
+                            foreach (var script in spell.Scripts.Values)
+                                script.OnUse(this, aobj);
                         }
 
                         if (target is Mundane)
-                            spell.Script.OnUse(this, target as Mundane);
+                            foreach (var script in spell.Scripts.Values)
+                                script.OnUse(this, target as Mundane);
                     }
                     else
                     {
-                        spell.Script.OnUse(this, this);
+                        foreach (var script in spell.Scripts.Values)
+                            script.OnUse(this, this);
                     }
                 }
             }

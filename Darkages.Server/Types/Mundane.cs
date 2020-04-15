@@ -41,7 +41,7 @@ namespace Darkages.Types
 
         public MundaneTemplate Template { get; set; }
 
-        [JsonIgnore] public MundaneScript Script { get; set; }
+        [JsonIgnore] public Dictionary<string, MundaneScript> Scripts { get; set; }
 
         [JsonIgnore] public SkillScript DefaultSkill => SkillScripts.Find(i => i.IsScriptDefault) ?? null;
 
@@ -121,7 +121,7 @@ namespace Darkages.Types
             npc.DefenseElement = Generator.RandomEnumValue<ElementManager.Element>();
             npc.OffenseElement = Generator.RandomEnumValue<ElementManager.Element>();
 
-            npc.Script = ScriptManager.Load<MundaneScript>(template.ScriptKey, ServerContext.Game, npc);
+            npc.Scripts = ScriptManager.Load<MundaneScript>(template.ScriptKey, ServerContext.Game, npc);
 
             npc.Template.AttackTimer = new GameServerTimer(TimeSpan.FromMilliseconds(450));
             npc.Template.EnableTurning = false;
@@ -137,29 +137,34 @@ namespace Darkages.Types
         public void LoadSkillScript(string skillscriptstr, bool primary = false)
         {
             Skill obj;
-            var script = ScriptManager.Load<SkillScript>(skillscriptstr,
+            var scripts = ScriptManager.Load<SkillScript>(skillscriptstr, 
                 obj = Skill.Create(1, ServerContext.GlobalSkillTemplateCache[skillscriptstr]));
 
-            obj.NextAvailableUse = DateTime.UtcNow;
-
-            if (script != null)
+            foreach (var script in scripts.Values)
             {
-                script.Skill = obj;
-                script.IsScriptDefault = primary;
-                SkillScripts.Add(script);
+                obj.NextAvailableUse = DateTime.UtcNow;
+
+                if (script != null)
+                {
+                    script.Skill = obj;
+                    script.IsScriptDefault = primary;
+                    SkillScripts.Add(script);
+                }
             }
         }
 
         private void LoadSpellScript(string spellscriptstr, bool primary = false)
         {
-            var script = ScriptManager.Load<SpellScript>(spellscriptstr,
+            var scripts = ScriptManager.Load<SpellScript>(spellscriptstr,
                 Spell.Create(1, ServerContext.GlobalSpellTemplateCache[spellscriptstr]));
 
-
-            if (script != null)
+            foreach (var script in scripts.Values)
             {
-                script.IsScriptDefault = primary;
-                SpellScripts.Add(script);
+                if (script != null)
+                {
+                    script.IsScriptDefault = primary;
+                    SpellScripts.Add(script);
+                }
             }
         }
 
@@ -302,7 +307,8 @@ namespace Darkages.Types
 
                     if (target != null)
                     {
-                        Script?.TargetAcquired(target);
+                        foreach (var script in Scripts.Values)
+                            script?.TargetAcquired(target);
 
                         if (!Position.IsNextTo(target.Position))
                         {

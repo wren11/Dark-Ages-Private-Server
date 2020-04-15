@@ -17,6 +17,7 @@
 //*************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Darkages.Common;
 using Darkages.Network.Game;
@@ -48,9 +49,9 @@ namespace Darkages.Types
 
         public ItemTemplate Template { get; set; }
 
-        [JsonIgnore] public ItemScript Script { get; set; }
+        [JsonIgnore] public Dictionary<string, ItemScript> Scripts { get; set; }
 
-        [JsonIgnore] public WeaponScript WeaponScript { get; set; }
+        [JsonIgnore] public Dictionary<string, WeaponScript> WeaponScripts { get; set; }
 
         [JsonIgnore] public Sprite[] AuthenticatedAislings { get; set; }
 
@@ -733,9 +734,9 @@ namespace Darkages.Types
                 obj.Serial = Generator.GenerateNumber();
             }
 
-            obj.Script = ScriptManager.Load<ItemScript>(template.ScriptName, obj);
+            obj.Scripts = ScriptManager.Load<ItemScript>(template.ScriptName, obj);
             if (!string.IsNullOrEmpty(obj.Template.WeaponScript))
-                obj.WeaponScript = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
+                obj.WeaponScripts = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
 
 
             ServerContext.Log("Item Created by {0} Item is {1}", Owner.Aisling(Owner)?.Username ?? Owner.Serial.ToString(), obj.Dump());

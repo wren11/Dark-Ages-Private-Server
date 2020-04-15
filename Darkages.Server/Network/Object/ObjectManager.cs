@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Scripting;
 using Darkages.Types;
 using Newtonsoft.Json;
 
@@ -52,6 +53,40 @@ namespace Darkages.Network.Object
             return ServerContext.Game?.ObjectFactory.Query(map, p);
         }
 
+        /// <summary>
+        /// GetObjectByName
+        /// </summary>
+        /// <param name="name">Aisling Name or Template Name</param>
+        /// <param name="map">optional,only get objects from your current map instance.</param>
+        /// <returns></returns>
+        public T GetObjectByName<T>(string name, Area map = null)
+            where T: Sprite, new()
+        {
+            var objType = new T();
+
+            if (objType is Aisling)
+            {
+                return GetObject<Aisling>(map, i => i.Username.ToLower() == name.ToLower()).Cast<T>();
+            }
+
+            if (objType is Monster)
+            {
+                return GetObject<Monster>(map, i => i.Template.Name.ToLower() == name.ToLower()).Cast<T>();
+            }
+
+            if (objType is Mundane)
+            {
+                return GetObject<Mundane>(map, i => i.Template.Name.ToLower() == name.ToLower()).Cast<T>();
+            }
+
+            if (objType is Item)
+            {
+                return GetObject<Item>(map, i => i.Template.Name.ToLower() == name.ToLower()).Cast<T>();
+            }
+
+            return null;
+        }
+
         public IEnumerable<T> GetObjects<T>(Area map, Predicate<T> p) where T : Sprite
         {
             return ServerContext.Game?.ObjectFactory.QueryAll(map, p);
@@ -70,19 +105,33 @@ namespace Darkages.Network.Object
             });
 
             if (source is Item)
+            {
                 (obj as Item).Template = (source as Item).Template;
-
+                (obj as Item).Scripts  = ScriptManager.Load<ItemScript>((source as Item).Template.ScriptName, (obj as Item));
+            }
             if (source is Skill)
+            {
                 (obj as Skill).Template = (source as Skill).Template;
-
+                (obj as Skill).Scripts  = ScriptManager.Load<SkillScript>((source as Skill).Template.ScriptName, (obj as Skill));
+            }
             if (source is Spell)
+            {
                 (obj as Spell).Template = (source as Spell).Template;
+                (obj as Spell).Scripts  = ScriptManager.Load<SpellScript>((source as Spell).Template.ScriptKey, (obj as Spell));
+            }
 
             if (source is Monster)
+            {
                 (obj as Monster).Template = (source as Monster).Template;
+                (obj as Monster).Scripts  = ScriptManager.Load<MonsterScript>((source as Monster).Template.ScriptName, (obj as Monster));
+            }
 
             if (source is Mundane)
+            {
                 (obj as Mundane).Template = (source as Mundane).Template;
+                (obj as Mundane).Scripts  = ScriptManager.Load<MundaneScript>((source as Mundane).Template.ScriptKey, (obj as Mundane));
+            }
+
 
             return obj;
         }

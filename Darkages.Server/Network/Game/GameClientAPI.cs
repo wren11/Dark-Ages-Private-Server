@@ -274,12 +274,15 @@ namespace Darkages.Network.Game
         {
             if (ServerContext.GlobalSpellTemplateCache.ContainsKey(spellName))
             {
-                var script = ScriptManager.Load<SpellScript>(spellName,
+                var scripts = ScriptManager.Load<SpellScript>(spellName,
                     Spell.Create(1, ServerContext.GlobalSpellTemplateCache[spellName]));
                 {
-                    script.OnUse(caster, target);
+                    foreach (var script in scripts.Values)
+                    {
+                        script.OnUse(caster, target);
 
-                    ServerContext.Report(string.Format("[Spell {0} Casted By {1} At Target {2}]", spellName, caster.Serial, target.Serial));
+                        ServerContext.Report(string.Format("[Spell {0} Casted By {1} At Target {2}]", spellName, caster.Serial, target.Serial));
+                    }
 
                     return true;
                 }
@@ -295,7 +298,9 @@ namespace Darkages.Network.Game
 
             if (spell != null)
             {
-                spell.Script?.OnUse(Aisling, target);
+                foreach (var script in spell.Scripts.Values)
+                    script?.OnUse(Aisling, target);
+
                 return true;
             }
 
@@ -309,7 +314,8 @@ namespace Darkages.Network.Game
 
             if (skill != null)
             {
-                skill.Script?.OnUse(Aisling);
+                foreach (var script in skill.Scripts?.Values)
+                    script.OnUse(Aisling);
                 return true;
             }
 

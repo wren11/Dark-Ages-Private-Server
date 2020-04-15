@@ -379,9 +379,6 @@
     <Compile Include="Storage\locales\debuffs\debuff_poison.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_reeping.cs" />
     <Compile Include="Storage\locales\debuffs\debuff_sleep.cs" />
-    <Compile Include="Storage\locales\Scripts\Global\Reactors.cs" />
-    <Compile Include="Storage\locales\Scripts\Global\Tut.cs" />
-    <Compile Include="Storage\locales\Scripts\Global\WishingWell.cs" />
     <Compile Include="Storage\locales\Scripts\Items\Armor.cs" />
     <Compile Include="Storage\locales\Scripts\Items\Belt.cs" />
     <Compile Include="Storage\locales\Scripts\Items\Boot.cs" />
@@ -393,6 +390,7 @@
     <Compile Include="Storage\locales\Scripts\Items\Scroll.cs" />
     <Compile Include="Storage\locales\Scripts\Items\Shield.cs" />
     <Compile Include="Storage\locales\Scripts\Items\Weapon.cs" />
+    <Compile Include="Storage\locales\Scripts\Items\WishingWell.cs" />
     <Compile Include="Storage\locales\Scripts\Monsters\CommonMonster.cs" />
     <Compile Include="Storage\locales\Scripts\Monsters\TowerDefense.cs" />
     <Compile Include="Storage\locales\Scripts\Monsters\TrainingDummy.cs" />
@@ -512,6 +510,7 @@
     <Compile Include="Systems\MenuInterpreter\Parser\IMenuParser.cs" />
     <Compile Include="Systems\MenuInterpreter\Parser\ParserDTOs.cs" />
     <Compile Include="Systems\MenuInterpreter\Parser\YamlMenuParser.cs" />
+    <Compile Include="Types\ActivationTrigger.cs" />
     <Compile Include="Types\ActivityStatus.cs" />
     <Compile Include="Types\Aisling.cs" />
     <Compile Include="Types\AislingFlags.cs" />
@@ -610,6 +609,7 @@
     <Compile Include="Types\Templates\WarpTemplate.cs" />
     <Compile Include="Types\Templates\WorldMapTemplate.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
     <VisualStudio AllowExistingFolder="true" />

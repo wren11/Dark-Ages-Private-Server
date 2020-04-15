@@ -95,7 +95,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public override void OnSuccess(Sprite sprite)
         {
-
             if (sprite is Aisling aisling)
             {
 
