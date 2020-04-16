@@ -1760,8 +1760,12 @@ namespace Darkages.Network.Game
             if (format.Serial != ServerContext.Config.HelperMenuId)
             {
                 var mundane = GetObject<Mundane>(client.Aisling.Map, i => i.Serial == format.Serial);
-                foreach (var script in mundane?.Scripts?.Values)
-                    script.OnResponse(this, client, format.Step, format.Args);
+
+                if (mundane.Scripts != null)
+                {
+                    foreach (var script in mundane?.Scripts?.Values)
+                        script.OnResponse(this, client, format.Step, format.Args);
+                }
             }
             else
             {
@@ -2350,9 +2354,13 @@ namespace Darkages.Network.Game
                     {
                             try
                             {
-                                //try and call script first
-                                foreach (var script in (obj as Mundane)?.Scripts?.Values)
-                                    script.OnClick(this, client);
+                                if ((obj as Mundane).Scripts != null)
+                                {
+                                    //try and call script first
+                                    foreach (var script in (obj as Mundane)?.Scripts?.Values)
+                                        script.OnClick(this, client);
+                                }
+
 
                                 if (client.MenuInterpter != null)
                                 {
