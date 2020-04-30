@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -94,13 +94,13 @@ namespace Darkages.Types
         public bool Has(Spell s)
         {
             return Spells.Where(i => i.Value != null && i.Value.Template != null).Select(i => i.Value.Template)
-                       .FirstOrDefault(i => i.Name.Equals(s.Template.Name)) != null;
+                .FirstOrDefault(i => i.Name.Equals(s.Template.Name)) != null;
         }
 
         public bool Has(string s)
         {
             return Spells.Where(i => i.Value != null && i.Value.Template != null).Select(i => i.Value.Template)
-                       .FirstOrDefault(i => s.Equals(i.Name)) != null;
+                .FirstOrDefault(i => s.Equals(i.Name)) != null;
         }
 
         public bool Has(SpellTemplate s)

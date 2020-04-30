@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -32,14 +32,14 @@ namespace Darkages.Types
 
         public void GiveTo(int amount, Aisling aisling)
         {
-            if (aisling.GoldPoints + amount < ServerContext.Config.MaxCarryGold)
+            if (aisling.GoldPoints + amount < ServerContextBase.GlobalConfig.MaxCarryGold)
             {
                 aisling.GoldPoints += amount;
 
-                if (aisling.GoldPoints > ServerContext.Config.MaxCarryGold)
+                if (aisling.GoldPoints > ServerContextBase.GlobalConfig.MaxCarryGold)
                     aisling.GoldPoints = int.MaxValue;
 
-                aisling.Client.SendMessage(0x03, string.Format("You've Received {0} coins.", amount));
+                aisling.Client.SendMessage(0x03, $"You've Received {amount} coins.");
                 aisling.Client.Send(new ServerFormat08(aisling, StatusFlags.StructC));
 
                 Remove<Money>();

@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 {
                     if (args.HasOptions)
                         sender.Client.SendOptionsDialog(Mundane,
-                            string.Format("oye {0}, Nice job.", sender.Path.ToString()),
+                            $"oye {sender.Path.ToString()}, Nice job.",
                             new OptionsDataItem(0x0017, "Hand over the rat shit")
                         );
                 }
@@ -200,7 +200,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
                 Type = QuestType.ItemHandIn,
                 Amount = 10,
-                TemplateContext = ServerContext.GlobalItemTemplateCache["rat shit"]
+                TemplateContext = ServerContextBase.GlobalItemTemplateCache["rat shit"]
             });
 
             quest.QuestStages.Add(q1);

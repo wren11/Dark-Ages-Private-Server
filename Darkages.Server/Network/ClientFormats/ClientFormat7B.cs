@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -47,10 +47,7 @@ namespace Darkages.Network.ClientFormats
 
             #region Type 1
 
-            if (Type == 0x01 && reader.Packet.Data.Length > 2)
-            {
-                Name = reader.ReadStringB();
-            }
+            if (Type == 0x01 && reader.Packet.Data.Length > 2) Name = reader.ReadStringB();
 
             #endregion
         }

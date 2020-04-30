@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -15,6 +15,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
+
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 
@@ -26,12 +27,12 @@ namespace Darkages.Storage.locales.Buffs
         ///     This name MUST match and correspond the name in the type BUFF.
         /// </summary>
         public override string Name => "Hide";
+
         public override int Length => 10;
         public override byte Icon => 10;
 
         public buff_hide()
         {
-
         }
 
         public override void OnApplied(Sprite Affected, Buff buff)
@@ -43,10 +44,7 @@ namespace Darkages.Storage.locales.Buffs
                 {
                     client.Aisling.Flags = AislingFlags.Invisible;
 
-                    if (client.Aisling.Invisible)
-                    {
-                        client.SendMessage(0x02, "You blend in to the shadows.");
-                    }
+                    if (client.Aisling.Invisible) client.SendMessage(0x02, "You blend in to the shadows.");
 
                     var sound = new ServerFormat13
                     {
@@ -64,8 +62,8 @@ namespace Darkages.Storage.locales.Buffs
         public override void OnDurationUpdate(Sprite Affected, Buff buff)
         {
             Affected.Show(Scope.NearbyAislings,
-                new ServerFormat29((uint)Affected.Serial,
-                (uint)Affected.Serial, 0, 0, 100));
+                new ServerFormat29((uint) Affected.Serial,
+                    (uint) Affected.Serial, 0, 0, 100));
 
             base.OnDurationUpdate(Affected, buff);
         }

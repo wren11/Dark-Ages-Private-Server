@@ -46,10 +46,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     //this would return false if they were already on the quest.
                     //or failed to accept it for any reason
                     if (client.Aisling.AcceptQuest(quest))
-                    {
                         //completed it.
                         quest.OnCompleted(client.Aisling);
-                    }
                 }
                     break;
             }

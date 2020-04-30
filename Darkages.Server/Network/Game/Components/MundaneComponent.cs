@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ namespace Darkages.Network.Game.Components
     {
         public MundaneComponent(GameServer server) : base(server)
         {
-            Timer = new GameServerTimer(TimeSpan.FromSeconds(ServerContext.Config.MundaneRespawnInterval));
+            Timer = new GameServerTimer(TimeSpan.FromSeconds(ServerContextBase.GlobalConfig.MundaneRespawnInterval));
         }
 
         public GameServerTimer Timer { get; set; }
@@ -43,15 +43,15 @@ namespace Darkages.Network.Game.Components
 
         public void SpawnMundanes()
         {
-            foreach (var mundane in ServerContext.GlobalMundaneTemplateCache)
+            foreach (var mundane in ServerContextBase.GlobalMundaneTemplateCache)
             {
                 if (mundane.Value == null || mundane.Value.AreaID == 0)
                     continue;
 
-                if (!ServerContext.GlobalMapCache.ContainsKey(mundane.Value.AreaID))
+                if (!ServerContextBase.GlobalMapCache.ContainsKey(mundane.Value.AreaID))
                     continue;
 
-                var map = ServerContext.GlobalMapCache[mundane.Value.AreaID];
+                var map = ServerContextBase.GlobalMapCache[mundane.Value.AreaID];
 
                 if (map == null || !map.Ready)
                     continue;

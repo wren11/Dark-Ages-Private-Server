@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -37,11 +37,7 @@ namespace Darkages.Types
         public byte Slot { get; set; }
         public byte Icon { get; set; }
 
-        [JsonIgnore]
-        [Browsable(false)]
-        public string Name => string.Format("{0} (Lev:{1}/{2})",
-            Template.Name,
-            Level, Template.MaxLevel);
+        [JsonIgnore] [Browsable(false)] public string Name => $"{Template.Name} (Lev:{Level}/{Template.MaxLevel})";
 
         public int Level { get; set; }
         public int ID { get; set; }
@@ -98,7 +94,7 @@ namespace Darkages.Types
 
         public static bool GiveTo(GameClient client, string args)
         {
-            var skillTemplate = ServerContext.GlobalSkillTemplateCache[args];
+            var skillTemplate = ServerContextBase.GlobalSkillTemplateCache[args];
             var slot = client.Aisling.SkillBook.FindEmpty();
 
             if (slot <= 0)
@@ -123,7 +119,7 @@ namespace Darkages.Types
 
         public static bool GiveTo(Aisling aisling, string args, byte slot, int level = 1)
         {
-            var skillTemplate = ServerContext.GlobalSkillTemplateCache[args];
+            var skillTemplate = ServerContextBase.GlobalSkillTemplateCache[args];
             var skill = Create(slot, skillTemplate);
             {
                 skill.Level = level;
@@ -135,10 +131,10 @@ namespace Darkages.Types
 
         public static bool GiveTo(Aisling aisling, string args, int level = 100)
         {
-            if (!ServerContext.GlobalSkillTemplateCache.ContainsKey(args))
+            if (!ServerContextBase.GlobalSkillTemplateCache.ContainsKey(args))
                 return false;
 
-            var skillTemplate = ServerContext.GlobalSkillTemplateCache[args];
+            var skillTemplate = ServerContextBase.GlobalSkillTemplateCache[args];
             var slot = aisling.SkillBook.FindEmpty();
 
             if (slot <= 0)

@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -23,22 +23,22 @@ namespace Darkages.Types
     /// </summary>
     public enum MapFlags : uint
     {
-        Snow        = 1,
-        Rain        = 2,
-        NoMap       = 64,
-        Winter      = 128,
-        CanSummon   = 256,
-        CanLocate   = 512,
+        Snow = 1,
+        Rain = 2,
+        NoMap = 64,
+        Winter = 128,
+        CanSummon = 256,
+        CanLocate = 512,
         CanTeleport = 1024,
         CanUseSkill = 2048,
         CanUseSpell = 4096,
-        ArenaTeam   = 8192,
-        PlayerKill  = 16384,
-        SendToHell  = 32768,
-        ShouldComa  = 65536,
+        ArenaTeam = 8192,
+        PlayerKill = 16384,
+        SendToHell = 32768,
+        ShouldComa = 65536,
         HasDayNight = 131072,
 
-        Darkness    = Snow | Rain,
-        Default     = CanSummon | CanLocate | CanTeleport | CanUseSkill | CanUseSpell | SendToHell | ShouldComa,
+        Darkness = Snow | Rain,
+        Default = CanSummon | CanLocate | CanTeleport | CanUseSkill | CanUseSpell | SendToHell | ShouldComa,
     }
 }

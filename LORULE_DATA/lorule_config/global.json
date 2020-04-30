@@ -26,7 +26,7 @@
   "DayTimeInterval": 30.0,
   "DeathHPPenalty": 50,
   "DeathMap": 88888,
-  "DebugMode": false,
+  "DebugMode": true,
   "DefaultItemColor": 13,
   "DefaultItemDurability": 1000,
   "DefaultItemValue": 500,
@@ -40,14 +40,6 @@
   "ServerDev": "",
   "ProjectDev": "Wren",
   "GlobalBaseSkillDelay": 500.0,
-  "GlobalScripts": {
-    "$type": "System.String[], mscorlib",
-    "$values": [
-      "Tut",
-      "Reactors",
-      "WishingWell"
-    ]
-  },
   "GlobalSpawnTimer": 2000.0,
   "GroupExpBonus": 5.0,
   "GroupRequestDeclinedMsg": "noname does not wish to join your group.",
@@ -146,5 +138,8 @@
   "UseLoruleItemRarity": false,
   "ItemNotRequiredMsg": "Come back when you have the items required. \n{=q",
   "AppInsightsKey": "MWVhMDJhMTgtZjU2My00OTgzLTgyNTMtOTVjYjRmZjIzMWZm",
-  "ErrorReporting": true
+  "ErrorReporting": true,
+  "DeathReepingMessage": "You have been scared for life.",
+  "DeathMapX": 21,
+  "DeathMapY": 21
 }

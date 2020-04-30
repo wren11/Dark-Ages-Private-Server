@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -47,20 +47,14 @@ namespace Darkages.Types
 
         public Item FindInSlot(int Slot)
         {
-            if (Items.ContainsKey(Slot))
-            {
-                return Items[Slot];
-            }
+            if (Items.ContainsKey(Slot)) return Items[Slot];
 
             return null;
         }
 
         public void Assign(Item Item)
         {
-            if (Item != null)
-            {
-                Set(Item);
-            }
+            if (Item != null) Set(Item);
         }
 
         public new Item[] Get(Predicate<Item> prediate)
@@ -78,10 +72,7 @@ namespace Darkages.Types
             if (s == null)
                 return;
 
-            if (Items.ContainsKey(s.Slot))
-            {
-                Items[s.Slot] = Clone<Item>(s);
-            }
+            if (Items.ContainsKey(s.Slot)) Items[s.Slot] = Clone<Item>(s);
         }
 
         public byte FindEmpty()
@@ -104,10 +95,7 @@ namespace Darkages.Types
             if (s == null)
                 return;
 
-            if (Items.ContainsKey(s.Slot))
-            {
-                Items[s.Slot] = clone ? Clone<Item>(s) : s;
-            }
+            if (Items.ContainsKey(s.Slot)) Items[s.Slot] = clone ? Clone<Item>(s) : s;
         }
 
         public void Remove(GameClient client, Item item)
@@ -115,10 +103,7 @@ namespace Darkages.Types
             if (item == null)
                 return;
 
-            if (Remove(item.Slot) != null)
-            {
-                client.Send(new ServerFormat10(item.Slot));
-            }
+            if (Remove(item.Slot) != null) client.Send(new ServerFormat10(item.Slot));
         }
 
         public Item Remove(byte movingFrom)

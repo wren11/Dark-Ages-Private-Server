@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -30,10 +30,10 @@ namespace Darkages.Storage
 
         static AreaStorage()
         {
-            if (ServerContext.StoragePath == null)
-                ServerContext.LoadConstants();
+            if (ServerContextBase.StoragePath == null)
+                ServerContextBase.LoadConstants();
 
-            StoragePath = $@"{ServerContext.StoragePath}\areas";
+            StoragePath = $@"{ServerContextBase.StoragePath}\areas";
 
             if (!Directory.Exists(StoragePath))
                 Directory.CreateDirectory(StoragePath);
@@ -43,7 +43,7 @@ namespace Darkages.Storage
 
         public Area Load(string Name)
         {
-            var path = Path.Combine(StoragePath, string.Format("{0}.json", Name.ToLower()));
+            var path = Path.Combine(StoragePath, $"{Name.ToLower()}.json");
 
             if (!File.Exists(path))
                 return null;
@@ -59,14 +59,14 @@ namespace Darkages.Storage
                 {
                     var obj = JsonConvert.DeserializeObject<Area>(content, settings);
 
-                    ServerContext.Report(obj);
+                    ServerContextBase.Report(obj);
 
 
                     return obj;
                 }
                 catch (Exception e)
                 {
-                    ServerContext.Report(e);
+                    ServerContextBase.Report(e);
                     return null;
                 }
             }
@@ -74,15 +74,15 @@ namespace Darkages.Storage
 
         public void Save(Area obj)
         {
-            if (ServerContext.Paused)
+            if (ServerContextBase.Paused)
                 return;
 
 
-            var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.ContentName.ToLower()));
+            var path = Path.Combine(StoragePath, $"{obj.ContentName.ToLower()}.json");
             var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
             File.WriteAllText(path, objString);
 
-            ServerContext.Report(obj);
+            ServerContextBase.Report(obj);
         }
 
         public void CacheFromStorage()
@@ -99,13 +99,13 @@ namespace Darkages.Storage
                 if (mapObj == null)
                     continue;
 
-                var mapFile = Directory.GetFiles($@"{ServerContext.StoragePath}\maps", $"lod{mapObj.ID}.map",
+                var mapFile = Directory.GetFiles($@"{ServerContextBase.StoragePath}\maps", $"lod{mapObj.ID}.map",
                     SearchOption.TopDirectoryOnly).FirstOrDefault();
 
                 if (mapFile != null && File.Exists(mapFile))
                 {
                     LoadMap(mapObj, mapFile, true);
-                    ServerContext.GlobalMapCache[mapObj.ID] = mapObj;
+                    ServerContextBase.GlobalMapCache[mapObj.ID] = mapObj;
                 }
             }
         }

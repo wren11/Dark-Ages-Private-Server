@@ -17,17 +17,14 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         public void LoadScriptInterpreter(GameClient client)
         {
             var parser = new YamlMenuParser();
-            var yamlPath = ServerContext.StoragePath + string.Format(@"\Scripts\Menus\{0}.yaml", Mundane.Template.Name);
+            var yamlPath = ServerContextBase.StoragePath + $@"\Scripts\Menus\{Mundane.Template.Name}.yaml";
 
             if (File.Exists(yamlPath))
                 if (client.MenuInterpter == null)
                 {
                     client.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
                     client.MenuInterpter.Client = client;
-
                     client.MenuInterpter.OnMovedToNextStep += MenuInterpreter_OnMovedToNextStep;
-
-                    ServerContext.Log("Script Interpreter Created for Mundane: {0}", Mundane.Template.Name);
                 }
         }
 

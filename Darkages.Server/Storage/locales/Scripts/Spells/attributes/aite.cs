@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 else
                 {
                     if (sprite is Aisling)
-                        (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
+                        (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.GlobalConfig.NoManaMessage);
                     return;
                 }
 

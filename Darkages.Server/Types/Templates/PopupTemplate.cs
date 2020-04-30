@@ -167,7 +167,7 @@ namespace Darkages.Types
                 Owner = client.Aisling.Serial
             };
 
-            var users   = client.Aisling.AislingsNearby().Where(i => i.Serial != client.Aisling.Serial);
+            var users = client.Aisling.AislingsNearby().Where(i => i.Serial != client.Aisling.Serial);
             popup.Users = new List<int>(users.Select(i => i.Serial));
 
             Add(popup);

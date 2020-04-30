@@ -29,10 +29,7 @@ namespace Darkages.Types
         {
             var q = FindQuest(lpString);
 
-            if (q != null)
-            {
-                return q.Completed;
-            }
+            if (q != null) return q.Completed;
 
             return false;
         }
@@ -63,10 +60,7 @@ namespace Darkages.Types
 
         public void OntoNext()
         {
-            if (Index + 1 < Quests.Count)
-            {
-                Index++;
-            }
+            if (Index + 1 < Quests.Count) Index++;
         }
     }
 }

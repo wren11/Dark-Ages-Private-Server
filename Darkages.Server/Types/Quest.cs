@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -101,7 +101,6 @@ namespace Darkages.Types
 
             GiveRewards(user, equipLoot);
         }
-
 
 
         public void GiveRewards(Aisling user, bool equipLoot)
@@ -212,9 +211,9 @@ namespace Darkages.Types
                 }
 
             foreach (var items in ItemRewards)
-                if (ServerContext.GlobalItemTemplateCache.ContainsKey(items))
+                if (ServerContextBase.GlobalItemTemplateCache.ContainsKey(items))
                 {
-                    var template = ServerContext.GlobalItemTemplateCache[items];
+                    var template = ServerContextBase.GlobalItemTemplateCache[items];
 
                     var obj = Item.Create(user, template);
                     if (!obj.GiveTo(user)) obj.Release(user, user.Position);
@@ -224,9 +223,9 @@ namespace Darkages.Types
                 user.LegendBook.AddLegend(new Legend.LegendItem
                 {
                     Category = "Quest Reward",
-                    Color    = legends.Color,
-                    Icon     = legends.Icon,
-                    Value    = legends.Value
+                    Color = legends.Color,
+                    Icon = legends.Icon,
+                    Value = legends.Value
                 });
 
 
@@ -237,7 +236,7 @@ namespace Darkages.Types
             if (GoldReward > 0)
             {
                 user.GoldPoints += (int) GoldReward;
-                user.Client.SendMessage(0x02, string.Format("You are awarded {0} gold.", GoldReward));
+                user.Client.SendMessage(0x02, $"You are awarded {GoldReward} gold.");
             }
 
             if (equipLoot)
@@ -277,9 +276,9 @@ namespace Darkages.Types
                     if (!string.IsNullOrEmpty(obj.Template.WeaponScript))
                     {
                         obj.WeaponScripts = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
-                        
+
                         foreach (var script in obj.Scripts?.Values)
-                            script.Equipped(user, (byte)obj.Template.EquipmentSlot);
+                            script.Equipped(user, (byte) obj.Template.EquipmentSlot);
                     }
                 }
         }

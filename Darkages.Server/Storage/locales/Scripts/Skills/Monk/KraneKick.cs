@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                             continue;
 
                         var mod = 1 * client.Aisling.Position.SurroundingContent(client.Aisling.Map)
-                                      .Where(o => o != null && o.Content != TileContent.None).Count();
+                            .Where(o => o != null && o.Content != TileContent.None).Count();
                         var dmg = (int) ((client.Aisling.Invisible ? 2 : 1 * client.Aisling.Con * 100) / 0.5) * mod;
 
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);

@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -26,10 +26,7 @@ namespace Darkages.Common
 
         public static bool Run(this string str)
         {
-            var result = ServerContext.EVALUATOR.Run(str);
-
-            ServerContext.Log("[[Script] => {0} [Result] => {1}]", str, result);
-
+            var result = ServerContextBase.Evaluator.Run(str);
             return result;
         }
 

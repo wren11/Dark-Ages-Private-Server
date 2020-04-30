@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -68,19 +68,7 @@ namespace Darkages.Types
 
         public bool Aggressive { get; set; }
 
-        [JsonIgnore]
-        public Position CurrentWaypoint
-        {
-            get
-            {
-                if (Template?.Waypoints != null)
-                {
-                    return Template.Waypoints[WaypointIndex];
-                }
-
-                return null;
-            }
-        }
+        [JsonIgnore] public Position CurrentWaypoint => Template?.Waypoints?[WaypointIndex];
 
         [JsonIgnore] public LootTable LootTable { get; set; }
 
@@ -149,32 +137,25 @@ namespace Darkages.Types
             }
 
             if (canCrit)
-            {
                 lock (Generator.Random)
                 {
                     var critical = Math.Abs(GenerateNumber() % 100);
-                    if (critical >= 85)
-                    {
-                        exp *= 2;
-                    }
+                    if (critical >= 85) exp *= 2;
                 }
-            }
 
             DistributeExperience(player, exp);
 
             foreach (var party in player.PartyMembers.Where(i => i.Serial != player.Serial))
-            {
                 if (party.WithinRangeOf(player))
                 {
                     DistributeExperience(party, exp);
 
                     party.Client.SendStats(StatusFlags.StructC);
-                    party.Client.SendMessage(0x02, string.Format("You received {0} Experience!.", (int)exp));
+                    party.Client.SendMessage(0x02, $"You received {(int) exp} Experience!.");
                 }
-            }
 
             player.Client.SendStats(StatusFlags.StructC);
-            player.Client.SendMessage(0x02, string.Format("You received {0} Experience!.", (int)exp));
+            player.Client.SendMessage(0x02, $"You received {(int) exp} Experience!.");
         }
 
         public static void DistributeExperience(Aisling player, double exp)
@@ -184,12 +165,8 @@ namespace Darkages.Types
             if (chunks <= 1)
                 HandleExp(player, exp);
             else
-            {
-                for (int i = 0; i < chunks; i++)
-                {
+                for (var i = 0; i < chunks; i++)
                     HandleExp(player, 1000);
-                }
-            }
         }
 
         private static void HandleExp(Aisling player, double exp)
@@ -197,38 +174,31 @@ namespace Darkages.Types
             if (exp <= 0)
                 exp = 1;
 
-            var bonus = exp * (1 + player.GroupParty.LengthExcludingSelf) * Config.GroupExpBonus / 100;
+            var bonus = exp * (1 + player.GroupParty.LengthExcludingSelf) *
+                ServerContextBase.GlobalConfig.GroupExpBonus / 100;
 
             if (bonus > 0)
                 exp += bonus;
 
             if (player.ExpTotal <= uint.MaxValue)
-            {
-                player.ExpTotal += (uint)exp;
-            }
+                player.ExpTotal += (uint) exp;
             else
-            {
                 player.ExpTotal = uint.MaxValue;
-            }
 
 
+            player.ExpNext -= (uint) exp;
 
-            player.ExpNext -= (uint)exp;
-
-            if (player.ExpNext >= int.MaxValue)
-            {
-                player.ExpNext = 0;
-            }
+            if (player.ExpNext >= int.MaxValue) player.ExpNext = 0;
 
             var seed = player.ExpLevel * 0.1 + 0.5;
             {
-                if (player.ExpLevel >= Config.PlayerLevelCap)
+                if (player.ExpLevel >= ServerContextBase.GlobalConfig.PlayerLevelCap)
                     return;
             }
 
             while (player.ExpNext <= 0 && player.ExpLevel < 99)
             {
-                player.ExpNext = (uint)(player.ExpLevel * seed * 5000);
+                player.ExpNext = (uint) (player.ExpLevel * seed * 5000);
 
                 if (player.ExpLevel == 99)
                     break;
@@ -251,14 +221,15 @@ namespace Darkages.Types
 
         private static void Levelup(Aisling player)
         {
-            if (player.ExpLevel < Config.PlayerLevelCap)
+            if (player.ExpLevel < ServerContextBase.GlobalConfig.PlayerLevelCap)
             {
-                player._MaximumHp += (int) (Config.HpGainFactor * player.Con * 0.65);
-                player._MaximumMp += (int) (Config.MpGainFactor * player.Wis * 0.45);
-                player.StatPoints += Config.StatsPerLevel;
+                player._MaximumHp += (int) (ServerContextBase.GlobalConfig.HpGainFactor * player.Con * 0.65);
+                player._MaximumMp += (int) (ServerContextBase.GlobalConfig.MpGainFactor * player.Wis * 0.45);
+                player.StatPoints += ServerContextBase.GlobalConfig.StatsPerLevel;
                 player.ExpLevel++;
 
-                player.Client.SendMessage(0x02, string.Format(Config.LevelUpMessage, player.ExpLevel));
+                player.Client.SendMessage(0x02,
+                    string.Format(ServerContextBase.GlobalConfig.LevelUpMessage, player.ExpLevel));
                 player.Show(Scope.NearbyAislings,
                     new ServerFormat29((uint) player.Serial, (uint) player.Serial, 0x004F, 0x004F, 64));
             }
@@ -283,7 +254,7 @@ namespace Darkages.Types
 
         private List<string> DetermineDrop()
         {
-            return LootManager.Drop(LootTable, Generator.Random.Next(Config.LootTableStackSize))
+            return LootManager.Drop(LootTable, Generator.Random.Next(ServerContextBase.GlobalConfig.LootTableStackSize))
                 .Select(i => i?.Name).ToList();
         }
 
@@ -296,13 +267,13 @@ namespace Darkages.Types
         {
             var idx = 0;
             if (Template.Drops.Count > 0)
-                    idx = Generator.Random.Next(Template.Drops.Count);
+                idx = Generator.Random.Next(Template.Drops.Count);
 
 
             var rndSelector = Template.Drops[idx];
-            if (GlobalItemTemplateCache.ContainsKey(rndSelector))
+            if (ServerContextBase.GlobalItemTemplateCache.ContainsKey(rndSelector))
             {
-                var item = Item.Create(this, GlobalItemTemplateCache[rndSelector], true);
+                var item = Item.Create(this, ServerContextBase.GlobalItemTemplateCache[rndSelector], true);
                 var chance = 0.00;
 
 
@@ -325,9 +296,9 @@ namespace Darkages.Types
                 DetermineDrop().ForEach(i =>
                 {
                     if (i != null)
-                        if (GlobalItemTemplateCache.ContainsKey(i))
+                        if (ServerContextBase.GlobalItemTemplateCache.ContainsKey(i))
                         {
-                            var rolled_item = Item.Create(this, GlobalItemTemplateCache[i]);
+                            var rolled_item = Item.Create(this, ServerContextBase.GlobalItemTemplateCache[i]);
                             if (rolled_item != GlobalLastItemRoll)
                             {
                                 GlobalLastItemRoll = rolled_item;
@@ -338,7 +309,7 @@ namespace Darkages.Types
                                 {
                                     var variance = DetermineVariance();
 
-                                    if (!ServerContext.Config.UseLoruleVariants)
+                                    if (!ServerContextBase.GlobalConfig.UseLoruleVariants)
                                         variance = Variance.None;
 
                                     if (variance != Variance.None)
@@ -351,7 +322,7 @@ namespace Darkages.Types
                                 if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
                                     upgrade = null;
 
-                                if (!ServerContext.Config.UseLoruleItemRarity)
+                                if (!ServerContextBase.GlobalConfig.UseLoruleItemRarity)
                                     upgrade = null;
 
                                 rolled_item.Upgrades = upgrade?.Upgrade ?? 0;
@@ -370,7 +341,7 @@ namespace Darkages.Types
 
                                             foreach (var player in party)
                                                 player.Client.SendMessage(0x03,
-                                                    string.Format("Special Drop: {0}", rolled_item.DisplayName));
+                                                    $"Special Drop: {rolled_item.DisplayName}");
 
                                             Task.Delay(500).ContinueWith(ct => { rolled_item.Animate(160, 200); });
                                         }
@@ -398,10 +369,8 @@ namespace Darkages.Types
         public List<Aisling> GetTaggedAislings()
         {
             if (TaggedAislings.Any())
-            {
                 return TaggedAislings.Select(b => GetObject<Aisling>(Map, n => n.Serial == b)).Where(i => i != null)
                     .ToList();
-            }
 
             return new List<Aisling>();
         }
@@ -415,19 +384,13 @@ namespace Darkages.Types
             {
                 var aisling = target as Aisling;
 
-                if (!TaggedAislings.Contains(aisling.Serial)) 
+                if (!TaggedAislings.Contains(aisling.Serial))
                     TaggedAislings.Add(aisling.Serial);
 
                 if (aisling.GroupParty.LengthExcludingSelf > 0)
-                {
                     foreach (var member in aisling.GroupParty.MembersExcludingSelf)
-                    {
                         if (!TaggedAislings.Contains(member.Serial))
-                        {
                             TaggedAislings.Add(member.Serial);
-                        }
-                    }
-                }
             }
         }
 
@@ -522,8 +485,8 @@ namespace Darkages.Types
 
             obj.BonusMr = (byte) (10 * (template.Level / 20));
 
-            if (obj.BonusMr > Config.BaseMR)
-                obj.BonusMr = Config.BaseMR;
+            if (obj.BonusMr > ServerContextBase.GlobalConfig.BaseMR)
+                obj.BonusMr = ServerContextBase.GlobalConfig.BaseMR;
 
             if ((template.PathQualifer & PathQualifer.Wander) == PathQualifer.Wander)
                 obj.WalkEnabled = true;
@@ -593,14 +556,15 @@ namespace Darkages.Types
                     {
                         lock (Generator.Random)
                         {
-                            var available = GlobalItemTemplateCache.Select(i => i.Value)
+                            var available = ServerContextBase.GlobalItemTemplateCache.Select(i => i.Value)
                                 .Where(i => Math.Abs(i.LevelRequired - obj.Template.Level) <= 10).ToList();
                             if (available.Count > 0) obj.LootTable.Add(available[GenerateNumber() % available.Count]);
                         }
                     }
                     else
                     {
-                        if (GlobalItemTemplateCache.ContainsKey(drop)) obj.LootTable.Add(GlobalItemTemplateCache[drop]);
+                        if (ServerContextBase.GlobalItemTemplateCache.ContainsKey(drop))
+                            obj.LootTable.Add(ServerContextBase.GlobalItemTemplateCache[drop]);
                     }
 
                 obj.UpgradeTable.Add(new Common());

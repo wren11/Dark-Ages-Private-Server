@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ namespace Darkages.Types
 {
     public class Board : NetworkFormat
     {
-        public static string StoragePath = $@"{ServerContext.StoragePath}\Community\Boards";
+        public static string StoragePath = $@"{ServerContextBase.StoragePath}\Community\Boards";
 
         public List<PostFormat> Posts = new List<PostFormat>();
 
@@ -115,7 +115,7 @@ namespace Darkages.Types
 
         public static Board Load(string LookupKey)
         {
-            var path = Path.Combine(StoragePath, string.Format("{0}.json", LookupKey));
+            var path = Path.Combine(StoragePath, $"{LookupKey}.json");
 
             if (!File.Exists(path))
                 return null;
@@ -141,11 +141,11 @@ namespace Darkages.Types
 
         public void Save(string key)
         {
-            if (ServerContext.Paused)
+            if (ServerContextBase.Paused)
                 return;
 
 
-            var path = Path.Combine(StoragePath, string.Format("{0}\\{1}.json", key, Subject));
+            var path = Path.Combine(StoragePath, $"{key}\\{Subject}.json");
             var objString = JsonConvert.SerializeObject(this, StorageManager.Settings);
             File.WriteAllText(path, objString);
         }

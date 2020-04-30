@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -93,39 +93,26 @@ namespace Darkages.Types
         internal string[] MetaData
             => new[]
             {
-                string.Format("{0}/0/0", ExpLevel_Required > 0 ? ExpLevel_Required : 0),
-                string.Format("{0}/0/0",
-                    _template is SkillTemplate ? (_template as SkillTemplate).Icon : (_template as SpellTemplate).Icon),
-                string.Format("{0}/{1}/{2}/{3}/{4}",
-                    Str_Required == 0 ? 3 : Str_Required,
-                    Int_Required == 0 ? 3 : Int_Required,
-                    Wis_Required == 0 ? 3 : Wis_Required,
-                    Con_Required == 0 ? 3 : Con_Required,
-                    Dex_Required == 0 ? 3 : Dex_Required),
-                string.Format("{0}/{1}", !string.IsNullOrEmpty(Skill_Required) ? Skill_Required : "0",
-                    Skill_Level_Required > 0 ? Skill_Level_Required : 0),
-                string.Format("{0}/{1}", !string.IsNullOrEmpty(Spell_Required) ? Spell_Required : "0",
-                    Spell_Level_Required > 0 ? Spell_Level_Required : 0),
-                string.Format("{0} \n\n$Items Required: {1} $gold: {2}\n\n{3}",
-                    _template.Description != "" ? _template.Description : _template.Name,
-                    Items_Required.Count > 0
-                        ? string.Join(",", Items_Required.Select(i => i.AmountRequired + " " + i.Item))
-                        : "None", Gold_Required > 0 ? Gold_Required : 0, Script ?? "unknown.")
+                $"{(ExpLevel_Required > 0 ? ExpLevel_Required : 0)}/0/0",
+                $"{(_template is SkillTemplate ? (_template as SkillTemplate).Icon : (_template as SpellTemplate).Icon)}/0/0",
+                $"{(Str_Required == 0 ? 3 : Str_Required)}/{(Int_Required == 0 ? 3 : Int_Required)}/{(Wis_Required == 0 ? 3 : Wis_Required)}/{(Con_Required == 0 ? 3 : Con_Required)}/{(Dex_Required == 0 ? 3 : Dex_Required)}",
+                $"{(!string.IsNullOrEmpty(Skill_Required) ? Skill_Required : "0")}/{(Skill_Level_Required > 0 ? Skill_Level_Required : 0)}",
+                $"{(!string.IsNullOrEmpty(Spell_Required) ? Spell_Required : "0")}/{(Spell_Level_Required > 0 ? Spell_Level_Required : 0)}",
+                $"{(_template.Description != "" ? _template.Description : _template.Name)} \n\n$Items Required: {(Items_Required.Count > 0 ? string.Join(",", Items_Required.Select(i => i.AmountRequired + " " + i.Item)) : "None")} $gold: {(Gold_Required > 0 ? Gold_Required : 0)}\n\n{Script ?? "unknown."}"
             };
 
         private string AreaAndPosition(string npcKey)
         {
-            if (!ServerContext.GlobalMundaneTemplateCache.ContainsKey(npcKey)) return "Secret!";
+            if (!ServerContextBase.GlobalMundaneTemplateCache.ContainsKey(npcKey)) return "Secret!";
 
-            var npc = ServerContext.GlobalMundaneTemplateCache[npcKey];
+            var npc = ServerContextBase.GlobalMundaneTemplateCache[npcKey];
 
-            if (!ServerContext.GlobalMapCache.ContainsKey(npc.AreaID))
+            if (!ServerContextBase.GlobalMapCache.ContainsKey(npc.AreaID))
                 return "Secret!";
 
-            var map = ServerContext.GlobalMapCache[npc.AreaID];
+            var map = ServerContextBase.GlobalMapCache[npc.AreaID];
             {
-                return string.Format("From Who: {0}\nFrom Where:{1} - (Coordinates: {2},{3})", npc.Name, map.Name,
-                    npc.X, npc.Y);
+                return $"From Who: {npc.Name}\nFrom Where:{map.Name} - (Coordinates: {npc.X},{npc.Y})";
             }
         }
 
@@ -134,8 +121,8 @@ namespace Darkages.Types
         {
             var sb = new StringBuilder();
 
-            sb.Append(string.Format("Stats Required: ({0} STR, {1} INT, {2} WIS, {3} CON, {4} DEX)", Str_Required,
-                Int_Required, Wis_Required, Con_Required, Dex_Required));
+            sb.Append(
+                $"Stats Required: ({Str_Required} STR, {Int_Required} INT, {Wis_Required} WIS, {Con_Required} CON, {Dex_Required} DEX)");
             sb.Append("\nDo you wish to learn this new ability?");
             return sb.ToString();
         }
@@ -157,7 +144,7 @@ namespace Darkages.Types
                 player.Client.SendMessage(0x02, "You cannot learn that yet. Not even close!");
                 player.SendAnimation(94, player, player);
 
-                ServerContext.Report(e);
+                ServerContextBase.Report(e);
 
                 //ignore
                 return false;
@@ -191,14 +178,14 @@ namespace Darkages.Types
         {
             if (Skill_Required != null)
             {
-                var skill = ServerContext.GlobalSkillTemplateCache[Skill_Required];
+                var skill = ServerContextBase.GlobalSkillTemplateCache[Skill_Required];
                 var skill_retainer = player.SkillBook.Get(i => i.Template?.Name.Equals(skill.Name) ?? false)
                     .FirstOrDefault();
 
                 if (skill_retainer == null)
                 {
                     result[n++] = new Tuple<bool, object>(false,
-                        string.Format("You don't have the skill required. ({0})", Skill_Required));
+                        $"You don't have the skill required. ({Skill_Required})");
                 }
                 else
                 {
@@ -207,30 +194,27 @@ namespace Darkages.Types
                             "Skills Required.");
                     else
                         result[n++] = new Tuple<bool, object>(false,
-                            string.Format("{0} Must be level {1} - Go get {2} more levels.",
-                                skill.Name, Skill_Level_Required,
-                                Math.Abs(skill_retainer.Level - Skill_Level_Required)));
+                            $"{skill.Name} Must be level {Skill_Level_Required} - Go get {Math.Abs(skill_retainer.Level - Skill_Level_Required)} more levels.");
                 }
             }
 
             if (Spell_Required != null)
             {
-                var spell = ServerContext.GlobalSpellTemplateCache[Spell_Required];
+                var spell = ServerContextBase.GlobalSpellTemplateCache[Spell_Required];
                 var spell_retainer = player.SpellBook.Get(i => i
                                                                != null && i.Template != null &&
                                                                i.Template.Name.Equals(spell.Name)).FirstOrDefault();
 
                 if (spell_retainer == null)
                     result[n++] = new Tuple<bool, object>(false,
-                        string.Format("You don't have the spell required. ({0})", Spell_Required));
+                        $"You don't have the spell required. ({Spell_Required})");
 
                 if ((spell_retainer != null) & (spell_retainer.Level >= Spell_Level_Required))
                     result[n++] = new Tuple<bool, object>(true,
                         "Spells Required.");
                 else
                     result[n++] = new Tuple<bool, object>(false,
-                        string.Format("{0} Must be level {1} - Go get {2} more levels.",
-                            spell.Name, Skill_Level_Required, Math.Abs(spell_retainer.Level - Spell_Level_Required)));
+                        $"{spell.Name} Must be level {Skill_Level_Required} - Go get {Math.Abs(spell_retainer.Level - Spell_Level_Required)} more levels.");
             }
 
             return n;
@@ -239,19 +223,19 @@ namespace Darkages.Types
         private int CHeckAttributePredicates(Aisling player, Dictionary<int, Tuple<bool, object>> result, int n)
         {
             result[n++] = new Tuple<bool, object>(player.ExpLevel >= ExpLevel_Required,
-                string.Format("Go level more. (Level {0} Required)", ExpLevel_Required));
+                $"Go level more. (Level {ExpLevel_Required} Required)");
             result[n++] = new Tuple<bool, object>(player.Str >= Str_Required,
-                string.Format("You are not strong enough. ({0} Str Required)", Str_Required));
+                $"You are not strong enough. ({Str_Required} Str Required)");
             result[n++] = new Tuple<bool, object>(player.Int >= Int_Required,
-                string.Format("You are not smart enough.  ({0} Int Required)", Int_Required));
+                $"You are not smart enough.  ({Int_Required} Int Required)");
             result[n++] = new Tuple<bool, object>(player.Wis >= Wis_Required,
-                string.Format("You are not wise enough. ({0} Wis Required)", Wis_Required));
+                $"You are not wise enough. ({Wis_Required} Wis Required)");
             result[n++] = new Tuple<bool, object>(player.Con >= Con_Required,
-                string.Format("You lack stamina. ({0} Con Required)", Con_Required));
+                $"You lack stamina. ({Con_Required} Con Required)");
             result[n++] = new Tuple<bool, object>(player.Dex >= Dex_Required,
-                string.Format("You are not nimble enough. ({0} Dex Required)", Dex_Required));
+                $"You are not nimble enough. ({Dex_Required} Dex Required)");
             result[n++] = new Tuple<bool, object>(player.GoldPoints >= Gold_Required,
-                string.Format("You best come back when you got the cash. ({0} Gold Required)", Gold_Required));
+                $"You best come back when you got the cash. ({Gold_Required} Gold Required)");
             result[n++] = new Tuple<bool, object>(player.Stage == Stage_Required, "You must transcend further first");
             result[n++] =
                 new Tuple<bool, object>(player.Path == Class_Required, "You should not be here, " + player.Path);
@@ -263,22 +247,19 @@ namespace Darkages.Types
         {
             if (Items_Required != null && Items_Required.Count > 0)
             {
-                var msg = new StringBuilder(ServerContext.Config.ItemNotRequiredMsg);
+                var msg = new StringBuilder(ServerContextBase.GlobalConfig.ItemNotRequiredMsg);
 
-                var items = Items_Required.Select(i => string.Format("{0} ({1}) ", i.Item, i.AmountRequired));
+                var items = Items_Required.Select(i => $"{i.Item} ({i.AmountRequired}) ");
 
-                foreach (var itemstrs in items)
-                {
-                    msg.Append(itemstrs);
-                }
+                foreach (var itemstrs in items) msg.Append(itemstrs);
 
                 var errorMsg = msg.ToString();
 
-                var formatted = errorMsg.Replace(") ", "), ").TrimEnd(new char[] { ',', ' ' });
+                var formatted = errorMsg.Replace(") ", "), ").TrimEnd(new char[] {',', ' '});
 
                 foreach (var ir in Items_Required)
                 {
-                    if (!ServerContext.GlobalItemTemplateCache.ContainsKey(ir.Item))
+                    if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(ir.Item))
                     {
                         result[n] = new Tuple<bool, object>(false, formatted);
 
@@ -286,7 +267,7 @@ namespace Darkages.Types
                     }
 
 
-                    var item = ServerContext.GlobalItemTemplateCache[ir.Item];
+                    var item = ServerContextBase.GlobalItemTemplateCache[ir.Item];
 
                     if (item == null)
                     {
@@ -304,25 +285,17 @@ namespace Darkages.Types
                     {
                         var itemcount = 0;
                         if (itemObj.Template.CanStack)
-                        {
                             itemcount += itemObj.Stacks;
-                        }
                         else
-                        {
                             itemcount++;
-                        }
 
                         item_total += itemcount;
                     }
 
                     if (item_total >= ir.AmountRequired)
-                    {
                         result[n] = new Tuple<bool, object>(true, string.Empty);
-                    }
                     else
-                    {
                         result[n] = new Tuple<bool, object>(false, formatted);
-                    }
 
 
                     n++;
@@ -353,7 +326,6 @@ namespace Darkages.Types
 
             var sb = string.Empty;
             {
-
                 var errorCaps = result.Select(i => i.Value).Distinct();
 
                 sb += "{=sYou are not worthy., \n{=u";

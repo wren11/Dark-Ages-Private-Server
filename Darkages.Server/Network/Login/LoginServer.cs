@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -96,14 +96,12 @@ namespace Darkages.Network.Login
             template.HairColor = format.HairColor;
             template.HairStyle = format.HairStyle;
 
-            ServerContext.Log("New character Created: " + template.Username);
-
             StorageManager.AislingBucket.Save(template);
             client.SendMessageBox(0x00, "\0");
         }
 
         /// <summary>
-        ///     Login - Check username/password. Proceed to Game Server.
+        ///     Login - Check username/password. Proceed to Game Client.
         /// </summary>
         protected override void Format03Handler(LoginClient client, ClientFormat03 format)
         {
@@ -124,29 +122,25 @@ namespace Darkages.Network.Login
                 else
                 {
                     client.SendMessageBox(0x02,
-                        string.Format(
-                            "{0} does not exist in this world. You can make this hero by clicking on 'Create'.",
-                            format.Username));
+                        $"{format.Username} does not exist in this world. You can make this hero by clicking on 'Create'.");
                     return;
                 }
             }
             catch (Exception e)
             {
                 client.SendMessageBox(0x02,
-                    string.Format(
-                        "{0} is not supported by the new server. Please remake your character. This will not happen when the server goes to beta.",
-                        format.Username));
+                    $"{format.Username} is not supported by the new server. Please remake your character. This will not happen when the server goes to beta.");
 
-                ServerContext.Report(e);
+                ServerContextBase.Report(e);
 
                 return;
             }
 
-            if (!ServerContext.Config.MultiUserLogin)
+            if (!ServerContextBase.GlobalConfig.MultiUserLogin)
             {
                 var aislings = GetObjects<Aisling>(null,
                     i => i.Username.ToLower() == format.Username.ToLower()
-                    && format.Password == i.Password);
+                         && format.Password == i.Password);
 
                 foreach (var aisling in aislings)
                     aisling.Client.Server.ClientDisconnected(aisling.Client);
@@ -167,15 +161,8 @@ namespace Darkages.Network.Login
                     Name = _aisling.Username
                 };
 
-                if (_aisling.Username.Equals(ServerContext.Config.GameMaster, StringComparison.OrdinalIgnoreCase))
-                {
-                    _aisling.GameMaster = true;
-                    ServerContext.Log("GameMaster Entering Game: {0}", _aisling.Username);
-                }
-                else
-                {
-                    ServerContext.Log("Player Entering Game: {0}", _aisling.Username);
-                }
+                if (_aisling.Username.Equals(ServerContextBase.GlobalConfig.GameMaster,
+                    StringComparison.OrdinalIgnoreCase)) _aisling.GameMaster = true;
 
                 _aisling.Redirect = redirect;
 
@@ -184,7 +171,7 @@ namespace Darkages.Network.Login
                 client.SendMessageBox(0x00, "\0");
                 client.Send(new ServerFormat03
                 {
-                    EndPoint = new IPEndPoint(Address, ServerContext.DefaultPort),
+                    EndPoint = new IPEndPoint(Address, ServerContextBase.DefaultPort),
                     Redirect = redirect
                 });
             }
@@ -199,7 +186,7 @@ namespace Darkages.Network.Login
         }
 
         /// <summary>
-        ///     Redirect Client from Lobby Server to Login Server Automatically.
+        ///     Redirect Client from Lobby Client to Login Client Automatically.
         /// </summary>
         protected override void Format10Handler(LoginClient client, ClientFormat10 format)
         {
@@ -264,9 +251,9 @@ namespace Darkages.Network.Login
                 var redirect = new Redirect
                 {
                     Serial = Convert.ToString(client.Serial),
-                    Salt   = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
-                    Seed   = Convert.ToString(client.Encryption.Parameters.Seed),
-                    Name   = "socket[" + client.Serial + "]"
+                    Salt = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
+                    Seed = Convert.ToString(client.Encryption.Parameters.Seed),
+                    Name = "socket[" + client.Serial + "]"
                 };
 
                 client.Send(new ServerFormat03
@@ -304,12 +291,10 @@ namespace Darkages.Network.Login
             }
 
             if (format.Type == 0x01)
-            {
                 client.Send(new ServerFormat6F
                 {
                     Type = 0x01
                 });
-            }
         }
 
         public override bool AddClient(LoginClient client)

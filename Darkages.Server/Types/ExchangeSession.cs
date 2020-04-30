@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ using System.Collections.Generic;
 namespace Darkages.Types
 {
     /// <summary>
-    ///     This entire exchange routine was shamelessly copy pasted from Kojasou's Server Project.
+    ///     This entire exchange routine was shamelessly copy pasted from Kojasou's Client Project.
     ///     (Yes I'm way to lazy to write this myself when it's already been done correctly.)
     ///     Credits: https://github.com/kojasou/wewladh
     /// </summary>

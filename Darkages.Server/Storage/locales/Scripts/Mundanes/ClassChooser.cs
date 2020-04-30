@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -90,8 +90,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 client.Aisling.ClassID = responseID;
                 client.Aisling.Path = (Class) responseID;
 
-                client.SendOptionsDialog(Mundane, string.Format("You are now a {0}",
-                    Convert.ToString(client.Aisling.Path)));
+                client.SendOptionsDialog(Mundane, $"You are now a {Convert.ToString(client.Aisling.Path)}");
 
                 client.Aisling.Stage = ClassStage.Master;
                 client.Aisling.ExpLevel = 99;
@@ -193,7 +192,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     Spell.GiveTo(client.Aisling, "Stiletto Trap", 1);
 
 
-                    var item = Item.Create(client.Aisling, ServerContext.GlobalItemTemplateCache["Snow Secret"]);
+                    var item = Item.Create(client.Aisling, ServerContextBase.GlobalItemTemplateCache["Snow Secret"]);
                     {
                         item.GiveTo(client.Aisling);
                     }
@@ -206,7 +205,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     Category = "Class",
                     Color = (byte) LegendColor.Blue,
                     Icon = (byte) LegendIcon.Victory,
-                    Value = string.Format("Devoted to the path of {0} ", Convert.ToString(client.Aisling.Path))
+                    Value = $"Devoted to the path of {Convert.ToString(client.Aisling.Path)} "
                 });
 
                 client.Aisling.GoHome();

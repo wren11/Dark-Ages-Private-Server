@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -76,16 +76,12 @@ namespace Darkages.Scripting.Scripts.Skills
                         var imp = 300 + Skill.Level;
                         var dmg = client.Aisling.Str * 4 + client.Aisling.Dex * 2;
 
-                        dmg += (dmg * imp / 100);
+                        dmg += dmg * imp / 100;
 
                         if (sprite.EmpoweredAssail)
-                        {
                             if (sprite is Aisling)
-                            {
                                 if ((sprite as Aisling).Weapon == 0)
                                     dmg *= 3;
-                            }
-                        }
 
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
                         i.Target = client.Aisling;
@@ -153,21 +149,20 @@ namespace Darkages.Scripting.Scripts.Skills
 
         private Sprite[] GetInCone(Sprite sprite, int v)
         {
-            List<Sprite> objs = new List<Sprite>();
+            var objs = new List<Sprite>();
             var front = sprite.GetInfront(v);
 
             if (front.Any())
             {
                 objs.AddRange(objs);
 
-                foreach(var obj in front)
+                foreach (var obj in front)
                 {
-                    var valid_target = (sprite.GetObject<Monster>(sprite.Map, i => i != null && i.Alive && i.Position.IsNextTo(obj.Position) && i.Serial != obj.Serial && i.Serial != sprite.Serial));
+                    var valid_target = sprite.GetObject<Monster>(sprite.Map,
+                        i => i != null && i.Alive && i.Position.IsNextTo(obj.Position) && i.Serial != obj.Serial &&
+                             i.Serial != sprite.Serial);
 
-                    if (valid_target != null)
-                    {
-                        objs.Add(valid_target);
-                    }
+                    if (valid_target != null) objs.Add(valid_target);
                 }
             }
 

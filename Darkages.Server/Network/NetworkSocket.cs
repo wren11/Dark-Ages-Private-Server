@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ using System.Net.Sockets;
 
 namespace Darkages.Network
 {
-    public class NetworkSocket : Socket
+    public class NetworkSocket : Socket, INetworkSocket
     {
         private static readonly int processId = Process.GetCurrentProcess().Id;
 
@@ -36,6 +36,8 @@ namespace Darkages.Network
         public NetworkSocket(Socket socket)
             : base(socket.DuplicateAndClose(processId))
         {
+            SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+            SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.NoDelay, true);
         }
 
         public bool HeaderComplete => headerOffset == headerLength;
@@ -89,8 +91,8 @@ namespace Darkages.Network
             catch (Exception e)
             {
                 error = SocketError.SocketError;
-                ServerContext.Report(e);
-                ServerContext.Report(error);
+                ServerContextBase.Report(e);
+                ServerContextBase.Report(error);
             }
 
 

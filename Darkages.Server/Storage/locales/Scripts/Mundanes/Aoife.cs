@@ -99,15 +99,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         new OptionsDataItem(0x03, "I'm ready.")
                     };
                     client.SendOptionsDialog(Mundane,
-                        string.Format(
-                            "To become a master {0}, You must have earned {1} Experience.\nYou must also have obtained the item {2}\nHave At least {3} Health and {4} Mana Points\nAnd Finally, You must have mastered using {5}.",
-                            client.Aisling.Path,
-                            ExpReqs[client.Aisling.Path],
-                            ItemsReqs[client.Aisling.Path],
-                            HPReqs[client.Aisling.Path],
-                            MPReqs[client.Aisling.Path],
-                            MaxSkillReqs[client.Aisling.Path]
-                        ), options.ToArray());
+                        $"To become a master {client.Aisling.Path}, You must have earned {ExpReqs[client.Aisling.Path]} Experience.\nYou must also have obtained the item {ItemsReqs[client.Aisling.Path]}\nHave At least {HPReqs[client.Aisling.Path]} Health and {MPReqs[client.Aisling.Path]} Mana Points\nAnd Finally, You must have mastered using {MaxSkillReqs[client.Aisling.Path]}.",
+                        options.ToArray());
                 }
                     break;
             }

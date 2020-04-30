@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -50,9 +50,9 @@ namespace Darkages.Storage
 
         public void SaveSorageContainers()
         {
-            if (ServerContext.Paused)
+            if (ServerContextBase.Paused)
                 return;
-            foreach (var item in ServerContext.GlobalItemTemplateCache.Values)
+            foreach (var item in ServerContextBase.GlobalItemTemplateCache.Values)
             {
                 if (ItemBucket.IsStored(item)) continue;
 
@@ -68,8 +68,8 @@ namespace Darkages.Storage
 
                 if (obj is ServerConstants)
                 {
-                    var StoragePath = $@"{ServerContext.StoragePath}\lorule_config";
-                    var path = Path.Combine(StoragePath, string.Format("{0}.json", "global"));
+                    var StoragePath = $@"{ServerContextBase.StoragePath}\lorule_config";
+                    var path = Path.Combine(StoragePath, $"{"global"}.json");
 
                     if (!File.Exists(path))
                         return null;
@@ -99,12 +99,12 @@ namespace Darkages.Storage
             {
                 if (obj is ServerConstants)
                 {
-                    var StoragePath = $@"{ServerContext.StoragePath}\lorule_config";
+                    var StoragePath = $@"{ServerContextBase.StoragePath}\lorule_config";
 
                     if (!Directory.Exists(StoragePath))
                         Directory.CreateDirectory(StoragePath);
 
-                    var path = Path.Combine(StoragePath, string.Format("{0}.json", "global"));
+                    var path = Path.Combine(StoragePath, $"{"global"}.json");
                     var objString = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
                     {
                         TypeNameHandling = TypeNameHandling.All

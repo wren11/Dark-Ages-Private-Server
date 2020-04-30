@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -29,14 +29,14 @@ namespace Darkages.Network.Game.Components
 
         private readonly GameServerTimer _timer;
 
-        public Dictionary<int, Spawn> _spawns = new Dictionary<int, Spawn>();
+        public Dictionary<int, Spawn> Spawns = new Dictionary<int, Spawn>();
 
         public bool Updating { get; set; } = true;
 
         public MonolithComponent(GameServer server)
             : base(server)
         {
-            _timer = new GameServerTimer(TimeSpan.FromMilliseconds(ServerContext.Config.GlobalSpawnTimer));
+            _timer = new GameServerTimer(TimeSpan.FromMilliseconds(ServerContextBase.GlobalConfig.GlobalSpawnTimer));
         }
 
         public override void Update(TimeSpan elapsedTime)
@@ -49,11 +49,11 @@ namespace Darkages.Network.Game.Components
                 {
                     _timer.Reset();
 
-                    var templates = ServerContext.GlobalMonsterTemplateCache;
+                    var templates = ServerContextBase.GlobalMonsterTemplateCache;
                     if (templates.Count == 0)
                         return;
 
-                    foreach (var map in ServerContext.GlobalMapCache.Values)
+                    foreach (var map in ServerContextBase.GlobalMapCache.Values)
                     {
                         if (map == null || map.Rows == 0 || map.Cols == 0)
                             return;
@@ -63,8 +63,9 @@ namespace Darkages.Network.Game.Components
 
                         foreach (var template in temps)
                         {
-                            var Count = GetObjects<Monster>(map, i => i.Template != null && i.Template.Name == template.Name
-                                            && i.Template.AreaID == map.ID).Count();
+                            var count = GetObjects<Monster>(map, i =>
+                                i.Template != null && i.Template.Name == template.Name
+                                                   && i.Template.AreaID == map.ID).Count();
 
                             if (template.ReadyToSpawn())
                             {
@@ -75,10 +76,7 @@ namespace Darkages.Network.Game.Components
                                     LastSpawned = DateTime.UtcNow
                                 };
 
-                                if (Count < template.SpawnMax)
-                                {
-                                    CreateFromTemplate(template, map);
-                                }
+                                if (count < template.SpawnMax) CreateFromTemplate(template, map);
                             }
                         }
                     }

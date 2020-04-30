@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -28,10 +28,10 @@ namespace Darkages.Storage
 
         static WarpStorage()
         {
-            if (ServerContext.StoragePath == null)
-                ServerContext.LoadConstants();
+            if (ServerContextBase.StoragePath == null)
+                ServerContextBase.LoadConstants();
 
-            StoragePath = $@"{ServerContext.StoragePath}\templates\warps";
+            StoragePath = $@"{ServerContextBase.StoragePath}\templates\warps";
 
             if (!Directory.Exists(StoragePath))
                 Directory.CreateDirectory(StoragePath);
@@ -39,7 +39,7 @@ namespace Darkages.Storage
 
         public WarpTemplate Load(string Name)
         {
-            var path = Path.Combine(StoragePath, string.Format("{0}.json", Name.ToLower()));
+            var path = Path.Combine(StoragePath, $"{Name.ToLower()}.json");
 
             if (!File.Exists(path))
                 return null;
@@ -53,11 +53,11 @@ namespace Darkages.Storage
 
         public void Save(WarpTemplate obj)
         {
-            if (ServerContext.Paused)
+            if (ServerContextBase.Paused)
                 return;
 
 
-            var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Name.ToLower()));
+            var path = Path.Combine(StoragePath, $"{obj.Name.ToLower()}.json");
             var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
             File.WriteAllText(path, objString);
         }
@@ -72,7 +72,7 @@ namespace Darkages.Storage
             foreach (var area in area_names)
             {
                 var obj = StorageManager.WarpBucket.Load(Path.GetFileNameWithoutExtension(area));
-                ServerContext.GlobalWarpTemplateCache.Add(obj);
+                ServerContextBase.GlobalWarpTemplateCache.Add(obj);
             }
         }
     }

@@ -73,7 +73,7 @@ public class Cache<K, T> : IDisposable
             }
             catch (Exception e)
             {
-                ServerContext.Report(e);
+                ServerContextBase.Report(e);
             }
 
             timers.Clear();
@@ -335,7 +335,7 @@ public class Cache<T> : Cache<string, T>
 /// </summary>
 public class Cache : Cache<string, object>
 {
-    #region Static Global Cache instance 
+    #region Static Global Cache instance
 
     private static readonly Lazy<Cache> global = new Lazy<Cache>();
 

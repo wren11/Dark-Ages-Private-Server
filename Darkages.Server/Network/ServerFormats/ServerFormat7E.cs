@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat7E : NetworkFormat
     {
-        public string Text = ServerContext.Config?.HandShakeMessage ?? "CUNTS\n";
+        public string Text = ServerContextBase.GlobalConfig?.HandShakeMessage ?? "CUNTS\n";
         public byte Type = 0x1B;
 
         public ServerFormat7E()

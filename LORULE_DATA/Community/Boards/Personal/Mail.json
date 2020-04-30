@@ -13,6 +13,34 @@
       "Message": "jgfhj",
       "Recipient": "lol",
       "Subject": "lol"
+    },
+    {
+      "Command": 49,
+      "Secured": true,
+      "Owner": "lol",
+      "TopicId": 1140,
+      "PostId": 3,
+      "BoardId": 0,
+      "Read": false,
+      "DatePosted": "2020-04-30T11:52:59.3459229Z",
+      "Sender": "lol",
+      "Message": "test",
+      "Recipient": "test",
+      "Subject": "test"
+    },
+    {
+      "Command": 49,
+      "Secured": true,
+      "Owner": "lol",
+      "TopicId": 616,
+      "PostId": 4,
+      "BoardId": 0,
+      "Read": false,
+      "DatePosted": "2020-04-30T11:53:04.8690295Z",
+      "Sender": "lol",
+      "Message": "hi",
+      "Recipient": "hi",
+      "Subject": "hi"
     }
   ],
   "Command": 49,

@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ namespace Darkages.Storage.locales.Buffs
     {
         public override string Name => "deireas faileas";
 
-        public override byte Icon   => 54;
+        public override byte Icon => 54;
 
-        public override int Length  => 12;
+        public override int Length => 12;
 
         public override void OnApplied(Sprite Affected, Buff buff)
         {

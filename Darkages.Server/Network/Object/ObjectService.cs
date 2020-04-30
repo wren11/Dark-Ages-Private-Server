@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -109,7 +109,7 @@ namespace Darkages.Network.Object
 
         public ObjectService()
         {
-            foreach (var map in ServerContext.GlobalMapCache.Values)
+            foreach (var map in ServerContextBase.GlobalMapCache.Values)
                 _spriteCollections.Add(map.ID, new Dictionary<Type, object>
                 {
                     {typeof(Monster), new SpriteCollection<Monster>(Enumerable.Empty<Monster>())},
@@ -135,7 +135,7 @@ namespace Darkages.Network.Object
             {
                 if (!_spriteCollections.ContainsKey(map.ID))
                 {
-                    var _cachemap = ServerContext.GlobalMapCache.Select(i => i.Value)
+                    var _cachemap = ServerContextBase.GlobalMapCache.Select(i => i.Value)
                         .Where(n => n.Name.Equals(map.Name) && n.ID != map.ID).FirstOrDefault();
 
                     if (_cachemap != null) map = _cachemap;
@@ -168,7 +168,7 @@ namespace Darkages.Network.Object
             {
                 if (!_spriteCollections.ContainsKey(map.ID))
                 {
-                    var _cachemap = ServerContext.GlobalMapCache.Select(i => i.Value)
+                    var _cachemap = ServerContextBase.GlobalMapCache.Select(i => i.Value)
                         .Where(n => n.Name.Equals(map.Name) && n.ID != map.ID).FirstOrDefault();
 
                     if (_cachemap != null) map = _cachemap;
@@ -217,7 +217,6 @@ namespace Darkages.Network.Object
                 objCollection.Delete(obj);
 
                 obj.Map.Update(obj.XPos, obj.YPos);
-
             }
         }
     }

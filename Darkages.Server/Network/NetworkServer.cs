@@ -1,5 +1,5 @@
 ﻿// ************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -21,11 +21,12 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
+using System.Web.Caching;
 using Darkages.Common;
 
 namespace Darkages.Network
 {
-    public abstract class NetworkServer<TClient> : ServerFormatStubs<TClient>, IDisposable
+    public abstract class NetworkServer<TClient> : ServerFormatStubs<TClient>, IDisposable, INetworkServer<TClient>
         where TClient : NetworkClient<TClient>, new()
     {
         private readonly MethodInfo[] _handlers;
@@ -44,7 +45,7 @@ namespace Darkages.Network
         {
             var type = typeof(NetworkServer<TClient>);
 
-            Address = ServerContext.IPADDR;
+            Address = ServerContextBase.IpAddress;
             Clients = new TClient[capacity];
 
             _handlers = new MethodInfo[256];
@@ -57,7 +58,7 @@ namespace Darkages.Network
 
         public Socket Listener { get; set; }
 
-        private void EndConnectClient(IAsyncResult result)
+        public void EndConnectClient(IAsyncResult result)
         {
             var handler = Listener.EndAccept(result);
 
@@ -73,6 +74,8 @@ namespace Darkages.Network
             {
                 ServerSocket = new NetworkSocket(handler)
             };
+
+            client.Session = new Session<TClient>(client);
 
             if (client.ServerSocket.Connected)
             {
@@ -100,9 +103,8 @@ namespace Darkages.Network
             Listener.BeginAccept(EndConnectClient, Listener);
         }
 
-        private void EndReceiveHeader(IAsyncResult result)
+        public void EndReceiveHeader(IAsyncResult result)
         {
-
             try
             {
                 if (!(result.AsyncState is TClient client))
@@ -118,22 +120,18 @@ namespace Darkages.Network
                 }
 
                 if (client.ServerSocket.HeaderComplete)
-                {
                     client.ServerSocket.BeginReceivePacket(EndReceivePacket, out error, client);
-                }
                 else
-                {
                     client.ServerSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
-                }
             }
             catch (Exception e)
             {
-                ServerContext.Report(e);
+                ServerContextBase.Report(e);
                 //Ignore
             }
         }
 
-        private void EndReceivePacket(IAsyncResult result)
+        public void EndReceivePacket(IAsyncResult result)
         {
             try
             {
@@ -150,7 +148,6 @@ namespace Darkages.Network
                 }
 
 
-
                 if (client.ServerSocket?.PacketComplete ?? false)
                 {
                     ClientDataReceived(client, client.ServerSocket?.ToPacket());
@@ -163,7 +160,7 @@ namespace Darkages.Network
             }
             catch (Exception e)
             {
-                ServerContext.Report(e);
+                ServerContextBase.Report(e);
                 //ignore
             }
         }
@@ -239,7 +236,10 @@ namespace Darkages.Network
             {
                 Listener.Bind(new IPEndPoint(IPAddress.Any, port));
 
-                Listener.Listen(Clients.Length);
+                lock (syncLock)
+                {
+                    Listener.Listen(Clients.Length);
+                }
 
                 Listener.BeginAccept(EndConnectClient, null);
             }
@@ -247,7 +247,7 @@ namespace Darkages.Network
 
         public virtual void ClientConnected(TClient client)
         {
-            ServerContext.Log("Connection From {0} Established.",
+            ServerContextBase.Debug("Connection From {0} Established.",
                 client.ServerSocket.RemoteEndPoint.ToString());
         }
 
@@ -292,7 +292,7 @@ namespace Darkages.Network
             }
             catch (Exception e)
             {
-                ServerContext.Report(e);
+                ServerContextBase.Report(e);
                 //Ignore
             }
         }
@@ -301,6 +301,9 @@ namespace Darkages.Network
         {
             if (client == null)
                 return;
+
+            client.Session?.ClearBuffers();
+
 
             if (client.ServerSocket != null &&
                 client.ServerSocket.Connected)
@@ -335,6 +338,16 @@ namespace Darkages.Network
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        public void OnConnectedInternal(Session<TClient> session)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnDisconnectedInternal(Session<TClient> session)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

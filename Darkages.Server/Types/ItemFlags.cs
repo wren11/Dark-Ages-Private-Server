@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ namespace Darkages.Types
         Repairable = 1 << 6,
         Stackable = 1 << 7,
         Consumable = 1 << 8,
-        PerishIFEquipped = 1  << 9,
+        PerishIFEquipped = 1 << 9,
         Elemental = 1 << 10,
         QuestRelated = 1 << 11,
         Upgradeable = 1 << 12,

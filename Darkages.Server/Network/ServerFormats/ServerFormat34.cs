@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ namespace Darkages.Network.ServerFormats
             writer.Write((byte) Aisling.ActiveStatus);
             writer.WriteStringA(Aisling.Username);
             writer.Write(Aisling.Nation);
-            writer.WriteStringA(string.Format("Lev {0}", Aisling.ExpLevel));
+            writer.WriteStringA($"Lev {Aisling.ExpLevel}");
             writer.Write((byte) Aisling.PartyStatus);
 
             writer.WriteStringA(Aisling.ClanTitle);
@@ -59,7 +59,7 @@ namespace Darkages.Network.ServerFormats
                 writer.Write(mark.Icon);
                 writer.Write(mark.Color);
                 writer.WriteStringA(mark.Category);
-                writer.WriteStringA(mark.Value + string.Format(" - {0}", DateTime.UtcNow.ToShortDateString()));
+                writer.WriteStringA(mark.Value + $" - {DateTime.UtcNow.ToShortDateString()}");
             }
 
             if (Aisling.PictureData != null)

@@ -23,14 +23,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             var proceed = client != null && client.Aisling != null && client.Aisling.WithinRangeOf(Mundane);
 
             //Sanity Check
-            if (!proceed)
-            {
-                ServerContext.Log("[{0}] OnClick: unexpected result occured in Script: {1}",
-                    Mundane.Template.ScriptKey,
-                    client.Aisling.Username);
-
-                return;
-            }
+            if (!proceed) return;
 
             //check if the user is a Monk.
             if (client.Aisling.Path != Class.Monk)
@@ -81,14 +74,14 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                 {
                                     Type = QuestType.ItemHandIn,
                                     Amount = 2,
-                                    TemplateContext = ServerContext.GlobalItemTemplateCache["Wolf's Teeth"],
+                                    TemplateContext = ServerContextBase.GlobalItemTemplateCache["Wolf's Teeth"],
                                     Value = "Wolf's Teeth"
                                 },
                                 new QuestRequirement
                                 {
                                     Type = QuestType.ItemHandIn,
                                     Amount = 1,
-                                    TemplateContext = ServerContext.GlobalItemTemplateCache["Silver Earrings"],
+                                    TemplateContext = ServerContextBase.GlobalItemTemplateCache["Silver Earrings"],
                                     Value = "Silver Earrings"
                                 }
                             }
@@ -168,10 +161,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             Actor.Decorators = ScriptManager.Load<ReactorScript>(Actor.ScriptKey, Actor);
             if (Actor != null && Actor.Decorators != null)
-            {
                 foreach (var script in Actor.Decorators.Values)
                     script.OnTriggered(client.Aisling);
-            }
         }
 
         private void QuestCompleted(Aisling aisling, DialogSequence b)
@@ -197,37 +188,33 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             switch (responseID)
             {
                 case 0x002A:
-                    {
-                        //start the quest.
-                        if (!client.Aisling.AcceptQuest(Actor.Quest))
-                            //for some reason he already has the quest.
-                            ServerContext.Log("Script Issue: {0} failed to receive quest {1}",
-                            client.Aisling.Username,
-                            Mundane.Template.ScriptKey);
+                {
+                    //start the quest.
+                    if (!client.Aisling.AcceptQuest(Actor.Quest)) return;
 
-                        client.SendOptionsDialog(Mundane,
-                            "Alright now we're talking. I am going to need some materials. Bring me 2 pieces of Wolf's Teeth, 1 Silver Earrings, and 2 Pieces of Spider's Silk. I will do the rest.",
-                            new OptionsDataItem(0x006A, "Continue"));
-                    }
+                    client.SendOptionsDialog(Mundane,
+                        "Alright now we're talking. I am going to need some materials. Bring me 2 pieces of Wolf's Teeth, 1 Silver Earrings, and 2 Pieces of Spider's Silk. I will do the rest.",
+                        new OptionsDataItem(0x006A, "Continue"));
+                }
                     break;
                 case 0x006A:
-                    {
-                        client.SendOptionsDialog(Mundane,
-                            "You can find Wolf's Teeth from the Wolves in the Woodlands,\nsome Spider's Silk from the Spiders here in Mileth Crypt,\nand the Silver Earrings from the Armory in Mileth. Come back when you have the items.");
-                    }
+                {
+                    client.SendOptionsDialog(Mundane,
+                        "You can find Wolf's Teeth from the Wolves in the Woodlands,\nsome Spider's Silk from the Spiders here in Mileth Crypt,\nand the Silver Earrings from the Armory in Mileth. Come back when you have the items.");
+                }
                     break;
                 case 0x001B:
-                    {
-                        client.Aisling.DestroyReactor(Actor);
-                        client.SendOptionsDialog(Mundane, "So be it. Goodluck Aisling.");
-                    }
+                {
+                    client.Aisling.DestroyReactor(Actor);
+                    client.SendOptionsDialog(Mundane, "So be it. Goodluck Aisling.");
+                }
                     break;
 
                 case 0x004A:
-                    {
-                        foreach (var script in Actor.Decorators.Values)
-                            script.OnTriggered(client.Aisling);
-                    }
+                {
+                    foreach (var script in Actor.Decorators.Values)
+                        script.OnTriggered(client.Aisling);
+                }
                     break;
             }
         }

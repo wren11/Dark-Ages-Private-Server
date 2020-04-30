@@ -1,4 +1,4 @@
-﻿//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+﻿//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -16,6 +16,7 @@
 //*************************************************************************/
 
 using System.Linq;
+
 ///************************************************************************
 namespace Darkages.Network.ServerFormats
 {
@@ -43,8 +44,8 @@ namespace Darkages.Network.ServerFormats
             if (User == null)
                 return;
 
-            var portal = ServerContext.GlobalWorldMapTemplateCache[User.Client.Aisling.World];
-            var name   = string.Format("field{0:000}", portal.FieldNumber);
+            var portal = ServerContextBase.GlobalWorldMapTemplateCache[User.Client.Aisling.World];
+            var name = $"field{portal.FieldNumber:000}";
 
             writer.WriteStringA(name);
             writer.Write((byte) portal.Portals.Count);

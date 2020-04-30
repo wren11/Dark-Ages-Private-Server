@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -66,12 +66,9 @@ namespace Darkages.Network.ServerFormats
                 var partyMessage = "Group members\n";
 
                 foreach (var member in Aisling.GroupParty.Members)
-                    partyMessage += string.Format("{0}{1}\n",
-                        Aisling.Username.Equals(member.GroupParty.Creator.Username,
-                            StringComparison.OrdinalIgnoreCase)
-                            ? " * "
-                            : " ", member.Username);
-                partyMessage += string.Format("{0} total", Aisling.GroupParty.Length);
+                    partyMessage +=
+                        $"{(Aisling.Username.Equals(member.GroupParty.Creator.Username, StringComparison.OrdinalIgnoreCase) ? " * " : " ")}{member.Username}\n";
+                partyMessage += $"{Aisling.GroupParty.Length} total";
                 packet.WriteStringA(partyMessage);
             }
 
@@ -89,17 +86,19 @@ namespace Darkages.Network.ServerFormats
 
 
             var legendSubjects = from subject in Aisling.LegendBook.LegendMarks
-                    group subject by subject into g
-                    let count = g.Count()
-                    orderby count descending
-                    select new {
-                        Value = Aisling.LegendBook.LegendMarks.Find(i => i.Value == g.Key.Value),
-                        Count = Aisling.LegendBook.LegendMarks.Count(i => i.Value == g.Key.Value) };
-
+                group subject by subject
+                into g
+                let count = g.Count()
+                orderby count descending
+                select new
+                {
+                    Value = Aisling.LegendBook.LegendMarks.Find(i => i.Value == g.Key.Value),
+                    Count = Aisling.LegendBook.LegendMarks.Count(i => i.Value == g.Key.Value)
+                };
 
 
             var exactCount = legendSubjects.Distinct().Count();
-            packet.Write((byte)exactCount);
+            packet.Write((byte) exactCount);
 
             foreach (var obj in legendSubjects.Distinct().ToList())
             {
@@ -107,8 +106,7 @@ namespace Darkages.Network.ServerFormats
                 packet.Write(legend.Icon);
                 packet.Write(legend.Color);
                 packet.WriteStringA(legend.Category);
-                packet.WriteStringA(string.Format("{0} {1}", legend.Value, obj.Count > 1 ? "(" + (obj.Count).ToString() + ")" : ""));
-
+                packet.WriteStringA($"{legend.Value} {(obj.Count > 1 ? "(" + obj.Count.ToString() + ")" : "")}");
             }
 
             packet.Write((byte) 0x00);

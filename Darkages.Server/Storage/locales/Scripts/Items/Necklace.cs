@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -31,13 +31,9 @@ namespace Darkages.Storage.locales.Scripts.Items
         public override void Equipped(Sprite sprite, byte displayslot)
         {
             if (Item.Template.Flags.HasFlag(ItemFlags.Elemental))
-            {
                 if (Item.OffenseElement != ElementManager.Element.None)
-                {
                     while (sprite.OffenseElement == ElementManager.Element.Random)
                         sprite.OffenseElement = Sprite.CheckRandomElement(Item.Template.OffenseElement);
-                }
-            }
 
             Item.ApplyModifers((sprite as Aisling).Client);
             (sprite as Aisling).Client.SendStats(StatusFlags.StructD);

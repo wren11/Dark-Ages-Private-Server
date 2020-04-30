@@ -93,8 +93,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         {
                             if (cbAisling.Inventory.Has(i => i.Template.Name == "Stick") == null)
                                 if (Item.Create(cbAisling, "Stick")?.GiveTo(cbAisling) ?? false)
-                                    ServerContext.Log("{0} received Stick from {1}", cbAisling.Username,
-                                        cbSequence.Title);
+                                {
+                                }
                         }
                     },
                     new DialogSequence

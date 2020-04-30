@@ -137,11 +137,7 @@ namespace MenuInterpreter
 
             // find next item
             var nextItem = _items.FirstOrDefault(i => i.Id == nextId);
-            if (nextItem == null)
-            {
-                ServerContext.Log($"There is no item with id {nextId} (answer id {answerId}).");
-                return null;
-            }
+            if (nextItem == null) return null;
 
             // save previous item
             _previousItem = _currentItem;
@@ -232,11 +228,7 @@ namespace MenuInterpreter
         private int PassCheckpoint(CheckpointMenuItem checkpoint)
         {
             // find handler
-            if (_checkpointHandlers.ContainsKey(checkpoint.Text) == false)
-            {
-                ServerContext.Log("No Callback for checkpoint: {0}", checkpoint.Text);
-                return Constants.CheckpointOnFail;
-            }
+            if (_checkpointHandlers.ContainsKey(checkpoint.Text) == false) return Constants.CheckpointOnFail;
 
             var handler = _checkpointHandlers[checkpoint.Text];
             var args = new CheckpointHandlerArgs

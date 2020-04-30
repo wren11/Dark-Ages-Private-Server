@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -29,14 +29,12 @@ namespace Darkages.Types
 
         static MetafileManager()
         {
-            var files = Directory.GetFiles(Path.Combine(ServerContext.StoragePath, "metafile"));
+            var files = Directory.GetFiles(Path.Combine(ServerContextBase.StoragePath, "metafile"));
             metafiles = new MetafileCollection(files.Length);
 
             foreach (var file in files)
-            {
                 metafiles.Add(
                     CompressableObject.Load<Metafile>(file, true));
-            }
         }
 
         public static Metafile GetMetafile(string name)

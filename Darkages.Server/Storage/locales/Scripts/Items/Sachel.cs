@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ namespace Darkages.Storage.locales.Scripts.Items
 
                 if (name == string.Empty)
                 {
-                    client.SendMessage(0x02, ServerContext.Config.CantUseThat);
+                    client.SendMessage(0x02, ServerContextBase.GlobalConfig.CantUseThat);
                     return;
                 }
 
@@ -56,8 +56,7 @@ namespace Darkages.Storage.locales.Scripts.Items
                     client.SendStats(StatusFlags.All);
 
                     client.SendMessage(Scope.All, 0x02,
-                        string.Format("{0} broke open {1}'s Cursed Sachel. (Granted +50 hp!)", client.Aisling.Username,
-                            name));
+                        $"{client.Aisling.Username} broke open {name}'s Cursed Sachel. (Granted +50 hp!)");
                 }
             }
         }

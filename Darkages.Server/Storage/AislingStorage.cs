@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ namespace Darkages.Storage
 {
     public class AislingStorage : IStorage<Aisling>
     {
-        public static string StoragePath = $@"{ServerContext.StoragePath}\aislings";
+        public static string StoragePath = $@"{ServerContextBase.StoragePath}\aislings";
 
         static AislingStorage()
         {
@@ -41,7 +41,7 @@ namespace Darkages.Storage
 
         public Aisling Load(string Name)
         {
-            var path = Path.Combine(StoragePath, string.Format("{0}.json", Name.ToLower()));
+            var path = Path.Combine(StoragePath, $"{Name.ToLower()}.json");
 
             if (!File.Exists(path))
                 return null;
@@ -58,12 +58,12 @@ namespace Darkages.Storage
 
         public void Save(Aisling obj)
         {
-            if (ServerContext.Paused)
+            if (ServerContextBase.Paused)
                 return;
 
             try
             {
-                var path = Path.Combine(StoragePath, string.Format("{0}.json", obj.Username.ToLower()));
+                var path = Path.Combine(StoragePath, $"{obj.Username.ToLower()}.json");
 
 
                 var objString = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
@@ -72,11 +72,10 @@ namespace Darkages.Storage
                 });
 
                 File.WriteAllText(path, objString);
-
             }
             catch (Exception e)
             {
-                ServerContext.Report(e);
+                ServerContextBase.Report(e);
                 /* Ignore */
             }
         }

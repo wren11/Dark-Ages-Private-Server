@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -22,21 +22,21 @@ namespace Darkages.Network.Game.Components
 {
     public class Save : GameServerComponent
     {
-        private readonly GameServerTimer Timer;
+        private readonly GameServerTimer _timer;
 
         public Save(GameServer server) : base(server)
         {
-            Timer = new GameServerTimer(TimeSpan.FromSeconds(45));
+            _timer = new GameServerTimer(TimeSpan.FromSeconds(45));
         }
 
         public override void Update(TimeSpan elapsedTime)
         {
-            Timer.Update(elapsedTime);
+            _timer.Update(elapsedTime);
 
-            if (Timer.Elapsed)
+            if (_timer.Elapsed)
             {
-                ServerContext.SaveCommunityAssets();
-                Timer.Reset();
+                ServerContextBase.SaveCommunityAssets();
+                _timer.Reset();
             }
         }
     }

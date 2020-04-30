@@ -1,5 +1,5 @@
 ﻿// ************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -103,7 +103,8 @@ namespace Darkages
         ///     Gets or sets the game settings.
         /// </summary>
         /// <value>The game settings.</value>
-        [BsonIgnore] public List<ClientGameSettings> GameSettings { get; set; }
+        [BsonIgnore]
+        public List<ClientGameSettings> GameSettings { get; set; }
 
         /// <summary>
         ///     Gets or sets the <strong>bank</strong> manager.
@@ -477,7 +478,7 @@ namespace Darkages
         /// </summary>
         /// <value>The maximum weight.</value>
         [JsonIgnore]
-        public int MaximumWeight => (int) (_Str * ServerContext.Config.WeightIncreaseModifer);
+        public int MaximumWeight => (int) (_Str * ServerContextBase.GlobalConfig.WeightIncreaseModifer);
 
         /// <summary>
         ///     Gets or sets a value indicating whether [profile open].
@@ -775,10 +776,10 @@ namespace Darkages
         /// <returns><c>true</c> if [has in inventory] [the specified item]; otherwise, <c>false</c>.</returns>
         public bool HasInInventory(string item, int count, out int found)
         {
-            var template = ServerContext.GlobalItemTemplateCache[item];
-            found        = 0;
+            var template = ServerContextBase.GlobalItemTemplateCache[item];
+            found = 0;
 
-            if (!ServerContext.GlobalItemTemplateCache.ContainsKey(item))
+            if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(item))
                 return false;
 
             if (template != null)
@@ -807,15 +808,15 @@ namespace Darkages
         /// </summary>
         public void GoHome()
         {
-            var DestinationMap = ServerContext.Config.TransitionZone;
+            var DestinationMap = ServerContextBase.GlobalConfig.TransitionZone;
 
-            if (ServerContext.GlobalMapCache.ContainsKey(DestinationMap))
+            if (ServerContextBase.GlobalMapCache.ContainsKey(DestinationMap))
             {
-                var targetMap = ServerContext.GlobalMapCache[DestinationMap];
+                var targetMap = ServerContextBase.GlobalMapCache[DestinationMap];
 
                 Client.LeaveArea(true, true);
-                Client.Aisling.XPos = ServerContext.Config.TransitionPointX;
-                Client.Aisling.YPos = ServerContext.Config.TransitionPointY;
+                Client.Aisling.XPos = ServerContextBase.GlobalConfig.TransitionPointX;
+                Client.Aisling.YPos = ServerContextBase.GlobalConfig.TransitionPointY;
                 Client.Aisling.CurrentMapId = DestinationMap;
                 Client.EnterArea();
                 Client.Refresh();
@@ -833,7 +834,7 @@ namespace Darkages
         {
             if (CurrentMp >= spell.Template.ManaCost)
                 return this;
-            Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
+            Client.SendMessage(0x02, ServerContextBase.GlobalConfig.NoManaMessage);
 
             return null;
         }
@@ -940,13 +941,9 @@ namespace Darkages
             if (info != null)
             {
                 if (!string.IsNullOrEmpty(info.Data))
-                {
                     //setup arguments
                     foreach (var script in spell.Scripts.Values)
-                    {
                         script.Arguments = info.Data;
-                    }
-                }
 
                 var target = GetObject(Map, i => i.Serial == info.Target, Get.Monsters | Get.Aislings | Get.Mundanes);
                 spell.InUse = true;
@@ -957,16 +954,12 @@ namespace Darkages
                     if (target != null)
                     {
                         if (target is Aisling tobj)
-                        {
                             foreach (var script in spell.Scripts.Values)
-                                script.OnUse(this, target as Aisling);                            
-                        }
+                                script.OnUse(this, target as Aisling);
 
                         if (target is Monster aobj)
-                        {
                             foreach (var script in spell.Scripts.Values)
                                 script.OnUse(this, aobj);
-                        }
 
                         if (target is Mundane)
                             foreach (var script in spell.Scripts.Values)
@@ -984,12 +977,9 @@ namespace Darkages
             spell.InUse = false;
 
             if (spell.Template.Cooldown > 0)
-            {
-                Client.Send(new ServerFormat3F((byte)0,
+                Client.Send(new ServerFormat3F((byte) 0,
                     spell.Slot,
                     spell.Template.Cooldown));
-            }
-
         }
 
         /// <summary>
@@ -1040,7 +1030,7 @@ namespace Darkages
                 Gender = 0,
                 Title = 0,
                 Flags = 0,
-                CurrentMapId = ServerContext.Config.StartingMap,
+                CurrentMapId = ServerContextBase.GlobalConfig.StartingMap,
                 ClassID = 0,
                 Stage = ClassStage.Class,
                 Path = Class.Peasant,
@@ -1073,10 +1063,10 @@ namespace Darkages
                 BankManager = new Bank(),
                 Created = DateTime.UtcNow,
                 LastLogged = DateTime.UtcNow,
-                XPos = ServerContext.Config.StartingPosition.X,
-                YPos = ServerContext.Config.StartingPosition.Y,
+                XPos = ServerContextBase.GlobalConfig.StartingPosition.X,
+                YPos = ServerContextBase.GlobalConfig.StartingPosition.Y,
                 Nation = (byte) randomFraction,
-                AnimalForm = AnimalForm.None,                
+                AnimalForm = AnimalForm.None,
             };
 
             Skill.GiveTo(result, "Assail", 1);
@@ -1084,15 +1074,9 @@ namespace Darkages
             Spell.GiveTo(result, "Gem Polishing", 1);
 
 
-            foreach (var temp in ServerContext.GlobalSpellTemplateCache)
-            {
-                Spell.GiveTo(result, temp.Value.Name);
-            }
+            foreach (var temp in ServerContextBase.GlobalSpellTemplateCache) Spell.GiveTo(result, temp.Value.Name);
 
-            foreach (var temp in ServerContext.GlobalSkillTemplateCache)
-            {
-                Skill.GiveTo(result, temp.Value.Name);
-            }
+            foreach (var temp in ServerContextBase.GlobalSkillTemplateCache) Skill.GiveTo(result, temp.Value.Name);
 
 
             if (DateTime.UtcNow.Year <= 2020)
@@ -1140,8 +1124,7 @@ namespace Darkages
         /// <param name="delete">if set to <c>true</c> [delete].</param>
         public void Remove(bool update = false, bool delete = true)
         {
-            if (Map != null)
-                Map.Update(XPos, YPos);
+            Map?.Update(XPos, YPos);
 
             if (update)
                 Show(Scope.NearbyAislingsExludingSelf, new ServerFormat0E(Serial));
@@ -1229,10 +1212,10 @@ namespace Darkages
         /// </summary>
         public void SendToHell()
         {
-            if (!ServerContext.GlobalMapCache.ContainsKey(ServerContext.Config.DeathMap))
+            if (!ServerContextBase.GlobalMapCache.ContainsKey(ServerContextBase.GlobalConfig.DeathMap))
                 return;
 
-            if (CurrentMapId == ServerContext.Config.DeathMap)
+            if (CurrentMapId == ServerContextBase.GlobalConfig.DeathMap)
                 return;
 
             Remains.Owner = this;
@@ -1253,10 +1236,10 @@ namespace Darkages
                 RemoveBuffsAndDebuffs();
 
             Client.LeaveArea(true, true);
-            XPos = ServerContext.Config.DeathMapX;
-            YPos = ServerContext.Config.DeathMapY;
+            XPos = ServerContextBase.GlobalConfig.DeathMapX;
+            YPos = ServerContextBase.GlobalConfig.DeathMapY;
             Direction = 0;
-            Client.Aisling.CurrentMapId = ServerContext.Config.DeathMap;
+            Client.Aisling.CurrentMapId = ServerContextBase.GlobalConfig.DeathMap;
             Client.EnterArea();
 
             UpdateStats();
@@ -1296,10 +1279,10 @@ namespace Darkages
             trader.GoldPoints += goldB;
 
 
-            if (trader.GoldPoints > ServerContext.Config.MaxCarryGold)
-                trader.GoldPoints = ServerContext.Config.MaxCarryGold;
-            if (GoldPoints > ServerContext.Config.MaxCarryGold)
-                GoldPoints = ServerContext.Config.MaxCarryGold;
+            if (trader.GoldPoints > ServerContextBase.GlobalConfig.MaxCarryGold)
+                trader.GoldPoints = ServerContextBase.GlobalConfig.MaxCarryGold;
+            if (GoldPoints > ServerContextBase.GlobalConfig.MaxCarryGold)
+                GoldPoints = ServerContextBase.GlobalConfig.MaxCarryGold;
 
             trader.Client.SendStats(StatusFlags.StructC);
             Client.SendStats(StatusFlags.StructC);
@@ -1354,10 +1337,10 @@ namespace Darkages
             GoldPoints += goldB;
             trader.GoldPoints += goldA;
 
-            if (trader.GoldPoints > ServerContext.Config.MaxCarryGold)
-                trader.GoldPoints = ServerContext.Config.MaxCarryGold;
-            if (GoldPoints > ServerContext.Config.MaxCarryGold)
-                GoldPoints = ServerContext.Config.MaxCarryGold;
+            if (trader.GoldPoints > ServerContextBase.GlobalConfig.MaxCarryGold)
+                trader.GoldPoints = ServerContextBase.GlobalConfig.MaxCarryGold;
+            if (GoldPoints > ServerContextBase.GlobalConfig.MaxCarryGold)
+                GoldPoints = ServerContextBase.GlobalConfig.MaxCarryGold;
 
             exchangeA.Items.Clear();
             exchangeB.Items.Clear();
@@ -1415,7 +1398,7 @@ namespace Darkages
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         public bool GiveGold(int offer, bool SendClientUpdate = true)
         {
-            if (GoldPoints + offer < ServerContext.Config.MaxCarryGold)
+            if (GoldPoints + offer < ServerContextBase.GlobalConfig.MaxCarryGold)
             {
                 GoldPoints += offer;
                 return true;
@@ -1465,7 +1448,7 @@ namespace Darkages
         public AnimalForm AnimalForm { get; set; }
 
         /// <summary>
-        ///     Used for Internal Server Authentication
+        ///     Used for Internal Client Authentication
         /// </summary>
         /// <value>The redirect.</value>
         public Redirect Redirect { get; set; }

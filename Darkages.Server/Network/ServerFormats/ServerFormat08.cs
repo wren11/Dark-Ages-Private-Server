@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -96,7 +96,9 @@ namespace Darkages.Network.ServerFormats
             if ((Flags & 0x08) != 0)
             {
                 writer.Write((uint) Aisling.ExpTotal);
-                writer.Write((uint) Aisling.ExpLevel >= ServerContext.Config.PlayerLevelCap ? 0 : Aisling.ExpNext);
+                writer.Write((uint) Aisling.ExpLevel >= ServerContextBase.GlobalConfig.PlayerLevelCap
+                    ? 0
+                    : Aisling.ExpNext);
                 writer.Write((uint) Aisling.AbpTotal);
                 writer.Write((uint) Aisling.AbpNext);
                 writer.Write((uint) Aisling.GamePoints);

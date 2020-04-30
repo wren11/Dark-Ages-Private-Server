@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -39,19 +39,15 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write(this.Type);
+            writer.Write(Type);
 
-            if (this.Type == 0x00)
-            {
+            if (Type == 0x00)
                 writer.Write(
-                    MetafileManager.GetMetafile(this.Name));
-            }
+                    MetafileManager.GetMetafile(Name));
 
-            if (this.Type == 0x01)
-            {
+            if (Type == 0x01)
                 writer.Write(
                     MetafileManager.GetMetafiles());
-            }
         }
     }
 }

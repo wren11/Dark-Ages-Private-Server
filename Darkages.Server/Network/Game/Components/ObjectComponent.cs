@@ -27,15 +27,15 @@ namespace Darkages.Network.Game.Components
 
         private void UpdateObjects()
         {
-            var connected_users = Server.Clients.Where(i =>
+            var connectedUsers = Server.Clients.Where(i =>
                 i != null &&
                 i.Aisling != null &&
                 i.Aisling.Map != null &&
                 i.Aisling.Map.Ready).Select(i => i.Aisling).ToArray();
 
-            for (var i = 0; i < connected_users.Length; i++)
+            for (var i = 0; i < connectedUsers.Length; i++)
             {
-                var user = connected_users[i];
+                var user = connectedUsers[i];
 
                 UpdateClientObjects(user);
             }
@@ -51,24 +51,24 @@ namespace Darkages.Network.Game.Components
                     Get.All);
                 var objectsInView = objects.Where(s => s.WithinRangeOf(user));
                 var objectsNotInView = objects.Where(s => !s.WithinRangeOf(user));
-                var ObjectsToRemove = objectsNotInView.Except(objectsInView).ToArray();
-                var ObjectsToAdd = objectsInView.Except(objectsNotInView).ToArray();
+                var objectsToRemove = objectsNotInView.Except(objectsInView).ToArray();
+                var objectsToAdd = objectsInView.Except(objectsNotInView).ToArray();
 
                 RemoveObjects(
                     user,
-                    ObjectsToRemove);
+                    objectsToRemove);
 
                 AddObjects(payload,
                     user,
-                    ObjectsToAdd);
+                    objectsToAdd);
 
                 if (payload.Count > 0) user.Show(Scope.Self, new ServerFormat07(payload.ToArray()));
             }
         }
 
-        public static void AddObjects(List<Sprite> payload, Aisling client, Sprite[] ObjectsToAdd)
+        public static void AddObjects(List<Sprite> payload, Aisling client, Sprite[] objectsToAdd)
         {
-            foreach (var obj in ObjectsToAdd)
+            foreach (var obj in objectsToAdd)
             {
                 if (obj.Serial == client.Serial)
                     continue;
@@ -76,8 +76,8 @@ namespace Darkages.Network.Game.Components
                 if (!client.View.Contains(obj))
                     if (client.View.Add(obj))
                     {
-                        if (obj is Monster) 
-                            
+                        if (obj is Monster)
+
                             foreach (var script in (obj as Monster).Scripts?.Values)
                                 script.OnApproach(client.Client);
 
@@ -139,11 +139,11 @@ namespace Darkages.Network.Game.Components
                             {
                                 if (obj is Money)
                                 {
-                                    var gold_setting = client.GameSettings.Find(i =>
+                                    var goldSetting = client.GameSettings.Find(i =>
                                         i.EnabledSettingStr.Contains("AUTO LOOT GOLD"));
 
-                                    if (gold_setting != null)
-                                        if (gold_setting.Enabled)
+                                    if (goldSetting != null)
+                                        if (goldSetting.Enabled)
                                         {
                                             (obj as Money).GiveTo((obj as Money).Amount, client);
                                             skip = true;
@@ -158,9 +158,9 @@ namespace Darkages.Network.Game.Components
             }
         }
 
-        public static void RemoveObjects(Aisling client, Sprite[] ObjectsToRemove)
+        public static void RemoveObjects(Aisling client, Sprite[] objectsToRemove)
         {
-            foreach (var obj in ObjectsToRemove)
+            foreach (var obj in objectsToRemove)
             {
                 if (obj.Serial == client.Serial)
                     continue;

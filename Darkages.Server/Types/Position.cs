@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ namespace Darkages.Types
 
         public Position() : this(0, 0)
         {
-
         }
 
         public int DistanceFrom(ushort X, ushort Y)
@@ -58,7 +57,7 @@ namespace Darkages.Types
 
         public bool IsNearby(Position pos)
         {
-            return pos.DistanceFrom(X, Y) <= ServerContext.Config.VeryNearByProximity;
+            return pos.DistanceFrom(X, Y) <= ServerContextBase.GlobalConfig.VeryNearByProximity;
         }
 
         public static Position operator +(Position a, Direction b)

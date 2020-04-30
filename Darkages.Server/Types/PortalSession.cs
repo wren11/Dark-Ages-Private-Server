@@ -3,7 +3,7 @@ using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using Newtonsoft.Json;
 ///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@ using Newtonsoft.Json;
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,21 +38,21 @@ namespace Darkages
 
         [JsonIgnore]
         public WorldMapTemplate Template
-            => ServerContext.GlobalWorldMapTemplateCache[FieldNumber];
+            => ServerContextBase.GlobalWorldMapTemplateCache[FieldNumber];
 
         public void ShowFieldMap(GameClient client)
         {
             client.InMapTransition = true;
             client.Send(new ServerFormat2E(client.Aisling));
-            Task.Run(async () => await client.FlushBuffers());
+
 
             client.Aisling.PortalSession
-                    = new PortalSession
-                    {
-                        FieldNumber = client.Aisling.World,
-                        IsMapOpen = true,
-                        DateOpened = DateTime.UtcNow
-                    };
+                = new PortalSession
+                {
+                    FieldNumber = client.Aisling.World,
+                    IsMapOpen = true,
+                    DateOpened = DateTime.UtcNow
+                };
 
             client.DateMapOpened = DateTime.UtcNow;
         }
@@ -64,10 +63,10 @@ namespace Darkages
             {
                 client.LeaveArea(true, true);
 
-                DestinationMap = ServerContext.Config.TransitionZone;
+                DestinationMap = ServerContextBase.GlobalConfig.TransitionZone;
 
-                client.Aisling.XPos = X >= 0 ? X : ServerContext.Config.TransitionPointX;
-                client.Aisling.YPos = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
+                client.Aisling.XPos = X >= 0 ? X : ServerContextBase.GlobalConfig.TransitionPointX;
+                client.Aisling.YPos = Y >= 0 ? Y : ServerContextBase.GlobalConfig.TransitionPointY;
                 client.Aisling.CurrentMapId = DestinationMap;
 
                 client.Refresh();
@@ -75,10 +74,10 @@ namespace Darkages
             }
             else
             {
-                if (ServerContext.GlobalMapCache.ContainsKey(DestinationMap))
+                if (ServerContextBase.GlobalMapCache.ContainsKey(DestinationMap))
                 {
-                    client.Aisling.XPos = X >= 0 ? X : ServerContext.Config.TransitionPointX;
-                    client.Aisling.YPos = Y >= 0 ? Y : ServerContext.Config.TransitionPointY;
+                    client.Aisling.XPos = X >= 0 ? X : ServerContextBase.GlobalConfig.TransitionPointX;
+                    client.Aisling.YPos = Y >= 0 ? Y : ServerContextBase.GlobalConfig.TransitionPointY;
                     client.Aisling.CurrentMapId = DestinationMap;
                     client.LeaveArea(true, true);
                     client.EnterArea();
@@ -86,6 +85,6 @@ namespace Darkages
                     client.Aisling.PortalSession = null;
                 }
             }
-        }    
+        }
     }
 }

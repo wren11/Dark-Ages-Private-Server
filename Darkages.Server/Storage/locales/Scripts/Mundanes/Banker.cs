@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -95,8 +95,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                         if (slot < 0)
                         {
                             client.SendMessage(0x02,
-                                string.Format("{0} is finished with you.",
-                                    Mundane.Template.Name));
+                                $"{Mundane.Template.Name} is finished with you.");
 
                             client.CloseDialog();
                             return;
@@ -115,7 +114,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                                 Mundane.Show(Scope.NearbyAislings, new ServerFormat0D
                                 {
                                     Serial = Mundane.Serial,
-                                    Text = string.Format("Great, That will be {0} coins.", cost),
+                                    Text = $"Great, That will be {cost} coins.",
                                     Type = 0x00
                                 });
 
@@ -142,8 +141,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                                 Mundane.Show(Scope.NearbyAislings, new ServerFormat0D
                                 {
                                     Serial = Mundane.Serial,
-                                    Text = string.Format("Help!, {0} is trying to rip me off!",
-                                        client.Aisling.Username),
+                                    Text = $"Help!, {client.Aisling.Username} is trying to rip me off!",
                                     Type = 0x02
                                 });
                                 client.CloseDialog();
@@ -154,7 +152,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                             Mundane.Show(Scope.NearbyAislings, new ServerFormat0D
                             {
                                 Serial = Mundane.Serial,
-                                Text = string.Format("Help!, {0} is trying to scam me!", client.Aisling.Username),
+                                Text = $"Help!, {client.Aisling.Username} is trying to scam me!",
                                 Type = 0x02
                             });
                             client.CloseDialog();
@@ -184,8 +182,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                             options.Add(new OptionsDataItem(0x0052, "Cancel"));
 
                             client.SendOptionsDialog(Mundane,
-                                string.Format("I can hold that ({0}) But it will cost {1} gold.",
-                                    item.DisplayName, cost), args, options.ToArray());
+                                $"I can hold that ({item.DisplayName}) But it will cost {cost} gold.", args,
+                                options.ToArray());
                         }
                     }
                         break;
@@ -213,7 +211,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                             Mundane.Show(Scope.NearbyAislings, new ServerFormat0D
                             {
                                 Serial = Mundane.Serial,
-                                Text = string.Format("{0}, Here is your {1} back.", client.Aisling.Username, itemName),
+                                Text = $"{client.Aisling.Username}, Here is your {itemName} back.",
                                 Type = 0x00
                             });
                             WithDrawMenu(client);
@@ -235,8 +233,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                     default:
                     {
                         client.SendMessage(0x02,
-                            string.Format("{0} is finished with you.",
-                                Mundane.Template.Name));
+                            $"{Mundane.Template.Name} is finished with you.");
 
                         client.CloseDialog();
                     }

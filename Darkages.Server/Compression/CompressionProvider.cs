@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -24,8 +24,6 @@ namespace Darkages.Compression
 {
     public static class CompressionProvider
     {
-
-
         private static void CopyStream(Stream src, Stream dst)
         {
             var buffer = new byte[4096];
@@ -70,7 +68,7 @@ namespace Darkages.Compression
                 }
                 catch (Exception e)
                 {
-                    ServerContext.Report(e);
+                    ServerContextBase.Report(e);
 
                     return null;
                 }

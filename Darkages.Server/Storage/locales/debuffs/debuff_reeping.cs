@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -27,10 +27,10 @@ namespace Darkages.Storage.locales.debuffs
         public readonly Random _rnd = new Random();
         public override string Name => "skulled";
         public override byte Icon => 89;
-        public override int Length => ServerContext.Config.SkullLength;
+        public override int Length => ServerContextBase.GlobalConfig.SkullLength;
 
         public string[] Messages =>
-            ServerContext.Config.ReapMessage.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
+            ServerContextBase.GlobalConfig.ReapMessage.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 
         public int Count => Messages.Length;
 
@@ -39,12 +39,12 @@ namespace Darkages.Storage.locales.debuffs
             /* GM Character's don't die. */
             if (Affected is Aisling)
                 if ((Affected as Aisling).GameMaster)
-                   return;
+                    return;
 
 
             base.OnApplied(Affected, debuff);
 
-            if (Affected.CurrentMapId == ServerContext.Config.DeathMap)
+            if (Affected.CurrentMapId == ServerContextBase.GlobalConfig.DeathMap)
             {
                 base.OnEnded(Affected, debuff);
                 return;
@@ -79,7 +79,7 @@ namespace Darkages.Storage.locales.debuffs
 
         public override void OnDurationUpdate(Sprite Affected, Debuff debuff)
         {
-            if (Affected.CurrentMapId == ServerContext.Config.DeathMap)
+            if (Affected.CurrentMapId == ServerContextBase.GlobalConfig.DeathMap)
             {
                 base.OnEnded(Affected, debuff);
                 return;
@@ -129,7 +129,7 @@ namespace Darkages.Storage.locales.debuffs
 
         public override void OnEnded(Sprite Affected, Debuff debuff)
         {
-            if (Affected.CurrentMapId == ServerContext.Config.DeathMap)
+            if (Affected.CurrentMapId == ServerContextBase.GlobalConfig.DeathMap)
             {
                 base.OnEnded(Affected, debuff);
                 return;

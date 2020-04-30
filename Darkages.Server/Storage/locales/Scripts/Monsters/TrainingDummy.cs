@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -29,13 +29,12 @@ namespace Darkages.Storage.locales.Scripts.Monsters
     [Script("Training Dummy")]
     public class TrainingDummy : MonsterScript
     {
-
         public HashSet<dmgTable> dmgtbl = new HashSet<dmgTable>();
 
         public struct dmgTable
         {
-            public int Damage    { get; set; }
-            public string What   { get; set; }
+            public int Damage { get; set; }
+            public string What { get; set; }
         }
 
         public dmgTable incoming;
@@ -56,13 +55,12 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void OnAttacked(GameClient client)
         {
-
         }
 
         public override void OnDamaged(GameClient client, int dmg, Sprite source)
         {
             var frames = new StackTrace().GetFrames();
-            var cls    = "unknown";
+            var cls = "unknown";
             foreach (var frame in frames)
             {
                 var mth = frame.GetMethod();
@@ -75,18 +73,16 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             }
 
             incoming.Damage = dmg;
-            incoming.What   = cls;
+            incoming.What = cls;
 
             dmgtbl.Add(incoming);
 
             Monster.Show(Scope.NearbyAislings,
                 new ServerFormat0D
                 {
-                    Serial = Monster.Serial, Text = string.Format("{0}'s {1}: {2} DMG.\n", client.Aisling.Username, cls, dmg),
-                    Type   = 0x01
+                    Serial = Monster.Serial, Text = $"{client.Aisling.Username}'s {cls}: {dmg} DMG.\n",
+                    Type = 0x01
                 });
-
-
         }
 
         public override void OnCast(GameClient client)
@@ -101,8 +97,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         public override void OnClick(GameClient client)
         {
             client.SendMessage(0x02,
-                string.Format("(Lv {0}, HP: {1}/{2}, AC: {3}, O: {4}, D: {5})", Monster.Template.Level,
-                    Monster.CurrentHp, Monster.MaximumHp, Monster.Ac, Monster.OffenseElement, Monster.DefenseElement));
+                $"(Lv {Monster.Template.Level}, HP: {Monster.CurrentHp}/{Monster.MaximumHp}, AC: {Monster.Ac}, O: {Monster.OffenseElement}, D: {Monster.DefenseElement})");
         }
 
         public override void OnLeave(GameClient client)

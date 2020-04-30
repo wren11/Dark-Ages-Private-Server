@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -221,7 +221,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                     client.Aisling.SpellBook.Has("Macronator's Magic Spell"))
                                 {
                                     if (Item.Create(client.Aisling,
-                                        ServerContext.GlobalItemTemplateCache["Training Staff"]).GiveTo(client.Aisling))
+                                            ServerContextBase.GlobalItemTemplateCache["Training Staff"])
+                                        .GiveTo(client.Aisling))
                                     {
                                         client.SendMessage(0x02,
                                             "You received a new spell from macronator and a new item.");

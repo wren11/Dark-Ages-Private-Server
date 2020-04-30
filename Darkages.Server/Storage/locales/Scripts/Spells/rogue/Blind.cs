@@ -20,7 +20,7 @@ namespace Darkages.Storage.locales.Scripts.Spells.rogue
         public override void OnFailed(Sprite sprite, Sprite target)
         {
             if (sprite is Aisling aisling)
-                aisling.Client.SendMessage(0x02, ServerContext.Config.SpellFailedMessage);
+                aisling.Client.SendMessage(0x02, ServerContextBase.GlobalConfig.SpellFailedMessage);
         }
 
         public override void OnSuccess(Sprite sprite, Sprite target)
@@ -62,7 +62,7 @@ namespace Darkages.Storage.locales.Scripts.Spells.rogue
                 }
                 else
                 {
-                    aisling.Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
+                    aisling.Client.SendMessage(0x02, ServerContextBase.GlobalConfig.NoManaMessage);
                     return;
                 }
             }

@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -58,25 +58,23 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         {
             try
             {
-                if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skillscriptstr))
+                if (ServerContextBase.GlobalSkillTemplateCache.ContainsKey(skillscriptstr))
                 {
                     var scripts = ScriptManager.Load<SkillScript>(skillscriptstr,
-                        Skill.Create(1, ServerContext.GlobalSkillTemplateCache[skillscriptstr]));
+                        Skill.Create(1, ServerContextBase.GlobalSkillTemplateCache[skillscriptstr]));
 
                     foreach (var script in scripts.Values)
-                    {
                         if (script != null)
                         {
                             script.Skill.NextAvailableUse = DateTime.UtcNow;
                             script.IsScriptDefault = primary;
                             SkillScripts.Add(script);
                         }
-                    }
                 }
             }
             catch (Exception e)
             {
-                ServerContext.Report(e);
+                ServerContextBase.Report(e);
                 //ignore
             }
         }
@@ -85,24 +83,22 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         {
             try
             {
-                if (ServerContext.GlobalSpellTemplateCache.ContainsKey(spellscriptstr))
+                if (ServerContextBase.GlobalSpellTemplateCache.ContainsKey(spellscriptstr))
                 {
                     var scripts = ScriptManager.Load<SpellScript>(spellscriptstr,
-                        Spell.Create(1, ServerContext.GlobalSpellTemplateCache[spellscriptstr]));
+                        Spell.Create(1, ServerContextBase.GlobalSpellTemplateCache[spellscriptstr]));
 
                     foreach (var script in scripts.Values)
-                    {
                         if (script != null)
                         {
                             script.IsScriptDefault = primary;
                             SpellScripts.Add(script);
                         }
-                    }
                 }
             }
             catch (Exception e)
             {
-                ServerContext.Report(e);
+                ServerContextBase.Report(e);
                 //ignore
             }
         }
@@ -222,7 +218,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             }
             catch (Exception e)
             {
-                ServerContext.Report(e);
+                ServerContextBase.Report(e);
                 //ignore
             }
         }
@@ -262,7 +258,8 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                                 Monster.Template.MoodType == MoodQualifer.VeryAggressive
                                     ? Get.Aislings | Get.Monsters
                                     : Get.Aislings)
-                            .OrderBy(v => v.Position.DistanceFrom(Monster.Position.X, Monster.Position.Y)).FirstOrDefault();
+                            .OrderBy(v => v.Position.DistanceFrom(Monster.Position.X, Monster.Position.Y))
+                            .FirstOrDefault();
 
                     if (Monster.Target != null && Monster.Target.CurrentHp <= 0) Monster.Target = null;
 
@@ -284,7 +281,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 return;
 
             if (Monster != null && Monster.Target != null && SpellScripts.Count > 0)
-                if (_random.Next(1, 101) < ServerContext.Config.MonsterSpellSuccessRate)
+                if (_random.Next(1, 101) < ServerContextBase.GlobalConfig.MonsterSpellSuccessRate)
                 {
                     var spellidx = _random.Next(SpellScripts.Count);
 
@@ -405,7 +402,9 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                             skill.NextAvailableUse = DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
                         else
                             skill.NextAvailableUse =
-                                DateTime.UtcNow.AddMilliseconds(Monster.Template.AttackSpeed > 0 ? Monster.Template.AttackSpeed : 500);
+                                DateTime.UtcNow.AddMilliseconds(Monster.Template.AttackSpeed > 0
+                                    ? Monster.Template.AttackSpeed
+                                    : 500);
                     }
 
                     skill.InUse = false;

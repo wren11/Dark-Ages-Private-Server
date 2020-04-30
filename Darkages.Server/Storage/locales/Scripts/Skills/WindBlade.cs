@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         var imp = 50 + Skill.Level;
                         var dmg = client.Aisling.Str * 10 + client.Aisling.Dex * 5;
 
-                        dmg += (dmg * imp / 100);
+                        dmg += dmg * imp / 100;
 
 
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);

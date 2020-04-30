@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -31,10 +31,10 @@ namespace Darkages.Network
         {
             Command = array[0];
             Ordinal = array[1];
-            Data    = count - 2 > 0 ? new byte[count - 2] : new byte[count];
+            Data = count - 2 > 0 ? new byte[count - 2] : new byte[count];
 
             if (Data.Length != 0)
-                Buffer.BlockCopy(array, 2, Data, 0, Data.Length);
+                System.Buffer.BlockCopy(array, 2, Data, 0, Data.Length);
         }
 
         public byte[] ToArray()
@@ -43,14 +43,11 @@ namespace Darkages.Network
 
             buffer[0] = 0xAA;
             buffer[1] = (byte) ((Data.Length + 2) >> 8);
-            buffer[2] = (byte) ((Data.Length + 2) >> 0);
+            buffer[2] = (byte) (Data.Length + 2);
             buffer[3] = Command;
             buffer[4] = Ordinal;
 
-            for (var i = 0; i < Data.Length; i++)
-            {
-                buffer[i + 5] = Data[i];
-            }
+            for (var i = 0; i < Data.Length; i++) buffer[i + 5] = Data[i];
 
             return buffer;
         }

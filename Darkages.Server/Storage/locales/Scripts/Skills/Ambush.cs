@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -49,7 +49,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public override void OnSuccess(Sprite sprite)
         {
-
             var targets = sprite.GetInfront(3, true).ToList();
             var prev = sprite.Position;
 
@@ -85,7 +84,8 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         if (selections.Length == 0 || selection == null)
                             if (sprite is Aisling)
                             {
-                                (sprite as Aisling).Client.SendMessageBox(0x02, ServerContext.Config.CantDoThat);
+                                (sprite as Aisling).Client.SendMessageBox(0x02,
+                                    ServerContextBase.GlobalConfig.CantDoThat);
                                 return;
                             }
                             else

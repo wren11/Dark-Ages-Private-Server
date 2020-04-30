@@ -9,12 +9,12 @@ namespace Darkages.Network.Game.Components
 {
     public class ClientTickComponent : GameServerComponent
     {
-        private readonly GameServerTimer timer;
+        private readonly GameServerTimer _timer;
 
         public ClientTickComponent(GameServer server)
             : base(server)
         {
-            timer = new GameServerTimer(
+            _timer = new GameServerTimer(
                 TimeSpan.FromSeconds(30));
         }
 
@@ -22,12 +22,9 @@ namespace Darkages.Network.Game.Components
 
         public override void Update(TimeSpan elapsedTime)
         {
-            timer.Update(elapsedTime);
+            _timer.Update(elapsedTime);
 
-            if (timer.Elapsed)
-            {
-                timer.Reset();
-            }
+            if (_timer.Elapsed) _timer.Reset();
         }
 
         public class EntityObj

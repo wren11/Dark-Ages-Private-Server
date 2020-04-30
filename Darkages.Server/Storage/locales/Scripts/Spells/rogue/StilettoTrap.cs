@@ -24,7 +24,7 @@ namespace Darkages.Assets.locales.Scripts.Traps
             Trap.Set(sprite, 300, 0, OnTriggeredBy);
 
             if (sprite is Aisling)
-                (sprite as Aisling).Client.SendMessage(0x02, string.Format("You Cast {0}", Spell.Template.Name));
+                (sprite as Aisling).Client.SendMessage(0x02, $"You Cast {Spell.Template.Name}");
         }
 
 

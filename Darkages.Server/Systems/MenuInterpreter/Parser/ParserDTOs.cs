@@ -64,7 +64,6 @@ namespace MenuInterpreter.Parser
         public int amount { get; set; }
         public Link success { get; set; }
         public Link fail { get; set; }
-
     }
 
     public class ParseResult

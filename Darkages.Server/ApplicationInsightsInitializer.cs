@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -35,7 +35,8 @@ namespace Darkages
         public void Initialize(ITelemetry telemetry)
         {
             telemetry.Context.InstrumentationKey = InstrumentationKey;
-            telemetry.Context.Cloud.RoleName     = ServerContext.Config.SERVER_TITLE + " (" + ServerContext.IPADDR.ToString()  + ")";
+            telemetry.Context.Cloud.RoleName = ServerContextBase.GlobalConfig.SERVER_TITLE + " (" +
+                                               ServerContextBase.IpAddress.ToString() + ")";
 
             if (!string.IsNullOrWhiteSpace(Environment.UserName))
                 telemetry.Context.User.Id = Environment.UserName;

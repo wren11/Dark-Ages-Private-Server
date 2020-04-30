@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
                 // Skill Learn
                 case 0x0001:
-                    var skills = ServerContext.GlobalSpellTemplateCache.Select(i => i.Value)
+                    var skills = ServerContextBase.GlobalSpellTemplateCache.Select(i => i.Value)
                         .Where(i => i.Prerequisites != null && i.NpcKey != null &&
                                     i.NpcKey.ToLower().Equals(Mundane.Template.Name.ToLower())
                                     && i.Prerequisites.Class_Required == client.Aisling.Path).ToList();
@@ -112,20 +112,20 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     client.SendOptionsDialog(Mundane,
                         "Are you sure you want to learn " + args +
                         "?\nDo you wish to expand your mind? Let me check if you're ready.", args,
-                        new OptionsDataItem(0x0006, string.Format("What does {0} do?", args)),
+                        new OptionsDataItem(0x0006, $"What does {args} do?"),
                         new OptionsDataItem(0x0004, "Yes"),
                         new OptionsDataItem(0x0001, "No"));
                     break;
                 case 0x0004:
                 {
-                    var subject = ServerContext.GlobalSpellTemplateCache[args];
+                    var subject = ServerContextBase.GlobalSpellTemplateCache[args];
                     if (subject == null)
                         return;
 
                     if (subject.Prerequisites == null)
                     {
                         client.CloseDialog();
-                        client.SendMessage(0x02, ServerContext.Config.CantDoThat);
+                        client.SendMessage(0x02, ServerContextBase.GlobalConfig.CantDoThat);
                     }
                     else
                     {
@@ -145,17 +145,15 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     break;
                 case 0x0006:
                 {
-                    var subject = ServerContext.GlobalSpellTemplateCache[args];
+                    var subject = ServerContextBase.GlobalSpellTemplateCache[args];
                     if (subject == null)
                         return;
 
                     client.SendOptionsDialog(Mundane,
-                        string.Format("{0} - {1}", args,
-                            string.IsNullOrEmpty(subject.Description)
-                                ? "No more information is available."
-                                : subject.Description) + "\n" + subject.Prerequisites,
+                        $"{args} - {(string.IsNullOrEmpty(subject.Description) ? "No more information is available." : subject.Description)}" +
+                        "\n" + subject.Prerequisites,
                         subject.Name,
-                        new OptionsDataItem(0x0006, string.Format("What does {0} do?", subject.Name)),
+                        new OptionsDataItem(0x0006, $"What does {subject.Name} do?"),
                         new OptionsDataItem(0x0004, "Yes"),
                         new OptionsDataItem(0x0001, "No"));
                 }
@@ -163,7 +161,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 // Skill Acquire
                 case 0x0005:
                 {
-                    var subject = ServerContext.GlobalSpellTemplateCache[args];
+                    var subject = ServerContextBase.GlobalSpellTemplateCache[args];
                     if (subject == null)
                         return;
 

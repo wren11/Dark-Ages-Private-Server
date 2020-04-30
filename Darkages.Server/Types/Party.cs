@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ namespace Darkages.Types
 {
     public class Party
     {
-
         public Party(Aisling User)
         {
             Creator = User;
@@ -38,9 +37,11 @@ namespace Darkages.Types
 
         public List<Aisling> MembersExcludingSelf => Members.FindAll(i => i.Serial != Creator.Serial);
 
-        public List<Aisling> MembersExcludingSelfNearby => Members.FindAll(i => i.Serial != Creator.Serial && Creator.WithinRangeOf(i));
+        public List<Aisling> MembersExcludingSelfNearby =>
+            Members.FindAll(i => i.Serial != Creator.Serial && Creator.WithinRangeOf(i));
 
-        public List<Aisling> MembersExcludingSelfMapWide => Members.FindAll(i => i.Serial != Creator.Serial && i.CurrentMapId == Creator.CurrentMapId);
+        public List<Aisling> MembersExcludingSelfMapWide =>
+            Members.FindAll(i => i.Serial != Creator.Serial && i.CurrentMapId == Creator.CurrentMapId);
 
         public int Length => Members.Count;
 
@@ -67,8 +68,8 @@ namespace Darkages.Types
         public static bool AddToParty(Party prmParty, Aisling User)
         {
             if (prmParty.Members.Find(i =>
-                    string.Equals(i.Username, User.Username,
-                        StringComparison.OrdinalIgnoreCase)) == null)
+                string.Equals(i.Username, User.Username,
+                    StringComparison.OrdinalIgnoreCase)) == null)
             {
                 User.InvitePrivleges = true;
                 prmParty.Members.Add(User);
@@ -93,12 +94,12 @@ namespace Darkages.Types
             User.LeaderPrivleges = false;
             User.InvitePrivleges = true;
 
-                prmParty.Members.RemoveAt(idx);
+            prmParty.Members.RemoveAt(idx);
 
             prmParty.Creator.Client.SendMessage(0x02,
-                !disbanded ? string.Format("{0} has left the party.", User.Username) : "Party Disbanded.");
+                !disbanded ? $"{User.Username} has left the party." : "Party Disbanded.");
             User.Client.SendMessage(0x02,
-                !disbanded ? string.Format("{0} has left the party.", prmParty.Creator.Username) : "Party Disbanded.");
+                !disbanded ? $"{prmParty.Creator.Username} has left the party." : "Party Disbanded.");
 
 
             if (!disbanded && prmParty.LengthExcludingSelf == 0)
@@ -133,8 +134,8 @@ namespace Darkages.Types
             }
 
             if (Creator.GroupParty.MembersExcludingSelf.Find(i
-                    => string.Equals(i.Username, userRequested.Username,
-                        StringComparison.OrdinalIgnoreCase)) != null)
+                => string.Equals(i.Username, userRequested.Username,
+                    StringComparison.OrdinalIgnoreCase)) != null)
             {
                 RemoveFromParty(Creator.GroupParty, userRequested);
                 RemoveFromParty(userRequested.GroupParty, Creator);
@@ -156,21 +157,18 @@ namespace Darkages.Types
                 if (userRequested.GroupParty.LengthExcludingSelf > 0)
                 {
                     Creator.Client.SendMessage(0x02,
-                        string.Format("{0} Is a member of another party.",
-                            userRequested.Username));
+                        $"{userRequested.Username} Is a member of another party.");
 
                     return false;
                 }
 
                 var a = AddToParty(userRequested.GroupParty, Creator);
                 userRequested.Client.SendMessage(0x02,
-                    string.Format("{0} has joined your party.",
-                        Creator.Username));
+                    $"{Creator.Username} has joined your party.");
 
                 var b = AddToParty(Creator.GroupParty, userRequested);
                 Creator.Client.SendMessage(0x02,
-                    string.Format("{0} has joined your party.",
-                        userRequested.Username));
+                    $"{userRequested.Username} has joined your party.");
 
                 return a && b;
             }

@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -145,13 +145,11 @@ namespace Darkages.Network.ServerFormats
                 (byte) Count);
 
             foreach (var option in this)
-            {
                 if (option.Text != null)
                 {
                     writer.WriteStringA(option.Text);
                     writer.Write(option.Step);
                 }
-            }
         }
     }
 
@@ -258,10 +256,10 @@ namespace Darkages.Network.ServerFormats
 
             foreach (var str in Data.Items.Keys)
             {
-                if (!ServerContext.GlobalItemTemplateCache.ContainsKey(str))
+                if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(str))
                     continue;
 
-                var item = ServerContext.GlobalItemTemplateCache[str];
+                var item = ServerContextBase.GlobalItemTemplateCache[str];
 
                 if (item == null)
                     continue;

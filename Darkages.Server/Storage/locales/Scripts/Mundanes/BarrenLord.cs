@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -59,10 +59,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             if (responseID == 0x0005)
             {
-                client.Aisling._MaximumHp -= ServerContext.Config.DeathHPPenalty;
+                client.Aisling._MaximumHp -= ServerContextBase.GlobalConfig.DeathHPPenalty;
 
                 if (client.Aisling.MaximumHp <= 0)
-                    client.Aisling._MaximumHp = ServerContext.Config.MinimumHp;
+                    client.Aisling._MaximumHp = ServerContextBase.GlobalConfig.MinimumHp;
 
                 client.Revive();
                 client.SendMessage(0x02, "You have lost some health.");

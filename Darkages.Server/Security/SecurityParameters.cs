@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -28,7 +28,8 @@ namespace Darkages.Security
     public sealed class SecurityParameters : IFormattable
     {
         public static readonly SecurityParameters Default
-            = new SecurityParameters(0, Encoding.ASCII.GetBytes(ServerContext.Config?.DefaultKey ?? "NexonInc."));
+            = new SecurityParameters(0,
+                Encoding.ASCII.GetBytes(ServerContextBase.GlobalConfig?.DefaultKey ?? "NexonInc."));
 
         public SecurityParameters()
         {

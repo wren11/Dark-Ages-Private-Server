@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -23,32 +23,32 @@ namespace Darkages.Network.Game.Components
 {
     public class DaytimeComponent : GameServerComponent
     {
-        private readonly GameServerTimer timer;
-        private byte shade;
+        private readonly GameServerTimer _timer;
+        private byte _shade;
 
         public DaytimeComponent(GameServer server)
             : base(server)
         {
-            timer = new GameServerTimer(
-                TimeSpan.FromSeconds(ServerContext.Config.DayTimeInterval));
+            _timer = new GameServerTimer(
+                TimeSpan.FromSeconds(ServerContextBase.GlobalConfig.DayTimeInterval));
         }
 
         public override void Update(TimeSpan elapsedTime)
         {
-            timer.Update(elapsedTime);
+            _timer.Update(elapsedTime);
 
-            if (timer.Elapsed)
+            if (_timer.Elapsed)
             {
-                timer.Reset();
+                _timer.Reset();
 
-                var format20 = new ServerFormat20 {Shade = shade};
+                var format20 = new ServerFormat20 {Shade = _shade};
 
                 foreach (var client in Server.Clients)
                     if (client != null)
                         client.Send(format20);
 
-                shade += 1;
-                shade %= 18;
+                _shade += 1;
+                _shade %= 18;
             }
         }
     }

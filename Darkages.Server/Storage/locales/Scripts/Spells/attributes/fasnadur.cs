@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -57,10 +57,9 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     if (target is Aisling)
                         (target as Aisling).Client
                             .SendMessage(0x02,
-                                string.Format("{0} Casts {1} on you. Elements augmented.", client.Aisling.Username,
-                                    Spell.Template.Name));
+                                $"{client.Aisling.Username} Casts {Spell.Template.Name} on you. Elements augmented.");
 
-                    client.SendMessage(0x02, string.Format("you cast {0}", Spell.Template.Name));
+                    client.SendMessage(0x02, $"you cast {Spell.Template.Name}");
                     client.SendAnimation(126, target, sprite);
 
                     var action = new ServerFormat1A
@@ -99,11 +98,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     if (target is Aisling)
                         (target as Aisling).Client
                             .SendMessage(0x02,
-                                string.Format("{0} Casts {1} on you. Elements augmented.",
-                                    (sprite is Monster
-                                        ? (sprite as Monster).Template.Name
-                                        : (sprite as Mundane).Template.Name) ?? "Monster",
-                                    Spell.Template.Name));
+                                $"{(sprite is Monster ? (sprite as Monster).Template.Name : (sprite as Mundane).Template.Name) ?? "Monster"} Casts {Spell.Template.Name} on you. Elements augmented.");
 
                     target.SendAnimation(126, target, sprite);
 
@@ -135,7 +130,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                if (sprite is Aisling) (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
+                if (sprite is Aisling)
+                    (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.GlobalConfig.NoManaMessage);
                 return;
             }
 

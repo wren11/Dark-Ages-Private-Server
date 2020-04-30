@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
                 Monster.Template = temp;
 
-                client.SendMessage(0x02, string.Format("[Difficulty: {0}] Creeps get stronger ...", temp.Level));
+                client.SendMessage(0x02, $"[Difficulty: {temp.Level}] Creeps get stronger ...");
             }
 
             if (GetObject<Monster>(client.Aisling.Map, i => i.Serial == Monster.Serial) != null)

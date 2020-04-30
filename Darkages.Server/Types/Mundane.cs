@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ namespace Darkages.Types
             if (template == null)
                 return;
 
-            var map = ServerContext.GlobalMapCache[template.AreaID];
+            var map = ServerContextBase.GlobalMapCache[template.AreaID];
             var existing = template.GetObject<Mundane>(map,
                 p => p != null && p.Template != null && p.Template.Name == template.Name);
 
@@ -121,7 +121,7 @@ namespace Darkages.Types
             npc.DefenseElement = Generator.RandomEnumValue<ElementManager.Element>();
             npc.OffenseElement = Generator.RandomEnumValue<ElementManager.Element>();
 
-            npc.Scripts = ScriptManager.Load<MundaneScript>(template.ScriptKey, ServerContext.Game, npc);
+            npc.Scripts = ScriptManager.Load<MundaneScript>(template.ScriptKey, ServerContextBase.Game, npc);
 
             npc.Template.AttackTimer = new GameServerTimer(TimeSpan.FromMilliseconds(450));
             npc.Template.EnableTurning = false;
@@ -137,8 +137,8 @@ namespace Darkages.Types
         public void LoadSkillScript(string skillscriptstr, bool primary = false)
         {
             Skill obj;
-            var scripts = ScriptManager.Load<SkillScript>(skillscriptstr, 
-                obj = Skill.Create(1, ServerContext.GlobalSkillTemplateCache[skillscriptstr]));
+            var scripts = ScriptManager.Load<SkillScript>(skillscriptstr,
+                obj = Skill.Create(1, ServerContextBase.GlobalSkillTemplateCache[skillscriptstr]));
 
             foreach (var script in scripts.Values)
             {
@@ -156,16 +156,14 @@ namespace Darkages.Types
         private void LoadSpellScript(string spellscriptstr, bool primary = false)
         {
             var scripts = ScriptManager.Load<SpellScript>(spellscriptstr,
-                Spell.Create(1, ServerContext.GlobalSpellTemplateCache[spellscriptstr]));
+                Spell.Create(1, ServerContextBase.GlobalSpellTemplateCache[spellscriptstr]));
 
             foreach (var script in scripts.Values)
-            {
                 if (script != null)
                 {
                     script.IsScriptDefault = primary;
                     SpellScripts.Add(script);
                 }
-            }
         }
 
         public void OnDeath()
@@ -203,10 +201,7 @@ namespace Darkages.Types
 
             var nearby = GetObjects<Aisling>(Map, i => i.WithinRangeOf(this));
 
-            if (!nearby.Any())
-            {
-                return;
-            }
+            if (!nearby.Any()) return;
 
             if (Template.ChatTimer != null)
             {
@@ -214,7 +209,6 @@ namespace Darkages.Types
 
                 if (Template.ChatTimer.Elapsed && nearby.Any())
                 {
-
                     foreach (var obj in nearby)
                         if (Template.Speech.Count > 0)
                         {
@@ -344,7 +338,7 @@ namespace Darkages.Types
                                                     DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
                                             else
                                                 skill.NextAvailableUse =
-                                                    DateTime.UtcNow.AddMilliseconds(ServerContext.Config
+                                                    DateTime.UtcNow.AddMilliseconds(ServerContextBase.GlobalConfig
                                                         .GlobalBaseSkillDelay);
                                         }
 

@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -41,8 +41,7 @@ namespace Darkages.Types
         public int MapId { get; set; }
         public Item ReaperBag { get; set; }
 
-        [JsonIgnore]
-        public Aisling Owner { get; set; }
+        [JsonIgnore] public Aisling Owner { get; set; }
 
         public void GenerateReeper()
         {
@@ -53,7 +52,7 @@ namespace Darkages.Types
 
             var itemTemplate = new ItemTemplate
             {
-                Name = string.Format("{0}'s Lost Sachel.", Owner?.Username),
+                Name = $"{Owner?.Username}'s Lost Sachel.",
                 ScriptName = "Cursed Sachel",
                 Image = 135,
                 DisplayImage = 0x8000 + 135,
@@ -73,10 +72,7 @@ namespace Darkages.Types
 
         private void FindOwner()
         {
-            if (Owner == null)
-            {
-                Owner = StorageManager.AislingBucket.Load(OwnerName);
-            }
+            if (Owner == null) Owner = StorageManager.AislingBucket.Load(OwnerName);
         }
 
         public void RecoverItems(Aisling Owner)
@@ -91,7 +87,7 @@ namespace Darkages.Types
                 var nitem = ObjectManager.Clone<Item>(item);
 
                 if (nitem.GiveTo(Owner))
-                    Owner.Client.SendMessage(0x02, string.Format("You have recovered {0}.", item.Template.Name));
+                    Owner.Client.SendMessage(0x02, $"You have recovered {item.Template.Name}.");
             }
 
 
@@ -122,7 +118,7 @@ namespace Darkages.Types
                 ReepGold();
                 GenerateReeper();
 
-                Owner.Client.SendMessage(0x02, ServerContext.Config.DeathReepingMessage);
+                Owner.Client.SendMessage(0x02, ServerContextBase.GlobalConfig.DeathReepingMessage);
                 Owner.Client.SendStats(StatusFlags.All);
             }
         }
@@ -152,9 +148,7 @@ namespace Darkages.Types
             {
                 var obj = es.Item;
 
-                if (obj == null) continue;
-
-                if (obj.Template == null)
+                if (obj?.Template == null)
                     continue;
 
                 if (Owner.EquipmentManager.RemoveFromExisting(es.Slot, false))
@@ -182,15 +176,11 @@ namespace Darkages.Types
                 inv = new List<Item>(batch);
             }
 
-            ServerContext.Log("Player {0} Died, Items Before Reep {1}", Owner.Username, inv.Dump());
-
             foreach (var item in inv)
             {
                 var obj = item;
 
-                if (obj == null) continue;
-
-                if (obj.Template == null)
+                if (obj?.Template == null)
                     continue;
 
                 obj.Durability -= obj.Durability * 10 / 100;
@@ -204,9 +194,6 @@ namespace Darkages.Types
                     Add(copy);
                 }
             }
-
-            ServerContext.Log("Player {0} Died, Items Inside Cursed_Sachel {1}", Owner.Username, Items.Dump());
-
         }
 
         private void Add(Item obj, bool wasEquipped = false)
@@ -216,24 +203,15 @@ namespace Darkages.Types
 
             if (wasEquipped)
             {
-                if (obj.Template.Flags.HasFlag(ItemFlags.PerishIFEquipped))
-                {
-                    ServerContext.Log("Player {0} Item's Perished because it was equipped. {1}", Owner.Username, obj.Dump());
-                    return;
-                }
+                if (obj.Template.Flags.HasFlag(ItemFlags.PerishIFEquipped)) return;
             }
             else
             {
-                if (obj.Template.Flags.HasFlag(ItemFlags.Perishable))
-                {
-                    ServerContext.Log("Player {0} Item's Perished {1}", Owner.Username, obj.Dump());
-                    return;
-                }
+                if (obj.Template.Flags.HasFlag(ItemFlags.Perishable)) return;
             }
 
             lock (Items)
             {
-                ServerContext.Log("Player {0} Item Added to Sachel. ItemObj = {1}", Owner.Username, obj.Template.Name);
                 Items.Add(obj);
             }
         }

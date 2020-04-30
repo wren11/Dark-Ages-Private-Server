@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ namespace Darkages.Network.Game
         public bool Elapsed => Timer >= Delay;
 
         public bool Disabled { get; set; }
-        public int Interval { get; set; }
+
         public int Tick { get; set; }
 
         public void Reset()

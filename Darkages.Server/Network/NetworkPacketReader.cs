@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -60,10 +60,12 @@ namespace Darkages.Network
 
         public byte ReadByte()
         {
-            byte b = (0);
+            byte b = 0;
 
             if (Position == -1)
+            {
                 b = Packet.Ordinal;
+            }
             else
             {
                 if (Position < Packet.Data.Length)

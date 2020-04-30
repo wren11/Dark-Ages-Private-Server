@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -50,8 +50,9 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     if (client.Aisling.TutorialCompleted)
                         client.Aisling.GoHome();
                     else
-                        client.TransitionToMap(ServerContext.GlobalMapCache[ServerContext.Config.StartingMap],
-                            ServerContext.Config.StartingPosition);
+                        client.TransitionToMap(
+                            ServerContextBase.GlobalMapCache[ServerContextBase.GlobalConfig.StartingMap],
+                            ServerContextBase.GlobalConfig.StartingPosition);
                 }
                     break;
                 case 0x0002:
@@ -86,15 +87,15 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 {
                     client.Aisling.TutorialCompleted = true;
                     client.Aisling.ExpLevel = 11;
-                    client.Aisling._Str = ServerContext.Config.BaseStatAttribute;
-                    client.Aisling._Int = ServerContext.Config.BaseStatAttribute;
-                    client.Aisling._Wis = ServerContext.Config.BaseStatAttribute;
-                    client.Aisling._Con = ServerContext.Config.BaseStatAttribute;
-                    client.Aisling._Dex = ServerContext.Config.BaseStatAttribute;
-                    client.Aisling._MaximumHp = (ServerContext.Config.MinimumHp + 33) * 11;
-                    client.Aisling._MaximumMp = (ServerContext.Config.MinimumHp + 21) * 11;
+                    client.Aisling._Str = ServerContextBase.GlobalConfig.BaseStatAttribute;
+                    client.Aisling._Int = ServerContextBase.GlobalConfig.BaseStatAttribute;
+                    client.Aisling._Wis = ServerContextBase.GlobalConfig.BaseStatAttribute;
+                    client.Aisling._Con = ServerContextBase.GlobalConfig.BaseStatAttribute;
+                    client.Aisling._Dex = ServerContextBase.GlobalConfig.BaseStatAttribute;
+                    client.Aisling._MaximumHp = (ServerContextBase.GlobalConfig.MinimumHp + 33) * 11;
+                    client.Aisling._MaximumMp = (ServerContextBase.GlobalConfig.MinimumHp + 21) * 11;
 
-                    client.Aisling.StatPoints = 11 * ServerContext.Config.StatsPerLevel;
+                    client.Aisling.StatPoints = 11 * ServerContextBase.GlobalConfig.StatsPerLevel;
                     client.SendStats(StatusFlags.All);
 
                     client.SendMessage(0x02, "You have lost all memory...");

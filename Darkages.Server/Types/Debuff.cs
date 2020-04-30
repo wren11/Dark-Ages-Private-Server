@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -62,10 +62,8 @@ namespace Darkages.Types
         public virtual void OnEnded(Sprite Affected, Debuff debuff)
         {
             if (Affected.Debuffs.TryRemove(debuff.Name, out var removed))
-                if (Affected is Aisling)
-                    (Affected as Aisling)
-                        .Client
-                        .Send(new ServerFormat3A(Icon, byte.MinValue));
+                (Affected as Aisling)?.Client
+                    .Send(new ServerFormat3A(Icon, byte.MinValue));
         }
 
         internal void Update(Sprite Affected, TimeSpan elapsedTime)
@@ -104,10 +102,8 @@ namespace Darkages.Types
             else if ((Length - Timer.Tick).IsWithin(90, short.MaxValue))
                 colorInt = 6;
 
-            if (Affected is Aisling)
-                (Affected as Aisling)
-                    .Client
-                    .Send(new ServerFormat3A(Icon, (byte) colorInt));
+            (Affected as Aisling)?.Client
+                .Send(new ServerFormat3A(Icon, (byte) colorInt));
         }
     }
 }

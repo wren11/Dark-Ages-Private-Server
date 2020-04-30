@@ -1,5 +1,9 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+﻿using Darkages.Network.Game;
+using Darkages.Network.Object;
+using Darkages.Types;
+using Newtonsoft.Json;
+///************************************************************************
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -15,58 +19,32 @@
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Darkages.Common;
-using Darkages.Network.Game;
-using Darkages.Network.Object;
-using Darkages.Network.ServerFormats;
-using Darkages.Storage;
-using Darkages.Types;
-using Newtonsoft.Json;
 
 namespace Darkages
 {
     public class Area : ObjectManager
     {
-        [JsonIgnore] private static readonly byte[] sotp = File.ReadAllBytes("sotp.dat");
+        [JsonIgnore] private readonly object _syncLock = new object();
 
-        public static Dictionary<int, Area> Instances = new Dictionary<int, Area>();
+        [JsonIgnore] private static readonly byte[] Sotp = File.ReadAllBytes("sotp.dat");
 
-        [JsonIgnore]
-        [Browsable(false)]
-        private readonly GameServerTimer UpdateTimer =
-            new GameServerTimer(TimeSpan.FromMilliseconds(30));
+        [JsonIgnore] [Browsable(false)]
+        private readonly GameServerTimer _updateTimer = new GameServerTimer(TimeSpan.FromMilliseconds(10));
 
-        [JsonIgnore]
-        [Browsable(false)]
-        private readonly GameServerTimer WarpTimer =
-            new GameServerTimer(TimeSpan.FromSeconds(1.1));
+        [JsonIgnore] public GameServerTimer Reaper = new GameServerTimer(TimeSpan.FromSeconds(2));
 
-        [JsonIgnore]
-        public GameServerTimer _Reaper = new GameServerTimer(TimeSpan.FromSeconds(2));
+        [JsonIgnore] public Cache<Sprite[]> AreaObjectCache = new Cache<Sprite[]>();
 
-        [JsonIgnore]
-        public Cache<Sprite[]> AreaObjectCache = new Cache<Sprite[]>();
+        [JsonIgnore] [Browsable(false)] public byte[] Data;
 
+        [JsonIgnore] [Browsable(false)] public ushort Hash;
 
-        [JsonIgnore]
-        [Browsable(false)]
-        public byte[] Data;
-
-        [JsonIgnore]
-        [Browsable(false)]
-        public ushort Hash;
-
-        [JsonIgnore]
-        [Browsable(false)]
-        public bool Ready;
+        [JsonIgnore] [Browsable(false)] public bool Ready;
 
         public int Music { get; set; }
 
@@ -76,21 +54,15 @@ namespace Darkages
 
         public int ID { get; set; }
 
-        public int ContentOrder { get; set; }
-
-        public string ContentDescription { get; set; }
-
         public string Name { get; set; }
 
         public string ContentName { get; set; }
 
         public MapFlags Flags { get; set; }
 
-        [JsonIgnore]
-        public Tile[,] MapNodes { get; set; }
+        [JsonIgnore] public Tile[,] MapNodes { get; set; }
 
-        [JsonIgnore]
-        private TileContent[,] BaseMap { get; set; }
+        [JsonIgnore] private TileContent[,] BaseMap { get; set; }
 
         public class Tile
         {
@@ -121,16 +93,14 @@ namespace Darkages
                 return true;
             }
 
-            public bool CanSpawnMonster() => !HasMonsters && !HasMundanes;
-
-            private object syncLock = new object();
+            public bool CanSpawnMonster()
+            {
+                return !HasMonsters && !HasMundanes;
+            }
 
             public void Add(TileContent content)
             {
-                lock (syncLock)
-                {
-                    Content.Push(content);
-                }
+                Content.Push(content);
             }
 
             public void Empty()
@@ -140,21 +110,24 @@ namespace Darkages
         }
 
 
-        public static bool ParseSotp(short lWall, short rWall)
+        public bool ParseSotp(short lWall, short rWall)
         {
-            if (lWall == 0 &&
-                rWall == 0)
+            if (lWall == 0 && rWall == 0)
                 return false;
+
             if (lWall == 0)
-                return sotp[rWall - 1] == 0x0F;
+                return Sotp[rWall - 1] == 0x0F;
+
             if (rWall == 0)
-                return sotp[lWall - 1] == 0x0F;
-            return
-                sotp[lWall - 1] == 0x0F &&
-                sotp[rWall - 1] == 0x0F;
+                return Sotp[lWall - 1] == 0x0F;
+
+            return Sotp[lWall - 1] == 0x0F && Sotp[rWall - 1] == 0x0F;
         }
 
-        internal void Update(int xPos, int yPos) => UpdateTileContents(xPos, yPos);
+        internal void Update(int xPos, int yPos)
+        {
+            UpdateTileContents(xPos, yPos);
+        }
 
         internal void UpdateTileContents(int xPos, int yPos)
         {
@@ -164,17 +137,9 @@ namespace Darkages
             if (yPos < 0)
                 yPos = 0;
 
+            if (yPos >= MapNodes.GetUpperBound(1)) return;
 
-
-            if (yPos >= MapNodes.GetUpperBound(1))
-            {
-                return;
-            }
-
-            if (xPos >= MapNodes.GetUpperBound(0))
-            {
-                return;
-            }
+            if (xPos >= MapNodes.GetUpperBound(0)) return;
 
             MapNodes[xPos, yPos].Empty();
             {
@@ -184,14 +149,12 @@ namespace Darkages
                     return;
                 }
 
-                var objects = GetObjects(this,
-                    i => i.X == xPos && i.Y == yPos, Get.Monsters | Get.Mundanes | Get.Aislings);
+                var objects = GetObjects(this, i => i.X == xPos && i.Y == yPos,
+                    Get.Monsters | Get.Mundanes | Get.Aislings);
 
                 foreach (var obj in objects)
-                {
                     if (MapNodes[xPos, yPos].IsAvailable())
                         MapNodes[xPos, yPos].Add(obj.EntityType);
-                }
             }
         }
 
@@ -226,7 +189,7 @@ namespace Darkages
         }
 
         public bool IsWall(Aisling obj, int x, int y)
-        { 
+        {
             if (obj.Flags.HasFlag(AislingFlags.Dead))
                 return false;
 
@@ -265,24 +228,25 @@ namespace Darkages
         public byte[] GetRowData(int row)
         {
             var buffer = new byte[Cols * 6];
+            var bPos = 0;
+            var dPos = row * Cols * 6;
 
-            int b_pos = 0;
-
-            int d_pos = (row * Cols * 6);
-
-            for (var i = 0; i < Cols; i++, b_pos += 6, d_pos += 6)
+            lock (_syncLock)
             {
-                buffer[b_pos + 0] = Data[d_pos + 1];
+                for (var i = 0; i < Cols; i++, bPos += 6, dPos += 6)
+                {
+                    buffer[bPos + 0] = Data[dPos + 1];
 
-                buffer[b_pos + 1] = Data[d_pos + 0];
+                    buffer[bPos + 1] = Data[dPos + 0];
 
-                buffer[b_pos + 2] = Data[d_pos + 3];
+                    buffer[bPos + 2] = Data[dPos + 3];
 
-                buffer[b_pos + 3] = Data[d_pos + 2];
+                    buffer[bPos + 3] = Data[dPos + 2];
 
-                buffer[b_pos + 4] = Data[d_pos + 5];
+                    buffer[bPos + 4] = Data[dPos + 5];
 
-                buffer[b_pos + 5] = Data[d_pos + 4];
+                    buffer[bPos + 5] = Data[dPos + 4];
+                }
             }
 
             return buffer;
@@ -294,135 +258,76 @@ namespace Darkages
             return GetObjects(this, i => i != null, Get.All).ToArray();
         }
 
-        public void ObjectUpdate(TimeSpan elapsedTime)
+        public void UpdateAreaObjects(TimeSpan elapsedTime)
         {
-            var users = ServerContext.Game.Clients.Where(i => i != null &&
-                                                              i.Aisling != null && i.Aisling.CurrentMapId == ID)
+            var users = ServerContextBase.Game.Clients.Where(i => i?.Aisling != null && i.Aisling.CurrentMapId == ID)
                 .Select(i => i.Aisling).ToArray();
 
-            Sprite[] ObjectCache = null;
+            Sprite[] objectCache;
 
             if (!AreaObjectCache.Exists(Name))
             {
-                ObjectCache = GetAreaObjects();
+                objectCache = GetAreaObjects();
 
-                if (ObjectCache.Length > 0)
-                {
-                    AreaObjectCache.AddOrUpdate(Name, ObjectCache, 3);
-                }
+                if (objectCache.Length > 0) AreaObjectCache.AddOrUpdate(Name, objectCache, 3);
             }
             else
             {
-                ObjectCache = AreaObjectCache.Get(Name);
+                objectCache = AreaObjectCache.Get(Name);
             }
 
-            if (ObjectCache != null && ObjectCache.Length > 0)
-            {
-                if (users.Length > 0)
-                {
-                    UpdateMonsterObjects (elapsedTime, ObjectCache.OfType<Monster>());
-                    UpdateMundaneObjects (elapsedTime, ObjectCache.OfType<Mundane>());
-                    UpdateItemObjects    (elapsedTime, ObjectCache.OfType<Money>().Concat<Sprite>(ObjectCache.OfType<Item>()));
-                }
-            }
+            if (objectCache == null || objectCache.Length <= 0)
+                return;
+
+            if (users.Length <= 0)
+                return;
+
+            UpdateMonsterObjects(elapsedTime, objectCache.OfType<Monster>());
+            UpdateMundaneObjects(elapsedTime, objectCache.OfType<Mundane>());
+            UpdateItemObjects(elapsedTime, objectCache.OfType<Money>().Concat<Sprite>(objectCache.OfType<Item>()));
         }
 
         public void Update(TimeSpan elapsedTime)
         {
-            UpdateTimer.Update(elapsedTime);
+            _updateTimer.Update(elapsedTime);
 
-            if (UpdateTimer.Elapsed)
-            {
-                ObjectUpdate(elapsedTime);
-                UpdateTimer.Reset();
-            }
+            if (!_updateTimer.Elapsed) return;
 
-            if (ServerContext.Config.ShowWarpAnimation)
-            {
-                WarpTimer.Update(elapsedTime);
-
-                if (WarpTimer.Elapsed)
-                {
-                    UpdateWarps();
-                    WarpTimer.Reset();
-                }
-            }
-        }
-
-        private void UpdateWarps()
-        {
-            var warpsOnMap = ServerContext.GlobalWarpTemplateCache.Where(i => i.ActivationMapId == ID);
-
-            foreach (var warp in warpsOnMap)
-            {
-                if (!warp.Activations.Any())
-                    continue;
-
-                var nearby = GetObjects<Aisling>(this, i =>
-                    i.LoggedIn && i.CurrentMapId == warp.ActivationMapId);
-
-                if (!nearby.Any())
-                    continue;
-
-                foreach (var warpObj in warp.Activations)
-                {
-                    foreach (var obj in nearby)
-                        if (obj.WithinRangeOf(warpObj.Location.X, warpObj.Location.Y, 16))
-                            DisplayWarpTo(warpObj, obj);
-                }
-            }
-        }
-
-        public void DisplayWarpTo(Warp warpObj, Aisling obj)
-        {
-            if (obj.WithinRangeOf(warpObj.Location.X, warpObj.Location.Y, 10))
-            {
-                obj.Show(Scope.Self, new ServerFormat29(
-                    ServerContext.Config.WarpNumber,
-                    warpObj.Location.X, warpObj.Location.Y));
-            }
+            UpdateAreaObjects(elapsedTime);
+            _updateTimer.Reset();
         }
 
         public void UpdateMonsterObjects(TimeSpan elapsedTime, IEnumerable<Monster> objects)
         {
-            _Reaper.Update(elapsedTime);
+            Reaper.Update(elapsedTime);
 
-            if (_Reaper.Elapsed)
+            var enumerable = objects as Monster[] ?? objects.ToArray();
+
+            if (Reaper.Elapsed)
             {
-                _Reaper.Reset();
+                Reaper.Reset();
 
-                foreach (var obj in objects)
+                foreach (var obj in enumerable)
                     if (obj != null && obj.Map != null && obj.Scripts != null)
                         if (obj.CurrentHp <= 0)
                             if (obj.Target != null)
-                            {
                                 foreach (var script in obj.Scripts.Values)
                                     script.OnDeath(obj.Target.Client);
-                            }
             }
 
 
-            foreach (var obj in objects)
+            foreach (var obj in enumerable)
                 if (obj != null && obj.Map != null && obj.Scripts != null)
                 {
                     if (obj.CurrentHp <= 0)
-                    {
                         if (obj.Target != null)
-                        {
                             if (!obj.Skulled)
                             {
-                                foreach (var script in obj.Scripts.Values)
-                                {
-                                    script.OnSkulled(obj.Target.Client);
-                                }
+                                foreach (var script in obj.Scripts.Values) script.OnSkulled(obj.Target.Client);
                                 obj.Skulled = true;
                             }
-                        }
-                    }
-                    foreach (var script in obj.Scripts.Values)
-                    {
-                        script.Update(elapsedTime);
-                    }
+
+                    foreach (var script in obj.Scripts.Values) script.Update(elapsedTime);
 
                     obj.UpdateBuffs(elapsedTime);
                     obj.UpdateDebuffs(elapsedTime);
@@ -437,13 +342,12 @@ namespace Darkages
                 {
                     obj.LastUpdated = DateTime.UtcNow;
 
-                    if (obj is Item)
-                        if ((DateTime.UtcNow - obj.AbandonedDate).TotalMinutes > 3)
-                            if ((obj as Item).Cursed)
-                            {
-                                (obj as Item).AuthenticatedAislings = null;
-                                (obj as Item).Cursed = false;
-                            }
+                    if (!(obj is Item item)) continue;
+                    if (!((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3)) continue;
+                    if (!item.Cursed) continue;
+
+                    item.AuthenticatedAislings = null;
+                    item.Cursed = false;
                 }
         }
 
@@ -465,38 +369,34 @@ namespace Darkages
             }
         }
 
-        private object syncLock = new object();
-
         public void OnLoaded()
         {
             MapNodes = new Tile[Cols, Rows];
             BaseMap = new TileContent[Cols, Rows];
 
-            lock (syncLock)
+            lock (_syncLock)
             {
                 using (var stream = new MemoryStream(Data))
                 {
                     using (var reader = new BinaryReader(stream))
                     {
                         for (var y = 0; y < Rows; y++)
+                        for (var x = 0; x < Cols; x++)
                         {
-                            for (var x = 0; x < Cols; x++)
+                            reader.BaseStream.Seek(2, SeekOrigin.Current);
+
+                            MapNodes[x, y] = new Tile();
+                            MapNodes[x, y].Empty();
+
+                            if (ParseSotp(reader.ReadInt16(), reader.ReadInt16()))
                             {
-                                reader.BaseStream.Seek(2, SeekOrigin.Current);
-
-                                MapNodes[x, y] = new Tile();
-                                MapNodes[x, y].Empty();
-
-                                if (ParseSotp(reader.ReadInt16(), reader.ReadInt16()))
-                                {
-                                    BaseMap[x, y] = TileContent.Wall;
-                                    MapNodes[x, y].Add(TileContent.Wall);
-                                }
-                                else
-                                {
-                                    BaseMap[x, y] = TileContent.None;
-                                    MapNodes[x, y].Add(TileContent.None);
-                                }
+                                BaseMap[x, y] = TileContent.Wall;
+                                MapNodes[x, y].Add(TileContent.Wall);
+                            }
+                            else
+                            {
+                                BaseMap[x, y] = TileContent.None;
+                                MapNodes[x, y].Add(TileContent.None);
                             }
                         }
                     }
@@ -507,5 +407,3 @@ namespace Darkages
         }
     }
 }
-
-

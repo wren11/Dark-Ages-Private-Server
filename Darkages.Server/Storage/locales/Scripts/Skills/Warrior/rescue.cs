@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -75,21 +75,15 @@ namespace Darkages.Scripting.Scripts.Skills
 
                         //this should ensure we remove everyone from the tag list except me or group members.
                         if (i is Monster _monster)
-                        {
                             if (sprite is Aisling _player)
-                            {
                                 if (_player.GroupParty.MembersExcludingSelfMapWide.Count > 0)
                                 {
                                     var nearbyTags = _player.GroupParty.MembersExcludingSelfMapWide.ToArray();
-                                    var removed    = 0;
+                                    var removed = 0;
 
                                     foreach (var obj in nearbyTags)
-                                    {
                                         removed += _monster.TaggedAislings.RemoveWhere(n => n != obj.Serial);
-                                    }
                                 }
-                            }
-                        }
 
                         Target = i;
                         i.ApplyDamage(sprite, 0, true, Skill.Template.Sound, null, true);

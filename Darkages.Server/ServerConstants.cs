@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ namespace Darkages
 {
     public class ServerConstants
     {
-
         /// <summary>
         /// Can we allow the same player to enter the server more then once?
         /// </summary>
@@ -131,11 +130,11 @@ namespace Darkages
 
         [JsonProperty] public double FasNadurStrength = 3.00;
 
-        [JsonProperty] public string GameMaster    = "lol"; // add the character name of who will have in-game GM Power.
+        [JsonProperty] public string GameMaster = "lol"; // add the character name of who will have in-game GM Power.
 
-        [JsonProperty] public string ServerDev     = ""; //add your name here so people know who is running this server.
+        [JsonProperty] public string ServerDev = ""; //add your name here so people know who is running this server.
 
-        [JsonProperty] public string ProjectDev    = "Wren"; //you can decide if you want to change this.
+        [JsonProperty] public string ProjectDev = "Wren"; //you can decide if you want to change this.
 
 
         [JsonProperty]
@@ -303,13 +302,13 @@ namespace Darkages
 
         [JsonProperty] public string SpellFailedMessage = "failed.";
 
-        [JsonProperty] public int StartingMap = 3029; // tutorial : 1, as per USDA Live Server
+        [JsonProperty] public int StartingMap = 3029; // tutorial : 1, as per USDA Live Client
 
         [JsonProperty] public Position StartingPosition = new Position(26, 48);
 
         [JsonProperty]
         /// <summary>
-        /// Maximum Server Capacity for stat attributes
+        /// Maximum Client Capacity for stat attributes
         /// Recommended to keep it below 255.
         /// </summary>
         public byte StatCap = 255;
@@ -375,35 +374,32 @@ namespace Darkages
         /// <summary>
         /// This Message is displayed to the player if they don't meet item Requirements during a Learn Spell/Skill script.
         /// </summary>
-        [JsonProperty]
-        public string ItemNotRequiredMsg = "Come back when you have the items required. \n{=q";
+        [JsonProperty] public string ItemNotRequiredMsg = "Come back when you have the items required. \n{=q";
 
 
         /// <summary>
         /// This should not be changed. This is your instrument key. this is used for error reporting.
         /// </summary>
-        [JsonProperty]
-        public string AppInsightsKey = "MWVhMDJhMTgtZjU2My00OTgzLTgyNTMtOTVjYjRmZjIzMWZm";
+        [JsonProperty] public string AppInsightsKey = "MWVhMDJhMTgtZjU2My00OTgzLTgyNTMtOTVjYjRmZjIzMWZm";
 
 
         /// <summary>
         /// This setting should only be used for debugging purposes.
         /// </summary>
-        [JsonProperty]
-        public bool ErrorReporting = true;
+        [JsonProperty] public bool ErrorReporting = true;
 
 
-        [Description("Death Handling Message on Death")]
-        [JsonProperty]
+        [Description("Death Handling Message on Death")] [JsonProperty]
         public string DeathReepingMessage = "You have been scared for life.";
 
-        [Description("Death Handling X Coordinate")]
-        [JsonProperty]
+        [Description("Death Handling X Coordinate")] [JsonProperty]
         public int DeathMapX = 21;
 
-        [Description("Death Handling Y Coordinate")]
-        [JsonProperty]
+        [Description("Death Handling Y Coordinate")] [JsonProperty]
         public int DeathMapY = 21;
+
+        [Description("This needs to be set, as Arena has unique warp conditions.")] [JsonProperty]
+        public int PVPMap = 509;
 
         public override string ToString()
         {

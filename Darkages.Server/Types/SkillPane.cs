@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ namespace Darkages.Types
     public enum Pane
     {
         Inventory = 0,
-        Spells    = 1,
-        Skills    = 2,
-        Tools     = 3
+        Spells = 1,
+        Skills = 2,
+        Tools = 3
     }
 }

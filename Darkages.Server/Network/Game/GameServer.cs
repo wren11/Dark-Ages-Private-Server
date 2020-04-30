@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -16,80 +16,61 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
+
+using Darkages.Network.Game.Components;
+using Darkages.Network.Object;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using Darkages.Network.Game.Components;
-using Darkages.Network.Object;
 
 namespace Darkages.Network.Game
 {
     public partial class GameServer
     {
-
         public Dictionary<Type, GameServerComponent> Components;
 
-        private readonly TimeSpan HeavyUpdateSpan;
+        private readonly TimeSpan _heavyUpdateSpan;
 
-        private DateTime lastHeavyUpdate = DateTime.UtcNow;
+        private DateTime _lastHeavyUpdate = DateTime.UtcNow;
 
         public ObjectService ObjectFactory = new ObjectService();
 
         public GameServer(int capacity) : base(capacity)
         {
-            HeavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 60);
+            _heavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
 
             InitializeGameServer();
         }
 
-        /// <summary>
-        ///     <para>
-        ///         Gets the Value True or False That represents if the Server is running Healthy.
-        ///     </para>
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if [server healthy]; otherwise, <c>false</c>.
-        /// </value>
-        /// <remarks>
-        ///     This is done by Checking that the lastUpdate took less then the specified length of time. By Default this is
-        ///     one second.
-        /// </remarks>
-        public bool ServerHealthy => DateTime.UtcNow - lastHeavyUpdate < new TimeSpan(0, 0, 0, 2);
-
         private void AutoSave(GameClient client)
         {
-            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContext.Config.SaveRate)
-            {
+            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContextBase.GlobalConfig.SaveRate)
                 client.Save();
-            }            
         }
 
-        private async void Update()
+        private async void MainServerLoop()
         {
-            lastHeavyUpdate = DateTime.UtcNow;
-            ServerContext.Running = true;
+            _lastHeavyUpdate = DateTime.UtcNow;
 
-            while (ServerContext.Running)
+            while (ServerContextBase.Running)
             {
-                var elapsedTime = DateTime.UtcNow - lastHeavyUpdate;
+                var elapsedTime = DateTime.UtcNow - _lastHeavyUpdate;
 
                 try
                 {
-                    await Task.WhenAll(
-                        UpdateClients(elapsedTime),
-                        UpdateComponents(elapsedTime),
-                        UpdateAreas(elapsedTime));
+                    await UpdateClients(elapsedTime);
+                    await UpdateComponents(elapsedTime);
+                    await UpdateAreas(elapsedTime);
                 }
                 catch (Exception e)
                 {
-                    ServerContext.Report(e);
+                    ServerContextBase.Report(e);
                 }
 
-                lastHeavyUpdate = DateTime.UtcNow;
-                await Task.Delay(HeavyUpdateSpan);
+                _lastHeavyUpdate = DateTime.UtcNow;
+                await Task.Delay(_heavyUpdateSpan);
             }
         }
 
@@ -102,95 +83,93 @@ namespace Darkages.Network.Game
         {
             Components = new Dictionary<Type, GameServerComponent>
             {
-                [typeof(Save)]                 = new Save(this),
-                [typeof(ObjectComponent)]      = new ObjectComponent(this),
-                [typeof(ClientTickComponent)]  = new ClientTickComponent(this),
-                [typeof(MonolithComponent)]    = new MonolithComponent(this),
-                [typeof(DaytimeComponent)]     = new DaytimeComponent(this),
-                [typeof(MundaneComponent)]     = new MundaneComponent(this),
-                [typeof(MessageComponent)]     = new MessageComponent(this),
-                [typeof(PingComponent)]        = new PingComponent(this),
+                [typeof(Save)] = new Save(this),
+                [typeof(ObjectComponent)] = new ObjectComponent(this),
+                [typeof(ClientTickComponent)] = new ClientTickComponent(this),
+                [typeof(MonolithComponent)] = new MonolithComponent(this),
+                [typeof(DaytimeComponent)] = new DaytimeComponent(this),
+                [typeof(MundaneComponent)] = new MundaneComponent(this),
+                [typeof(MessageComponent)] = new MessageComponent(this),
+                [typeof(PingComponent)] = new PingComponent(this),
             };
-
-
-            ServerContext.Log(string.Format("Loading {0} Components...", Components.Count));
-
-            foreach (var component in Components)
-            {
-                ServerContext.Log(string.Format("Component '{0}' loaded.", component.Key.Name));
-            }
         }
 
 
-        private Task UpdateComponents(TimeSpan elapsedTime)
+        private async Task UpdateComponents(TimeSpan elapsedTime)
         {
-            return Task.Run(() =>
+            try
             {
                 foreach (var component in Components.Values)
                     component.Update(elapsedTime);
-            });
+            }
+            catch (Exception e)
+            {
+                await Task.FromException(e);
+                ServerContextBase.Report(e);
+                throw;
+            }
+
+            await Task.CompletedTask;
         }
 
-        private Task UpdateAreas(TimeSpan elapsedTime)
+        private async Task UpdateAreas(TimeSpan elapsedTime)
         {
-            return Task.Run(() =>
-            {
-                var values = ServerContext.GlobalMapCache.Select(i => i.Value).ToArray();
+            var values = ServerContextBase.GlobalMapCache.Select(i => i.Value).ToArray();
 
+            try
+            {
                 foreach (var area in values)
-                {
                     area.Update(elapsedTime);
-                }
-            });
+            }
+            catch (Exception e)
+            {
+                await Task.FromException(e);
+                ServerContextBase.Report(e);
+                throw;
+            }
+
+            await Task.CompletedTask;
         }
 
         public async Task UpdateClients(TimeSpan elapsedTime)
         {
-            await Task.Run(async () =>
+            foreach (var client in Clients)
             {
-                foreach (var client in Clients)
+                if (client?.Aisling == null)
+                    continue;
+
+                if (!client.IsWarping && !client.InMapTransition && !client.MapOpen)
                 {
-                    if (client != null && client.Aisling != null)
-                    {
-                        if (!client.IsWarping && !client.InMapTransition && !client.MapOpen)
-                        {
-                            await Pulse(elapsedTime, client);
-                        }
-                        else if (client.IsWarping && !client.InMapTransition)
-                        {
-                            if (client.CanSendLocation && !client.IsRefreshing && client.Aisling.CurrentMapId == 509)
-                                client.SendLocation();
-                        }
-                        else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
-                        {
-                            client.MapOpen = false;
-
-                            if (client.InMapTransition && !client.MapOpen)
-                            {
-                                if ((DateTime.UtcNow - client.DateMapOpened) > TimeSpan.FromSeconds(0.2))
-                                {
-                                    client.MapOpen = true;
-                                    client.InMapTransition = false;
-                                }
-                            }
-                        }
-
-                        if (client.MapOpen)
-                        {
-                            if (!client.IsWarping && !client.IsRefreshing)
-                                await Pulse(elapsedTime, client);
-                        }
-                    }
+                    await Pulse(elapsedTime, client);
                 }
-            });
+                else if (client.IsWarping && !client.InMapTransition)
+                {
+                    if (client.CanSendLocation && !client.IsRefreshing &&
+                        client.Aisling.CurrentMapId == ServerContextBase.GlobalConfig.PVPMap)
+                        client.SendLocation();
+                }
+                else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
+                {
+                    client.MapOpen = false;
+
+                    if (client.InMapTransition && !client.MapOpen)
+                        if (DateTime.UtcNow - client.DateMapOpened > TimeSpan.FromSeconds(0.2))
+                        {
+                            client.MapOpen = true;
+                            client.InMapTransition = false;
+                        }
+                }
+
+                if (!client.MapOpen) continue;
+                if (!client.IsWarping && !client.IsRefreshing)
+                    await Pulse(elapsedTime, client);
+            }
         }
 
-        private static async Task Pulse(TimeSpan elapsedTime, GameClient client)
+        private async Task Pulse(TimeSpan elapsedTime, GameClient client)
         {
-            await client.FlushBuffers();
             await client.Update(elapsedTime);
-            await client.FlushBuffers();
-            
+
             ObjectComponent.UpdateClientObjects(client.Aisling);
         }
 
@@ -201,20 +180,14 @@ namespace Darkages.Network.Game
 
             try
             {
-                if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
-                {
-                    client.Save();
-                }
-
-                ServerContext.Log("Player {0} has disconnected from server.", client.Aisling.Username);
+                if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2) client.Save();
 
                 client.Aisling.LoggedIn = false;
                 client.Aisling.Remove(true);
             }
             catch (Exception e)
             {
-                ServerContext.Report(e);
-                //Ignore
+                ServerContextBase.Report(e);
             }
             finally
             {
@@ -222,17 +195,21 @@ namespace Darkages.Network.Game
             }
         }
 
-        public override void Abort()
-        {
-            base.Abort();
-        }
-
-
         public override void Start(int port)
         {
             base.Start(port);
 
-            Task.Run(Update);
+            var serverThread = new Thread(MainServerLoop) {Priority = ThreadPriority.Highest};
+
+            try
+            {
+                serverThread.Start();
+                ServerContextBase.Running = true;
+            }
+            catch (ThreadAbortException)
+            {
+                ServerContextBase.Running = false;
+            }
         }
     }
 }

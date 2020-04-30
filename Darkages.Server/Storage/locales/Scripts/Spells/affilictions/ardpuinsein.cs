@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -111,11 +111,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             if (target is Aisling)
                 (target as Aisling).Client
                     .SendMessage(0x02,
-                        string.Format("{0} Attacks you with {1}.",
-                            (sprite is Monster
-                                ? (sprite as Monster).Template.Name
-                                : (sprite as Mundane).Template.Name) ?? "Monster",
-                            Spell.Template.Name));
+                        $"{(sprite is Monster ? (sprite as Monster).Template.Name : (sprite as Mundane).Template.Name) ?? "Monster"} Attacks you with {Spell.Template.Name}.");
 
             sprite.Show(Scope.NearbyAislings, action);
         }
@@ -124,7 +120,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
         {
             var c = curses.FirstOrDefault();
             if (c != null)
-                client.SendMessage(0x02, string.Format("Another poison is already applied. [{0}].", c.Name));
+                client.SendMessage(0x02, $"Another poison is already applied. [{c.Name}].");
         }
 
         private void SendCastSpellOrder(Sprite sprite, Sprite target, GameClient client, bool IsAttack = false)
@@ -147,12 +143,12 @@ namespace Darkages.Storage.locales.Scripts.Spells
             client.SendStats(StatusFlags.StructB | StatusFlags.StructD);
             client.Aisling.Show(Scope.NearbyAislings, hpbar);
             client.SendAnimation(Spell.Template.Animation, target, sprite);
-            client.SendMessage(0x02, string.Format("you cast {0}", Spell.Template.Name));
+            client.SendMessage(0x02, $"you cast {Spell.Template.Name}");
 
             if (IsAttack)
                 if (target is Aisling)
                     (target as Aisling).Client.SendMessage(0x02,
-                        string.Format("{0} Attacks you with {1}.", client.Aisling.Username, Spell.Template.Name));
+                        $"{client.Aisling.Username} Attacks you with {Spell.Template.Name}.");
 
             client.Aisling.Show(Scope.NearbyAislings, action);
         }
@@ -168,7 +164,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 else
                 {
                     if (sprite is Aisling)
-                        (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
+                        (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.GlobalConfig.NoManaMessage);
                     return;
                 }
 

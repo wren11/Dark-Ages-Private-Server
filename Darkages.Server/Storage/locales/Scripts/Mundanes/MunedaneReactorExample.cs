@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -140,15 +140,15 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
                 {
                     client.Aisling.TutorialCompleted = true;
                     client.Aisling.ExpLevel = 11;
-                    client.Aisling._Str = ServerContext.Config.BaseStatAttribute;
-                    client.Aisling._Int = ServerContext.Config.BaseStatAttribute;
-                    client.Aisling._Wis = ServerContext.Config.BaseStatAttribute;
-                    client.Aisling._Con = ServerContext.Config.BaseStatAttribute;
-                    client.Aisling._Dex = ServerContext.Config.BaseStatAttribute;
-                    client.Aisling._MaximumHp = (ServerContext.Config.MinimumHp + 33) * 11;
-                    client.Aisling._MaximumMp = (ServerContext.Config.MinimumHp + 21) * 11;
+                    client.Aisling._Str = ServerContextBase.GlobalConfig.BaseStatAttribute;
+                    client.Aisling._Int = ServerContextBase.GlobalConfig.BaseStatAttribute;
+                    client.Aisling._Wis = ServerContextBase.GlobalConfig.BaseStatAttribute;
+                    client.Aisling._Con = ServerContextBase.GlobalConfig.BaseStatAttribute;
+                    client.Aisling._Dex = ServerContextBase.GlobalConfig.BaseStatAttribute;
+                    client.Aisling._MaximumHp = (ServerContextBase.GlobalConfig.MinimumHp + 33) * 11;
+                    client.Aisling._MaximumMp = (ServerContextBase.GlobalConfig.MinimumHp + 21) * 11;
 
-                    client.Aisling.StatPoints = 11 * ServerContext.Config.StatsPerLevel;
+                    client.Aisling.StatPoints = 11 * ServerContextBase.GlobalConfig.StatsPerLevel;
                     client.SendStats(StatusFlags.All);
 
                     client.SendMessage(0x02, "You have lost all memory...");
@@ -186,17 +186,12 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
                 subject = a.Quests.Find(i => i.Name == "practice makes perfect");
 
                 if (subject != null && subject.Completed)
-                {
                     a.Client.SendOptionsDialog(Mundane,
-                        string.Format("Thank you {0}, I have a secret way out of this tutorial if you desire!",
-                            a.Username),
+                        $"Thank you {a.Username}, I have a secret way out of this tutorial if you desire!",
                         new OptionsDataItem(0x0012, "Skip Tutorial (Advanced Users Only)")
                     );
-                }
                 else
-                {
                     a.Client.SendOptionsDialog(Mundane, "I said go kill these rats, what are you sitting around for?");
-                }
             }
         }
     }

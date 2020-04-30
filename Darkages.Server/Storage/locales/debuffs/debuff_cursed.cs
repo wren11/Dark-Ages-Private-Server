@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ namespace Darkages.Storage.locales.debuffs
             {
                 (Affected as Aisling)
                     .Client
-                    .SendMessage(0x02, string.Format("{0} has ended.", Name));
+                    .SendMessage(0x02, $"{Name} has ended.");
                 (Affected as Aisling)
                     .Client
                     .SendStats(StatusFlags.StructD);

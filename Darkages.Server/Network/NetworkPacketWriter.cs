@@ -1,5 +1,5 @@
 ﻿// ************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
 // *************************************************************************/
 
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Text;
 using Darkages.IO;
@@ -33,12 +34,11 @@ namespace Darkages.Network
             buffer = BufferPool.Take(0x8192);
         }
 
+        public byte[] Buffer => buffer;
+
         public int Position { get; set; }
 
-        public bool GetCanWrite()
-        {
-            return Position + 1 < buffer.Length;
-        }
+        public bool IsEmpty => buffer == null || buffer.Length == 0;
 
         public void Write(bool value)
         {
@@ -104,7 +104,6 @@ namespace Darkages.Network
 
         public void WriteStringA(string value)
         {
-
             var count = encoding.GetByteCount(value);
 
             Write(

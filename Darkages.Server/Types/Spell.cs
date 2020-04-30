@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -48,11 +48,7 @@ namespace Darkages.Types
 
         public bool InUse { get; internal set; }
 
-        [JsonIgnore]
-        [Browsable(false)]
-        public string Name => string.Format("{0} (Lev:{1}/{2})",
-            Template.Name,
-            Level, Template.MaxLevel);
+        [JsonIgnore] [Browsable(false)] public string Name => $"{Template.Name} (Lev:{Level}/{Template.MaxLevel})";
 
         [JsonIgnore] [Browsable(false)] public int Lines { get; set; }
 
@@ -120,7 +116,7 @@ namespace Darkages.Types
 
         public static bool GiveTo(Aisling Aisling, string spellname, byte slot)
         {
-            var spellTemplate = ServerContext.GlobalSpellTemplateCache[spellname];
+            var spellTemplate = ServerContextBase.GlobalSpellTemplateCache[spellname];
 
             if (slot <= 0)
                 return false;
@@ -145,11 +141,11 @@ namespace Darkages.Types
 
         public static bool GiveTo(GameClient client, string args)
         {
-            if (!ServerContext.GlobalSpellTemplateCache.ContainsKey(args))
+            if (!ServerContextBase.GlobalSpellTemplateCache.ContainsKey(args))
                 return false;
 
 
-            var spellTemplate = ServerContext.GlobalSpellTemplateCache[args];
+            var spellTemplate = ServerContextBase.GlobalSpellTemplateCache[args];
             var slot = client.Aisling.SpellBook.FindEmpty();
 
             if (slot <= 0)
@@ -175,10 +171,10 @@ namespace Darkages.Types
 
         public static bool GiveTo(Aisling Aisling, string spellname, int level = 100)
         {
-            if (!ServerContext.GlobalSpellTemplateCache.ContainsKey(spellname))
+            if (!ServerContextBase.GlobalSpellTemplateCache.ContainsKey(spellname))
                 return false;
 
-            var spellTemplate = ServerContext.GlobalSpellTemplateCache[spellname];
+            var spellTemplate = ServerContextBase.GlobalSpellTemplateCache[spellname];
 
             if (Aisling.SpellBook.Has(spellTemplate))
                 return false;

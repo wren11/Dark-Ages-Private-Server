@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ using Darkages.Network;
 
 namespace Darkages.Types
 {
-
     public class ForumCallback : BoardDescriptors
     {
         public byte ActionType;
@@ -51,7 +50,6 @@ namespace Darkages.Types
 
     public class PostFormat : BoardDescriptors
     {
-
         public PostFormat(ushort boardId, ushort topicId)
         {
             BoardId = boardId;
@@ -82,14 +80,15 @@ namespace Darkages.Types
         {
             if (BoardId == 0)
             {
-                writer.Write((byte)0x03);
-                writer.Write((byte)0x00);
+                writer.Write((byte) 0x03);
+                writer.Write((byte) 0x00);
             }
             else
             {
-                writer.Write((byte)0x05);
-                writer.Write((byte)0x03);
+                writer.Write((byte) 0x05);
+                writer.Write((byte) 0x03);
             }
+
             writer.Write((byte) 0x00);
             writer.Write(PostId);
             writer.WriteStringA(Sender);

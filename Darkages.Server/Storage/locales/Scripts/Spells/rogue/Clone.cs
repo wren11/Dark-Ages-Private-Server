@@ -20,7 +20,7 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                client.SendMessage(0x02, ServerContext.Config.SomethingWentWrong);
+                client.SendMessage(0x02, ServerContextBase.GlobalConfig.SomethingWentWrong);
             }
         }
 
@@ -111,7 +111,7 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
                 else
                 {
                     if (sprite is Aisling)
-                        (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
+                        (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.GlobalConfig.NoManaMessage);
                 }
             }
         }

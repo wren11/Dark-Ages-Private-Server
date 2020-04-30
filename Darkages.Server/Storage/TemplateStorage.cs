@@ -1,7 +1,7 @@
 ﻿using Darkages.Types;
 using Newtonsoft.Json;
 ///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@ using Newtonsoft.Json;
 //You should have received a copy of the GNU General Public License
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,10 +29,10 @@ namespace Darkages.Storage
 
         static TemplateStorage()
         {
-            if (ServerContext.StoragePath == null)
-                ServerContext.LoadConstants();
+            if (ServerContextBase.StoragePath == null)
+                ServerContextBase.LoadConstants();
 
-            StoragePath = $@"{ServerContext.StoragePath}\templates";
+            StoragePath = $@"{ServerContextBase.StoragePath}\templates";
 
             var tmp = new T();
 
@@ -79,7 +78,7 @@ namespace Darkages.Storage
 
         public void SaveOrReplace(T template)
         {
-            var path = Path.Combine(StoragePath, string.Format("{0}.json", template.Name.ToLower()));
+            var path = Path.Combine(StoragePath, $"{template.Name.ToLower()}.json");
 
             if (IsStored(template))
                 File.Delete(path);
@@ -105,10 +104,7 @@ namespace Darkages.Storage
             if (template is WarpTemplate)
                 StorageManager.WarpBucket.Save(template as WarpTemplate);
 
-            if (template is PopupTemplate)
-            {
-                StorageManager.PopupBucket.Save(template as PopupTemplate);
-            }
+            if (template is PopupTemplate) StorageManager.PopupBucket.Save(template as PopupTemplate);
         }
 
         public Template LoadFromStorage(Template existing)
@@ -117,7 +113,7 @@ namespace Darkages.Storage
             if (template == null)
                 return null;
 
-            ServerContext.GlobalItemTemplateCache[template.Name] = template;
+            ServerContextBase.GlobalItemTemplateCache[template.Name] = template;
             return template;
         }
 
@@ -145,7 +141,7 @@ namespace Darkages.Storage
                         var template =
                             StorageManager.SkillBucket.Load<SkillTemplate>(Path.GetFileNameWithoutExtension(asset));
                         if (template != null)
-                            ServerContext.GlobalSkillTemplateCache[template.Name] = template;
+                            ServerContextBase.GlobalSkillTemplateCache[template.Name] = template;
 
                         break;
                     }
@@ -155,7 +151,7 @@ namespace Darkages.Storage
                         var template =
                             StorageManager.SpellBucket.Load<SpellTemplate>(Path.GetFileNameWithoutExtension(asset));
                         if (template != null)
-                            ServerContext.GlobalSpellTemplateCache[template.Name] = template;
+                            ServerContextBase.GlobalSpellTemplateCache[template.Name] = template;
                         break;
                     }
 
@@ -164,7 +160,7 @@ namespace Darkages.Storage
                         var template =
                             StorageManager.ReactorBucket.Load<Reactor>(Path.GetFileNameWithoutExtension(asset));
                         if (template != null)
-                            ServerContext.GlobalReactorCache[template.Name] = template;
+                            ServerContextBase.GlobalReactorCache[template.Name] = template;
                         break;
                     }
 
@@ -176,7 +172,7 @@ namespace Darkages.Storage
 
                         if (template != null)
                         {
-                            ServerContext.GlobalMonsterTemplateCache.Add(template);
+                            ServerContextBase.GlobalMonsterTemplateCache.Add(template);
                             template.NextAvailableSpawn = DateTime.UtcNow;
                         }
 
@@ -188,7 +184,7 @@ namespace Darkages.Storage
                         var template =
                             StorageManager.MundaneBucket.Load<MundaneTemplate>(Path.GetFileNameWithoutExtension(asset));
                         if (template != null)
-                            ServerContext.GlobalMundaneTemplateCache[template.Name] = template;
+                            ServerContextBase.GlobalMundaneTemplateCache[template.Name] = template;
                         break;
                     }
 
@@ -197,16 +193,17 @@ namespace Darkages.Storage
                         var template =
                             StorageManager.ItemBucket.Load<ItemTemplate>(Path.GetFileNameWithoutExtension(asset));
                         if (template != null)
-                            ServerContext.GlobalItemTemplateCache[template.Name] = template;
+                            ServerContextBase.GlobalItemTemplateCache[template.Name] = template;
                         break;
                     }
 
                     case WorldMapTemplate _:
                     {
                         var template =
-                            StorageManager.WorldMapBucket.Load<WorldMapTemplate>(Path.GetFileNameWithoutExtension(asset));
+                            StorageManager.WorldMapBucket.Load<WorldMapTemplate>(
+                                Path.GetFileNameWithoutExtension(asset));
                         if (template != null)
-                            ServerContext.GlobalWorldMapTemplateCache[template.WorldIndex] = template;
+                            ServerContextBase.GlobalWorldMapTemplateCache[template.WorldIndex] = template;
                         break;
                     }
 
@@ -220,22 +217,22 @@ namespace Darkages.Storage
                             case TriggerType.UserClick:
                                 template = StorageManager.PopupBucket.Load<UserClickPopup>(
                                     Path.GetFileNameWithoutExtension(asset));
-                                ServerContext.GlobalPopupCache.Add(template);
+                                ServerContextBase.GlobalPopupCache.Add(template);
                                 break;
                             case TriggerType.ItemDrop:
                                 template = StorageManager.PopupBucket.Load<ItemDropPopup>(
                                     Path.GetFileNameWithoutExtension(asset));
-                                ServerContext.GlobalPopupCache.Add(template);
+                                ServerContextBase.GlobalPopupCache.Add(template);
                                 break;
                             case TriggerType.ItemPickup:
                                 template = StorageManager.PopupBucket.Load<ItemPickupPopup>(
                                     Path.GetFileNameWithoutExtension(asset));
-                                ServerContext.GlobalPopupCache.Add(template);
+                                ServerContextBase.GlobalPopupCache.Add(template);
                                 break;
                             case TriggerType.MapLocation:
                                 template = StorageManager.PopupBucket.Load<UserWalkPopup>(
                                     Path.GetFileNameWithoutExtension(asset));
-                                ServerContext.GlobalPopupCache.Add(template);
+                                ServerContextBase.GlobalPopupCache.Add(template);
                                 break;
                         }
 
@@ -257,7 +254,7 @@ namespace Darkages.Storage
                 using (var f = new StreamReader(s))
                 {
                     var obj = JsonConvert.DeserializeObject<TD>(f.ReadToEnd(), StorageManager.Settings);
-                    ServerContext.Report<TD>(obj);
+                    ServerContextBase.Report(obj);
                     return obj;
                 }
             }
@@ -265,7 +262,6 @@ namespace Darkages.Storage
 
         public void Save(T obj, bool replace = false)
         {
-
             if (replace)
             {
                 var path = Path.Combine(StoragePath, $"{obj.Name.ToLower()}.json");

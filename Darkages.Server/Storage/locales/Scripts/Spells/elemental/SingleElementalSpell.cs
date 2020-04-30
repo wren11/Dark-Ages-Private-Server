@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -62,8 +62,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 if (target is Aisling)
                     (target as Aisling).Client
                         .SendMessage(0x02,
-                            string.Format("{0} Attacks you with {1}.", client.Aisling.Username,
-                                Spell.Template.Name));
+                            $"{client.Aisling.Username} Attacks you with {Spell.Template.Name}.");
 
                 var imp = Spell.Level * 2 / 100;
                 var dmg = (int) (client.Aisling.Int / 2 * Spell.Template.DamageExponent);
@@ -72,7 +71,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 target.ApplyDamage(sprite, dmg, Spell.Template.ElementalProperty, Spell.Template.Sound);
 
-                client.SendMessage(0x02, string.Format("you cast {0}", Spell.Template.Name));
+                client.SendMessage(0x02, $"you cast {Spell.Template.Name}");
                 client.SendAnimation(Spell.Template.Animation, target, sprite);
 
                 var action = new ServerFormat1A
@@ -93,11 +92,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 if (target is Aisling)
                     (target as Aisling).Client
-                        .SendMessage(0x02, string.Format("{0} Attacks you with {1}.",
-                            (sprite is Monster
-                                ? (sprite as Monster).Template.Name
-                                : (sprite as Mundane).Template.Name) ?? "Monster",
-                            Spell.Template.Name));
+                        .SendMessage(0x02,
+                            $"{(sprite is Monster ? (sprite as Monster).Template.Name : (sprite as Mundane).Template.Name) ?? "Monster"} Attacks you with {Spell.Template.Name}.");
 
                 target.SendAnimation(Spell.Template.Animation, target, sprite);
 
@@ -120,7 +116,8 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                if (sprite is Aisling) (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
+                if (sprite is Aisling)
+                    (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.GlobalConfig.NoManaMessage);
                 return;
             }
 

@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -54,14 +54,16 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
         {
             var defaultbag = Mundane.Template.DefaultMerchantStock.Select(i =>
-                ServerContext.GlobalItemTemplateCache.ContainsKey(i) ? ServerContext.GlobalItemTemplateCache[i] : null);
+                ServerContextBase.GlobalItemTemplateCache.ContainsKey(i)
+                    ? ServerContextBase.GlobalItemTemplateCache[i]
+                    : null);
 
 
             switch (responseID)
             {
                 case 0x0001:
                     client.SendItemShopDialog(Mundane, "Have a browse!", 0x0004,
-                        ServerContext.GlobalItemTemplateCache.Values.Where(i => i.NpcKey == Mundane.Template.Name)
+                        ServerContextBase.GlobalItemTemplateCache.Values.Where(i => i.NpcKey == Mundane.Template.Name)
                             .ToList().Concat(defaultbag.Where(n => n != null)));
                     break;
 
@@ -82,9 +84,9 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     opts2.Add(new OptionsDataItem(0x0019, "Fair enough."));
                     opts2.Add(new OptionsDataItem(0x0020, "decline offer."));
 
-                    client.SendOptionsDialog(Mundane, string.Format(
-                        "I will give offer you {0} gold for that {1}, Deal?",
-                        offer, item.Template.Name), item.Template.Name, opts2.ToArray());
+                    client.SendOptionsDialog(Mundane,
+                        $"I will give offer you {offer} gold for that {item.Template.Name}, Deal?", item.Template.Name,
+                        opts2.ToArray());
                 }
                     break;
 
@@ -105,7 +107,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     if (Convert.ToInt32(offer) > item.Template.Value)
                         return;
 
-                    if (client.Aisling.GoldPoints + Convert.ToInt32(offer) <= ServerContext.Config.MaxCarryGold)
+                    if (client.Aisling.GoldPoints + Convert.ToInt32(offer) <=
+                        ServerContextBase.GlobalConfig.MaxCarryGold)
                     {
                         client.Aisling.GoldPoints += Convert.ToInt32(offer);
                         client.Aisling.EquipmentManager.RemoveFromInventory(item, true);
@@ -155,10 +158,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     if (string.IsNullOrEmpty(args))
                         return;
 
-                    if (!ServerContext.GlobalItemTemplateCache.ContainsKey(args))
+                    if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(args))
                         return;
 
-                    var template = ServerContext.GlobalItemTemplateCache[args];
+                    var template = ServerContextBase.GlobalItemTemplateCache[args];
                     if (template != null)
                         if (client.Aisling.GoldPoints >= template.Value)
                         {
@@ -173,7 +176,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                     client.Aisling.GoldPoints = 0;
 
                                 client.SendStats(StatusFlags.All);
-                                client.SendOptionsDialog(Mundane, string.Format("You have a brand new {0}", args));
+                                client.SendOptionsDialog(Mundane, $"You have a brand new {args}");
                             }
                             else
                             {
@@ -182,13 +185,13 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         }
                         else
                         {
-                            if (ServerContext.GlobalSpellTemplateCache.ContainsKey("beag cradh"))
+                            if (ServerContextBase.GlobalSpellTemplateCache.ContainsKey("beag cradh"))
                             {
                                 var scripts = ScriptManager.Load<SpellScript>("beag cradh",
-                                    Spell.Create(1, ServerContext.GlobalSpellTemplateCache["beag cradh"]));
+                                    Spell.Create(1, ServerContextBase.GlobalSpellTemplateCache["beag cradh"]));
                                 {
-                                        foreach (var script in scripts.Values)
-                                            script.OnUse(Mundane, client.Aisling);
+                                    foreach (var script in scripts.Values)
+                                        script.OnUse(Mundane, client.Aisling);
                                 }
                                 client.SendOptionsDialog(Mundane, "You trying to rip me off?! go away.");
                             }

@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ namespace Darkages.Scripting
 
             if (scripts.TryGetValue(name, out script))
             {
-                var instance = (Activator.CreateInstance(script, args));
+                var instance = Activator.CreateInstance(script, args);
                 return instance as TScript;
             }
 
@@ -85,15 +85,13 @@ namespace Darkages.Scripting
             if (values == null)
                 return null;
 
-            var names = values.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            var names = values.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
 
-            Dictionary<string, TScript> data = new Dictionary<string, TScript>();
+            var data = new Dictionary<string, TScript>();
 
 
             foreach (var name in names)
             {
-                
-
                 if (string.IsNullOrEmpty(name))
                     continue;
 
@@ -101,14 +99,13 @@ namespace Darkages.Scripting
 
                 if (scripts.TryGetValue(name, out script))
                 {
-                    var instance = (Activator.CreateInstance(script, args));
-                    data[name] = (instance as TScript);
+                    var instance = Activator.CreateInstance(script, args);
+                    data[name] = instance as TScript;
                 }
             }
 
             if (data.Count == 2)
             {
-
             }
 
             return data;

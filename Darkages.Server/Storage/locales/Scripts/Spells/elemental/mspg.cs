@@ -4,14 +4,21 @@ using Darkages.Types;
 
 namespace Darkages.Storage.locales.Scripts.Spells.elemental
 {
-    [Script(name: "MSPG")]
+    [Script("MSPG")]
     public class mspg : SpellScript
     {
-        public mspg(Spell spell) : base(spell) { }
+        public mspg(Spell spell) : base(spell)
+        {
+        }
 
         //Don't need to use these if you don't need too.
-        public override void OnFailed(Sprite sprite, Sprite target)  { }
-        public override void OnSuccess(Sprite sprite, Sprite target) { }
+        public override void OnFailed(Sprite sprite, Sprite target)
+        {
+        }
+
+        public override void OnSuccess(Sprite sprite, Sprite target)
+        {
+        }
 
         public override void OnUse(Sprite sprite, Sprite target)
         {
@@ -30,7 +37,7 @@ namespace Darkages.Storage.locales.Scripts.Spells.elemental
                 var dmg = sprite.MaximumMp * 0.01 * (sprite.Int * 0.01) * 200;
 
                 //deal dmg
-                targetObj.ApplyDamage(sprite, (int)dmg, sprite.OffenseElement, Spell.Template.Sound);
+                targetObj.ApplyDamage(sprite, (int) dmg, sprite.OffenseElement, Spell.Template.Sound);
 
                 //send animation
                 targetObj.SendAnimation(Spell.Template.Animation, targetObj, sprite);
@@ -47,8 +54,8 @@ namespace Darkages.Storage.locales.Scripts.Spells.elemental
             var hpbar = new ServerFormat13
             {
                 Serial = target.Serial,
-                Health = (ushort)(100 * target.CurrentHp / target.MaximumHp),
-                Sound  = Spell.Template.Sound
+                Health = (ushort) (100 * target.CurrentHp / target.MaximumHp),
+                Sound = Spell.Template.Sound
             };
             target.Show(Scope.NearbyAislings, hpbar);
         }
@@ -59,8 +66,8 @@ namespace Darkages.Storage.locales.Scripts.Spells.elemental
             {
                 Serial = sprite.Serial,
                 Number = 0x80,
-                Speed  = 30
-            };            
+                Speed = 30
+            };
             sprite.Show(Scope.NearbyAislings, action);
         }
     }

@@ -1,6 +1,5 @@
 ﻿namespace MenuInterpreter
 {
-
     public class QuestHanderArgs
     {
         public string QuestName { get; set; }

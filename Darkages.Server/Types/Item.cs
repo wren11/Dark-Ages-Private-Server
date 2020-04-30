@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -101,9 +101,9 @@ namespace Darkages.Types
             if (Upgrades == 8) upgradeName = "{=uForsaken";
 
             if (ItemVariance != Variance.None && Identifed)
-                return string.Format("{0} {1} {2}", upgradeName, ItemVariance.ToString(), Template.Name);
+                return $"{upgradeName} {ItemVariance.ToString()} {Template.Name}";
 
-            if (upgradeName != "") return string.Format("{0} {1}", upgradeName, Template.Name);
+            if (upgradeName != "") return $"{upgradeName} {Template.Name}";
 
             return Template.Name;
         }
@@ -112,7 +112,7 @@ namespace Darkages.Types
         {
             if ((sprite as Aisling).CurrentWeight + Template.CarryWeight > (sprite as Aisling).MaximumWeight)
             {
-                (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02, ServerContext.Config.ToWeakToLift);
+                (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02, ServerContextBase.GlobalConfig.ToWeakToLift);
                 return false;
             }
 
@@ -124,10 +124,10 @@ namespace Darkages.Types
         {
             if (sprite is Aisling)
             {
-                Owner = (uint)sprite.Serial;
+                Owner = (uint) sprite.Serial;
 
 
-                #region stackable items 
+                #region stackable items
 
                 if (Template.Flags.HasFlag(ItemFlags.Stackable))
                 {
@@ -160,8 +160,7 @@ namespace Darkages.Types
 
                         //send message
                         (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
-                            string.Format("Received {0}, You now have ({1})", DisplayName,
-                                item.Stacks == 0 ? item.Stacks + 1 : item.Stacks));
+                            $"Received {DisplayName}, You now have ({(item.Stacks == 0 ? item.Stacks + 1 : item.Stacks)})");
 
                         return true;
                     }
@@ -178,7 +177,8 @@ namespace Darkages.Types
 
                     if (Slot == byte.MaxValue)
                     {
-                        (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02, ServerContext.Config.CantCarryMoreMsg);
+                        (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
+                            ServerContextBase.GlobalConfig.CantCarryMoreMsg);
                         return false;
                     }
 
@@ -187,7 +187,7 @@ namespace Darkages.Types
                     var format = new ServerFormat0F(this);
                     (sprite as Aisling).Show(Scope.Self, format);
                     (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
-                        string.Format("{0} Received.", DisplayName));
+                        $"{DisplayName} Received.");
 
                     if (CheckWeight)
                     {
@@ -208,7 +208,8 @@ namespace Darkages.Types
 
                     if (Slot == byte.MaxValue)
                     {
-                        (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02, ServerContext.Config.CantCarryMoreMsg);
+                        (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
+                            ServerContextBase.GlobalConfig.CantCarryMoreMsg);
                         return false;
                     }
 
@@ -251,7 +252,7 @@ namespace Darkages.Types
                 if (Template.AcModifer.Option == Operator.Remove)
                     client.Aisling.BonusAc += Template.AcModifer.Value;
 
-                client.SendMessage(0x03, string.Format("E: {0}, AC: {1}", Template.Name, client.Aisling.Ac));
+                client.SendMessage(0x03, $"E: {Template.Name}, AC: {client.Aisling.Ac}");
                 client.SendStats(StatusFlags.StructD);
             }
 
@@ -267,10 +268,7 @@ namespace Darkages.Types
                 {
                     var spell = client.Aisling.SpellBook.FindInSlot(i);
 
-                    if (spell == null)
-                        continue;
-
-                    if (spell.Template == null)
+                    if (spell?.Template == null)
                         continue;
 
                     spell.Lines = spell.Template.BaseLines;
@@ -309,7 +307,7 @@ namespace Darkages.Types
                     client.Aisling.BonusHp += Template.HealthModifer.Value;
 
                 if (client.Aisling.BonusHp < 0)
-                    client.Aisling.BonusHp = ServerContext.Config.MinimumHp;
+                    client.Aisling.BonusHp = ServerContextBase.GlobalConfig.MinimumHp;
             }
 
             #endregion
@@ -384,7 +382,7 @@ namespace Darkages.Types
                     client.Aisling.BonusCon += (byte) Template.ConModifer.Value;
 
                 if (client.Aisling.BonusCon < 0)
-                    client.Aisling.BonusCon = ServerContext.Config.BaseStatAttribute;
+                    client.Aisling.BonusCon = ServerContextBase.GlobalConfig.BaseStatAttribute;
                 if (client.Aisling.BonusCon > 255)
                     client.Aisling.BonusCon = 255;
             }
@@ -442,7 +440,7 @@ namespace Darkages.Types
                 if (Template.AcModifer.Option == Operator.Remove)
                     client.Aisling.BonusAc -= Template.AcModifer.Value;
 
-                client.SendMessage(0x03, string.Format("E: {0}, AC: {1}", Template.Name, client.Aisling.Ac));
+                client.SendMessage(0x03, $"E: {Template.Name}, AC: {client.Aisling.Ac}");
                 client.SendStats(StatusFlags.StructD);
             }
 
@@ -537,7 +535,7 @@ namespace Darkages.Types
                     client.Aisling.BonusHp -= Template.HealthModifer.Value;
 
                 if (client.Aisling.BonusHp < 0)
-                    client.Aisling.BonusHp = ServerContext.Config.MinimumHp;
+                    client.Aisling.BonusHp = ServerContextBase.GlobalConfig.MinimumHp;
             }
 
             #endregion
@@ -666,10 +664,10 @@ namespace Darkages.Types
 
         public static Item Create(Sprite owner, string item, bool curse = false)
         {
-            if (!ServerContext.GlobalItemTemplateCache.ContainsKey(item))
+            if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(item))
                 return null;
 
-            var template = ServerContext.GlobalItemTemplateCache[item];
+            var template = ServerContextBase.GlobalItemTemplateCache[item];
             return Create(owner, template, curse);
         }
 
@@ -708,18 +706,18 @@ namespace Darkages.Types
             obj.AuthenticatedAislings = null;
 
             if (obj.Color == 0)
-                obj.Color = (byte) ServerContext.Config.DefaultItemColor;
+                obj.Color = (byte) ServerContextBase.GlobalConfig.DefaultItemColor;
 
             if (obj.Template.Flags.HasFlag(ItemFlags.Repairable))
             {
                 if (obj.Template.MaxDurability == uint.MinValue)
                 {
-                    obj.Template.MaxDurability = ServerContext.Config.DefaultItemDurability;
-                    obj.Durability = ServerContext.Config.DefaultItemDurability;
+                    obj.Template.MaxDurability = ServerContextBase.GlobalConfig.DefaultItemDurability;
+                    obj.Durability = ServerContextBase.GlobalConfig.DefaultItemDurability;
                 }
 
                 if (obj.Template.Value == uint.MinValue)
-                    obj.Template.Value = ServerContext.Config.DefaultItemValue;
+                    obj.Template.Value = ServerContextBase.GlobalConfig.DefaultItemValue;
             }
 
             if (obj.Template.Flags.HasFlag(ItemFlags.QuestRelated))
@@ -739,8 +737,6 @@ namespace Darkages.Types
                 obj.WeaponScripts = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
 
 
-            ServerContext.Log("Item Created by {0} Item is {1}", Owner.Aisling(Owner)?.Username ?? Owner.Serial.ToString(), obj.Dump());
-
             return obj;
         }
 
@@ -751,49 +747,49 @@ namespace Darkages.Types
                 if (obj.Template == null)
                     return;
 
-                    var template = (ItemTemplate) StorageManager.ItemBucket.LoadFromStorage(obj.Template);
-                    if (template == null)
-                        return;
+                var template = (ItemTemplate) StorageManager.ItemBucket.LoadFromStorage(obj.Template);
+                if (template == null)
+                    return;
 
 
-                    obj.Template = new ItemTemplate();
-                    obj.Template.AcModifer = template.AcModifer;
-                    obj.Template.CanStack = template.CanStack;
-                    obj.Template.CarryWeight = template.CarryWeight;
-                    obj.Template.Class = template.Class;
-                    obj.Template.Color = template.Color;
-                    obj.Template.ConModifer = template.ConModifer;
-                    obj.Template.DefenseElement = template.DefenseElement;
-                    obj.Template.DexModifer = template.DexModifer;
-                    obj.Template.DisplayImage = template.DisplayImage;
-                    obj.Template.DmgMax = template.DmgMax;
-                    obj.Template.DmgMin = template.DmgMin;
-                    obj.Template.DmgModifer = template.DmgModifer;
-                    obj.Template.DropRate = template.DropRate;
-                    obj.Template.EquipmentSlot = template.EquipmentSlot;
-                    obj.Template.Flags = template.Flags;
-                    obj.Template.Gender = template.Gender;
-                    obj.Template.HasPants = template.HasPants;
-                    obj.Template.HealthModifer = template.HealthModifer;
-                    obj.Template.HitModifer = template.HitModifer;
-                    obj.Template.ID = template.ID;
-                    obj.Template.Image = template.Image;
-                    obj.Template.IntModifer = template.IntModifer;
-                    obj.Template.LevelRequired = template.LevelRequired;
-                    obj.Template.ManaModifer = template.ManaModifer;
-                    obj.Template.MaxDurability = template.MaxDurability;
-                    obj.Template.MaxStack = template.MaxStack;
-                    obj.Template.MrModifer = template.MrModifer;
-                    obj.Template.Name = template.Name;
-                    obj.Template.NpcKey = template.NpcKey;
-                    obj.Template.OffenseElement = template.OffenseElement;
-                    obj.Template.ScriptName = template.ScriptName;
-                    obj.Template.SpellOperator = template.SpellOperator;
-                    obj.Template.StageRequired = template.StageRequired;
-                    obj.Template.StrModifer = template.StrModifer;
-                    obj.Template.Value = template.Value;
-                    obj.Template.Weight = template.Weight;
-                    obj.Template.WisModifer = template.WisModifer;
+                obj.Template = new ItemTemplate();
+                obj.Template.AcModifer = template.AcModifer;
+                obj.Template.CanStack = template.CanStack;
+                obj.Template.CarryWeight = template.CarryWeight;
+                obj.Template.Class = template.Class;
+                obj.Template.Color = template.Color;
+                obj.Template.ConModifer = template.ConModifer;
+                obj.Template.DefenseElement = template.DefenseElement;
+                obj.Template.DexModifer = template.DexModifer;
+                obj.Template.DisplayImage = template.DisplayImage;
+                obj.Template.DmgMax = template.DmgMax;
+                obj.Template.DmgMin = template.DmgMin;
+                obj.Template.DmgModifer = template.DmgModifer;
+                obj.Template.DropRate = template.DropRate;
+                obj.Template.EquipmentSlot = template.EquipmentSlot;
+                obj.Template.Flags = template.Flags;
+                obj.Template.Gender = template.Gender;
+                obj.Template.HasPants = template.HasPants;
+                obj.Template.HealthModifer = template.HealthModifer;
+                obj.Template.HitModifer = template.HitModifer;
+                obj.Template.ID = template.ID;
+                obj.Template.Image = template.Image;
+                obj.Template.IntModifer = template.IntModifer;
+                obj.Template.LevelRequired = template.LevelRequired;
+                obj.Template.ManaModifer = template.ManaModifer;
+                obj.Template.MaxDurability = template.MaxDurability;
+                obj.Template.MaxStack = template.MaxStack;
+                obj.Template.MrModifer = template.MrModifer;
+                obj.Template.Name = template.Name;
+                obj.Template.NpcKey = template.NpcKey;
+                obj.Template.OffenseElement = template.OffenseElement;
+                obj.Template.ScriptName = template.ScriptName;
+                obj.Template.SpellOperator = template.SpellOperator;
+                obj.Template.StageRequired = template.StageRequired;
+                obj.Template.StrModifer = template.StrModifer;
+                obj.Template.Value = template.Value;
+                obj.Template.Weight = template.Weight;
+                obj.Template.WisModifer = template.WisModifer;
 
                 if (obj.Upgrades > 0)
                 {
@@ -853,8 +849,7 @@ namespace Darkages.Types
             }
             catch (Exception e)
             {
-                ServerContext.Log("Error: ItemAddQuality.");
-                ServerContext.Report(e);
+                ServerContextBase.Report(e);
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 {
                     if (args.HasOptions)
                         sender.Client.SendOptionsDialog(Mundane,
-                            string.Format("Nice work {0}. Now give me that shit.", sender.Username.ToString()),
+                            $"Nice work {sender.Username.ToString()}. Now give me that shit.",
                             new OptionsDataItem(0x0017, "Hand the items to Sunup")
                         );
                 }
@@ -147,7 +147,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
                 Type = QuestType.SingleItemHandIn,
                 Amount = 1,
-                TemplateContext = ServerContext.GlobalItemTemplateCache["Sunup's Lost Sachel"]
+                TemplateContext = ServerContextBase.GlobalItemTemplateCache["Sunup's Lost Sachel"]
             });
 
             quest.QuestStages.Add(q1);

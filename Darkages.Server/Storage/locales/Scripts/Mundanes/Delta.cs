@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -114,12 +114,12 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             if (quest == null)
             {
-                quest = new Quest { Name = Mundane.Template.QuestKey };
+                quest = new Quest {Name = Mundane.Template.QuestKey};
                 quest.LegendRewards.Add(new Legend.LegendItem
                 {
                     Category = "Quest",
-                    Color = (byte)LegendColor.Blue,
-                    Icon = (byte)LegendIcon.Victory,
+                    Color = (byte) LegendColor.Blue,
+                    Icon = (byte) LegendIcon.Victory,
                     Value = "Scratched Delta's Back."
                 });
                 quest.ExpRewards.Add(1000);
@@ -133,9 +133,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 quest.ExpRewards.Add(5000);
 
                 quest.SpellRewards.Add("beag ioc fein");
-
-
-
 
 
                 client.Aisling.Quests.Add(quest);

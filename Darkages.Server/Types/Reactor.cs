@@ -73,7 +73,7 @@ namespace Darkages.Types
             {
                 client.Aisling.CanReact = false;
 
-                if (Decorators != null) 
+                if (Decorators != null)
                     foreach (var script in Decorators.Values)
                         script?.OnTriggered(client.Aisling);
             }

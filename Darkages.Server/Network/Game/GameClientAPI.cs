@@ -1,16 +1,13 @@
 ﻿using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using ServiceStack.Text;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
-    public partial class GameClient : NetworkClient<GameClient>, IDisposable
+    public partial class GameClient : IGameClient
     {
         /// <summary>
         /// Ports the specified i.
@@ -39,7 +36,7 @@ namespace Darkages.Network.Game
         {
             var name = t.Replace("-", string.Empty).Trim();
 
-            var obj = ServerContext.GlobalMonsterTemplateCache
+            var obj = ServerContextBase.GlobalMonsterTemplateCache
                 .FirstOrDefault(i => i.Name.Equals(name, StringComparison.CurrentCulture));
 
             if (obj != null)
@@ -66,15 +63,11 @@ namespace Darkages.Network.Game
 
         public void LearnEverything()
         {
-            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values)
-            {
+            foreach (var skill in ServerContextBase.GlobalSkillTemplateCache.Values)
                 Skill.GiveTo(Aisling, skill.Name, 100);
-            }
 
-            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Values)
-            {
+            foreach (var spell in ServerContextBase.GlobalSpellTemplateCache.Values)
                 Spell.GiveTo(Aisling, spell.Name, 100);
-            }
 
             LoadSkillBook();
             LoadSpellBook();
@@ -84,8 +77,9 @@ namespace Darkages.Network.Game
         {
             var subject = Aisling.SkillBook.Skills.Values
                 .FirstOrDefault(i => i != null
-                && i.Template != null
-                && !string.IsNullOrEmpty(i.Template.Name) && i.Template.Name.ToLower() == s.ToLower());
+                                     && i.Template != null
+                                     && !string.IsNullOrEmpty(i.Template.Name) &&
+                                     i.Template.Name.ToLower() == s.ToLower());
 
             if (subject != null)
             {
@@ -94,6 +88,7 @@ namespace Darkages.Network.Game
                     Send(new ServerFormat2D(subject.Slot));
                 }
             }
+
             LoadSkillBook();
         }
 
@@ -101,9 +96,9 @@ namespace Darkages.Network.Game
         {
             var subject = Aisling.SpellBook.Spells.Values
                 .FirstOrDefault(i => i != null
-                && i.Template != null
-                && !string.IsNullOrEmpty(i.Template.Name)
-                && i.Template.Name.ToLower() == s.ToLower());
+                                     && i.Template != null
+                                     && !string.IsNullOrEmpty(i.Template.Name)
+                                     && i.Template.Name.ToLower() == s.ToLower());
 
             if (subject != null)
             {
@@ -112,6 +107,7 @@ namespace Darkages.Network.Game
                     Send(new ServerFormat18(subject.Slot));
                 }
             }
+
             LoadSpellBook();
         }
 
@@ -121,15 +117,18 @@ namespace Darkages.Network.Game
             Monster.DistributeExperience(Aisling, a);
         }
 
-        public void Recover() => Revive();
+        public void Recover()
+        {
+            Revive();
+        }
 
 
         public void GiveStr(byte v = 1)
         {
             Aisling._Str += v;
 
-            if (Aisling._Str > ServerContext.Config.StatCap)
-                Aisling._Str = ServerContext.Config.StatCap;
+            if (Aisling._Str > ServerContextBase.GlobalConfig.StatCap)
+                Aisling._Str = ServerContextBase.GlobalConfig.StatCap;
 
             SendStats(StatusFlags.All);
         }
@@ -138,8 +137,8 @@ namespace Darkages.Network.Game
         {
             Aisling._Int += v;
 
-            if (Aisling._Int > ServerContext.Config.StatCap)
-                Aisling._Int = ServerContext.Config.StatCap;
+            if (Aisling._Int > ServerContextBase.GlobalConfig.StatCap)
+                Aisling._Int = ServerContextBase.GlobalConfig.StatCap;
 
             SendStats(StatusFlags.All);
         }
@@ -148,8 +147,8 @@ namespace Darkages.Network.Game
         {
             Aisling._Wis += v;
 
-            if (Aisling._Wis > ServerContext.Config.StatCap)
-                Aisling._Wis = ServerContext.Config.StatCap;
+            if (Aisling._Wis > ServerContextBase.GlobalConfig.StatCap)
+                Aisling._Wis = ServerContextBase.GlobalConfig.StatCap;
 
             SendStats(StatusFlags.All);
         }
@@ -158,8 +157,8 @@ namespace Darkages.Network.Game
         {
             Aisling._Wis += v;
 
-            if (Aisling._Wis > ServerContext.Config.StatCap)
-                Aisling._Wis = ServerContext.Config.StatCap;
+            if (Aisling._Wis > ServerContextBase.GlobalConfig.StatCap)
+                Aisling._Wis = ServerContextBase.GlobalConfig.StatCap;
 
             SendStats(StatusFlags.All);
         }
@@ -168,8 +167,8 @@ namespace Darkages.Network.Game
         {
             Aisling._Dex += v;
 
-            if (Aisling._Dex > ServerContext.Config.StatCap)
-                Aisling._Dex = ServerContext.Config.StatCap;
+            if (Aisling._Dex > ServerContextBase.GlobalConfig.StatCap)
+                Aisling._Dex = ServerContextBase.GlobalConfig.StatCap;
 
             SendStats(StatusFlags.All);
         }
@@ -178,8 +177,8 @@ namespace Darkages.Network.Game
         {
             Aisling._MaximumHp += v;
 
-            if (Aisling._MaximumHp > ServerContext.Config.MaxHP)
-                Aisling._MaximumHp = ServerContext.Config.MaxHP;
+            if (Aisling._MaximumHp > ServerContextBase.GlobalConfig.MaxHP)
+                Aisling._MaximumHp = ServerContextBase.GlobalConfig.MaxHP;
 
             SendStats(StatusFlags.All);
         }
@@ -188,8 +187,8 @@ namespace Darkages.Network.Game
         {
             Aisling._MaximumMp += v;
 
-            if (Aisling._MaximumMp > ServerContext.Config.MaxHP)
-                Aisling._MaximumMp = ServerContext.Config.MaxHP;
+            if (Aisling._MaximumMp > ServerContextBase.GlobalConfig.MaxHP)
+                Aisling._MaximumMp = ServerContextBase.GlobalConfig.MaxHP;
 
             SendStats(StatusFlags.All);
         }
@@ -203,10 +202,7 @@ namespace Darkages.Network.Game
             {
                 Aisling.SendAnimation(n, Aisling, Aisling);
 
-                foreach (var obj in Aisling.MonstersNearby())
-                {
-                    obj.SendAnimation(n, obj.Position);
-                }
+                foreach (var obj in Aisling.MonstersNearby()) obj.SendAnimation(n, obj.Position);
                 await Task.Delay(d);
             }
         }
@@ -215,13 +211,9 @@ namespace Darkages.Network.Game
         {
             Task.Run(async () =>
             {
-                for (int n = 0; n < 5000; n++)
-                {
-                    for (byte i = 0; i < 100; i++)
-                    {
-                        await Effect(i, 500);
-                    }
-                }
+                for (var n = 0; n < 5000; n++)
+                for (byte i = 0; i < 100; i++)
+                    await Effect(i, 500);
             });
         }
 
@@ -230,8 +222,8 @@ namespace Darkages.Network.Game
             Aisling.LegendBook.AddLegend(new Legend.LegendItem
             {
                 Category = "Event",
-                Color = (byte)LegendColor.LightOrange,
-                Icon = (byte)LegendIcon.Rogue,
+                Color = (byte) LegendColor.LightOrange,
+                Icon = (byte) LegendIcon.Rogue,
                 Value = "Scar of Sgrios"
             });
         }
@@ -256,10 +248,7 @@ namespace Darkages.Network.Game
         {
             var item = Item.Create(Aisling, itemName);
 
-            if (item != null)
-            {
-                return item.GiveTo(Aisling, true);
-            }
+            if (item != null) return item.GiveTo(Aisling, true);
 
             return false;
         }
@@ -272,16 +261,17 @@ namespace Darkages.Network.Game
 
         public bool CastSpell(string spellName, Sprite caster, Sprite target)
         {
-            if (ServerContext.GlobalSpellTemplateCache.ContainsKey(spellName))
+            if (ServerContextBase.GlobalSpellTemplateCache.ContainsKey(spellName))
             {
                 var scripts = ScriptManager.Load<SpellScript>(spellName,
-                    Spell.Create(1, ServerContext.GlobalSpellTemplateCache[spellName]));
+                    Spell.Create(1, ServerContextBase.GlobalSpellTemplateCache[spellName]));
                 {
                     foreach (var script in scripts.Values)
                     {
                         script.OnUse(caster, target);
 
-                        ServerContext.Report(string.Format("[Spell {0} Casted By {1} At Target {2}]", spellName, caster.Serial, target.Serial));
+                        ServerContextBase.Report(
+                            $"[Spell {spellName} Casted By {caster.Serial} At Target {target.Serial}]");
                     }
 
                     return true;
@@ -293,7 +283,8 @@ namespace Darkages.Network.Game
 
         public bool PlayerUseSpell(string spellname, Sprite target)
         {
-            var spell = Aisling.SpellBook.Get(i => i.Template.Name.Equals(spellname, StringComparison.OrdinalIgnoreCase))
+            var spell = Aisling.SpellBook
+                .Get(i => i.Template.Name.Equals(spellname, StringComparison.OrdinalIgnoreCase))
                 .FirstOrDefault();
 
             if (spell != null)
@@ -309,7 +300,8 @@ namespace Darkages.Network.Game
 
         public bool PlayerUseSkill(string spellname)
         {
-            var skill = Aisling.SkillBook.Get(i => i.Template.Name.Equals(spellname, StringComparison.OrdinalIgnoreCase))
+            var skill = Aisling.SkillBook
+                .Get(i => i.Template.Name.Equals(spellname, StringComparison.OrdinalIgnoreCase))
                 .FirstOrDefault();
 
             if (skill != null)
@@ -349,9 +341,9 @@ namespace Darkages.Network.Game
 
         public void OpenBoard(string n)
         {
-            if (ServerContext.GlobalBoardCache.ContainsKey(n))
+            if (ServerContextBase.GlobalBoardCache.ContainsKey(n))
             {
-                var boardListObj = ServerContext.GlobalBoardCache[n];
+                var boardListObj = ServerContextBase.GlobalBoardCache[n];
 
                 if (boardListObj != null && boardListObj.Any())
                     Send(new BoardList(boardListObj));
@@ -365,7 +357,7 @@ namespace Darkages.Network.Game
 
             foreach (var obj in objs) obj.Remove();
 
-            ServerContext.LoadAndCacheStorage();
+            ServerContextBase.LoadAndCacheStorage();
         }
 
         public GameClient LoggedIn(bool state)

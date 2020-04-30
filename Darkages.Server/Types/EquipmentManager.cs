@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ namespace Darkages.Types
                 Equipment[i] = null;
         }
 
-        [BsonIgnore]  [JsonIgnore] public GameClient Client { get; set; }
+        [BsonIgnore] [JsonIgnore] public GameClient Client { get; set; }
 
         [BsonIgnore] [JsonIgnore] public int Length => Equipment?.Count ?? 0;
 
@@ -135,8 +135,7 @@ namespace Darkages.Types
 
                 if (RemoveFromExisting(item.Template.EquipmentSlot))
                     Client.SendMessage(0x02,
-                        string.Format("{0} has broken.",
-                            item.Template.Name));
+                        $"{item.Template.Name} has broken.");
             }
         }
 
@@ -152,18 +151,18 @@ namespace Darkages.Types
                 if (p10 <= 10 && !item.Warnings[0])
                 {
                     Client.SendMessage(0x02,
-                        string.Format("{0} is almost broken!. Please repair it soon (< 10%)", item.Template.Name));
+                        $"{item.Template.Name} is almost broken!. Please repair it soon (< 10%)");
                     item.Warnings[0] = true;
                 }
                 else if (p10 <= 30 && p10 > 10 && !item.Warnings[1])
                 {
                     Client.SendMessage(0x02,
-                        string.Format("{0} is wearing out soon. Please repair it ASAP. (< 30%)", item.Template.Name));
+                        $"{item.Template.Name} is wearing out soon. Please repair it ASAP. (< 30%)");
                     item.Warnings[1] = true;
                 }
                 else if (p10 <= 50 && p10 > 30 && !item.Warnings[2])
                 {
-                    Client.SendMessage(0x02, string.Format("{0} will need a repair soon. (< 50%)", item.Template.Name));
+                    Client.SendMessage(0x02, $"{item.Template.Name} will need a repair soon. (< 50%)");
                     item.Warnings[2] = true;
                 }
             }
@@ -179,10 +178,7 @@ namespace Darkages.Types
             if (displayslot <= 0 || displayslot > 17)
                 return;
 
-            if (item == null)
-                return;
-
-            if (item.Template == null)
+            if (item?.Template == null)
                 return;
 
             if (!item.Template.Flags.HasFlag(ItemFlags.Equipable))

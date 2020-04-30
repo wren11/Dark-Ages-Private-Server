@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -39,9 +39,9 @@ namespace Darkages.Types
 
         public bool Withdraw(GameClient client, string itemName)
         {
-            if (ServerContext.GlobalItemTemplateCache.ContainsKey(itemName))
+            if (ServerContextBase.GlobalItemTemplateCache.ContainsKey(itemName))
             {
-                var template = ServerContext.GlobalItemTemplateCache[itemName];
+                var template = ServerContextBase.GlobalItemTemplateCache[itemName];
                 var item = Item.Create(client.Aisling, template);
 
                 if (item.GiveTo(client.Aisling))

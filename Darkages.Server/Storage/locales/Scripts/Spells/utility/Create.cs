@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -42,36 +42,30 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
         public override void OnUse(Sprite sprite, Sprite target)
         {
-
-                var spellArgs = Arguments;
-
-            ServerContext.Log("[GM Spell => Create] Casted by {0} with {1}", (sprite as Aisling).Username, spellArgs);
-
+            var spellArgs = Arguments;
 
 
             if (spellArgs == "die") sprite.CurrentHp = 0;
 
-                if (spellArgs == "+hit") sprite._Hit += 10;
+            if (spellArgs == "+hit") sprite._Hit += 10;
 
 
-                spellArgs = spellArgs.Trim();
+            spellArgs = spellArgs.Trim();
 
-                if (!string.IsNullOrEmpty(spellArgs))
-                {
-                    var exists = ServerContext.GlobalItemTemplateCache.Keys.FirstOrDefault(i
-                        => i.Equals(spellArgs, StringComparison.OrdinalIgnoreCase));
+            if (!string.IsNullOrEmpty(spellArgs))
+            {
+                var exists = ServerContextBase.GlobalItemTemplateCache.Keys.FirstOrDefault(i
+                    => i.Equals(spellArgs, StringComparison.OrdinalIgnoreCase));
 
                 if (exists != null)
                 {
-                    var template = ServerContext.GlobalItemTemplateCache[exists];
-                    var offset   = template.DisplayImage - 0x8000;
-                    var item     = Item.Create(sprite, template);
+                    var template = ServerContextBase.GlobalItemTemplateCache[exists];
+                    var offset = template.DisplayImage - 0x8000;
+                    var item = Item.Create(sprite, template);
 
                     item.Template = template;
                     {
                         item.Release(sprite, sprite.Position);
-
-                        ServerContext.Log("[GM Spell => Create Item] Casted by {0} Created Item {1}", (sprite as Aisling).Username, item.Dump());
                     }
                 }
             }

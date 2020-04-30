@@ -1,5 +1,5 @@
 ﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -82,16 +82,12 @@ namespace Darkages.Scripting.Scripts.Skills
                         var imp = 10 + Skill.Level;
                         var dmg = client.Aisling.Str * 2;
 
-                        dmg += (dmg * imp / 100);
+                        dmg += dmg * imp / 100;
 
                         if (sprite.EmpoweredAssail)
-                        {
                             if (sprite is Aisling)
-                            {
                                 if ((sprite as Aisling).Weapon == 0)
                                     dmg *= 3;
-                            }
-                        }
 
                         i.ApplyDamage(sprite, 0, false, Skill.Template.Sound);
                         {
