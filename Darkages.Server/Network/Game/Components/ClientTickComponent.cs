@@ -2,6 +2,7 @@
 using LiteDB;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,7 +25,14 @@ namespace Darkages.Network.Game.Components
         {
             _timer.Update(elapsedTime);
 
-            if (_timer.Elapsed) _timer.Reset();
+
+
+            if (_timer.Elapsed)
+            {
+                _timer.Reset();
+                ServerContextBase.Debug($"Server Running on {Process.GetCurrentProcess().Threads.Count} Threads.");
+            }
+
         }
 
         public class EntityObj
