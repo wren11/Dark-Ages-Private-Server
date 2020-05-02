@@ -17,6 +17,7 @@
 //*************************************************************************/
 
 using System;
+using System.Linq;
 
 namespace Darkages.Network.ServerFormats
 {
@@ -38,6 +39,13 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
+            var legends = Aisling.LegendBook.LegendMarks.Select(i => i);
+
+            var q = legends.GroupBy(x => x)
+                .Select(g => new {V = g.Key, C = g.Count()})
+                .OrderByDescending(x => x.C).ToArray();
+
+
             writer.Write((uint) Aisling.Serial);
 
             BuildEquipment(writer);
@@ -53,13 +61,13 @@ namespace Darkages.Network.ServerFormats
             writer.WriteStringA(Aisling.Clan);
 
 
-            writer.Write((byte) Aisling.LegendBook.LegendMarks.Count);
-            foreach (var mark in Aisling.LegendBook.LegendMarks)
+            writer.Write((byte) q.Length);
+            foreach (var mark in q)
             {
-                writer.Write(mark.Icon);
-                writer.Write(mark.Color);
-                writer.WriteStringA(mark.Category);
-                writer.WriteStringA(mark.Value + $" - {DateTime.UtcNow.ToShortDateString()}");
+                writer.Write((byte)mark.V.Icon);
+                writer.Write((byte)mark.V.Color);
+                writer.WriteStringA(mark.V.Category);
+                writer.WriteStringA(mark.V.Value + $" - {DateTime.UtcNow.ToShortDateString()} {(mark.C > 1 ? " (" + mark.C.ToString() + ")" : "")} ");
             }
 
             if (Aisling.PictureData != null)
