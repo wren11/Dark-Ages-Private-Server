@@ -1171,7 +1171,9 @@ namespace Darkages.Types
             if (nearbyAisling != null)
             {
                 if (this is Aisling)
+                {
                     nearbyAisling.Show(Scope.Self, new ServerFormat33(Client, this as Aisling));
+                }
                 else
                     nearbyAisling.Show(Scope.Self, new ServerFormat07(new[] {this}));
             }

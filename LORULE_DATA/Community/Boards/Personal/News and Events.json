@@ -1,5 +1,20 @@
 {
-  "Posts": [],
+  "Posts": [
+    {
+      "Command": 49,
+      "Secured": true,
+      "Owner": "lol",
+      "TopicId": 616,
+      "PostId": 1,
+      "BoardId": 1,
+      "Read": false,
+      "DatePosted": "2020-05-07T14:23:24.9807695Z",
+      "Sender": "lol",
+      "Message": "",
+      "Recipient": null,
+      "Subject": "hi"
+    }
+  ],
   "Command": 49,
   "Secured": true,
   "Index": 1,

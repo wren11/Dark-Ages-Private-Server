@@ -16,15 +16,6 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Darkages.Common;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.ServerFormats;
@@ -35,7 +26,13 @@ using Darkages.Storage.locales.Scripts.Mundanes;
 using Darkages.Types;
 using MenuInterpreter;
 using MenuInterpreter.Parser;
-using ServiceStack.Text;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
 
 namespace Darkages.Network.Game
 {
@@ -84,7 +81,6 @@ namespace Darkages.Network.Game
 
             if (File.Exists(yamlPath))
             {
-                var ycontent = File.ReadAllText(yamlPath);
 
                 try
                 {
@@ -192,6 +188,8 @@ namespace Darkages.Network.Game
         /// <param name="lpClient">A valid GameClient</param>
         public static void ActivateAssails(GameClient lpClient)
         {
+            if (lpClient == null) throw new ArgumentNullException(nameof(lpClient));
+
             #region Sanity Checks
 
             if (lpClient?.Aisling == null)
@@ -249,11 +247,11 @@ namespace Darkages.Network.Game
                 if (skill.InUse)
                     continue;
 
-                if (lastTemplate != skill.Template.Name)
-                {
-                    ExecuteAbility(lpClient, skill);
-                    lastTemplate = skill.Template.Name;
-                }
+                if (lastTemplate == skill.Template.Name)
+                    continue;
+
+                ExecuteAbility(lpClient, skill);
+                lastTemplate = skill.Template.Name;
             }
 
             lpClient.LastAssail = DateTime.UtcNow;
@@ -294,11 +292,10 @@ namespace Darkages.Network.Game
                     script.OnUse(lpClient.Aisling);
 
 
-            if (lpSkill.Template.Cooldown > 0)
-                lpSkill.NextAvailableUse = DateTime.UtcNow.AddSeconds(lpSkill.Template.Cooldown);
-            else
-                lpSkill.NextAvailableUse =
-                    DateTime.UtcNow.AddMilliseconds(ServerContextBase.GlobalConfig.GlobalBaseSkillDelay);
+            lpSkill.NextAvailableUse = 
+                lpSkill.Template.Cooldown > 0 
+                    ? DateTime.UtcNow.AddSeconds(lpSkill.Template.Cooldown) 
+                    : DateTime.UtcNow.AddMilliseconds(ServerContextBase.GlobalConfig.GlobalBaseSkillDelay);
 
             lpSkill.InUse = false;
         }
@@ -361,6 +358,7 @@ namespace Darkages.Network.Game
                 .SendMessage(0x02, ServerContextBase.GlobalConfig.ServerWelcomeMessage)
                 .EnterArea()
                 .LoggedIn(true).Aisling;
+
         }
 
         /// <summary>
@@ -400,6 +398,8 @@ namespace Darkages.Network.Game
             };
 
             client.Aisling.LoggedIn = false;
+            client.DlgSession = null;
+            client.CloseDialog();
 
             if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2) client.Save();
 
@@ -599,7 +599,7 @@ namespace Darkages.Network.Game
                 .OfType<UserWalkPopup>().Where(i => i.MapId == client.Aisling.CurrentMapId);
 
             foreach (var popupTemplate in popupTemplates)
-                if (popupTemplate != null && client.Aisling.X == popupTemplate.X && client.Aisling.Y == popupTemplate.Y)
+                if (client.Aisling.X == popupTemplate.X && client.Aisling.Y == popupTemplate.Y)
                 {
                     popupTemplate.SpriteId = popupTemplate.SpriteId;
 
@@ -610,16 +610,14 @@ namespace Darkages.Network.Game
                         {
                             CreateInterpreterFromMenuFile(client, popup.Template.YamlKey);
 
-                            if (client.MenuInterpter != null)
-                                if (client.MenuInterpter != null)
-                                {
-                                    client.MenuInterpter.Start();
+                            if (client.MenuInterpter == null)
+                                continue;
 
-                                    var next = client.MenuInterpter?.GetCurrentStep();
+                            client.MenuInterpter.Start();
+                            var next = client.MenuInterpter?.GetCurrentStep();
 
-                                    if (next != null)
-                                        client.ShowCurrentMenu(popup, null, next);
-                                }
+                            if (next != null)
+                                client.ShowCurrentMenu(popup, null, next);
                         }
                 }
         }
@@ -716,8 +714,9 @@ namespace Darkages.Network.Game
 
                         if (item.Scripts != null)
                             foreach (var itemScript in item.Scripts?.Values)
-                                if (itemScript != null)
-                                    itemScript.OnPickedUp(client.Aisling, format.Position, client.Aisling.Map);
+                            {
+                                itemScript?.OnPickedUp(client.Aisling, format.Position, client.Aisling.Map);
+                            }
 
 
                         break;
@@ -740,7 +739,7 @@ namespace Darkages.Network.Game
         {
             #region Sanity Checks (alot can go wrong if you remove this)
 
-            if (client == null || client.Aisling == null)
+            if (client?.Aisling == null)
                 return;
 
             if (!client.Aisling.LoggedIn)
@@ -803,7 +802,7 @@ namespace Darkages.Network.Game
                     return;
                 }
 
-            //if this item a stackable item?
+            //if this item a stack-able item?
             if ((item.Template.Flags & ItemFlags.Stackable) == ItemFlags.Stackable)
             {
                 //remaining?
@@ -837,7 +836,7 @@ namespace Darkages.Network.Game
                     client.Send(new ServerFormat0F(item));
                 }
             }
-            else // not stackable.
+            else // not stack-able.
             {
                 //clone item
                 copy = Clone<Item>(item);
@@ -850,10 +849,11 @@ namespace Darkages.Network.Game
 
             copy = Clone<Item>(item);
 
-            if (copy != null && copy.Scripts != null)
+            if (copy?.Scripts != null)
                 foreach (var itemScript in copy.Scripts?.Values)
-                    if (itemScript != null)
-                        itemScript.OnDropped(client.Aisling, new Position(format.X, format.Y), client.Aisling.Map);
+                {
+                    itemScript?.OnDropped(client.Aisling, new Position(format.X, format.Y), client.Aisling.Map);
+                }
         }
 
         /// <summary>
@@ -889,12 +889,13 @@ namespace Darkages.Network.Game
 
             IEnumerable<Aisling> audience;
 
+            
             switch (format.Type)
             {
                 case 0x00:
                     response.Text = $"{client.Aisling.Username}: {format.Text}";
                     audience = client.GetObjects<Aisling>(client.Aisling.Map,
-                        n => client.Aisling.WithinRangeOf(n, false));
+                        n => client.Aisling.WithinRangeOf(n, true));
                     break;
                 case 0x01:
                     response.Text = $"{client.Aisling.Username}! {format.Text}";
@@ -914,8 +915,9 @@ namespace Darkages.Network.Game
             var nearbyMundanes = client.Aisling.MundanesNearby();
 
             foreach (var npc in nearbyMundanes)
-            foreach (var script in npc?.Scripts?.Values)
-                script.OnGossip(this, client, format.Text);
+                if (npc?.Scripts != null)
+                    foreach (var script in npc?.Scripts?.Values)
+                        script.OnGossip(this, client, format.Text);
 
             client.Aisling.Show(Scope.DefinedAislings, response, audience.ToArray());
         }

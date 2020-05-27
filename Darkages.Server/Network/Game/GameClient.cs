@@ -1286,7 +1286,27 @@ namespace Darkages.Network.Game
                 return this;
             }
 
-            Aisling.Show(Scope.NearbyAislingsExludingSelf, response);
+
+            var nearbyAislings = Aisling.AislingsNearby();
+
+            if (nearbyAislings.Any())
+            {
+
+                foreach (var obj in nearbyAislings)
+                {
+                    if (obj.Serial == Aisling.Serial)
+                        continue;
+
+                    if (obj.Invisible && !Aisling.CanSeeHidden())
+                    {
+                        continue;
+                    }
+
+                    obj.ShowTo(Aisling);
+                }
+
+            }
+
 
             return this;
         }

@@ -49,9 +49,6 @@ namespace Darkages.Network.ServerFormats
             if (Aisling.Dead && !Client.Aisling.CanSeeGhosts())
                 return;
 
-            if (Client.Aisling.Serial != Aisling.Serial)
-                if (Aisling.Invisible && !Client.Aisling.CanSeeHidden())
-                    return;
 
             writer.Write((ushort) Aisling.XPos);
             writer.Write((ushort) Aisling.YPos);

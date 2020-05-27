@@ -27,26 +27,24 @@ namespace Darkages.Network
             BytesSent = 0;
         }
 
-        private readonly INetworkClient<T> _client;
-
         public Socket Socket => _client.ServerSocket;
-
 
         public long BytesPending { get; private set; }
         public long BytesSending { get; private set; }
-        public long BytesSent { get; private set; }
+        public long BytesSent    { get; private set; }
 
         public int OptionSendBufferSize { get; set; }
 
-        public bool IsConnected => _client.ServerSocket.Connected;
+        public bool IsConnected => _client?.ServerSocket?.Connected ?? false;
 
         private readonly object _sendLock = new object();
+        private readonly SocketAsyncEventArgs _sendEventArg;
+        private readonly INetworkClient<T> _client;
 
-        private bool _sending;
+        private bool   _sending;
         private Buffer _sendBufferMain;
         private Buffer _sendBufferFlush;
 
-        private readonly SocketAsyncEventArgs _sendEventArg;
         private long _sendBufferFlushOffset;
 
         public virtual long Send(byte[] buffer)

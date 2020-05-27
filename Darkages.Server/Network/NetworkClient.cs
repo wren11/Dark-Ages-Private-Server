@@ -86,16 +86,14 @@ namespace Darkages.Network
             {
                 Encryption.Transform(packet);
 
-                switch (format.Command)
+                if (format.Command == 0x39 || format.Command == 0x3A)
                 {
-                    case 0x39:
-                    case 0x3A:
-                        TransFormDialog(packet);
-                        Reader.Position = 6;
-                        break;
-                    default:
-                        Reader.Position = 0;
-                        break;
+                    TransFormDialog(packet);
+                    Reader.Position = 6;
+                }
+                else
+                {
+                    Reader.Position = 0;
                 }
             }
             else
@@ -173,10 +171,7 @@ namespace Darkages.Network
             }
         }
 
-        private byte P(NetworkPacket value)
-        {
-            return (byte) (value.Data[1] ^ (byte) (value.Data[0] - 0x2D));
-        }
+        private protected static byte P(NetworkPacket value) => (byte) (value.Data[1] ^ (byte) (value.Data[0] - 0x2D));
 
         private void TransFormDialog(NetworkPacket value)
         {
