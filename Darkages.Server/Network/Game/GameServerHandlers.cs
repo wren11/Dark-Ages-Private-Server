@@ -373,6 +373,18 @@ namespace Darkages.Network.Game
 
             #endregion
 
+
+            Party.RemoveFromParty(client.Aisling.GroupParty, client.Aisling,
+                client.Aisling.GroupParty.Creator.Serial == client.Aisling.Serial);
+
+            client.Aisling.ActiveReactor = null;
+            client.Aisling.ActiveSequence = null;
+            client.CloseDialog();
+            client.DlgSession = null;
+            client.MenuInterpter = null;
+            client.Aisling.CancelExchange();
+            client.Aisling.Remove(true, true);
+
             if (format.Type == 0) ExitGame(client);
 
             if (format.Type == 1)
@@ -397,6 +409,7 @@ namespace Darkages.Network.Game
                 Type = "2"
             };
 
+            client.Aisling.CancelExchange();
             client.Aisling.LoggedIn = false;
             client.DlgSession = null;
             client.CloseDialog();

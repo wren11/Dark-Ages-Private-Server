@@ -688,8 +688,14 @@ namespace Darkages.Types
             if (aisling.EquipmentManager.Weapon?.Item == null || aisling.Weapon <= 0)
                 return dmg;
 
-            //TODO: support weapon damage and hit attrs.
             var weapon = aisling.EquipmentManager.Weapon.Item;
+
+            lock (Generator.Random)
+            {
+                dmg += Generator.Random.Next(
+                    weapon.Template.DmgMin + (aisling.BonusDmg * 1),
+                    weapon.Template.DmgMax + (aisling.BonusDmg * 5));
+            }
 
             return dmg;
         }
@@ -1392,12 +1398,6 @@ namespace Darkages.Types
 
         public virtual bool Walk()
         {
-
-            if (this is Aisling)
-            {
-
-            }
-
             int savedX = this.X;
             int savedY = this.Y;
 

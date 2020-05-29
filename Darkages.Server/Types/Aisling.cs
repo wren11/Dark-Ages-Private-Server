@@ -1250,6 +1250,9 @@ namespace Darkages
         /// </summary>
         public void CancelExchange()
         {
+            if (Exchange == null || Exchange.Trader == null)
+                return;
+
             var trader = Exchange.Trader;
 
             var exchangeA = Exchange;

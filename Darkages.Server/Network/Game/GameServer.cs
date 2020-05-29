@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Darkages.Types;
 
 namespace Darkages.Network.Game
 {
@@ -183,7 +184,16 @@ namespace Darkages.Network.Game
                 if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
                     client.Save();
 
-                client.Aisling.LoggedIn = false;
+                Party.RemoveFromParty(client.Aisling.GroupParty, client.Aisling,
+                    client.Aisling.GroupParty.Creator.Serial == client.Aisling.Serial);
+
+                client.Aisling.ActiveReactor = null;
+                client.Aisling.ActiveSequence = null;
+                client.CloseDialog();
+                client.DlgSession = null;
+                client.MenuInterpter = null;
+                client.Aisling.CancelExchange();
+                client.Aisling.Remove(true, true);
             }
             catch (Exception e)
             {

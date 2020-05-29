@@ -1431,6 +1431,8 @@ namespace Darkages.Network.Game
             LastLocationSent = DateTime.UtcNow;
 
 
+
+
             return CloseDialog();
         }
 
