@@ -80,13 +80,13 @@ namespace Darkages.Types
             if (Amount > 0 && Amount < 10)
                 Type = MoneySprites.SilverCoin;
 
-            if (Amount > 10 && Amount < 100)
+            if (Amount >= 10 && Amount < 100)
                 Type = MoneySprites.GoldCoin;
 
-            if (Amount > 100 && Amount < 1000)
+            if (Amount >= 100 && Amount < 1000)
                 Type = MoneySprites.SilverPile;
 
-            if (Amount > 1000)
+            if (Amount >= 1000)
                 Type = MoneySprites.GoldPile;
         }
     }
