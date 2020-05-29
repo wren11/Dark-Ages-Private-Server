@@ -42,7 +42,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
         public override void OnUse(Sprite sprite, Sprite target)
         {
-            var spellArgs = Arguments;
+            var spellArgs = Arguments ?? throw new ArgumentNullException(nameof(Arguments));
 
 
             if (spellArgs == "die") sprite.CurrentHp = 0;

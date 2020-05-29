@@ -14,21 +14,21 @@ namespace Darkages.Storage.locales.Scripts.Items
         {
         }
 
-        public override void OnDropped(Sprite sprite, Position dropped_position, Area map)
+        public override void OnDropped(Sprite sprite, Position droppedPosition, Area map)
         {
             var obj = GetObject<Item>(map,
-                i => i.Position.X == dropped_position.X && i.Position.Y == dropped_position.Y
+                i => i.Position.X == droppedPosition.X && i.Position.Y == droppedPosition.Y
                                                         && i.Template.Name == Item.Template.Name &&
                                                         i.DisplayImage == Item.DisplayImage);
 
-            if (obj != null) obj.Remove<Item>();
+            obj?.Remove();
         }
 
         public override void OnUse(Sprite sprite, byte slot)
         {
         }
 
-        public override void OnPickedUp(Sprite sprite, Position picked_position, Area map)
+        public override void OnPickedUp(Sprite sprite, Position pickedPosition, Area map)
         {
         }
 

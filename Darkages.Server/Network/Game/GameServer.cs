@@ -180,10 +180,10 @@ namespace Darkages.Network.Game
 
             try
             {
-                if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2) client.Save();
+                if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
+                    client.Save();
 
                 client.Aisling.LoggedIn = false;
-                client.Aisling.Remove(true);
             }
             catch (Exception e)
             {

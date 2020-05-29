@@ -22,8 +22,8 @@ namespace Darkages.Network.ServerFormats
     {
         public ServerFormat04(Aisling aisling) : this()
         {
-            X = (short) aisling.XPos;
-            Y = (short) aisling.YPos;
+            X = (short) aisling.X;
+            Y = (short) aisling.Y;
         }
 
         public ServerFormat04()

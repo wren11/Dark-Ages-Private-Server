@@ -401,15 +401,16 @@ namespace Darkages.Network.Game
             client.DlgSession = null;
             client.CloseDialog();
 
-            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2) client.Save();
+            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
+                client.Save();
 
-            client.Aisling.Remove(true);
-
+            //back to login screen.
             client.FlushAndSend(new ServerFormat03
             {
                 EndPoint = new IPEndPoint(Address, 2610),
                 Redirect = redirect
             });
+
             client.FlushAndSend(new ServerFormat02(0x00, "\0"));
         }
 
@@ -541,11 +542,9 @@ namespace Darkages.Network.Game
             if (client.IsRefreshing && ServerContextBase.GlobalConfig.CancelWalkingIfRefreshing)
                 return;
 
-            if (client.Aisling.Direction != format.Direction)
-                client.Aisling.Direction = format.Direction;
+            client.Aisling.Direction = format.Direction;
+            client.Aisling.Walk(); 
 
-
-            client.Aisling.Walk();
             client.LastMovement = DateTime.UtcNow;
 
             if (client.Aisling.AreaID == ServerContextBase.GlobalConfig.TransitionZone)
@@ -673,7 +672,7 @@ namespace Darkages.Network.Game
 
                         if (item.GiveTo(client.Aisling))
                         {
-                            item.Remove<Item>();
+                            item.Remove();
                             break;
                         }
 
@@ -685,7 +684,7 @@ namespace Darkages.Network.Game
 
                     if (item.GiveTo(client.Aisling))
                     {
-                        item.Remove<Item>();
+                        item.Remove();
 
                         var popupTemplate = ServerContextBase.GlobalPopupCache
                             .OfType<ItemPickupPopup>().FirstOrDefault(i => i.ItemName == (obj as Item)?.Template.Name);
@@ -795,7 +794,7 @@ namespace Darkages.Network.Game
             }
 
             //check position is available to drop.
-            if (client.Aisling.Map.IsWall(client.Aisling, format.X, format.Y))
+            if (client.Aisling.Map.IsWall(format.X, format.Y))
                 if (client.Aisling.XPos != format.X || client.Aisling.YPos != format.Y)
                 {
                     client.SendMessage(Scope.Self, 0x02, ServerContextBase.GlobalConfig.CantDoThat);
@@ -1039,35 +1038,18 @@ namespace Darkages.Network.Game
         /// </summary>
         protected override void Format11Handler(GameClient client, ClientFormat11 format)
         {
-            #region Sanity Checks
-
-            if (client?.Aisling == null)
-                return;
-
-            if (!client.Aisling.LoggedIn)
-                return;
-
-            if (client.IsRefreshing && ServerContextBase.GlobalConfig.DontTurnDuringRefresh)
-                return;
-
-            #endregion
+            client.Aisling.Direction = format.Direction;
 
             if (client.Aisling.Skulled)
             {
                 client.SystemMessage(ServerContextBase.GlobalConfig.ReapMessageDuringAction);
-                return;
             }
 
-            if (client.Aisling.Direction != format.Direction)
+            client.Aisling.Show(Scope.NearbyAislings, new ServerFormat11
             {
-                client.Aisling.Direction = format.Direction;
-
-                client.Aisling.Show(Scope.NearbyAislings, new ServerFormat11
-                {
-                    Direction = client.Aisling.Direction,
-                    Serial = client.Aisling.Serial
-                });
-            }
+                Direction = client.Aisling.Direction,
+                Serial = client.Aisling.Serial
+            });
         }
 
         /// <summary>
@@ -1627,8 +1609,8 @@ namespace Darkages.Network.Game
             if (!client.Aisling.LoggedIn)
                 return;
 
-            //if (client.IsRefreshing)
-            //    return;
+            if (client.IsRefreshing)
+                return;
 
             #endregion
 

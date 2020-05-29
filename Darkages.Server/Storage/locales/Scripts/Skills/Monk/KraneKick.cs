@@ -61,43 +61,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                 var enemy = sprite.GetInfront(1, true);
 
-                if (enemy != null)
-                {
-                    foreach (var i in enemy)
-                    {
-                        if (i == null)
-                            continue;
-
-
-                        if (client.Aisling.Serial == i.Serial)
-                            continue;
-
-                        if (i is Money)
-                            continue;
-
-                        var mod = 1 * client.Aisling.Position.SurroundingContent(client.Aisling.Map)
-                            .Where(o => o != null && o.Content != TileContent.None).Count();
-                        var dmg = (int) ((client.Aisling.Invisible ? 2 : 1 * client.Aisling.Con * 100) / 0.5) * mod;
-
-                        i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
-
-                        if (i is Monster) (i as Monster).Target = client.Aisling;
-                        if (i is Aisling)
-                        {
-                            (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial, byte.MinValue,
-                                    Skill.Template.TargetAnimation, 100));
-                            (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
-                        }
-
-                        if (i is Monster || i is Mundane || i is Aisling)
-                            client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial,
-                                    Skill.Template.TargetAnimation, 0, 100));
-                    }
-
-                    client.Aisling.Show(Scope.NearbyAislings, action);
-                }
+                
             }
         }
 

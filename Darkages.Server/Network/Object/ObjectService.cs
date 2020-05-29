@@ -205,19 +205,18 @@ namespace Darkages.Network.Object
                 var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
                 objCollection.Add(obj);
 
-                obj.Map.Update(obj.XPos, obj.YPos);
+                if (obj.Map != null)
+                    obj.Map.Tile[obj.X, obj.Y] = obj.EntityType;
             }
         }
 
         public void RemoveGameObject<T>(T obj) where T : Sprite
         {
-            if (_spriteCollections.ContainsKey(obj.CurrentMapId))
-            {
-                var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
-                objCollection.Delete(obj);
+            if (!_spriteCollections.ContainsKey(obj.CurrentMapId))
+                return;
 
-                obj.Map.Update(obj.XPos, obj.YPos);
-            }
+            var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
+            objCollection.Delete(obj);
         }
     }
 }

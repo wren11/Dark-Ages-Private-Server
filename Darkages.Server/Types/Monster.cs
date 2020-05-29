@@ -45,6 +45,8 @@ namespace Darkages.Types
             WalkEnabled = false;
             WaypointIndex = 0;
             TaggedAislings = new HashSet<int>();
+
+            EntityType = TileContent.Monster;
         }
 
         [JsonIgnore] public Dictionary<string, MonsterScript> Scripts { get; set; }
@@ -576,6 +578,10 @@ namespace Darkages.Types
                 obj.UpgradeTable.Add(new Godly());
                 obj.UpgradeTable.Add(new Forsaken());
             }
+
+            if (obj.Map != null)
+                obj.Map.Tile[obj.X, obj.Y] = TileContent.Monster;
+
 
             return obj;
         }

@@ -243,10 +243,15 @@ namespace DAClient
 
                     } break;
                 #endregion
+                case 0x38:
+                    Send(new Assail());
+                    break;
                 case 0x05:
                     Connections++;
                     break;
-                default: break;
+                default:
+                    Send(new Assail());
+                    break;
             }
         }
     }

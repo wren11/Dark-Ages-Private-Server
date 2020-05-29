@@ -16,7 +16,10 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using Darkages.Scripting;
 using Darkages.Types;
 
@@ -31,56 +34,18 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public override void OnUse(Sprite sprite)
         {
-            var nearest = GetObjects<Monster>(sprite.Map, i => i.CurrentMapId == sprite.CurrentMapId && i.IsAlive)
-                .OrderBy(i => i.Position.DistanceFrom(sprite.Position)).FirstOrDefault();
-
-            if (sprite is Aisling)
+            if (sprite is Aisling aisling)
             {
-                var client = (sprite as Aisling).Client;
+                var objects = aisling.GetObjects(null, i => true, Get.All);
+                var sb = new StringBuilder();
 
-                if (nearest != null)
+                foreach (var obj in objects)
                 {
-                    var prev = client.Aisling.Position;
-                    Position targetPosition = null;
-
-                    var blocks = nearest.Position.SurroundingContent(client.Aisling.Map);
-
-                    if (blocks.Length > 0)
-                    {
-                        var selections = blocks.Where(i => i.Content == TileContent.Item
-                                                           || i.Content == TileContent.Money
-                                                           || i.Content == TileContent.None).ToArray();
-
-                        var selection = selections
-                            .OrderByDescending(i => i.Position.DistanceFrom(client.Aisling.Position)).FirstOrDefault();
-                        if (selections.Length == 0 || selection == null)
-                        {
-                            client.SendMessageBox(0x02, "you can't do that.");
-                            return;
-                        }
-
-                        targetPosition = selection.Position;
-                    }
-
-                    if (targetPosition != null)
-                    {
-                        client.Aisling.XPos = targetPosition.X;
-                        client.Aisling.YPos = targetPosition.Y;
-
-                        client.Aisling.Map.Update(prev.X, prev.Y);
-
-                        if (!client.Aisling.Facing(nearest.XPos, nearest.YPos, out var direction))
-                        {
-                            client.Aisling.Direction = (byte) direction;
-
-                            if (client.Aisling.Position.IsNextTo(nearest.Position))
-                                client.Aisling.Turn();
-                        }
-
-
-                        client.Refresh();
-                    }
+                    sb.AppendLine(string.Format("{0} {1} {2} {3} {4} {5}", obj.Position.X, obj.Position.Y, obj.Map.Name, obj.CurrentMapId,
+                        obj.Direction, obj.EntityType));
                 }
+
+                File.WriteAllText("objdump.txt", sb.ToString());
             }
         }
 

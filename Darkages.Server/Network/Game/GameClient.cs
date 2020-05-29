@@ -474,29 +474,7 @@ namespace Darkages.Network.Game
                         : string.Format(CultureInfo.CurrentCulture,
                             "Nightmarish visions of your own death repel you. ({0} Req)", warps.LevelRequired));
 
-
-                    //Teleport the user away the warp.
-                    var nearestActivation =
-                        warps.Activations.OrderBy(i => i.Location - Aisling.Position).FirstOrDefault();
-
-                    if (nearestActivation != null)
-                    {
-                        LeaveArea(true);
-
-                        var nearby = nearestActivation.Location.SurroundingContent(Aisling.Map);
-
-                        foreach (var near in nearby)
-                            if (near.Content != TileContent.Wall && near.Content != TileContent.Warp)
-                            {
-                                Aisling.XPos = near.Position.X;
-                                Aisling.YPos = near.Position.Y;
-                                break;
-                            }
-
-
-                        EnterArea();
-                    }
-
+                    //TODO: move player somewhere near the warp. but not ontop of it.
                     return;
                 }
 
@@ -693,17 +671,17 @@ namespace Darkages.Network.Game
 
             #region Warping Sanity Check
 
-            var distance = Aisling.Position.DistanceFrom(Aisling.LastPosition.X, Aisling.LastPosition.Y);
+            //var distance = Aisling.Position.DistanceFrom(Aisling.LastPosition.X, Aisling.LastPosition.Y);
 
-            if (distance > 1 && !MapOpen && !IsWarping && (DateTime.UtcNow - LastMapUpdated).TotalMilliseconds > 2000)
-            {
-                LastWarp = DateTime.UtcNow;
-                Aisling.LastPosition.X = (ushort) Aisling.XPos;
-                Aisling.LastPosition.Y = (ushort) Aisling.YPos;
-                LastLocationSent = DateTime.UtcNow;
-                Refresh();
-                return;
-            }
+            //if (distance > 1 && !MapOpen && !IsWarping && (DateTime.UtcNow - LastMapUpdated).TotalMilliseconds > 2000)
+            //{
+            //    LastWarp = DateTime.UtcNow;
+            //    Aisling.LastPosition.X = (ushort) Aisling.XPos;
+            //    Aisling.LastPosition.Y = (ushort) Aisling.YPos;
+            //    LastLocationSent = DateTime.UtcNow;
+            //    Refresh();
+            //    return;
+            //}
 
             #endregion
 
@@ -1323,14 +1301,12 @@ namespace Darkages.Network.Game
             return this;
         }
 
-        /// <summary>
-        ///     Leaves the area.
-        /// </summary>
-        /// <param name="update">if set to <c>true</c> [update].</param>
-        /// <param name="delete">if set to <c>true</c> [delete].</param>
         public GameClient LeaveArea(bool update = false, bool delete = false)
         {
-            if (Aisling.LastMapId == short.MaxValue) Aisling.LastMapId = Aisling.CurrentMapId;
+            if (Aisling.LastMapId == short.MaxValue)
+            {
+                Aisling.LastMapId = Aisling.CurrentMapId;
+            }
 
             Aisling.Remove(update, delete);
 
@@ -1792,8 +1768,6 @@ namespace Darkages.Network.Game
             Aisling.YPos = position.Y;
 
             Refresh();
-
-            Aisling.Map.Update(Aisling.XPos, Aisling.YPos);
         }
 
         /// <summary>

@@ -1124,7 +1124,7 @@ namespace Darkages
         /// <param name="delete">if set to <c>true</c> [delete].</param>
         public void Remove(bool update = false, bool delete = true)
         {
-            Map?.Update(XPos, YPos);
+            Map.Tile[XPos, YPos] = TileContent.None;
 
             if (update)
                 Show(Scope.NearbyAislingsExludingSelf, new ServerFormat0E(Serial));

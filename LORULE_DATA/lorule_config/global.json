@@ -141,5 +141,6 @@
   "ErrorReporting": true,
   "DeathReepingMessage": "You have been scared for life.",
   "DeathMapX": 21,
-  "DeathMapY": 21
+  "DeathMapY": 21,
+  "PVPMap": 509
 }
