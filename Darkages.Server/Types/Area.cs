@@ -21,7 +21,6 @@ using Newtonsoft.Json;
 //*************************************************************************/
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
@@ -69,17 +68,25 @@ namespace Darkages
 
         public bool IsWall(int x, int y)
         {
-            if (x < 0 ||
-                x >= Cols)
+            if (x < 0 || x >= Cols)
+            {
                 return true;
+            }
 
-            if (y < 0 ||
-                y >= Rows)
+            if (y < 0 || y >= Rows)
+            {
                 return true;
+            }
 
-            var obj = Tile[x, y];
-            var isEmpty = obj == TileContent.None;
-            return !isEmpty;
+
+            return Tile[x, y] ==
+                             TileContent.Wall ||
+                             Tile[x, y] ==
+                             TileContent.Aisling ||
+                             Tile[x, y] ==
+                             TileContent.Monster ||
+                             Tile[x, y] ==
+                             TileContent.Mundane;
         }
 
         public byte[] GetRowData(int row)
@@ -150,9 +157,12 @@ namespace Darkages
             if (objectCache == null || objectCache.Length <= 0)
                 return;
 
-            UpdateMonsterObjects (elapsedTime, objectCache.OfType<Monster>());
-            UpdateMundaneObjects (elapsedTime, objectCache.OfType<Mundane>());
-            UpdateItemObjects    (elapsedTime, objectCache.OfType<Money>().Concat<Sprite>(objectCache.OfType<Item>()));
+            lock (ServerContext.syncLock)
+            {
+                UpdateMonsterObjects(elapsedTime, objectCache.OfType<Monster>());
+                UpdateMundaneObjects(elapsedTime, objectCache.OfType<Mundane>());
+                UpdateItemObjects(elapsedTime, objectCache.OfType<Money>().Concat<Sprite>(objectCache.OfType<Item>()));
+            }
         }
 
         public void Update(TimeSpan elapsedTime)
@@ -173,26 +183,50 @@ namespace Darkages
 
             foreach (var obj in enumerable)
             {
-                if (obj?.Map == null || obj.Scripts == null) continue;
-                if (obj.CurrentHp <= 0x0)
-                    if (obj.Target != null)
-                        if (!obj.Skulled)
-                        {
-                            foreach (var script in obj.Scripts.Values)
-                            {
-                                if (obj.Target == null || obj.Target.Client == null)
-                                    continue;
+                if (obj?.Map == null || obj.Scripts == null)
+                    continue;
 
-                                script.OnDeath(obj.Target.Client);
-                            }
+                if (obj.CurrentHp <= 0x0 && obj.Target != null && !obj.Skulled)
+                {
+                    foreach (var script in obj.Scripts.Values)
+                    {
+                        if (obj.Target?.Client == null)
+                            continue;
 
-                            obj.Skulled = true;
-                        }
+                        script?.OnDeath(obj.Target.Client);
+                    }
+
+                    obj.Skulled = true;
+                }
 
                 foreach (var script in obj.Scripts.Values)
                 {
-                    script.Update(elapsedTime);
+                    script?.Update(elapsedTime);
                 }
+
+                if (obj.WalkEnabled
+                    || ((DateTime.UtcNow - obj.LastMovementChanged).TotalMilliseconds > obj.Template.MovementSpeed * 6)
+                    && ((DateTime.UtcNow - obj.LastTurnUpdated).TotalMilliseconds > obj.Template.MovementSpeed * 8))
+                {
+                    if (obj.Target == null && obj.CurrentHp <= 0)
+                    {
+                        obj.Remove();
+                        continue;
+                    }
+                }
+
+
+                if (obj.TrapsAreNearby())
+                {
+                    var nextTrap = Trap.Traps.Select(i => i.Value)
+                        .FirstOrDefault(i => i.Location.X == obj.X && i.Location.Y == obj.Y);
+
+                    if (nextTrap != null)
+                    {
+                        Trap.Activate(nextTrap, obj);
+                    }
+                }
+
 
                 obj.UpdateBuffs(elapsedTime);
                 obj.UpdateDebuffs(elapsedTime);
@@ -202,66 +236,69 @@ namespace Darkages
 
         public void UpdateItemObjects(TimeSpan elapsedTime, IEnumerable<Sprite> objects)
         {
-            foreach (var obj in objects)
-                if (obj != null)
-                {
-                    obj.LastUpdated = DateTime.UtcNow;
+                foreach (var obj in objects)
+                    if (obj != null)
+                    {
+                        obj.LastUpdated = DateTime.UtcNow;
 
-                    if (!(obj is Item item)) continue;
-                    if (!((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3)) continue;
-                    if (!item.Cursed) continue;
+                        if (!(obj is Item item)) continue;
+                        if (!((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3)) continue;
+                        if (!item.Cursed) continue;
 
-                    item.AuthenticatedAislings = null;
-                    item.Cursed = false;
-                }
+                        item.AuthenticatedAislings = null;
+                        item.Cursed = false;
+                    }
+            
         }
 
         public void UpdateMundaneObjects(TimeSpan elapsedTime, IEnumerable<Mundane> objects)
         {
-            foreach (var obj in objects)
-            {
-                if (obj == null)
-                    continue;
+                foreach (var obj in objects)
+                {
+                    if (obj == null)
+                        continue;
 
-                if (obj.CurrentHp <= 0)
-                    obj.CurrentHp = obj.Template.MaximumHp;
+                    if (obj.CurrentHp <= 0)
+                        obj.CurrentHp = obj.Template.MaximumHp;
 
-                obj.UpdateBuffs(elapsedTime);
-                obj.UpdateDebuffs(elapsedTime);
-                obj.Update(elapsedTime);
-
-                obj.LastUpdated = DateTime.UtcNow;
-            }
+                    obj.UpdateBuffs(elapsedTime);
+                    obj.UpdateDebuffs(elapsedTime);
+                    obj.Update(elapsedTime);
+                    obj.LastUpdated = DateTime.UtcNow;
+                }
         }
 
         public void OnLoaded()
-        { 
-            Tile = new TileContent[Cols, Rows];
-
-            var stream = new MemoryStream(Data);
-            var reader = new BinaryReader(stream);
-
-            for (var y = 0; y < Rows; y++)
+        {
+            lock (ServerContext.syncLock)
             {
-                for (var x = 0; x < Cols; x++)
-                {
-                    reader.BaseStream.Seek(2, SeekOrigin.Current);
+                Tile = new TileContent[Cols, Rows];
 
-                    if (ParseMapWalls(reader.ReadInt16(), reader.ReadInt16()))
+                var stream = new MemoryStream(Data);
+                var reader = new BinaryReader(stream);
+
+                for (var y = 0; y < Rows; y++)
+                {
+                    for (var x = 0; x < Cols; x++)
                     {
-                        Tile[x, y] = TileContent.Wall;
-                    }
-                    else
-                    {
-                        Tile[x, y] = TileContent.None;
+                        reader.BaseStream.Seek(2, SeekOrigin.Current);
+
+                        if (ParseMapWalls(reader.ReadInt16(), reader.ReadInt16()))
+                        {
+                            Tile[x, y] = TileContent.Wall;
+                        }
+                        else
+                        {
+                            Tile[x, y] = TileContent.None;
+                        }
                     }
                 }
+
+                reader.Close();
+                stream.Close();
+
+                Ready = true;
             }
-
-            reader.Close();
-            stream.Close();
-
-            Ready = true;
         }
     }
 }

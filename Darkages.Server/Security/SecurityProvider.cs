@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
+using System.Threading.Tasks;
 using Darkages.Network;
 
 namespace Darkages.Security
@@ -221,7 +222,7 @@ namespace Darkages.Security
         #endregion
 
         public SecurityProvider()
-            : this(new SecurityParameters())
+            : this(SecurityParameters.Default)
         {
         }
 
@@ -234,14 +235,20 @@ namespace Darkages.Security
 
         public void Transform(NetworkPacket packet)
         {
-            if (packet == null)
-                return;
+            Parallel.For(0, packet.Data.Length, delegate (int i)
+            {
+                int mod = (i / this.Parameters.Salt.Length) & 0xFF;
 
-            if (packet.Data == null)
-                return;
+                packet.Data[i] ^= (byte)(
+                    this.Parameters.Salt[i % this.Parameters.Salt.Length] ^
+                    tree[this.Parameters.Seed][packet.Ordinal] ^
+                    tree[this.Parameters.Seed][mod]);
 
-            for (var i = 0; i < packet.Data.Length; i++)
-                Xor(packet, i);
+                if (packet.Ordinal == mod)
+                {
+                    packet.Data[i] ^= tree[this.Parameters.Seed][packet.Ordinal];
+                }
+            });
         }
 
         private void Xor(NetworkPacket packet, int i)

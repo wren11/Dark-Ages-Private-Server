@@ -579,10 +579,6 @@ namespace Darkages.Types
                 obj.UpgradeTable.Add(new Forsaken());
             }
 
-            if (obj.Map != null)
-                obj.Map.Tile[obj.X, obj.Y] = TileContent.Monster;
-
-
             return obj;
         }
 

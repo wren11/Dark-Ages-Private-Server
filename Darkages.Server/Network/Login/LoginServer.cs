@@ -18,6 +18,10 @@
 // ReSharper disable RedundantAssignment
 // ReSharper disable IdentifierTypo
 
+using System.Linq;
+using System.Web.ModelBinding;
+using Newtonsoft.Json;
+
 namespace Darkages.Network.Login
 {
     using ClientFormats;
@@ -46,13 +50,24 @@ namespace Darkages.Network.Login
         /// </summary>
         protected override void Format00Handler(LoginClient client, ClientFormat00 format)
         {
-            if (format.Version == 718)
-                client.Send(new ServerFormat00
-                {
-                    Type = 0x00,
-                    Hash = MServerTable.Hash,
-                    Parameters = client.Encryption.Parameters
-                });
+            if (ServerContextBase.GlobalConfig.UseLobby)
+            {
+                if (format.Version == ServerContextBase.GlobalConfig.ClientVersion)
+                    client.Send(new ServerFormat00
+                    {
+                        Type = 0x00,
+                        Hash = MServerTable.Hash,
+                        Parameters = client.Encryption.Parameters
+                    });
+            }
+
+            if (ServerContextBase.GlobalConfig.DevMode)
+            {
+                var aisling = StorageManager.AislingBucket.Load(ServerContextBase.GlobalConfig.GameMaster);
+
+                if (aisling != null)
+                    LoginAsAisling(client, aisling);
+            }
         }
 
         /// <summary>
@@ -154,12 +169,14 @@ namespace Darkages.Network.Login
         {
             if (aisling != null)
             {
+                var map = ServerContext.GlobalMapCache.FirstOrDefault().Value;
+
                 var redirect = new Redirect
                 {
                     Serial = Convert.ToString(client.Serial),
-                    Salt = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
-                    Seed = Convert.ToString(client.Encryption.Parameters.Seed),
-                    Name = aisling.Username
+                    Salt   = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
+                    Seed   = Convert.ToString(client.Encryption.Parameters.Seed),
+                    Name   = JsonConvert.SerializeObject(new { player = aisling.Username, map } ),
                 };
 
                 if (aisling.Username.Equals(ServerContextBase.GlobalConfig.GameMaster,

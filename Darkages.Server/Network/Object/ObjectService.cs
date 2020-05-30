@@ -135,8 +135,8 @@ namespace Darkages.Network.Object
             {
                 if (!_spriteCollections.ContainsKey(map.ID))
                 {
-                    var _cachemap = ServerContextBase.GlobalMapCache.Select(i => i.Value)
-                        .Where(n => n.Name.Equals(map.Name) && n.ID != map.ID).FirstOrDefault();
+                    var _cachemap = ServerContextBase.GlobalMapCache
+                        .Select(i => i.Value).FirstOrDefault(n => n.Name.Equals(map.Name) && n.ID != map.ID);
 
                     if (_cachemap != null) map = _cachemap;
                 }
@@ -168,8 +168,8 @@ namespace Darkages.Network.Object
             {
                 if (!_spriteCollections.ContainsKey(map.ID))
                 {
-                    var _cachemap = ServerContextBase.GlobalMapCache.Select(i => i.Value)
-                        .Where(n => n.Name.Equals(map.Name) && n.ID != map.ID).FirstOrDefault();
+                    var _cachemap = ServerContextBase.GlobalMapCache
+                        .Select(i => i.Value).FirstOrDefault(n => n.Name.Equals(map.Name) && n.ID != map.ID);
 
                     if (_cachemap != null) map = _cachemap;
                 }
@@ -205,8 +205,18 @@ namespace Darkages.Network.Object
                 var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
                 objCollection.Add(obj);
 
-                if (obj.Map != null)
-                    obj.Map.Tile[obj.X, obj.Y] = obj.EntityType;
+                lock (ServerContext.syncLock)
+                {
+                    if (obj.Map != null)
+                    {
+                        if (ServerContextBase.GlobalConfig.LogObjectsAdded)
+                        {
+                            Console.WriteLine($"({obj.X},{obj.Y}) {obj.EntityType} was added.");
+                        }
+
+                        obj.Map.Tile[obj.X, obj.Y] = obj.EntityType;
+                    }
+                }
             }
         }
 
@@ -217,6 +227,19 @@ namespace Darkages.Network.Object
 
             var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
             objCollection.Delete(obj);
+
+            lock (ServerContext.syncLock)
+            {
+                if (obj.Map != null)
+                {
+                    if (ServerContextBase.GlobalConfig.LogObjectsRemoved)
+                    {
+                        Console.WriteLine($"({obj.X},{obj.Y}) {obj.EntityType} was removed.");
+                    }
+
+                    obj.Map.Tile[obj.X, obj.Y] = TileContent.None;
+                }
+            }
         }
     }
 }

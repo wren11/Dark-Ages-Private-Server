@@ -16,35 +16,26 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
-using System;
-
-namespace Darkages.Types
+namespace Darkages.Network.ServerFormats
 {
-    [Flags]
-    public enum ItemFlags
+    public class ServerFormat06 : NetworkFormat
     {
-        Equipable = 1,
-        Perishable = 1 << 1,
-        Tradeable = 1 << 2,
-        Dropable = 1 << 3,
-        Bankable = 1 << 4,
-        Sellable = 1 << 5,
-        Repairable = 1 << 6,
-        Stackable = 1 << 7,
-        Consumable = 1 << 8,
-        PerishIFEquipped = 1 << 9,
-        Elemental = 1 << 10,
-        QuestRelated = 1 << 11,
-        Upgradeable = 1 << 12,
-        TwoHanded = 1 << 13,
-        LongRanged = 1 << 14,
-        Trap = 1 << 15,
+
+        public ServerFormat06()
+        {
+            Secured = true;
+            Command = 0x06;
+        }
 
 
-        NormalEquipment = Equipable | Repairable | Tradeable | Sellable | Bankable | Dropable,
-        NormalEquipPerish = NormalEquipment | Perishable,
-        NormalEquipElementPerish = NormalEquipment | Perishable | Elemental,
+        public override void Serialize(NetworkPacketReader reader)
+        {
 
-        NormalConsumable = Consumable | Stackable | Dropable | Sellable | Tradeable | Bankable
+        }
+
+        public override void Serialize(NetworkPacketWriter writer)
+        {
+
+        }
     }
 }

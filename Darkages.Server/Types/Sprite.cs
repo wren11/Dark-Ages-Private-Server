@@ -5,24 +5,6 @@ using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using LiteDB;
 using Newtonsoft.Json;
-///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
-
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -61,7 +43,9 @@ namespace Darkages.Types
 
             LastTargetAcquired = DateTime.UtcNow;
             LastMovementChanged = DateTime.UtcNow;
+            LastTurnUpdated = DateTime.UtcNow;
             LastUpdated = DateTime.UtcNow;
+
             LastPosition = new Position(0, 0);
             LastDirection = 0;
         }
@@ -116,6 +100,7 @@ namespace Darkages.Types
 
         public int Amplified { get; set; }
 
+        public DateTime LastTurnUpdated { get; set; }
 
         [JsonIgnore] [BsonIgnore] public bool CanMove => !(IsFrozen || IsSleeping || IsParalyzed);
 
@@ -356,19 +341,6 @@ namespace Darkages.Types
         public bool TrapsAreNearby()
         {
             return Trap.Traps.Select(i => i.Value).Any(i => i.CurrentMapId == CurrentMapId);
-        }
-
-        public bool TriggerNearbyTraps()
-        {
-            var trap = Trap.Traps.Select(i => i.Value)
-                .FirstOrDefault(i => i.Owner.Serial != Serial && i.CurrentMapId == CurrentMapId);
-
-            if (trap == null)
-                return false;
-
-            if (X == trap.Location.X && Y == trap.Location.Y)
-                Trap.Activate(trap, this);
-            return false;
         }
 
         public bool HasBuff(string buff)
@@ -1215,13 +1187,16 @@ namespace Darkages.Types
 
         public void Remove()
         {
-            Map.Tile[X, Y] = TileContent.None;
-
-            var nearby   = GetObjects<Aisling>(Map, i => i.WithinRangeOf(this));
+            var nearby   = GetObjects<Aisling>(Map, i => i.CurrentMapId == CurrentMapId);
             var response = new ServerFormat0E(Serial);
 
             foreach (var o in nearby)
-                o?.Client?.Send(response);
+            {
+                for (var i = 0; i < 3; i++)
+                {
+                    o?.Client?.FlushAndSend(response);
+                }
+            }
 
             DeleteObject();
         }
@@ -1287,6 +1262,7 @@ namespace Darkages.Types
             });
 
             LastDirection = Direction;
+            LastTurnUpdated = DateTime.UtcNow;
         }
 
         public void WalkTo(int x, int y, bool ignoreWalls = false)
@@ -1396,6 +1372,26 @@ namespace Darkages.Types
             return false;
         }
 
+        public virtual Position GetPendingWalkPosition()
+        {
+            var pendingX = X;
+            var pendingY = Y;
+
+            if (Direction == 0)
+                pendingY--;
+
+            if (Direction == 1)
+                pendingX++;
+
+            if (Direction == 2)
+                pendingY++;
+
+            if (Direction == 3)
+                pendingX--;
+
+            return new Position(pendingX, pendingY);
+        }
+
         public virtual bool Walk()
         {
             int savedX = this.X;
@@ -1444,8 +1440,9 @@ namespace Darkages.Types
                 Y = (short) savedY
             };
 
-
             Show(Scope.NearbyAislingsExludingSelf, response);
+            LastMovementChanged = DateTime.UtcNow;
+            LastPosition = new Position(savedX, savedY);
 
             return true;
         }

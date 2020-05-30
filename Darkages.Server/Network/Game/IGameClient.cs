@@ -275,7 +275,7 @@ namespace Darkages.Network.Game
         ///     Updates the specified elapsed time.
         /// </summary>
         /// <param name="elapsedTime">The elapsed time.</param>
-        Task Update(TimeSpan elapsedTime);
+        void Update(TimeSpan elapsedTime);
 
         GameClient DoUpdate(TimeSpan elapsedTime);
 

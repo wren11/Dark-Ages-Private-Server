@@ -32,7 +32,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Darkages.Network.Game
 {
@@ -310,7 +313,8 @@ namespace Darkages.Network.Game
 
         private Aisling LoadPlayer(GameClient client, ClientFormat10 format)
         {
-            var aisling = StorageManager.AislingBucket.Load(format.Name);
+            dynamic redirect = JsonConvert.DeserializeObject(format.Name);
+            var aisling = StorageManager.AislingBucket.Load(redirect.player.Value);
 
             if (aisling != null)
                 client.Aisling = aisling;
@@ -555,6 +559,8 @@ namespace Darkages.Network.Game
             if (client.IsRefreshing && ServerContextBase.GlobalConfig.CancelWalkingIfRefreshing)
                 return;
 
+            CheckforAnyPhantoms(client);
+
             client.Aisling.Direction = format.Direction;
             client.Aisling.Walk(); 
 
@@ -569,6 +575,48 @@ namespace Darkages.Network.Game
 
             CheckWalkOverPopups(client);
             CheckWarpTransitions(client);
+        }
+
+        private void CheckforAnyPhantoms(GameClient client)
+        {
+            var pending = client.Aisling.GetPendingWalkPosition();
+
+            var objsBlocking = GetObjects(client.Aisling.Map,
+                sel => sel.X == pending.X && sel.Y == pending.Y
+                                          && sel.Serial != client.Aisling.Serial, Get.Monsters | Get.Mundanes | Get.Aislings);
+
+            if (objsBlocking.Any())
+            {
+                lock (ServerContext.syncLock)
+                {
+                    //let us pass anyways.
+                    client.Aisling.Map.Tile[pending.X, pending.Y] = TileContent.None;
+                }
+
+
+                Task.Run(() =>
+                {
+                    //remove the objects is they are dead.
+                    foreach (var obj in objsBlocking)
+                    {
+                        if (obj is Aisling aisling)
+                        {
+                            if (!aisling.LoggedIn ||
+                                (DateTime.UtcNow - aisling.LastMovementChanged).TotalMilliseconds > 120 ||
+                                aisling.CurrentHp <= 0)
+                            {
+                                aisling.Remove(true, true);
+                            }
+                        }
+
+                        if (obj.CurrentHp <= 0 || (DateTime.UtcNow - obj.LastMovementChanged).TotalMilliseconds > 120
+                                               || (DateTime.UtcNow - obj.LastTurnUpdated).TotalMilliseconds > 120)
+                        {
+                            obj.Remove();
+                        }
+                    }
+                });
+            }
         }
 
         private static void CheckWarpTransitions(GameClient client)
@@ -635,7 +683,7 @@ namespace Darkages.Network.Game
         }
 
         /// <summary>
-        ///     Pickup Item / Gold (User Pressed B)
+        /// Pickup Item / Gold (User Pressed B)
         /// </summary>
         protected override void Format07Handler(GameClient client, ClientFormat07 format)
         {
@@ -651,7 +699,6 @@ namespace Darkages.Network.Game
                 return;
 
             #endregion
-
 
             var objs = GetObjects(client.Aisling.Map, i => i.XPos == format.Position.X && i.YPos == format.Position.Y,
                 Get.Items | Get.Money);
@@ -674,6 +721,12 @@ namespace Darkages.Network.Game
                 }
                 else if (obj is Item item)
                 {
+                    //TODO: we may allow users to remove traps. for now, we don't.
+                    if ((item.Template.Flags & ItemFlags.Trap) == ItemFlags.Trap)
+                    {
+                        continue;
+                    }
+
                     if (item.Cursed)
                     {
                         if (item.AuthenticatedAislings.FirstOrDefault(i =>

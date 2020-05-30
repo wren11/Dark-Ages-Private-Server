@@ -26,9 +26,7 @@ namespace Darkages.Network.ServerFormats
     //public class ServerFormat03 { } Added (Redirect)
     //public class ServerFormat04 { } Added (Position)
     //public class ServerFormat05 { } Added (Serial)
-    public class ServerFormat06
-    {
-    }
+    //public class ServerFormat06 { } Added (Send Tile)
 
     //public class ServerFormat07 { } Added (Sprite)
     //public class ServerFormat08 { } Added (Status)

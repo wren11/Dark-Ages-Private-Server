@@ -91,7 +91,7 @@ namespace Darkages.Network.ServerFormats
                 writer.Write(Aisling.Shield);
                 writer.Write((byte) Aisling.Weapon);
                 writer.Write(Aisling.HairColor);
-                writer.Write(Aisling.BootColor);
+                writer.Write(0);
                 writer.Write((ushort) Aisling.HeadAccessory1);
                 writer.Write((byte) 0);
                 writer.Write((ushort) Aisling.HeadAccessory2);

@@ -654,7 +654,7 @@ namespace Darkages.Network.Game
         ///     Updates the specified elapsed time.
         /// </summary>
         /// <param name="elapsedTime">The elapsed time.</param>
-        public async Task Update(TimeSpan elapsedTime)
+        public void Update(TimeSpan elapsedTime)
         {
             #region Sanity Checks
 
@@ -669,25 +669,32 @@ namespace Darkages.Network.Game
 
             #endregion
 
-            #region Warping Sanity Check
+            var distance = Aisling.Position.DistanceFrom(Aisling.LastPosition.X, Aisling.LastPosition.Y);
 
-            //var distance = Aisling.Position.DistanceFrom(Aisling.LastPosition.X, Aisling.LastPosition.Y);
+            if (distance > 1 && !MapOpen && !IsWarping && (DateTime.UtcNow - LastMapUpdated).TotalMilliseconds > 2000)
+            {
+                LastWarp = DateTime.UtcNow;
+                Aisling.LastPosition.X = (ushort)Aisling.XPos;
+                Aisling.LastPosition.Y = (ushort)Aisling.YPos;
+                LastLocationSent = DateTime.UtcNow;
+                Refresh();
+                return;
+            }
 
-            //if (distance > 1 && !MapOpen && !IsWarping && (DateTime.UtcNow - LastMapUpdated).TotalMilliseconds > 2000)
-            //{
-            //    LastWarp = DateTime.UtcNow;
-            //    Aisling.LastPosition.X = (ushort) Aisling.XPos;
-            //    Aisling.LastPosition.Y = (ushort) Aisling.YPos;
-            //    LastLocationSent = DateTime.UtcNow;
-            //    Refresh();
-            //    return;
-            //}
+            if (Aisling.TrapsAreNearby())
+            {
+                var nextTrap = Trap.Traps.Select(i => i.Value)
+                    .FirstOrDefault(i => i.Owner.Serial != Aisling.Serial &&
+                                         Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill)
+                                         && i.Location.X == Aisling.X && i.Location.Y == Aisling.Y);
 
-            #endregion
+                if (nextTrap != null)
+                {
+                    Trap.Activate(nextTrap, Aisling);
+                }
+            }
 
             DoUpdate(elapsedTime);
-
-            await Task.CompletedTask;
         }
 
         public GameClient DoUpdate(TimeSpan elapsedTime)
@@ -851,12 +858,12 @@ namespace Darkages.Network.Game
                 try
                 {
                     return InitSpellBar()
-                        .LoadInventory()
-                        .LoadSkillBook()
-                        .LoadSpellBook()
-                        .LoadEquipment()
-                        .SendProfileUpdate()
-                        .SendStats(StatusFlags.All);
+                    .LoadInventory()
+                    .LoadSkillBook()
+                    .LoadSpellBook()
+                    .LoadEquipment()
+                    .SendProfileUpdate()
+                    .SendStats(StatusFlags.All);
                 }
                 catch (NullReferenceException e)
                 {
