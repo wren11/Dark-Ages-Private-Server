@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using Darkages.Network.Game.Components;
 using static Darkages.Types.ElementManager;
 
 namespace Darkages.Types
@@ -1394,43 +1395,38 @@ namespace Darkages.Types
 
         public virtual bool Walk()
         {
-            int savedX = this.X;
-            int savedY = this.Y;
+            var savedX   = this.X;
+            var savedY   = this.Y;
+            var pendingX = this.X;
+            var pendingY = this.Y;
+
+            if (Map.IsWall(savedX, savedY)) 
+                return false;
+
+            if (!Map.ObjectGrid[savedX, savedY].IsPassable(this, this is Aisling))
+                return false;
+
+
 
             if (this.Direction == 0)
-            {
-                if (Map.IsWall(this.X, this.Y - 1))
-                    return false;
+                pendingY--;
+            else if (this.Direction == 1)
+                pendingX++;
+            else if (this.Direction == 2)
+                pendingY++;
+            else if (this.Direction == 3)
+                pendingX--;
 
-                this.Y--;
-            }
 
-            if (this.Direction == 1)
-            {
-                if (Map.IsWall(this.X + 1, this.Y))
-                    return false;
+            if (Map.IsWall(pendingX, pendingY))
+                return false;
 
-                this.X++;
-            }
+            if (!Map.ObjectGrid[pendingX, pendingY].IsPassable(this, this is Aisling))
+                return false;
 
-            if (this.Direction == 2)
-            {
-                if (Map.IsWall(this.X, this.Y + 1))
-                    return false;
 
-                this.Y++;
-            }
-
-            if (this.Direction == 3)
-            {
-                if (Map.IsWall(this.X - 1, this.Y))
-                    return false;
-
-                this.X--;
-            }
-
-            this.Map.Tile[savedX, savedY] = TileContent.None;
-            this.Map.Tile[this.X, this.Y] = this.EntityType;
+            Map.ObjectGrid[savedX, savedY].RemoveObject(this);
+            Map.ObjectGrid[pendingX, pendingY].AddObject(this);
 
             var response = new ServerFormat0C
             {
@@ -1440,9 +1436,20 @@ namespace Darkages.Types
                 Y = (short) savedY
             };
 
+            X = pendingX;
+            Y = pendingY;
+
             Show(Scope.NearbyAislingsExludingSelf, response);
-            LastMovementChanged = DateTime.UtcNow;
-            LastPosition = new Position(savedX, savedY);
+            {
+                LastMovementChanged = DateTime.UtcNow;
+                LastPosition = new Position(savedX, savedY);
+            }
+
+
+            foreach (var obj in AislingsNearby())
+            {
+                ObjectComponent.UpdateClientObjects(obj);
+            }
 
             return true;
         }

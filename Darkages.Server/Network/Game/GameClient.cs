@@ -178,7 +178,6 @@ namespace Darkages.Network.Game
                 {
                     LastSelectedNodeIndex = node;
 
-                    MapOpen = false;
                     LastWarp = DateTime.UtcNow;
                     ShouldUpdateMap = true;
 
@@ -818,7 +817,6 @@ namespace Darkages.Network.Game
 
             if (Aisling.PortalSession != null)
                 if ((DateTime.UtcNow - Aisling.PortalSession.DateOpened).TotalSeconds > 10)
-                    if (LastSelectedNodeIndex > 0)
                         GameServer.HandleMapNodeSelection(this, LastSelectedNodeIndex);
 
             return this;
@@ -1288,6 +1286,7 @@ namespace Darkages.Network.Game
                     }
 
                     obj.ShowTo(Aisling);
+                    Aisling.ShowTo(obj);
                 }
 
             }
@@ -1388,6 +1387,7 @@ namespace Darkages.Network.Game
         /// </summary>
         public GameClient RefreshMap()
         {
+            MapOpen = false;
             ShouldUpdateMap = false;
 
             if (Aisling.CurrentMapId != Aisling.LastMapId)
@@ -1436,7 +1436,7 @@ namespace Darkages.Network.Game
         {
             Send(new ServerFormat04(Aisling));
             LastLocationSent = DateTime.UtcNow;
-
+            MapOpen = false;
 
 
 

@@ -555,14 +555,11 @@ namespace Darkages.Network.Game
                 return;
             }
 
-
             if (client.IsRefreshing && ServerContextBase.GlobalConfig.CancelWalkingIfRefreshing)
                 return;
 
-            CheckforAnyPhantoms(client);
-
             client.Aisling.Direction = format.Direction;
-            client.Aisling.Walk(); 
+            var success = client.Aisling.Walk(); 
 
             client.LastMovement = DateTime.UtcNow;
 
@@ -573,8 +570,16 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            CheckWalkOverPopups(client);
-            CheckWarpTransitions(client);
+            if (success)
+            {
+                CheckWalkOverPopups(client);
+                CheckWarpTransitions(client);
+            }
+            else
+            {
+                client.SendLocation();
+                client.UpdateDisplay();
+            }
         }
 
         private void CheckforAnyPhantoms(GameClient client)
@@ -2239,11 +2244,6 @@ namespace Darkages.Network.Game
                 ServerContextBase.Report(e);
                 client.Aisling.GoHome();
             }
-            finally
-            {
-                client.MapOpen = false;
-                client.SelectedNodeIndex = 0;
-            }
         }
 
         /// <summary>
@@ -2253,6 +2253,8 @@ namespace Darkages.Network.Game
         {
             if (client.Aisling == null || !client.Aisling.LoggedIn)
                 return;
+
+            client.SelectedNodeIndex = -1;
 
             var maxIdx = format.Index;
             if (maxIdx <= 0)

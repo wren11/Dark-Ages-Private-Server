@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -37,6 +38,53 @@ namespace Darkages
         public MapFlags Flags { get; set; }
     }
 
+    public class TileGrid
+    {
+        public ConcurrentDictionary<int, Sprite> Sprites = new ConcurrentDictionary<int, Sprite>();
+
+        public bool IsPassable(Sprite sprite, bool isAisling)
+        {
+            var length  = 0;
+            var objects = Sprites.Select(i => i.Value).ToArray();
+
+            foreach (var obj in objects)
+            {
+                if (obj.Serial == sprite.Serial)
+                    continue;
+
+                if (obj is Monster || obj is Aisling || obj is Mundane)
+                {
+                    length++;
+                }
+            }
+
+            if (isAisling)
+            {
+
+            }
+
+            return length == 0;
+        }
+
+        public void AddObject(Sprite obj)
+        {
+            if (Sprites.ContainsKey(obj.Serial))
+                RemoveObject(obj);
+
+            if (Sprites.TryAdd(obj.Serial, obj))
+            {
+
+            }
+        }
+
+        public void RemoveObject(Sprite obj)
+        {
+            if (Sprites.TryRemove(obj.Serial, out var removedSprite))
+            {
+
+            }
+        }
+    }
     public class Area : Map
     {
         [JsonIgnore] private static readonly byte[] Sotp = File.ReadAllBytes("sotp.dat");
@@ -50,6 +98,8 @@ namespace Darkages
         [JsonIgnore] public bool Ready;
 
         [JsonIgnore] public TileContent[,] Tile { get; set; }
+
+        [JsonIgnore] public TileGrid[,] ObjectGrid { get; set; }
 
         public bool ParseMapWalls(short lWall, short rWall)
         {
@@ -79,14 +129,7 @@ namespace Darkages
             }
 
 
-            return Tile[x, y] ==
-                             TileContent.Wall ||
-                             Tile[x, y] ==
-                             TileContent.Aisling ||
-                             Tile[x, y] ==
-                             TileContent.Monster ||
-                             Tile[x, y] ==
-                             TileContent.Mundane;
+            return Tile[x, y] == TileContent.Wall;
         }
 
         public byte[] GetRowData(int row)
@@ -273,6 +316,7 @@ namespace Darkages
             lock (ServerContext.syncLock)
             {
                 Tile = new TileContent[Cols, Rows];
+                ObjectGrid = new TileGrid[Cols, Rows];
 
                 var stream = new MemoryStream(Data);
                 var reader = new BinaryReader(stream);
@@ -281,6 +325,8 @@ namespace Darkages
                 {
                     for (var x = 0; x < Cols; x++)
                     {
+                        ObjectGrid[x,y] = new TileGrid();
+
                         reader.BaseStream.Seek(2, SeekOrigin.Current);
 
                         if (ParseMapWalls(reader.ReadInt16(), reader.ReadInt16()))

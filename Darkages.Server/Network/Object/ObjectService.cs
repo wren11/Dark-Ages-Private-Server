@@ -214,7 +214,7 @@ namespace Darkages.Network.Object
                             Console.WriteLine($"({obj.X},{obj.Y}) {obj.EntityType} was added.");
                         }
 
-                        obj.Map.Tile[obj.X, obj.Y] = obj.EntityType;
+                        obj.Map.ObjectGrid[obj.X, obj.Y].AddObject(obj);
                     }
                 }
             }
@@ -237,7 +237,7 @@ namespace Darkages.Network.Object
                         Console.WriteLine($"({obj.X},{obj.Y}) {obj.EntityType} was removed.");
                     }
 
-                    obj.Map.Tile[obj.X, obj.Y] = TileContent.None;
+                    obj.Map.ObjectGrid[obj.X, obj.Y].RemoveObject(obj);
                 }
             }
         }

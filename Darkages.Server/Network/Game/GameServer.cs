@@ -110,7 +110,6 @@ namespace Darkages.Network.Game
             catch (Exception e)
             {
                 ServerContextBase.Report(e);
-                throw;
             }
         }
 
@@ -129,7 +128,6 @@ namespace Darkages.Network.Game
             catch (Exception e)
             {
                 ServerContextBase.Report(e);
-                throw;
             }
         }
 
@@ -137,38 +135,47 @@ namespace Darkages.Network.Game
         {
             lock (Clients)
             {
-                foreach (var client in Clients)
+                try
                 {
-                    if (client?.Aisling == null)
-                        continue;
 
-                    if (!client.IsWarping && !client.InMapTransition && !client.MapOpen)
+
+                    foreach (var client in Clients)
                     {
-                        Pulse(elapsedTime, client);
-                    }
-                    else if (client.IsWarping && !client.InMapTransition)
-                    {
-                        if (client.CanSendLocation && !client.IsRefreshing &&
-                            client.Aisling.CurrentMapId == ServerContextBase.GlobalConfig.PVPMap)
-                            client.SendLocation();
-                    }
-                    else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
-                    {
-                        client.MapOpen = false;
+                        if (client?.Aisling == null)
+                            continue;
 
-                        if (client.InMapTransition && !client.MapOpen)
-                            if (DateTime.UtcNow - client.DateMapOpened > TimeSpan.FromSeconds(0.2))
-                            {
-                                client.MapOpen = true;
-                                client.InMapTransition = false;
-                            }
+                        if (!client.IsWarping && !client.InMapTransition && !client.MapOpen)
+                        {
+                            Pulse(elapsedTime, client);
+                        }
+                        else if (client.IsWarping && !client.InMapTransition)
+                        {
+                            if (client.CanSendLocation && !client.IsRefreshing &&
+                                client.Aisling.CurrentMapId == ServerContextBase.GlobalConfig.PVPMap)
+                                client.SendLocation();
+                        }
+                        else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
+                        {
+                            client.MapOpen = false;
+
+                            if (client.InMapTransition && !client.MapOpen)
+                                if (DateTime.UtcNow - client.DateMapOpened > TimeSpan.FromSeconds(0.2))
+                                {
+                                    client.MapOpen = true;
+                                    client.InMapTransition = false;
+                                }
+                        }
+
+                        if (!client.MapOpen)
+                            continue;
+
+                        if (!client.IsWarping && !client.IsRefreshing)
+                            Pulse(elapsedTime, client);
                     }
+                }
+                catch
+                {
 
-                    if (!client.MapOpen)
-                        continue;
-
-                    if (!client.IsWarping && !client.IsRefreshing)
-                        Pulse(elapsedTime, client);
                 }
             }
         }
@@ -176,7 +183,7 @@ namespace Darkages.Network.Game
         private void Pulse(TimeSpan elapsedTime, GameClient client)
         {
             client.Update(elapsedTime);
-            //ObjectComponent.UpdateClientObjects(client.Aisling);
+            ObjectComponent.UpdateClientObjects(client.Aisling);
         }
 
         public override void ClientDisconnected(GameClient client)

@@ -1,4 +1,10 @@
-﻿///************************************************************************
+﻿using Darkages.Common;
+using Darkages.Network.Game;
+using Darkages.Network.ServerFormats;
+using Darkages.Scripting;
+using Darkages.Systems.Loot;
+using Newtonsoft.Json;
+///************************************************************************
 //Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
@@ -17,19 +23,11 @@
 //*************************************************************************/
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Darkages.Common;
-using Darkages.Network.Game;
-using Darkages.Network.ServerFormats;
-using Darkages.Scripting;
-using Darkages.Systems.Loot;
-using Newtonsoft.Json;
 using static Darkages.Common.Generator;
-using static Darkages.ServerContext;
 using static Darkages.Types.Item;
 
 namespace Darkages.Types
