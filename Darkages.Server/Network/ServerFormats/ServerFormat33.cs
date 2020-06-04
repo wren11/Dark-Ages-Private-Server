@@ -49,9 +49,6 @@ namespace Darkages.Network.ServerFormats
             if (Aisling.Dead && !Client.Aisling.CanSeeGhosts())
                 return;
 
-            if (Client.Aisling.Serial != Aisling.Serial)
-                if (Aisling.Invisible && !Client.Aisling.CanSeeHidden())
-                    return;
 
             writer.Write((ushort) Aisling.XPos);
             writer.Write((ushort) Aisling.YPos);
@@ -94,7 +91,7 @@ namespace Darkages.Network.ServerFormats
                 writer.Write(Aisling.Shield);
                 writer.Write((byte) Aisling.Weapon);
                 writer.Write(Aisling.HairColor);
-                writer.Write(Aisling.BootColor);
+                writer.Write(0);
                 writer.Write((ushort) Aisling.HeadAccessory1);
                 writer.Write((byte) 0);
                 writer.Write((ushort) Aisling.HeadAccessory2);

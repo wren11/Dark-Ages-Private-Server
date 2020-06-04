@@ -295,6 +295,7 @@
     <Compile Include="Network\ServerFormats\ServerFormat02.cs" />
     <Compile Include="Network\ServerFormats\ServerFormat03.cs" />
     <Compile Include="Network\ServerFormats\ServerFormat04.cs" />
+    <Compile Include="Network\ServerFormats\ServerFormat06.cs" />
     <Compile Include="Network\ServerFormats\ServerFormat05.cs" />
     <Compile Include="Network\ServerFormats\ServerFormat07.cs" />
     <Compile Include="Network\ServerFormats\ServerFormat08.cs" />
@@ -401,6 +402,7 @@
     <Compile Include="Storage\locales\Scripts\Monsters\CommonMonster.cs" />
     <Compile Include="Storage\locales\Scripts\Monsters\TowerDefense.cs" />
     <Compile Include="Storage\locales\Scripts\Monsters\TrainingDummy.cs" />
+    <Compile Include="Storage\locales\Scripts\Monsters\UnfriendlyBoss.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\Aoife.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\ArenaMaster.cs" />
     <Compile Include="Storage\locales\Scripts\Mundanes\Banker.cs" />

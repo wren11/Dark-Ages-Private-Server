@@ -42,17 +42,17 @@ namespace Darkages.Types
                 aisling.Client.SendMessage(0x03, $"You've Received {amount} coins.");
                 aisling.Client.Send(new ServerFormat08(aisling, StatusFlags.StructC));
 
-                Remove<Money>();
+                Remove();
             }
         }
 
-        public static void Create(Sprite Parent, int ammount, Position location)
+        public static void Create(Sprite parent, int amount, Position location)
         {
-            if (Parent == null)
+            if (parent == null)
                 return;
 
             var money = new Money();
-            money.CalcAmount(ammount);
+            money.CalcAmount(amount);
 
             lock (Generator.Random)
             {
@@ -60,7 +60,7 @@ namespace Darkages.Types
             }
 
             money.AbandonedDate = DateTime.UtcNow;
-            money.CurrentMapId = Parent.CurrentMapId;
+            money.CurrentMapId = parent.CurrentMapId;
             money.XPos = location.X;
             money.YPos = location.Y;
 
@@ -69,7 +69,7 @@ namespace Darkages.Types
 
             if (mt > 0) money.Image = (ushort) (mt + 0x8000);
 
-            Parent.AddObject(money);
+            parent.AddObject(money);
         }
 
         private void CalcAmount(int amount)
@@ -80,13 +80,13 @@ namespace Darkages.Types
             if (Amount > 0 && Amount < 10)
                 Type = MoneySprites.SilverCoin;
 
-            if (Amount > 10 && Amount < 100)
+            if (Amount >= 10 && Amount < 100)
                 Type = MoneySprites.GoldCoin;
 
-            if (Amount > 100 && Amount < 1000)
+            if (Amount >= 100 && Amount < 1000)
                 Type = MoneySprites.SilverPile;
 
-            if (Amount > 1000)
+            if (Amount >= 1000)
                 Type = MoneySprites.GoldPile;
         }
     }

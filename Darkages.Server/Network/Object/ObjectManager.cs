@@ -53,12 +53,6 @@ namespace Darkages.Network.Object
             return ServerContextBase.Game?.ObjectFactory.Query(map, p);
         }
 
-        /// <summary>
-        /// GetObjectByName
-        /// </summary>
-        /// <param name="name">Aisling Name or Template Name</param>
-        /// <param name="map">optional,only get objects from your current map instance.</param>
-        /// <returns></returns>
         public T GetObjectByName<T>(string name, Area map = null)
             where T : Sprite, new()
         {

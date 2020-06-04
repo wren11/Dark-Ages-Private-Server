@@ -25,7 +25,7 @@ namespace Darkages.Scripting
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class ScriptAttribute : Attribute
     {
-        public ScriptAttribute(string name, string author = "")
+        public ScriptAttribute(string name, string author = "", string description = "")
         {
             Name = name;
             Author = author;

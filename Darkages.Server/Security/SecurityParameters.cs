@@ -29,11 +29,11 @@ namespace Darkages.Security
     {
         public static readonly SecurityParameters Default
             = new SecurityParameters(0,
-                Encoding.ASCII.GetBytes(ServerContextBase.GlobalConfig?.DefaultKey ?? "NexonInc."));
+                Encoding.ASCII.GetBytes("NexonInc."));
 
         public SecurityParameters()
         {
-            Seed = (byte) Generator.Random.Next(0, 9);
+            Seed = (byte)Generator.Random.Next(0, 9);
             Salt = Generator.GenerateString(9).ToByteArray();
         }
 

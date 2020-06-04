@@ -135,8 +135,8 @@ namespace Darkages.Network.Object
             {
                 if (!_spriteCollections.ContainsKey(map.ID))
                 {
-                    var _cachemap = ServerContextBase.GlobalMapCache.Select(i => i.Value)
-                        .Where(n => n.Name.Equals(map.Name) && n.ID != map.ID).FirstOrDefault();
+                    var _cachemap = ServerContextBase.GlobalMapCache
+                        .Select(i => i.Value).FirstOrDefault(n => n.Name.Equals(map.Name) && n.ID != map.ID);
 
                     if (_cachemap != null) map = _cachemap;
                 }
@@ -168,8 +168,8 @@ namespace Darkages.Network.Object
             {
                 if (!_spriteCollections.ContainsKey(map.ID))
                 {
-                    var _cachemap = ServerContextBase.GlobalMapCache.Select(i => i.Value)
-                        .Where(n => n.Name.Equals(map.Name) && n.ID != map.ID).FirstOrDefault();
+                    var _cachemap = ServerContextBase.GlobalMapCache
+                        .Select(i => i.Value).FirstOrDefault(n => n.Name.Equals(map.Name) && n.ID != map.ID);
 
                     if (_cachemap != null) map = _cachemap;
                 }
@@ -205,18 +205,40 @@ namespace Darkages.Network.Object
                 var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
                 objCollection.Add(obj);
 
-                obj.Map.Update(obj.XPos, obj.YPos);
+                lock (ServerContext.syncLock)
+                {
+                    if (obj.Map != null)
+                    {
+                        if (ServerContextBase.GlobalConfig.LogObjectsAdded)
+                        {
+                            Console.WriteLine($"({obj.X},{obj.Y}) {obj.EntityType} was added.");
+                        }
+
+                        obj.Map.ObjectGrid[obj.X, obj.Y].AddObject(obj);
+                    }
+                }
             }
         }
 
         public void RemoveGameObject<T>(T obj) where T : Sprite
         {
-            if (_spriteCollections.ContainsKey(obj.CurrentMapId))
-            {
-                var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
-                objCollection.Delete(obj);
+            if (!_spriteCollections.ContainsKey(obj.CurrentMapId))
+                return;
 
-                obj.Map.Update(obj.XPos, obj.YPos);
+            var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
+            objCollection.Delete(obj);
+
+            lock (ServerContext.syncLock)
+            {
+                if (obj.Map != null)
+                {
+                    if (ServerContextBase.GlobalConfig.LogObjectsRemoved)
+                    {
+                        Console.WriteLine($"({obj.X},{obj.Y}) {obj.EntityType} was removed.");
+                    }
+
+                    obj.Map.ObjectGrid[obj.X, obj.Y].RemoveObject(obj);
+                }
             }
         }
     }

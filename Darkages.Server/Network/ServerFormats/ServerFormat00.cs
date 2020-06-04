@@ -40,7 +40,7 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write(Type);
 
-            if (Type == 0)
+            //if (Type == 0)
             {
                 writer.Write(Hash);
                 writer.Write(Parameters);

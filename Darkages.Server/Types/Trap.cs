@@ -23,24 +23,38 @@ namespace Darkages.Types
         public int Radius { get; set; }
 
         [JsonIgnore] public Sprite Owner { get; set; }
-
         public Action<Sprite, Sprite> Tripped { get; set; }
+        public Item TrapItem { get; private set; }
 
-        public static bool Set(Sprite obj, int _duration, int _radius = 1, Action<Sprite, Sprite> cb = null)
+        //0x‭81F4‬
+
+        public static bool Set(Sprite obj, int duration, int radius = 1, Action<Sprite, Sprite> cb = null)
         {
+            var itemTemplate = new ItemTemplate
+            {
+                Name  = $"A Hidden Trap",
+                Image = 500,
+                DisplayImage = 0x8000 + 500,
+                Flags = ItemFlags.Trap,
+            };
+
+            var ts = Item.Create(obj, itemTemplate, true);
+            ts.Release(obj, obj.Position);
+
             lock (Generator.Random)
             {
                 var id = Generator.GenerateNumber();
 
                 return Traps.TryAdd(id, new Trap
                 {
-                    Radius = _radius,
-                    Duration = _duration,
+                    Radius = radius,
+                    Duration = duration,
                     CurrentMapId = obj.CurrentMapId,
-                    Location = new Position(obj.LastPosition.X, obj.LastPosition.Y),
+                    Location = new Position(obj.X, obj.Y),
                     Owner = obj,
                     Tripped = cb,
-                    Serial = id
+                    Serial = id,
+                    TrapItem = ts,
                 });
             }
         }
@@ -68,7 +82,9 @@ namespace Darkages.Types
             {
                 if (Traps.TryRemove(traptoRemove.Serial, out var trap))
                 {
+                    trap.TrapItem?.Remove();
                     traptoRemove = null;
+
                     return true;
                 }
             }

@@ -1124,7 +1124,6 @@ namespace Darkages
         /// <param name="delete">if set to <c>true</c> [delete].</param>
         public void Remove(bool update = false, bool delete = true)
         {
-            Map?.Update(XPos, YPos);
 
             if (update)
                 Show(Scope.NearbyAislingsExludingSelf, new ServerFormat0E(Serial));
@@ -1250,6 +1249,9 @@ namespace Darkages
         /// </summary>
         public void CancelExchange()
         {
+            if (Exchange == null || Exchange.Trader == null)
+                return;
+
             var trader = Exchange.Trader;
 
             var exchangeA = Exchange;

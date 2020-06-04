@@ -168,16 +168,10 @@ namespace Darkages.Types
 
         public void OnDeath()
         {
-            Map.Update(XPos, YPos);
-
             RemoveActiveTargets();
 
             if (CurrentHp == 0)
-                new TaskFactory().StartNew(() =>
-                {
-                    Thread.Sleep(1000);
-                    Remove<Mundane>();
-                });
+                CurrentHp = Template.MaximumHp;
         }
 
         private void RemoveActiveTargets()

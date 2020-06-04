@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Darkages.Types;
+using Mono.CSharp;
 
 namespace Darkages.Network.Game
 {
@@ -39,7 +41,7 @@ namespace Darkages.Network.Game
 
         public GameServer(int capacity) : base(capacity)
         {
-            _heavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
+            _heavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 60);
 
             InitializeGameServer();
         }
@@ -50,7 +52,7 @@ namespace Darkages.Network.Game
                 client.Save();
         }
 
-        private async void MainServerLoop()
+        private void MainServerLoop()
         {
             _lastHeavyUpdate = DateTime.UtcNow;
 
@@ -60,9 +62,9 @@ namespace Darkages.Network.Game
 
                 try
                 {
-                    await UpdateClients(elapsedTime);
-                    await UpdateComponents(elapsedTime);
-                    await UpdateAreas(elapsedTime);
+                    UpdateClients(elapsedTime);
+                    UpdateComponents(elapsedTime);
+                    UpdateAreas(elapsedTime);
                 }
                 catch (Exception e)
                 {
@@ -70,7 +72,7 @@ namespace Darkages.Network.Game
                 }
 
                 _lastHeavyUpdate = DateTime.UtcNow;
-                await Task.Delay(_heavyUpdateSpan);
+                Thread.Sleep(_heavyUpdateSpan);
             }
         }
 
@@ -95,81 +97,92 @@ namespace Darkages.Network.Game
         }
 
 
-        private async Task UpdateComponents(TimeSpan elapsedTime)
+        private void UpdateComponents(TimeSpan elapsedTime)
         {
             try
             {
-                foreach (var component in Components.Values)
-                    component.Update(elapsedTime);
+                lock (Components)
+                {
+                    foreach (var component in Components.Values)
+                        component.Update(elapsedTime);
+                }
             }
             catch (Exception e)
             {
-                await Task.FromException(e);
                 ServerContextBase.Report(e);
-                throw;
             }
-
-            await Task.CompletedTask;
         }
 
-        private async Task UpdateAreas(TimeSpan elapsedTime)
+        private void UpdateAreas(TimeSpan elapsedTime)
         {
             var values = ServerContextBase.GlobalMapCache.Select(i => i.Value).ToArray();
 
             try
             {
-                foreach (var area in values)
-                    area.Update(elapsedTime);
+                lock (values)
+                {
+                    foreach (var area in values)
+                        area.Update(elapsedTime);
+                }
             }
             catch (Exception e)
             {
-                await Task.FromException(e);
                 ServerContextBase.Report(e);
-                throw;
             }
-
-            await Task.CompletedTask;
         }
 
-        public async Task UpdateClients(TimeSpan elapsedTime)
+        public void UpdateClients(TimeSpan elapsedTime)
         {
-            foreach (var client in Clients)
+            lock (Clients)
             {
-                if (client?.Aisling == null)
-                    continue;
+                try
+                {
 
-                if (!client.IsWarping && !client.InMapTransition && !client.MapOpen)
-                {
-                    await Pulse(elapsedTime, client);
-                }
-                else if (client.IsWarping && !client.InMapTransition)
-                {
-                    if (client.CanSendLocation && !client.IsRefreshing &&
-                        client.Aisling.CurrentMapId == ServerContextBase.GlobalConfig.PVPMap)
-                        client.SendLocation();
-                }
-                else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
-                {
-                    client.MapOpen = false;
 
-                    if (client.InMapTransition && !client.MapOpen)
-                        if (DateTime.UtcNow - client.DateMapOpened > TimeSpan.FromSeconds(0.2))
+                    foreach (var client in Clients)
+                    {
+                        if (client?.Aisling == null)
+                            continue;
+
+                        if (!client.IsWarping && !client.InMapTransition && !client.MapOpen)
                         {
-                            client.MapOpen = true;
-                            client.InMapTransition = false;
+                            Pulse(elapsedTime, client);
                         }
-                }
+                        else if (client.IsWarping && !client.InMapTransition)
+                        {
+                            if (client.CanSendLocation && !client.IsRefreshing &&
+                                client.Aisling.CurrentMapId == ServerContextBase.GlobalConfig.PVPMap)
+                                client.SendLocation();
+                        }
+                        else if (!client.MapOpen && !client.IsWarping && client.InMapTransition)
+                        {
+                            client.MapOpen = false;
 
-                if (!client.MapOpen) continue;
-                if (!client.IsWarping && !client.IsRefreshing)
-                    await Pulse(elapsedTime, client);
+                            if (client.InMapTransition && !client.MapOpen)
+                                if (DateTime.UtcNow - client.DateMapOpened > TimeSpan.FromSeconds(0.2))
+                                {
+                                    client.MapOpen = true;
+                                    client.InMapTransition = false;
+                                }
+                        }
+
+                        if (!client.MapOpen)
+                            continue;
+
+                        if (!client.IsWarping && !client.IsRefreshing)
+                            Pulse(elapsedTime, client);
+                    }
+                }
+                catch
+                {
+
+                }
             }
         }
 
-        private async Task Pulse(TimeSpan elapsedTime, GameClient client)
+        private void Pulse(TimeSpan elapsedTime, GameClient client)
         {
-            await client.Update(elapsedTime);
-
+            client.Update(elapsedTime);
             ObjectComponent.UpdateClientObjects(client.Aisling);
         }
 
@@ -180,10 +193,19 @@ namespace Darkages.Network.Game
 
             try
             {
-                if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2) client.Save();
+                if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
+                    client.Save();
 
-                client.Aisling.LoggedIn = false;
-                client.Aisling.Remove(true);
+                Party.RemoveFromParty(client.Aisling.GroupParty, client.Aisling,
+                    client.Aisling.GroupParty.Creator.Serial == client.Aisling.Serial);
+
+                client.Aisling.ActiveReactor = null;
+                client.Aisling.ActiveSequence = null;
+                client.CloseDialog();
+                client.DlgSession = null;
+                client.MenuInterpter = null;
+                client.Aisling.CancelExchange();
+                client.Aisling.Remove(true, true);
             }
             catch (Exception e)
             {

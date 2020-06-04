@@ -386,7 +386,7 @@ namespace Darkages
         /// <summary>
         /// This setting should only be used for debugging purposes.
         /// </summary>
-        [JsonProperty] public bool ErrorReporting = true;
+        [JsonProperty] public bool ErrorReporting = false;
 
 
         [Description("Death Handling Message on Death")] [JsonProperty]
@@ -400,6 +400,26 @@ namespace Darkages
 
         [Description("This needs to be set, as Arena has unique warp conditions.")] [JsonProperty]
         public int PVPMap = 509;
+
+        [Description("Enable this to auto login to the game without logging in normally. using the GameMaster.")]
+        [JsonProperty]
+        public bool DevMode = false;
+
+        [Description("Note, this cannot be enabled along with dev mode. This allows for server selection, notification during login.")]
+        [JsonProperty] public bool UseLobby = false;
+
+        [Description("Note, Currently only 718 is supported. Download 718 Here: https://drive.google.com/file/d/1EbIf7AzQLJaUrR9Kd3wmZDQWM7qT0-hR/view?usp=sharing")]
+        [JsonProperty] public int ClientVersion = 718;
+
+        /// <summary>
+        /// Writes to the Console Objects that are added. For Debugging Purposes Only
+        /// </summary>
+        [JsonProperty] public bool LogObjectsAdded = false;
+
+        /// <summary>
+        /// Writes to the Console Objects that are removed. For Debugging Purposes Only
+        /// </summary>
+        [JsonProperty] public bool LogObjectsRemoved = false;
 
         public override string ToString()
         {

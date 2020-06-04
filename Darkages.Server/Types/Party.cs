@@ -176,6 +176,7 @@ namespace Darkages.Types
             return false;
         }
 
+
         public static void WithDrawFromParty(GameClient client)
         {
             if (client == null || client.Aisling == null)

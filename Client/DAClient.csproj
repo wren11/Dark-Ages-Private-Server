@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="ClientFormats\Assail.cs" />
     <Compile Include="ClientFormats\EncryptionReceived.cs" />
     <Compile Include="ClientFormats\ClientVersion.cs" />
     <Compile Include="ClientFormats\Login.cs" />

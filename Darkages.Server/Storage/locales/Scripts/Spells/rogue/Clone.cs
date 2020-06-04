@@ -53,22 +53,22 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
                     var posC = new Position(obj.XPos, obj.YPos - 1);
                     var posD = new Position(obj.XPos, obj.YPos + 1);
 
-                    if (obj.Map.IsWall(obj, posA.X, posA.Y))
+                    if (obj.Map.IsWall(posA.X, posA.Y))
                     {
                         obj.XPos = posA.X;
                         obj.YPos = posA.Y;
                     }
-                    else if (obj.Map.IsWall(obj, posB.X, posB.Y))
+                    else if (obj.Map.IsWall(posB.X, posB.Y))
                     {
                         obj.XPos = posB.X;
                         obj.YPos = posB.Y;
                     }
-                    else if (obj.Map.IsWall(obj, posC.X, posC.Y))
+                    else if (obj.Map.IsWall(posC.X, posC.Y))
                     {
                         obj.XPos = posC.X;
                         obj.YPos = posC.Y;
                     }
-                    else if (obj.Map.IsWall(obj, posD.X, posD.Y))
+                    else if (obj.Map.IsWall(posD.X, posD.Y))
                     {
                         obj.XPos = posD.X;
                         obj.YPos = posD.Y;

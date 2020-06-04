@@ -3,7 +3,9 @@ using Darkages.Network.ServerFormats;
 using Darkages.Security;
 using System;
 using System.ComponentModel;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace Darkages.Network
 {
@@ -47,11 +49,8 @@ namespace Darkages.Network
             get => _selectedNodeIndex;
             set
             {
-                if (value != _selectedNodeIndex)
-                {
-                    _selectedNodeIndex = value;
-                    NotifyPropertyChanged("SelectedNodeIndex");
-                }
+                _selectedNodeIndex = value;
+                NotifyPropertyChanged("SelectedNodeIndex");
             }
         }
 
@@ -62,11 +61,9 @@ namespace Darkages.Network
             get => _inMapTransition;
             set
             {
-                if (value != _inMapTransition)
-                {
-                    _inMapTransition = value;
-                    NotifyPropertyChanged("InMapTransition");
-                }
+
+                _inMapTransition = value;
+                NotifyPropertyChanged("InMapTransition");
             }
         }
 
@@ -86,16 +83,14 @@ namespace Darkages.Network
             {
                 Encryption.Transform(packet);
 
-                switch (format.Command)
+                if (format.Command == 0x39 || format.Command == 0x3A)
                 {
-                    case 0x39:
-                    case 0x3A:
-                        TransFormDialog(packet);
-                        Reader.Position = 6;
-                        break;
-                    default:
-                        Reader.Position = 0;
-                        break;
+                    TransFormDialog(packet);
+                    Reader.Position = 6;
+                }
+                else
+                {
+                    Reader.Position = 0;
                 }
             }
             else
@@ -139,6 +134,29 @@ namespace Darkages.Network
 
         public NetworkClient<TClient> Send(NetworkFormat format)
         {
+            if (format is ServerFormat2E)
+            {
+                Writer.Position = 0;
+                Writer.Write(format.Command);
+
+                if (format.Secured)
+                    Writer.Write(Ordinal++);
+
+                format.Serialize(Writer);
+
+                var packet = Writer.ToPacket();
+
+                if (packet == null)
+                    return this;
+
+                if (format.Secured)
+                    Encryption.Transform(packet);
+
+                var array = packet.ToArray();
+                ServerSocket.Send(array, array.Length, SocketFlags.None);
+                return this;
+            }
+
             FlushAndSend(format);
             return this;
         }
@@ -173,10 +191,7 @@ namespace Darkages.Network
             }
         }
 
-        private byte P(NetworkPacket value)
-        {
-            return (byte) (value.Data[1] ^ (byte) (value.Data[0] - 0x2D));
-        }
+        private protected static byte P(NetworkPacket value) => (byte) (value.Data[1] ^ (byte) (value.Data[0] - 0x2D));
 
         private void TransFormDialog(NetworkPacket value)
         {

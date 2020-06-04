@@ -178,7 +178,6 @@ namespace Darkages.Network.Game
                 {
                     LastSelectedNodeIndex = node;
 
-                    MapOpen = false;
                     LastWarp = DateTime.UtcNow;
                     ShouldUpdateMap = true;
 
@@ -474,29 +473,7 @@ namespace Darkages.Network.Game
                         : string.Format(CultureInfo.CurrentCulture,
                             "Nightmarish visions of your own death repel you. ({0} Req)", warps.LevelRequired));
 
-
-                    //Teleport the user away the warp.
-                    var nearestActivation =
-                        warps.Activations.OrderBy(i => i.Location - Aisling.Position).FirstOrDefault();
-
-                    if (nearestActivation != null)
-                    {
-                        LeaveArea(true);
-
-                        var nearby = nearestActivation.Location.SurroundingContent(Aisling.Map);
-
-                        foreach (var near in nearby)
-                            if (near.Content != TileContent.Wall && near.Content != TileContent.Warp)
-                            {
-                                Aisling.XPos = near.Position.X;
-                                Aisling.YPos = near.Position.Y;
-                                break;
-                            }
-
-
-                        EnterArea();
-                    }
-
+                    //TODO: move player somewhere near the warp. but not ontop of it.
                     return;
                 }
 
@@ -676,7 +653,7 @@ namespace Darkages.Network.Game
         ///     Updates the specified elapsed time.
         /// </summary>
         /// <param name="elapsedTime">The elapsed time.</param>
-        public async Task Update(TimeSpan elapsedTime)
+        public void Update(TimeSpan elapsedTime)
         {
             #region Sanity Checks
 
@@ -691,25 +668,32 @@ namespace Darkages.Network.Game
 
             #endregion
 
-            #region Warping Sanity Check
-
             var distance = Aisling.Position.DistanceFrom(Aisling.LastPosition.X, Aisling.LastPosition.Y);
 
             if (distance > 1 && !MapOpen && !IsWarping && (DateTime.UtcNow - LastMapUpdated).TotalMilliseconds > 2000)
             {
                 LastWarp = DateTime.UtcNow;
-                Aisling.LastPosition.X = (ushort) Aisling.XPos;
-                Aisling.LastPosition.Y = (ushort) Aisling.YPos;
+                Aisling.LastPosition.X = (ushort)Aisling.XPos;
+                Aisling.LastPosition.Y = (ushort)Aisling.YPos;
                 LastLocationSent = DateTime.UtcNow;
                 Refresh();
                 return;
             }
 
-            #endregion
+            if (Aisling.TrapsAreNearby())
+            {
+                var nextTrap = Trap.Traps.Select(i => i.Value)
+                    .FirstOrDefault(i => i.Owner.Serial != Aisling.Serial &&
+                                         Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill)
+                                         && i.Location.X == Aisling.X && i.Location.Y == Aisling.Y);
+
+                if (nextTrap != null)
+                {
+                    Trap.Activate(nextTrap, Aisling);
+                }
+            }
 
             DoUpdate(elapsedTime);
-
-            await Task.CompletedTask;
         }
 
         public GameClient DoUpdate(TimeSpan elapsedTime)
@@ -833,7 +817,6 @@ namespace Darkages.Network.Game
 
             if (Aisling.PortalSession != null)
                 if ((DateTime.UtcNow - Aisling.PortalSession.DateOpened).TotalSeconds > 10)
-                    if (LastSelectedNodeIndex > 0)
                         GameServer.HandleMapNodeSelection(this, LastSelectedNodeIndex);
 
             return this;
@@ -873,12 +856,12 @@ namespace Darkages.Network.Game
                 try
                 {
                     return InitSpellBar()
-                        .LoadInventory()
-                        .LoadSkillBook()
-                        .LoadSpellBook()
-                        .LoadEquipment()
-                        .SendProfileUpdate()
-                        .SendStats(StatusFlags.All);
+                    .LoadInventory()
+                    .LoadSkillBook()
+                    .LoadSpellBook()
+                    .LoadEquipment()
+                    .SendProfileUpdate()
+                    .SendStats(StatusFlags.All);
                 }
                 catch (NullReferenceException e)
                 {
@@ -1286,7 +1269,28 @@ namespace Darkages.Network.Game
                 return this;
             }
 
-            Aisling.Show(Scope.NearbyAislingsExludingSelf, response);
+
+            var nearbyAislings = Aisling.AislingsNearby();
+
+            if (nearbyAislings.Any())
+            {
+
+                foreach (var obj in nearbyAislings)
+                {
+                    if (obj.Serial == Aisling.Serial)
+                        continue;
+
+                    if (obj.Invisible && !Aisling.CanSeeHidden())
+                    {
+                        continue;
+                    }
+
+                    obj.ShowTo(Aisling);
+                    Aisling.ShowTo(obj);
+                }
+
+            }
+
 
             return this;
         }
@@ -1303,14 +1307,12 @@ namespace Darkages.Network.Game
             return this;
         }
 
-        /// <summary>
-        ///     Leaves the area.
-        /// </summary>
-        /// <param name="update">if set to <c>true</c> [update].</param>
-        /// <param name="delete">if set to <c>true</c> [delete].</param>
         public GameClient LeaveArea(bool update = false, bool delete = false)
         {
-            if (Aisling.LastMapId == short.MaxValue) Aisling.LastMapId = Aisling.CurrentMapId;
+            if (Aisling.LastMapId == short.MaxValue)
+            {
+                Aisling.LastMapId = Aisling.CurrentMapId;
+            }
 
             Aisling.Remove(update, delete);
 
@@ -1385,6 +1387,7 @@ namespace Darkages.Network.Game
         /// </summary>
         public GameClient RefreshMap()
         {
+            MapOpen = false;
             ShouldUpdateMap = false;
 
             if (Aisling.CurrentMapId != Aisling.LastMapId)
@@ -1433,6 +1436,8 @@ namespace Darkages.Network.Game
         {
             Send(new ServerFormat04(Aisling));
             LastLocationSent = DateTime.UtcNow;
+            MapOpen = false;
+
 
 
             return CloseDialog();
@@ -1772,8 +1777,6 @@ namespace Darkages.Network.Game
             Aisling.YPos = position.Y;
 
             Refresh();
-
-            Aisling.Map.Update(Aisling.XPos, Aisling.YPos);
         }
 
         /// <summary>

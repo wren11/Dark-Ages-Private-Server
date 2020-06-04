@@ -1,5 +1,4 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
+﻿//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
 //This program is free software: you can redistribute it and/or modify
@@ -16,16 +15,23 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
-using System;
-using System.Net;
-using System.Text;
-using Darkages.Network.ClientFormats;
-using Darkages.Network.ServerFormats;
-using Darkages.Storage;
-using Darkages.Types;
+// ReSharper disable RedundantAssignment
+// ReSharper disable IdentifierTypo
+
+using System.Linq;
+using System.Web.ModelBinding;
+using Newtonsoft.Json;
 
 namespace Darkages.Network.Login
 {
+    using ClientFormats;
+    using ServerFormats;
+    using Storage;
+    using Types;
+    using System;
+    using System.Net;
+    using System.Text;
+
     public class LoginServer : NetworkServer<LoginClient>
     {
         public LoginServer(int capacity)
@@ -44,13 +50,24 @@ namespace Darkages.Network.Login
         /// </summary>
         protected override void Format00Handler(LoginClient client, ClientFormat00 format)
         {
-            if (format.Version == 718)
-                client.Send(new ServerFormat00
-                {
-                    Type = 0x00,
-                    Hash = MServerTable.Hash,
-                    Parameters = client.Encryption.Parameters
-                });
+            if (ServerContextBase.GlobalConfig.UseLobby)
+            {
+                if (format.Version == ServerContextBase.GlobalConfig.ClientVersion)
+                    client.Send(new ServerFormat00
+                    {
+                        Type = 0x00,
+                        Hash = MServerTable.Hash,
+                        Parameters = client.Encryption.Parameters
+                    });
+            }
+
+            if (ServerContextBase.GlobalConfig.DevMode)
+            {
+                var aisling = StorageManager.AislingBucket.Load(ServerContextBase.GlobalConfig.GameMaster);
+
+                if (aisling != null)
+                    LoginAsAisling(client, aisling);
+            }
         }
 
         /// <summary>
@@ -61,9 +78,9 @@ namespace Darkages.Network.Login
             //save information to memory.
             client.CreateInfo = format;
 
-            var _aisling = StorageManager.AislingBucket.Load(format.AislingUsername);
+            var aisling = StorageManager.AislingBucket.Load(format.AislingUsername);
 
-            if (_aisling == null)
+            if (aisling == null)
             {
                 client.SendMessageBox(0x00, "\0");
             }
@@ -71,7 +88,6 @@ namespace Darkages.Network.Login
             {
                 client.SendMessageBox(0x03, "Character Already Exists.\0");
                 client.CreateInfo = null;
-                return;
             }
         }
 
@@ -105,15 +121,15 @@ namespace Darkages.Network.Login
         /// </summary>
         protected override void Format03Handler(LoginClient client, ClientFormat03 format)
         {
-            Aisling _aisling = null;
+            Aisling aisling = null;
 
             try
             {
-                _aisling = StorageManager.AislingBucket.Load(format.Username);
+                aisling = StorageManager.AislingBucket.Load(format.Username);
 
-                if (_aisling != null)
+                if (aisling != null)
                 {
-                    if (_aisling.Password != format.Password)
+                    if (aisling.Password != format.Password)
                     {
                         client.SendMessageBox(0x02, "Sorry, Incorrect Password.");
                         return;
@@ -139,34 +155,36 @@ namespace Darkages.Network.Login
             if (!ServerContextBase.GlobalConfig.MultiUserLogin)
             {
                 var aislings = GetObjects<Aisling>(null,
-                    i => i.Username.ToLower() == format.Username.ToLower()
+                    i => string.Equals(i.Username, format.Username, StringComparison.CurrentCultureIgnoreCase)
                          && format.Password == i.Password);
 
-                foreach (var aisling in aislings)
-                    aisling.Client.Server.ClientDisconnected(aisling.Client);
+                foreach (var obj in aislings)
+                    obj.Client.Server.ClientDisconnected(aisling.Client);
             }
 
-            LoginAsAisling(client, _aisling);
+            LoginAsAisling(client, aisling);
         }
 
-        public void LoginAsAisling(LoginClient client, Aisling _aisling)
+        public void LoginAsAisling(LoginClient client, Aisling aisling)
         {
-            if (_aisling != null)
+            if (aisling != null)
             {
+                var map = ServerContext.GlobalMapCache.FirstOrDefault().Value;
+
                 var redirect = new Redirect
                 {
                     Serial = Convert.ToString(client.Serial),
-                    Salt = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
-                    Seed = Convert.ToString(client.Encryption.Parameters.Seed),
-                    Name = _aisling.Username
+                    Salt   = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
+                    Seed   = Convert.ToString(client.Encryption.Parameters.Seed),
+                    Name   = JsonConvert.SerializeObject(new { player = aisling.Username, map } ),
                 };
 
-                if (_aisling.Username.Equals(ServerContextBase.GlobalConfig.GameMaster,
-                    StringComparison.OrdinalIgnoreCase)) _aisling.GameMaster = true;
+                if (aisling.Username.Equals(ServerContextBase.GlobalConfig.GameMaster,
+                    StringComparison.OrdinalIgnoreCase)) aisling.GameMaster = true;
 
-                _aisling.Redirect = redirect;
+                aisling.Redirect = redirect;
 
-                StorageManager.AislingBucket.Save(_aisling);
+                StorageManager.AislingBucket.Save(aisling);
 
                 client.SendMessageBox(0x00, "\0");
                 client.Send(new ServerFormat03
@@ -203,14 +221,15 @@ namespace Darkages.Network.Login
         /// </summary>
         protected override void Format26Handler(LoginClient client, ClientFormat26 format)
         {
-            var _aisling = StorageManager.AislingBucket.Load(format.Username);
-            if (_aisling == null)
+            var aisling = StorageManager.AislingBucket.Load(format.Username);
+
+            if (aisling == null)
             {
                 client.SendMessageBox(0x02, "Incorrect Information provided.");
                 return;
             }
 
-            if (_aisling.Password != format.Password)
+            if (aisling.Password != format.Password)
             {
                 client.SendMessageBox(0x02, "Incorrect Information provided.");
                 return;
@@ -223,9 +242,9 @@ namespace Darkages.Network.Login
             }
 
             //Update new password.
-            _aisling.Password = format.NewPassword;
+            aisling.Password = format.NewPassword;
             //Update and Store Information.
-            StorageManager.AislingBucket.Save(_aisling);
+            StorageManager.AislingBucket.Save(aisling);
 
             client.SendMessageBox(0x00, "\0");
         }
@@ -238,10 +257,6 @@ namespace Darkages.Network.Login
                 Size = Notification.Size,
                 Data = Notification.Data
             });
-        }
-
-        protected override void Format66Handler(LoginClient client, ClientFormat66 format)
-        {
         }
 
         protected override void Format57Handler(LoginClient client, ClientFormat57 format)
@@ -295,11 +310,6 @@ namespace Darkages.Network.Login
                 {
                     Type = 0x01
                 });
-        }
-
-        public override bool AddClient(LoginClient client)
-        {
-            return base.AddClient(client);
         }
 
         public override void ClientConnected(LoginClient client)

@@ -37,54 +37,53 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     i => i.Serial != sprite.Serial && i.CurrentMapId == sprite.CurrentMapId)
                 .OrderBy(i => i.Position.DistanceFrom(sprite.Position)).FirstOrDefault();
 
-            if (sprite is Aisling)
-            {
-                var client = (sprite as Aisling).Client;
+            //if (sprite is Aisling)
+            //{
+            //    var client = (sprite as Aisling).Client;
 
-                if (nearest != null)
-                {
-                    var prev = client.Aisling.Position;
-                    Position targetPosition = null;
+            //    if (nearest != null)
+            //    {
+            //        var prev = client.Aisling.Position;
+            //        Position targetPosition = null;
 
-                    var blocks = nearest.Position.SurroundingContent(client.Aisling.Map);
+            //        var blocks = nearest.Position.SurroundingContent(client.Aisling.Map);
 
-                    if (blocks.Length > 0)
-                    {
-                        var selections = blocks.Where(i => i.Content == TileContent.Item
-                                                           || i.Content == TileContent.Money
-                                                           || i.Content == TileContent.None).ToArray();
+            //        if (blocks.Length > 0)
+            //        {
+            //            var selections = blocks.Where(i => i.Content == TileContent.Item
+            //                                               || i.Content == TileContent.Money
+            //                                               || i.Content == TileContent.None).ToArray();
 
-                        var selection = selections
-                            .OrderByDescending(i => i.Position.DistanceFrom(client.Aisling.Position)).FirstOrDefault();
-                        if (selections.Length == 0 || selection == null)
-                        {
-                            client.SendMessageBox(0x02, "you can't do that.");
-                            return;
-                        }
+            //            var selection = selections
+            //                .OrderByDescending(i => i.Position.DistanceFrom(client.Aisling.Position)).FirstOrDefault();
+            //            if (selections.Length == 0 || selection == null)
+            //            {
+            //                client.SendMessageBox(0x02, "you can't do that.");
+            //                return;
+            //            }
 
-                        targetPosition = selection.Position;
-                    }
+            //            targetPosition = selection.Position;
+            //        }
 
-                    if (targetPosition != null)
-                    {
-                        client.Aisling.XPos = targetPosition.X;
-                        client.Aisling.YPos = targetPosition.Y;
-
-                        client.Aisling.Map.Update(prev.X, prev.Y);
-
-                        if (!client.Aisling.Facing(nearest.XPos, nearest.YPos, out var direction))
-                        {
-                            client.Aisling.Direction = (byte) direction;
-
-                            if (client.Aisling.Position.IsNextTo(nearest.Position))
-                                client.Aisling.Turn();
-                        }
+            //        if (targetPosition != null)
+            //        {
+            //            client.Aisling.XPos = targetPosition.X;
+            //            client.Aisling.YPos = targetPosition.Y;
 
 
-                        client.Refresh();
-                    }
-                }
-            }
+            //            if (!client.Aisling.Facing(nearest.XPos, nearest.YPos, out var direction))
+            //            {
+            //                client.Aisling.Direction = (byte) direction;
+
+            //                if (client.Aisling.Position.IsNextTo(nearest.Position))
+            //                    client.Aisling.Turn();
+            //            }
+
+
+            //            client.Refresh();
+            //        }
+            //    }
+           // }
 
             OnSuccess(sprite);
         }

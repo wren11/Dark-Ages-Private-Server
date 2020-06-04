@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.UI;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 
@@ -93,7 +94,9 @@ namespace Darkages.Network.Game.Components
 
                             //subject is not dead, display it as normal.
                             else if (!(obj as Aisling).Dead)
+                            {
                                 obj.ShowTo(client);
+                            }
                         }
                         else
                         {

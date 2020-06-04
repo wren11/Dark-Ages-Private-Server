@@ -32,9 +32,9 @@ namespace Darkages.Network.ClientFormats
 
         public override void Serialize(NetworkPacketReader reader)
         {
-            Count = reader.ReadUInt16();
-            Image = reader.ReadBytes(reader.ReadUInt16());
-            Words = reader.ReadStringB();
+            //Count = reader.ReadUInt16();
+            //Image = reader.ReadBytes(reader.ReadUInt16());
+            //Words = reader.ReadStringB();
         }
 
         public override void Serialize(NetworkPacketWriter writer)
