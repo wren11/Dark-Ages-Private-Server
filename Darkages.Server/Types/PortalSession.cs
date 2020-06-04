@@ -59,9 +59,12 @@ namespace Darkages
 
         public void TransitionToMap(GameClient client, short X = -1, short Y = -1, int DestinationMap = 0)
         {
+            client.LastWarp = DateTime.UtcNow.AddMilliseconds(10);
+
             if (DestinationMap == 0)
             {
                 client.LeaveArea(true, true);
+                client.UpdateDisplay();
 
                 DestinationMap = ServerContextBase.GlobalConfig.TransitionZone;
 
@@ -71,6 +74,7 @@ namespace Darkages
 
                 client.Refresh();
                 ShowFieldMap(client);
+                client.Refresh();
             }
             else
             {
