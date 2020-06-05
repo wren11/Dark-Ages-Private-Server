@@ -151,6 +151,7 @@ namespace Darkages.Types
                     return;
 
                 Y = value;
+
                 NotifyPropertyChanged();
             }
         }

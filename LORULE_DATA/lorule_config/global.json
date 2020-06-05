@@ -142,5 +142,10 @@
   "DeathReepingMessage": "You have been scared for life.",
   "DeathMapX": 21,
   "DeathMapY": 21,
-  "PVPMap": 509
+  "PVPMap": 509,
+  "DevMode": false,
+  "UseLobby": false,
+  "ClientVersion": 718,
+  "LogObjectsAdded": false,
+  "LogObjectsRemoved": false
 }

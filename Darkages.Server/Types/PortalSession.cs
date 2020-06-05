@@ -40,12 +40,12 @@ namespace Darkages
 
         public void TransitionToMap(GameClient client, short X = -1, short Y = -1, int DestinationMap = 0)
         {
-            client.LastWarp = DateTime.UtcNow.AddMilliseconds(10);
+            client.LastWarp = DateTime.UtcNow.AddMilliseconds(100);
 
             if (DestinationMap == 0)
             {
                 client.LeaveArea(true, true);
-                client.UpdateDisplay();
+                client.Aisling.Map?.ObjectGrid[client.Aisling.X, client.Aisling.Y].RemoveObject(client.Aisling);
 
                 DestinationMap = ServerContextBase.GlobalConfig.TransitionZone;
 

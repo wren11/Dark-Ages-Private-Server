@@ -598,7 +598,9 @@ namespace Darkages.Network.Game
 
             if (area.ID != Aisling.CurrentMapId)
             {
-                LeaveArea(true);
+                Aisling.Map?.ObjectGrid[Aisling.X, Aisling.Y].RemoveObject(Aisling);
+
+                LeaveArea(true, true);
 
                 Aisling.LastPosition = new Position(Aisling.X, Aisling.Y);
                 Aisling.XPos = position.X;
@@ -606,13 +608,19 @@ namespace Darkages.Network.Game
                 Aisling.CurrentMapId = area.ID;
 
                 EnterArea();
+                Aisling.Map?.ObjectGrid[Aisling.X, Aisling.Y].AddObject(Aisling);
+
             }
             else
             {
                 LeaveArea(true);
+                Aisling.Map?.ObjectGrid[Aisling.X, Aisling.Y].RemoveObject(Aisling);
+
                 Aisling.XPos = position.X;
                 Aisling.YPos = position.Y;
                 EnterArea();
+
+                Aisling.Map?.ObjectGrid[Aisling.X, Aisling.Y].AddObject(Aisling);
             }
 
             Aisling.Client.CloseDialog();

@@ -52,6 +52,9 @@ namespace Darkages
                 if (obj.Serial == sprite.Serial)
                     continue;
 
+                if (obj.X == sprite.X || obj.Y == sprite.Y)
+                    continue;
+
                 if (obj is Monster || obj is Aisling || obj is Mundane)
                 {
                     length++;
