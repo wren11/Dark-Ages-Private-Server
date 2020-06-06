@@ -1422,7 +1422,7 @@ namespace Darkages.Network.Game
                 ShouldUpdateMap = true;
                 Aisling.LastMapId = Aisling.CurrentMapId;
 
-                if (!Aisling.DiscoveredMaps.Any(i => i == Aisling.CurrentMapId))
+                if (Aisling.DiscoveredMaps.All(i => i != Aisling.CurrentMapId))
                     Aisling.DiscoveredMaps.Add(Aisling.CurrentMapId);
 
                 SendMusic();

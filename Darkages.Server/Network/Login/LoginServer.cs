@@ -154,7 +154,7 @@ namespace Darkages.Network.Login
 
             if (!ServerContextBase.GlobalConfig.MultiUserLogin)
             {
-                var aislings = ServerContext.Game.Clients.Where(i => i != null && i.Aisling != null && i.Aisling.LoggedIn);
+                var aislings = ServerContext.Game.Clients.Where(i => i?.Aisling != null && i.Aisling.LoggedIn && i.Aisling.Username.ToLower() == format.Username.ToLower());
 
                 foreach (var obj in aislings)
                     obj.Server.ClientDisconnected(obj);
