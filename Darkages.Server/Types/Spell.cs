@@ -107,6 +107,9 @@ namespace Darkages.Types
 
             if (obj.Template.Name == "mor fas nadur")
                 obj.Template.Debuff = new debuff_morfasnadur();
+
+            if (obj.Template.Name == "blind")
+                obj.Template.Debuff = new debuff_blind();
         }
 
         public static void AttachScript(Aisling Aisling, Spell spell)

@@ -678,7 +678,7 @@ namespace Darkages.Network.Game
 
             var distance = Aisling.Position.DistanceFrom(Aisling.LastPosition.X, Aisling.LastPosition.Y);
 
-            if (distance > 1 && !MapOpen && !IsWarping && (DateTime.UtcNow - LastMapUpdated).TotalMilliseconds > 2000)
+            if (distance > 2 && !MapOpen && !IsWarping && (DateTime.UtcNow - LastMapUpdated).TotalMilliseconds > 2000)
             {
                 LastWarp = DateTime.UtcNow;
                 Aisling.LastPosition.X = (ushort)Aisling.XPos;
@@ -1266,37 +1266,56 @@ namespace Darkages.Network.Game
             //Display Aisling to self.
             Aisling.Show(Scope.Self, response);
 
-            //Display Aisling to everyone else nearby.
-            if (Aisling.Flags.HasFlag(AislingFlags.Dead))
-            {
-                //only show to clients who can see ghosts.
-                var nearby = GetObjects<Aisling>(Aisling.Map, i => i.WithinRangeOf(Aisling) && i.CanSeeGhosts());
-
-                if (nearby != null) Aisling.Show(Scope.NearbyAislingsExludingSelf, response, nearby);
-
-                return this;
-            }
-
 
             var nearbyAislings = Aisling.AislingsNearby();
 
             if (nearbyAislings.Any())
             {
-
-                foreach (var obj in nearbyAislings)
+                var myplayer = Aisling;
+                foreach (var otherplayer in nearbyAislings)
                 {
-                    if (obj.Serial == Aisling.Serial)
+                    if (myplayer.Serial == otherplayer.Serial)
                         continue;
 
-                    if (obj.Invisible && !Aisling.CanSeeHidden())
+                    if (!myplayer.Dead && !otherplayer.Dead)
                     {
-                        continue;
+                        if (myplayer.Invisible)
+                        {
+                            otherplayer.ShowTo(myplayer);
+                        }
+                        else
+                        {
+                            myplayer.ShowTo(otherplayer);
+                        }
+
+                        if (otherplayer.Invisible)
+                        {
+                            myplayer.ShowTo(otherplayer);
+                        }
+                        else
+                        {
+                            otherplayer.ShowTo(myplayer);
+                        }
                     }
+                    else
+                    {
+                        if (myplayer.Dead)
+                        {
+                            if (otherplayer.CanSeeGhosts())
+                            {
+                                myplayer.ShowTo(otherplayer);
+                            }
+                        }
 
-                    obj.ShowTo(Aisling);
-                    Aisling.ShowTo(obj);
+                        if (otherplayer.Dead)
+                        {
+                            if (myplayer.CanSeeGhosts())
+                            {
+                                otherplayer.ShowTo(myplayer);
+                            }
+                        }
+                    }
                 }
-
             }
 
 
@@ -1414,6 +1433,12 @@ namespace Darkages.Network.Game
                 MapUpdating = true;
                 Aisling.Client.LastMapUpdated = DateTime.UtcNow;
                 Aisling.View.Clear();
+
+                if (Aisling.Blind == 1)
+                {
+                    Aisling.Map.Flags |= MapFlags.Darkness;
+                }
+
                 Send(new ServerFormat15(Aisling.Map));
             }
             else

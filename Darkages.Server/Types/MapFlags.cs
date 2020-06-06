@@ -16,11 +16,14 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
+using System;
+
 namespace Darkages.Types
 {
     /// <summary>
     ///     CREDITS: Enum Borrowed from... i forgot where... the creator i guess.)
     /// </summary>
+    [Flags]
     public enum MapFlags : uint
     {
         Snow = 1,

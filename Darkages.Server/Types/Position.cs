@@ -96,6 +96,46 @@ namespace Darkages.Types
             return Direction.UnDefined;
         }
 
+        public TileContentPosition[] SurroundingContent(Area map)
+        {
+            var list = new List<TileContentPosition>();
+
+            if (X > 0)
+            {
+                list.Add(new TileContentPosition(
+                    new Position(X - 1, Y),
+                    map.ObjectGrid[X - 1, Y].Sprites.Count == 0 ? TileContent.Wall : TileContent.None));
+
+            }
+
+            if (Y > 0)
+            {
+                list.Add(new TileContentPosition(
+                    new Position(X, Y - 1),
+                    map.ObjectGrid[X, Y - 1].Sprites.Count == 0 ? TileContent.Wall : TileContent.None));
+
+            }
+
+            if (X < map.Rows - 1)
+            {
+                list.Add(new TileContentPosition(
+                    new Position(X + 1, Y),
+                    map.ObjectGrid[X + 1, Y].Sprites.Count == 0 ? TileContent.Wall : TileContent.None));
+
+            }
+
+            if (Y < map.Cols - 1)
+            {
+                list.Add(new TileContentPosition(
+                    new Position(X, Y + 1),
+                    map.ObjectGrid[X, Y + 1].Sprites.Count == 0 ? TileContent.Wall : TileContent.None));
+
+            }
+
+
+            return list.ToArray();
+        }
+
 
         public bool IsNextTo(Position pos, int distance = 1)
         {

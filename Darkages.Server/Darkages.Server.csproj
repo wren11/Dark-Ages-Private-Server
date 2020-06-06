@@ -454,6 +454,7 @@
     <Compile Include="Storage\locales\Scripts\Spells\affilictions\beagpuinsein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\affilictions\morpuinsein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\affilictions\pramh.cs" />
+    <Compile Include="Storage\locales\Scripts\Spells\affilictions\blind.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\affilictions\puinsein.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\attributes\spellreflect.cs" />
     <Compile Include="Storage\locales\Scripts\Spells\attributes\aite.cs" />

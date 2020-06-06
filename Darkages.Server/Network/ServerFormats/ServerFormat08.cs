@@ -108,8 +108,8 @@ namespace Darkages.Network.ServerFormats
             if ((Flags & 0x04) != 0)
             {
                 writer.Write(uint.MinValue);
-                writer.Write(Aisling.Blind);
-                writer.Write((byte)0x10);
+                writer.Write((byte)Aisling.Blind);
+                writer.Write((byte)0x00);
                 writer.Write((byte)Aisling.OffenseElement); // element off
                 writer.Write((byte)Aisling.DefenseElement); // element def
                 writer.Write((byte)(Aisling.Mr / 10));

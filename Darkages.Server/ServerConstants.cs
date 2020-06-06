@@ -336,7 +336,7 @@ namespace Darkages
             "WarpCheckRate, This Value determines the amount of time to wait for async operations to complete before updating the aislingss position. default is 200.")]
         public int WarpCheckRate = 200;
 
-        [JsonProperty] public double WeightIncreaseModifer = 3.5;
+        [JsonProperty] public double WeightIncreaseModifer = 48;
 
         [JsonProperty] public string WisAddedMessage = "Your will increases.";
 

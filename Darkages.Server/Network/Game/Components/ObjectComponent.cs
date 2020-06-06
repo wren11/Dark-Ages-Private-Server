@@ -29,15 +29,10 @@ namespace Darkages.Network.Game.Components
         private void UpdateObjects()
         {
             var connectedUsers = Server.Clients.Where(i =>
-                i != null &&
-                i.Aisling != null &&
-                i.Aisling.Map != null &&
-                i.Aisling.Map.Ready).Select(i => i.Aisling).ToArray();
+                i?.Aisling?.Map != null && i.Aisling.Map.Ready).Select(i => i.Aisling).ToArray();
 
-            for (var i = 0; i < connectedUsers.Length; i++)
+            foreach (var user in connectedUsers)
             {
-                var user = connectedUsers[i];
-
                 UpdateClientObjects(user);
             }
         }
@@ -48,10 +43,9 @@ namespace Darkages.Network.Game.Components
 
             if (user.LoggedIn && user.Map.Ready)
             {
-                var objects = user.GetObjects(user.Map, selector => selector != null && selector.Serial != user.Serial,
-                    Get.All);
-                var objectsInView = objects.Where(s => s.WithinRangeOf(user));
-                var objectsNotInView = objects.Where(s => !s.WithinRangeOf(user));
+                var objects = user.GetObjects(user.Map, selector => selector != null && selector.Serial != user.Serial, Get.All).ToArray();
+                var objectsInView = objects.Where(s => s.WithinRangeOf(user)).ToArray();
+                var objectsNotInView = objects.Where(s => !s.WithinRangeOf(user)).ToArray();
                 var objectsToRemove = objectsNotInView.Except(objectsInView).ToArray();
                 var objectsToAdd = objectsInView.Except(objectsNotInView).ToArray();
 
@@ -67,97 +61,136 @@ namespace Darkages.Network.Game.Components
             }
         }
 
-        public static void AddObjects(List<Sprite> payload, Aisling client, Sprite[] objectsToAdd)
+        public static void AddObjects(List<Sprite> payload, Aisling myplayer, Sprite[] objectsToAdd)
         {
             foreach (var obj in objectsToAdd)
             {
-                if (obj.Serial == client.Serial)
+                if (obj.Serial == myplayer.Serial)
                     continue;
 
-                if (!client.View.Contains(obj))
-                    if (client.View.Add(obj))
+                if (myplayer.View.Contains(obj))
+                    continue;
+
+                if (!myplayer.View.Add(obj))
+                    continue;
+
+                if (obj is Monster monster)
+                {
+                    var valueCollection = monster.Scripts?.Values;
+
+                    if (valueCollection != null)
                     {
-                        if (obj is Monster)
-
-                            foreach (var script in (obj as Monster).Scripts?.Values)
-                                script.OnApproach(client.Client);
-
-                        if (obj is Aisling)
+                        foreach (var script in valueCollection)
                         {
-                            //if the subject to show is dead, and I'm not dead, Don't display the subject.
-                            if ((obj as Aisling).Dead && !client.Dead)
-                                continue;
+                            script.OnApproach(myplayer.Client);
+                        }
+                    }
+                }
 
-                            //both are dead, let them see each other.
-                            if ((obj as Aisling).Dead && client.Dead)
-                                obj.ShowTo(client);
-
-                            //subject is not dead, display it as normal.
-                            else if (!(obj as Aisling).Dead)
-                            {
-                                obj.ShowTo(client);
-                            }
+                if (obj is Aisling otherplayer)
+                {
+                    if (!myplayer.Dead && !otherplayer.Dead)
+                    {
+                        if (myplayer.Invisible)
+                        {
+                            otherplayer.ShowTo(myplayer);
                         }
                         else
                         {
-                            var skip = false;
+                            myplayer.ShowTo(otherplayer);
+                        }
 
-                            if (obj is Mundane)
-                            {
-                                if (obj is Mundane mundane)
-                                {
-                                    var template = mundane.Template;
-
-
-                                    //hide user if they are not a monk.
-                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Monks))
-                                        if (client.ClassID != 5)
-                                            skip = true;
-
-                                    //hide user if they are not a warrior.
-                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Warriors))
-                                        if (client.ClassID != 1)
-                                            skip = true;
-
-                                    //hide user if they are not a rogue.
-                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Rogues))
-                                        if (client.ClassID != 2)
-                                            skip = true;
-
-                                    //hide user if they are not a wizard.
-                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Wizards))
-                                        if (client.ClassID != 3)
-                                            skip = true;
-
-                                    //hide user if they are not a priest.
-                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Priests))
-                                        if (client.ClassID != 4)
-                                            skip = true;
-
-
-                                    //TODO add more classes.
-                                }
-                            }
-                            else
-                            {
-                                if (obj is Money)
-                                {
-                                    var goldSetting = client.GameSettings.Find(i =>
-                                        i.EnabledSettingStr.Contains("AUTO LOOT GOLD"));
-
-                                    if (goldSetting != null)
-                                        if (goldSetting.Enabled)
-                                        {
-                                            (obj as Money).GiveTo((obj as Money).Amount, client);
-                                            skip = true;
-                                        }
-                                }
-                            }
-
-                            if (!skip)
-                                payload.Add(obj);
+                        if (otherplayer.Invisible)
+                        {
+                            myplayer.ShowTo(otherplayer);
+                        }
+                        else
+                        {
+                            otherplayer.ShowTo(myplayer);
                         }
                     }
+                    else
+                    {
+                        if (myplayer.Dead)
+                        {
+                            if (otherplayer.CanSeeGhosts())
+                            {
+                                myplayer.ShowTo(otherplayer);
+                            }
+                        }
+
+                        if (otherplayer.Dead)
+                        {
+                            if (myplayer.CanSeeGhosts())
+                            {
+                                otherplayer.ShowTo(myplayer);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    var skip = false;
+
+                    switch (obj)
+                    {
+                        case Mundane sprite:
+                        {
+                            if (sprite is Mundane mundane)
+                            {
+                                var template = mundane.Template;
+
+
+                                //hide user if they are not a monk.
+                                if (template.ViewingQualifer.HasFlag(ViewQualifer.Monks))
+                                    if (myplayer.ClassID != 5)
+                                        skip = true;
+
+                                //hide user if they are not a warrior.
+                                if (template.ViewingQualifer.HasFlag(ViewQualifer.Warriors))
+                                    if (myplayer.ClassID != 1)
+                                        skip = true;
+
+                                //hide user if they are not a rogue.
+                                if (template.ViewingQualifer.HasFlag(ViewQualifer.Rogues))
+                                    if (myplayer.ClassID != 2)
+                                        skip = true;
+
+                                //hide user if they are not a wizard.
+                                if (template.ViewingQualifer.HasFlag(ViewQualifer.Wizards))
+                                    if (myplayer.ClassID != 3)
+                                        skip = true;
+
+                                //hide user if they are not a priest.
+                                if (template.ViewingQualifer.HasFlag(ViewQualifer.Priests))
+                                    if (myplayer.ClassID != 4)
+                                        skip = true;
+
+
+                                //TODO add more classes.
+                            }
+
+                            break;
+                        }
+                        case Money money:
+                        {
+                            var goldSetting = myplayer.GameSettings.Find(i =>
+                                i.EnabledSettingStr.Contains("AUTO LOOT GOLD"));
+
+                            if (goldSetting != null)
+                                if (goldSetting.Enabled)
+                                {
+                                    money.GiveTo(money.Amount, myplayer);
+                                    skip = true;
+                                }
+
+                            break;
+                        }
+                    }
+
+                    if (!skip)
+                        payload.Add(obj);
+                }
             }
         }
 
@@ -168,15 +201,26 @@ namespace Darkages.Network.Game.Components
                 if (obj.Serial == client.Serial)
                     continue;
 
-                if (client.View.Contains(obj))
-                    if (client.View.Remove(obj))
-                    {
-                        if (obj is Monster)
-                            foreach (var script in (obj as Monster).Scripts?.Values)
-                                script.OnLeave(client.Client);
+                if (!client.View.Contains(obj))
+                    continue;
 
-                        obj.HideFrom(client);
+                if (!client.View.Remove(obj))
+                    continue;
+
+                if (obj is Monster monster)
+                {
+                    var valueCollection = monster.Scripts?.Values;
+
+                    if (valueCollection != null)
+                    {
+                        foreach (var script in valueCollection)
+                        {
+                            script.OnLeave(client.Client);
+                        }
                     }
+                }
+
+                obj.HideFrom(client);
             }
         }
     }

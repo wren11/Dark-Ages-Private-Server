@@ -478,7 +478,7 @@ namespace Darkages
         /// </summary>
         /// <value>The maximum weight.</value>
         [JsonIgnore]
-        public int MaximumWeight => (int) (_Str * ServerContextBase.GlobalConfig.WeightIncreaseModifer);
+        public int MaximumWeight => (int) (ExpLevel / 4 + _Str + ServerContextBase.GlobalConfig.WeightIncreaseModifer);
 
         /// <summary>
         ///     Gets or sets a value indicating whether [profile open].

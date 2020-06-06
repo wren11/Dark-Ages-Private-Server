@@ -1,4 +1,5 @@
-﻿using Darkages.Types;
+﻿using Darkages.Network.ServerFormats;
+using Darkages.Types;
 
 namespace Darkages.Storage.locales.debuffs
 {
@@ -6,60 +7,65 @@ namespace Darkages.Storage.locales.debuffs
     {
         public override string Name => "blind";
         public override byte Icon => 114;
-        public override int Length => 35;
+        public override int Length => 7;
 
-        public override void OnApplied(Sprite Affected, Debuff debuff)
+        public override void OnApplied(Sprite affected, Debuff debuff)
         {
-            if (Affected is Aisling)
+            if (affected is Aisling aisling)
             {
-                (Affected as Aisling)
+                aisling.Blind = 1;
+
+                aisling.Map.Flags |= MapFlags.Darkness;
+                aisling.Client.Send(new ServerFormat15(affected.Map));
+                aisling
                     .Client
                     .SendStats(StatusFlags.StructD);
-
-                (Affected as Aisling)
-                    .Client.SendLocation();
-
-                (Affected as Aisling)
+                aisling
                     .Client.SendMessage(0x02, "You are blinded!");
+                aisling
+                    .Client.Refresh();
             }
 
-            Affected.SendAnimation(391, Affected, Affected);
+            affected.SendAnimation(391, affected, affected);
 
-            base.OnApplied(Affected, debuff);
+            base.OnApplied(affected, debuff);
         }
 
-        public override void OnDurationUpdate(Sprite Affected, Debuff buff)
+        public override void OnDurationUpdate(Sprite affected, Debuff buff)
         {
-            if (Affected is Aisling)
+            if (affected is Aisling aisling)
             {
-                (Affected as Aisling)
+                aisling
                     .Client
                     .SendStats(StatusFlags.StructD);
-
-                (Affected as Aisling)
-                    .Client.SendLocation();
             }
 
-            Affected.SendAnimation(391, Affected, Affected);
+            affected.SendAnimation(42, affected, affected);
 
-            base.OnDurationUpdate(Affected, buff);
+            base.OnDurationUpdate(affected, buff);
         }
 
-        public override void OnEnded(Sprite Affected, Debuff debuff)
+        public override void OnEnded(Sprite affected, Debuff debuff)
         {
-            if (Affected is Aisling)
+            if (affected is Aisling aisling)
             {
-                (Affected as Aisling)
+                aisling.Blind = 0;
+                aisling.Map.Flags ^= MapFlags.Darkness;
+                aisling.Client.Send(new ServerFormat15(affected.Map));
+
+                aisling
                     .Client
                     .SendStats(StatusFlags.StructD);
-
-                (Affected as Aisling)
+                aisling
                     .Client.SendMessage(0x02, "You can see again.");
+
+                aisling
+                    .Client.Refresh();
             }
 
-            Affected.SendAnimation(379, Affected, Affected);
+            affected.SendAnimation(379, affected, affected);
 
-            base.OnEnded(Affected, debuff);
+            base.OnEnded(affected, debuff);
         }
     }
 }

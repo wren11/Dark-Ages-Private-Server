@@ -582,48 +582,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        private void CheckforAnyPhantoms(GameClient client)
-        {
-            var pending = client.Aisling.GetPendingWalkPosition();
-
-            var objsBlocking = GetObjects(client.Aisling.Map,
-                sel => sel.X == pending.X && sel.Y == pending.Y
-                                          && sel.Serial != client.Aisling.Serial, Get.Monsters | Get.Mundanes | Get.Aislings);
-
-            if (objsBlocking.Any())
-            {
-                lock (ServerContext.syncLock)
-                {
-                    //let us pass anyways.
-                    client.Aisling.Map.Tile[pending.X, pending.Y] = TileContent.None;
-                }
-
-
-                Task.Run(() =>
-                {
-                    //remove the objects is they are dead.
-                    foreach (var obj in objsBlocking)
-                    {
-                        if (obj is Aisling aisling)
-                        {
-                            if (!aisling.LoggedIn ||
-                                (DateTime.UtcNow - aisling.LastMovementChanged).TotalMilliseconds > 120 ||
-                                aisling.CurrentHp <= 0)
-                            {
-                                aisling.Remove(true, true);
-                            }
-                        }
-
-                        if (obj.CurrentHp <= 0 || (DateTime.UtcNow - obj.LastMovementChanged).TotalMilliseconds > 120
-                                               || (DateTime.UtcNow - obj.LastTurnUpdated).TotalMilliseconds > 120)
-                        {
-                            obj.Remove();
-                        }
-                    }
-                });
-            }
-        }
-
         private static void CheckWarpTransitions(GameClient client)
         {
             foreach (var warps in ServerContextBase.GlobalWarpTemplateCache)

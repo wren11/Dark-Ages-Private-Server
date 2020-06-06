@@ -52,7 +52,7 @@ namespace Darkages
                 if (obj.Serial == sprite.Serial)
                     continue;
 
-                if (obj.X == sprite.X || obj.Y == sprite.Y)
+                if (obj.X == sprite.X && obj.Y == sprite.Y)
                     continue;
 
                 if (obj is Monster || obj is Aisling || obj is Mundane)
@@ -119,8 +119,14 @@ namespace Darkages
         }
 
 
-        public bool IsWall(int x, int y)
+        public bool IsWall(int x, int y, bool IsAisling = false)
         {
+
+            if (IsAisling)
+            {
+
+            }
+
             if (x < 0 || x >= Cols)
             {
                 return true;

@@ -551,6 +551,12 @@ namespace Darkages.Types
             if (!CanBeAttackedHere(damageDealingSprite))
                 return;
 
+            if (Map.Flags.HasFlag(MapFlags.PlayerKill))
+            {
+                //normalize pvp damage.
+                dmg = (int)(dmg * 0.75);
+            }
+
             if (dmg == -1)
             {
                 dmg = CurrentHp;
@@ -895,17 +901,6 @@ namespace Darkages.Types
                     foreach (var gc in GetObjects<Aisling>(Map, that => WithinRangeOf(that)))
                         if (gc.Serial != Serial)
                         {
-                            if (this is Aisling)
-                            {
-                                if (!gc.Client.Aisling.CanSeeHidden() && ((Aisling) this).Invisible)
-                                    if (format is ServerFormat33)
-                                        return;
-
-                                if (!gc.Client.Aisling.CanSeeGhosts() && ((Aisling) this).Dead)
-                                    if (format is ServerFormat33)
-                                        return;
-                            }
-
                             gc.Client.Send(format);
                         }
                 }
@@ -913,17 +908,6 @@ namespace Darkages.Types
                 {
                     foreach (var gc in GetObjects<Aisling>(Map, that => WithinRangeOf(that)))
                     {
-                        if (this is Aisling)
-                        {
-                            if (!gc.Client.Aisling.CanSeeHidden() && ((Aisling) this).Invisible)
-                                if (format is ServerFormat33)
-                                    return;
-
-                            if (!gc.Client.Aisling.CanSeeGhosts() && ((Aisling) this).Dead)
-                                if (format is ServerFormat33)
-                                    return;
-                        }
-
                         gc.Client.Send(format);
                     }
                 }
@@ -932,17 +916,6 @@ namespace Darkages.Types
                     foreach (var gc in GetObjects<Aisling>(Map, that =>
                         WithinRangeOf(that, ServerContextBase.GlobalConfig.VeryNearByProximity)))
                     {
-                        if (this is Aisling)
-                        {
-                            if (!gc.Client.Aisling.CanSeeHidden() && ((Aisling) this).Invisible)
-                                if (format is ServerFormat33)
-                                    return;
-
-                            if (!gc.Client.Aisling.CanSeeGhosts() && ((Aisling) this).Dead)
-                                if (format is ServerFormat33)
-                                    return;
-                        }
-
                         gc.Client.Send(format);
                     }
                 }
@@ -950,17 +923,6 @@ namespace Darkages.Types
                 {
                     foreach (var gc in GetObjects<Aisling>(Map, that => CurrentMapId == that.CurrentMapId))
                     {
-                        if (this is Aisling)
-                        {
-                            if (!gc.Client.Aisling.CanSeeHidden() && ((Aisling) this).Invisible)
-                                if (format is ServerFormat33)
-                                    return;
-
-                            if (!gc.Client.Aisling.CanSeeGhosts() && ((Aisling) this).Dead)
-                                if (format is ServerFormat33)
-                                    return;
-                        }
-
                         gc.Client.Send(format);
                     }
                 }
@@ -971,14 +933,6 @@ namespace Darkages.Types
 
                     foreach (var gc in GetObjects<Aisling>(Map, that => ((Aisling) this).GroupParty.Has(that)))
                     {
-                        if (!gc.Client.Aisling.CanSeeHidden() && ((Aisling) this).Invisible)
-                            if (format is ServerFormat33)
-                                return;
-
-                        if (!gc.Client.Aisling.CanSeeGhosts() && ((Aisling) this).Dead)
-                            if (format is ServerFormat33)
-                                return;
-
                         gc.Client.Send(format);
                     }
                 }
@@ -989,14 +943,6 @@ namespace Darkages.Types
 
                     foreach (var gc in GetObjects<Aisling>(Map, that => that.WithinRangeOf(this) && ((Aisling) this).GroupParty.Has(that)))
                     {
-                        if (!gc.Client.Aisling.CanSeeHidden() && ((Aisling) this).Invisible)
-                            if (format is ServerFormat33)
-                                return;
-
-                        if (!gc.Client.Aisling.CanSeeGhosts() && ((Aisling) this).Dead)
-                            if (format is ServerFormat33)
-                                return;
-
                         gc.Client.Send(format);
                     }
 
@@ -1008,14 +954,6 @@ namespace Darkages.Types
 
                     foreach (var gc in GetObjects<Aisling>(Map, that => that.WithinRangeOf(this) && ((Aisling) this).GroupParty.Has(that, true)))
                     {
-                        if (!gc.Client.Aisling.CanSeeHidden() && ((Aisling) this).Invisible)
-                            if (format is ServerFormat33)
-                                return;
-
-                        if (!gc.Client.Aisling.CanSeeGhosts() && ((Aisling) this).Dead)
-                            if (format is ServerFormat33)
-                                return;
-
                         gc.Client.Send(format);
                     }
                 }
@@ -1026,17 +964,6 @@ namespace Darkages.Types
 
                     foreach (var gc in definer)
                     {
-                        if (this is Aisling)
-                        {
-                            if (!gc.Client.Aisling.CanSeeHidden() && ((Aisling) this).Invisible)
-                                if (format is ServerFormat33)
-                                    return;
-
-                            if (!gc.Client.Aisling.CanSeeGhosts() && ((Aisling) this).Dead)
-                                if (format is ServerFormat33)
-                                    return;
-                        }
-
                         (gc as Aisling)?.Client.Send(format);
                     }
                 }
@@ -1401,7 +1328,8 @@ namespace Darkages.Types
             var pendingX = this.X;
             var pendingY = this.Y;
 
-            if (Map.IsWall(savedX, savedY)) 
+
+            if (Map.IsWall(savedX, savedY, this is Aisling))
                 return false;
 
             if (!Map.ObjectGrid[savedX, savedY].IsPassable(this, this is Aisling))
@@ -1419,15 +1347,11 @@ namespace Darkages.Types
                 pendingX--;
 
 
-            if (Map.IsWall(pendingX, pendingY))
+            if (Map.IsWall(pendingX, pendingY, this is Aisling))
                 return false;
 
             if (!Map.ObjectGrid[pendingX, pendingY].IsPassable(this, this is Aisling))
                 return false;
-
-
-            Map.ObjectGrid[savedX, savedY].RemoveObject(this);
-            Map.ObjectGrid[pendingX, pendingY].AddObject(this);
 
             var response = new ServerFormat0C
             {
@@ -1446,11 +1370,19 @@ namespace Darkages.Types
                 LastPosition = new Position(savedX, savedY);
             }
 
-
-            foreach (var obj in AislingsNearby())
+            if (this is Aisling)
             {
-                ObjectComponent.UpdateClientObjects(obj);
+                foreach (var obj in AislingsNearby())
+                {
+                    obj.Map.ObjectGrid[savedX, savedY].RemoveObject(this);
+                    obj.Map.ObjectGrid[pendingX, pendingY].AddObject(this);
+
+                    ObjectComponent.UpdateClientObjects(obj);
+                }
             }
+
+            Map.ObjectGrid[savedX, savedY].RemoveObject(this);
+            Map.ObjectGrid[pendingX, pendingY].AddObject(this);
 
             return true;
         }

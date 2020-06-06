@@ -182,6 +182,7 @@ namespace Darkages.Network.Game
 
         private void Pulse(TimeSpan elapsedTime, GameClient client)
         {
+            ObjectComponent.UpdateClientObjects(client.Aisling);
             client.Update(elapsedTime);
             ObjectComponent.UpdateClientObjects(client.Aisling);
         }

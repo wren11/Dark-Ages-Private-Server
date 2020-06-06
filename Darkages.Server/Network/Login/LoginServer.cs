@@ -154,12 +154,11 @@ namespace Darkages.Network.Login
 
             if (!ServerContextBase.GlobalConfig.MultiUserLogin)
             {
-                var aislings = GetObjects<Aisling>(null,
-                    i => string.Equals(i.Username, format.Username, StringComparison.CurrentCultureIgnoreCase)
-                         && format.Password == i.Password);
+                var aislings = ServerContext.Game.Clients.Where(i => i != null && i.Aisling != null && i.Aisling.LoggedIn);
 
                 foreach (var obj in aislings)
-                    obj.Client.Server.ClientDisconnected(aisling.Client);
+                    obj.Server.ClientDisconnected(obj);
+
             }
 
             LoginAsAisling(client, aisling);

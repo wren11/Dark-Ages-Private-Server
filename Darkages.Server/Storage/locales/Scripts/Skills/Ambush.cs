@@ -69,63 +69,63 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     if (target.Serial == sprite.Serial)
                         continue;
 
-                    //var blocks = target.Position.SurroundingContent(sprite.Map);
+                    var blocks = target.Position.SurroundingContent(sprite.Map);
 
 
-                    //if (blocks.Length > 0)
-                    //{
-                    //    var selections = blocks.Where(i => i.Content == TileContent.Item
-                    //                                       || i.Content == TileContent.Money
-                    //                                       || i.Content == TileContent.None).ToArray();
-                    //    var selection = selections
-                    //        .OrderByDescending(i => i.Position.DistanceFrom(sprite.Position))
-                    //        .FirstOrDefault();
+                    if (blocks.Length > 0)
+                    {
+                        var selections = blocks.Where(i => i.Content == TileContent.Item
+                                                           || i.Content == TileContent.Money
+                                                           || i.Content == TileContent.None).ToArray();
+                        var selection = selections
+                            .OrderByDescending(i => i.Position.DistanceFrom(sprite.Position))
+                            .FirstOrDefault();
 
-                    //    if (selections.Length == 0 || selection == null)
-                    //        if (sprite is Aisling)
-                    //        {
-                    //            (sprite as Aisling).Client.SendMessageBox(0x02,
-                    //                ServerContextBase.GlobalConfig.CantDoThat);
-                    //            return;
-                    //        }
-                    //        else
-                    //        {
-                    //            return;
-                    //        }
-
-
-                    //    targetPosition = selection.Position;
-                    //}
+                        if (selections.Length == 0 || selection == null)
+                            if (sprite is Aisling)
+                            {
+                                (sprite as Aisling).Client.SendMessageBox(0x02,
+                                    ServerContextBase.GlobalConfig.CantDoThat);
+                                return;
+                            }
+                            else
+                            {
+                                return;
+                            }
 
 
-                    //if (targetPosition != null)
-                    //{
-                    //    sprite.XPos = targetPosition.X;
-                    //    sprite.YPos = targetPosition.Y;
+                        targetPosition = selection.Position;
+                    }
 
-                    //    int direction;
 
-                    //    if (!sprite.Facing(target.XPos, target.YPos, out direction))
-                    //    {
-                    //        sprite.Direction = (byte) direction;
+                    if (targetPosition != null)
+                    {
+                        sprite.XPos = targetPosition.X;
+                        sprite.YPos = targetPosition.Y;
 
-                    //        if (sprite.Position.IsNextTo(target.Position))
-                    //            sprite.Turn();
-                    //    }
+                        int direction;
 
-                    //    if (sprite is Aisling)
-                    //    {
-                    //        var client = (sprite as Aisling).Client;
-                    //        client.SendLocation();
-                    //    }
-                    //    else
-                    //    {
-                    //        sprite.Show(Scope.NearbyAislings, new ServerFormat0E(sprite.Serial));
-                    //        sprite.Show(Scope.NearbyAislings, new ServerFormat07(new[] {sprite}));
-                    //    }
+                        if (!sprite.Facing(target.XPos, target.YPos, out direction))
+                        {
+                            sprite.Direction = (byte)direction;
 
-                    //    return;
-                    //}
+                            if (sprite.Position.IsNextTo(target.Position))
+                                sprite.Turn();
+                        }
+
+                        if (sprite is Aisling)
+                        {
+                            var client = (sprite as Aisling).Client;
+                            client.SendLocation();
+                        }
+                        else
+                        {
+                            sprite.Show(Scope.NearbyAislings, new ServerFormat0E(sprite.Serial));
+                            sprite.Show(Scope.NearbyAislings, new ServerFormat07(new[] { sprite }));
+                        }
+
+                        return;
+                    }
                 }
         }
 

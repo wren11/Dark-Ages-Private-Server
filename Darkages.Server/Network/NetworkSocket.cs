@@ -29,7 +29,8 @@ namespace Darkages.Network
         private readonly byte[] header = new byte[0x0003];
         private int headerLength = 3;
         private int headerOffset;
-        private readonly byte[] packet = new byte[0x4000];
+
+        private readonly byte[] packet = new byte[65536];
         private int packetLength;
         private int packetOffset;
 

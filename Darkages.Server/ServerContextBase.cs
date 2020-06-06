@@ -8,11 +8,13 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Web.UI.Design.WebControls;
 using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Network.Object;
 using Darkages.Script.Context;
 using Darkages.Storage;
+using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DependencyCollector;
@@ -22,6 +24,7 @@ using Newtonsoft.Json;
 using NLog;
 using ServiceStack;
 using ServiceStack.Text;
+using Class = Darkages.Types.Class;
 
 namespace Darkages
 {
@@ -441,6 +444,33 @@ namespace Darkages
                 GlobalWorldMapTemplateCache.Dump());
             Insight("Loaded {0} Reactor Templates Loaded from Cache ({1})", GlobalReactorCache.Count,
                 GlobalReactorCache.Dump());
+
+
+            //Hard coding a test spell here. "Test Blind"
+
+            var blind = new SpellTemplate();
+            blind.Name = "blind";
+            blind.Icon = 114;
+            blind.Animation = 42;
+            blind.BaseLines = 4;
+            blind.MaxLines  = 9;
+            blind.MinLines  = 1;
+            blind.Cooldown  = 3;
+            blind.ManaCost  = 100;
+            blind.Debuff = new debuff_blind();
+            blind.ScriptKey = "blind";
+            blind.NpcKey = "dar";
+            blind.Pane = Pane.Spells;
+            blind.LevelRate = 0.03;
+            blind.TargetType = SpellTemplate.SpellUseType.ChooseTarget;
+            blind.Sound = 1;
+            blind.TargetAnimation = 114;
+            blind.Prerequisites = new LearningPredicate();
+            blind.Prerequisites.Class_Required = Class.Wizard;
+            blind.Prerequisites.Con_Required = 20;
+            blind.Prerequisites.Int_Required = 65;
+            blind.Prerequisites.Gold_Required = 100000;
+            ServerContextBase.GlobalSpellTemplateCache.Add("blind", blind);
         }
 
 

@@ -7,7 +7,7 @@ namespace Darkages.Network
 {
     public class Session<T> where T : NetworkClient<T>
     {
-        public Session(T client, int capacity = 8192)
+        public Session(T client, int capacity = ushort.MaxValue)
         {
             _client = client;
 
