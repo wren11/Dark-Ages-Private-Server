@@ -18,6 +18,8 @@
 
 ///************************************************************************
 
+using System.Drawing;
+
 namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat3A : NetworkFormat
@@ -32,6 +34,8 @@ namespace Darkages.Network.ClientFormats
         public ushort Step { get; set; }
         public uint Serial { get; set; }
 
+        public string Input { get; set; }
+
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -39,6 +43,12 @@ namespace Darkages.Network.ClientFormats
             var id = reader.ReadUInt32();
             var scriptid = reader.ReadUInt16();
             var step = reader.ReadUInt16();
+
+
+            if (reader.ReadByte() == 0x02)
+            {
+                Input = reader.ReadStringA();
+            }
 
 
             ScriptId = scriptid;

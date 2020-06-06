@@ -73,7 +73,48 @@ namespace Darkages.Network.ServerFormats
 
     public class ReactorInputSequence : ServerFormat30
     {
+        private readonly Mundane _mundane;
+        private readonly string _captionA;
+        private readonly string _captionB;
+        private readonly int _inputLength;
+
+
+        public ReactorInputSequence(Mundane mundane, string captionA, int inputLength = 48)
+        {
+            _mundane = mundane;
+            _captionA = captionA;
+            _inputLength = inputLength;
+        }
+
+        public override void Serialize(NetworkPacketReader reader)
+        {
+
+        }
+
+        public override void Serialize(NetworkPacketWriter writer)
+        {
+            writer.Write((byte) 0x04); // type!
+            writer.Write((byte) 0x01); // ??
+            writer.Write((uint) _mundane.Serial);
+            writer.Write((byte) 0x00); // ??
+            writer.Write((short)_mundane.Template.Image);
+            writer.Write((byte) 0x05); // ??
+            writer.Write((byte) 0x05); // ??
+            writer.Write(ushort.MinValue);
+            writer.Write((byte) 0x00);
+            writer.Write(ushort.MinValue);
+            writer.Write((byte) 0);
+            writer.Write((byte) 0);
+            writer.Write((byte) 0);
+            writer.Write((byte) 0);
+            writer.Write((byte) 0);
+            writer.WriteStringA("test");
+            writer.WriteStringB("test");
+            writer.WriteStringA(_captionA);
+            writer.Write((byte)_inputLength);
+        }
     }
+
 
     public class ReactorSequence : ServerFormat30
     {

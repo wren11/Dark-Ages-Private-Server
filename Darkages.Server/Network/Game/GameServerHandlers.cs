@@ -1930,7 +1930,7 @@ namespace Darkages.Network.Game
             }
             else
             {
-                client.DlgSession?.Callback?.Invoke(this, client, format.Step, string.Empty);
+                client.DlgSession?.Callback?.Invoke(this, client, format.Step, format.Input ?? string.Empty);
             }
         }
 

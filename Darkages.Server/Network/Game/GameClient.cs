@@ -36,9 +36,9 @@ namespace Darkages.Network.Game
 {
     /// <summary>
     ///     Class GameClient.
-    ///     Implements the <see cref="Darkages.Network.NetworkClient{Darkages.Network.Game.GameClient}" />
+    ///     Implements the <see cref="GameClient" />
     /// </summary>
-    /// <seealso cref="Darkages.Network.NetworkClient{Darkages.Network.Game.GameClient}" />
+    /// <seealso cref="GameClient" />
     public partial class GameClient : NetworkClient<GameClient>, IDisposable
     {
         private readonly object _syncObj = new object();
