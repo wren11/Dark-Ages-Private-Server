@@ -20,10 +20,13 @@ using Newtonsoft.Json;
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ServiceStack.Text;
+using ServiceStack.Text.Common;
 
 namespace Darkages
 {
@@ -38,56 +41,57 @@ namespace Darkages
         public MapFlags Flags { get; set; }
     }
 
-    public class TileGrid
+    public class TileGrid : ObjectManager
     {
-        public ConcurrentDictionary<int, Sprite> Sprites = new ConcurrentDictionary<int, Sprite>();
+
+        public List<Sprite> Sprites
+        {
+            get
+            {
+                return GetObjects(_map, o => o.X == _x && o.Y == _y && o.Alive,
+                    Get.Monsters | Get.Mundanes | Get.Aislings).ToList();
+            }
+        }
+        
+        readonly Area _map;
+        readonly int _x, _y;
+
+        public TileGrid(Area map, int x, int y)
+        {
+            _map = map;
+            _x = x;
+            _y = y;
+        }
 
         public bool IsPassable(Sprite sprite, bool isAisling)
         {
-            var length  = 0;
-            var objects = Sprites.Select(i => i.Value).ToArray();
+            var length = 0;
 
-            foreach (var obj in objects)
+            foreach (var obj in Sprites)
             {
                 if (obj.Serial == sprite.Serial)
-                    continue;
+                {
+                    if (!isAisling)
+                        continue;
+
+                    return true;
+                }
 
                 if (obj.X == sprite.X && obj.Y == sprite.Y)
+                {
+                    continue;
+                }
+
+                if (!(obj is Monster) && !(obj is Aisling) && !(obj is Mundane))
                     continue;
 
-                if (obj is Monster || obj is Aisling || obj is Mundane)
-                {
-                    length++;
-                }
-            }
-
-            if (isAisling)
-            {
-
+                length++;
             }
 
             return length == 0;
         }
-
-        public void AddObject(Sprite obj)
-        {
-            if (Sprites.ContainsKey(obj.Serial))
-                RemoveObject(obj);
-
-            if (Sprites.TryAdd(obj.Serial, obj))
-            {
-
-            }
-        }
-
-        public void RemoveObject(Sprite obj)
-        {
-            if (Sprites.TryRemove(obj.Serial, out var removedSprite))
-            {
-
-            }
-        }
     }
+
     public class Area : Map
     {
         [JsonIgnore] private static readonly byte[] Sotp = File.ReadAllBytes("sotp.dat");
@@ -122,11 +126,6 @@ namespace Darkages
         public bool IsWall(int x, int y, bool IsAisling = false)
         {
 
-            if (IsAisling)
-            {
-
-            }
-
             if (x < 0 || x >= Cols)
             {
                 return true;
@@ -138,7 +137,19 @@ namespace Darkages
             }
 
 
-            return Tile[x, y] == TileContent.Wall;
+            var isWall  = Tile[x, y] == TileContent.Wall;
+
+            //if (IsAisling)
+            //{
+            //    ServerContextBase.Report($"IsWall: {isWall} at location {x}, {y}");
+            //    ServerContextBase.Report($"IsWall: {isWall} at location {x},{y}");
+
+            //    ServerContextBase.Report($"Objects at location {x},{y} = {ObjectGrid[x, y].Sprites.Dump()}");
+            //    ServerContextBase.Report($"# Objects at location {x},{y} = {ObjectGrid[x, y].Sprites.Count}");
+            //}
+
+
+            return isWall;
         }
 
         public byte[] GetRowData(int row)
@@ -334,7 +345,7 @@ namespace Darkages
                 {
                     for (var x = 0; x < Cols; x++)
                     {
-                        ObjectGrid[x,y] = new TileGrid();
+                        ObjectGrid[x,y] = new TileGrid(this, x, y);
 
                         reader.BaseStream.Seek(2, SeekOrigin.Current);
 

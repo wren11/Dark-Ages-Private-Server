@@ -213,8 +213,6 @@ namespace Darkages.Network.Object
                         {
                             Console.WriteLine($"({obj.X},{obj.Y}) {obj.EntityType} was added.");
                         }
-
-                        obj.Map.ObjectGrid[obj.X, obj.Y].AddObject(obj);
                     }
                 }
             }
@@ -236,8 +234,6 @@ namespace Darkages.Network.Object
                     {
                         Console.WriteLine($"({obj.X},{obj.Y}) {obj.EntityType} was removed.");
                     }
-
-                    obj.Map.ObjectGrid[obj.X, obj.Y].RemoveObject(obj);
                 }
             }
         }

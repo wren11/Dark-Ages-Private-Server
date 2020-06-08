@@ -1374,15 +1374,9 @@ namespace Darkages.Types
             {
                 foreach (var obj in AislingsNearby())
                 {
-                    obj.Map.ObjectGrid[savedX, savedY].RemoveObject(this);
-                    obj.Map.ObjectGrid[pendingX, pendingY].AddObject(this);
-
                     ObjectComponent.UpdateClientObjects(obj);
                 }
             }
-
-            Map.ObjectGrid[savedX, savedY].RemoveObject(this);
-            Map.ObjectGrid[pendingX, pendingY].AddObject(this);
 
             return true;
         }

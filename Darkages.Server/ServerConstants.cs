@@ -386,7 +386,7 @@ namespace Darkages
         /// <summary>
         /// This setting should only be used for debugging purposes.
         /// </summary>
-        [JsonProperty] public bool ErrorReporting = false;
+        [JsonProperty] public bool ErrorReporting = true;
 
 
         [Description("Death Handling Message on Death")] [JsonProperty]

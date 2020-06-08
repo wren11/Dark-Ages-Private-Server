@@ -1,4 +1,6 @@
-﻿///************************************************************************
+﻿using Darkages.Scripting;
+using Darkages.Types;
+///************************************************************************
 //Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
@@ -17,11 +19,7 @@
 //*************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using Darkages.Scripting;
-using Darkages.Types;
-using ServiceStack.Text;
 
 namespace Darkages.Storage.locales.Scripts.Spells
 {
@@ -48,6 +46,9 @@ namespace Darkages.Storage.locales.Scripts.Spells
             if (spellArgs == "die") sprite.CurrentHp = 0;
 
             if (spellArgs == "+hit") sprite._Hit += 10;
+
+
+
 
 
             spellArgs = spellArgs.Trim();

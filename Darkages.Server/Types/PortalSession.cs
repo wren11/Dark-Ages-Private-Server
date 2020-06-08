@@ -45,7 +45,6 @@ namespace Darkages
             if (DestinationMap == 0)
             {
                 client.LeaveArea(true, true);
-                client.Aisling.Map?.ObjectGrid[client.Aisling.X, client.Aisling.Y].RemoveObject(client.Aisling);
 
                 DestinationMap = ServerContextBase.GlobalConfig.TransitionZone;
 
