@@ -153,12 +153,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Darkages.Server\Darkages.Server.csproj">
-      <Project>{2f0321e0-ebe0-468b-8f25-d08241ad14f7}</Project>
-      <Name>Darkages.Server</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="resources\fieldmap_F1.png" />
   </ItemGroup>
   <ItemGroup>
