@@ -59,10 +59,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             if (responseID == 0x0005)
             {
-                client.Aisling._MaximumHp -= ServerContextBase.GlobalConfig.DeathHPPenalty;
+                client.Aisling._MaximumHp -= ServerContextBase.Config.DeathHPPenalty;
 
                 if (client.Aisling.MaximumHp <= 0)
-                    client.Aisling._MaximumHp = ServerContextBase.GlobalConfig.MinimumHp;
+                    client.Aisling._MaximumHp = ServerContextBase.Config.MinimumHp;
 
                 client.Revive();
                 client.SendMessage(0x02, "You have lost some health.");

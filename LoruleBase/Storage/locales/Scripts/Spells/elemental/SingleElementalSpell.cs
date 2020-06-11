@@ -117,7 +117,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             else
             {
                 if (sprite is Aisling)
-                    (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.GlobalConfig.NoManaMessage);
+                    (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.Config.NoManaMessage);
                 return;
             }
 

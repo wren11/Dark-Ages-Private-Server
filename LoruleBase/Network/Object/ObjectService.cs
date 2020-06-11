@@ -1,31 +1,11 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
-
+﻿using Darkages.Types;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using Darkages.Types;
 
 namespace Darkages.Network.Object
 {
-    [DataContract]
     public class SpriteCollection<T> : IEnumerable<T>
         where T : Sprite
     {
@@ -135,10 +115,10 @@ namespace Darkages.Network.Object
             {
                 if (!_spriteCollections.ContainsKey(map.ID))
                 {
-                    var _cachemap = ServerContextBase.GlobalMapCache
+                    var cachemap = ServerContextBase.GlobalMapCache
                         .Select(i => i.Value).FirstOrDefault(n => n.Name.Equals(map.Name) && n.ID != map.ID);
 
-                    if (_cachemap != null) map = _cachemap;
+                    if (cachemap != null) map = cachemap;
                 }
 
                 var obj = (SpriteCollection<T>) _spriteCollections[map.ID][typeof(T)];
@@ -168,10 +148,10 @@ namespace Darkages.Network.Object
             {
                 if (!_spriteCollections.ContainsKey(map.ID))
                 {
-                    var _cachemap = ServerContextBase.GlobalMapCache
+                    var cachemap = ServerContextBase.GlobalMapCache
                         .Select(i => i.Value).FirstOrDefault(n => n.Name.Equals(map.Name) && n.ID != map.ID);
 
-                    if (_cachemap != null) map = _cachemap;
+                    if (cachemap != null) map = cachemap;
                 }
 
 
@@ -200,22 +180,11 @@ namespace Darkages.Network.Object
             if (obj.YPos >= byte.MaxValue)
                 return;
 
-            if (_spriteCollections.ContainsKey(obj.CurrentMapId))
-            {
-                var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
-                objCollection.Add(obj);
+            if (!_spriteCollections.ContainsKey(obj.CurrentMapId))
+                return;
 
-                lock (ServerContext.syncLock)
-                {
-                    if (obj.Map != null)
-                    {
-                        if (ServerContextBase.GlobalConfig.LogObjectsAdded)
-                        {
-                            Console.WriteLine($"({obj.X},{obj.Y}) {obj.EntityType} was added.");
-                        }
-                    }
-                }
-            }
+            var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
+            objCollection.Add(obj);
         }
 
         public void RemoveGameObject<T>(T obj) where T : Sprite
@@ -225,17 +194,6 @@ namespace Darkages.Network.Object
 
             var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
             objCollection.Delete(obj);
-
-            lock (ServerContext.syncLock)
-            {
-                if (obj.Map != null)
-                {
-                    if (ServerContextBase.GlobalConfig.LogObjectsRemoved)
-                    {
-                        Console.WriteLine($"({obj.X},{obj.Y}) {obj.EntityType} was removed.");
-                    }
-                }
-            }
         }
     }
 }

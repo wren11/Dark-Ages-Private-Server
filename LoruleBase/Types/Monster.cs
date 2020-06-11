@@ -83,19 +83,6 @@ namespace Darkages.Types
 
         [JsonIgnore] public bool Skulled { get; set; }
 
-        public bool NextTo(int x, int y)
-        {
-            var xDist = Math.Abs(x - XPos);
-            var yDist = Math.Abs(y - YPos);
-
-            return xDist + yDist == 1;
-        }
-
-        public bool NextTo(Sprite target)
-        {
-            return NextTo(target.XPos, target.YPos);
-        }
-
         public void GenerateRewards(Aisling player)
         {
             if (Rewarded)
@@ -175,7 +162,7 @@ namespace Darkages.Types
                 exp = 1;
 
             var bonus = exp * (1 + player.GroupParty.LengthExcludingSelf) *
-                ServerContextBase.GlobalConfig.GroupExpBonus / 100;
+                ServerContextBase.Config.GroupExpBonus / 100;
 
             if (bonus > 0)
                 exp += bonus;
@@ -192,7 +179,7 @@ namespace Darkages.Types
 
             var seed = player.ExpLevel * 0.1 + 0.5;
             {
-                if (player.ExpLevel >= ServerContextBase.GlobalConfig.PlayerLevelCap)
+                if (player.ExpLevel >= ServerContextBase.Config.PlayerLevelCap)
                     return;
             }
 
@@ -221,15 +208,15 @@ namespace Darkages.Types
 
         private static void Levelup(Aisling player)
         {
-            if (player.ExpLevel < ServerContextBase.GlobalConfig.PlayerLevelCap)
+            if (player.ExpLevel < ServerContextBase.Config.PlayerLevelCap)
             {
-                player._MaximumHp += (int) (ServerContextBase.GlobalConfig.HpGainFactor * player.Con * 0.65);
-                player._MaximumMp += (int) (ServerContextBase.GlobalConfig.MpGainFactor * player.Wis * 0.45);
-                player.StatPoints += ServerContextBase.GlobalConfig.StatsPerLevel;
+                player._MaximumHp += (int) (ServerContextBase.Config.HpGainFactor * player.Con * 0.65);
+                player._MaximumMp += (int) (ServerContextBase.Config.MpGainFactor * player.Wis * 0.45);
+                player.StatPoints += ServerContextBase.Config.StatsPerLevel;
                 player.ExpLevel++;
 
                 player.Client.SendMessage(0x02,
-                    string.Format(ServerContextBase.GlobalConfig.LevelUpMessage, player.ExpLevel));
+                    string.Format(ServerContextBase.Config.LevelUpMessage, player.ExpLevel));
                 player.Show(Scope.NearbyAislings,
                     new ServerFormat29((uint) player.Serial, (uint) player.Serial, 0x004F, 0x004F, 64));
             }
@@ -254,7 +241,7 @@ namespace Darkages.Types
 
         private List<string> DetermineDrop()
         {
-            return LootManager.Drop(LootTable, Generator.Random.Next(ServerContextBase.GlobalConfig.LootTableStackSize))
+            return LootManager.Drop(LootTable, Generator.Random.Next(ServerContextBase.Config.LootTableStackSize))
                 .Select(i => i?.Name).ToList();
         }
 
@@ -309,7 +296,7 @@ namespace Darkages.Types
                                 {
                                     var variance = DetermineVariance();
 
-                                    if (!ServerContextBase.GlobalConfig.UseLoruleVariants)
+                                    if (!ServerContextBase.Config.UseLoruleVariants)
                                         variance = Variance.None;
 
                                     if (variance != Variance.None)
@@ -322,7 +309,7 @@ namespace Darkages.Types
                                 if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
                                     upgrade = null;
 
-                                if (!ServerContextBase.GlobalConfig.UseLoruleItemRarity)
+                                if (!ServerContextBase.Config.UseLoruleItemRarity)
                                     upgrade = null;
 
                                 rolled_item.Upgrades = upgrade?.Upgrade ?? 0;
@@ -485,8 +472,8 @@ namespace Darkages.Types
 
             obj.BonusMr = (byte) (10 * (template.Level / 20));
 
-            if (obj.BonusMr > ServerContextBase.GlobalConfig.BaseMR)
-                obj.BonusMr = ServerContextBase.GlobalConfig.BaseMR;
+            if (obj.BonusMr > ServerContextBase.Config.BaseMR)
+                obj.BonusMr = ServerContextBase.Config.BaseMR;
 
             if ((template.PathQualifer & PathQualifer.Wander) == PathQualifer.Wander)
                 obj.WalkEnabled = true;

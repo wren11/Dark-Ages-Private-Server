@@ -123,7 +123,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     sprite.CurrentMp = 0;
 
 
-                (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.GlobalConfig.NoManaMessage);
+                (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.Config.NoManaMessage);
             }
 
             var success = Spell.RollDice(rand);

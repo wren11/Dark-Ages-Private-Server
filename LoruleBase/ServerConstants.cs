@@ -118,9 +118,8 @@ namespace Darkages
         int PVPMap { get; set; }
         bool DevMode { get; set; }
         int ClientVersion { get; set; }
-        bool LogObjectsAdded { get; set; }
-        bool LogObjectsRemoved { get; set; }
         bool UseLobby { get; set; }
+        int LOGIN_PORT { get; set; }
     }
 
     public class ServerConstants : IServerConstants
@@ -129,7 +128,7 @@ namespace Darkages
 
         public bool AssailsCancelSpells { get; set; }
 
-        public string BadRequestMessage { get; set; } 
+        public string BadRequestMessage { get; set; }
 
         public byte BaseAC { get; set; } = 170;
 
@@ -176,9 +175,8 @@ namespace Darkages
         public int DeathMap { get; set; }
 
         public bool DebugMode { get; set; }
-        
-        [JsonProperty]
-        public ItemColor DefaultItemColor { get; set; }
+
+        [JsonProperty] public ItemColor DefaultItemColor { get; set; }
 
         public uint DefaultItemDurability { get; set; }
 
@@ -288,8 +286,7 @@ namespace Darkages
 
         public int StartingMap { get; set; }
 
-        [JsonProperty]
-        public Position StartingPosition { get; set; }
+        [JsonProperty] public Position StartingPosition { get; set; }
 
         public byte StatCap { get; set; }
 
@@ -341,11 +338,9 @@ namespace Darkages
 
         public int ClientVersion { get; set; }
 
-        public bool LogObjectsAdded { get; set; }
-
-        public bool LogObjectsRemoved { get; set; }
-
         public bool UseLobby { get; set; }
+
+        public int LOGIN_PORT { get; set; }
     }
 
     public class GameSetting

@@ -32,11 +32,11 @@ namespace Darkages.Types
 
         public void GiveTo(int amount, Aisling aisling)
         {
-            if (aisling.GoldPoints + amount < ServerContextBase.GlobalConfig.MaxCarryGold)
+            if (aisling.GoldPoints + amount < ServerContextBase.Config.MaxCarryGold)
             {
                 aisling.GoldPoints += amount;
 
-                if (aisling.GoldPoints > ServerContextBase.GlobalConfig.MaxCarryGold)
+                if (aisling.GoldPoints > ServerContextBase.Config.MaxCarryGold)
                     aisling.GoldPoints = int.MaxValue;
 
                 aisling.Client.SendMessage(0x03, $"You've Received {amount} coins.");

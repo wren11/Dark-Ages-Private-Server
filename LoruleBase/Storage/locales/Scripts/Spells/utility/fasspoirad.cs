@@ -38,7 +38,7 @@ namespace Darkages.Assets.locales.Scripts.Spells.utility
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                client.SendMessage(0x02, ServerContextBase.GlobalConfig.SomethingWentWrong);
+                client.SendMessage(0x02, ServerContextBase.Config.SomethingWentWrong);
             }
         }
 

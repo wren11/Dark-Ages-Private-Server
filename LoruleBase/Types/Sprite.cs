@@ -1,8 +1,10 @@
 ﻿using Darkages.Common;
 using Darkages.Network;
 using Darkages.Network.Game;
+using Darkages.Network.Game.Components;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
+using Darkages.Scripting;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -10,12 +12,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Darkages.Network.Game.Components;
 using static Darkages.Types.ElementManager;
 
 namespace Darkages.Types
 {
-    public abstract class Sprite : ObjectManager, INotifyPropertyChanged
+    public abstract class Sprite : ObjectManager, INotifyPropertyChanged, ISprite
     {
         [JsonIgnore] public byte LastDirection;
 
@@ -571,7 +572,7 @@ namespace Darkages.Types
             OnDamaged(damageDealingSprite, dmg);
         }
 
-        private void OnDamaged(Sprite source, int dmg)
+        public void OnDamaged(Sprite source, int dmg)
         {
             (this as Aisling)?.Client.SendStats(StatusFlags.StructB);
             (source as Aisling)?.Client.SendStats(StatusFlags.StructB);
@@ -591,7 +592,7 @@ namespace Darkages.Types
                 script?.OnDamaged(aisling?.Client, dmg, source);
         }
 
-        private bool DamageTarget(Sprite damageDealingSprite,
+        public bool DamageTarget(Sprite damageDealingSprite,
             ref int dmg, bool penetrating, byte sound,
             Action<int> dmgcb, bool forced)
         {
@@ -622,7 +623,7 @@ namespace Darkages.Types
                 if (damageDealingSprite is Aisling aisling)
                     if (!CanTag(aisling, forced))
                     {
-                        aisling.Client.SendMessage(0x02, ServerContextBase.GlobalConfig.CantAttack);
+                        aisling.Client.SendMessage(0x02, ServerContextBase.Config.CantAttack);
                         return false;
                     }
 
@@ -656,7 +657,7 @@ namespace Darkages.Types
             return true;
         }
 
-        private int ApplyWeaponBonuses(Sprite source, int dmg)
+        public int ApplyWeaponBonuses(Sprite source, int dmg)
         {
             if (!(source is Aisling aisling))
                 return dmg;
@@ -676,13 +677,13 @@ namespace Darkages.Types
             return dmg;
         }
 
-        private void ApplyEquipmentDurability(int dmg)
+        public void ApplyEquipmentDurability(int dmg)
         {
             if (this is Aisling aisling && aisling.DamageCounter++ % 2 == 0 && dmg > 0)
                 aisling.EquipmentManager.DecreaseDurability();
         }
 
-        private double GetElementalModifier(Sprite damageDealingSprite)
+        public double GetElementalModifier(Sprite damageDealingSprite)
         {
             if (damageDealingSprite == null)
                 return 1;
@@ -696,14 +697,14 @@ namespace Darkages.Types
             }
 
             amplifier *= Amplified == 1
-                ? ServerContextBase.GlobalConfig.FasNadurStrength + 10
-                : ServerContextBase.GlobalConfig.MorFasNadurStrength + 30;
+                ? ServerContextBase.Config.FasNadurStrength + 10
+                : ServerContextBase.Config.MorFasNadurStrength + 30;
 
 
             return amplifier;
         }
 
-        private double CalculateElementalDamageMod(Element element)
+        public double CalculateElementalDamageMod(Element element)
         {
             while (DefenseElement == Element.Random) DefenseElement = CheckRandomElement(DefenseElement);
 
@@ -838,7 +839,7 @@ namespace Darkages.Types
             return 0.00;
         }
 
-        private int CompleteDamageApplication(int dmg, byte sound, Action<int> dmgcb, double amplifier)
+        public int CompleteDamageApplication(int dmg, byte sound, Action<int> dmgcb, double amplifier)
         {
             if (dmg <= 0)
                 dmg = 1;
@@ -910,7 +911,7 @@ namespace Darkages.Types
                 else if (op == Scope.VeryNearbyAislings)
                 {
                     foreach (var gc in GetObjects<Aisling>(Map, that =>
-                        WithinRangeOf(that, ServerContextBase.GlobalConfig.VeryNearByProximity)))
+                        WithinRangeOf(that, ServerContextBase.Config.VeryNearByProximity)))
                     {
                         gc.Client.Send(format);
                     }
@@ -1072,7 +1073,7 @@ namespace Darkages.Types
 
         public bool WithinRangeOf(Sprite other, bool checkMap = true)
         {
-            return other != null && WithinRangeOf(other, ServerContextBase.GlobalConfig.WithinRangeProximity, checkMap);
+            return other != null && WithinRangeOf(other, ServerContextBase.Config.WithinRangeProximity, checkMap);
         }
 
         public bool WithinRangeOf(Sprite other, int distance, bool checkMap = true)
@@ -1257,7 +1258,9 @@ namespace Darkages.Types
                     offset = 0;
                 }
 
-                buffer[offset] = i;
+                if (offset < buffer.Length)
+                    buffer[offset] = i;
+
                 offset++;
             }
 
@@ -1266,7 +1269,7 @@ namespace Darkages.Types
 
             lock (Generator.Random)
             {
-                var pendingDirection = buffer[Generator.Random.Next(0, offset)];
+                var pendingDirection = buffer[Generator.Random.Next(0, offset) % buffer.Length];
                 Direction = pendingDirection;
 
                 return this.Walk();
@@ -1307,7 +1310,7 @@ namespace Darkages.Types
                 if (CurrentHp == 0)
                     return false;
 
-            if (ServerContextBase.GlobalConfig.CanMoveDuringReap)
+            if (ServerContextBase.Config.CanMoveDuringReap)
                 return true;
 
             if (!(this is Aisling aisling))
@@ -1316,7 +1319,7 @@ namespace Darkages.Types
             if (!aisling.Skulled)
                 return true;
 
-            aisling.Client.SystemMessage(ServerContextBase.GlobalConfig.ReapMessageDuringAction);
+            aisling.Client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
             return false;
         }
 
@@ -1408,6 +1411,47 @@ namespace Darkages.Types
             }
 
             return Aisling(this);
+        }
+
+        public void Shout(string message)
+        {
+            var response = new ServerFormat0D
+            {
+                Serial = Serial,
+                Type = 0x01,
+                Text = message
+            };
+
+            Show(Scope.AislingsOnSameMap, response);
+        }
+
+        public void UseSpellScript(string spellName, Sprite target)
+        {
+            if (!ServerContextBase.GlobalSpellTemplateCache.ContainsKey(spellName))
+                return;
+
+
+            var scripts = ScriptManager.Load<SpellScript>(spellName,
+                Spell.Create(1, ServerContextBase.GlobalSpellTemplateCache[spellName]));
+
+            foreach (var script in scripts.Values)
+            {
+                script?.OnUse(this, target);
+            }
+        }
+
+        public void UseSkillScript(string skillName)
+        {
+            if (!ServerContextBase.GlobalSkillTemplateCache.ContainsKey(skillName))
+                return;
+
+            var spellTemplate = ServerContextBase.GlobalSkillTemplateCache[skillName];
+            var skill = Skill.Create(1, spellTemplate);
+
+            foreach (var script in skill.Scripts.Values)
+            {
+                script?.OnUse(this);
+            }
         }
 
         public void Animate(ushort animation, byte speed = 100)

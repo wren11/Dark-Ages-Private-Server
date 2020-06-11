@@ -16,34 +16,44 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 // *************************************************************************
 
+using System;
+using System.IO;
+
 namespace Darkages
 {
     public interface IServerContext
     {
-        public void Start();
-        public void Shutdown();
+        void Start(IServerConstants config, Action<string> log, Action<Exception> error);
+        void Shutdown();
+        void InitFromConfig(string storagePath);
     }
 
-    /// <summary>
-    ///     The Main Application Context Used to Couple All Information used to Manage Running Servers and Clients and
-    ///     Storage.
-    /// </summary>
     public class ServerContext : ServerContextBase, IServerContext
     {
-        public static object syncLock = new object();
+        public static object SyncLock = new object();
+        public static Action<string> Logger { get; set; }
+        public static Action<Exception> Error { get; set; }
 
-        static ServerContext()
+        public virtual void Start(IServerConstants config, Action<string> log, Action<Exception> error)
         {
-        }
+            Error = error ?? throw new ArgumentNullException(nameof(error));
+            Logger = log ?? throw new ArgumentNullException(nameof(log));
+            Config = config ?? throw new ArgumentNullException(nameof(config));
 
-        public virtual void Start()
-        {
             Startup();
         }
 
         public virtual void Shutdown()
         {
             DisposeGame();
+        }
+
+        public void InitFromConfig(string storagePath)
+        {
+            StoragePath = storagePath;
+
+            if (!Directory.Exists(StoragePath))
+                Directory.CreateDirectory(StoragePath);
         }
     }
 }

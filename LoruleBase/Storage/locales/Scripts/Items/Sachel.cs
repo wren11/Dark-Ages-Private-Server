@@ -42,7 +42,7 @@ namespace Darkages.Storage.locales.Scripts.Items
 
                 if (name == string.Empty)
                 {
-                    client.SendMessage(0x02, ServerContextBase.GlobalConfig.CantUseThat);
+                    client.SendMessage(0x02, ServerContextBase.Config.CantUseThat);
                     return;
                 }
 

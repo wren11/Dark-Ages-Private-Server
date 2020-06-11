@@ -27,7 +27,7 @@ namespace Darkages.Network.Game.Components
             : base(server)
         {
             Timer = new GameServerTimer(
-                TimeSpan.FromSeconds(ServerContextBase.GlobalConfig.PingInterval));
+                TimeSpan.FromSeconds(ServerContextBase.Config.PingInterval));
         }
 
         public GameServerTimer Timer { get; set; }

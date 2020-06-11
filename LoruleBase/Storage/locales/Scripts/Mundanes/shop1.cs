@@ -108,7 +108,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         return;
 
                     if (client.Aisling.GoldPoints + Convert.ToInt32(offer) <=
-                        ServerContextBase.GlobalConfig.MaxCarryGold)
+                        ServerContextBase.Config.MaxCarryGold)
                     {
                         client.Aisling.GoldPoints += Convert.ToInt32(offer);
                         client.Aisling.EquipmentManager.RemoveFromInventory(item, true);

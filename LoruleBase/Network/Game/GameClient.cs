@@ -154,10 +154,10 @@ namespace Darkages.Network.Game
         public GameClient()
         {
             HpRegenTimer = new GameServerTimer(
-                TimeSpan.FromMilliseconds(ServerContextBase.GlobalConfig.RegenRate));
+                TimeSpan.FromMilliseconds(ServerContextBase.Config.RegenRate));
 
             MpRegenTimer = new GameServerTimer(
-                TimeSpan.FromMilliseconds(ServerContextBase.GlobalConfig.RegenRate));
+                TimeSpan.FromMilliseconds(ServerContextBase.Config.RegenRate));
 
         }
 
@@ -342,7 +342,7 @@ namespace Darkages.Network.Game
         /// </summary>
         /// <value><c>true</c> if this instance is refreshing; otherwise, <c>false</c>.</value>
         public bool IsRefreshing =>
-            DateTime.UtcNow - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContextBase.GlobalConfig.RefreshRate);
+            DateTime.UtcNow - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContextBase.Config.RefreshRate);
 
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace Darkages.Network.Game
         /// </summary>
         /// <value><c>true</c> if this instance is warping; otherwise, <c>false</c>.</value>
         public bool IsWarping =>
-            DateTime.UtcNow - LastWarp < new TimeSpan(0, 0, 0, 0, ServerContextBase.GlobalConfig.WarpCheckRate);
+            DateTime.UtcNow - LastWarp < new TimeSpan(0, 0, 0, 0, ServerContextBase.Config.WarpCheckRate);
 
         /// <summary>
         ///     Gets a value indicating whether this instance can send location.
@@ -413,14 +413,14 @@ namespace Darkages.Network.Game
 
         public void BuildSettings()
         {
-            if (ServerContextBase.GlobalConfig.Settings == null || ServerContextBase.GlobalConfig.Settings.Count == 0)
+            if (ServerContextBase.Config.Settings == null || ServerContextBase.Config.Settings.Count == 0)
                 return;
 
             if (Aisling.GameSettings == null || Aisling.GameSettings.Count == 0)
             {
                 Aisling.GameSettings = new List<ClientGameSettings>();
 
-                foreach (var settings in ServerContextBase.GlobalConfig.Settings)
+                foreach (var settings in ServerContextBase.Config.Settings)
                     Aisling.GameSettings.Add(new ClientGameSettings(settings.SettingOff, settings.SettingOn,
                         settings.Enabled));
             }
@@ -640,7 +640,7 @@ namespace Darkages.Network.Game
             if (!Aisling.LoggedIn)
                 return;
 
-            if ((DateTime.UtcNow - Aisling.LastLogged).TotalMilliseconds < ServerContextBase.GlobalConfig.LingerState)
+            if ((DateTime.UtcNow - Aisling.LastLogged).TotalMilliseconds < ServerContextBase.Config.LingerState)
                 return;
 
             #endregion
@@ -768,7 +768,7 @@ namespace Darkages.Network.Game
 
                 if (!Aisling.Skulled)
                 {
-                    if (Aisling.CurrentMapId == ServerContextBase.GlobalConfig.DeathMap)
+                    if (Aisling.CurrentMapId == ServerContextBase.Config.DeathMap)
                         return this;
 
                     var debuff = new debuff_reeping();
@@ -838,6 +838,7 @@ namespace Darkages.Network.Game
                 }
                 catch (NullReferenceException e)
                 {
+                    ServerContext.Error(e);
                 }
             }
 
@@ -873,10 +874,10 @@ namespace Darkages.Network.Game
         public GameClient Regen(TimeSpan elapsedTime)
         {
             if (Aisling.Con > Aisling.ExpLevel + 1)
-                HpRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContextBase.GlobalConfig.RegenRate / 2);
+                HpRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContextBase.Config.RegenRate / 2);
 
             if (Aisling.Wis > Aisling.ExpLevel + 1)
-                MpRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContextBase.GlobalConfig.RegenRate / 2);
+                MpRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContextBase.Config.RegenRate / 2);
 
             if (!HpRegenTimer.Disabled)
                 HpRegenTimer.Update(elapsedTime);
@@ -1770,7 +1771,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.ExpLevel < item.Template.LevelRequired)
             {
-                message = ServerContextBase.GlobalConfig.CantWearYetMessage;
+                message = ServerContextBase.Config.CantWearYetMessage;
                 if (!(message != null && string.IsNullOrEmpty(message)))
                 {
                     client.SendMessage(0x02, message);
@@ -1780,7 +1781,7 @@ namespace Darkages.Network.Game
 
             if (item.Durability <= 0)
             {
-                message = ServerContextBase.GlobalConfig.RepairItemMessage;
+                message = ServerContextBase.Config.RepairItemMessage;
                 if (!(message != null && string.IsNullOrEmpty(message)))
                 {
                     client.SendMessage(0x02, message);
@@ -1791,9 +1792,9 @@ namespace Darkages.Network.Game
             if (client.Aisling.Path != item.Template.Class && !(item.Template.Class == Class.Peasant))
             {
                 if (client.Aisling.ExpLevel >= item.Template.LevelRequired)
-                    message = ServerContextBase.GlobalConfig.WrongClassMessage;
+                    message = ServerContextBase.Config.WrongClassMessage;
                 else
-                    message = ServerContextBase.GlobalConfig.CantWearYetMessage;
+                    message = ServerContextBase.Config.CantWearYetMessage;
             }
 
             if (!item.Template.Class.HasFlag(client.Aisling.Path) && !(item.Template.Class == Class.Peasant))
@@ -1821,7 +1822,7 @@ namespace Darkages.Network.Game
                     }
                     else
                     {
-                        client.SendMessage(0x02, ServerContextBase.GlobalConfig.DoesNotFitMessage);
+                        client.SendMessage(0x02, ServerContextBase.Config.DoesNotFitMessage);
                         return false;
                     }
                 }
@@ -1829,7 +1830,7 @@ namespace Darkages.Network.Game
                 return true;
             }
 
-            client.SendMessage(0x02, ServerContextBase.GlobalConfig.CantEquipThatMessage);
+            client.SendMessage(0x02, ServerContextBase.Config.CantEquipThatMessage);
             return false;
         }
 

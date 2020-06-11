@@ -125,7 +125,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     if (subject.Prerequisites == null)
                     {
                         client.CloseDialog();
-                        client.SendMessage(0x02, ServerContextBase.GlobalConfig.CantDoThat);
+                        client.SendMessage(0x02, ServerContextBase.Config.CantDoThat);
                     }
                     else
                     {

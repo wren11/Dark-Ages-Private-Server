@@ -49,9 +49,9 @@ namespace Darkages.Network.Login
         /// </summary>
         protected virtual void Format00Handler(LoginClient client, ClientFormat00 format)
         {
-            if (ServerContextBase.GlobalConfig.UseLobby)
+            if (ServerContextBase.Config.UseLobby)
             {
-                if (format.Version == ServerContextBase.GlobalConfig.ClientVersion)
+                if (format.Version == ServerContextBase.Config.ClientVersion)
                     client.Send(new ServerFormat00
                     {
                         Type = 0x00,
@@ -60,9 +60,9 @@ namespace Darkages.Network.Login
                     });
             }
 
-            if (ServerContextBase.GlobalConfig.DevMode)
+            if (ServerContextBase.Config.DevMode)
             {
-                var aisling = StorageManager.AislingBucket.Load(ServerContextBase.GlobalConfig.GameMaster);
+                var aisling = StorageManager.AislingBucket.Load(ServerContextBase.Config.GameMaster);
 
                 if (aisling != null)
                     LoginAsAisling(client, aisling);
@@ -143,12 +143,13 @@ namespace Darkages.Network.Login
             }
             catch (Exception e)
             {
+                ServerContext.Error(e);
                 client.SendMessageBox(0x02, $"{format.Username} is not supported by the new server. Please remake your character. This will not happen when the server goes to beta.");
 
                 return;
             }
 
-            if (!ServerContextBase.GlobalConfig.MultiUserLogin)
+            if (!ServerContextBase.Config.MultiUserLogin)
             {
                 var aislings = ServerContextBase.Game.Clients.Where(i => i?.Aisling != null && i.Aisling.LoggedIn && i.Aisling.Username.ToLower() == format.Username.ToLower());
 
@@ -174,7 +175,7 @@ namespace Darkages.Network.Login
                     Name   = JsonConvert.SerializeObject(new { player = aisling.Username, map } ),
                 };
 
-                if (aisling.Username.Equals(ServerContextBase.GlobalConfig.GameMaster,
+                if (aisling.Username.Equals(ServerContextBase.Config.GameMaster,
                     StringComparison.OrdinalIgnoreCase)) aisling.GameMaster = true;
 
                 aisling.Redirect = redirect;
@@ -184,7 +185,7 @@ namespace Darkages.Network.Login
                 client.SendMessageBox(0x00, "\0");
                 client.Send(new ServerFormat03
                 {
-                    EndPoint = new IPEndPoint(Address, ServerContextBase.DefaultPort),
+                    EndPoint = new IPEndPoint(Address, ServerContextBase.Config.SERVER_PORT),
                     Redirect = redirect
                 });
             }

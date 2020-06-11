@@ -30,7 +30,7 @@ namespace Darkages.Network.Game.Components
             : base(server)
         {
             _timer = new GameServerTimer(
-                TimeSpan.FromSeconds(ServerContextBase.GlobalConfig.DayTimeInterval));
+                TimeSpan.FromSeconds(ServerContextBase.Config.DayTimeInterval));
         }
 
         public override void Update(TimeSpan elapsedTime)

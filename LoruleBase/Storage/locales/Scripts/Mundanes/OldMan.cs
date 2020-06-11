@@ -65,16 +65,19 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                             }
                     });
 
-                    ServerContextBase.Debug("Script Interpreter Created for Mundane: {0}", Mundane.Template.Name);
+                    ServerContext.Logger($"Script Interpreter Created for Mundane: {Mundane.Template.Name}");
                 }
         }
 
         public void MenuInterpreter_OnMovedToNextStep(GameClient client, MenuItem previous, MenuItem current)
         {
-            if (client.MenuInterpter != null)
-                if (client.MenuInterpter.IsFinished)
-                {
-                }
+            if (client.MenuInterpter == null)
+                return;
+
+            if (client.MenuInterpter.IsFinished)
+            {
+
+            }
         }
 
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)

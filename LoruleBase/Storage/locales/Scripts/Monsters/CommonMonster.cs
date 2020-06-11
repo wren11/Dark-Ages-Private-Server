@@ -74,6 +74,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             }
             catch (Exception e)
             {
+                ServerContext.Error(e);
                 //ignore
             }
         }
@@ -97,6 +98,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             }
             catch (Exception e)
             {
+                ServerContext.Error(e);
                 //ignore
             }
         }
@@ -216,6 +218,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             }
             catch (Exception e)
             {
+                ServerContext.Error(e);
                 //ignore
             }
         }
@@ -278,7 +281,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 return;
 
             if (Monster != null && Monster.Target != null && SpellScripts.Count > 0)
-                if (_random.Next(1, 101) < ServerContextBase.GlobalConfig.MonsterSpellSuccessRate)
+                if (_random.Next(1, 101) < ServerContextBase.Config.MonsterSpellSuccessRate)
                 {
                     var spellidx = _random.Next(SpellScripts.Count);
 

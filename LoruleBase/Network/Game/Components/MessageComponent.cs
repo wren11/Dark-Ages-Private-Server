@@ -26,7 +26,7 @@ namespace Darkages.Network.Game.Components
             : base(server)
         {
             Timer = new GameServerTimer(
-                TimeSpan.FromSeconds(ServerContextBase.GlobalConfig.MessageClearInterval));
+                TimeSpan.FromSeconds(ServerContextBase.Config.MessageClearInterval));
         }
 
         public GameServerTimer Timer { get; set; }

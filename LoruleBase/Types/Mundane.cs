@@ -332,7 +332,7 @@ namespace Darkages.Types
                                                     DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
                                             else
                                                 skill.NextAvailableUse =
-                                                    DateTime.UtcNow.AddMilliseconds(ServerContextBase.GlobalConfig
+                                                    DateTime.UtcNow.AddMilliseconds(ServerContextBase.Config
                                                         .GlobalBaseSkillDelay);
                                         }
 

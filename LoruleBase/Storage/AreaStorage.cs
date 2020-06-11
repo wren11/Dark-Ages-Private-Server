@@ -60,6 +60,7 @@ namespace Darkages.Storage
                 }
                 catch (Exception e)
                 {
+                    ServerContext.Error(e);
                     return null;
                 }
             }

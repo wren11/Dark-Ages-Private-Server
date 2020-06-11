@@ -27,10 +27,10 @@ namespace Darkages.Storage.locales.debuffs
         public readonly Random _rnd = new Random();
         public override string Name => "skulled";
         public override byte Icon => 89;
-        public override int Length => ServerContextBase.GlobalConfig.SkullLength;
+        public override int Length => ServerContextBase.Config.SkullLength;
 
         public string[] Messages =>
-            ServerContextBase.GlobalConfig.ReapMessage.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
+            ServerContextBase.Config.ReapMessage.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 
         public int Count => Messages.Length;
 
@@ -44,7 +44,7 @@ namespace Darkages.Storage.locales.debuffs
 
             base.OnApplied(Affected, debuff);
 
-            if (Affected.CurrentMapId == ServerContextBase.GlobalConfig.DeathMap)
+            if (Affected.CurrentMapId == ServerContextBase.Config.DeathMap)
             {
                 base.OnEnded(Affected, debuff);
                 return;
@@ -79,7 +79,7 @@ namespace Darkages.Storage.locales.debuffs
 
         public override void OnDurationUpdate(Sprite Affected, Debuff debuff)
         {
-            if (Affected.CurrentMapId == ServerContextBase.GlobalConfig.DeathMap)
+            if (Affected.CurrentMapId == ServerContextBase.Config.DeathMap)
             {
                 base.OnEnded(Affected, debuff);
                 return;
@@ -129,7 +129,7 @@ namespace Darkages.Storage.locales.debuffs
 
         public override void OnEnded(Sprite Affected, Debuff debuff)
         {
-            if (Affected.CurrentMapId == ServerContextBase.GlobalConfig.DeathMap)
+            if (Affected.CurrentMapId == ServerContextBase.Config.DeathMap)
             {
                 base.OnEnded(Affected, debuff);
                 return;

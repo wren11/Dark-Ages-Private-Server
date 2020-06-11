@@ -36,7 +36,7 @@ namespace Darkages.Network.Game.Components
         public MonolithComponent(GameServer server)
             : base(server)
         {
-            _timer = new GameServerTimer(TimeSpan.FromMilliseconds(ServerContextBase.GlobalConfig.GlobalSpawnTimer));
+            _timer = new GameServerTimer(TimeSpan.FromMilliseconds(ServerContextBase.Config.GlobalSpawnTimer));
         }
 
         public override void Update(TimeSpan elapsedTime)

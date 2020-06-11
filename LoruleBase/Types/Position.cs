@@ -60,7 +60,7 @@ namespace Darkages.Types
 
         public bool IsNearby(Position pos)
         {
-            return pos.DistanceFrom(X, Y) <= ServerContextBase.GlobalConfig.VeryNearByProximity;
+            return pos.DistanceFrom(X, Y) <= ServerContextBase.Config.VeryNearByProximity;
         }
 
         public static Position operator +(Position a, Direction b)

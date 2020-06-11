@@ -160,7 +160,7 @@ namespace Darkages
             var bPos = 0;
             var dPos = row * Cols * 6;
 
-            lock (ServerContext.syncLock)
+            lock (ServerContext.SyncLock)
             {
                 for (var i = 0; i < Cols; i++, bPos += 6, dPos += 6)
                 {
@@ -189,7 +189,7 @@ namespace Darkages
 
         public void UpdateAreaObjects(TimeSpan elapsedTime)
         {
-            lock (ServerContext.syncLock)
+            lock (ServerContext.SyncLock)
             {
                 var objectCache = GetAreaObjects();
 
@@ -293,7 +293,7 @@ namespace Darkages
 
         public void OnLoaded()
         {
-            lock (ServerContext.syncLock)
+            lock (ServerContext.SyncLock)
             {
                 Tile = new TileContent[Cols, Rows];
                 ObjectGrid = new TileGrid[Cols, Rows];

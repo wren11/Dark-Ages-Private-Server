@@ -85,7 +85,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                             if (sprite is Aisling)
                             {
                                 (sprite as Aisling).Client.SendMessageBox(0x02,
-                                    ServerContextBase.GlobalConfig.CantDoThat);
+                                    ServerContextBase.Config.CantDoThat);
                                 return;
                             }
                             else

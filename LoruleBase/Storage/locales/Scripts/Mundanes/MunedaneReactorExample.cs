@@ -140,15 +140,15 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
                 {
                     client.Aisling.TutorialCompleted = true;
                     client.Aisling.ExpLevel = 11;
-                    client.Aisling._Str = ServerContextBase.GlobalConfig.BaseStatAttribute;
-                    client.Aisling._Int = ServerContextBase.GlobalConfig.BaseStatAttribute;
-                    client.Aisling._Wis = ServerContextBase.GlobalConfig.BaseStatAttribute;
-                    client.Aisling._Con = ServerContextBase.GlobalConfig.BaseStatAttribute;
-                    client.Aisling._Dex = ServerContextBase.GlobalConfig.BaseStatAttribute;
-                    client.Aisling._MaximumHp = (ServerContextBase.GlobalConfig.MinimumHp + 33) * 11;
-                    client.Aisling._MaximumMp = (ServerContextBase.GlobalConfig.MinimumHp + 21) * 11;
+                    client.Aisling._Str = ServerContextBase.Config.BaseStatAttribute;
+                    client.Aisling._Int = ServerContextBase.Config.BaseStatAttribute;
+                    client.Aisling._Wis = ServerContextBase.Config.BaseStatAttribute;
+                    client.Aisling._Con = ServerContextBase.Config.BaseStatAttribute;
+                    client.Aisling._Dex = ServerContextBase.Config.BaseStatAttribute;
+                    client.Aisling._MaximumHp = (ServerContextBase.Config.MinimumHp + 33) * 11;
+                    client.Aisling._MaximumMp = (ServerContextBase.Config.MinimumHp + 21) * 11;
 
-                    client.Aisling.StatPoints = 11 * ServerContextBase.GlobalConfig.StatsPerLevel;
+                    client.Aisling.StatPoints = 11 * ServerContextBase.Config.StatsPerLevel;
                     client.SendStats(StatusFlags.All);
 
                     client.SendMessage(0x02, "You have lost all memory...");

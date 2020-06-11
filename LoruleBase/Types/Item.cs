@@ -112,7 +112,7 @@ namespace Darkages.Types
         {
             if ((sprite as Aisling).CurrentWeight + Template.CarryWeight > (sprite as Aisling).MaximumWeight)
             {
-                (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02, ServerContextBase.GlobalConfig.ToWeakToLift);
+                (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02, ServerContextBase.Config.ToWeakToLift);
                 return false;
             }
 
@@ -178,7 +178,7 @@ namespace Darkages.Types
                     if (Slot == byte.MaxValue)
                     {
                         (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
-                            ServerContextBase.GlobalConfig.CantCarryMoreMsg);
+                            ServerContextBase.Config.CantCarryMoreMsg);
                         return false;
                     }
 
@@ -209,7 +209,7 @@ namespace Darkages.Types
                     if (Slot == byte.MaxValue)
                     {
                         (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
-                            ServerContextBase.GlobalConfig.CantCarryMoreMsg);
+                            ServerContextBase.Config.CantCarryMoreMsg);
                         return false;
                     }
 
@@ -307,7 +307,7 @@ namespace Darkages.Types
                     client.Aisling.BonusHp += Template.HealthModifer.Value;
 
                 if (client.Aisling.BonusHp < 0)
-                    client.Aisling.BonusHp = ServerContextBase.GlobalConfig.MinimumHp;
+                    client.Aisling.BonusHp = ServerContextBase.Config.MinimumHp;
             }
 
             #endregion
@@ -382,7 +382,7 @@ namespace Darkages.Types
                     client.Aisling.BonusCon += (byte) Template.ConModifer.Value;
 
                 if (client.Aisling.BonusCon < 0)
-                    client.Aisling.BonusCon = ServerContextBase.GlobalConfig.BaseStatAttribute;
+                    client.Aisling.BonusCon = ServerContextBase.Config.BaseStatAttribute;
                 if (client.Aisling.BonusCon > 255)
                     client.Aisling.BonusCon = 255;
             }
@@ -535,7 +535,7 @@ namespace Darkages.Types
                     client.Aisling.BonusHp -= Template.HealthModifer.Value;
 
                 if (client.Aisling.BonusHp < 0)
-                    client.Aisling.BonusHp = ServerContextBase.GlobalConfig.MinimumHp;
+                    client.Aisling.BonusHp = ServerContextBase.Config.MinimumHp;
             }
 
             #endregion
@@ -706,18 +706,18 @@ namespace Darkages.Types
             obj.AuthenticatedAislings = null;
 
             if (obj.Color == 0)
-                obj.Color = (byte) ServerContextBase.GlobalConfig.DefaultItemColor;
+                obj.Color = (byte) ServerContextBase.Config.DefaultItemColor;
 
             if (obj.Template.Flags.HasFlag(ItemFlags.Repairable))
             {
                 if (obj.Template.MaxDurability == uint.MinValue)
                 {
-                    obj.Template.MaxDurability = ServerContextBase.GlobalConfig.DefaultItemDurability;
-                    obj.Durability = ServerContextBase.GlobalConfig.DefaultItemDurability;
+                    obj.Template.MaxDurability = ServerContextBase.Config.DefaultItemDurability;
+                    obj.Durability = ServerContextBase.Config.DefaultItemDurability;
                 }
 
                 if (obj.Template.Value == uint.MinValue)
-                    obj.Template.Value = ServerContextBase.GlobalConfig.DefaultItemValue;
+                    obj.Template.Value = ServerContextBase.Config.DefaultItemValue;
             }
 
             if (obj.Template.Flags.HasFlag(ItemFlags.QuestRelated))
@@ -849,6 +849,7 @@ namespace Darkages.Types
             }
             catch (Exception e)
             {
+                ServerContext.Error(e);
             }
         }
 

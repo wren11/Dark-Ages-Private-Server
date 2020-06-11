@@ -29,7 +29,7 @@ namespace Darkages.Network.Game
 {
     public partial class GameServer
     {
-        public Dictionary<Type, GameServerComponent> Components;
+        public Dictionary<Type, GameServerComponent> ServerComponents;
 
         private readonly TimeSpan _heavyUpdateSpan;
 
@@ -46,7 +46,7 @@ namespace Darkages.Network.Game
 
         private void AutoSave(GameClient client)
         {
-            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContextBase.GlobalConfig.SaveRate)
+            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContextBase.Config.SaveRate)
                 client.Save();
         }
 
@@ -83,17 +83,19 @@ namespace Darkages.Network.Game
 
         private void InitComponentCache()
         {
-            Components = new Dictionary<Type, GameServerComponent>
+            lock (ServerContext.SyncLock)
             {
-                [typeof(Save)] = new Save(this),
-                [typeof(ObjectComponent)] = new ObjectComponent(this),
-                [typeof(ClientTickComponent)] = new ClientTickComponent(this),
-                [typeof(MonolithComponent)] = new MonolithComponent(this),
-                [typeof(DaytimeComponent)] = new DaytimeComponent(this),
-                [typeof(MundaneComponent)] = new MundaneComponent(this),
-                [typeof(MessageComponent)] = new MessageComponent(this),
-                [typeof(PingComponent)] = new PingComponent(this),
-            };
+                ServerComponents = new Dictionary<Type, GameServerComponent>
+                {
+                    [typeof(Save)] = new Save(this),
+                    [typeof(ObjectComponent)] = new ObjectComponent(this),
+                    [typeof(MonolithComponent)] = new MonolithComponent(this),
+                    [typeof(DaytimeComponent)] = new DaytimeComponent(this),
+                    [typeof(MundaneComponent)] = new MundaneComponent(this),
+                    [typeof(MessageComponent)] = new MessageComponent(this),
+                    [typeof(PingComponent)] = new PingComponent(this),
+                };
+            }
         }
 
 
@@ -101,14 +103,15 @@ namespace Darkages.Network.Game
         {
             try
             {
-                lock (Components)
+                lock (ServerComponents)
                 {
-                    foreach (var component in Components.Values)
+                    foreach (var component in ServerComponents.Values)
                         component.Update(elapsedTime);
                 }
             }
             catch (Exception e)
             {
+                ServerContext.Error(e);
             }
         }
 
@@ -126,6 +129,7 @@ namespace Darkages.Network.Game
             }
             catch (Exception e)
             {
+                ServerContext.Error(e);
             }
         }
 
@@ -151,7 +155,7 @@ namespace Darkages.Network.Game
                         else if (client.IsWarping && !client.InMapTransition)
                         {
                             if (client.CanSendLocation && !client.IsRefreshing &&
-                                client.Aisling.CurrentMapId == ServerContextBase.GlobalConfig.PVPMap)
+                                client.Aisling.CurrentMapId == ServerContextBase.Config.PVPMap)
                                 client.SendLocation();
                         }
                     }
@@ -191,7 +195,7 @@ namespace Darkages.Network.Game
             }
             catch (Exception e)
             {
-
+                ServerContext.Error(e);
             }
             finally
             {

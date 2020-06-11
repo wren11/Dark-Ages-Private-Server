@@ -49,11 +49,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         private void TopMenu(GameClient client)
         {
             var opts = new List<OptionsDataItem>();
-            opts.Add(new OptionsDataItem(0x0001, ServerContextBase.GlobalConfig.MerchantBuy));
-            opts.Add(new OptionsDataItem(0x0002, ServerContextBase.GlobalConfig.MerchantSell));
+            opts.Add(new OptionsDataItem(0x0001, ServerContextBase.Config.MerchantBuy));
+            opts.Add(new OptionsDataItem(0x0002, ServerContextBase.Config.MerchantSell));
             opts.Add(new OptionsDataItem(0x0003, "Repair Items"));
 
-            client.SendOptionsDialog(Mundane, ServerContextBase.GlobalConfig.MerchantBuyMessage, opts.ToArray());
+            client.SendOptionsDialog(Mundane, ServerContextBase.Config.MerchantBuyMessage, opts.ToArray());
         }
 
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
@@ -125,7 +125,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                             if (item.Stacks >= amount)
                             {
                                 if (client.Aisling.GoldPoints + Convert.ToInt32(offer) <=
-                                    ServerContextBase.GlobalConfig.MaxCarryGold)
+                                    ServerContextBase.Config.MaxCarryGold)
                                 {
                                     client.PendingItemSessions.Offer = Convert.ToInt32(offer) * amount;
                                     client.PendingItemSessions.Removing = amount;
@@ -133,9 +133,9 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                                     var opts2 = new List<OptionsDataItem>();
                                     opts2.Add(new OptionsDataItem(0x0030,
-                                        ServerContextBase.GlobalConfig.MerchantConfirmMessage));
+                                        ServerContextBase.Config.MerchantConfirmMessage));
                                     opts2.Add(new OptionsDataItem(0x0020,
-                                        ServerContextBase.GlobalConfig.MerchantCancelMessage));
+                                        ServerContextBase.Config.MerchantCancelMessage));
 
                                     client.SendOptionsDialog(Mundane, string.Format(
                                             "I will give offer you {0} gold for {1} of those ({2} Gold Each), Deal?",
@@ -148,13 +148,13 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                             {
                                 client.PendingItemSessions = null;
                                 client.SendOptionsDialog(Mundane,
-                                    ServerContextBase.GlobalConfig.MerchantStackErrorMessage);
+                                    ServerContextBase.Config.MerchantStackErrorMessage);
                             }
                         }
                     }
                     else
                     {
-                        client.SendOptionsDialog(Mundane, ServerContextBase.GlobalConfig.MerchantTradeErrorMessage);
+                        client.SendOptionsDialog(Mundane, ServerContextBase.Config.MerchantTradeErrorMessage);
                     }
                 }
                     break;
@@ -166,7 +166,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                     if (offer == "0")
                     {
-                        client.SendOptionsDialog(Mundane, ServerContextBase.GlobalConfig.MerchantRefuseTradeMessage);
+                        client.SendOptionsDialog(Mundane, ServerContextBase.Config.MerchantRefuseTradeMessage);
                         return;
                     }
 
@@ -185,8 +185,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     else
                     {
                         var opts2 = new List<OptionsDataItem>();
-                        opts2.Add(new OptionsDataItem(0x0019, ServerContextBase.GlobalConfig.MerchantConfirmMessage));
-                        opts2.Add(new OptionsDataItem(0x0020, ServerContextBase.GlobalConfig.MerchantCancelMessage));
+                        opts2.Add(new OptionsDataItem(0x0019, ServerContextBase.Config.MerchantConfirmMessage));
+                        opts2.Add(new OptionsDataItem(0x0020, ServerContextBase.Config.MerchantCancelMessage));
 
                         client.SendOptionsDialog(Mundane,
                             $"I will give offer you {offer} gold for that {item.Template.Name}, Deal?",
@@ -213,13 +213,13 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         return;
 
                     if (client.Aisling.GoldPoints + Convert.ToInt32(offer) <=
-                        ServerContextBase.GlobalConfig.MaxCarryGold)
+                        ServerContextBase.Config.MaxCarryGold)
                     {
                         client.Aisling.GoldPoints += Convert.ToInt32(offer);
                         client.Aisling.EquipmentManager.RemoveFromInventory(item, true);
                         client.SendStats(StatusFlags.StructC);
 
-                        client.SendOptionsDialog(Mundane, ServerContextBase.GlobalConfig.MerchantTradeCompletedMessage);
+                        client.SendOptionsDialog(Mundane, ServerContextBase.Config.MerchantTradeCompletedMessage);
                     }
                 }
                     break;
@@ -237,8 +237,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     if (repair_sum > 0)
                     {
                         var opts = new List<OptionsDataItem>();
-                        opts.Add(new OptionsDataItem(0x0014, ServerContextBase.GlobalConfig.MerchantConfirmMessage));
-                        opts.Add(new OptionsDataItem(0x0015, ServerContextBase.GlobalConfig.MerchantCancelMessage));
+                        opts.Add(new OptionsDataItem(0x0014, ServerContextBase.Config.MerchantConfirmMessage));
+                        opts.Add(new OptionsDataItem(0x0015, ServerContextBase.Config.MerchantCancelMessage));
                         client.SendOptionsDialog(Mundane,
                             "It will cost " + repair_sum + " Gold to repair everything. Do you Agree?",
                             repair_sum.ToString(), opts.ToArray());
@@ -257,17 +257,17 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                     client.RepairEquipment(gear);
 
-                    client.SendOptionsDialog(Mundane, ServerContextBase.GlobalConfig.MerchantTradeCompletedMessage);
+                    client.SendOptionsDialog(Mundane, ServerContextBase.Config.MerchantTradeCompletedMessage);
                 }
                     break;
 
                 case 0x0015:
-                    client.SendOptionsDialog(Mundane, ServerContextBase.GlobalConfig.MerchantCancelMessage);
+                    client.SendOptionsDialog(Mundane, ServerContextBase.Config.MerchantCancelMessage);
                     break;
                 case 0x0020:
                 {
                     client.PendingItemSessions = null;
-                    client.SendOptionsDialog(Mundane, ServerContextBase.GlobalConfig.MerchantCancelMessage);
+                    client.SendOptionsDialog(Mundane, ServerContextBase.Config.MerchantCancelMessage);
                 }
                     break;
                 case 0x0004:
@@ -313,7 +313,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
 
                                 client.SendOptionsDialog(Mundane,
-                                    ServerContextBase.GlobalConfig.MerchantWarningMessage);
+                                    ServerContextBase.Config.MerchantWarningMessage);
                             }
                         }
                 }

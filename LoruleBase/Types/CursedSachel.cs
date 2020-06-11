@@ -118,7 +118,7 @@ namespace Darkages.Types
                 ReepGold();
                 GenerateReeper();
 
-                Owner.Client.SendMessage(0x02, ServerContextBase.GlobalConfig.DeathReepingMessage);
+                Owner.Client.SendMessage(0x02, ServerContextBase.Config.DeathReepingMessage);
                 Owner.Client.SendStats(StatusFlags.All);
             }
         }

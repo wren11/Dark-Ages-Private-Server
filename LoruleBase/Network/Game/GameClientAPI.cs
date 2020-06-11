@@ -127,8 +127,8 @@ namespace Darkages.Network.Game
         {
             Aisling._Str += v;
 
-            if (Aisling._Str > ServerContextBase.GlobalConfig.StatCap)
-                Aisling._Str = ServerContextBase.GlobalConfig.StatCap;
+            if (Aisling._Str > ServerContextBase.Config.StatCap)
+                Aisling._Str = ServerContextBase.Config.StatCap;
 
             SendStats(StatusFlags.All);
         }
@@ -137,8 +137,8 @@ namespace Darkages.Network.Game
         {
             Aisling._Int += v;
 
-            if (Aisling._Int > ServerContextBase.GlobalConfig.StatCap)
-                Aisling._Int = ServerContextBase.GlobalConfig.StatCap;
+            if (Aisling._Int > ServerContextBase.Config.StatCap)
+                Aisling._Int = ServerContextBase.Config.StatCap;
 
             SendStats(StatusFlags.All);
         }
@@ -147,8 +147,8 @@ namespace Darkages.Network.Game
         {
             Aisling._Wis += v;
 
-            if (Aisling._Wis > ServerContextBase.GlobalConfig.StatCap)
-                Aisling._Wis = ServerContextBase.GlobalConfig.StatCap;
+            if (Aisling._Wis > ServerContextBase.Config.StatCap)
+                Aisling._Wis = ServerContextBase.Config.StatCap;
 
             SendStats(StatusFlags.All);
         }
@@ -157,8 +157,8 @@ namespace Darkages.Network.Game
         {
             Aisling._Wis += v;
 
-            if (Aisling._Wis > ServerContextBase.GlobalConfig.StatCap)
-                Aisling._Wis = ServerContextBase.GlobalConfig.StatCap;
+            if (Aisling._Wis > ServerContextBase.Config.StatCap)
+                Aisling._Wis = ServerContextBase.Config.StatCap;
 
             SendStats(StatusFlags.All);
         }
@@ -167,8 +167,8 @@ namespace Darkages.Network.Game
         {
             Aisling._Dex += v;
 
-            if (Aisling._Dex > ServerContextBase.GlobalConfig.StatCap)
-                Aisling._Dex = ServerContextBase.GlobalConfig.StatCap;
+            if (Aisling._Dex > ServerContextBase.Config.StatCap)
+                Aisling._Dex = ServerContextBase.Config.StatCap;
 
             SendStats(StatusFlags.All);
         }
@@ -177,8 +177,8 @@ namespace Darkages.Network.Game
         {
             Aisling._MaximumHp += v;
 
-            if (Aisling._MaximumHp > ServerContextBase.GlobalConfig.MaxHP)
-                Aisling._MaximumHp = ServerContextBase.GlobalConfig.MaxHP;
+            if (Aisling._MaximumHp > ServerContextBase.Config.MaxHP)
+                Aisling._MaximumHp = ServerContextBase.Config.MaxHP;
 
             SendStats(StatusFlags.All);
         }
@@ -187,8 +187,8 @@ namespace Darkages.Network.Game
         {
             Aisling._MaximumMp += v;
 
-            if (Aisling._MaximumMp > ServerContextBase.GlobalConfig.MaxHP)
-                Aisling._MaximumMp = ServerContextBase.GlobalConfig.MaxHP;
+            if (Aisling._MaximumMp > ServerContextBase.Config.MaxHP)
+                Aisling._MaximumMp = ServerContextBase.Config.MaxHP;
 
             SendStats(StatusFlags.All);
         }

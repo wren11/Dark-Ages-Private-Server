@@ -1,22 +1,4 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Darkages.Scripting;
@@ -25,7 +7,26 @@ using Newtonsoft.Json;
 
 namespace Darkages.Network.Object
 {
-    public class ObjectManager
+    public interface IObjectManager
+    {
+        void DelObject<T>(T obj) where T : Sprite;
+        
+        void DelObjects<T>(T[] obj) where T : Sprite;
+
+        T GetObject<T>(Area map, Predicate<T> p) where T : Sprite;
+        
+        T GetObjectByName<T>(string name, Area map = null) where T : Sprite, new();
+
+        IEnumerable<T> GetObjects<T>(Area map, Predicate<T> p) where T : Sprite;
+        
+        void AddObject<T>(T obj, Predicate<T> p = null) where T : Sprite;
+        
+        IEnumerable<Sprite> GetObjects(Area map, Predicate<Sprite> p, ObjectManager.Get selections);
+        
+        Sprite GetObject(Area Map, Predicate<Sprite> p, ObjectManager.Get selections);
+    }
+
+    public class ObjectManager : IObjectManager
     {
         [Flags]
         public enum Get
@@ -33,9 +34,9 @@ namespace Darkages.Network.Object
             Aislings = 1,
             Monsters = 2,
             Mundanes = 4,
-            Items = 8,
-            Money = 16,
-            All = Aislings | Items | Money | Monsters | Mundanes
+            Items    = 8,
+            Money    = 16,
+            All      = Aislings | Items | Money | Monsters | Mundanes
         }
 
         public void DelObject<T>(T obj) where T : Sprite

@@ -61,6 +61,7 @@ namespace Darkages.Compression
                 }
                 catch (Exception e)
                 {
+                    ServerContext.Error(e);
                     return null;
                 }
             }

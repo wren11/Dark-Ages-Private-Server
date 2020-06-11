@@ -24,7 +24,7 @@ namespace Darkages
 
         public void ShowFieldMap(GameClient client)
         {
-            lock (ServerContext.syncLock)
+            lock (ServerContext.SyncLock)
             {
                 client.InMapTransition = true;
                 client.Send(new ServerFormat2E(client.Aisling));
@@ -48,10 +48,10 @@ namespace Darkages
             {
                 client.LeaveArea(true, true);
 
-                DestinationMap = ServerContextBase.GlobalConfig.TransitionZone;
+                DestinationMap = ServerContextBase.Config.TransitionZone;
 
-                client.Aisling.XPos = X >= 0 ? X : ServerContextBase.GlobalConfig.TransitionPointX;
-                client.Aisling.YPos = Y >= 0 ? Y : ServerContextBase.GlobalConfig.TransitionPointY;
+                client.Aisling.XPos = X >= 0 ? X : ServerContextBase.Config.TransitionPointX;
+                client.Aisling.YPos = Y >= 0 ? Y : ServerContextBase.Config.TransitionPointY;
 
                 client.Aisling.CurrentMapId = DestinationMap;
                 client.LeaveArea(true, true);
@@ -64,8 +64,8 @@ namespace Darkages
                 if (!ServerContextBase.GlobalMapCache.ContainsKey(DestinationMap))
                     return;
 
-                client.Aisling.XPos = X >= 0 ? X : ServerContextBase.GlobalConfig.TransitionPointX;
-                client.Aisling.YPos = Y >= 0 ? Y : ServerContextBase.GlobalConfig.TransitionPointY;
+                client.Aisling.XPos = X >= 0 ? X : ServerContextBase.Config.TransitionPointX;
+                client.Aisling.YPos = Y >= 0 ? Y : ServerContextBase.Config.TransitionPointY;
 
                 client.Aisling.CurrentMapId = DestinationMap;
                 client.LeaveArea(true, true); 

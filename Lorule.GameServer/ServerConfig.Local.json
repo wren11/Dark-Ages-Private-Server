@@ -4,7 +4,6 @@
 	},
 	"ServerConfig": {
 		"MultiUserLogin": false,
-		"DBName": "LorDB",
 		"AssailsCancelSpells": true,
 		"BadRequestMessage": "(Invalid Request)",
 		"BaseAC": 0,
@@ -77,8 +76,7 @@
 		"NotEnoughGoldToDropMsg": "You wish you had that much.",
 		"PingInterval": 10.0,
 		"PlayerLevelCap": 99,
-		"ReapMessage":
-			"You are dying|You better find some help|You are about to die!|You are skulled, Barron has taken your soul.",
+		"ReapMessage": "You are dying|You better find some help|You are about to die!|You are skulled, Barron has taken your soul.",
 		"ReapMessageDuringAction": "You can't do that, you are about to die!",
 		"RefreshOnWalkCollision": true,
 		"RefreshRate": 300,
@@ -86,6 +84,7 @@
 		"RepairItemMessage": "You can't wear somethin' that fucked. Go repair it first.",
 		"SaveRate": 25.0,
 		"SERVER_PORT": 2615,
+		"LOGIN_PORT": 2610,
 		"SERVER_TITLE": "Lorule",
 		"ServerWelcomeMessage": "Welcome to Lorule, If you need help, Please use The [F1] menu.",
 		"Settings": [
@@ -117,8 +116,8 @@
 		"StatsPerLevel": 2,
 		"StrAddedMessage": "You become stronger.",
 		"ToWeakToLift": "You are to weak to even lift it.",
-		"TransitionPointX": 3,
-		"TransitionPointY": 3,
+		"TransitionPointX": 6,
+		"TransitionPointY": 6,
 		"TransitionZone": 9999,
 		"UserDroppedGoldMsg": "noname has dropped some money nearby.",
 		"VeryNearByProximity": 7,

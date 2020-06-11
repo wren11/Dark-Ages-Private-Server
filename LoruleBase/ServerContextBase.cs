@@ -1,6 +1,5 @@
 ﻿using Darkages.Network.Game;
 using Darkages.Network.Login;
-using Darkages.Network.Object;
 using Darkages.Storage;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
@@ -17,15 +16,18 @@ using Class = Darkages.Types.Class;
 
 namespace Darkages
 {
-    public class ServerContextBase : ObjectManager
+    public class ServerContextBase
     {
-        public static int Errors;
-        public static int DefaultPort;
         public static bool Running;
+
         public static bool Paused;
+
+        public static IServerConstants Config;
+
         public static GameServer Game;
+
         public static LoginServer Lobby;
-        public static IServerConstants GlobalConfig;
+
         public static string StoragePath { get; set; }
 
         public static List<Metafile> GlobalMetaCache = new List<Metafile>();
@@ -78,92 +80,76 @@ namespace Darkages
         public static void LoadSkillTemplates()
         {
             StorageManager.SkillBucket.CacheFromStorage();
-            Debug("Skill Templates Loaded: {0}", GlobalSkillTemplateCache.Count);
+            ServerContext.Logger($"Skill Templates Loaded: {GlobalSkillTemplateCache.Count}");
         }
 
         public static void LoadSpellTemplates()
         {
             StorageManager.SpellBucket.CacheFromStorage();
-            Debug("Spell Templates Loaded: {0}", GlobalSpellTemplateCache.Count);
+            ServerContext.Logger($"Spell Templates Loaded: {GlobalSpellTemplateCache.Count}");
         }
 
         public static void LoadItemTemplates()
         {
             StorageManager.ItemBucket.CacheFromStorage();
-            Debug("Item Templates Loaded: {0}", GlobalItemTemplateCache.Count);
+            ServerContext.Logger($"Item Templates Loaded: {GlobalItemTemplateCache.Count}");
         }
 
         public static void LoadMonsterTemplates()
         {
             StorageManager.MonsterBucket.CacheFromStorage();
-            Debug("Monster Templates Loaded: {0}", GlobalMonsterTemplateCache.Count);
+            ServerContext.Logger($"Monster Templates Loaded: {GlobalMonsterTemplateCache.Count}");
         }
 
         public static void LoadMundaneTemplates()
         {
             StorageManager.MundaneBucket.CacheFromStorage();
-            Debug("Mundane Templates Loaded: {0}", GlobalMundaneTemplateCache.Count);
+            ServerContext.Logger($"Mundane Templates Loaded: {GlobalMundaneTemplateCache.Count}");
         }
 
         public static void LoadWarpTemplates()
         {
             StorageManager.WarpBucket.CacheFromStorage();
-            Debug("Warp Templates Loaded: {0}", GlobalWarpTemplateCache.Count);
+            ServerContext.Logger($"Warp Templates Loaded: {GlobalWarpTemplateCache.Count}");
         }
 
         public static void LoadWorldMapTemplates()
         {
             StorageManager.WorldMapBucket.CacheFromStorage();
-            Debug("World Map Templates Loaded: {0}", GlobalWorldMapTemplateCache.Count);
+            ServerContext.Logger($"World Map Templates Loaded: {GlobalWorldMapTemplateCache.Count}");
         }
 
         public static void LoadPopupTemplates()
         {
             StorageManager.PopupBucket.CacheFromStorage();
-            Debug("Popup Templates Loaded: {0}", GlobalPopupCache.Count);
+            ServerContext.Logger($"Popup Templates Loaded: {GlobalPopupCache.Count}");
         }
 
         public static void LoadMaps()
         {
             StorageManager.AreaBucket.CacheFromStorage();
-            Debug("Map Templates Loaded: {0}", GlobalMapCache.Count);
+            ServerContext.Logger($"Map Templates Loaded: {GlobalMapCache.Count}");
         }
 
-        public static void Debug(string msg, params object[] args)
-        {
-            if (string.IsNullOrEmpty(msg))
-                return;
-
-            var logMessage = string.Format(msg, args.Join());
-
-            Console.WriteLine($"[Debug -> ({logMessage})");
-        }
 
         private static void StartServers()
         {
 #if DEBUG
-            GlobalConfig.DebugMode = true;
+            Config.DebugMode = true;
 #endif
-            redo:
+            try
             {
-                if (Errors > GlobalConfig.ERRORCAP)
-                    Process.GetCurrentProcess().Kill();
+                Game = new GameServer(Config.ConnectionCapacity);
+                Game.Start(Config.SERVER_PORT);
+                ServerContext.Logger("Login server is online.");
 
-                try
-                {
-                    Game = new GameServer(GlobalConfig.ConnectionCapacity);
-                    Game.Start(DefaultPort);
-
-                    Lobby = new LoginServer(GlobalConfig.ConnectionCapacity);
-                    Lobby.Start(2610);
-                }
-                catch (SocketException e)
-                {
-                    ++DefaultPort;
-                    Errors++;
-
-                    goto redo;
-                }
+                Lobby = new LoginServer(Config.ConnectionCapacity);
+                Lobby.Start(Config.LOGIN_PORT);
+                ServerContext.Logger("Game server is online.");
+            }
+            catch (SocketException e)
+            {
+                ServerContext.Error(e);
             }
         }
 
@@ -180,8 +166,7 @@ namespace Darkages
 
         public static void Startup()
         {
-            Debug($"{GlobalConfig.SERVER_TITLE} Loading...");
-            Debug("----------------------------------------------");
+            ServerContext.Logger(string.Format($"{Config.SERVER_TITLE} Loading..."));
 
             {
                 try
@@ -191,10 +176,9 @@ namespace Darkages
                 }
                 catch (Exception e)
                 {
-                    Debug("Startup Error.");
+                    ServerContext.Logger(string.Format("Startup Error.", e.Message));
                 }
             }
-            Debug($"{GlobalConfig.SERVER_TITLE} Online and Ready!");
         }
 
         private static void EmptyCacheCollectors()
@@ -215,15 +199,6 @@ namespace Darkages
             GlobalBoardCache = new Dictionary<string, List<Board>>();
         }
 
-        public static void InitFromConfig(string storagePath)
-        {
-            StoragePath = storagePath;
-            DefaultPort = GlobalConfig.SERVER_PORT;
-
-            if (!Directory.Exists(StoragePath))
-                Directory.CreateDirectory(StoragePath);
-        }
-
         public static void LoadMetaDatabase()
         {
             var files = MetafileManager.GetMetafiles();
@@ -235,7 +210,7 @@ namespace Darkages
         {
             List<Board> tmp;
 
-            lock (ServerContext.syncLock)
+            lock (ServerContext.SyncLock)
             {
                 tmp = new List<Board>(Community);
             }
@@ -243,7 +218,6 @@ namespace Darkages
             foreach (var asset in tmp)
                 asset.Save("Personal");
 
-            Debug("Saved Community Assets.");
         }
 
         public static void CacheCommunityAssets()
@@ -268,7 +242,7 @@ namespace Darkages
                     tmplBoards[dir.Name].AddRange(boards);
                 }
 
-                lock (ServerContext.syncLock)
+                lock (ServerContext.SyncLock)
                 {
                     Community = tmplBoards["Personal"].OrderBy(i => i.Index).ToArray();
                 }
@@ -287,13 +261,6 @@ namespace Darkages
             Paused = true;
 
             EmptyCacheCollectors();
-            {
-                Debug("Clearing Cache... Success");
-                Debug("");
-            }
-
-            Debug($"Loading Client Templates...");
-
             LoadMaps();
             LoadSkillTemplates();
             LoadSpellTemplates();
@@ -341,14 +308,15 @@ namespace Darkages
 
         private static void LoadExtensions()
         {
-            Debug("");
-            Debug("Loading Extensions...");
+            ServerContext.Logger("Loading Extensions...");
 
             CacheBuffs();
-            Debug($"Building Buff Cache: {GlobalBuffCache.Count} Loaded.");
+            ServerContext.Logger($"Building Buff Cache: {GlobalBuffCache.Count} Loaded.");
 
             CacheDebuffs();
-            Debug($"Building Debuff Cache: {GlobalDeBuffCache.Count} Loaded.");
+            ServerContext.Logger($"Building Debuff Cache: {GlobalDeBuffCache.Count} Loaded.");
+
+            ServerContext.Logger("Loading Extensions... Completed.");
         }
 
         private static void CacheDebuffs()

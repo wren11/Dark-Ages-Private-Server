@@ -25,7 +25,7 @@ namespace Darkages.Network.Game.Components
     {
         public MundaneComponent(GameServer server) : base(server)
         {
-            Timer = new GameServerTimer(TimeSpan.FromSeconds(ServerContextBase.GlobalConfig.MundaneRespawnInterval));
+            Timer = new GameServerTimer(TimeSpan.FromSeconds(ServerContextBase.Config.MundaneRespawnInterval));
         }
 
         public GameServerTimer Timer { get; set; }

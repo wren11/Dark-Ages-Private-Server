@@ -476,7 +476,7 @@ namespace Darkages
         /// </summary>
         /// <value>The maximum weight.</value>
         [JsonIgnore]
-        public int MaximumWeight => (int) (ExpLevel / 4 + _Str + ServerContextBase.GlobalConfig.WeightIncreaseModifer);
+        public int MaximumWeight => (int) (ExpLevel / 4 + _Str + ServerContextBase.Config.WeightIncreaseModifer);
 
         /// <summary>
         ///     Gets or sets a value indicating whether [profile open].
@@ -806,15 +806,15 @@ namespace Darkages
         /// </summary>
         public void GoHome()
         {
-            var DestinationMap = ServerContextBase.GlobalConfig.TransitionZone;
+            var DestinationMap = ServerContextBase.Config.TransitionZone;
 
             if (ServerContextBase.GlobalMapCache.ContainsKey(DestinationMap))
             {
                 var targetMap = ServerContextBase.GlobalMapCache[DestinationMap];
 
                 Client.LeaveArea(true, true);
-                Client.Aisling.XPos = ServerContextBase.GlobalConfig.TransitionPointX;
-                Client.Aisling.YPos = ServerContextBase.GlobalConfig.TransitionPointY;
+                Client.Aisling.XPos = ServerContextBase.Config.TransitionPointX;
+                Client.Aisling.YPos = ServerContextBase.Config.TransitionPointY;
                 Client.Aisling.CurrentMapId = DestinationMap;
                 Client.EnterArea();
                 Client.Refresh();
@@ -832,7 +832,7 @@ namespace Darkages
         {
             if (CurrentMp >= spell.Template.ManaCost)
                 return this;
-            Client.SendMessage(0x02, ServerContextBase.GlobalConfig.NoManaMessage);
+            Client.SendMessage(0x02, ServerContextBase.Config.NoManaMessage);
 
             return null;
         }
@@ -1028,7 +1028,7 @@ namespace Darkages
                 Gender = 0,
                 Title = 0,
                 Flags = 0,
-                CurrentMapId = ServerContextBase.GlobalConfig.StartingMap,
+                CurrentMapId = ServerContextBase.Config.StartingMap,
                 ClassID = 0,
                 Stage = ClassStage.Class,
                 Path = Class.Peasant,
@@ -1061,8 +1061,8 @@ namespace Darkages
                 BankManager = new Bank(),
                 Created = DateTime.UtcNow,
                 LastLogged = DateTime.UtcNow,
-                XPos = ServerContextBase.GlobalConfig.StartingPosition.X,
-                YPos = ServerContextBase.GlobalConfig.StartingPosition.Y,
+                XPos = ServerContextBase.Config.StartingPosition.X,
+                YPos = ServerContextBase.Config.StartingPosition.Y,
                 Nation = (byte) randomFraction,
                 AnimalForm = AnimalForm.None,
             };
@@ -1209,10 +1209,10 @@ namespace Darkages
         /// </summary>
         public void SendToHell()
         {
-            if (!ServerContextBase.GlobalMapCache.ContainsKey(ServerContextBase.GlobalConfig.DeathMap))
+            if (!ServerContextBase.GlobalMapCache.ContainsKey(ServerContextBase.Config.DeathMap))
                 return;
 
-            if (CurrentMapId == ServerContextBase.GlobalConfig.DeathMap)
+            if (CurrentMapId == ServerContextBase.Config.DeathMap)
                 return;
 
             Remains.Owner = this;
@@ -1233,10 +1233,10 @@ namespace Darkages
                 RemoveBuffsAndDebuffs();
 
             Client.LeaveArea(true, true);
-            XPos = ServerContextBase.GlobalConfig.DeathMapX;
-            YPos = ServerContextBase.GlobalConfig.DeathMapY;
+            XPos = ServerContextBase.Config.DeathMapX;
+            YPos = ServerContextBase.Config.DeathMapY;
             Direction = 0;
-            Client.Aisling.CurrentMapId = ServerContextBase.GlobalConfig.DeathMap;
+            Client.Aisling.CurrentMapId = ServerContextBase.Config.DeathMap;
             Client.EnterArea();
 
             UpdateStats();
@@ -1279,10 +1279,10 @@ namespace Darkages
             trader.GoldPoints += goldB;
 
 
-            if (trader.GoldPoints > ServerContextBase.GlobalConfig.MaxCarryGold)
-                trader.GoldPoints = ServerContextBase.GlobalConfig.MaxCarryGold;
-            if (GoldPoints > ServerContextBase.GlobalConfig.MaxCarryGold)
-                GoldPoints = ServerContextBase.GlobalConfig.MaxCarryGold;
+            if (trader.GoldPoints > ServerContextBase.Config.MaxCarryGold)
+                trader.GoldPoints = ServerContextBase.Config.MaxCarryGold;
+            if (GoldPoints > ServerContextBase.Config.MaxCarryGold)
+                GoldPoints = ServerContextBase.Config.MaxCarryGold;
 
             trader.Client.SendStats(StatusFlags.StructC);
             Client.SendStats(StatusFlags.StructC);
@@ -1337,10 +1337,10 @@ namespace Darkages
             GoldPoints += goldB;
             trader.GoldPoints += goldA;
 
-            if (trader.GoldPoints > ServerContextBase.GlobalConfig.MaxCarryGold)
-                trader.GoldPoints = ServerContextBase.GlobalConfig.MaxCarryGold;
-            if (GoldPoints > ServerContextBase.GlobalConfig.MaxCarryGold)
-                GoldPoints = ServerContextBase.GlobalConfig.MaxCarryGold;
+            if (trader.GoldPoints > ServerContextBase.Config.MaxCarryGold)
+                trader.GoldPoints = ServerContextBase.Config.MaxCarryGold;
+            if (GoldPoints > ServerContextBase.Config.MaxCarryGold)
+                GoldPoints = ServerContextBase.Config.MaxCarryGold;
 
             exchangeA.Items.Clear();
             exchangeB.Items.Clear();
@@ -1398,7 +1398,7 @@ namespace Darkages
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         public bool GiveGold(int offer, bool SendClientUpdate = true)
         {
-            if (GoldPoints + offer < ServerContextBase.GlobalConfig.MaxCarryGold)
+            if (GoldPoints + offer < ServerContextBase.Config.MaxCarryGold)
             {
                 GoldPoints += offer;
                 return true;
