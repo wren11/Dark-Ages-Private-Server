@@ -16,7 +16,6 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
-using System.IO;
 using Darkages.Types;
 using Newtonsoft.Json;
 
@@ -31,9 +30,14 @@ namespace Darkages.Storage
             Formatting = Formatting.Indented
         };
 
-        public static AislingStorage AislingBucket = new AislingStorage();
-        public static AreaStorage AreaBucket = new AreaStorage();
-        public static WarpStorage WarpBucket = new WarpStorage();
+        public static AislingStorage AislingBucket 
+            = new AislingStorage();
+
+        public static AreaStorage AreaBucket
+            = new AreaStorage();
+
+        public static WarpStorage WarpBucket
+            = new WarpStorage();
 
         public static TemplateStorage<SkillTemplate> SkillBucket = new TemplateStorage<SkillTemplate>();
         public static TemplateStorage<SpellTemplate> SpellBucket = new TemplateStorage<SpellTemplate>();
@@ -46,80 +50,6 @@ namespace Darkages.Storage
 
         static StorageManager()
         {
-        }
-
-        public void SaveSorageContainers()
-        {
-            if (ServerContextBase.Paused)
-                return;
-            foreach (var item in ServerContextBase.GlobalItemTemplateCache.Values)
-            {
-                if (ItemBucket.IsStored(item)) continue;
-
-                ItemBucket.Save(item);
-            }
-        }
-
-        public static T Load<T>() where T : class, new()
-        {
-            try
-            {
-                var obj = new T();
-
-                if (obj is ServerConstants)
-                {
-                    var StoragePath = $@"{ServerContextBase.StoragePath}\lorule_config";
-                    var path = Path.Combine(StoragePath, $"{"global"}.json");
-
-                    if (!File.Exists(path))
-                        return null;
-
-                    T result;
-
-                    using (var s = File.OpenRead(path))
-                    using (var f = new StreamReader(s))
-                    {
-                        result = JsonConvert.DeserializeObject<ServerConstants>(f.ReadToEnd(), Settings) as T;
-                    }
-
-                    return result;
-                }
-            }
-            catch
-            {
-                return null;
-            }
-
-            return null;
-        }
-
-        public static string Save<T>(T obj)
-        {
-            try
-            {
-                if (obj is ServerConstants)
-                {
-                    var StoragePath = $@"{ServerContextBase.StoragePath}\lorule_config";
-
-                    if (!Directory.Exists(StoragePath))
-                        Directory.CreateDirectory(StoragePath);
-
-                    var path = Path.Combine(StoragePath, $"{"global"}.json");
-                    var objString = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
-                    {
-                        TypeNameHandling = TypeNameHandling.All
-                    });
-
-                    File.WriteAllText(path, objString);
-                    return objString;
-                }
-
-                return string.Empty;
-            }
-            catch
-            {
-                return string.Empty;
-            }
         }
     }
 }

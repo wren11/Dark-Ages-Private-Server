@@ -84,6 +84,22 @@ namespace Darkages
                 length++;
             }
 
+            if (!isAisling)
+                return length == 0;
+
+            var updates = 0;
+
+            foreach (var s in Sprites)
+            {
+                s.Update();
+                updates++;
+            }
+
+            if (updates > 0)
+            { 
+                (sprite as Aisling)?.Client.Refresh();
+            }
+
             return length == 0;
         }
     }

@@ -65,45 +65,6 @@ namespace Darkages.Storage
         }
 
 
-        public bool IsStored(T obj)
-        {
-            if (Load<T>(obj.Name) == null)
-                return false;
-
-            return true;
-        }
-
-        public void SaveOrReplace(T template)
-        {
-            var path = Path.Combine(StoragePath, $"{template.Name.ToLower()}.json");
-
-            if (IsStored(template))
-                File.Delete(path);
-
-            if (template is ItemTemplate)
-                StorageManager.ItemBucket.Save(template as ItemTemplate);
-
-            if (template is SpellTemplate)
-                StorageManager.SpellBucket.Save(template as SpellTemplate);
-
-            if (template is SkillTemplate)
-                StorageManager.SkillBucket.Save(template as SkillTemplate);
-
-            if (template is MonsterTemplate)
-                StorageManager.MonsterBucket.Save(template as MonsterTemplate);
-
-            if (template is MundaneTemplate)
-                StorageManager.MundaneBucket.Save(template as MundaneTemplate);
-
-            if (template is Reactor)
-                StorageManager.ReactorBucket.Save(template as Reactor);
-
-            if (template is WarpTemplate)
-                StorageManager.WarpBucket.Save(template as WarpTemplate);
-
-            if (template is PopupTemplate) StorageManager.PopupBucket.Save(template as PopupTemplate);
-        }
-
         public Template LoadFromStorage(Template existing)
         {
             var template = StorageManager.ItemBucket.Load<ItemTemplate>(existing.Name);
@@ -118,7 +79,6 @@ namespace Darkages.Storage
         {
             var tmp = new T();
 
-            var results = new List<T>();
             var assetNames = Directory.GetFiles(
                 StoragePath,
                 "*.json",

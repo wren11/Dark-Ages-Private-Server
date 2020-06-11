@@ -328,7 +328,11 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 {
                     Monster.BashEnabled = false;
                     Monster.CastEnabled = true;
-                    Monster.WalkTo(Target.XPos, Target.YPos);
+
+                    if (!Monster.WalkTo(Target.XPos, Target.YPos))
+                    {
+                        Monster.Wander();
+                    }
                 }
             }
             else

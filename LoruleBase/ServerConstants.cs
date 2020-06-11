@@ -346,12 +346,6 @@ namespace Darkages
         public bool LogObjectsRemoved { get; set; }
 
         public bool UseLobby { get; set; }
-
-        public override string ToString()
-        {
-            return StorageManager.Save(this)
-                   ?? string.Empty;
-        }
     }
 
     public class GameSetting

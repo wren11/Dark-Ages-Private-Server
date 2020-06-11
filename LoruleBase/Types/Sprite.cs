@@ -1131,6 +1131,13 @@ namespace Darkages.Types
         public Monster[] MonstersNearby() => GetObjects<Monster>(Map, i => i != null && i.WithinRangeOf(this)).ToArray();
         public Mundane[] MundanesNearby() => GetObjects<Mundane>(Map, i => i != null && i.WithinRangeOf(this)).ToArray();
 
+        private static readonly int[][] directions = new int[][]
+        {
+            new int[] { +0, -1 },
+            new int[] { +1, +0 },
+            new int[] { +0, +1 },
+            new int[] { -1, +0 },
+        };
 
         private void DeleteObject()
         {
@@ -1191,61 +1198,78 @@ namespace Darkages.Types
             LastTurnUpdated = DateTime.UtcNow;
         }
 
-        public void WalkTo(int x, int y, bool ignoreWalls = false)
+        public bool NextTo(int x, int y)
         {
-            if (!CanUpdate()) return;
+            int xDist = Math.Abs(x - this.X);
+            int yDist = Math.Abs(y - this.Y);
 
-            try
+            return (xDist + yDist) == 1;
+        }
+        public static float Sqrt(float number)
+        {
+            ulong i;
+            float x = (number * 0.5f);
+            float y = (number);
+
+            unsafe
             {
-                var buffer = new byte[2];
-                var length = float.PositiveInfinity;
-                var offset = 0;
-
-                for (byte i = 0; i < 4; i++)
-                {
-                    var newX = XPos + Directions[i][0];
-                    var newY = YPos + Directions[i][1];
-
-                    if (newX == x &&
-                        newY == y)
-                        continue;
-
-                    if (!ignoreWalls && Map.IsWall(newX, newY))
-                        continue;
-
-                    var xDist = x - newX;
-                    var yDist = y - newY;
-                    var tDist = (float) Math.Sqrt(xDist * xDist + yDist * yDist);
-
-                    if (length < tDist)
-                        continue;
-
-                    if (length > tDist)
-                    {
-                        length = tDist;
-                        offset = 0;
-                    }
-
-                    if (offset < buffer.Length)
-                        buffer[offset] = i;
-
-                    offset++;
-                }
-
-                if (offset == 0)
-                    return;
-
-                lock (_rnd)
-                {
-                    if (offset < buffer.Length)
-                        Direction = buffer[_rnd.Next(0, offset)];
-                }
-
-                Walk();
+                i = *(ulong*)&y;
+                i = (0x5F3759DF - (i >> 1));
+                y = *(float*)&i;
+                y = (y * (1.5f - (x * y * y)));
+                y = (y * (1.5f - (x * y * y)));
             }
-            catch (Exception)
+
+            return (number * y);
+        }
+
+        public bool WalkTo(int x, int y, bool ignoreWalls = false)
+        {
+            var buffer = new byte[2];
+            var length = float.PositiveInfinity;
+            var offset = 0;
+
+            for (byte i = 0; i < 4; i++)
             {
-                // ignored
+                var newX = (this.X + directions[i][0]);
+                var newY = (this.Y + directions[i][1]);
+
+                if (newX == x &&
+                    newY == y)
+                    return false;
+
+               if (this.Map.IsWall(newX, newY)) 
+                   continue;
+
+               if (GetObjects(Map, n => n.Serial == Serial && n.X == newX && n.Y == newY, Get.Monsters | Get.Aislings | Get.Mundanes).Any())
+                   continue;
+
+                var xDist = (x - newX);
+                var yDist = (y - newY);
+                var tDist = Sqrt(xDist * xDist + yDist * yDist);
+
+                if (length < tDist)
+                    continue;
+
+                if (length > tDist)
+                {
+                    length = tDist;
+                    offset = 0;
+                }
+
+                buffer[offset] = i;
+                offset++;
+            }
+
+            if (offset == 0)
+                return false;
+
+            lock (Generator.Random)
+            {
+                var pendingDirection = buffer[Generator.Random.Next(0, offset)];
+                Direction = pendingDirection;
+
+                return this.Walk();
             }
         }
 
