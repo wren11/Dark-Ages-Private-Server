@@ -339,12 +339,15 @@ namespace Darkages.Network.Game
             client.Aisling.LeaderPrivleges = false;
 
             Party.Reform(client);
+            ServerContext.Logger(client.Aisling.Username + " : " + ServerContextBase.Config.ServerWelcomeMessage);
 
             return client.Load()
                 .SendStats(StatusFlags.All)
                 .SendMessage(0x02, ServerContextBase.Config.ServerWelcomeMessage)
                 .EnterArea()
                 .LoggedIn(true).Aisling;
+
+
 
         }
 
