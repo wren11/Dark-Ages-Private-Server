@@ -1,11 +1,11 @@
-﻿using System;
-using Darkages;
+﻿using Darkages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading;
-using Microsoft.Extensions.Options;
 
 namespace Lorule.GameServer
 {
@@ -19,8 +19,10 @@ namespace Lorule.GameServer
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("ServerConfig.Local.json");
 
-            var config    = builder.Build();
-            var constants = config.GetSection("ServerConfig").Get<ServerConstants>();
+
+
+           var config    = builder.Build();
+           var constants = config.GetSection("ServerConfig").Get<ServerConstants>();
 
             var serviceProvider = new ServiceCollection()
                 .AddOptions()
@@ -39,6 +41,8 @@ namespace Lorule.GameServer
         public Server(IServerConstants constants, IOptions<LoruleOptions> loruleOptions)
         {
             GlobalConfig = constants ?? throw new ArgumentNullException(nameof(constants));
+
+            Debug("Loading Config: {0}", loruleOptions.Value.Location);
 
             if (loruleOptions.Value.Location != null)
                 InitFromConfig(storagePath: loruleOptions.Value.Location);

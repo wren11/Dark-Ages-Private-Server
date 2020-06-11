@@ -62,7 +62,7 @@ namespace Darkages.Network.Game
                 {
                     UpdateClients(elapsedTime);
                     UpdateComponents(elapsedTime);
-                    UpdateAreas(elapsedTime);
+                    //UpdateAreas(elapsedTime);
                 }
                 catch
                 {
@@ -139,6 +139,8 @@ namespace Darkages.Network.Game
                     {
                         if (client?.Aisling == null)
                             continue;
+
+                        client.Aisling.Map?.Update(elapsedTime);
 
                         ObjectComponent.UpdateClientObjects(client.Aisling);
 

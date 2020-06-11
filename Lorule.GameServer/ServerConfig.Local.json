@@ -1,9 +1,8 @@
 {
 	"Content": {
-		"Location": "..\\..\\..\\..\\LORULE_DATA"
-	}, 
+		"Location": "C:\\Users\\Dean\\Documents\\GitHub\\DarkAges-Lorule-Server\\LORULE_DATA"
+	},
 	"ServerConfig": {
-		"$type": "Darkages.ServerConstants, Darkages.Server",
 		"MultiUserLogin": false,
 		"DBName": "LorDB",
 		"AssailsCancelSpells": true,
@@ -30,7 +29,7 @@
 		"DayTimeInterval": 30.0,
 		"DeathHPPenalty": 50,
 		"DeathMap": 88888,
-		"DebugMode": false,
+		"DebugMode": true,
 		"DefaultItemColor": 13,
 		"DefaultItemDurability": 1000,
 		"DefaultItemValue": 500,
@@ -78,7 +77,8 @@
 		"NotEnoughGoldToDropMsg": "You wish you had that much.",
 		"PingInterval": 10.0,
 		"PlayerLevelCap": 99,
-		"ReapMessage": "You are dying|You better find some help|You are about to die!|You are skulled, Barron has taken your soul.",
+		"ReapMessage":
+			"You are dying|You better find some help|You are about to die!|You are skulled, Barron has taken your soul.",
 		"ReapMessageDuringAction": "You can't do that, you are about to die!",
 		"RefreshOnWalkCollision": true,
 		"RefreshRate": 300,
@@ -88,35 +88,28 @@
 		"SERVER_PORT": 2615,
 		"SERVER_TITLE": "Lorule",
 		"ServerWelcomeMessage": "Welcome to Lorule, If you need help, Please use The [F1] menu.",
-		"Settings": {
-			"$type": "Darkages.ServerConstants+GameSetting[], Darkages.Server",
-			"$values": [
-				{
-					"$type": "Darkages.ServerConstants+GameSetting, Darkages.Server",
-					"SettingOn": "Loot Mode  :Single",
-					"SettingOff": "Loot Mode  :Multi",
-					"Enabled": true
-				},
-				{
-					"$type": "Darkages.ServerConstants+GameSetting, Darkages.Server",
-					"SettingOn": "PVP  :ON",
-					"SettingOff": "PVP  :OFF",
-					"Enabled": true
-				},
-				{
-					"$type": "Darkages.ServerConstants+GameSetting, Darkages.Server",
-					"SettingOn": "AUTO LOOT GOLD  :Toggle",
-					"SettingOff": "AUTO LOOT GOLD  :Toggled",
-					"Enabled": false
-				}
-			]
-		},
+		"Settings": [
+			{
+				"SettingOn": "Loot Mode  :Single",
+				"SettingOff": "Loot Mode  :Multi",
+				"Enabled": true
+			},
+			{
+				"SettingOn": "PVP  :ON",
+				"SettingOff": "PVP  :OFF",
+				"Enabled": true
+			},
+			{
+				"SettingOn": "AUTO LOOT GOLD: Toggle",
+				"SettingOff": "AUTO LOOT GOLD: Toggle",
+				"Enabled": false
+			}
+		],
 		"SkullLength": 10,
 		"SomethingWentWrong": "Something went wrong.",
 		"SpellFailedMessage": "failed.",
 		"StartingMap": 3029,
 		"StartingPosition": {
-			"$type": "Darkages.Types.Position, Darkages.Server",
 			"X": 26,
 			"Y": 48
 		},
@@ -130,7 +123,7 @@
 		"UserDroppedGoldMsg": "noname has dropped some money nearby.",
 		"VeryNearByProximity": 7,
 		"WarpCheckRate": 200,
-		"WeightIncreaseModifer": 48.0,
+		"WeightIncreaseModifer": 3.5,
 		"WisAddedMessage": "Your will increases.",
 		"WithinRangeProximity": 12,
 		"WrongClassMessage": "This is best suited for somebody else.",

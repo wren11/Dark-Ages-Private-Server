@@ -23,9 +23,12 @@ using Darkages.Network.Game;
 
 namespace Darkages.Types
 {
+
+    [Serializable]
     public class Position
     {
-        public ushort X, Y;
+        public ushort X { get; set; }
+        public ushort Y { get; set; }
 
         public Position(ushort x, ushort y)
         {

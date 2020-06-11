@@ -1,8 +1,11 @@
 ﻿// ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
 
+using System;
+using System.Collections.Generic;
 using Darkages.Storage;
 using Darkages.Types;
+using Newtonsoft.Json;
 
 namespace Darkages
 {
@@ -84,7 +87,7 @@ namespace Darkages
         int SERVER_PORT { get; set; }
         string SERVER_TITLE { get; set; }
         string ServerWelcomeMessage { get; set; }
-        ServerConstants.GameSetting[] Settings { get; set; }
+        List<GameSetting> Settings { get; set; }
         int SkullLength { get; set; }
         string SomethingWentWrong { get; set; }
         string SpellFailedMessage { get; set; }
@@ -126,11 +129,11 @@ namespace Darkages
 
         public bool AssailsCancelSpells { get; set; }
 
-        public string BadRequestMessage { get; set; }
+        public string BadRequestMessage { get; set; } 
 
-        public byte BaseAC { get; set; }
+        public byte BaseAC { get; set; } = 170;
 
-        public byte BaseMR { get; set; }
+        public byte BaseMR { get; set; } = 70;
 
         public byte BaseStatAttribute { get; set; }
 
@@ -173,7 +176,8 @@ namespace Darkages
         public int DeathMap { get; set; }
 
         public bool DebugMode { get; set; }
-
+        
+        [JsonProperty]
         public ItemColor DefaultItemColor { get; set; }
 
         public uint DefaultItemDurability { get; set; }
@@ -274,7 +278,7 @@ namespace Darkages
 
         public string ServerWelcomeMessage { get; set; }
 
-        public GameSetting[] Settings { get; set; }
+        public List<GameSetting> Settings { get; set; }
 
         public int SkullLength { get; set; }
 
@@ -284,6 +288,7 @@ namespace Darkages
 
         public int StartingMap { get; set; }
 
+        [JsonProperty]
         public Position StartingPosition { get; set; }
 
         public byte StatCap { get; set; }
@@ -347,11 +352,17 @@ namespace Darkages
             return StorageManager.Save(this)
                    ?? string.Empty;
         }
+    }
 
-        public struct GameSetting
-        {
-            public string SettingOn, SettingOff;
-            public bool Enabled;
-        }
+    public class GameSetting
+    {
+        [JsonProperty]
+        public string SettingOn { get; set; }
+
+        [JsonProperty]
+        public string SettingOff { get; set; }
+
+        [JsonProperty]
+        public bool Enabled { get; set; }
     }
 }

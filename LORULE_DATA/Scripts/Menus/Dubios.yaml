@@ -1,0 +1,165 @@
+﻿# NPC START #
+#################################################################################################
+start:
+    checkpoint: 5
+
+
+
+# SEQUENCES START
+#################################################################################################    
+sequences:
+#Sequence 1 - START --------------------------------------------
+  - id: 1                                  
+    name: "My sequence 1"                  
+    steps:  
+    # --> Step 1                            
+    - id: 1                                
+      text: "Ah, a new Monk, How can i assist you?"          
+      answers:                            
+      - id: 1                              
+        text: next                        
+        menu: 1
+#Sequence 1 - END ----------------------------------------------    
+  
+#Sequence 2 - START --------------------------------------------
+  - id: 2                                  
+    name: "My sequence 2"                  
+    steps:  
+    # --> Step 1                            
+    - id: 1                                
+      text: "A beast form is an crucial part of your journey, You can only choose this once."          
+      answers:                            
+      - id: 1                              
+        text: next    
+        step: 2        
+    - id: 2                                
+      text: "Ensure you are familar with your choice and make the correct decision."          
+      answers:                            
+      - id: 1                              
+        text: back
+        step: 1        
+      - id: 2                              
+        text: next
+        menu: 3
+        
+#Sequence 2 - END ----------------------------------------------    
+  
+#Sequence 3 - START --------------------------------------------
+  - id: 3                                 
+    name: "My sequence 3"                  
+    steps:  
+    # --> Step 1                            
+    - id: 1                                
+      text: "Draco Form - Engage your foes with the most devastating of attacks. Drawn from powers of the legendary Draco, You will be a reckoning force, invulnerable to most. Only the strongest of Monks prove worthy to carry the power of the Legendary Draco."          
+      answers:                            
+      - id: 1                              
+        text: next    
+        menu: 1        
+    - id: 2                                
+      text: "Kelberoth Form - The Kelberoth is the mystic Beast of legends. You will inherit a kelberoth Pup who will scale in power by your side, Once you understand it's power. You're attacks will be unstoppable."          
+      answers:                            
+      - id: 1                              
+        text: next    
+        menu: 1        
+    - id: 3                                
+      text: "White Bat Form - Learn to blend in the shadows, Harness the Power of this deceptive creature, Not even a rogue can predict your next move. You will learn ranged attacks unavailable to other monks and unique abilities that allow you to manipulate other creatures."          
+      answers:                            
+      - id: 1                              
+        text: next    
+        menu: 1        
+    - id: 4                                
+      text: "Scorpion Form - The Scorpion is one of the most enduring creatures in this world, The scorpion is very influential, so make sure you know how you can harness the power of this dangerous but interesting creature!, Those who fail to tame the Scorpion will never understand it's true power."          
+      answers:                            
+      - id: 1                              
+        text: next    
+        menu: 1        
+     
+#Sequence 3 - END ----------------------------------------------      
+  
+  
+  
+#Sequence 4 - START --------------------------------------------
+  - id: 4                                 
+    name: "My sequence 3"                  
+    steps:                           
+    - id: 1                                
+      text: "You have already chosen your form."                 
+#Sequence 4 - END ----------------------------------------------   
+ 
+ 
+ 
+# MENUS
+#################################################################################################    
+menus:
+  - id: 1
+    text: "Do you wish to learn the ways of the beast?"
+    options:
+      - id: 1
+        text: "Tell me about Monk Forms"
+        menu: 2
+      - id: 2
+        text: "I'm ready to pick my form."
+        sequence: 2
+        step: 1   
+  - id: 2
+    text: "What form do you want to learn about?"
+    options:
+      - id: 1
+        text: "Draco"
+        sequence: 3
+        step: 1        
+      - id: 2
+        text: "Kelberoth"
+        sequence: 3
+        step: 2          
+      - id: 3
+        text: "White Bat"
+        sequence: 3
+        step: 3          
+      - id: 4
+        text: "Scorpion"
+        sequence: 3
+        step: 4          
+  - id: 3
+    text: "What is your decision?"
+    options:
+      - id: 1
+        text: "Draco Form"
+        checkpoint: 1
+      - id: 2
+        text: "Kelberoth Form"
+        checkpoint: 2
+      - id: 3
+        text: "White Bat Form"
+        checkpoint: 3
+      - id: 4
+        text: "Scorpion Form"
+        checkpoint: 4
+# CHECKPOINTS
+#################################################################################################  
+  
+checkpoints:
+  - id: 1
+    type: LearnForm1
+    success:
+    fail:
+  - id: 2
+    type: LearnForm2
+    success:
+    fail:    
+  - id: 3
+    type: LearnForm3
+    success:
+    fail:    
+  - id: 4
+    type: LearnForm4
+    success:
+    fail:    
+  - id: 5
+    type: HasAForm
+    success:
+      sequence: 4
+      step: 1
+    fail:    
+      sequence: 1
+      step: 1    

@@ -47,7 +47,10 @@ namespace Darkages.Network.ClientFormats
 
             if (reader.ReadByte() == 0x02)
             {
-                Input = reader.ReadStringA();
+                if (reader.GetCanRead())
+                {
+                    Input = reader.ReadStringA();
+                }
             }
 
 

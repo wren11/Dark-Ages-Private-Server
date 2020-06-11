@@ -81,17 +81,16 @@ namespace Darkages.Network.Game
                     .WithImports("System.Text")
                     .WithImports("System.Threading.Tasks");
 
-
                 lpClient.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
                 lpClient.MenuInterpter.Actor = obj;
                 lpClient.MenuInterpter.Client = lpClient;
                 lpClient.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
 
-                lpClient.MenuInterpter.RegisterCheckpointHandler("Call", (_client, res) =>
+                lpClient.MenuInterpter.RegisterCheckpointHandler("Call", async (_client, res) =>
                 {
                     try
                     {
-                        CSharpScript.EvaluateAsync<bool>(res.Value, opts, globals: globals);
+                        var tresult = await CSharpScript.EvaluateAsync<bool>(res.Value, opts, globals: globals);
                         res.Result = globals.result;
                     }
                     catch

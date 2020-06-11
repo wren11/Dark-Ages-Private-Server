@@ -413,7 +413,7 @@ namespace Darkages.Network.Game
 
         public void BuildSettings()
         {
-            if (ServerContextBase.GlobalConfig.Settings == null || ServerContextBase.GlobalConfig.Settings.Length == 0)
+            if (ServerContextBase.GlobalConfig.Settings == null || ServerContextBase.GlobalConfig.Settings.Count == 0)
                 return;
 
             if (Aisling.GameSettings == null || Aisling.GameSettings.Count == 0)
