@@ -140,8 +140,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             quest.QuestStages = new List<QuestStep<Template>>();
 
-            var q1 = new QuestStep<Template> {Type = QuestType.Accept};
-            var q2 = new QuestStep<Template> {Type = QuestType.SingleItemHandIn};
+            var q1 = new QuestStep<Template> { Type = QuestType.Accept};
+            var q2 = new QuestStep<Template> { Type = QuestType.SingleItemHandIn};
 
             q2.Prerequisites.Add(new QuestRequirement
             {

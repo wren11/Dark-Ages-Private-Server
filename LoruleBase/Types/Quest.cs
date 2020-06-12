@@ -355,16 +355,12 @@ namespace Darkages.Types
         }
     }
 
-    public class QuestStep<T>
+    public class QuestStep<T> 
     {
         [JsonIgnore] public List<QuestRequirement> Prerequisites = new List<QuestRequirement>();
 
         public QuestType Type { get; set; }
 
         public bool StepComplete { get; set; }
-
-        public string AcceptedMessage { get; set; }
-
-        public string RejectedMessage { get; set; }
     }
 }

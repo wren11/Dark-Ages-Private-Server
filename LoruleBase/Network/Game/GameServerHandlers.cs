@@ -39,8 +39,28 @@ using System.Threading;
 
 namespace Darkages.Network.Game
 {
+
     public partial class GameServer : NetworkServer<GameClient>
     {
+        public static ScriptOptions ScriptOptions;
+
+        static GameServer()
+        {
+            ScriptOptions = ScriptOptions.Default
+                .AddReferences(typeof(Quest).Assembly)
+                .AddImports("System")
+                .AddImports("System.Collections.Generic")
+                .AddImports("System.IO")
+                .AddImports("System.Linq")
+                .AddImports("System.Text")
+                .AddImports("System.Globalization")
+                .AddImports("Newtonsoft.Json")
+                .AddImports("Darkages.Common")
+                .AddImports("Darkages.Storage")
+                .AddImports("Darkages.Types")
+                .AddImports("Darkages.Types.Quest");
+        }
+
         /// <param name="lpName">The yaml Script excluding the .yaml extension.</param>
         public void CreateInterpreterFromMenuFile(GameClient lpClient, string lpName, Sprite obj = null)
         {
@@ -55,73 +75,51 @@ namespace Darkages.Network.Game
 
                 var globals = new ScriptGlobals()
                 {
-                    actor = obj,
+                    actor  = obj,
                     client = lpClient,
-                    user = lpClient.Aisling
+                    user   = lpClient.Aisling
                 };
-
-                var opts = ScriptOptions.Default
-                    .WithImports("Darkages.Common")
-                    .WithImports("Darkages.Session.ClientFormats")
-                    .WithImports("Darkages.Session.ServerFormats")
-                    .WithImports("Darkages.Scripting")
-                    .WithImports("Darkages.Storage")
-                    .WithImports("Darkages.Storage.locales.Scripts.Mundanes")
-                    .WithImports("Darkages.Types")
-                    .WithImports("MenuInterpreter")
-                    .WithImports("MenuInterpreter.Parser")
-                    .WithImports("Microsoft.CodeAnalysis.CSharp.Scripting")
-                    .WithImports("Microsoft.CodeAnalysis.Scripting")
-                    .WithImports("System")
-                    .WithImports("System.Collections.Generic")
-                    .WithImports("System.Globalization")
-                    .WithImports("System.IO")
-                    .WithImports("System.Linq")
-                    .WithImports("System.Net")
-                    .WithImports("System.Text")
-                    .WithImports("System.Threading.Tasks");
 
                 lpClient.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
                 lpClient.MenuInterpter.Actor = obj;
                 lpClient.MenuInterpter.Client = lpClient;
                 lpClient.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
 
-                lpClient.MenuInterpter.RegisterCheckpointHandler("Call", async (_client, res) =>
+                lpClient.MenuInterpter.RegisterCheckpointHandler("Call", async (client, res) =>
+                    {
+                        try
+                        {
+                            await CSharpScript.EvaluateAsync<bool>(res.Value, ScriptOptions, globals);
+                            res.Result = globals.result;
+                        }
+                        catch (Exception e)
+                        {
+                            ServerContext.Logger($"Script Error: {res.Value}.");
+                            ServerContext.Error(e);
+
+                            res.Result = false;
+                        }
+                    });
+
+                lpClient.MenuInterpter.RegisterCheckpointHandler("QuestCompleted", (client, res) =>
                 {
-                    try
-                    {
-                        var tresult = await CSharpScript.EvaluateAsync<bool>(res.Value, opts, globals: globals);
-                        res.Result = globals.result;
-                    }
-                    catch
-                    {
-                        globals.result = false;
-                    }
-                    finally
-                    {
-                        res.Result = globals.result;
-                    }
+                    if (client.Aisling.HasQuest(res.Value))
+                        res.Result = client.Aisling.HasCompletedQuest(res.Value);
                 });
 
-                lpClient.MenuInterpter.RegisterCheckpointHandler("QuestCompleted", (_client, res) =>
-                {
-                    if (_client.Aisling.HasQuest(res.Value))
-                        res.Result = _client.Aisling.HasCompletedQuest(res.Value);
-                });
 
-
-                lpClient.MenuInterpter.RegisterCheckpointHandler("CompleteQuest", (_client, res) =>
+                lpClient.MenuInterpter.RegisterCheckpointHandler("CompleteQuest", (client, res) =>
                 {
-                    if (!_client.Aisling.HasQuest(res.Value))
+                    if (!client.Aisling.HasQuest(res.Value))
                         return;
 
-                    var q = _client.Aisling.GetQuest(res.Value);
+                    var q = client.Aisling.GetQuest(res.Value);
 
                     if (q != null)
                     {
                         if (!q.Completed)
                         {
-                            q.HandleQuest(_client, null,
+                            q.HandleQuest(client, null,
                                 completed =>
                                 {
                                     res.Result = completed;

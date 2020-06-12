@@ -1,11 +1,9 @@
 ﻿// ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
 
-using System;
-using System.Collections.Generic;
-using Darkages.Storage;
 using Darkages.Types;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Darkages
 {

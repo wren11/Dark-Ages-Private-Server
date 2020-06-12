@@ -3,15 +3,17 @@ using Darkages.Network.Login;
 using Darkages.Storage;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
+using Microsoft.CodeAnalysis.Scripting;
 using Newtonsoft.Json;
-using ServiceStack;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting.Hosting;
 using Class = Darkages.Types.Class;
 
 namespace Darkages
@@ -74,8 +76,7 @@ namespace Darkages
         [property: JsonIgnore]
         public static IPAddress IpAddress { get; } = IPAddress.Parse(File.ReadAllText("server.tbl"));
 
-        public static string GlobalMessage { get; internal set; }
-
+        public static string GlobalMessage { get; set; }
 
         public static void LoadSkillTemplates()
         {

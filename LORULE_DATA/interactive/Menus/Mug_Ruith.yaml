@@ -641,7 +641,7 @@ checkpoints:
   - id: 30
     type: Call
     value: >
-            var result = (user.HasQuest("Dugon1"));
+            result = (user.HasQuest("Dugon1"));
     success:
       checkpoint: 31
     fail:
@@ -650,7 +650,7 @@ checkpoints:
   - id: 31
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon1"));
+            result = (user.HasCompletedQuest("Dugon1"));
     success:
       checkpoint: 32
     fail:
@@ -659,7 +659,7 @@ checkpoints:
   - id: 32
     type: Call
     value: >
-            var result = (user.HasQuest("Dugon2"));
+            result = (user.HasQuest("Dugon2"));
     success:
       checkpoint: 33
     fail:
@@ -668,7 +668,7 @@ checkpoints:
   - id: 33
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon2"));
+            result = (user.HasCompletedQuest("Dugon2"));
     success:
       checkpoint: 34
     fail:
@@ -677,7 +677,7 @@ checkpoints:
   - id: 34
     type: Call
     value: >
-            var result = (user.HasQuest("Dugon3"));
+            result = (user.HasQuest("Dugon3"));
     success:
       checkpoint: 35
     fail:
@@ -686,7 +686,7 @@ checkpoints:
   - id: 35
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon3"));
+            result = (user.HasCompletedQuest("Dugon3"));
     success:
       checkpoint: 36
     fail:
@@ -695,7 +695,7 @@ checkpoints:
   - id: 36
     type: Call
     value: >
-            var result = (user.HasQuest("Dugon4"));
+            result = (user.HasQuest("Dugon4"));
     success:
       checkpoint: 37
     fail:
@@ -704,7 +704,7 @@ checkpoints:
   - id: 37
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon4"));
+            result = (user.HasCompletedQuest("Dugon4"));
     success:
       checkpoint: 38
     fail:
@@ -713,7 +713,7 @@ checkpoints:
   - id: 38
     type: Call
     value: >
-            var result = (user.HasQuest("Dugon5"));
+            result = (user.HasQuest("Dugon5"));
     success:
       checkpoint: 39
     fail:
@@ -722,7 +722,7 @@ checkpoints:
   - id: 39
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon5"));
+            result = (user.HasCompletedQuest("Dugon5"));
     success:
       checkpoint: 40
     fail:
@@ -731,7 +731,7 @@ checkpoints:
   - id: 40
     type: Call
     value: >
-            var result = (user.HasQuest("Dugon6"));
+            result = (user.HasQuest("Dugon6"));
     success:
       checkpoint: 41
     fail:
@@ -740,7 +740,7 @@ checkpoints:
   - id: 41
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon6"));
+            result = (user.HasCompletedQuest("Dugon6"));
     success:
       checkpoint: 42
     fail:
@@ -749,7 +749,7 @@ checkpoints:
   - id: 42
     type: Call
     value: >
-            var result = (user.HasQuest("Dugon7"));
+            result = (user.HasQuest("Dugon7"));
     success:
       checkpoint: 43
     fail:
@@ -758,7 +758,7 @@ checkpoints:
   - id: 43
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon7"));
+            result = (user.HasCompletedQuest("Dugon7"));
     success:
       checkpoint: 44
     fail:
@@ -767,7 +767,7 @@ checkpoints:
   - id: 44
     type: Call
     value: >
-            var result = (user.HasQuest("Dugon8"));
+            result = (user.HasQuest("Dugon8"));
     success:
       checkpoint: 45
     fail:
@@ -776,7 +776,7 @@ checkpoints:
   - id: 45
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon8"));
+            result = (user.HasCompletedQuest("Dugon8"));
     success:
       menu: 12
     fail:
@@ -801,7 +801,7 @@ checkpoints:
   - id: 1
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon1"));
+            result = (user.HasCompletedQuest("Dugon1"));
     success:
       step: 1
       sequence: 13
@@ -812,7 +812,7 @@ checkpoints:
   - id: 61
     type: Call
     value: >
-            var result = (client.Aisling.ExpLevel >= 11);
+            result = (client.Aisling.ExpLevel >= 11);
     success:
       step: 1
       sequence: 1
@@ -824,7 +824,7 @@ checkpoints:
   - id: 2
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon2"));
+            result = (user.HasCompletedQuest("Dugon2"));
     success:
       step: 1
       sequence: 13
@@ -834,7 +834,7 @@ checkpoints:
   - id: 52
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon1"));
+            result = (user.HasCompletedQuest("Dugon1"));
     success:
       checkpoint: 62
     fail:
@@ -844,7 +844,7 @@ checkpoints:
   - id: 62
     type: Call
     value: >
-            var result = (client.Aisling.ExpLevel >= 22);
+            result = (client.Aisling.ExpLevel >= 22);
     success:
       step: 1
       sequence: 2
@@ -855,7 +855,7 @@ checkpoints:
   - id: 3
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon3"));
+            result = (user.HasCompletedQuest("Dugon3"));
     success:
       step: 1
       sequence: 13
@@ -865,7 +865,7 @@ checkpoints:
   - id: 53
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon2"));
+            result = (user.HasCompletedQuest("Dugon2"));
     success:
       checkpoint: 63
     fail:
@@ -875,7 +875,7 @@ checkpoints:
   - id: 63
     type: Call
     value: >
-            var result = (client.Aisling.ExpLevel >= 33);
+            result = (client.Aisling.ExpLevel >= 33);
     success:
       step: 1
       sequence: 3
@@ -886,7 +886,7 @@ checkpoints:
   - id: 4
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon4"));
+            result = (user.HasCompletedQuest("Dugon4"));
     success:
       step: 1
       sequence: 13
@@ -896,7 +896,7 @@ checkpoints:
   - id: 54
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon3"));
+            result = (user.HasCompletedQuest("Dugon3"));
     success:
       checkpoint: 64
     fail:
@@ -907,7 +907,7 @@ checkpoints:
   - id: 64
     type: Call
     value: >
-            var result = (client.Aisling.ExpLevel >= 44);
+            result = (client.Aisling.ExpLevel >= 44);
     success:
       step: 1
       sequence: 4
@@ -918,7 +918,7 @@ checkpoints:
   - id: 5
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon5"));
+            result = (user.HasCompletedQuest("Dugon5"));
     success:
       step: 1
       sequence: 13
@@ -928,7 +928,7 @@ checkpoints:
   - id: 55
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon4"));
+            result = (user.HasCompletedQuest("Dugon4"));
     success:
       checkpoint: 65
     fail:
@@ -938,7 +938,7 @@ checkpoints:
   - id: 65
     type: Call
     value: >
-            var result = (client.Aisling.ExpLevel >= 55);
+            result = (client.Aisling.ExpLevel >= 55);
     success:
       step: 1
       sequence: 5
@@ -949,7 +949,7 @@ checkpoints:
   - id: 6
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon6"));
+            result = (user.HasCompletedQuest("Dugon6"));
     success:
       step: 1
       sequence: 13
@@ -959,7 +959,7 @@ checkpoints:
   - id: 56
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon5"));
+            result = (user.HasCompletedQuest("Dugon5"));
     success:
       checkpoint: 66
     fail:
@@ -970,7 +970,7 @@ checkpoints:
   - id: 66
     type: Call
     value: >
-            var result = (client.Aisling.ExpLevel >= 66);
+            result = (client.Aisling.ExpLevel >= 66);
     success:
       step: 1
       sequence: 6
@@ -981,7 +981,7 @@ checkpoints:
   - id: 7
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon7"));
+            result = (user.HasCompletedQuest("Dugon7"));
     success:
       step: 1
       sequence: 13
@@ -991,7 +991,7 @@ checkpoints:
   - id: 57
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon6"));
+            result = (user.HasCompletedQuest("Dugon6"));
     success:
       checkpoint: 67
     fail:
@@ -1002,7 +1002,7 @@ checkpoints:
   - id: 67
     type: Call
     value: >
-            var result = (client.Aisling.ExpLevel >= 77);
+            result = (client.Aisling.ExpLevel >= 77);
     success:
       step: 1
       sequence: 7
@@ -1013,7 +1013,7 @@ checkpoints:
   - id: 8
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon8"));
+            result = (user.HasCompletedQuest("Dugon8"));
     success:
       step: 1
       sequence: 13
@@ -1023,7 +1023,7 @@ checkpoints:
   - id: 58
     type: Call
     value: >
-            var result = (user.HasCompletedQuest("Dugon7"));
+            result = (user.HasCompletedQuest("Dugon7"));
     success:
       checkpoint: 68
     fail:
@@ -1034,7 +1034,7 @@ checkpoints:
   - id: 68
     type: Call
     value: >
-            var result = (client.Aisling.ExpLevel >= 88);
+            result = (client.Aisling.ExpLevel >= 88);
     success:
       step: 1
       sequence: 8
@@ -1084,7 +1084,7 @@ checkpoints:
             });
             quest.QuestStages.Add(q1);
             quest.QuestStages.Add(q2);
-            var result = user.AcceptQuest(quest);
+            result = user.AcceptQuest(quest);
     success:
       checkpoint: 21
     fail:
@@ -1097,7 +1097,7 @@ checkpoints:
     type: Call
     value: >
             var q         = user.GetQuest("Dugon1");
-            var result    = false;
+            result    = false;
             
             if (q != null) {           
                 q.HandleQuest(client, null);
@@ -1139,7 +1139,7 @@ checkpoints:
             });
             quest.QuestStages.Add(q1);
             quest.QuestStages.Add(q2);
-            var result = user.AcceptQuest(quest);
+            result = user.AcceptQuest(quest);
     success:
       checkpoint: 22
     fail:
@@ -1152,7 +1152,7 @@ checkpoints:
     type: Call
     value: >
             var q         = user.GetQuest("Dugon2");
-            var result    = false;
+            result    = false;
             
             if (q != null) {           
                 q.HandleQuest(client, null);
@@ -1207,7 +1207,7 @@ checkpoints:
     type: Call
     value: >
             var q         = user.GetQuest("Dugon3");
-            var result    = false;
+            result    = false;
             
             if (q != null) {           
                 q.HandleQuest(client, null);
@@ -1245,7 +1245,7 @@ checkpoints:
             });
             quest.QuestStages.Add(q1);
             quest.QuestStages.Add(q2);
-            var result = user.AcceptQuest(quest);
+            result = user.AcceptQuest(quest);
     success:
       checkpoint: 24
     fail:
@@ -1258,7 +1258,7 @@ checkpoints:
     type: Call
     value: >
             var q         = user.GetQuest("Dugon4");
-            var result    = false;
+            result    = false;
             
             if (q != null) {           
                 q.HandleQuest(client, null);
@@ -1296,7 +1296,7 @@ checkpoints:
             });
             quest.QuestStages.Add(q1);
             quest.QuestStages.Add(q2);
-            var result = user.AcceptQuest(quest);
+            result = user.AcceptQuest(quest);
     success:
       checkpoint: 25
     fail:
@@ -1309,7 +1309,7 @@ checkpoints:
     type: Call
     value: >
             var q         = user.GetQuest("Dugon5");
-            var result    = false;
+            result    = false;
             
             if (q != null) {           
                 q.HandleQuest(client, null);
@@ -1347,7 +1347,7 @@ checkpoints:
             });
             quest.QuestStages.Add(q1);
             quest.QuestStages.Add(q2);
-            var result = user.AcceptQuest(quest);
+            result = user.AcceptQuest(quest);
     success:
       checkpoint: 26
     fail:
@@ -1360,7 +1360,7 @@ checkpoints:
     type: Call
     value: >
             var q         = user.GetQuest("Dugon6");
-            var result    = false;
+            result    = false;
             
             if (q != null) {           
                 q.HandleQuest(client, null);
@@ -1398,7 +1398,7 @@ checkpoints:
             });
             quest.QuestStages.Add(q1);
             quest.QuestStages.Add(q2);
-            var result = user.AcceptQuest(quest);
+            result = user.AcceptQuest(quest);
     success:
       checkpoint: 27
     fail:
@@ -1411,7 +1411,8 @@ checkpoints:
     type: Call
     value: >
             var q         = user.GetQuest("Dugon7");
-            var result    = false;
+            
+            result    = false;
             
             if (q != null) {           
                 q.HandleQuest(client, null);
@@ -1449,7 +1450,8 @@ checkpoints:
             });
             quest.QuestStages.Add(q1);
             quest.QuestStages.Add(q2);
-            var result = user.AcceptQuest(quest);
+            
+            result = user.AcceptQuest(quest);
     success:
       checkpoint: 21
     fail:
@@ -1462,7 +1464,6 @@ checkpoints:
     type: Call
     value: >
             var q         = user.GetQuest("Dugon8");
-            var result    = false;
             
             if (q != null) {           
                 q.HandleQuest(client, null);
