@@ -132,8 +132,10 @@ namespace Darkages.Types
 
             DistributeExperience(player, exp);
 
-            foreach (var party in player.PartyMembers.Where(i => i.Serial != player.Serial))
-                if (party.WithinRangeOf(player))
+            if (player.PartyMembers != null)
+                foreach (var party in player.PartyMembers
+                    .Where(party => party.Serial != player.Serial)
+                    .Where(party => party.WithinRangeOf(player)))
                 {
                     DistributeExperience(party, exp);
 
@@ -367,13 +369,15 @@ namespace Darkages.Types
             if (!TaggedAislings.Contains(aisling.Serial))
                 TaggedAislings.Add(aisling.Serial);
 
-            if (aisling.GroupParty.PartyMembers.Count - 1 <= 0)
+            if (aisling.GroupParty != null && aisling.GroupParty.PartyMembers.Count - 1 <= 0)
                 return;
 
-            foreach (var member in aisling.GroupParty.PartyMembers.Where(member => !TaggedAislings.Contains(member.Serial)))
-            {
-                TaggedAislings.Add(member.Serial);
-            }
+            if (aisling.GroupParty != null)
+                foreach (var member in aisling.GroupParty.PartyMembers.Where(member =>
+                    !TaggedAislings.Contains(member.Serial)))
+                {
+                    TaggedAislings.Add(member.Serial);
+                }
         }
 
 

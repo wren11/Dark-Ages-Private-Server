@@ -111,7 +111,7 @@ namespace Darkages.Types
 
             user.SendAnimation(22, user, user);
 
-            lock (syncLock)
+            lock (SyncLock)
             {
                 var completeStages = QuestStages.Where(i => i.StepComplete).SelectMany(i => i.Prerequisites).ToArray();
 
@@ -199,25 +199,23 @@ namespace Darkages.Types
 
         public void Rewards(Aisling user, bool equipLoot)
         {
-            foreach (var items in SkillRewards)
-                if (!Skill.GiveTo(user.Client, items))
-                {
-                }
+            foreach (var items in SkillRewards.Where(items => !Skill.GiveTo(user.Client, items)))
+            {
+            }
 
 
-            foreach (var items in SpellRewards)
-                if (!Spell.GiveTo(user, items))
-                {
-                }
+            foreach (var items in SpellRewards.Where(items => !Spell.GiveTo(user, items)))
+            {
+            }
 
-            foreach (var items in ItemRewards)
-                if (ServerContextBase.GlobalItemTemplateCache.ContainsKey(items))
-                {
-                    var template = ServerContextBase.GlobalItemTemplateCache[items];
-
-                    var obj = Item.Create(user, template);
-                    if (!obj.GiveTo(user)) obj.Release(user, user.Position);
-                }
+            foreach (var obj in from items in ItemRewards
+                where ServerContextBase.GlobalItemTemplateCache.ContainsKey(items)
+                select ServerContextBase.GlobalItemTemplateCache[items]
+                into template
+                select Item.Create(user, template)
+                into obj
+                where !obj.GiveTo(user)
+                select obj) obj.Release(user, user.Position);
 
             foreach (var legends in LegendRewards)
                 user.LegendBook.AddLegend(new Legend.LegendItem
@@ -248,13 +246,13 @@ namespace Darkages.Types
             user.Client.SendStats(StatusFlags.All);
         }
 
-        private static object syncLock = new object();
+        private static readonly object SyncLock = new object();
 
         private static void EquipRewards(Aisling user)
         {
-            var items = new List<Item>();
+            List<Item> items;
 
-            lock (syncLock)
+            lock (SyncLock)
             {
                 items = new List<Item>(user
                     .Inventory
@@ -263,24 +261,28 @@ namespace Darkages.Types
                 );
             }
 
-            foreach (var obj in items)
-                if (obj != null)
+            foreach (var obj in items.Where(obj => obj != null))
+            {
+                user.EquipmentManager.Add
+                (
+                    obj.Template.EquipmentSlot,
+                    obj
+                );
+
+                obj.Scripts = ScriptManager.Load<ItemScript>(obj.Template.ScriptName, obj);
+                if (string.IsNullOrEmpty(obj.Template.WeaponScript))
+                    continue;
+
+                obj.WeaponScripts = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
+
+                if (obj.Scripts?.Values == null)
+                    continue;
+
+                foreach (var script in obj.Scripts?.Values)
                 {
-                    user.EquipmentManager.Add
-                    (
-                        obj.Template.EquipmentSlot,
-                        obj
-                    );
-
-                    obj.Scripts = ScriptManager.Load<ItemScript>(obj.Template.ScriptName, obj);
-                    if (!string.IsNullOrEmpty(obj.Template.WeaponScript))
-                    {
-                        obj.WeaponScripts = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
-
-                        foreach (var script in obj.Scripts?.Values)
-                            script.Equipped(user, (byte) obj.Template.EquipmentSlot);
-                    }
+                    script.Equipped(user, (byte) obj.Template.EquipmentSlot);
                 }
+            }
         }
 
         public void UpdateQuest(Aisling user)
@@ -291,16 +293,13 @@ namespace Darkages.Types
                 OnCompleted(user);
         }
 
-
         public void HandleQuest(GameClient client, Dialog menu = null, Action<bool> cb = null)
         {
-            var valid = QuestStages.Any() ? false : true;
+            var valid = !QuestStages.Any();
 
             foreach (var stage in QuestStages)
             {
-                var results = new List<bool>();
-                foreach (var reqs in stage.Prerequisites)
-                    results.Add(reqs.IsMet(client.Aisling, i => i(reqs.TemplateContext)));
+                var results = stage.Prerequisites.Select(reqs => reqs.IsMet(client.Aisling, i => i(reqs.TemplateContext))).ToList();
 
                 valid = results.TrueForAll(i => i);
                 stage.StepComplete = valid;
@@ -321,12 +320,14 @@ namespace Darkages.Types
                 }
             }
 
-            if (menu != null && valid)
-                if (menu.CanMoveNext)
-                {
-                    menu.MoveNext(client);
-                    menu.Invoke(client);
-                }
+            if (menu == null || !valid)
+                return;
+
+            if (!menu.CanMoveNext)
+                return;
+
+            menu.MoveNext(client);
+            menu.Invoke(client);
         }
     }
 
@@ -340,18 +341,21 @@ namespace Darkages.Types
 
         public bool IsMet(Aisling user, Func<Predicate<Template>, bool> predicate)
         {
-            if (Type == QuestType.ItemHandIn)
-                return predicate(i => user.Inventory.Has(TemplateContext) >= Amount);
-            if (Type == QuestType.KillCount)
-                return predicate(i => user.HasKilled(Value, Amount));
-            if (Type == QuestType.HasItem)
-                return predicate(i => user.Inventory.HasCount(TemplateContext) >= Amount);
-            if (Type == QuestType.SingleItemHandIn)
-                return predicate(i => user.Inventory.HasCount(TemplateContext) >= Amount);
-            if (Type == QuestType.Gossip)
-                return true;
-
-            return false;
+            switch (Type)
+            {
+                case QuestType.ItemHandIn:
+                    return predicate(i => user.Inventory.Has(TemplateContext) >= Amount);
+                case QuestType.KillCount:
+                    return predicate(i => user.HasKilled(Value, Amount));
+                case QuestType.HasItem:
+                    return predicate(i => user.Inventory.HasCount(TemplateContext) >= Amount);
+                case QuestType.SingleItemHandIn:
+                    return predicate(i => user.Inventory.HasCount(TemplateContext) >= Amount);
+                case QuestType.Gossip:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 
