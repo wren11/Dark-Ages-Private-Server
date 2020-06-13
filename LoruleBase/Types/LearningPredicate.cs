@@ -208,8 +208,7 @@ namespace Darkages.Types
                 if (spell_retainer == null)
                     result[n++] = new Tuple<bool, object>(false,
                         $"You don't have the spell required. ({Spell_Required})");
-
-                if ((spell_retainer != null) & (spell_retainer.Level >= Spell_Level_Required))
+                else if (spell_retainer.Level >= Spell_Level_Required)
                     result[n++] = new Tuple<bool, object>(true,
                         "Spells Required.");
                 else

@@ -87,13 +87,17 @@ namespace Darkages.Network
                     Encryption.Transform(packet);
 
                 var array = packet.ToArray();
-                Session.ConnectedSocket.Send(array, SocketFlags.None);
+
+
+                if (Session.ConnectedSocket.Connected)
+                    Session.ConnectedSocket.Send(array, SocketFlags.None);
             }
         }
 
         public void Send(NetworkFormat format)
         {
-            FlushAndSend(format);
+            if (Session.ConnectedSocket.Connected) 
+                FlushAndSend(format);
         }
 
         public void Send(NetworkPacketWriter lpData)
@@ -102,7 +106,9 @@ namespace Darkages.Network
             Encryption.Transform(packet);
 
             var array = packet.ToArray();
-            Session.ConnectedSocket.Send(array, SocketFlags.None);
+
+            if (Session.ConnectedSocket.Connected)
+                Session.ConnectedSocket.Send(array, SocketFlags.None);
         }
 
         public void Send(byte[] data)
@@ -119,7 +125,9 @@ namespace Darkages.Network
                 Encryption.Transform(packet);
 
                 var array = packet.ToArray();
-                Session.ConnectedSocket.Send(array, SocketFlags.None);
+
+                if (Session.ConnectedSocket.Connected)
+                    Session.ConnectedSocket.Send(array, SocketFlags.None);
             }
         }
 

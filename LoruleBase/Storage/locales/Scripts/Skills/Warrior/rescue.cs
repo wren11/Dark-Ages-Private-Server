@@ -17,6 +17,8 @@
 //*************************************************************************/
 
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 
@@ -46,9 +48,9 @@ namespace Darkages.Scripting.Scripts.Skills
 
         public override void OnSuccess(Sprite sprite)
         {
-            if (sprite is Aisling)
+            if (sprite is Aisling aisling)
             {
-                var client = (sprite as Aisling).Client;
+                var client = aisling.Client;
 
                 var action = new ServerFormat1A
                 {
@@ -61,32 +63,27 @@ namespace Darkages.Scripting.Scripts.Skills
                 var enemy = client.Aisling.GetInfront();
 
                 if (enemy != null)
-                    foreach (var i in enemy)
+                    foreach (var i in from i in enemy where i != null where client.Aisling.Serial != i.Serial where !(i is Money) where i.Attackable select i)
                     {
-                        if (i == null)
-                            continue;
-
-                        if (client.Aisling.Serial == i.Serial)
-                            continue;
-                        if (i is Money)
-                            continue;
-                        if (!i.Attackable)
-                            continue;
-
                         //this should ensure we remove everyone from the tag list except me or group members.
-                        if (i is Monster _monster)
-                            if (sprite is Aisling _player)
-                                if (_player.GroupParty.MembersExcludingSelfMapWide.Count > 0)
-                                {
-                                    var nearbyTags = _player.GroupParty.MembersExcludingSelfMapWide.ToArray();
-                                    var removed = 0;
+                        if (i is Monster monster)
+                        {
+                            var membersExcludingSelfMapWide =
+                                GetObjects<Aisling>(aisling.Map,
+                                        n => n.Serial != aisling.Serial && n.GroupId == aisling.GroupId)
+                                    .ToList();
 
-                                    foreach (var obj in nearbyTags)
-                                        removed += _monster.TaggedAislings.RemoveWhere(n => n != obj.Serial);
-                                }
+                            if (membersExcludingSelfMapWide.Count > 0)
+                            {
+                                var nearbyTags = new List<Sprite>(membersExcludingSelfMapWide);
+                                var removed = nearbyTags.Sum(obj =>
+                                    monster.TaggedAislings.RemoveWhere(n => n != obj.Serial));
+                            }
+
+                        }
 
                         Target = i;
-                        i.ApplyDamage(sprite, 0, true, Skill.Template.Sound, null, true);
+                        i.ApplyDamage(aisling, 0, true, Skill.Template.Sound, null, true);
 
                         if (i is Aisling)
                         {

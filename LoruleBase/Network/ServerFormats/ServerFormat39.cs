@@ -55,7 +55,7 @@ namespace Darkages.Network.ServerFormats
             packet.Write((byte) 0x0);
             packet.Write((byte) 0x0);
 
-            var isGrouped = Aisling.GroupParty.LengthExcludingSelf > 0;
+            var isGrouped = Aisling.GroupParty != null && (Aisling.GroupParty.PartyMembers != null && (Aisling.GroupParty != null && Aisling.GroupParty.PartyMembers.Count(i => i.Serial != Aisling.Serial) > 0));
 
             if (!isGrouped)
             {
@@ -63,12 +63,10 @@ namespace Darkages.Network.ServerFormats
             }
             else
             {
-                var partyMessage = "Group members\n";
+                var partyMessage = Aisling.GroupParty.PartyMembers.Aggregate(
+                    "Group members\n", (current, member) => current + $"{(Aisling.Username.Equals(member.GroupParty.LeaderName, StringComparison.OrdinalIgnoreCase) ? " * " : " ")}{member.Username}\n");
 
-                foreach (var member in Aisling.GroupParty.Members)
-                    partyMessage +=
-                        $"{(Aisling.Username.Equals(member.GroupParty.Creator.Username, StringComparison.OrdinalIgnoreCase) ? " * " : " ")}{member.Username}\n";
-                partyMessage += $"{Aisling.GroupParty.Length} total";
+                partyMessage += $"{Aisling.GroupParty.PartyMembers.Count} total";
                 packet.WriteStringA(partyMessage);
             }
 

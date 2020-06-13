@@ -16,6 +16,7 @@
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
+using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
@@ -54,35 +55,39 @@ namespace Darkages.Storage.locales.Scripts.Spells
                         Speed = 30
                     };
 
-                    client.Aisling.CurrentMp -= Spell.Template.ManaCost;
-
-
-                    foreach (var obj in client.Aisling.PartyMembers)
+                    if (sprite.GroupId == 0)
                     {
-                        if (obj == null || obj.Dead)
-                            continue;
-
-                        obj.CurrentHp += obj.MaximumHp / 10;
-
-                        if (obj.CurrentHp > obj.MaximumHp)
-                            obj.CurrentHp = obj.MaximumHp;
-
-                        if (client.Aisling.CurrentMp < 0)
-                            client.Aisling.CurrentMp = 0;
-
-                        if (obj.CurrentHp > 0)
+                        client.Aisling.CurrentMp -= Spell.Template.ManaCost;
+                    }
+                    else
+                    {
+                        foreach (var obj in sprite.AislingsNearby().Where(i => i.GroupId == sprite.GroupId))
                         {
-                            var hpbar = new ServerFormat13
-                            {
-                                Serial = obj.Serial,
-                                Health = (ushort) (100 * obj.CurrentHp / obj.MaximumHp),
-                                Sound = 8
-                            };
-                            obj.Show(Scope.NearbyAislings, hpbar);
-                        }
+                            if (obj.Dead)
+                                continue;
 
-                        obj.Client.SendStats(StatusFlags.StructB);
-                        client.SendAnimation(0x04, obj, client.Aisling);
+                            obj.CurrentHp += obj.MaximumHp / 10;
+
+                            if (obj.CurrentHp > obj.MaximumHp)
+                                obj.CurrentHp = obj.MaximumHp;
+
+                            if (client.Aisling.CurrentMp < 0)
+                                client.Aisling.CurrentMp = 0;
+
+                            if (obj.CurrentHp > 0)
+                            {
+                                var hpbar = new ServerFormat13
+                                {
+                                    Serial = obj.Serial,
+                                    Health = (ushort) (100 * obj.CurrentHp / obj.MaximumHp),
+                                    Sound = 8
+                                };
+                                obj.Show(Scope.NearbyAislings, hpbar);
+                            }
+
+                            obj.Client.SendStats(StatusFlags.StructB);
+                            client.SendAnimation(0x04, obj, client.Aisling);
+                        }
                     }
 
                     client.Aisling.Show(Scope.NearbyAislings, action);

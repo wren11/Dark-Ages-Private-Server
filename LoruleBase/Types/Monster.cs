@@ -161,19 +161,13 @@ namespace Darkages.Types
             if (exp <= 0)
                 exp = 1;
 
-            var bonus = exp * (1 + player.GroupParty.LengthExcludingSelf) *
-                ServerContextBase.Config.GroupExpBonus / 100;
+            var bonus = exp * (1 + player.GroupParty.PartyMembers.Count - 1) * ServerContextBase.Config.GroupExpBonus / 100;
 
             if (bonus > 0)
                 exp += bonus;
 
-            if (player.ExpTotal <= uint.MaxValue)
-                player.ExpTotal += (uint) exp;
-            else
-                player.ExpTotal = uint.MaxValue;
-
-
-            player.ExpNext -= (uint) exp;
+            player.ExpTotal += (uint) exp;
+            player.ExpNext  -= (uint) exp;
 
             if (player.ExpNext >= int.MaxValue) player.ExpNext = 0;
 
@@ -324,13 +318,13 @@ namespace Darkages.Types
 
                                         if (user is Aisling aisling)
                                         {
-                                            var party = aisling.GroupParty.Members;
+                                            var party = aisling.GroupParty.PartyMembers;
 
                                             foreach (var player in party)
                                                 player.Client.SendMessage(0x03,
                                                     $"Special Drop: {rolled_item.DisplayName}");
 
-                                            Task.Delay(500).ContinueWith(ct => { rolled_item.Animate(160, 200); });
+                                            Task.Delay(1000).ContinueWith(ct => { rolled_item.Animate(160, 200); });
                                         }
                                     }
                                 }
@@ -367,17 +361,18 @@ namespace Darkages.Types
             if (TaggedAislings == null)
                 TaggedAislings = new HashSet<int>();
 
-            if (target is Aisling)
+            if (!(target is Aisling aisling))
+                return;
+
+            if (!TaggedAislings.Contains(aisling.Serial))
+                TaggedAislings.Add(aisling.Serial);
+
+            if (aisling.GroupParty.PartyMembers.Count - 1 <= 0)
+                return;
+
+            foreach (var member in aisling.GroupParty.PartyMembers.Where(member => !TaggedAislings.Contains(member.Serial)))
             {
-                var aisling = target as Aisling;
-
-                if (!TaggedAislings.Contains(aisling.Serial))
-                    TaggedAislings.Add(aisling.Serial);
-
-                if (aisling.GroupParty.LengthExcludingSelf > 0)
-                    foreach (var member in aisling.GroupParty.MembersExcludingSelf)
-                        if (!TaggedAislings.Contains(member.Serial))
-                            TaggedAislings.Add(member.Serial);
+                TaggedAislings.Add(member.Serial);
             }
         }
 

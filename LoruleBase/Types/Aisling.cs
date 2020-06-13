@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
 using Darkages.Common;
@@ -66,6 +67,7 @@ namespace Darkages
         /// </summary>
         [JsonIgnore] public HashSet<Sprite> View = new HashSet<Sprite>();
 
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="Aisling" /> class.
         /// </summary>
@@ -84,12 +86,11 @@ namespace Darkages
             PortalSession = new PortalSession();
             Quests = new List<Quest>();
             PartyStatus = GroupStatus.AcceptingRequests;
-            InvitePrivleges = true;
-            LeaderPrivleges = false;
             Remains = new CursedSachel(this);
             ActiveReactor = null;
             DiscoveredMaps = new List<int>();
             Popups = new List<Popup>();
+            GroupId = 0;
         }
 
         /// <summary>
@@ -499,12 +500,17 @@ namespace Darkages
         [JsonIgnore]
         public bool Skulled => HasDebuff("skulled");
 
-        /// <summary>
-        ///     Gets or sets the group party.
-        /// </summary>
-        /// <value>The group party.</value>
-        [JsonIgnore]
-        public Party GroupParty { get; set; }
+
+        [JsonIgnore] public Party GroupParty
+        {
+            get
+            {
+                if (ServerContextBase.GlobalGroupCache.ContainsKey(GroupId))
+                    return ServerContextBase.GlobalGroupCache[GroupId];
+
+                return null;
+            }
+        }
 
         /// <summary>
         ///     Gets or sets a value indicating whether this instance is casting spell.
@@ -525,7 +531,7 @@ namespace Darkages
         /// </summary>
         /// <value>The party members.</value>
         [JsonIgnore]
-        public List<Aisling> PartyMembers => GroupParty?.Members;
+        public List<Aisling> PartyMembers => GroupParty?.PartyMembers;
 
         /// <summary>
         ///     Gets or sets the field number.
@@ -541,19 +547,20 @@ namespace Darkages
         [JsonIgnore]
         public int LastMapId { get; set; }
 
-        /// <summary>
-        ///     Gets or sets a value indicating whether [leader privleges].
-        /// </summary>
-        /// <value><c>true</c> if [leader privleges]; otherwise, <c>false</c>.</value>
         [JsonIgnore]
-        public bool LeaderPrivleges { get; set; }
+        public bool LeaderPrivileges
+        {
+            get
+            {
+                if (!ServerContextBase.GlobalGroupCache.ContainsKey(GroupId))
+                    return false;
 
-        /// <summary>
-        ///     Gets or sets a value indicating whether [invite privleges].
-        /// </summary>
-        /// <value><c>true</c> if [invite privleges]; otherwise, <c>false</c>.</value>
-        [JsonIgnore]
-        public bool InvitePrivleges { get; set; }
+                var group = ServerContextBase.GlobalGroupCache[GroupId];
+                return group != null &&
+                       string.Equals(group.LeaderName, Username, StringComparison.CurrentCultureIgnoreCase);
+            }
+        }
+
 
         /// <summary>
         ///     Gets or sets a value indicating whether [using two handed].

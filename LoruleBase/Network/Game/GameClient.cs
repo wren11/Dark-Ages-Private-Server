@@ -675,6 +675,14 @@ namespace Darkages.Network.Game
 
         public GameClient DoUpdate(TimeSpan elapsedTime)
         {
+            if (!Session.ConnectedSocket.Connected)
+            {
+                Aisling.Remove(true, true);
+                Server.ClientDisconnected(this);
+
+                return this;
+            }
+
             return HandleTimeOuts()
                 .StatusCheck()
                 .Regen(elapsedTime)
@@ -703,9 +711,8 @@ namespace Darkages.Network.Game
             }
 
             //Remove inactive reactors.
-            foreach (var reactor in inactive)
-                if (Aisling.ActiveReactors.ContainsKey(reactor.YamlKey))
-                    Aisling.ActiveReactors.Remove(reactor.YamlKey);
+            foreach (var reactor in inactive.Where(reactor => Aisling.ActiveReactors.ContainsKey(reactor.YamlKey)))
+                Aisling.ActiveReactors.Remove(reactor.YamlKey);
 
             return this;
         }
@@ -1425,6 +1432,8 @@ namespace Darkages.Network.Game
         {
             StorageManager.AislingBucket.Save(Aisling);
             LastSave = DateTime.UtcNow;
+
+            ServerContext.Logger($"Aisling {Aisling.Username} data has been saved.");
 
             return this;
         }

@@ -22,6 +22,8 @@ namespace Darkages.Types
 
         [JsonIgnore] public Position LastPosition;
 
+        [JsonIgnore] public int GroupId { get; set; }
+
         protected Sprite()
         {
             if (this is Aisling)
@@ -505,7 +507,7 @@ namespace Darkages.Types
                 {
                     if (taggeduser.WithinRangeOf(this))
                     {
-                        canTag = attackingPlayer.GroupParty.Has(taggeduser);
+                        canTag = attackingPlayer.GroupId == taggeduser.GroupId;
                     }
                     else
                     {
@@ -949,7 +951,7 @@ namespace Darkages.Types
                     if (!(this is Aisling))
                         return;
 
-                    foreach (var gc in GetObjects<Aisling>(Map, that => that.WithinRangeOf(this) && ((Aisling) this).GroupParty.Has(that, true)))
+                    foreach (var gc in GetObjects<Aisling>(Map, that => that.WithinRangeOf(this) && ((Aisling) this).GroupParty.Has(that)))
                     {
                         gc.Client.Send(format);
                     }

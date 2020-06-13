@@ -118,9 +118,9 @@ namespace Darkages.Network.ServerFormats
                 writer.Write((byte) 0);
 
             writer.WriteStringA(Aisling.Username ?? string.Empty);
-            writer.WriteStringA(Aisling.GroupParty.LengthExcludingSelf > 0
-                ? Aisling.GroupParty.Name ?? string.Empty
-                : string.Empty);
+            //writer.WriteStringA(Aisling.GroupParty.LengthExcludingSelf > 0
+            //    ? Aisling.GroupParty.Name ?? string.Empty
+            //    : string.Empty);
         }
     }
 }

@@ -47,7 +47,9 @@ namespace Darkages.Network.Game
         private void AutoSave(GameClient client)
         {
             if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContextBase.Config.SaveRate)
+            {
                 client.Save();
+            }
         }
 
         private void MainServerLoop()
@@ -62,17 +64,17 @@ namespace Darkages.Network.Game
                 {
                     UpdateClients(elapsedTime);
                     UpdateComponents(elapsedTime);
-                    //UpdateAreas(elapsedTime);
                 }
-                catch
+                catch (Exception e)
                 {
+                    ServerContext.Logger("Error in MainServerLoop().");
+                    ServerContext.Error(e);
 
+                    continue;
                 }
-                finally
-                {
-                    _lastHeavyUpdate = DateTime.UtcNow;
-                    Thread.Sleep(_heavyUpdateSpan);
-                }
+
+                _lastHeavyUpdate = DateTime.UtcNow;
+                Thread.Sleep(_heavyUpdateSpan);
             }
         }
 
@@ -139,11 +141,8 @@ namespace Darkages.Network.Game
             {
                 try
                 {
-                    foreach (var client in Clients)
+                    foreach (var client in Clients.Where(client => client?.Aisling != null))
                     {
-                        if (client?.Aisling == null)
-                            continue;
-
                         client.Aisling.Map?.Update(elapsedTime);
 
                         ObjectComponent.UpdateClientObjects(client.Aisling);
@@ -182,8 +181,7 @@ namespace Darkages.Network.Game
                 if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
                     client.Save();
 
-                Party.RemoveFromParty(client.Aisling.GroupParty, client.Aisling,
-                    client.Aisling.GroupParty.Creator.Serial == client.Aisling.Serial);
+                Party.RemovePartyMember(client.Aisling);
 
                 client.Aisling.ActiveReactor = null;
                 client.Aisling.ActiveSequence = null;

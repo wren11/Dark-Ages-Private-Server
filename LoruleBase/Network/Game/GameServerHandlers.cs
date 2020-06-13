@@ -333,10 +333,7 @@ namespace Darkages.Network.Game
             client.Aisling.EquipmentManager.Client = client;
             client.Aisling.CurrentWeight = 0;
             client.Aisling.ActiveStatus = ActivityStatus.Awake;
-            client.Aisling.InvitePrivleges = true;
-            client.Aisling.LeaderPrivleges = false;
 
-            Party.Reform(client);
             ServerContext.Logger(client.Aisling.Username + " : " + ServerContextBase.Config.ServerWelcomeMessage);
 
             return client.Load()
@@ -362,8 +359,7 @@ namespace Darkages.Network.Game
             #endregion
 
 
-            Party.RemoveFromParty(client.Aisling.GroupParty, client.Aisling,
-                client.Aisling.GroupParty.Creator.Serial == client.Aisling.Serial);
+            Party.RemovePartyMember(client.Aisling);
 
             client.Aisling.ActiveReactor = null;
             client.Aisling.ActiveSequence = null;
@@ -1371,9 +1367,7 @@ namespace Darkages.Network.Game
             if (format.Type != 0x02)
                 return;
 
-            var player = GetObject<Aisling>(client.Aisling.Map, i =>
-                i.Username.ToLower() == format.Name.ToLower()
-                && i.WithinRangeOf(client.Aisling));
+            var player = GetObject<Aisling>(client.Aisling.Map, i => string.Equals(i.Username, format.Name, StringComparison.CurrentCultureIgnoreCase) && i.WithinRangeOf(client.Aisling));
 
             if (player == null)
             {
@@ -1389,10 +1383,9 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            if (client.Aisling.GroupParty.RequestUserToJoin(player))
+            if (Party.AddPartyMember(client.Aisling, player))
             {
-                client.Aisling.LeaderPrivleges = true;
-                player.InvitePrivleges = true;
+                client.Aisling.PartyStatus = GroupStatus.AcceptingRequests;
             }
         }
 
@@ -1408,15 +1401,20 @@ namespace Darkages.Network.Game
             client.Aisling.PartyStatus = mode;
 
             if (client.Aisling.PartyStatus == GroupStatus.NotAcceptingRequests)
-                if (client.Aisling.LeaderPrivleges)
+            {
+                //if the player is a leader, he can disband the entire group.
+                if (client.Aisling.LeaderPrivileges)
                 {
-                    Party.DisbandParty(client.Aisling.GroupParty);
+                    if (!ServerContextBase.GlobalGroupCache.ContainsKey(client.Aisling.GroupId))
+                        return;
+
+                    var group = ServerContextBase.GlobalGroupCache[client.Aisling.GroupId];
+                    if (group != null)
+                        Party.DisbandParty(group);
                 }
-                else
-                {
-                    Party.WithDrawFromParty(client);
-                    Party.Reform(client);
-                }
+
+                Party.RemovePartyMember(client.Aisling);
+            }
         }
 
 

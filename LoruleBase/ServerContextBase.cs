@@ -70,11 +70,16 @@ namespace Darkages
         public static List<PopupTemplate> GlobalPopupCache
             = new List<PopupTemplate>();
 
+        public static Dictionary<int, Party> GlobalGroupCache
+            = new Dictionary<int, Party>();
+
         public static Board[] Community = new Board[7];
         public static Dictionary<string, List<Board>> GlobalBoardCache = new Dictionary<string, List<Board>>();
 
         [property: JsonIgnore]
         public static IPAddress IpAddress { get; } = IPAddress.Parse(File.ReadAllText("server.tbl"));
+
+
 
         public static string GlobalMessage { get; set; }
 
