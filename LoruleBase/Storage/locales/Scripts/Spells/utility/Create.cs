@@ -23,7 +23,7 @@ using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Spells
 {
-    [Script("Create", "Dean")]
+    [Script("[GM] Create Item", "Dean")]
     public class Create : SpellScript
     {
         public Create(Spell spell) : base(spell)

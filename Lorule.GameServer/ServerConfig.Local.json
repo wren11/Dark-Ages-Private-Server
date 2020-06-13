@@ -104,6 +104,7 @@
 				"Enabled": false
 			}
 		],
+		"GiveAssailOnCreate": true, 
 		"SkullLength": 10,
 		"SomethingWentWrong": "Something went wrong.",
 		"SpellFailedMessage": "failed.",

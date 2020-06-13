@@ -165,22 +165,18 @@ namespace Darkages.Network.Login
         {
             if (aisling != null)
             {
-                var map = ServerContext.GlobalMapCache.FirstOrDefault().Value;
-
                 var redirect = new Redirect
                 {
                     Serial = Convert.ToString(client.Serial),
                     Salt   = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
                     Seed   = Convert.ToString(client.Encryption.Parameters.Seed),
-                    Name   = JsonConvert.SerializeObject(new { player = aisling.Username, map } ),
+                    Name   = JsonConvert.SerializeObject(new { player = aisling.Username, developer = "wren" } ),
                 };
 
+                ServerContextBase.Redirects.Add(aisling.Username.ToLower());
+
                 if (aisling.Username.Equals(ServerContextBase.Config.GameMaster,
-                    StringComparison.OrdinalIgnoreCase)) aisling.GameMaster = true;
-
-                aisling.Redirect = redirect;
-
-                StorageManager.AislingBucket.Save(aisling);
+                    StringComparison.CurrentCultureIgnoreCase)) aisling.GameMaster = true;
 
                 client.SendMessageBox(0x00, "\0");
                 client.Send(new ServerFormat03

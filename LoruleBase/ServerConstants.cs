@@ -118,6 +118,7 @@ namespace Darkages
         int ClientVersion { get; set; }
         bool UseLobby { get; set; }
         int LOGIN_PORT { get; set; }
+        bool GiveAssailOnCreate { get; }
     }
 
     public class ServerConstants : IServerConstants
@@ -339,6 +340,8 @@ namespace Darkages
         public bool UseLobby { get; set; }
 
         public int LOGIN_PORT { get; set; }
+
+        public bool GiveAssailOnCreate { get; set; }
     }
 
     public class GameSetting
