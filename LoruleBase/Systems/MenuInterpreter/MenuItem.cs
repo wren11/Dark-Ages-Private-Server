@@ -1,6 +1,10 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
+
+#endregion
 
 namespace MenuInterpreter
 {
@@ -15,7 +19,6 @@ namespace MenuInterpreter
             if (answers == null)
                 answers = Enumerable.Empty<Answer>().ToArray();
 
-            // every menu must have special option "close" 
             if (type == MenuItemType.Menu)
             {
                 var newAnswers = new List<Answer>(answers);

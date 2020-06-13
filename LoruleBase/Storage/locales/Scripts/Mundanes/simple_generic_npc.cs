@@ -1,9 +1,13 @@
-﻿using System.IO;
+﻿#region
+
+using System.IO;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
 using MenuInterpreter;
 using MenuInterpreter.Parser;
+
+#endregion
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {

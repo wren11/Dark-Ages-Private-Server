@@ -1,7 +1,11 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Concurrent;
 using Darkages.Common;
 using Newtonsoft.Json;
+
+#endregion
 
 namespace Darkages.Types
 {
@@ -26,16 +30,15 @@ namespace Darkages.Types
         public Action<Sprite, Sprite> Tripped { get; set; }
         public Item TrapItem { get; private set; }
 
-        //0x‭81F4‬
 
         public static bool Set(Sprite obj, int duration, int radius = 1, Action<Sprite, Sprite> cb = null)
         {
             var itemTemplate = new ItemTemplate
             {
-                Name  = $"A Hidden Trap",
+                Name = "A Hidden Trap",
                 Image = 500,
                 DisplayImage = 0x8000 + 500,
-                Flags = ItemFlags.Trap,
+                Flags = ItemFlags.Trap
             };
 
             var ts = Item.Create(obj, itemTemplate, true);
@@ -54,7 +57,7 @@ namespace Darkages.Types
                     Owner = obj,
                     Tripped = cb,
                     Serial = id,
-                    TrapItem = ts,
+                    TrapItem = ts
                 });
             }
         }

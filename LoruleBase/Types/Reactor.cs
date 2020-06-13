@@ -1,10 +1,14 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Newtonsoft.Json;
+
+#endregion
 
 namespace Darkages.Types
 {
@@ -130,14 +134,14 @@ namespace Darkages.Types
                         }
 
                         if (valid)
-                            Goto(client, Index); //send the next dialog.
+                            Goto(client, Index);
                         else
                             client.SendOptionsDialog(mundane, client.Aisling.ActiveSequence.ConditionFailMessage,
                                 "failed");
                     }
                     else
                     {
-                        Goto(client, Index); //send the next dialog.
+                        Goto(client, Index);
                     }
 
                     if (Sequences[Index].OnSequenceStep != null)

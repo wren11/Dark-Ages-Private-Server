@@ -1,44 +1,28 @@
-﻿// ************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-// *************************************************************************/
+﻿#region
 
 using System;
-using System.Diagnostics;
 using System.Net;
 using System.Text;
 using Darkages.IO;
+
+#endregion
 
 namespace Darkages.Network
 {
     public class NetworkPacketWriter
     {
-        private readonly byte[] buffer;
         private readonly Encoding encoding = Encoding.GetEncoding(949);
 
         public NetworkPacketWriter()
         {
-            buffer = BufferPool.Take(0x8192);
+            Buffer = BufferPool.Take(0x8192);
         }
 
-        public byte[] Buffer => buffer;
+        public byte[] Buffer { get; }
 
         public int Position { get; set; }
 
-        public bool IsEmpty => buffer == null || buffer.Length == 0;
+        public bool IsEmpty => Buffer == null || Buffer.Length == 0;
 
         public void Write(bool value)
         {
@@ -48,18 +32,18 @@ namespace Darkages.Network
 
         public void Write(byte value)
         {
-            buffer[Position++] = value;
+            Buffer[Position++] = value;
         }
 
         public void Write(byte[] value)
         {
-            Array.Copy(value, 0, buffer, Position, value.Length);
+            Array.Copy(value, 0, Buffer, Position, value.Length);
             Position += value.Length;
         }
 
         public void Write(sbyte value)
         {
-            buffer[Position++] = (byte) value;
+            Buffer[Position++] = (byte) value;
         }
 
         public void Write(short value)
@@ -98,7 +82,7 @@ namespace Darkages.Network
 
         public void WriteString(string value)
         {
-            encoding.GetBytes(value, 0, value.Length, buffer, Position);
+            encoding.GetBytes(value, 0, value.Length, Buffer, Position);
             Position += encoding.GetByteCount(value);
         }
 
@@ -109,7 +93,7 @@ namespace Darkages.Network
             Write(
                 (byte) count);
 
-            encoding.GetBytes(value, 0, value.Length, buffer, Position);
+            encoding.GetBytes(value, 0, value.Length, Buffer, Position);
             Position += count;
         }
 
@@ -120,7 +104,7 @@ namespace Darkages.Network
             Write(
                 (ushort) count);
 
-            encoding.GetBytes(value, 0, value.Length, buffer, Position);
+            encoding.GetBytes(value, 0, value.Length, Buffer, Position);
             Position += count;
         }
 
@@ -138,7 +122,7 @@ namespace Darkages.Network
 
         public NetworkPacket ToPacket()
         {
-            if (Position > 0) return new NetworkPacket(buffer, Position);
+            if (Position > 0) return new NetworkPacket(Buffer, Position);
 
             return null;
         }

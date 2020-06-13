@@ -1,22 +1,8 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Storage.locales.debuffs
 {
@@ -26,7 +12,6 @@ namespace Darkages.Storage.locales.debuffs
         public override byte Icon => 26;
         public override int Length => 2;
 
-        //going to make this debuff apply armor during it's duration. -50 AC!.
         public StatusOperator AcModifer => new StatusOperator(Operator.Remove, 50);
 
         public override void OnApplied(Sprite Affected, Debuff debuff)

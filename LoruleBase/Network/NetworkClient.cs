@@ -1,14 +1,16 @@
-﻿using Darkages.Network.Object;
+﻿#region
+
+using System.Net.Sockets;
+using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
-using System.Net.Sockets;
+
+#endregion
 
 namespace Darkages.Network
 {
     public abstract class NetworkClient : ObjectManager
     {
-        public NetworkSocket Session { get; set; }
-
         protected NetworkClient()
         {
             Reader = new NetworkPacketReader();
@@ -16,6 +18,8 @@ namespace Darkages.Network
 
             Encryption = new SecurityProvider();
         }
+
+        public NetworkSocket Session { get; set; }
 
         public NetworkPacketReader Reader { get; set; }
 
@@ -96,7 +100,7 @@ namespace Darkages.Network
 
         public void Send(NetworkFormat format)
         {
-            if (Session.ConnectedSocket.Connected) 
+            if (Session.ConnectedSocket.Connected)
                 FlushAndSend(format);
         }
 
@@ -133,20 +137,18 @@ namespace Darkages.Network
 
         private static byte P(NetworkPacket value)
         {
-            return (byte)(value.Data[1] ^ (byte)(value.Data[0] - 0x2D));
+            return (byte) (value.Data[1] ^ (byte) (value.Data[0] - 0x2D));
         }
 
         private static void TransFormDialog(NetworkPacket value)
         {
-            value.Data[2] ^= (byte)(P(value) + 0x73);
-            value.Data[3] ^= (byte)(P(value) + 0x73);
-            value.Data[4] ^= (byte)(P(value) + 0x28);
-            value.Data[5] ^= (byte)(P(value) + 0x29);
+            value.Data[2] ^= (byte) (P(value) + 0x73);
+            value.Data[3] ^= (byte) (P(value) + 0x73);
+            value.Data[4] ^= (byte) (P(value) + 0x28);
+            value.Data[5] ^= (byte) (P(value) + 0x29);
 
             for (var i = 0; i < value.Data.Length - 6; i++)
-            {
-                value.Data[6 + i] ^= (byte)(((byte)(P(value) + 0x28) + i + 2) % 256);
-            }
+                value.Data[6 + i] ^= (byte) (((byte) (P(value) + 0x28) + i + 2) % 256);
         }
 
         public void SendMessageBox(byte code, string text)
@@ -154,7 +156,7 @@ namespace Darkages.Network
             Send(new ServerFormat02(code, text));
         }
 
-        #region Server Formats 
+        #region Server Formats
 
         public virtual void Format00Handler(ServerFormat00 format)
         {

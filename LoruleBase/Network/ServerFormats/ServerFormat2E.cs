@@ -1,25 +1,9 @@
-﻿//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
-using System.Linq;
-using System.Threading;
 using Darkages.Common;
 
-///************************************************************************
+#endregion
+
 namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat2E : NetworkFormat
@@ -50,7 +34,6 @@ namespace Darkages.Network.ServerFormats
             var name = $"field{portal.FieldNumber:000}";
 
 
-
             writer.WriteStringA(name);
             writer.Write((byte) portal.Portals.Count);
             writer.Write((byte) portal.FieldNumber);
@@ -60,23 +43,21 @@ namespace Darkages.Network.ServerFormats
                 if (warps == null || warps.Destination == null)
                     continue;
 
-                writer.Write((short)warps.PointY);
-                writer.Write((short)warps.PointX);
+                writer.Write(warps.PointY);
+                writer.Write(warps.PointX);
 
                 writer.WriteStringA(warps.DisplayName);
                 writer.Write(warps.Destination.AreaID);
                 writer.Write((short) warps.Destination.Location.X);
                 writer.Write((short) warps.Destination.Location.Y);
-
             }
 
-            writer.Write((byte)(byte)Generator.Random.Next() % 255 + 1);
-            writer.Write((byte)(byte)Generator.Random.Next() % 255 + 1);
-            writer.Write((byte)(byte)Generator.Random.Next() % 255 + 1);
-            writer.Write((byte)(byte)Generator.Random.Next() % 255 + 1);
-            writer.Write((byte)(byte)Generator.Random.Next() % 255 + 1);
-            writer.Write((byte)(byte)Generator.Random.Next() % 255 + 1);
-
+            writer.Write((byte) Generator.Random.Next() % 255 + 1);
+            writer.Write((byte) Generator.Random.Next() % 255 + 1);
+            writer.Write((byte) Generator.Random.Next() % 255 + 1);
+            writer.Write((byte) Generator.Random.Next() % 255 + 1);
+            writer.Write((byte) Generator.Random.Next() % 255 + 1);
+            writer.Write((byte) Generator.Random.Next() % 255 + 1);
         }
     }
 }

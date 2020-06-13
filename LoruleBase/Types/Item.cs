@@ -1,20 +1,4 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using System;
 using System.Collections.Generic;
@@ -25,7 +9,8 @@ using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage;
 using Newtonsoft.Json;
-using ServiceStack.Text;
+
+#endregion
 
 namespace Darkages.Types
 {
@@ -136,36 +121,28 @@ namespace Darkages.Types
                     if (num_stacks <= 0)
                         num_stacks = 1;
 
-                    //find first item in inventory that is stackable with the same name.
                     var item = (sprite as Aisling).Inventory.Get(i => i != null && i.Template.Name == Template.Name
                                                                                 && i.Stacks + num_stacks <
                                                                                 i.Template.MaxStack).FirstOrDefault();
 
-                    if (item != null) // current stack
+                    if (item != null)
                     {
-                        //use the same slot as this stack we found of the same item.
                         Slot = item.Slot;
 
-                        //update the stack quanity.
                         item.Stacks += num_stacks;
 
-                        //refresh this item slot.
                         (sprite as Aisling).Client.Aisling.Inventory.Set(item, false);
 
-                        //send remove packet.
                         (sprite as Aisling).Client.Send(new ServerFormat10(item.Slot));
 
-                        //add it again with updated information.
                         (sprite as Aisling).Client.Send(new ServerFormat0F(item));
 
-                        //send message
                         (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
                             $"Received {DisplayName}, You now have ({(item.Stacks == 0 ? item.Stacks + 1 : item.Stacks)})");
 
                         return true;
                     }
 
-                    //if we don't find an existing item of this stack, create a new stack.
                     if (Stacks <= 0)
                         Stacks = 1;
 
@@ -182,7 +159,6 @@ namespace Darkages.Types
                         return false;
                     }
 
-                    //assign this item to the inventory.
                     (sprite as Aisling).Inventory.Set(this, false);
                     var format = new ServerFormat0F(this);
                     (sprite as Aisling).Show(Scope.Self, format);
@@ -203,7 +179,6 @@ namespace Darkages.Types
                 #region not stackable items
 
                 {
-                    //not stackable. find inventory slot.
                     Slot = (sprite as Aisling).Inventory.FindEmpty();
 
                     if (Slot == byte.MaxValue)
@@ -218,7 +193,6 @@ namespace Darkages.Types
                             return false;
 
 
-                    //assign this item to the inventory.
                     (sprite as Aisling).Inventory.Assign(this);
                     var format = new ServerFormat0F(this);
                     (sprite as Aisling).Show(Scope.Self, format);

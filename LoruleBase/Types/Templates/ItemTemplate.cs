@@ -1,8 +1,12 @@
-﻿using Darkages.Systems.Loot.Interfaces;
+﻿#region
+
+using System.ComponentModel;
+using Darkages.Systems.Loot.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.ComponentModel;
 using static Darkages.Types.ElementManager;
+
+#endregion
 
 namespace Darkages.Types
 {

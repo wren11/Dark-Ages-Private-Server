@@ -1,34 +1,20 @@
-﻿using Darkages.Common;
-using Darkages.Network.Game;
-using Darkages.Network.ServerFormats;
-using Darkages.Scripting;
-using Darkages.Systems.Loot;
-using Newtonsoft.Json;
-///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Darkages.Common;
+using Darkages.Network.Game;
+using Darkages.Network.ServerFormats;
+using Darkages.Scripting;
+using Darkages.Systems.Loot;
+using Newtonsoft.Json;
 using static Darkages.Common.Generator;
 using static Darkages.Types.Item;
+
+#endregion
 
 namespace Darkages.Types
 {
@@ -83,6 +69,8 @@ namespace Darkages.Types
 
         [JsonIgnore] public bool Skulled { get; set; }
 
+        public Sprite LastTargetSprite { get; internal set; }
+
         public void GenerateRewards(Aisling player)
         {
             if (Rewarded)
@@ -103,8 +91,6 @@ namespace Darkages.Types
             Rewarded = true;
             player.UpdateStats();
         }
-
-        public Sprite LastTargetSprite { get; internal set; }
 
         private void UpdateCounters(Aisling player)
         {
@@ -140,11 +126,11 @@ namespace Darkages.Types
                     DistributeExperience(party, exp);
 
                     party.Client.SendStats(StatusFlags.StructC);
-                    party.Client.SendMessage(0x02, $"You received {(int) exp} Experience!.");
+                    party.Client.SendMessage(0x02, $"You received {exp} Experience!.");
                 }
 
             player.Client.SendStats(StatusFlags.StructC);
-            player.Client.SendMessage(0x02, $"You received {(int) exp} Experience!.");
+            player.Client.SendMessage(0x02, $"You received {exp} Experience!.");
         }
 
         public static void DistributeExperience(Aisling player, double exp)
@@ -163,13 +149,14 @@ namespace Darkages.Types
             if (exp <= 0)
                 exp = 1;
 
-            var bonus = exp * (1 + player.GroupParty.PartyMembers.Count - 1) * ServerContextBase.Config.GroupExpBonus / 100;
+            var bonus = exp * (1 + player.GroupParty.PartyMembers.Count - 1) * ServerContextBase.Config.GroupExpBonus /
+                        100;
 
             if (bonus > 0)
                 exp += bonus;
 
             player.ExpTotal += (uint) exp;
-            player.ExpNext  -= (uint) exp;
+            player.ExpNext -= (uint) exp;
 
             if (player.ExpNext >= int.MaxValue) player.ExpNext = 0;
 
@@ -375,9 +362,7 @@ namespace Darkages.Types
             if (aisling.GroupParty != null)
                 foreach (var member in aisling.GroupParty.PartyMembers.Where(member =>
                     !TaggedAislings.Contains(member.Serial)))
-                {
                     TaggedAislings.Add(member.Serial);
-                }
         }
 
 
@@ -486,7 +471,6 @@ namespace Darkages.Types
             else if (template.MoodType.HasFlag(MoodQualifer.Unpredicable))
                 lock (Generator.Random)
                 {
-                    //this monster has a 50% chance of being aggressive.
                     obj.Aggressive = Generator.Random.Next(1, 101) > 50;
                 }
             else

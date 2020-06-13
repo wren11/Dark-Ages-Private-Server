@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.IO;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
 using MenuInterpreter;
 using MenuInterpreter.Parser;
+
+#endregion
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -76,7 +80,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             if (client.MenuInterpter.IsFinished)
             {
-
             }
         }
 
@@ -94,7 +97,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             if (client.Aisling.AcceptQuest(quest))
             {
-                //quest has been added to interpreter.
             }
 
 

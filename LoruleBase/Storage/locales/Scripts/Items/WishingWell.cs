@@ -1,5 +1,9 @@
-﻿using Darkages.Scripting;
+﻿#region
+
+using Darkages.Scripting;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Storage.locales.Scripts.Items
 {
@@ -18,8 +22,8 @@ namespace Darkages.Storage.locales.Scripts.Items
         {
             var obj = GetObject<Item>(map,
                 i => i.Position.X == droppedPosition.X && i.Position.Y == droppedPosition.Y
-                                                        && i.Template.Name == Item.Template.Name &&
-                                                        i.DisplayImage == Item.DisplayImage);
+                                                       && i.Template.Name == Item.Template.Name &&
+                                                       i.DisplayImage == Item.DisplayImage);
 
             obj?.Remove();
         }

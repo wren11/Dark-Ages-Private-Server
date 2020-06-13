@@ -1,16 +1,19 @@
-﻿using Darkages.Network.Game;
-using Darkages.Network.Login;
-using Darkages.Storage;
-using Darkages.Storage.locales.debuffs;
-using Darkages.Types;
-using Newtonsoft.Json;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using Class = Darkages.Types.Class;
+using Darkages.Network.Game;
+using Darkages.Network.Login;
+using Darkages.Storage;
+using Darkages.Storage.locales.debuffs;
+using Darkages.Types;
+using Newtonsoft.Json;
+
+#endregion
 
 namespace Darkages
 {
@@ -25,8 +28,6 @@ namespace Darkages
         public static GameServer Game;
 
         public static LoginServer Lobby;
-
-        public static string StoragePath { get; set; }
 
         public static List<Metafile> GlobalMetaCache = new List<Metafile>();
 
@@ -74,6 +75,8 @@ namespace Darkages
         public static Board[] Community = new Board[7];
 
         public static Dictionary<string, List<Board>> GlobalBoardCache = new Dictionary<string, List<Board>>();
+
+        public static string StoragePath { get; set; }
 
         [property: JsonIgnore]
         public static IPAddress IpAddress { get; } = IPAddress.Parse(File.ReadAllText("server.tbl"));
@@ -220,7 +223,6 @@ namespace Darkages
 
             foreach (var asset in tmp)
                 asset.Save("Personal");
-
         }
 
         public static void CacheCommunityAssets()
@@ -280,17 +282,16 @@ namespace Darkages
 
             Paused = false;
 
-           
 
             var blind = new SpellTemplate();
             blind.Name = "blind";
             blind.Icon = 114;
             blind.Animation = 42;
             blind.BaseLines = 4;
-            blind.MaxLines  = 9;
-            blind.MinLines  = 1;
-            blind.Cooldown  = 3;
-            blind.ManaCost  = 100;
+            blind.MaxLines = 9;
+            blind.MinLines = 1;
+            blind.Cooldown = 3;
+            blind.ManaCost = 100;
             blind.Debuff = new debuff_blind();
             blind.ScriptKey = "blind";
             blind.NpcKey = "dar";
@@ -303,7 +304,7 @@ namespace Darkages
             blind.Prerequisites.Class_Required = Class.Wizard;
             blind.Prerequisites.Con_Required = 20;
             blind.Prerequisites.Int_Required = 65;
-            blind.Prerequisites.Gold_Required = 100000; 
+            blind.Prerequisites.Gold_Required = 100000;
 
             GlobalSpellTemplateCache.Add("blind", blind);
         }

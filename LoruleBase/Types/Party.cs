@@ -1,8 +1,12 @@
-﻿using Darkages.Common;
-using Darkages.Network.Object;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Common;
+using Darkages.Network.Object;
+
+#endregion
 
 namespace Darkages.Types
 {
@@ -17,7 +21,6 @@ namespace Darkages.Types
         {
             if (partyLeader == null) throw new ArgumentNullException(nameof(partyLeader));
 
-            //Leader is not in a group already.
             if (partyLeader.GroupId != 0)
                 return null;
 
@@ -51,7 +54,6 @@ namespace Darkages.Types
                     return false;
                 }
 
-                //Player joining is not in a party, leader is in a party. so they are allowed to join.
                 if (playerToAdd.GroupId != 0 || partyLeader.GroupId == 0)
                     return false;
 
@@ -63,7 +65,6 @@ namespace Darkages.Types
                 return true;
             }
 
-            //player to add is already in a party. and it's different from the player requesting to from a party.
             if (playerToAdd.GroupId != 0 && partyLeader.GroupId == 0)
             {
                 playerToAdd.Client.SystemMessage(
@@ -75,7 +76,6 @@ namespace Darkages.Types
                 return false;
             }
 
-            //both players are not in a group. so they form a new group.
             if (playerToAdd.GroupId != 0 || partyLeader.GroupId != 0)
                 return false;
 
@@ -83,9 +83,7 @@ namespace Darkages.Types
             playerToAdd.GroupId = party.Id;
 
             foreach (var player in party.PartyMembers)
-            {
                 player.Client.SystemMessage($"{playerToAdd.Username} has joined the party.");
-            }
 
             playerToAdd.Client.SystemMessage($"You have joined {partyLeader.Username}'s party.");
             playerToAdd.GroupId = party.Id;
@@ -128,12 +126,12 @@ namespace Darkages.Types
 
         public static void DisbandParty(Party group)
         {
-            if (!ServerContextBase.GlobalGroupCache.ContainsKey(@group.Id)) return;
-            if (!ServerContextBase.GlobalGroupCache.Remove(@group.Id, out var removedValue)) return;
-            foreach (var player in @group.PartyMembers)
+            if (!ServerContextBase.GlobalGroupCache.ContainsKey(group.Id)) return;
+            if (!ServerContextBase.GlobalGroupCache.Remove(group.Id, out var removedValue)) return;
+            foreach (var player in group.PartyMembers)
             {
                 player.GroupId = 0;
-                player.Client.SendMessage($"The party has now been disbanded.");
+                player.Client.SendMessage("The party has now been disbanded.");
             }
         }
 

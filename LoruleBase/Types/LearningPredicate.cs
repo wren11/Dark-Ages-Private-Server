@@ -1,26 +1,12 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
-using Darkages.Network.Game;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Darkages.Network.Game;
+
+#endregion
 
 namespace Darkages.Types
 {
@@ -29,7 +15,7 @@ namespace Darkages.Types
         public string Item { get; set; }
         public int AmountRequired { get; set; }
 
-        public bool IsMet { get; set; } = false;
+        public bool IsMet { get; set; }
 
         public void Validate(GameClient client)
         {
@@ -146,7 +132,6 @@ namespace Darkages.Types
 
                 ServerContext.Error(e);
 
-                //ignore
                 return false;
             }
 
@@ -254,7 +239,7 @@ namespace Darkages.Types
 
                 var errorMsg = msg.ToString();
 
-                var formatted = errorMsg.Replace(") ", "), ").TrimEnd(new char[] {',', ' '});
+                var formatted = errorMsg.Replace(") ", "), ").TrimEnd(',', ' ');
 
                 foreach (var ir in Items_Required)
                 {

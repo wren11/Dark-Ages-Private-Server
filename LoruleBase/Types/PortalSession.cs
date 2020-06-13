@@ -1,9 +1,12 @@
-﻿using Darkages.Network.Game;
+﻿#region
+
+using System;
+using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using Newtonsoft.Json;
-using System;
-using System.Threading;
+
+#endregion
 
 namespace Darkages
 {
@@ -37,7 +40,6 @@ namespace Darkages
                     IsMapOpen = true,
                     DateOpened = DateTime.UtcNow
                 };
-
         }
 
         public void TransitionToMap(GameClient client, short X = -1, short Y = -1, int DestinationMap = 0)
@@ -68,7 +70,7 @@ namespace Darkages
                 client.Aisling.YPos = Y >= 0 ? Y : ServerContextBase.Config.TransitionPointY;
 
                 client.Aisling.CurrentMapId = DestinationMap;
-                client.LeaveArea(true, true); 
+                client.LeaveArea(true, true);
                 client.EnterArea();
             }
 

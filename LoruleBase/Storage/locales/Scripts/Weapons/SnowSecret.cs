@@ -1,7 +1,11 @@
-﻿using System;
+﻿#region
+
+using System;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Storage.locales.Scripts.Weapons
 {
@@ -37,7 +41,6 @@ namespace Darkages.Storage.locales.Scripts.Weapons
                         Speed = 100
                     };
 
-                    //=$E$1*10 *$F$1 *G1 / 10
                     var dmg = sprite.Dex * 3 * sprite.Position.DistanceFrom(i.Position);
 
                     dmg *= count;

@@ -1,23 +1,9 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using Darkages.Network.Game;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Network.ServerFormats
 {
@@ -50,13 +36,13 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte) 0x00); // type!
-            writer.Write((byte) 0x01); // ??
+            writer.Write((byte) 0x00);
+            writer.Write((byte) 0x01);
             writer.Write((uint) _client.DlgSession.Serial);
-            writer.Write((byte) 0x00); // ??
+            writer.Write((byte) 0x00);
             writer.Write(Sequence.DisplayImage);
-            writer.Write((byte) 0x00); // ??
-            writer.Write((byte) 0x01); // ??
+            writer.Write((byte) 0x00);
+            writer.Write((byte) 0x01);
             writer.Write(ushort.MinValue);
             writer.Write((byte) 0x00);
             writer.Write(ushort.MinValue);
@@ -73,9 +59,9 @@ namespace Darkages.Network.ServerFormats
 
     public class ReactorInputSequence : ServerFormat30
     {
-        private readonly Mundane _mundane;
         private readonly string _captionA;
         private readonly int _inputLength;
+        private readonly Mundane _mundane;
 
 
         public ReactorInputSequence(Mundane mundane, string captionA, int inputLength = 48)
@@ -87,18 +73,17 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketReader reader)
         {
-
         }
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte) 0x04); // type!
-            writer.Write((byte) 0x01); // ??
+            writer.Write((byte) 0x04);
+            writer.Write((byte) 0x01);
             writer.Write((uint) _mundane.Serial);
-            writer.Write((byte) 0x00); // ??
-            writer.Write((short)_mundane.Template.Image);
-            writer.Write((byte) 0x05); // ??
-            writer.Write((byte) 0x05); // ??
+            writer.Write((byte) 0x00);
+            writer.Write(_mundane.Template.Image);
+            writer.Write((byte) 0x05);
+            writer.Write((byte) 0x05);
             writer.Write(ushort.MinValue);
             writer.Write((byte) 0x00);
             writer.Write(ushort.MinValue);
@@ -110,7 +95,7 @@ namespace Darkages.Network.ServerFormats
             writer.WriteStringA("test");
             writer.WriteStringB("test");
             writer.WriteStringA(_captionA);
-            writer.Write((byte)_inputLength);
+            writer.Write((byte) _inputLength);
         }
     }
 
@@ -138,13 +123,13 @@ namespace Darkages.Network.ServerFormats
                 return;
 
 
-            writer.Write((byte) 0x00); // type!
-            writer.Write((byte) 0x01); // ??
+            writer.Write((byte) 0x00);
+            writer.Write((byte) 0x01);
             writer.Write((uint) sequence.Id);
-            writer.Write((byte) 0x00); // ??
+            writer.Write((byte) 0x00);
             writer.Write(sequence.DisplayImage);
-            writer.Write((byte) 0x00); // ??
-            writer.Write((byte) 0x01); // ??
+            writer.Write((byte) 0x00);
+            writer.Write((byte) 0x01);
             writer.Write(ushort.MinValue);
             writer.Write((byte) 0x00);
             writer.Write(ushort.MaxValue);

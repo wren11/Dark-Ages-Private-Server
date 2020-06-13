@@ -1,34 +1,9 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
-
-namespace Darkages.Network.ClientFormats
+﻿namespace Darkages.Network.ClientFormats
 {
     public class ClientFormat01
     {
     }
 
-    //public class ClientFormat02 { } Added (Create Stage A)
-    //public class ClientFormat03 { } Added (Create Stage B)
-    //public class ClientFormat04 { } Added (Log In)
-    //public class ClientFormat05 { } Added (Area Request)
-    //public class ClientFormat06 { } Added (Walk)
-    //public class ClientFormat07 { } pickup gold?
-    //public class ClientFormat08 { } Added (Drop Item)
     public class ClientFormat09
     {
     }
@@ -37,7 +12,6 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //public class ClientFormat0B { } Added (Client Disconnected)
     public class ClientFormat0C
     {
     }
@@ -46,14 +20,10 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //public class ClientFormat0E { } Added (Chat)
-    //public class ClientFormat0F { } Added (Use Spell)
-    //public class ClientFormat11 { } Added (Turn)
     public class ClientFormat12
     {
     }
 
-    //public class ClientFormat13 { } (Spacebar Attack)
     public class ClientFormat14
     {
     }
@@ -70,18 +40,12 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //public class ClientFormat18 { } Added (Request User List)
-
-    // public class ClientFormat19 { } Added (Private Messages)
 
     public class ClientFormat1A
     {
     }
 
-    //public class ClientFormat1B { } Client Settings
 
-    //public class ClientFormat1C { } Added (Use Item)
-    //public class ClientFormat1D { } Added (Emote)
     public class ClientFormat1E
     {
     }
@@ -106,12 +70,10 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //public class ClientFormat24 { } Added (Drop Gold)
     public class ClientFormat25
     {
     }
 
-    //public class ClientFormat26 { } Added (Change Password)
     public class ClientFormat27
     {
     }
@@ -120,10 +82,6 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //public class ClientFormat29 { ] Added (Exchange Item)
-
-
-    //public class ClientFormat2A { } Added (Exchange Gold)
 
     public class ClientFormat2B
     {
@@ -133,16 +91,11 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //public class ClientFormat2D { } Added
-    //public class ClientFormat2E { }
-    //public class ClientFormat2F { } // Added
 
-    //public class ClientFormat30 { } //swap skill item.
     public class ClientFormat31
     {
     }
 
-    // public class ClientFormat32 { } end walk
 
     public class ClientFormat33
     {
@@ -164,10 +117,6 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //public class ClientFormat38 { } Added
-    //public class ClientFormat39 { } Added (Mundane Dialog Response)
-    //public class ClientFormat3A { }
-    // public class ClientFormat3B { } // boards
 
     public class ClientFormat3C
     {
@@ -177,10 +126,6 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //public class ClientFormat3E { } Added (Use Skill)
-    //public class ClientFormat3F
-    //{
-    //} // (Map Click)
 
     public class ClientFormat40
     {
@@ -194,14 +139,10 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //public class ClientFormat43 { } Added (Click)
-    //public class ClientFormat44 { } Added (Unequip)
-    //public class ClientFormat45 { }
     public class ClientFormat46
     {
     }
 
-    //public class ClientFormat47 { } (Click Stat)
     public class ClientFormat48
     {
     }
@@ -210,16 +151,11 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    // public class ClientFormat4A { } Added (Complete Exchange)
 
-    //public class ClientFormat4B { }
     public class ClientFormat4C
     {
     }
 
-    //public class ClientFormat4D { } Added (Use Spell ClickTarget)
-    //public class ClientFormat4E { }
-    //public class ClientFormat4F { } Added
     public class ClientFormat50
     {
     }
@@ -304,9 +240,6 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //public class ClientFormat66
-    //{
-    //}
 
     public class ClientFormat67
     {
@@ -360,7 +293,6 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //public class ClientFormat75 { } Added
     public class ClientFormat76
     {
     }
@@ -373,12 +305,10 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //  public class ClientFormat79 { } Added Profile Data
     public class ClientFormat7A
     {
     }
 
-    //public class ClientFormat7B { } Added (Metafile)
     public class ClientFormat7C
     {
     }
@@ -431,7 +361,6 @@ namespace Darkages.Network.ClientFormats
     {
     }
 
-    //public class ClientFormat89 { } Display mask
     public class ClientFormat8A
     {
     }

@@ -1,9 +1,10 @@
-﻿// ReSharper disable InconsistentNaming
-// ReSharper disable IdentifierTypo
+﻿#region
 
+using System.Collections.Generic;
 using Darkages.Types;
 using Newtonsoft.Json;
-using System.Collections.Generic;
+
+#endregion
 
 namespace Darkages
 {
@@ -346,13 +347,10 @@ namespace Darkages
 
     public class GameSetting
     {
-        [JsonProperty]
-        public string SettingOn { get; set; }
+        [JsonProperty] public string SettingOn { get; set; }
 
-        [JsonProperty]
-        public string SettingOff { get; set; }
+        [JsonProperty] public string SettingOff { get; set; }
 
-        [JsonProperty]
-        public bool Enabled { get; set; }
+        [JsonProperty] public bool Enabled { get; set; }
     }
 }

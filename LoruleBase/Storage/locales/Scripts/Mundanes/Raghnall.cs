@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {

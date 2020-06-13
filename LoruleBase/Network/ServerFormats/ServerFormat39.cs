@@ -1,24 +1,10 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using System;
 using System.Linq;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Network.ServerFormats
 {
@@ -55,7 +41,9 @@ namespace Darkages.Network.ServerFormats
             packet.Write((byte) 0x0);
             packet.Write((byte) 0x0);
 
-            var isGrouped = Aisling.GroupParty != null && (Aisling.GroupParty.PartyMembers != null && (Aisling.GroupParty != null && Aisling.GroupParty.PartyMembers.Count(i => i.Serial != Aisling.Serial) > 0));
+            var isGrouped = Aisling.GroupParty != null && Aisling.GroupParty.PartyMembers != null &&
+                            Aisling.GroupParty != null &&
+                            Aisling.GroupParty.PartyMembers.Count(i => i.Serial != Aisling.Serial) > 0;
 
             if (!isGrouped)
             {
@@ -64,7 +52,10 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 var partyMessage = Aisling.GroupParty.PartyMembers.Aggregate(
-                    "Group members\n", (current, member) => current + $"{(Aisling.Username.Equals(member.GroupParty.LeaderName, StringComparison.OrdinalIgnoreCase) ? " * " : " ")}{member.Username}\n");
+                    "Group members\n",
+                    (current, member) =>
+                        current +
+                        $"{(Aisling.Username.Equals(member.GroupParty.LeaderName, StringComparison.OrdinalIgnoreCase) ? " * " : " ")}{member.Username}\n");
 
                 partyMessage += $"{Aisling.GroupParty.PartyMembers.Count} total";
                 packet.WriteStringA(partyMessage);
@@ -104,7 +95,7 @@ namespace Darkages.Network.ServerFormats
                 packet.Write(legend.Icon);
                 packet.Write(legend.Color);
                 packet.WriteStringA(legend.Category);
-                packet.WriteStringA($"{legend.Value} {(obj.Count > 1 ? "(" + obj.Count.ToString() + ")" : "")}");
+                packet.WriteStringA($"{legend.Value} {(obj.Count > 1 ? "(" + obj.Count + ")" : "")}");
             }
 
             packet.Write((byte) 0x00);

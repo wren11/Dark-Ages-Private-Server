@@ -1,26 +1,12 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using System;
 using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Newtonsoft.Json;
+
+#endregion
 
 namespace Darkages.Types
 {
@@ -196,10 +182,8 @@ namespace Darkages.Types
             if (Equipment[displayslot] == null)
                 return true;
 
-            //get current equipped item occupying the requested slot.
             var itemObj = Equipment[displayslot].Item;
 
-            //sanity check
             if (itemObj == null)
                 return false;
 
@@ -225,12 +209,10 @@ namespace Darkages.Types
 
         private void RemoveFromSlot(int displayslot)
         {
-            //send remove equipment packet.
             Client.Aisling.Show(Scope.Self, new ServerFormat38((byte) displayslot));
 
             OnEquipmentRemoved((byte) displayslot);
 
-            //make sure we remove it!
             Equipment[displayslot] = null;
         }
 
@@ -238,7 +220,6 @@ namespace Darkages.Types
         {
             Equipment[displayslot] = new EquipmentSlot(displayslot, item);
 
-            //Remove it from inventory, do not handle weight.
             RemoveFromInventory(item);
 
             DisplayToEquipment((byte) displayslot, item);
@@ -248,7 +229,6 @@ namespace Darkages.Types
 
         public void DisplayToEquipment(byte displayslot, Item item)
         {
-            //Send Equipment packet.
             Client.Send(new ServerFormat37(item, displayslot));
         }
 

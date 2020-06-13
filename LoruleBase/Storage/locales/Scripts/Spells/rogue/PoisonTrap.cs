@@ -1,7 +1,11 @@
-﻿using Darkages.Network.ServerFormats;
+﻿#region
+
+using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Assets.locales.Scripts.Traps
 {

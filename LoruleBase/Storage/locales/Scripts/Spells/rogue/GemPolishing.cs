@@ -1,5 +1,9 @@
-﻿using Darkages.Scripting;
+﻿#region
+
+using Darkages.Scripting;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Storage.locales.Scripts.Spells.rogue
 {
@@ -19,7 +23,6 @@ namespace Darkages.Storage.locales.Scripts.Spells.rogue
             if (sprite is Aisling aisling)
             {
                 aisling.MakeReactor("GramailPrayer", 30);
-                //aisling.MakeReactor("gem_polishing", 30);
                 aisling.Client.SystemMessage($"You cast {Spell.Template.Name}.");
             }
         }

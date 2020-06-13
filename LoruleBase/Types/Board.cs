@@ -1,20 +1,4 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using System;
 using System.Collections.Generic;
@@ -24,6 +8,8 @@ using Darkages.Network;
 using Darkages.Network.Game;
 using Darkages.Storage;
 using Newtonsoft.Json;
+
+#endregion
 
 namespace Darkages.Types
 {
@@ -94,15 +80,15 @@ namespace Darkages.Types
         public static List<Board> CacheFromStorage(string dir)
         {
             var results = new List<Board>();
-            var asset_names = Directory.GetFiles(
+            var assetNames = Directory.GetFiles(
                 Path.Combine(StoragePath, dir),
                 "*.json",
                 SearchOption.TopDirectoryOnly);
 
-            if (asset_names.Length == 0)
+            if (assetNames.Length == 0)
                 return null;
 
-            foreach (var asset in asset_names)
+            foreach (var asset in assetNames)
             {
                 var tmp = LoadFromFile(asset);
 
@@ -113,18 +99,16 @@ namespace Darkages.Types
             return results;
         }
 
-        public static Board Load(string LookupKey)
+        public static Board Load(string lookupKey)
         {
-            var path = Path.Combine(StoragePath, $"{LookupKey}.json");
+            var path = Path.Combine(StoragePath, $"{lookupKey}.json");
 
             if (!File.Exists(path))
                 return null;
 
-            using (var s = File.OpenRead(path))
-            using (var f = new StreamReader(s))
-            {
-                return JsonConvert.DeserializeObject<Board>(f.ReadToEnd(), StorageManager.Settings);
-            }
+            using var s = File.OpenRead(path);
+            using var f = new StreamReader(s);
+            return JsonConvert.DeserializeObject<Board>(f.ReadToEnd(), StorageManager.Settings);
         }
 
         public static Board LoadFromFile(string path)
@@ -132,11 +116,9 @@ namespace Darkages.Types
             if (!File.Exists(path))
                 return null;
 
-            using (var s = File.OpenRead(path))
-            using (var f = new StreamReader(s))
-            {
-                return JsonConvert.DeserializeObject<Board>(f.ReadToEnd(), StorageManager.Settings);
-            }
+            using var s = File.OpenRead(path);
+            using var f = new StreamReader(s);
+            return JsonConvert.DeserializeObject<Board>(f.ReadToEnd(), StorageManager.Settings);
         }
 
         public void Save(string key)

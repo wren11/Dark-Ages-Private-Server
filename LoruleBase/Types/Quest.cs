@@ -1,20 +1,4 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using System;
 using System.Collections.Generic;
@@ -23,6 +7,8 @@ using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Newtonsoft.Json;
+
+#endregion
 
 namespace Darkages.Types
 {
@@ -57,9 +43,8 @@ namespace Darkages.Types
 
     public class Quest
     {
+        private static readonly object SyncLock = new object();
         [JsonIgnore] public readonly int Id;
-
-        public event QuestDelegate OnQuestCompleted = null;
 
         public List<uint> ExpRewards = new List<uint>();
 
@@ -93,6 +78,8 @@ namespace Darkages.Types
         public bool Rewarded { get; set; }
 
         [JsonIgnore] public QuestStep<Template> Current => QuestStages.Count > 0 ? QuestStages[StageIndex] : null;
+
+        public event QuestDelegate OnQuestCompleted;
 
 
         public void OnCompleted(Aisling user, bool equipLoot = false)
@@ -246,8 +233,6 @@ namespace Darkages.Types
             user.Client.SendStats(StatusFlags.All);
         }
 
-        private static readonly object SyncLock = new object();
-
         private static void EquipRewards(Aisling user)
         {
             List<Item> items;
@@ -278,10 +263,7 @@ namespace Darkages.Types
                 if (obj.Scripts?.Values == null)
                     continue;
 
-                foreach (var script in obj.Scripts?.Values)
-                {
-                    script.Equipped(user, (byte) obj.Template.EquipmentSlot);
-                }
+                foreach (var script in obj.Scripts?.Values) script.Equipped(user, (byte) obj.Template.EquipmentSlot);
             }
         }
 
@@ -299,7 +281,8 @@ namespace Darkages.Types
 
             foreach (var stage in QuestStages)
             {
-                var results = stage.Prerequisites.Select(reqs => reqs.IsMet(client.Aisling, i => i(reqs.TemplateContext))).ToList();
+                var results = stage.Prerequisites
+                    .Select(reqs => reqs.IsMet(client.Aisling, i => i(reqs.TemplateContext))).ToList();
 
                 valid = results.TrueForAll(i => i);
                 stage.StepComplete = valid;
@@ -359,7 +342,7 @@ namespace Darkages.Types
         }
     }
 
-    public class QuestStep<T> 
+    public class QuestStep<T>
     {
         [JsonIgnore] public List<QuestRequirement> Prerequisites = new List<QuestRequirement>();
 

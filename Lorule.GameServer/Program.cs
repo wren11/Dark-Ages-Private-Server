@@ -1,23 +1,27 @@
-﻿using Darkages;
-using Darkages.Network.Object;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+﻿#region
+
 using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using Darkages;
+using Darkages.Network.Object;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Extensions.Logging;
 using Serilog.Formatting.Compact;
+
+#endregion
 
 namespace Lorule.GameServer
 {
     public static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var providers = new LoggerProviderCollection();
 
@@ -31,8 +35,8 @@ namespace Lorule.GameServer
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("ServerConfig.Local.json");
 
-           var config    = builder.Build();
-           var constants = config.GetSection("ServerConfig").Get<ServerConstants>();
+            var config = builder.Build();
+            var constants = config.GetSection("ServerConfig").Get<ServerConstants>();
 
             var serviceProvider = new ServiceCollection()
                 .AddOptions()
@@ -67,15 +71,12 @@ namespace Lorule.GameServer
 
     public class Server : IServer
     {
-        public string LoruleVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
         private readonly ILogger<Server> _logger;
         private readonly IObjectManager _objectManager;
 
         public Server(ILogger<Server> logger, IServerContext context, IServerConstants configConstants,
             IOptions<LoruleOptions> loruleOptions, IObjectManager objectManager)
         {
-
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _objectManager = objectManager ?? throw new ArgumentNullException(nameof(objectManager));
 
@@ -87,7 +88,16 @@ namespace Lorule.GameServer
             context.Start(configConstants, Log, Error);
         }
 
-        public void Log(string logMessage) => _logger.LogInformation(logMessage);
-        public void Error(Exception ex) => _logger.LogError(ex, ex.Message + "\n" + ex.StackTrace);
+        public string LoruleVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+        public void Log(string logMessage)
+        {
+            _logger.LogInformation(logMessage);
+        }
+
+        public void Error(Exception ex)
+        {
+            _logger.LogError(ex, ex.Message + "\n" + ex.StackTrace);
+        }
     }
 }

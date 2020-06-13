@@ -1,20 +1,4 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using System;
 using System.Linq;
@@ -23,13 +7,15 @@ using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
 
+#endregion
+
 namespace Darkages.Storage.locales.Scripts.Spells
 {
     [Script("ao mor cradh", "Dean")]
     public class ao_mor_cradh : SpellScript
     {
-        private readonly Random rand = new Random();
         private readonly debuff_morcradh Debuff = new debuff_morcradh();
+        private readonly Random rand = new Random();
 
         public ao_mor_cradh(Spell spell) : base(spell)
         {

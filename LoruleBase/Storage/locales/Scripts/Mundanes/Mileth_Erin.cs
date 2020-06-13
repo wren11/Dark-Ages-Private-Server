@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -14,7 +18,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         public Erin(GameServer server, Mundane mundane) : base(server, mundane)
         {
             if (string.IsNullOrEmpty(mundane.Template.QuestKey))
-                //Link this to a quest key.
                 mundane.Template.QuestKey = "Monk: Beginner Equipment";
         }
 
@@ -22,17 +25,14 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             var proceed = client != null && client.Aisling != null && client.Aisling.WithinRangeOf(Mundane);
 
-            //Sanity Check
             if (!proceed) return;
 
-            //check if the user is a Monk.
             if (client.Aisling.Path != Class.Monk)
             {
                 client.SendOptionsDialog(Mundane, "We have no business together.");
                 return;
             }
 
-            //build reactor
             Actor = new Reactor
             {
                 CallBackScriptKey = Mundane.Template.ScriptKey,
@@ -61,7 +61,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     },
                     ExpRewards = new List<uint>
                     {
-                        1000, 2000, 3000, 4000, 6000 // 16k EXP
+                        1000, 2000, 3000, 4000, 6000
                     },
                     GoldReward = 5000,
                     QuestStages = new List<QuestStep<Template>>
@@ -112,24 +112,18 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     DisplayText = "I can help you make something a little more violent, but i will need a few things.",
                     OnSequenceStep = (lpAisling, lpSequence) =>
                     {
-                        //callback for when quest was completed at this sequence.
                         lpSequence.OnSequenceStep = QuestCompleted;
 
-                        //Sanity Check
                         if (lpSequence.HasOptions)
                         {
-                            //Check for the presence of the Mundanes quest
                             var subject = lpAisling.Quests.Find(i => i.Name == Mundane.Template.QuestKey);
 
-                            //Quest not accepted yet?
                             if (subject == null)
-                                //ask the aisling what to do.
                                 lpAisling.Client.SendOptionsDialog(Mundane, "Are you Interested?",
                                     new OptionsDataItem(0x002A, "Yes i need your help"),
                                     new OptionsDataItem(0x001B, "No thanks, i'll be fine")
                                 );
                             else if (subject != null && !subject.Completed)
-                                //check if the aisling has finished the quest:
                                 Actor.Quest.HandleQuest(lpAisling.Client, null, quest_completed_ok =>
                                 {
                                     if (quest_completed_ok)
@@ -150,7 +144,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 }
             };
 
-            //Check for the presence of the Mundanes quest
             var lpsubject = client.Aisling.Quests.Find(i => i.Name == Mundane.Template.QuestKey);
 
             if (lpsubject != null && lpsubject.Completed)
@@ -178,7 +171,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 aisling.DestroyReactor(Actor);
                 aisling.Client.CloseDialog();
 
-                //and finally, complete it.
                 subject.Completed = true;
             }
         }
@@ -189,7 +181,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
                 case 0x002A:
                 {
-                    //start the quest.
                     if (!client.Aisling.AcceptQuest(Actor.Quest)) return;
 
                     client.SendOptionsDialog(Mundane,

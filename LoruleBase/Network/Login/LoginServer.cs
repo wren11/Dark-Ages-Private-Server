@@ -1,36 +1,19 @@
-﻿//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
-// ReSharper disable RedundantAssignment
-// ReSharper disable IdentifierTypo
-
+using System;
 using System.Linq;
+using System.Net;
+using System.Text;
+using Darkages.Network.ClientFormats;
+using Darkages.Network.ServerFormats;
+using Darkages.Storage;
+using Darkages.Types;
 using Newtonsoft.Json;
+
+#endregion
 
 namespace Darkages.Network.Login
 {
-    using ClientFormats;
-    using ServerFormats;
-    using Storage;
-    using Types;
-    using System;
-    using System.Net;
-    using System.Text;
-
     public class LoginServer : NetworkServer<LoginClient>
     {
         public LoginServer(int capacity)
@@ -44,13 +27,9 @@ namespace Darkages.Network.Login
         public static Notification Notification { get; set; }
 
 
-        /// <summary>
-        ///     Send Encryption Parameters.
-        /// </summary>
         protected virtual void Format00Handler(LoginClient client, ClientFormat00 format)
         {
             if (ServerContextBase.Config.UseLobby)
-            {
                 if (format.Version == ServerContextBase.Config.ClientVersion)
                     client.Send(new ServerFormat00
                     {
@@ -58,7 +37,6 @@ namespace Darkages.Network.Login
                         Hash = MServerTable.Hash,
                         Parameters = client.Encryption.Parameters
                     });
-            }
 
             if (ServerContextBase.Config.DevMode)
             {
@@ -69,12 +47,8 @@ namespace Darkages.Network.Login
             }
         }
 
-        /// <summary>
-        ///     Login Client - Create New Aisling, Choose Username/password.
-        /// </summary>
         protected override void Format02Handler(LoginClient client, ClientFormat02 format)
         {
-            //save information to memory.
             client.CreateInfo = format;
 
             var aisling = StorageManager.AislingBucket.Load(format.AislingUsername);
@@ -90,19 +64,14 @@ namespace Darkages.Network.Login
             }
         }
 
-        /// <summary>
-        ///     Login Client - Save Character Template.
-        /// </summary>
         protected override void Format04Handler(LoginClient client, ClientFormat04 format)
         {
-            //make sure the first step was done first.
             if (client.CreateInfo == null)
             {
                 ClientDisconnected(client);
                 return;
             }
 
-            //create aisling from default template.
             var template = Aisling.Create();
             template.Display = (BodySprite) (format.Gender * 16);
             template.Username = client.CreateInfo.AislingUsername;
@@ -115,9 +84,6 @@ namespace Darkages.Network.Login
             client.SendMessageBox(0x00, "\0");
         }
 
-        /// <summary>
-        ///     Login - Check username/password. Proceed to Game Client.
-        /// </summary>
         protected override void Format03Handler(LoginClient client, ClientFormat03 format)
         {
             Aisling aisling = null;
@@ -144,18 +110,20 @@ namespace Darkages.Network.Login
             catch (Exception e)
             {
                 ServerContext.Error(e);
-                client.SendMessageBox(0x02, $"{format.Username} is not supported by the new server. Please remake your character. This will not happen when the server goes to beta.");
+                client.SendMessageBox(0x02,
+                    $"{format.Username} is not supported by the new server. Please remake your character. This will not happen when the server goes to beta.");
 
                 return;
             }
 
             if (!ServerContextBase.Config.MultiUserLogin)
             {
-                var aislings = ServerContextBase.Game.Clients.Where(i => i?.Aisling != null && i.Aisling.LoggedIn && i.Aisling.Username.ToLower() == format.Username.ToLower());
+                var aislings = ServerContextBase.Game.Clients.Where(i =>
+                    i?.Aisling != null && i.Aisling.LoggedIn &&
+                    i.Aisling.Username.ToLower() == format.Username.ToLower());
 
                 foreach (var obj in aislings)
                     obj.Server.ClientDisconnected(obj);
-
             }
 
             LoginAsAisling(client, aisling);
@@ -168,9 +136,9 @@ namespace Darkages.Network.Login
                 var redirect = new Redirect
                 {
                     Serial = Convert.ToString(client.Serial),
-                    Salt   = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
-                    Seed   = Convert.ToString(client.Encryption.Parameters.Seed),
-                    Name   = JsonConvert.SerializeObject(new { player = aisling.Username, developer = "wren" } ),
+                    Salt = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
+                    Seed = Convert.ToString(client.Encryption.Parameters.Seed),
+                    Name = JsonConvert.SerializeObject(new {player = aisling.Username, developer = "wren"})
                 };
 
                 ServerContextBase.Redirects.Add(aisling.Username.ToLower());
@@ -187,17 +155,11 @@ namespace Darkages.Network.Login
             }
         }
 
-        /// <summary>
-        ///     Client Closed Connection (Closed Darkages.exe), Remove them.
-        /// </summary>
         protected override void Format0BHandler(LoginClient client, ClientFormat0B format)
         {
             RemoveClient(client);
         }
 
-        /// <summary>
-        ///     Redirect Client from Lobby Client to Login Client Automatically.
-        /// </summary>
         protected override void Format10Handler(LoginClient client, ClientFormat10 format)
         {
             client.Encryption.Parameters = format.Parameters;
@@ -208,9 +170,6 @@ namespace Darkages.Network.Login
             });
         }
 
-        /// <summary>
-        ///     Login Client - Update Password.
-        /// </summary>
         protected override void Format26Handler(LoginClient client, ClientFormat26 format)
         {
             var aisling = StorageManager.AislingBucket.Load(format.Username);
@@ -233,9 +192,7 @@ namespace Darkages.Network.Login
                 return;
             }
 
-            //Update new password.
             aisling.Password = format.NewPassword;
-            //Update and Store Information.
             StorageManager.AislingBucket.Save(aisling);
 
             client.SendMessageBox(0x00, "\0");

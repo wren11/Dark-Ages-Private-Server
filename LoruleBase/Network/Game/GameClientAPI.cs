@@ -1,22 +1,18 @@
-﻿using Darkages.Network.ServerFormats;
-using Darkages.Scripting;
-using Darkages.Types;
+﻿#region
+
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Darkages.Network.ServerFormats;
+using Darkages.Scripting;
+using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Network.Game
 {
     public partial class GameClient : IGameClient
     {
-        /// <summary>
-        /// Ports the specified i.
-        /// </summary>
-        /// <param name="i">The i.</param>
-        /// <param name="x">The x.</param>
-        /// <param name="y">The y.</param>
-        /// This Chat command ports the user to a location.
-        /// Example chat command: 'port -i:100 -x:5 -y:5'
         public void Port(int i, int x = 0, int y = 0)
         {
             TransitionToMap(i, new Position(x, y));
@@ -24,14 +20,6 @@ namespace Darkages.Network.Game
             SystemMessage("Port: Success.");
         }
 
-        /// <summary>
-        ///     This chat command spawns a monster.
-        /// </summary>
-        /// <param name="t">Name of Monster, Case Sensitive.</param>
-        /// <param name="x">X Location to Spawn.</param>
-        /// <param name="y">Y Location to Spawn.</param>
-        /// <param name="c">The c.</param>
-        /// <usage>spawnMonster -t:Undead -x:43 -y:16 -c:10</usage>
         public void Spawn(string t, int x, int y, int c)
         {
             var name = t.Replace("-", string.Empty).Trim();
@@ -64,10 +52,10 @@ namespace Darkages.Network.Game
         public void LearnEverything()
         {
             foreach (var skill in ServerContextBase.GlobalSkillTemplateCache.Values)
-                Skill.GiveTo(Aisling, skill.Name, 100);
+                Skill.GiveTo(Aisling, skill.Name);
 
             foreach (var spell in ServerContextBase.GlobalSpellTemplateCache.Values)
-                Spell.GiveTo(Aisling, spell.Name, 100);
+                Spell.GiveTo(Aisling, spell.Name);
 
             LoadSkillBook();
             LoadSpellBook();
@@ -248,7 +236,7 @@ namespace Darkages.Network.Game
         {
             var item = Item.Create(Aisling, itemName);
 
-            if (item != null) return item.GiveTo(Aisling, true);
+            if (item != null) return item.GiveTo(Aisling);
 
             return false;
         }
@@ -266,10 +254,7 @@ namespace Darkages.Network.Game
                 var scripts = ScriptManager.Load<SpellScript>(spellName,
                     Spell.Create(1, ServerContextBase.GlobalSpellTemplateCache[spellName]));
                 {
-                    foreach (var script in scripts.Values)
-                    {
-                        script.OnUse(caster, target);
-                    }
+                    foreach (var script in scripts.Values) script.OnUse(caster, target);
 
                     return true;
                 }

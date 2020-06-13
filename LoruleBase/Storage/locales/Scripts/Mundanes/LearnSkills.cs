@@ -1,20 +1,4 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using System;
 using System.Linq;
@@ -22,6 +6,8 @@ using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -55,7 +41,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             switch (responseID)
             {
-                // Skill Learn
                 case 0x0001:
                     var skills = ServerContextBase.GlobalSkillTemplateCache.Select(i => i.Value)
                         .Where(i => i.Prerequisites != null && i.NpcKey.Equals(Mundane.Template.Name)
@@ -109,7 +94,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         "It is gone, Shall we cleanse more?\nRemember, This cannot be undone.", 0x9000);
                 }
                     break;
-                // Skill Confirmation
                 case 0x0003:
                     client.SendOptionsDialog(Mundane,
                         "Are you sure you want to learn " + args +
@@ -161,7 +145,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         new OptionsDataItem(0x0001, "No"));
                 }
                     break;
-                // Skill Acquire
                 case 0x0005:
                 {
                     var subject = ServerContextBase.GlobalSkillTemplateCache[args];

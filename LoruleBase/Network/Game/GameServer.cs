@@ -1,41 +1,25 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
-
-using Darkages.Network.Game.Components;
-using Darkages.Network.Object;
-using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Darkages.Network.Game.Components;
+using Darkages.Network.Object;
+using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Network.Game
 {
     public partial class GameServer
     {
-        public Dictionary<Type, GameServerComponent> ServerComponents;
-
         private readonly TimeSpan _heavyUpdateSpan;
 
         private DateTime _lastHeavyUpdate = DateTime.UtcNow;
 
         public ObjectService ObjectFactory = new ObjectService();
+        public Dictionary<Type, GameServerComponent> ServerComponents;
 
         public GameServer(int capacity) : base(capacity)
         {
@@ -46,10 +30,7 @@ namespace Darkages.Network.Game
 
         private void AutoSave(GameClient client)
         {
-            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContextBase.Config.SaveRate)
-            {
-                client.Save();
-            }
+            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContextBase.Config.SaveRate) client.Save();
         }
 
         private void MainServerLoop()
@@ -95,7 +76,7 @@ namespace Darkages.Network.Game
                     [typeof(DaytimeComponent)] = new DaytimeComponent(this),
                     [typeof(MundaneComponent)] = new MundaneComponent(this),
                     [typeof(MessageComponent)] = new MessageComponent(this),
-                    [typeof(PingComponent)] = new PingComponent(this),
+                    [typeof(PingComponent)] = new PingComponent(this)
                 };
             }
         }
@@ -148,20 +129,15 @@ namespace Darkages.Network.Game
                         ObjectComponent.UpdateClientObjects(client.Aisling);
 
                         if (!client.IsWarping)
-                        {
                             Pulse(elapsedTime, client);
-                        }
                         else if (client.IsWarping && !client.InMapTransition)
-                        {
                             if (client.CanSendLocation && !client.IsRefreshing &&
                                 client.Aisling.CurrentMapId == ServerContextBase.Config.PVPMap)
                                 client.SendLocation();
-                        }
                     }
                 }
                 catch
                 {
-
                 }
             }
         }
@@ -189,7 +165,7 @@ namespace Darkages.Network.Game
                 client.DlgSession = null;
                 client.MenuInterpter = null;
                 client.Aisling.CancelExchange();
-                client.Aisling.Remove(true, true);
+                client.Aisling.Remove(true);
             }
             catch (Exception e)
             {

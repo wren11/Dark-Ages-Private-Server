@@ -1,21 +1,13 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading;
 using Darkages.Common;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.ServerFormats;
@@ -28,18 +20,11 @@ using MenuInterpreter.Parser;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
+
+#endregion
 
 namespace Darkages.Network.Game
 {
-
     public partial class GameServer : NetworkServer<GameClient>
     {
         public static ScriptOptions ScriptOptions;
@@ -61,7 +46,6 @@ namespace Darkages.Network.Game
                 .AddImports("Darkages.Types.Quest");
         }
 
-        /// <param name="lpName">The yaml Script excluding the .yaml extension.</param>
         public void CreateInterpreterFromMenuFile(GameClient lpClient, string lpName, Sprite obj = null)
         {
             var parser = new YamlMenuParser();
@@ -73,11 +57,11 @@ namespace Darkages.Network.Game
                 if (lpClient.MenuInterpter != null)
                     return;
 
-                var globals = new ScriptGlobals()
+                var globals = new ScriptGlobals
                 {
-                    actor  = obj,
+                    actor = obj,
                     client = lpClient,
-                    user   = lpClient.Aisling
+                    user = lpClient.Aisling
                 };
 
                 lpClient.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
@@ -86,20 +70,20 @@ namespace Darkages.Network.Game
                 lpClient.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
 
                 lpClient.MenuInterpter.RegisterCheckpointHandler("Call", async (client, res) =>
+                {
+                    try
                     {
-                        try
-                        {
-                            await CSharpScript.EvaluateAsync<bool>(res.Value, ScriptOptions, globals);
-                            res.Result = globals.result;
-                        }
-                        catch (Exception e)
-                        {
-                            ServerContext.Logger($"Script Error: {res.Value}.");
-                            ServerContext.Error(e);
+                        await CSharpScript.EvaluateAsync<bool>(res.Value, ScriptOptions, globals);
+                        res.Result = globals.result;
+                    }
+                    catch (Exception e)
+                    {
+                        ServerContext.Logger($"Script Error: {res.Value}.");
+                        ServerContext.Error(e);
 
-                            res.Result = false;
-                        }
-                    });
+                        res.Result = false;
+                    }
+                });
 
                 lpClient.MenuInterpter.RegisterCheckpointHandler("QuestCompleted", (client, res) =>
                 {
@@ -116,16 +100,9 @@ namespace Darkages.Network.Game
                     var q = client.Aisling.GetQuest(res.Value);
 
                     if (q != null)
-                    {
                         if (!q.Completed)
-                        {
                             q.HandleQuest(client, null,
-                                completed =>
-                                {
-                                    res.Result = completed;
-                                });
-                        }
-                    }
+                                completed => { res.Result = completed; });
                 });
 
                 return;
@@ -143,25 +120,6 @@ namespace Darkages.Network.Game
                 client.MenuInterpter = null;
         }
 
-        // ActivateAssails
-        /// <summary>
-        ///     Activates all available "Assails" for the provided <paramref name="lpClient" />
-        /// </summary>
-        /// <returns>
-        ///     void
-        /// </returns>
-        /// <example>
-        ///     <code>
-        /// public void Assail()
-        /// {
-        ///     if (Client != null)
-        ///     {
-        ///         GameServer.ActivateAssails(Client);
-        ///     }
-        /// }
-        /// </code>
-        /// </example>
-        /// <param name="lpClient">A valid GameClient</param>
         public static void ActivateAssails(GameClient lpClient)
         {
             if (lpClient == null) throw new ArgumentNullException(nameof(lpClient));
@@ -233,32 +191,6 @@ namespace Darkages.Network.Game
             lpClient.LastAssail = DateTime.UtcNow;
         }
 
-        // ExecuteAbility
-        /// <summary>
-        ///     Activates A <paramref name="lpSkill" /> for the provided <paramref name="lpClient" />
-        ///     With an optional parameter <paramref name="optExecuteScript" />
-        /// </summary>
-        /// <returns>
-        ///     void
-        /// </returns>
-        /// <example>
-        ///     <code>
-        /// foreach (var assail in client.Aisling.GetAssails())
-        /// {
-        ///     if (assail.Template.Name == skill.Template.Name)
-        ///         continue;
-        /// 
-        ///     ExecuteAbility(client, assail, false);
-        /// }
-        /// </code>
-        /// </example>
-        /// <param name="lpClient">A valid GameClient</param>
-        /// <param name="lpSkill">The Skill to Execute</param>
-        /// <param name="optExecuteScript">
-        ///     [Optional] Default: True, Execute the Script linked to <paramref name="lpSkill" />
-        ///     set False to "Fake" the ability.
-        /// </param>
-        /// <seealso cref="ActivateAssails(GameClient)" />
         public static void ExecuteAbility(GameClient lpClient, Skill lpSkill, bool optExecuteScript = true)
         {
             lpSkill.InUse = true;
@@ -268,17 +200,14 @@ namespace Darkages.Network.Game
                     script.OnUse(lpClient.Aisling);
 
 
-            lpSkill.NextAvailableUse = 
-                lpSkill.Template.Cooldown > 0 
-                    ? DateTime.UtcNow.AddSeconds(lpSkill.Template.Cooldown) 
+            lpSkill.NextAvailableUse =
+                lpSkill.Template.Cooldown > 0
+                    ? DateTime.UtcNow.AddSeconds(lpSkill.Template.Cooldown)
                     : DateTime.UtcNow.AddMilliseconds(ServerContextBase.Config.GlobalBaseSkillDelay);
 
             lpSkill.InUse = false;
         }
 
-        /// <summary>
-        ///     Enter Game
-        /// </summary>
         private void EnterGame(GameClient client, ClientFormat10 format)
         {
             client.Encryption.Parameters = format.Parameters;
@@ -286,11 +215,8 @@ namespace Darkages.Network.Game
 
             try
             {
-                dynamic redirect  = JsonConvert.DeserializeObject(format.Name);
-                if (LoadPlayer(client, redirect.player.Value) != null)
-                {
-                    ValidateRedirect(client, redirect);
-                }
+                dynamic redirect = JsonConvert.DeserializeObject(format.Name);
+                if (LoadPlayer(client, redirect.player.Value) != null) ValidateRedirect(client, redirect);
             }
             catch (JsonReaderException)
             {
@@ -319,11 +245,7 @@ namespace Darkages.Network.Game
                 return null;
             }
 
-            //prevent unauthorized login attempts.
-            if (!ServerContextBase.Redirects.Contains(aisling.Username.ToLower()))
-            {
-                base.ClientDisconnected(client);
-            }
+            if (!ServerContextBase.Redirects.Contains(aisling.Username.ToLower())) base.ClientDisconnected(client);
 
             if (ServerContextBase.Redirects.Contains(aisling.Username.ToLower()))
                 ServerContextBase.Redirects.Remove(aisling.Username.ToLower());
@@ -354,9 +276,6 @@ namespace Darkages.Network.Game
                 .LoggedIn(true).Aisling;
         }
 
-        /// <summary>
-        ///     Leave Game
-        /// </summary>
         private void LeaveGame(GameClient client, ClientFormat0B format)
         {
             #region Sanity Checks
@@ -374,7 +293,7 @@ namespace Darkages.Network.Game
             client.DlgSession = null;
             client.MenuInterpter = null;
             client.Aisling.CancelExchange();
-            client.Aisling.Remove(true, true);
+            client.Aisling.Remove(true);
 
             if (format.Type == 0) ExitGame(client);
 
@@ -408,10 +327,9 @@ namespace Darkages.Network.Game
             if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
                 client.Save();
 
-            if (ServerContextBase.Redirects.Contains(client.Aisling.Username.ToLower())) 
+            if (ServerContextBase.Redirects.Contains(client.Aisling.Username.ToLower()))
                 ServerContextBase.Redirects.Remove(client.Aisling.Username.ToLower());
 
-            //back to login screen.
             client.FlushAndSend(new ServerFormat03
             {
                 EndPoint = new IPEndPoint(Address, 2610),
@@ -436,9 +354,6 @@ namespace Darkages.Network.Game
             client.Aisling.Map.OnLoaded();
         }
 
-        /// <summary>
-        ///     Request Map
-        /// </summary>
         protected override void Format05Handler(GameClient client, ClientFormat05 format)
         {
             if (client?.Aisling?.Map == null)
@@ -451,9 +366,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        /// <summary>
-        ///     Settings Requested
-        /// </summary>
         protected override void Format1BHandler(GameClient client, ClientFormat1B format)
         {
             var settingKeys = client.Aisling.GameSettings.ToArray();
@@ -493,9 +405,6 @@ namespace Darkages.Network.Game
             client.SendMessage(0x07, msg);
         }
 
-        /// <summary>
-        ///     Sprite Walk
-        /// </summary>
         protected override void Format06Handler(GameClient client, ClientFormat06 format)
         {
             #region Sanity Checks
@@ -550,7 +459,7 @@ namespace Darkages.Network.Game
 
                 if (client.Aisling.AreaID == ServerContextBase.Config.TransitionZone)
                 {
-                    client.Aisling.PortalSession = new PortalSession { IsMapOpen = false };
+                    client.Aisling.PortalSession = new PortalSession {IsMapOpen = false};
                     client.Aisling.PortalSession.TransitionToMap(client);
                     return;
                 }
@@ -575,7 +484,8 @@ namespace Darkages.Network.Game
                             client.WarpTo(warps);
                             break;
                         }
-                        else if (warps.WarpType == WarpType.World)
+
+                        if (warps.WarpType == WarpType.World)
                         {
                             if (!ServerContextBase.GlobalWorldMapTemplateCache.ContainsKey(warps.To.PortalKey))
                                 return;
@@ -623,9 +533,6 @@ namespace Darkages.Network.Game
                 }
         }
 
-        /// <summary>
-        /// Pickup Item / Gold (User Pressed B)
-        /// </summary>
         protected override void Format07Handler(GameClient client, ClientFormat07 format)
         {
             #region Sanity Checks
@@ -662,11 +569,7 @@ namespace Darkages.Network.Game
                 }
                 else if (obj is Item item)
                 {
-                    //TODO: we may allow users to remove traps. for now, we don't.
-                    if ((item.Template.Flags & ItemFlags.Trap) == ItemFlags.Trap)
-                    {
-                        continue;
-                    }
+                    if ((item.Template.Flags & ItemFlags.Trap) == ItemFlags.Trap) continue;
 
                     if (item.Cursed)
                     {
@@ -720,9 +623,7 @@ namespace Darkages.Network.Game
 
                         if (item.Scripts != null)
                             foreach (var itemScript in item.Scripts?.Values)
-                            {
                                 itemScript?.OnPickedUp(client.Aisling, format.Position, client.Aisling.Map);
-                            }
 
 
                         break;
@@ -738,9 +639,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        /// <summary>
-        ///     Drop Item
-        /// </summary>
         protected override void Format08Handler(GameClient client, ClientFormat08 format)
         {
             #region Sanity Checks (alot can go wrong if you remove this)
@@ -756,10 +654,8 @@ namespace Darkages.Network.Game
 
             #endregion
 
-            //do we have an item in this slot?
             var item = client.Aisling.Inventory.Get(i => i != null && i.Slot == format.ItemSlot).FirstOrDefault();
 
-            //check if it's also a valid item?
             if (item?.Template == null)
                 return;
 
@@ -800,7 +696,6 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            //check position is available to drop.
             if (client.Aisling.Map.IsWall(format.X, format.Y))
                 if (client.Aisling.XPos != format.X || client.Aisling.YPos != format.Y)
                 {
@@ -808,27 +703,22 @@ namespace Darkages.Network.Game
                     return;
                 }
 
-            //if this item a stack-able item?
             if ((item.Template.Flags & ItemFlags.Stackable) == ItemFlags.Stackable)
             {
-                //remaining?
                 var remaining = item.Stacks - format.ItemAmount;
 
-                if (remaining <= 0) //none remaining / remove the item from inventory.
+                if (remaining <= 0)
                 {
-                    //clone the item.
                     copy = Clone<Item>(item);
 
-                    //remove from inventory and release to world.
                     if (client.Aisling.EquipmentManager.RemoveFromInventory(item, true))
                     {
                         copy.Release(client.Aisling, new Position(format.X, format.Y));
                         client.SendStats(StatusFlags.StructA);
                     }
                 }
-                else // some remain, update inventory item.
+                else
                 {
-                    //clone and release item
                     var nitem = Clone<Item>(item);
                     nitem.Stacks = (byte) format.ItemAmount;
                     nitem.Release(client.Aisling, new Position(format.X, format.Y));
@@ -836,20 +726,15 @@ namespace Darkages.Network.Game
                     item.Stacks = (byte) remaining;
                     client.Aisling.Inventory.Set(item, false);
 
-                    //send remove packet.
                     client.Send(new ServerFormat10(item.Slot));
-                    //add it again with updated information.
                     client.Send(new ServerFormat0F(item));
                 }
             }
-            else // not stack-able.
+            else
             {
-                //clone item
                 copy = Clone<Item>(item);
 
-                //remove from inventory
                 if (client.Aisling.EquipmentManager.RemoveFromInventory(item, true))
-                    //release the item back to the world.
                     copy.Release(client.Aisling, new Position(format.X, format.Y));
             }
 
@@ -857,23 +742,14 @@ namespace Darkages.Network.Game
 
             if (copy?.Scripts != null)
                 foreach (var itemScript in copy.Scripts?.Values)
-                {
                     itemScript?.OnDropped(client.Aisling, new Position(format.X, format.Y), client.Aisling.Map);
-                }
         }
 
-        /// <summary>
-        ///     Log Out
-        /// </summary>
         protected override void Format0BHandler(GameClient client, ClientFormat0B format)
         {
             LeaveGame(client, format);
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="format"></param>
         protected override void Format0EHandler(GameClient client, ClientFormat0E format)
         {
             #region Sanity Checks
@@ -895,13 +771,13 @@ namespace Darkages.Network.Game
 
             IEnumerable<Aisling> audience;
 
-            
+
             switch (format.Type)
             {
                 case 0x00:
                     response.Text = $"{client.Aisling.Username}: {format.Text}";
                     audience = client.GetObjects<Aisling>(client.Aisling.Map,
-                        n => client.Aisling.WithinRangeOf(n, true));
+                        n => client.Aisling.WithinRangeOf(n));
                     break;
                 case 0x01:
                     response.Text = $"{client.Aisling.Username}! {format.Text}";
@@ -928,9 +804,6 @@ namespace Darkages.Network.Game
             client.Aisling.Show(Scope.DefinedAislings, response, audience.ToArray());
         }
 
-        /// <summary>
-        ///     Use Spell
-        /// </summary>
         protected override void Format0FHandler(GameClient client, ClientFormat0F format)
         {
             #region Sanity Checks
@@ -1017,17 +890,13 @@ namespace Darkages.Network.Game
 
             if (obj != null && obj.SpellReflect)
             {
-                var n = Generator.Random.Next(100) > 30; // 70% chance to reflect a spell
-
+                var n = Generator.Random.Next(100) > 30;
                 if (n) return (uint) obj.Serial;
             }
 
             return format.Serial;
         }
 
-        /// <summary>
-        ///     Enter Game
-        /// </summary>
         protected override void Format10Handler(GameClient client, ClientFormat10 format)
         {
             #region Sanity Checks
@@ -1040,17 +909,11 @@ namespace Darkages.Network.Game
             EnterGame(client, format);
         }
 
-        /// <summary>
-        ///     Sprite Turn
-        /// </summary>
         protected override void Format11Handler(GameClient client, ClientFormat11 format)
         {
             client.Aisling.Direction = format.Direction;
 
-            if (client.Aisling.Skulled)
-            {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
-            }
+            if (client.Aisling.Skulled) client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
 
             client.Aisling.Show(Scope.NearbyAislings, new ServerFormat11
             {
@@ -1059,9 +922,6 @@ namespace Darkages.Network.Game
             });
         }
 
-        /// <summary>
-        ///     SpaceBar
-        /// </summary>
         protected override void Format13Handler(GameClient client, ClientFormat13 format)
         {
             #region Sanity Checks
@@ -1092,9 +952,6 @@ namespace Darkages.Network.Game
             ActivateAssails(client);
         }
 
-        /// <summary>
-        ///     User List
-        /// </summary>
         protected override void Format18Handler(GameClient client, ClientFormat18 format)
         {
             #region Sanity Checks
@@ -1150,9 +1007,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        /// <summary>
-        ///     Use Item
-        /// </summary>
         protected override void Format1CHandler(GameClient client, ClientFormat1C format)
         {
             #region Sanity Checks (alot can go wrong if you remove this)
@@ -1189,7 +1043,6 @@ namespace Darkages.Network.Game
 
             if (item.Template != null)
             {
-
                 if (!string.IsNullOrEmpty(item.Template.ScriptName))
                     if (item.Scripts == null)
                         item.Scripts = ScriptManager.Load<ItemScript>(item.Template.ScriptName, item);
@@ -1211,41 +1064,30 @@ namespace Darkages.Network.Game
                 }
 
                 if (activated)
-                {
                     if (item.Template.Flags.HasFlag(ItemFlags.Stackable))
-                    {
                         if (item.Template.Flags.HasFlag(ItemFlags.Consumable))
                         {
                             var stack = item.Stacks - 1;
 
                             if (stack > 0)
                             {
-                                //consume 1 unit, update stack and refresh item in inventory.
                                 item.Stacks -= 1;
                                 client.Aisling.Inventory.Set(item, false);
 
-                                //send remove packet.
                                 client.Send(new ServerFormat10(item.Slot));
 
-                                //add it again with updated information.
                                 client.Send(new ServerFormat0F(item));
                             }
                             else
                             {
-                                //remove from inventory
                                 client.Aisling.Inventory.Remove(item.Slot);
                                 client.Send(new ServerFormat10(item.Slot));
                             }
                         }
-                    }
-                }
             }
         }
 
 
-        /// <summary>
-        ///     Emotions
-        /// </summary>
         protected override void Format1DHandler(GameClient client, ClientFormat1D format)
         {
             #region Sanity Checks
@@ -1281,9 +1123,6 @@ namespace Darkages.Network.Game
                 new ServerFormat1A(client.Aisling.Serial, (byte) (id + 9), 64));
         }
 
-        /// <summary>
-        ///     Drop Gold
-        /// </summary>
         protected override void Format24Handler(GameClient client, ClientFormat24 format)
         {
             if (client?.Aisling == null)
@@ -1326,9 +1165,6 @@ namespace Darkages.Network.Game
         {
         }
 
-        /// <summary>
-        ///     Get Profile
-        /// </summary>
         protected override void Format2DHandler(GameClient client, ClientFormat2D format)
         {
             #region Sanity Checks
@@ -1351,9 +1187,6 @@ namespace Darkages.Network.Game
             client.Send(new ServerFormat39(client.Aisling));
         }
 
-        /// <summary>
-        ///     Grouping
-        /// </summary>
         protected override void Format2EHandler(GameClient client, ClientFormat2E format)
         {
             #region Sanity Checks
@@ -1377,7 +1210,9 @@ namespace Darkages.Network.Game
             if (format.Type != 0x02)
                 return;
 
-            var player = GetObject<Aisling>(client.Aisling.Map, i => string.Equals(i.Username, format.Name, StringComparison.CurrentCultureIgnoreCase) && i.WithinRangeOf(client.Aisling));
+            var player = GetObject<Aisling>(client.Aisling.Map,
+                i => string.Equals(i.Username, format.Name, StringComparison.CurrentCultureIgnoreCase) &&
+                     i.WithinRangeOf(client.Aisling));
 
             if (player == null)
             {
@@ -1385,7 +1220,6 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            //does player have group open?
             if (player.PartyStatus != GroupStatus.AcceptingRequests)
             {
                 client.SendMessage(0x02,
@@ -1394,9 +1228,7 @@ namespace Darkages.Network.Game
             }
 
             if (Party.AddPartyMember(client.Aisling, player))
-            {
                 client.Aisling.PartyStatus = GroupStatus.AcceptingRequests;
-            }
         }
 
         protected override void Format2FHandler(GameClient client, ClientFormat2F format)
@@ -1412,7 +1244,6 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.PartyStatus == GroupStatus.NotAcceptingRequests)
             {
-                //if the player is a leader, he can disband the entire group.
                 if (client.Aisling.LeaderPrivileges)
                 {
                     if (!ServerContextBase.GlobalGroupCache.ContainsKey(client.Aisling.GroupId))
@@ -1432,9 +1263,6 @@ namespace Darkages.Network.Game
         {
         }
 
-        /// <summary>
-        ///     Moving Slot
-        /// </summary>
         protected override void Format30Handler(GameClient client, ClientFormat30 format)
         {
             #region Sanity Checks
@@ -1602,9 +1430,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        /// <summary>
-        ///     Refresh
-        /// </summary>
         protected override void Format38Handler(GameClient client, ClientFormat38 format)
         {
             #region Sanity Checks
@@ -1621,15 +1446,12 @@ namespace Darkages.Network.Game
             #endregion
 
 
-            client.LeaveArea(true, false);
+            client.LeaveArea(true);
             client.EnterArea();
 
             client.LastClientRefresh = DateTime.UtcNow;
         }
 
-        /// <summary>
-        ///     Dialogs A
-        /// </summary>
         protected override void Format39Handler(GameClient client, ClientFormat39 format)
         {
             #region Sanity Checks
@@ -1723,9 +1545,6 @@ namespace Darkages.Network.Game
         }
 
 
-        /// <summary>
-        ///     Dialogs B
-        /// </summary>
         protected override void Format3AHandler(GameClient client, ClientFormat3A format)
         {
             #region Sanity Checks
@@ -1911,9 +1730,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        /// <summary>
-        ///     Board Handling
-        /// </summary>
         protected override void Format3BHandler(GameClient client, ClientFormat3B format)
         {
             if (client.Aisling.Skulled)
@@ -2037,7 +1853,6 @@ namespace Darkages.Network.Game
                         .FirstOrDefault();
 
                     if (community != null && community.Posts.Count > 0)
-                    {
                         try
                         {
                             if ((format.BoardIndex == 0
@@ -2065,20 +1880,13 @@ namespace Darkages.Network.Game
                             client.FlushAndSend(
                                 new ForumCallback(ServerContextBase.Config.CantDoThat, 0x07, true));
                         }
-                    }
-
-                    //client.FlushAndSend(new ForumCallback(ServerContext.GlobalConfig.CantDoThat, 0x07, true));
                 }
             }
             catch (Exception)
             {
-                //ignore
             }
         }
 
-        /// <summary>
-        ///     Use Skill
-        /// </summary>
         protected override void Format3EHandler(GameClient client, ClientFormat3E format)
         {
             #region Sanity Checks
@@ -2113,7 +1921,6 @@ namespace Darkages.Network.Game
             skill.InUse = true;
 
             if (skill.Template.Type == SkillScope.Assail)
-                //reset all other assail timers so that things work properly.
                 foreach (var assail in client.Aisling.GetAssails())
                 {
                     if (assail.Template.Name == skill.Template.Name)
@@ -2125,7 +1932,6 @@ namespace Darkages.Network.Game
             foreach (var script in skill.Scripts.Values)
                 script.OnUse(client.Aisling);
 
-            //define cooldown.
             if (skill.Template.Cooldown > 0)
                 skill.NextAvailableUse = DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
             else
@@ -2136,7 +1942,6 @@ namespace Darkages.Network.Game
         }
 
 
-        // World Map
         protected override void Format3FHandler(GameClient client, ClientFormat3F format)
         {
             if (client.Aisling == null || !client.Aisling.LoggedIn)
@@ -2155,13 +1960,13 @@ namespace Darkages.Network.Game
 
                 client.LeaveArea(true, true);
                 Thread.Sleep(50);
-                            
+
                 client.Send(new ServerFormat67());
                 client.Send(new ServerFormat15(client.Aisling.Map));
                 client.Send(new ServerFormat04(client.Aisling));
                 client.Send(new ServerFormat33(client, client.Aisling));
-                client.Send(new byte[] { 0x1F, 0x00, 0x00 });
-                client.Send(new byte[] { 0x58, 0x00, 0x00 });
+                client.Send(new byte[] {0x1F, 0x00, 0x00});
+                client.Send(new byte[] {0x58, 0x00, 0x00});
 
                 client.Aisling.CurrentMapId = selectedPortalNode.Destination.AreaID;
                 client.Aisling.X = selectedPortalNode.Destination.Location.X;
@@ -2171,9 +1976,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        /// <summary>
-        ///     Mouse Click
-        /// </summary>
         protected override void Format43Handler(GameClient client, ClientFormat43 format)
         {
             #region Sanity Checks
@@ -2229,7 +2031,6 @@ namespace Darkages.Network.Game
                 }
             }
 
-            //Menu Helper Handler!
             if (format.Serial == ServerContextBase.Config.HelperMenuId &&
                 ServerContextBase.GlobalMundaneTemplateCache.ContainsKey(ServerContextBase.Config
                     .HelperMenuTemplateKey))
@@ -2271,7 +2072,6 @@ namespace Darkages.Network.Game
                         try
                         {
                             if ((obj as Mundane).Scripts != null)
-                                //try and call script first
                                 foreach (var script in (obj as Mundane)?.Scripts?.Values)
                                     script.OnClick(this, client);
 
@@ -2282,7 +2082,6 @@ namespace Darkages.Network.Game
                                 client.CloseDialog();
                             }
 
-                            //if call does not produce it's own interpreter. Assume default role.
                             if (client.MenuInterpter == null)
                             {
                                 CreateInterpreterFromMenuFile(client, (obj as Mundane).Template.Name, obj);
@@ -2305,19 +2104,16 @@ namespace Darkages.Network.Game
                 }
             }
         }
+
         private static void ValidateRedirect(GameClient client, dynamic redirect)
         {
             #region
-            if (redirect.developer.Value == redirect.player.Value)
-            {
-                Spell.GiveTo(client.Aisling, "[GM] Create Item", 1);
-            }
+
+            if (redirect.developer.Value == redirect.player.Value) Spell.GiveTo(client.Aisling, "[GM] Create Item", 1);
+
             #endregion
         }
 
-        /// <summary>
-        ///     Remove equipment
-        /// </summary>
         protected override void Format44Handler(GameClient client, ClientFormat44 format)
         {
             #region Sanity Checks
@@ -2348,18 +2144,12 @@ namespace Darkages.Network.Game
                 client.Aisling.EquipmentManager?.RemoveFromExisting(format.Slot);
         }
 
-        /// <summary>
-        ///     Keep-Alive Ping Response
-        /// </summary>
         protected override void Format45Handler(GameClient client, ClientFormat45 format)
         {
             client.LastPingResponse = DateTime.UtcNow;
             AutoSave(client);
         }
 
-        /// <summary>
-        ///     Add Stat Point
-        /// </summary>
         protected override void Format47Handler(GameClient client, ClientFormat47 format)
         {
             #region Sanity Checks
@@ -2455,11 +2245,6 @@ namespace Darkages.Network.Game
             client.Aisling.Show(Scope.Self, new ServerFormat08(client.Aisling, StatusFlags.All));
         }
 
-        /// <summary>
-        ///     This entire exchange routine was shamelessly copy pasted from Kojasou's Client Project.
-        ///     (Yes I'm way to lazy to write this myself when it's already been done correctly.)
-        ///     Credits: https://github.com/kojasou/wewladh
-        /// </summary>
         protected override void Format4AHandler(GameClient client, ClientFormat4A format)
         {
             if (format == null)
@@ -2674,9 +2459,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        /// <summary>
-        ///     Start Spell Cast
-        /// </summary>
         protected override void Format4DHandler(GameClient client, ClientFormat4D format)
         {
             #region Sanity Checks
@@ -2717,9 +2499,6 @@ namespace Darkages.Network.Game
             client.Aisling.IsCastingSpell = true;
         }
 
-        /// <summary>
-        ///     Spell/Skill Chant Information
-        /// </summary>
         protected override void Format4EHandler(GameClient client, ClientFormat4E format)
         {
             #region Sanity Checks
@@ -2757,18 +2536,12 @@ namespace Darkages.Network.Game
             client.Say(chant, 0x02);
         }
 
-        /// <summary>
-        ///     Profile Picture
-        /// </summary>
         protected override void Format4FHandler(GameClient client, ClientFormat4F format)
         {
             client.Aisling.ProfileMessage = format.Words;
             client.Aisling.PictureData = format.Image;
         }
 
-        /// <summary>
-        ///     Save
-        /// </summary>
         protected override void Format75Handler(GameClient client, ClientFormat75 format)
         {
             AutoSave(client);
@@ -2783,9 +2556,6 @@ namespace Darkages.Network.Game
             client.Aisling.ActiveStatus = format.Status;
         }
 
-        /// <summary>
-        ///     Meta data
-        /// </summary>
         protected override void Format7BHandler(GameClient client, ClientFormat7B format)
         {
             if (format.Type == 0x00)
@@ -2806,9 +2576,6 @@ namespace Darkages.Network.Game
                 });
         }
 
-        /// <summary>
-        ///     CancelIfCasting - Use this Method to check and or abort if casting.
-        /// </summary>
         public static void CancelIfCasting(GameClient client)
         {
             if (!client.Aisling.LoggedIn)

@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -14,8 +18,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         public StateExample(GameServer server, Mundane mundane)
             : base(server, mundane)
         {
-            //this is called on script compile, build a quest.
-
             quest = new Quest();
             quest.Name = "some unique name";
             quest.LegendRewards = new List<Legend.LegendItem>
@@ -32,7 +34,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnClick(GameServer server, GameClient client)
         {
-            //display some options to the user
             client.SendOptionsDialog(Mundane, "some options",
                 new OptionsDataItem(0x0003, "option 3"));
         }
@@ -43,10 +44,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
                 case 0x0003:
                 {
-                    //this would return false if they were already on the quest.
-                    //or failed to accept it for any reason
                     if (client.Aisling.AcceptQuest(quest))
-                        //completed it.
                         quest.OnCompleted(client.Aisling);
                 }
                     break;

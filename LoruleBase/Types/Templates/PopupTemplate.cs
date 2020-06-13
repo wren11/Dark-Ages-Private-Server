@@ -1,16 +1,17 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Darkages.Common;
 using Darkages.Network.Game;
 
+#endregion
+
 namespace Darkages.Types
 {
     public class PopupTemplate : Template
     {
-        /// <summary>
-        ///     The Script (Yaml File that is executed on trigger)
-        /// </summary>
         public string YamlKey { get; set; }
 
         public int Timeout { get; set; }
@@ -65,20 +66,14 @@ namespace Darkages.Types
 
     public class ItemClickPopup : PopupTemplate
     {
-        /// <summary>
-        /// The Name that will map to a Template Name.
-        /// </summary>
-        public string ItemTemplateName { get; set; }
-
-        /// <summary>
-        /// Will the Item be consumed on trigger?
-        /// </summary>
-        public bool ConsumeItem { get; set; }
-
         public ItemClickPopup()
         {
             TypeOfTrigger = TriggerType.ItemOnUse;
         }
+
+        public string ItemTemplateName { get; set; }
+
+        public bool ConsumeItem { get; set; }
     }
 
     public enum TriggerType
@@ -122,19 +117,10 @@ namespace Darkages.Types
 
         public int Id { get; set; }
 
-        /// <summary>
-        ///     The Owner
-        /// </summary>
         public int Owner { get; set; }
 
-        /// <summary>
-        ///     List of Users who can receive the popup.
-        /// </summary>
         public List<int> Users { get; set; }
 
-        /// <summary>
-        ///     Popup Template
-        /// </summary>
         public PopupTemplate Template { get; set; }
 
 

@@ -1,8 +1,12 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Network.Game.Components
 {
@@ -12,7 +16,6 @@ namespace Darkages.Network.Game.Components
 
         public ObjectComponent(GameServer server) : base(server)
         {
-
         }
 
         public override void Update(TimeSpan elapsedTime)
@@ -31,10 +34,7 @@ namespace Darkages.Network.Game.Components
             var connectedUsers = Server.Clients.Where(i =>
                 i?.Aisling?.Map != null && i.Aisling.Map.Ready).Select(i => i.Aisling).ToArray();
 
-            foreach (var user in connectedUsers)
-            {
-                UpdateClientObjects(user);
-            }
+            foreach (var user in connectedUsers) UpdateClientObjects(user);
         }
 
         public static void UpdateClientObjects(Aisling user)
@@ -85,12 +85,8 @@ namespace Darkages.Network.Game.Components
                     var valueCollection = monster.Scripts?.Values;
 
                     if (valueCollection != null)
-                    {
                         foreach (var script in valueCollection)
-                        {
                             script.OnApproach(myplayer.Client);
-                        }
-                    }
                 }
 
                 if (obj is Aisling otherplayer)
@@ -98,40 +94,24 @@ namespace Darkages.Network.Game.Components
                     if (!myplayer.Dead && !otherplayer.Dead)
                     {
                         if (myplayer.Invisible)
-                        {
                             otherplayer.ShowTo(myplayer);
-                        }
                         else
-                        {
                             myplayer.ShowTo(otherplayer);
-                        }
 
                         if (otherplayer.Invisible)
-                        {
                             myplayer.ShowTo(otherplayer);
-                        }
                         else
-                        {
                             otherplayer.ShowTo(myplayer);
-                        }
                     }
                     else
                     {
                         if (myplayer.Dead)
-                        {
                             if (otherplayer.CanSeeGhosts())
-                            {
                                 myplayer.ShowTo(otherplayer);
-                            }
-                        }
 
                         if (otherplayer.Dead)
-                        {
                             if (myplayer.CanSeeGhosts())
-                            {
                                 otherplayer.ShowTo(myplayer);
-                            }
-                        }
                     }
                 }
                 else
@@ -147,33 +127,25 @@ namespace Darkages.Network.Game.Components
                                 var template = mundane.Template;
 
 
-                                //hide user if they are not a monk.
                                 if (template.ViewingQualifer.HasFlag(ViewQualifer.Monks))
                                     if (myplayer.ClassID != 5)
                                         skip = true;
 
-                                //hide user if they are not a warrior.
                                 if (template.ViewingQualifer.HasFlag(ViewQualifer.Warriors))
                                     if (myplayer.ClassID != 1)
                                         skip = true;
 
-                                //hide user if they are not a rogue.
                                 if (template.ViewingQualifer.HasFlag(ViewQualifer.Rogues))
                                     if (myplayer.ClassID != 2)
                                         skip = true;
 
-                                //hide user if they are not a wizard.
                                 if (template.ViewingQualifer.HasFlag(ViewQualifer.Wizards))
                                     if (myplayer.ClassID != 3)
                                         skip = true;
 
-                                //hide user if they are not a priest.
                                 if (template.ViewingQualifer.HasFlag(ViewQualifer.Priests))
                                     if (myplayer.ClassID != 4)
                                         skip = true;
-
-
-                                //TODO add more classes.
                             }
 
                             break;
@@ -221,12 +193,8 @@ namespace Darkages.Network.Game.Components
                     var valueCollection = monster.Scripts?.Values;
 
                     if (valueCollection != null)
-                    {
                         foreach (var script in valueCollection)
-                        {
                             script.OnLeave(client.Client);
-                        }
-                    }
                 }
 
                 obj.HideFrom(client);

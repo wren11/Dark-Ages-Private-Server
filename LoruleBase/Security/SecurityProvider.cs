@@ -1,23 +1,9 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using System.Threading.Tasks;
 using Darkages.Network;
+
+#endregion
 
 namespace Darkages.Security
 {
@@ -235,19 +221,16 @@ namespace Darkages.Security
 
         public void Transform(NetworkPacket packet)
         {
-            Parallel.For(0, packet.Data.Length, delegate (int i)
+            Parallel.For(0, packet.Data.Length, delegate(int i)
             {
-                int mod = (i / this.Parameters.Salt.Length) & 0xFF;
+                var mod = (i / Parameters.Salt.Length) & 0xFF;
 
-                packet.Data[i] ^= (byte)(
-                    this.Parameters.Salt[i % this.Parameters.Salt.Length] ^
-                    tree[this.Parameters.Seed][packet.Ordinal] ^
-                    tree[this.Parameters.Seed][mod]);
+                packet.Data[i] ^= (byte) (
+                    Parameters.Salt[i % Parameters.Salt.Length] ^
+                    tree[Parameters.Seed][packet.Ordinal] ^
+                    tree[Parameters.Seed][mod]);
 
-                if (packet.Ordinal == mod)
-                {
-                    packet.Data[i] ^= tree[this.Parameters.Seed][packet.Ordinal];
-                }
+                if (packet.Ordinal == mod) packet.Data[i] ^= tree[Parameters.Seed][packet.Ordinal];
             });
         }
 

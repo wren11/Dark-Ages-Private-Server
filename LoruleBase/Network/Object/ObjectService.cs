@@ -1,8 +1,12 @@
-﻿using Darkages.Types;
+﻿#region
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Network.Object
 {

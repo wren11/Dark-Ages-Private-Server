@@ -1,23 +1,9 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using System.Collections.Generic;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Network.ServerFormats
 {
@@ -76,10 +62,10 @@ namespace Darkages.Network.ServerFormats
                         writer.Write((ushort) sprite.YPos);
                         writer.Write((uint) sprite.Serial);
                         writer.Write((sprite as Monster).Image);
-                        writer.Write((uint) 0x0); // NFI
+                        writer.Write((uint) 0x0);
                         writer.Write(sprite.Direction);
-                        writer.Write(byte.MinValue); // NFI
-                        writer.Write(byte.MinValue); // Tint
+                        writer.Write(byte.MinValue);
+                        writer.Write(byte.MinValue);
                     }
 
                     if (sprite is Mundane)
@@ -88,11 +74,10 @@ namespace Darkages.Network.ServerFormats
                         writer.Write((ushort) sprite.YPos);
                         writer.Write((uint) sprite.Serial);
                         writer.Write((ushort) (sprite as Mundane).Template.Image);
-                        writer.Write(uint.MinValue); // NFI
+                        writer.Write(uint.MinValue);
                         writer.Write(sprite.Direction);
-                        writer.Write(byte.MinValue); // NFI
-
-                        writer.Write((byte) 0x02); // Type
+                        writer.Write(byte.MinValue);
+                        writer.Write((byte) 0x02);
                         writer.WriteStringA((sprite as Mundane).Template.Name);
                     }
                 }

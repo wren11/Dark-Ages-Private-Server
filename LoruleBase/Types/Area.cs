@@ -1,28 +1,15 @@
-﻿using Darkages.Network.Game;
-using Darkages.Network.Object;
-using Darkages.Types;
-using Newtonsoft.Json;
-///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Darkages.Network.Game;
+using Darkages.Network.Object;
+using Darkages.Types;
+using Newtonsoft.Json;
+
+#endregion
 
 namespace Darkages
 {
@@ -39,6 +26,15 @@ namespace Darkages
 
     public class TileGrid : ObjectManager
     {
+        private readonly Area _map;
+        private readonly int _x, _y;
+
+        public TileGrid(Area map, int x, int y)
+        {
+            _map = map;
+            _x = x;
+            _y = y;
+        }
 
         public List<Sprite> Sprites
         {
@@ -47,16 +43,6 @@ namespace Darkages
                 return GetObjects(_map, o => o.X == _x && o.Y == _y && o.Alive,
                     Get.Monsters | Get.Mundanes | Get.Aislings).ToList();
             }
-        }
-        
-        readonly Area _map;
-        readonly int _x, _y;
-
-        public TileGrid(Area map, int x, int y)
-        {
-            _map = map;
-            _x = x;
-            _y = y;
         }
 
         public bool IsPassable(Sprite sprite, bool isAisling)
@@ -73,10 +59,7 @@ namespace Darkages
                     return true;
                 }
 
-                if (obj.X == sprite.X && obj.Y == sprite.Y)
-                {
-                    continue;
-                }
+                if (obj.X == sprite.X && obj.Y == sprite.Y) continue;
 
                 if (!(obj is Monster) && !(obj is Aisling) && !(obj is Mundane))
                     continue;
@@ -95,10 +78,7 @@ namespace Darkages
                 updates++;
             }
 
-            if (updates > 0)
-            { 
-                (sprite as Aisling)?.Client.Refresh();
-            }
+            if (updates > 0) (sprite as Aisling)?.Client.Refresh();
 
             return length == 0;
         }
@@ -108,7 +88,7 @@ namespace Darkages
     {
         [JsonIgnore] private static readonly byte[] Sotp = File.ReadAllBytes("sotp.dat");
 
-        [JsonIgnore] readonly GameServerTimer _updateTimer = new GameServerTimer(TimeSpan.FromMilliseconds(10));
+        [JsonIgnore] private readonly GameServerTimer _updateTimer = new GameServerTimer(TimeSpan.FromMilliseconds(10));
 
         [JsonIgnore] public byte[] Data;
 
@@ -137,19 +117,12 @@ namespace Darkages
 
         public bool IsWall(int x, int y, bool IsAisling = false)
         {
+            if (x < 0 || x >= Cols) return true;
 
-            if (x < 0 || x >= Cols)
-            {
-                return true;
-            }
-
-            if (y < 0 || y >= Rows)
-            {
-                return true;
-            }
+            if (y < 0 || y >= Rows) return true;
 
 
-            var isWall  = Tile[x, y] == TileContent.Wall;
+            var isWall = Tile[x, y] == TileContent.Wall;
             return isWall;
         }
 
@@ -226,27 +199,19 @@ namespace Darkages
                 if (obj.CurrentHp <= 0x0 && obj.Target != null && !obj.Skulled)
                 {
                     foreach (var script in obj.Scripts.Values.Where(script => obj.Target?.Client != null))
-                    {
                         script?.OnDeath(obj.Target.Client);
-                    }
 
                     obj.Skulled = true;
                 }
 
-                foreach (var script in obj.Scripts.Values)
-                {
-                    script?.Update(elapsedTime);
-                }
+                foreach (var script in obj.Scripts.Values) script?.Update(elapsedTime);
 
                 if (obj.TrapsAreNearby())
                 {
                     var nextTrap = Trap.Traps.Select(i => i.Value)
                         .FirstOrDefault(i => i.Location.X == obj.X && i.Location.Y == obj.Y);
 
-                    if (nextTrap != null)
-                    {
-                        Trap.Activate(nextTrap, obj);
-                    }
+                    if (nextTrap != null) Trap.Activate(nextTrap, obj);
                 }
 
 
@@ -258,19 +223,17 @@ namespace Darkages
 
         public void UpdateItemObjects(TimeSpan elapsedTime, IEnumerable<Sprite> objects)
         {
-                foreach (var obj in objects)
+            foreach (var obj in objects)
+                if (obj != null)
                 {
-                    if (obj != null)
-                    {
-                        obj.LastUpdated = DateTime.UtcNow;
+                    obj.LastUpdated = DateTime.UtcNow;
 
-                        if (!(obj is Item item)) continue;
-                        if (!((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3)) continue;
-                        if (!item.Cursed) continue;
+                    if (!(obj is Item item)) continue;
+                    if (!((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3)) continue;
+                    if (!item.Cursed) continue;
 
-                        item.AuthenticatedAislings = null;
-                        item.Cursed = false;
-                    }
+                    item.AuthenticatedAislings = null;
+                    item.Cursed = false;
                 }
         }
 
@@ -302,22 +265,16 @@ namespace Darkages
                 var reader = new BinaryReader(stream);
 
                 for (var y = 0; y < Rows; y++)
+                for (var x = 0; x < Cols; x++)
                 {
-                    for (var x = 0; x < Cols; x++)
-                    {
-                        ObjectGrid[x,y] = new TileGrid(this, x, y);
+                    ObjectGrid[x, y] = new TileGrid(this, x, y);
 
-                        reader.BaseStream.Seek(2, SeekOrigin.Current);
+                    reader.BaseStream.Seek(2, SeekOrigin.Current);
 
-                        if (ParseMapWalls(reader.ReadInt16(), reader.ReadInt16()))
-                        {
-                            Tile[x, y] = TileContent.Wall;
-                        }
-                        else
-                        {
-                            Tile[x, y] = TileContent.None;
-                        }
-                    }
+                    if (ParseMapWalls(reader.ReadInt16(), reader.ReadInt16()))
+                        Tile[x, y] = TileContent.Wall;
+                    else
+                        Tile[x, y] = TileContent.None;
                 }
 
                 reader.Close();

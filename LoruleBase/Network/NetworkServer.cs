@@ -1,29 +1,16 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
-using Darkages.Common;
-using Darkages.Network.ClientFormats;
-using Darkages.Network.Object;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using Darkages.Common;
+using Darkages.Network.ClientFormats;
+using Darkages.Network.Object;
+
+#endregion
 
 namespace Darkages.Network
 {
@@ -33,26 +20,24 @@ namespace Darkages.Network
         private readonly MethodInfo[] _handlers;
         private Socket _listener;
         private bool _listening;
-
-        public IPAddress Address { get; }
         public Dictionary<int, TClient> ConnectedClients;
-
-        public List<TClient> Clients => ConnectedClients.Values.ToList();
 
         protected NetworkServer(int capacity = 2048)
         {
             var type = typeof(NetworkServer<TClient>);
 
-            Address  = ServerContextBase.IpAddress;
-            ConnectedClients  = new Dictionary<int, TClient>(capacity);
+            Address = ServerContextBase.IpAddress;
+            ConnectedClients = new Dictionary<int, TClient>(capacity);
 
             _handlers = new MethodInfo[256];
 
             for (var i = 0; i < _handlers.Length; i++)
-            {
                 _handlers[i] = type.GetMethod($"Format{i:X2}Handler", BindingFlags.NonPublic | BindingFlags.Instance);
-            }
         }
+
+        public IPAddress Address { get; }
+
+        public List<TClient> Clients => ConnectedClients.Values.ToList();
 
         private void EndConnectClient(IAsyncResult result)
         {
@@ -61,11 +46,11 @@ namespace Darkages.Network
                 if (_listener == null || !_listening) return;
 
                 var socket = _listener.EndAccept(result);
-                var handler = (Socket)result.AsyncState;
+                var handler = (Socket) result.AsyncState;
 
                 var client = new TClient
                 {
-                    Session = new NetworkSocket((Socket)socket),
+                    Session = new NetworkSocket(socket)
                 };
 
                 if (client.Session.ConnectedSocket.Connected)
@@ -81,10 +66,7 @@ namespace Darkages.Network
 
                         client.Session.BeginReceiveHeader(EndReceiveHeader, out var error, client);
 
-                        if (error != SocketError.IOPending && error != SocketError.Success)
-                        {
-                            ClientDisconnected(client);
-                        }
+                        if (error != SocketError.IOPending && error != SocketError.Success) ClientDisconnected(client);
                     }
                     else
                     {
@@ -99,7 +81,6 @@ namespace Darkages.Network
             catch (Exception e)
             {
                 ServerContext.Error(e);
-                // ignored
             }
         }
 
@@ -164,7 +145,7 @@ namespace Darkages.Network
 
         public virtual bool AddClient(TClient client)
         {
-            if (!ConnectedClients.ContainsKey(client.Serial)) 
+            if (!ConnectedClients.ContainsKey(client.Serial))
                 ConnectedClients.Add(client.Serial, client);
 
             return true;
@@ -172,10 +153,8 @@ namespace Darkages.Network
 
         public void RemoveClient(TClient client)
         {
-            if (client != null && (ConnectedClients != null && ConnectedClients.ContainsKey(client.Serial)))
-            {
+            if (client != null && ConnectedClients != null && ConnectedClients.ContainsKey(client.Serial))
                 ConnectedClients.Remove(client.Serial);
-            }
         }
 
         public virtual void Abort()
@@ -239,7 +218,6 @@ namespace Darkages.Network
             catch (Exception e)
             {
                 ServerContext.Error(e);
-                //ignore   
             }
         }
 
@@ -251,9 +229,7 @@ namespace Darkages.Network
 
             if (client.Session != null &&
                 client.Session.ConnectedSocket.Connected)
-            { 
                 client.Session.ConnectedSocket.Disconnect(false);
-            }
 
 
             RemoveClient(client);

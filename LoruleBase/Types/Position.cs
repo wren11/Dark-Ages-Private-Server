@@ -1,35 +1,15 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Darkages.Network.Game;
+
+#endregion
 
 namespace Darkages.Types
 {
-
     [Serializable]
     public class Position
     {
-        public ushort X { get; set; }
-        public ushort Y { get; set; }
-
         public Position(ushort x, ushort y)
         {
             X = x;
@@ -43,6 +23,9 @@ namespace Darkages.Types
         public Position() : this(0, 0)
         {
         }
+
+        public ushort X { get; set; }
+        public ushort Y { get; set; }
 
         public int DistanceFrom(ushort X, ushort Y)
         {
@@ -104,36 +87,24 @@ namespace Darkages.Types
             var list = new List<TileContentPosition>();
 
             if (X > 0)
-            {
                 list.Add(new TileContentPosition(
                     new Position(X - 1, Y),
                     map.ObjectGrid[X - 1, Y].Sprites.Count == 0 ? TileContent.Wall : TileContent.None));
 
-            }
-
             if (Y > 0)
-            {
                 list.Add(new TileContentPosition(
                     new Position(X, Y - 1),
                     map.ObjectGrid[X, Y - 1].Sprites.Count == 0 ? TileContent.Wall : TileContent.None));
 
-            }
-
             if (X < map.Rows - 1)
-            {
                 list.Add(new TileContentPosition(
                     new Position(X + 1, Y),
                     map.ObjectGrid[X + 1, Y].Sprites.Count == 0 ? TileContent.Wall : TileContent.None));
 
-            }
-
             if (Y < map.Cols - 1)
-            {
                 list.Add(new TileContentPosition(
                     new Position(X, Y + 1),
                     map.ObjectGrid[X, Y + 1].Sprites.Count == 0 ? TileContent.Wall : TileContent.None));
-
-            }
 
 
             return list.ToArray();

@@ -1,8 +1,12 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Threading.Tasks;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Assets.locales.Scripts.Spells.rogue
 {

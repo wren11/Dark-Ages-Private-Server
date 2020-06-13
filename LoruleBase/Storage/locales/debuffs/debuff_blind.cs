@@ -1,5 +1,9 @@
-﻿using Darkages.Network.ServerFormats;
+﻿#region
+
+using Darkages.Network.ServerFormats;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Storage.locales.debuffs
 {
@@ -34,11 +38,9 @@ namespace Darkages.Storage.locales.debuffs
         public override void OnDurationUpdate(Sprite affected, Debuff buff)
         {
             if (affected is Aisling aisling)
-            {
                 aisling
                     .Client
                     .SendStats(StatusFlags.StructD);
-            }
 
             affected.SendAnimation(42, affected, affected);
 

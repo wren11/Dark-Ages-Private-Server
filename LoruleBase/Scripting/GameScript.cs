@@ -1,4 +1,8 @@
-﻿using Darkages.Network.Object;
+﻿#region
+
+using Darkages.Network.Object;
+
+#endregion
 
 namespace Darkages.Scripting
 {
@@ -12,6 +16,5 @@ namespace Darkages.Scripting
             _objectManager = objectManager;
             _settings = settings;
         }
-
     }
 }

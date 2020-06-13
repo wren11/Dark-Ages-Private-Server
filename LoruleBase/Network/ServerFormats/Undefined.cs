@@ -1,65 +1,26 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
-
-namespace Darkages.Network.ServerFormats
+﻿namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat01
     {
     }
 
-    //public class ServerFormat02 { } Added (Message Box)
-    //public class ServerFormat03 { } Added (Redirect)
-    //public class ServerFormat04 { } Added (Position)
-    //public class ServerFormat05 { } Added (Serial)
-    //public class ServerFormat06 { } Added (Send Tile)
 
-    //public class ServerFormat07 { } Added (Sprite)
-    //public class ServerFormat08 { } Added (Status)
     public class ServerFormat09
     {
     }
 
-    //public class ServerFormat0A { } Added (Message)
-    //public class ServerFormat0B { } Added
-    //public class ServerFormat0C { } Added (Sprite Walk)
-    //public class ServerFormat0D { } Added (Public Chat)
-    //public class ServerFormat0E { } Added (Sprite Remove)
-    //public class ServerFormat0F { } Added (Item Update)
-    //public class ServerFormat10 { }
-    //public class ServerFormat11 { } Added (Sprite Rotate)
     public class ServerFormat12
     {
     }
 
-    //public class ServerFormat13 { } Added
     public class ServerFormat14
     {
     }
 
-    //public class ServerFormat15 { } Added (Map Info)
     public class ServerFormat16
     {
     }
 
-    //public class ServerFormat17 { } Added (Spell Update)
-    //public class ServerFormat18 { }
-    //public class ServerFormat19 { } Added (Sound Effect)
-    //public class ServerFormat1A { } Added (Sprite Animation)
     public class ServerFormat1B
     {
     }
@@ -80,7 +41,6 @@ namespace Darkages.Network.ServerFormats
     {
     }
 
-    //public class ServerFormat20 { } Added (Daytime)
     public class ServerFormat21
     {
     }
@@ -113,7 +73,6 @@ namespace Darkages.Network.ServerFormats
     {
     }
 
-    //public class ServerFormat29 { } Added (Effect Animation)
     public class ServerFormat2A
     {
     }
@@ -122,27 +81,11 @@ namespace Darkages.Network.ServerFormats
     {
     }
 
-    //public class ServerFormat2C { } Added (Skill Update)
-    //public class ServerFormat2D { }
-    //public class ServerFormat2E { } Added (Load Map/Image)
-    //public class ServerFormat2F { } Added (Mundane Dialog A)
-    //public class ServerFormat30 { }
-    //public class ServerFormat31 { } // Added Forum
 
-    //public class ServerFormat32 { }
-    //public class ServerFormat33 { } Added (Aisling)
-    //public class ServerFormat34 { } Added (Foreign Profile)
     public class ServerFormat35
     {
     }
 
-    //public class ServerFormat36 { } Added (User List)
-    //public class ServerFormat37 { } Added (Equip Update)
-    //public class ServerFormat38 { } Added (Equip Remove)
-    //public class ServerFormat39 { } Added (Endemic Profile)
-    //public class ServerFormat3A { } Added (Spell Effect)
-    //public class ServerFormat3B { } Added (Ping)
-    //public class ServerFormat3C { } Added (Area Data)
     public class ServerFormat3D
     {
     }
@@ -151,7 +94,6 @@ namespace Darkages.Network.ServerFormats
     {
     }
 
-    //public class ServerFormat3F { }
     public class ServerFormat40
     {
     }
@@ -160,7 +102,6 @@ namespace Darkages.Network.ServerFormats
     {
     }
 
-    // public class ServerFormat42 { } Added - Exchange Info
 
     public class ServerFormat43
     {
@@ -182,17 +123,11 @@ namespace Darkages.Network.ServerFormats
     {
     }
 
-    //public class ServerFormat48 { } stop casting packet
-    //public class ServerFormat49 { } Added
     public class ServerFormat4A
     {
     }
 
-    //public class ServerFormat4B // Request Exchange
-    //{
-    //}
 
-    //public class ServerFormat4C { } Added
     public class ServerFormat4D
     {
     }
@@ -229,7 +164,6 @@ namespace Darkages.Network.ServerFormats
     {
     }
 
-    //public class ServerFormat56 { } Added (MServerTable)
     public class ServerFormat57
     {
     }
@@ -266,7 +200,6 @@ namespace Darkages.Network.ServerFormats
     {
     }
 
-    //public class ServerFormat60 { } Added (Notification)
     public class ServerFormat61
     {
     }
@@ -287,8 +220,6 @@ namespace Darkages.Network.ServerFormats
     {
     }
 
-    //public class ServerFormat66 { } Added (Website Uri)
-    //public class ServerFormat67 { } Added
     public class ServerFormat68
     {
     }
@@ -317,7 +248,6 @@ namespace Darkages.Network.ServerFormats
     {
     }
 
-    //public class ServerFormat6F { } Added (Metafile)
     public class ServerFormat70
     {
     }
@@ -330,7 +260,6 @@ namespace Darkages.Network.ServerFormats
     {
     }
 
-    // public class ServerFormat73 { } Request Profile Updates? (Picture and stuff)
     public class ServerFormat74
     {
     }
@@ -371,7 +300,6 @@ namespace Darkages.Network.ServerFormats
     {
     }
 
-    //public class ServerFormat7E { } Added (Welcome Message)
     public class ServerFormat7F
     {
     }

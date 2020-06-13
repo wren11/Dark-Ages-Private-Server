@@ -1,17 +1,12 @@
-﻿using Darkages.Network.ClientFormats;
+﻿#region
+
+using Darkages.Network.ClientFormats;
 using Darkages.Network.Object;
+
+#endregion
 
 namespace Darkages.Network
 {
-    /// <summary>
-    ///     <para>
-    ///         Class NetworkStubs.
-    ///         Implements the <see cref="Darkages.Network.Object.ObjectManager" />
-    ///     </para>
-    ///     <para>The purpose of this Class is to provide an underlying set of Method Stubs that later get overriden.</para>
-    /// </summary>
-    /// <typeparam name="TClient">The type of the T becomes the NetworkClient</typeparam>
-    /// <seealso cref="Darkages.Network.Object.ObjectManager" />
     public class ServerFormatStubs<TClient> : ObjectManager
         where TClient : NetworkClient, new()
     {

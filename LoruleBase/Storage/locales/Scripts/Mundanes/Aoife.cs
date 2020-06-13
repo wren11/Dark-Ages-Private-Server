@@ -1,11 +1,12 @@
-﻿// Aoife.cs
-//
+﻿#region
 
 using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {

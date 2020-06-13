@@ -1,26 +1,12 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
 
 using System;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Assets.locales.Scripts.Spells.utility
 {
@@ -92,8 +78,7 @@ namespace Darkages.Assets.locales.Scripts.Spells.utility
                     if (client.Aisling.CurrentMp < 0)
                         client.Aisling.CurrentMp = 0;
 
-                    if (rand.Next(1, 101) >= 25) // decent fail rate i guess
-                        OnSuccess(sprite, target);
+                    if (rand.Next(1, 101) >= 25) OnSuccess(sprite, target);
                     else
                         OnFailed(sprite, target);
                 }

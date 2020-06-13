@@ -1,8 +1,12 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using YamlDotNet.Serialization;
+
+#endregion
 
 namespace MenuInterpreter.Parser
 {
@@ -10,21 +14,12 @@ namespace MenuInterpreter.Parser
     {
         private readonly IDictionary<int, int> _checkpointIds = new Dictionary<int, int>();
 
-        /// <summary>
-        ///     Current MenuItem id
-        /// </summary>
-        private int _currentId;
-
         private readonly IDeserializer _deserializer = new Deserializer();
 
-        /// <summary>
-        ///     Menu id to MenuItem id
-        /// </summary>
+        private int _currentId;
+
         private IDictionary<int, int> _menuIds = new Dictionary<int, int>();
 
-        /// <summary>
-        ///     Step id to MenuItem id
-        /// </summary>
         private IDictionary<KeyValuePair<int, int>, int> _stepIds;
 
         public YamlMenuParser()
@@ -52,7 +47,6 @@ namespace MenuInterpreter.Parser
 
             var items = new List<MenuItem>();
 
-            // parse sequences
             if (parsed.sequences != null)
                 foreach (var seq in parsed.sequences)
                 {
@@ -74,7 +68,6 @@ namespace MenuInterpreter.Parser
                     }
                 }
 
-            // parse menus
             if (parsed.menus != null)
                 foreach (var menu in parsed.menus)
                 {
@@ -90,7 +83,6 @@ namespace MenuInterpreter.Parser
                         items.Add(new MenuItem(newId, MenuItemType.Menu, menu.text, answers.ToArray()));
                 }
 
-            // parse checkpoints
             if (parsed.checkpoints != null)
                 foreach (var checkpoint in parsed.checkpoints)
                 {
@@ -112,7 +104,6 @@ namespace MenuInterpreter.Parser
                     items.Add(item);
                 }
 
-            // parse start point
             var startId = GetLinkedId(parsed.start);
             var startItem = items.FirstOrDefault(i => i.Id == startId);
             return new Interpreter(items, startItem);

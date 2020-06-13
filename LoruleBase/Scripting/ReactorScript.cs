@@ -1,4 +1,8 @@
-﻿using Darkages.Types;
+﻿#region
+
+using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Scripting
 {
