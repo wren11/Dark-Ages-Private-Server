@@ -573,11 +573,24 @@ namespace Darkages.Network.Game
 
                     if (item.Cursed)
                     {
-                        if (item.AuthenticatedAislings.FirstOrDefault(i =>
-                            i.Serial == client.Aisling.Serial) == null)
+                        Sprite first = null;
+
+                        if (item.AuthenticatedAislings != null)
                         {
-                            client.SendMessage(0x02, ServerContextBase.Config.CursedItemMessage);
-                            break;
+                            foreach (var i in item.AuthenticatedAislings)
+                            {
+                                if (i.Serial != client.Aisling.Serial)
+                                    continue;
+
+                                first = i;
+                                break;
+                            }
+
+                            if (item.AuthenticatedAislings != null && first == null)
+                            {
+                                client.SendMessage(0x02, ServerContextBase.Config.CursedItemMessage);
+                                break;
+                            }
                         }
 
                         if (item.GiveTo(client.Aisling))
