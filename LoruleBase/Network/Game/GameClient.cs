@@ -105,6 +105,14 @@ namespace Darkages.Network.Game
         {
             var message = string.Empty;
 
+            if (client.Aisling.GameMaster)
+            {
+                if (item.Durability > 0)
+                {
+                    return true;
+                }
+            }
+
             if (client.Aisling.ExpLevel < item.Template.LevelRequired)
             {
                 message = ServerContextBase.Config.CantWearYetMessage;
@@ -497,59 +505,63 @@ namespace Darkages.Network.Game
         {
             lock (_syncObj)
             {
-                var spellsAvailable = Aisling.SpellBook.Spells.Values
-                    .Where(i => i != null && i.Template != null).ToArray();
-
-                for (var i = 0; i < spellsAvailable.Length; i++)
+                Lorule.Update(() =>
                 {
-                    var spell = spellsAvailable[i];
+                    var spellsAvailable = Aisling.SpellBook.Spells.Values
+                        .Where(i => i != null && i.Template != null).ToArray();
 
-                    if (spell.Template != null)
-                        if (ServerContextBase.GlobalSpellTemplateCache.ContainsKey(spell.Template.Name))
-                        {
-                            var template = ServerContextBase.GlobalSpellTemplateCache[spell.Template.Name];
+                    for (var i = 0; i < spellsAvailable.Length; i++)
+                    {
+                        var spell = spellsAvailable[i];
+
+                        if (spell.Template != null)
+                            if (ServerContextBase.GlobalSpellTemplateCache.ContainsKey(spell.Template.Name))
                             {
-                                spell.Template = template;
+                                var template = ServerContextBase.GlobalSpellTemplateCache[spell.Template.Name];
+                                {
+                                    spell.Template = template;
+                                }
                             }
+
+                        spell.Lines = spell.Template.BaseLines;
+
+                        Spell.AttachScript(Aisling, spell);
+                        {
+                            Aisling.SpellBook.Set(spell, false);
                         }
 
-                    spell.Lines = spell.Template.BaseLines;
+                        Send(new ServerFormat17(spell));
 
-                    Spell.AttachScript(Aisling, spell);
-                    {
-                        Aisling.SpellBook.Set(spell, false);
+                        if (spell.NextAvailableUse.Year > 1)
+                            Task.Delay(1000).ContinueWith(ct =>
+                            {
+                                var delta = (int)Math.Abs((DateTime.UtcNow - spell.NextAvailableUse).TotalSeconds);
+                                var offset = Math.Abs(spell.Template.Cooldown - delta);
+
+                                if (delta <= spell.Template.Cooldown)
+                                    Send(new ServerFormat3F(0,
+                                        spell.Slot,
+                                        delta));
+                            });
+                        else
+                            spell.NextAvailableUse = DateTime.UtcNow;
                     }
 
-                    Send(new ServerFormat17(spell));
-
-                    if (spell.NextAvailableUse.Year > 1)
-                        Task.Delay(1000).ContinueWith(ct =>
-                        {
-                            var delta = (int)Math.Abs((DateTime.UtcNow - spell.NextAvailableUse).TotalSeconds);
-                            var offset = Math.Abs(spell.Template.Cooldown - delta);
-
-                            if (delta <= spell.Template.Cooldown)
-                                Send(new ServerFormat3F(0,
-                                    spell.Slot,
-                                    delta));
-                        });
-                    else
-                        spell.NextAvailableUse = DateTime.UtcNow;
-                }
-
-                if (Aisling.GameMaster)
-                {
-                    foreach (var spell in ServerContextBase.GlobalSpellTemplateCache.Select(i => i.Value))
+                    if (Aisling.GameMaster)
                     {
-                        if (spell.Name.StartsWith("[GM]"))
+                        foreach (var spell in ServerContextBase.GlobalSpellTemplateCache.Select(i => i.Value))
                         {
-                            if (Spell.GiveTo(Aisling, spell.Name, 1))
+                            if (spell.Name.StartsWith("[GM]"))
                             {
-                                ServerContext.Logger($"[GM] -> Spell {spell.Name} Given to GameMaster {Aisling.Username}.");
+                                if (Spell.GiveTo(Aisling, spell.Name, 1))
+                                {
+                                    ServerContext.Logger(
+                                        $"[GM] -> Spell {spell.Name} Given to GameMaster {Aisling.Username}.");
+                                }
                             }
                         }
                     }
-                }
+                });
             }
 
             return this;
@@ -1253,17 +1265,20 @@ namespace Darkages.Network.Game
 
             if (ServerContextBase.GlobalMapCache.Values.Any(i => i.ID == warps.ActivationMapId))
             {
-                if (warps.LevelRequired > 0 && Aisling.ExpLevel < warps.LevelRequired)
+                if (!Aisling.GameMaster)
                 {
-                    var msgTier = Math.Abs(Aisling.ExpLevel - warps.LevelRequired);
+                    if (warps.LevelRequired > 0 && Aisling.ExpLevel < warps.LevelRequired)
+                    {
+                        var msgTier = Math.Abs(Aisling.ExpLevel - warps.LevelRequired);
 
-                    SendMessage(0x02, msgTier <= 10
-                        ? string.Format(CultureInfo.CurrentCulture, "You can't enter there just yet. ({0} req)",
-                            warps.LevelRequired)
-                        : string.Format(CultureInfo.CurrentCulture,
-                            "Nightmarish visions of your own death repel you. ({0} Req)", warps.LevelRequired));
+                        SendMessage(0x02, msgTier <= 10
+                            ? string.Format(CultureInfo.CurrentCulture, "You can't enter there just yet. ({0} req)",
+                                warps.LevelRequired)
+                            : string.Format(CultureInfo.CurrentCulture,
+                                "Nightmarish visions of your own death repel you. ({0} Req)", warps.LevelRequired));
 
-                    return;
+                        return;
+                    }
                 }
 
                 if (Aisling.Map.ID != warps.To.AreaID)

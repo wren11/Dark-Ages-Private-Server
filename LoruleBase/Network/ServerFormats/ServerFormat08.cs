@@ -29,6 +29,15 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
+            if (Aisling.GameMaster)
+            {
+                Flags |= 0x40;
+            }
+            else
+            {
+                Flags |= 0x40 | 0x80;
+            }
+
             writer.Write(Flags);
 
             var hp = Aisling.MaximumHp >= int.MaxValue || Aisling.MaximumHp <= 0 ? 1 : Aisling.MaximumHp;

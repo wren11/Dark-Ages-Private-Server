@@ -1237,11 +1237,22 @@ namespace Darkages.Types
             var pendingX = X;
             var pendingY = Y;
 
-            if (Map.IsWall(savedX, savedY, this is Aisling))
-                return false;
+            bool allowGhostWalk = false;
 
-            if (!Map.ObjectGrid[savedX, savedY].IsPassable(this, this is Aisling))
-                return false;
+            if (this is Aisling aisling)
+            {
+                if (aisling.GameMaster)
+                    allowGhostWalk = true;
+            }
+
+            if (!allowGhostWalk)
+            {
+                if (Map.IsWall(savedX, savedY, this is Aisling))
+                    return false;
+
+                if (!Map.ObjectGrid[savedX, savedY].IsPassable(this, this is Aisling))
+                    return false;
+            }
 
             if (Direction == 0)
                 pendingY--;
@@ -1252,11 +1263,14 @@ namespace Darkages.Types
             else if (Direction == 3)
                 pendingX--;
 
-            if (Map.IsWall(pendingX, pendingY, this is Aisling))
-                return false;
+            if (!allowGhostWalk)
+            {
+                if (Map.IsWall(pendingX, pendingY, this is Aisling))
+                    return false;
 
-            if (!Map.ObjectGrid[pendingX, pendingY].IsPassable(this, this is Aisling))
-                return false;
+                if (!Map.ObjectGrid[pendingX, pendingY].IsPassable(this, this is Aisling))
+                    return false;
+            }
 
             var response = new ServerFormat0C
             {
@@ -1275,9 +1289,11 @@ namespace Darkages.Types
                 LastPosition = new Position(savedX, savedY);
             }
 
-            if (this is Aisling)
-                foreach (var obj in AislingsNearby())
-                    ObjectComponent.UpdateClientObjects(obj);
+            if (!(this is Aisling))
+                return true;
+
+            foreach (var obj in AislingsNearby())
+                ObjectComponent.UpdateClientObjects(obj);
 
             return true;
         }

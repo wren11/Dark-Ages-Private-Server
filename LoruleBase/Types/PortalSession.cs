@@ -42,20 +42,20 @@ namespace Darkages
                 };
         }
 
-        public void TransitionToMap(GameClient client, short X = -1, short Y = -1, int DestinationMap = 0)
+        public void TransitionToMap(GameClient client, short x = -1, short y = -1, int destinationMap = 0)
         {
             client.LastWarp = DateTime.UtcNow.AddMilliseconds(100);
 
-            if (DestinationMap == 0)
+            if (destinationMap == 0)
             {
                 client.LeaveArea(true, true);
 
-                DestinationMap = ServerContextBase.Config.TransitionZone;
+                destinationMap = ServerContextBase.Config.TransitionZone;
 
-                client.Aisling.XPos = X >= 0 ? X : ServerContextBase.Config.TransitionPointX;
-                client.Aisling.YPos = Y >= 0 ? Y : ServerContextBase.Config.TransitionPointY;
+                client.Aisling.XPos = x >= 0 ? x : ServerContextBase.Config.TransitionPointX;
+                client.Aisling.YPos = y >= 0 ? y : ServerContextBase.Config.TransitionPointY;
 
-                client.Aisling.CurrentMapId = DestinationMap;
+                client.Aisling.CurrentMapId = destinationMap;
                 client.LeaveArea(true, true);
                 client.EnterArea();
 
@@ -63,13 +63,13 @@ namespace Darkages
             }
             else
             {
-                if (!ServerContextBase.GlobalMapCache.ContainsKey(DestinationMap))
+                if (!ServerContextBase.GlobalMapCache.ContainsKey(destinationMap))
                     return;
 
-                client.Aisling.XPos = X >= 0 ? X : ServerContextBase.Config.TransitionPointX;
-                client.Aisling.YPos = Y >= 0 ? Y : ServerContextBase.Config.TransitionPointY;
+                client.Aisling.XPos = x >= 0 ? x : ServerContextBase.Config.TransitionPointX;
+                client.Aisling.YPos = y >= 0 ? y : ServerContextBase.Config.TransitionPointY;
 
-                client.Aisling.CurrentMapId = DestinationMap;
+                client.Aisling.CurrentMapId = destinationMap;
                 client.LeaveArea(true, true);
                 client.EnterArea();
             }
