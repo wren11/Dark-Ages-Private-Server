@@ -8,7 +8,6 @@
             Command = 0x06;
         }
 
-
         public override void Serialize(NetworkPacketReader reader)
         {
         }

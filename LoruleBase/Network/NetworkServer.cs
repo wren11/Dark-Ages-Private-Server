@@ -1,14 +1,14 @@
 ﻿#region
 
+using Darkages.Common;
+using Darkages.Network.ClientFormats;
+using Darkages.Network.Object;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
-using Darkages.Common;
-using Darkages.Network.ClientFormats;
-using Darkages.Network.Object;
 
 #endregion
 
@@ -17,10 +17,10 @@ namespace Darkages.Network
     public abstract class NetworkServer<TClient> : ObjectManager
         where TClient : NetworkClient, new()
     {
+        public Dictionary<int, TClient> ConnectedClients;
         private readonly MethodInfo[] _handlers;
         private Socket _listener;
         private bool _listening;
-        public Dictionary<int, TClient> ConnectedClients;
 
         protected NetworkServer(int capacity = 2048)
         {
@@ -38,124 +38,6 @@ namespace Darkages.Network
         public IPAddress Address { get; }
 
         public List<TClient> Clients => ConnectedClients.Values.ToList();
-
-        private void EndConnectClient(IAsyncResult result)
-        {
-            try
-            {
-                if (_listener == null || !_listening) return;
-
-                var socket = _listener.EndAccept(result);
-                var handler = (Socket) result.AsyncState;
-
-                var client = new TClient
-                {
-                    Session = new NetworkSocket(socket)
-                };
-
-                if (client.Session.ConnectedSocket.Connected)
-                {
-                    lock (Generator.Random)
-                    {
-                        client.Serial = Generator.GenerateNumber();
-                    }
-
-                    if (AddClient(client))
-                    {
-                        ClientConnected(client);
-
-                        client.Session.BeginReceiveHeader(EndReceiveHeader, out var error, client);
-
-                        if (error != SocketError.IOPending && error != SocketError.Success) ClientDisconnected(client);
-                    }
-                    else
-                    {
-                        ServerContext.Logger("Client could not be added.");
-                        ClientDisconnected(client);
-                    }
-                }
-
-                if (_listening)
-                    _listener.BeginAccept(EndConnectClient, null);
-            }
-            catch (Exception e)
-            {
-                ServerContext.Error(e);
-            }
-        }
-
-        private void EndReceiveHeader(IAsyncResult result)
-        {
-            try
-            {
-                if (!(result.AsyncState is TClient client))
-                    return;
-
-                var bytes = client.Session.EndReceiveHeader(result, out var error);
-
-                if (bytes == 0 ||
-                    error != SocketError.Success)
-                {
-                    ClientDisconnected(client);
-                    return;
-                }
-
-                if (client.Session.HeaderComplete)
-                    client.Session.BeginReceivePacket(EndReceivePacket, out error, client);
-                else
-                    client.Session.BeginReceiveHeader(EndReceiveHeader, out error, client);
-            }
-            catch (Exception e)
-            {
-                ServerContext.Error(e);
-            }
-        }
-
-        private void EndReceivePacket(IAsyncResult result)
-        {
-            try
-            {
-                if (result.AsyncState is TClient client)
-                {
-                    var bytes = client.Session.EndReceivePacket(result, out var error);
-
-                    if (bytes == 0 ||
-                        error != SocketError.Success)
-                    {
-                        ClientDisconnected(client);
-                        return;
-                    }
-
-                    if (client.Session.PacketComplete)
-                    {
-                        ClientDataReceived(client, client.Session.ToPacket());
-                        client.Session.BeginReceiveHeader(EndReceiveHeader, out error, client);
-                    }
-                    else
-                    {
-                        client.Session.BeginReceivePacket(EndReceivePacket, out error, client);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                ServerContext.Error(e);
-            }
-        }
-
-        public virtual bool AddClient(TClient client)
-        {
-            if (!ConnectedClients.ContainsKey(client.Serial))
-                ConnectedClients.Add(client.Serial, client);
-
-            return true;
-        }
-
-        public void RemoveClient(TClient client)
-        {
-            if (client != null && ConnectedClients != null && ConnectedClients.ContainsKey(client.Serial))
-                ConnectedClients.Remove(client.Serial);
-        }
 
         public virtual void Abort()
         {
@@ -175,16 +57,12 @@ namespace Darkages.Network
             }
         }
 
-        public virtual void Start(int port)
+        public virtual bool AddClient(TClient client)
         {
-            if (_listening)
-                return;
+            if (!ConnectedClients.ContainsKey(client.Serial))
+                ConnectedClients.Add(client.Serial, client);
 
-            _listening = true;
-            _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _listener.Bind(new IPEndPoint(IPAddress.Any, port));
-            _listener.Listen(ServerContextBase.Config?.ConnectionCapacity ?? 1000);
-            _listener.BeginAccept(EndConnectClient, _listener);
+            return true;
         }
 
         public virtual void ClientConnected(TClient client)
@@ -194,7 +72,6 @@ namespace Darkages.Network
 
             ServerContext.Logger($"Connection From {0} Established. {client.Session.ConnectedSocket.RemoteEndPoint}");
         }
-
 
         public virtual void ClientDataReceived(TClient client, NetworkPacket packet)
         {
@@ -226,16 +103,30 @@ namespace Darkages.Network
             if (client == null)
                 return;
 
-
             if (client.Session != null &&
                 client.Session.ConnectedSocket.Connected)
                 client.Session.ConnectedSocket.Disconnect(false);
 
-
             RemoveClient(client);
         }
 
-        #region Format Handlers
+        public void RemoveClient(TClient client)
+        {
+            if (client != null && ConnectedClients != null && ConnectedClients.ContainsKey(client.Serial))
+                ConnectedClients.Remove(client.Serial);
+        }
+
+        public virtual void Start(int port)
+        {
+            if (_listening)
+                return;
+
+            _listening = true;
+            _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _listener.Bind(new IPEndPoint(IPAddress.Any, port));
+            _listener.Listen(ServerContextBase.Config?.ConnectionCapacity ?? 1000);
+            _listener.BeginAccept(EndConnectClient, _listener);
+        }
 
         protected virtual void Format01Handler(TClient client, ClientFormat01 format)
         {
@@ -1257,6 +1148,111 @@ namespace Darkages.Network
         {
         }
 
+        private void EndConnectClient(IAsyncResult result)
+        {
+            try
+            {
+                if (_listener == null || !_listening) return;
+
+                var socket = _listener.EndAccept(result);
+                var handler = (Socket)result.AsyncState;
+
+                var client = new TClient
+                {
+                    Session = new NetworkSocket(socket)
+                };
+
+                if (client.Session.ConnectedSocket.Connected)
+                {
+                    lock (Generator.Random)
+                    {
+                        client.Serial = Generator.GenerateNumber();
+                    }
+
+                    if (AddClient(client))
+                    {
+                        ClientConnected(client);
+
+                        client.Session.BeginReceiveHeader(EndReceiveHeader, out var error, client);
+
+                        if (error != SocketError.IOPending && error != SocketError.Success) ClientDisconnected(client);
+                    }
+                    else
+                    {
+                        ServerContext.Logger("Client could not be added.");
+                        ClientDisconnected(client);
+                    }
+                }
+
+                if (_listening)
+                    _listener.BeginAccept(EndConnectClient, null);
+            }
+            catch (Exception e)
+            {
+                ServerContext.Error(e);
+            }
+        }
+
+        private void EndReceiveHeader(IAsyncResult result)
+        {
+            try
+            {
+                if (!(result.AsyncState is TClient client))
+                    return;
+
+                var bytes = client.Session.EndReceiveHeader(result, out var error);
+
+                if (bytes == 0 ||
+                    error != SocketError.Success)
+                {
+                    ClientDisconnected(client);
+                    return;
+                }
+
+                if (client.Session.HeaderComplete)
+                    client.Session.BeginReceivePacket(EndReceivePacket, out error, client);
+                else
+                    client.Session.BeginReceiveHeader(EndReceiveHeader, out error, client);
+            }
+            catch (Exception e)
+            {
+                ServerContext.Error(e);
+            }
+        }
+
+        private void EndReceivePacket(IAsyncResult result)
+        {
+            try
+            {
+                if (result.AsyncState is TClient client)
+                {
+                    var bytes = client.Session.EndReceivePacket(result, out var error);
+
+                    if (bytes == 0 ||
+                        error != SocketError.Success)
+                    {
+                        ClientDisconnected(client);
+                        return;
+                    }
+
+                    if (client.Session.PacketComplete)
+                    {
+                        ClientDataReceived(client, client.Session.ToPacket());
+                        client.Session.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                    }
+                    else
+                    {
+                        client.Session.BeginReceivePacket(EndReceivePacket, out error, client);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ServerContext.Error(e);
+            }
+        }
+
+        #region Format Handlers
         #endregion
     }
 }

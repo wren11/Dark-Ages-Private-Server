@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using Darkages.Types;
+using System;
 
 #endregion
 
@@ -15,10 +15,10 @@ namespace Darkages.Network.ClientFormats
             Command = 0x0F;
         }
 
+        public string Data { get; set; }
         public byte Index { get; set; }
         public Position Point { get; set; }
         public uint Serial { get; set; }
-        public string Data { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -44,6 +44,10 @@ namespace Darkages.Network.ClientFormats
             }
         }
 
+        public override void Serialize(NetworkPacketWriter writer)
+        {
+        }
+
         private string CHeckData(NetworkPacketReader reader)
         {
             Index = reader.ReadByte();
@@ -58,10 +62,6 @@ namespace Darkages.Network.ClientFormats
             } while (@char != char.Parse("\0"));
 
             return data;
-        }
-
-        public override void Serialize(NetworkPacketWriter writer)
-        {
         }
     }
 }

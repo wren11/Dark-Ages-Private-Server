@@ -1,9 +1,8 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Darkages.Types;
+using System;
+using System.Linq;
 
 #endregion
 
@@ -13,9 +12,6 @@ namespace Darkages.Network.Game.Components
     {
         private readonly GameServerTimer _timer;
 
-        public Dictionary<int, Spawn> Spawns = new Dictionary<int, Spawn>();
-        public object SyncObj = new object();
-
         public MonolithComponent(GameServer server)
             : base(server)
         {
@@ -23,6 +19,14 @@ namespace Darkages.Network.Game.Components
         }
 
         public bool Updating { get; set; } = true;
+
+        public void CreateFromTemplate(MonsterTemplate template, Area map)
+        {
+            var newObj = Monster.Create(template, map);
+
+            if (newObj != null)
+                AddObject(newObj);
+        }
 
         public override void Update(TimeSpan elapsedTime)
         {
@@ -33,56 +37,37 @@ namespace Darkages.Network.Game.Components
                 if (_timer.Elapsed)
                 {
                     _timer.Reset();
-
-                    var templates = ServerContextBase.GlobalMonsterTemplateCache;
-                    if (templates.Count == 0)
-                        return;
-
-                    foreach (var map in ServerContextBase.GlobalMapCache.Values)
-                    {
-                        if (map == null || map.Rows == 0 || map.Cols == 0)
-                            return;
-
-                        var temps = templates.Where(i => i.AreaID == map.ID);
-
-
-                        foreach (var template in temps)
-                        {
-                            var count = GetObjects<Monster>(map, i =>
-                                i.Template != null && i.Template.Name == template.Name
-                                                   && i.Template.AreaID == map.ID).Count();
-
-                            if (template.ReadyToSpawn())
-                            {
-                                var spawn = new Spawn
-                                {
-                                    Capacity = template.SpawnMax,
-                                    TotalSpawned = 0,
-                                    LastSpawned = DateTime.UtcNow
-                                };
-
-                                if (count < template.SpawnMax) CreateFromTemplate(template, map);
-                            }
-                        }
-                    }
+                    Lorule.Update(ManageSpawns);
                 }
             }
         }
 
-        public void CreateFromTemplate(MonsterTemplate template, Area map)
+        private void ManageSpawns()
         {
-            var newObj = Monster.Create(template, map);
+            var templates = ServerContextBase.GlobalMonsterTemplateCache;
+            if (templates.Count == 0)
+                return;
 
-            if (newObj != null) AddObject(newObj);
-        }
+            foreach (var map in ServerContextBase.GlobalMapCache.Values)
+            {
+                if (map == null || map.Rows == 0 || map.Cols == 0)
+                    return;
 
-        public class Spawn
-        {
-            public DateTime LastSpawned { get; set; }
+                var temps = templates.Where(i => i.AreaID == map.ID);
 
+                foreach (var template in temps)
+                {
+                    var count = GetObjects<Monster>(map, i =>
+                        i.Template != null && i.Template.Name == template.Name
+                                           && i.Template.AreaID == map.ID).Count();
 
-            public int Capacity { get; set; }
-            public int TotalSpawned { get; set; }
+                    if (!template.ReadyToSpawn())
+                        continue;
+
+                    if (count < template.SpawnMax)
+                        CreateFromTemplate(template, map);
+                }
+            }
         }
     }
 }

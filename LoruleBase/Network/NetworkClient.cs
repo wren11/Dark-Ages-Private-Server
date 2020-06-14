@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Net.Sockets;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
+using System.Net.Sockets;
 
 #endregion
 
@@ -19,51 +19,13 @@ namespace Darkages.Network
             Encryption = new SecurityProvider();
         }
 
-        public NetworkSocket Session { get; set; }
-
-        public NetworkPacketReader Reader { get; set; }
-
-        public NetworkPacketWriter Writer { get; set; }
-
         public SecurityProvider Encryption { get; set; }
-
-        public byte Ordinal { get; set; }
-
-        public int Serial { get; set; }
-
         public bool InMapTransition { get; set; }
-
-        public void Read(NetworkPacket packet, NetworkFormat format)
-        {
-            if (packet == null)
-                return;
-
-
-            if (format.Secured)
-            {
-                Encryption.Transform(packet);
-
-                switch (format.Command)
-                {
-                    case 0x39:
-                    case 0x3A:
-                        TransFormDialog(packet);
-                        Reader.Position = 6;
-                        break;
-                    default:
-                        Reader.Position = 0;
-                        break;
-                }
-            }
-            else
-            {
-                Reader.Position = -1;
-            }
-
-            Reader.Packet = packet;
-            format.Serialize(Reader);
-            Reader.Position = -1;
-        }
+        public byte Ordinal { get; set; }
+        public NetworkPacketReader Reader { get; set; }
+        public int Serial { get; set; }
+        public NetworkSocket Session { get; set; }
+        public NetworkPacketWriter Writer { get; set; }
 
         public void FlushAndSend(NetworkFormat format)
         {
@@ -92,71 +54,10 @@ namespace Darkages.Network
 
                 var array = packet.ToArray();
 
-
                 if (Session.ConnectedSocket.Connected)
                     Session.ConnectedSocket.Send(array, SocketFlags.None);
             }
         }
-
-        public void Send(NetworkFormat format)
-        {
-            if (Session.ConnectedSocket.Connected)
-                FlushAndSend(format);
-        }
-
-        public void Send(NetworkPacketWriter lpData)
-        {
-            var packet = lpData.ToPacket();
-            Encryption.Transform(packet);
-
-            var array = packet.ToArray();
-
-            if (Session.ConnectedSocket.Connected)
-                Session.ConnectedSocket.Send(array, SocketFlags.None);
-        }
-
-        public void Send(byte[] data)
-        {
-            lock (Writer)
-            {
-                Writer.Position = 0;
-                Writer.Write(data);
-
-                var packet = Writer.ToPacket();
-                if (packet == null)
-                    return;
-
-                Encryption.Transform(packet);
-
-                var array = packet.ToArray();
-
-                if (Session.ConnectedSocket.Connected)
-                    Session.ConnectedSocket.Send(array, SocketFlags.None);
-            }
-        }
-
-        private static byte P(NetworkPacket value)
-        {
-            return (byte) (value.Data[1] ^ (byte) (value.Data[0] - 0x2D));
-        }
-
-        private static void TransFormDialog(NetworkPacket value)
-        {
-            value.Data[2] ^= (byte) (P(value) + 0x73);
-            value.Data[3] ^= (byte) (P(value) + 0x73);
-            value.Data[4] ^= (byte) (P(value) + 0x28);
-            value.Data[5] ^= (byte) (P(value) + 0x29);
-
-            for (var i = 0; i < value.Data.Length - 6; i++)
-                value.Data[6 + i] ^= (byte) (((byte) (P(value) + 0x28) + i + 2) % 256);
-        }
-
-        public void SendMessageBox(byte code, string text)
-        {
-            Send(new ServerFormat02(code, text));
-        }
-
-        #region Server Formats
 
         public virtual void Format00Handler(ServerFormat00 format)
         {
@@ -1182,6 +1083,97 @@ namespace Darkages.Network
         {
         }
 
+        public void Read(NetworkPacket packet, NetworkFormat format)
+        {
+            if (packet == null)
+                return;
+
+            if (format.Secured)
+            {
+                Encryption.Transform(packet);
+
+                switch (format.Command)
+                {
+                    case 0x39:
+                    case 0x3A:
+                        TransFormDialog(packet);
+                        Reader.Position = 6;
+                        break;
+
+                    default:
+                        Reader.Position = 0;
+                        break;
+                }
+            }
+            else
+            {
+                Reader.Position = -1;
+            }
+
+            Reader.Packet = packet;
+            format.Serialize(Reader);
+            Reader.Position = -1;
+        }
+
+        public void Send(NetworkFormat format)
+        {
+            if (Session.ConnectedSocket.Connected)
+                FlushAndSend(format);
+        }
+
+        public void Send(NetworkPacketWriter lpData)
+        {
+            var packet = lpData.ToPacket();
+            Encryption.Transform(packet);
+
+            var array = packet.ToArray();
+
+            if (Session.ConnectedSocket.Connected)
+                Session.ConnectedSocket.Send(array, SocketFlags.None);
+        }
+
+        public void Send(byte[] data)
+        {
+            lock (Writer)
+            {
+                Writer.Position = 0;
+                Writer.Write(data);
+
+                var packet = Writer.ToPacket();
+                if (packet == null)
+                    return;
+
+                Encryption.Transform(packet);
+
+                var array = packet.ToArray();
+
+                if (Session.ConnectedSocket.Connected)
+                    Session.ConnectedSocket.Send(array, SocketFlags.None);
+            }
+        }
+
+        public void SendMessageBox(byte code, string text)
+        {
+            Send(new ServerFormat02(code, text));
+        }
+
+        private static byte P(NetworkPacket value)
+        {
+            return (byte)(value.Data[1] ^ (byte)(value.Data[0] - 0x2D));
+        }
+
+        private static void TransFormDialog(NetworkPacket value)
+        {
+            value.Data[2] ^= (byte)(P(value) + 0x73);
+            value.Data[3] ^= (byte)(P(value) + 0x73);
+            value.Data[4] ^= (byte)(P(value) + 0x28);
+            value.Data[5] ^= (byte)(P(value) + 0x29);
+
+            for (var i = 0; i < value.Data.Length - 6; i++)
+                value.Data[6 + i] ^= (byte)(((byte)(P(value) + 0x28) + i + 2) % 256);
+        }
+
+        #region Server Formats
         #endregion
     }
 }

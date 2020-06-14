@@ -1,10 +1,10 @@
 ﻿#region
 
+using Darkages.IO;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
-using Darkages.IO;
-using Newtonsoft.Json;
 
 #endregion
 
@@ -23,6 +23,42 @@ namespace Darkages.Storage
         }
 
         public int Count => Directory.GetFiles(StoragePath, "*.json", SearchOption.TopDirectoryOnly).Length;
+
+        public static void LoadMap(Area mapObj, string mapFile, bool save = false)
+        {
+            mapObj.Data = File.ReadAllBytes(mapFile);
+            mapObj.Hash = Crc16Provider.ComputeChecksum(mapObj.Data);
+            {
+                if (save) StorageManager.AreaBucket.Save(mapObj);
+            }
+
+            mapObj.OnLoaded();
+        }
+
+        public void CacheFromStorage()
+        {
+            var area_dir = StoragePath;
+            if (!Directory.Exists(area_dir))
+                return;
+            var area_names = Directory.GetFiles(area_dir, "*.json", SearchOption.TopDirectoryOnly);
+
+            foreach (var area in area_names)
+            {
+                var mapObj = StorageManager.AreaBucket.Load(Path.GetFileNameWithoutExtension(area));
+
+                if (mapObj == null)
+                    continue;
+
+                var mapFile = Directory.GetFiles($@"{ServerContextBase.StoragePath}\maps", $"lod{mapObj.ID}.map",
+                    SearchOption.TopDirectoryOnly).FirstOrDefault();
+
+                if (mapFile != null && File.Exists(mapFile))
+                {
+                    LoadMap(mapObj, mapFile, true);
+                    ServerContextBase.GlobalMapCache[mapObj.ID] = mapObj;
+                }
+            }
+        }
 
         public Area Load(string Name)
         {
@@ -57,46 +93,9 @@ namespace Darkages.Storage
             if (ServerContextBase.Paused)
                 return;
 
-
             var path = Path.Combine(StoragePath, $"{obj.ContentName.ToLower()}.json");
             var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
             File.WriteAllText(path, objString);
-        }
-
-        public void CacheFromStorage()
-        {
-            var area_dir = StoragePath;
-            if (!Directory.Exists(area_dir))
-                return;
-            var area_names = Directory.GetFiles(area_dir, "*.json", SearchOption.TopDirectoryOnly);
-
-            foreach (var area in area_names)
-            {
-                var mapObj = StorageManager.AreaBucket.Load(Path.GetFileNameWithoutExtension(area));
-
-                if (mapObj == null)
-                    continue;
-
-                var mapFile = Directory.GetFiles($@"{ServerContextBase.StoragePath}\maps", $"lod{mapObj.ID}.map",
-                    SearchOption.TopDirectoryOnly).FirstOrDefault();
-
-                if (mapFile != null && File.Exists(mapFile))
-                {
-                    LoadMap(mapObj, mapFile, true);
-                    ServerContextBase.GlobalMapCache[mapObj.ID] = mapObj;
-                }
-            }
-        }
-
-        public static void LoadMap(Area mapObj, string mapFile, bool save = false)
-        {
-            mapObj.Data = File.ReadAllBytes(mapFile);
-            mapObj.Hash = Crc16Provider.ComputeChecksum(mapObj.Data);
-            {
-                if (save) StorageManager.AreaBucket.Save(mapObj);
-            }
-
-            mapObj.OnLoaded();
         }
     }
 }

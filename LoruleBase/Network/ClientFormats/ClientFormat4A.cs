@@ -8,10 +8,10 @@
             Command = 0x4A;
         }
 
-        public uint Id { get; set; }
-        public byte Type { get; set; }
-        public byte ItemSlot { get; set; }
         public int Gold { get; set; }
+        public uint Id { get; set; }
+        public byte ItemSlot { get; set; }
+        public byte Type { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

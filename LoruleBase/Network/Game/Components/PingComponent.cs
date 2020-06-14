@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using Darkages.Network.ServerFormats;
+using System;
 
 #endregion
 

@@ -1,10 +1,10 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System.Collections.Generic;
 
 #endregion
 
@@ -27,12 +27,15 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             if (!client.Aisling.TutorialCompleted) options.Add(new OptionsDataItem(0x0003, "Skip Tutorial."));
             client.SendOptionsDialog(Mundane, "What do you need?", options.ToArray());
 
-
             if (client.DlgSession == null)
                 client.DlgSession = new DialogSession(client.Aisling, Mundane.Serial)
                 {
                     Callback = OnResponse
                 };
+        }
+
+        public override void OnGossip(GameServer server, GameClient client, string message)
+        {
         }
 
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
@@ -51,74 +54,71 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 switch (responseID)
                 {
                     case 0x0001:
-                    {
-                        if (client.Aisling.TutorialCompleted)
-                            client.Aisling.GoHome();
-                        else
-                            client.TransitionToMap(
-                                ServerContextBase.GlobalMapCache[ServerContextBase.Config.StartingMap],
-                                ServerContextBase.Config.StartingPosition);
-                    }
-                        break;
-                    case 0x0002:
-                    {
-                        if (client.Aisling.Stage == ClassStage.Master)
                         {
-                            client.SendOptionsDialog(Mundane, "You are a master already.");
-                            return;
+                            if (client.Aisling.TutorialCompleted)
+                                client.Aisling.GoHome();
+                            else
+                                client.TransitionToMap(
+                                    ServerContextBase.GlobalMapCache[ServerContextBase.Config.StartingMap],
+                                    ServerContextBase.Config.StartingPosition);
                         }
-
-
-                        client.Aisling.Path = Class.Warrior;
-                        client.Aisling.Stage = ClassStage.Master;
-                        client.Aisling.ExpLevel = 99;
-                        client.Aisling._Str = 215;
-                        client.Aisling._Wis = 100;
-                        client.Aisling._Int = 100;
-                        client.Aisling._Con = 180;
-                        client.Aisling._Dex = 150;
-                        client.Aisling._MaximumHp = 20000;
-                        client.Aisling._MaximumMp = 10000;
-
-                        Item.Create(client.Aisling, "War Mantle").GiveTo(client.Aisling);
-                        Item.Create(client.Aisling, "War Helmet").GiveTo(client.Aisling);
-
-
-                        client.SendStats(StatusFlags.All);
-                        client.CloseDialog();
-                    }
                         break;
+
+                    case 0x0002:
+                        {
+                            if (client.Aisling.Stage == ClassStage.Master)
+                            {
+                                client.SendOptionsDialog(Mundane, "You are a master already.");
+                                return;
+                            }
+
+                            client.Aisling.Path = Class.Warrior;
+                            client.Aisling.Stage = ClassStage.Master;
+                            client.Aisling.ExpLevel = 99;
+                            client.Aisling._Str = 215;
+                            client.Aisling._Wis = 100;
+                            client.Aisling._Int = 100;
+                            client.Aisling._Con = 180;
+                            client.Aisling._Dex = 150;
+                            client.Aisling._MaximumHp = 20000;
+                            client.Aisling._MaximumMp = 10000;
+
+                            Item.Create(client.Aisling, "War Mantle").GiveTo(client.Aisling);
+                            Item.Create(client.Aisling, "War Helmet").GiveTo(client.Aisling);
+
+                            client.SendStats(StatusFlags.All);
+                            client.CloseDialog();
+                        }
+                        break;
+
                     case 0x0003:
-                    {
-                        client.Aisling.TutorialCompleted = true;
-                        client.Aisling.ExpLevel = 11;
-                        client.Aisling._Str = ServerContextBase.Config.BaseStatAttribute;
-                        client.Aisling._Int = ServerContextBase.Config.BaseStatAttribute;
-                        client.Aisling._Wis = ServerContextBase.Config.BaseStatAttribute;
-                        client.Aisling._Con = ServerContextBase.Config.BaseStatAttribute;
-                        client.Aisling._Dex = ServerContextBase.Config.BaseStatAttribute;
-                        client.Aisling._MaximumHp = (ServerContextBase.Config.MinimumHp + 33) * 11;
-                        client.Aisling._MaximumMp = (ServerContextBase.Config.MinimumHp + 21) * 11;
+                        {
+                            client.Aisling.TutorialCompleted = true;
+                            client.Aisling.ExpLevel = 11;
+                            client.Aisling._Str = ServerContextBase.Config.BaseStatAttribute;
+                            client.Aisling._Int = ServerContextBase.Config.BaseStatAttribute;
+                            client.Aisling._Wis = ServerContextBase.Config.BaseStatAttribute;
+                            client.Aisling._Con = ServerContextBase.Config.BaseStatAttribute;
+                            client.Aisling._Dex = ServerContextBase.Config.BaseStatAttribute;
+                            client.Aisling._MaximumHp = (ServerContextBase.Config.MinimumHp + 33) * 11;
+                            client.Aisling._MaximumMp = (ServerContextBase.Config.MinimumHp + 21) * 11;
 
-                        client.Aisling.StatPoints = 11 * ServerContextBase.Config.StatsPerLevel;
-                        client.SendStats(StatusFlags.All);
+                            client.Aisling.StatPoints = 11 * ServerContextBase.Config.StatsPerLevel;
+                            client.SendStats(StatusFlags.All);
 
-                        client.SendMessage(0x02, "You have lost all memory...");
-                        client.TransitionToMap(1006, new Position(2, 4));
-                        client.Aisling.TutorialCompleted = true;
-                    }
+                            client.SendMessage(0x02, "You have lost all memory...");
+                            client.TransitionToMap(1006, new Position(2, 4));
+                            client.Aisling.TutorialCompleted = true;
+                        }
                         break;
+
                     case 0x0005:
-                    {
-                        client.Send(new ReactorInputSequence(Mundane, "What do you want to shout?", 40));
-                    }
+                        {
+                            client.Send(new ReactorInputSequence(Mundane, "What do you want to shout?", 40));
+                        }
                         break;
                 }
             }
-        }
-
-        public override void OnGossip(GameServer server, GameClient client, string message)
-        {
         }
 
         public override void TargetAcquired(Sprite Target)

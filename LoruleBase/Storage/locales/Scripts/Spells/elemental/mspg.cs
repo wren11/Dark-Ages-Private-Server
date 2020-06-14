@@ -36,7 +36,7 @@ namespace Darkages.Storage.locales.Scripts.Spells.elemental
 
                 var dmg = sprite.MaximumMp * 0.01 * (sprite.Int * 0.01) * 200;
 
-                targetObj.ApplyDamage(sprite, (int) dmg, sprite.OffenseElement, Spell.Template.Sound);
+                targetObj.ApplyDamage(sprite, (int)dmg, sprite.OffenseElement, Spell.Template.Sound);
 
                 targetObj.SendAnimation(Spell.Template.Animation, targetObj, sprite);
 
@@ -44,17 +44,6 @@ namespace Darkages.Storage.locales.Scripts.Spells.elemental
             }
 
             SendAction(sprite);
-        }
-
-        private void ShowDamage(Sprite target)
-        {
-            var hpbar = new ServerFormat13
-            {
-                Serial = target.Serial,
-                Health = (ushort) (100 * target.CurrentHp / target.MaximumHp),
-                Sound = Spell.Template.Sound
-            };
-            target.Show(Scope.NearbyAislings, hpbar);
         }
 
         private void SendAction(Sprite sprite)
@@ -66,6 +55,17 @@ namespace Darkages.Storage.locales.Scripts.Spells.elemental
                 Speed = 30
             };
             sprite.Show(Scope.NearbyAislings, action);
+        }
+
+        private void ShowDamage(Sprite target)
+        {
+            var hpbar = new ServerFormat13
+            {
+                Serial = target.Serial,
+                Health = (ushort)(100 * target.CurrentHp / target.MaximumHp),
+                Sound = Spell.Template.Sound
+            };
+            target.Show(Scope.NearbyAislings, hpbar);
         }
     }
 }

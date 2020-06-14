@@ -78,7 +78,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     return;
                 }
 
-
                 client.SendStats(StatusFlags.StructB);
             }
             else

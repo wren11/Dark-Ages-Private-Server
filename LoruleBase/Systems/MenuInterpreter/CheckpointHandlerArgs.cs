@@ -1,17 +1,15 @@
 ﻿namespace MenuInterpreter
 {
-    public class QuestHanderArgs
-    {
-        public string QuestName { get; set; }
-        public bool IsMet { get; set; }
-    }
-
     public class CheckpointHandlerArgs
     {
-        public string Value { get; set; }
-
         public int Amount { get; set; }
-
         public bool Result { get; set; }
+        public string Value { get; set; }
+    }
+
+    public class QuestHanderArgs
+    {
+        public bool IsMet { get; set; }
+        public string QuestName { get; set; }
     }
 }

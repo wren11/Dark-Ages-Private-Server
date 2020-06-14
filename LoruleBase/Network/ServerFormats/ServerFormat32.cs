@@ -14,7 +14,7 @@
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte) 0x00);
+            writer.Write((byte)0x00);
         }
     }
 }

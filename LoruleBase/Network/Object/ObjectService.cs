@@ -1,56 +1,136 @@
 ﻿#region
 
+using Darkages.Types;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Darkages.Types;
 
 #endregion
 
 namespace Darkages.Network.Object
 {
+    public sealed class ObjectService
+    {
+        private readonly Dictionary<int, IDictionary<Type, object>> _spriteCollections =
+            new Dictionary<int, IDictionary<Type, object>>();
+
+        public ObjectService()
+        {
+            foreach (var map in ServerContextBase.GlobalMapCache.Values)
+                _spriteCollections.Add(map.ID, new Dictionary<Type, object>
+                {
+                    {typeof(Monster), new SpriteCollection<Monster>(Enumerable.Empty<Monster>())},
+                    {typeof(Aisling), new SpriteCollection<Aisling>(Enumerable.Empty<Aisling>())},
+                    {typeof(Mundane), new SpriteCollection<Mundane>(Enumerable.Empty<Mundane>())},
+                    {typeof(Item), new SpriteCollection<Item>(Enumerable.Empty<Item>())},
+                    {typeof(Money), new SpriteCollection<Money>(Enumerable.Empty<Money>())}
+                });
+        }
+
+        public void AddGameObject<T>(T obj) where T : Sprite
+        {
+            if (obj.XPos >= byte.MaxValue)
+                return;
+
+            if (obj.YPos >= byte.MaxValue)
+                return;
+
+            if (!_spriteCollections.ContainsKey(obj.CurrentMapId))
+                return;
+
+            var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
+            objCollection.Add(obj);
+        }
+
+        public T Query<T>(Area map, Predicate<T> predicate) where T : Sprite
+        {
+            if (map == null)
+            {
+                var values = _spriteCollections.Select(i => (SpriteCollection<T>)i.Value[typeof(T)]);
+
+                foreach (var obj in values)
+                    if (obj.Any())
+                        return obj.Query(predicate);
+            }
+            else
+            {
+                if (!_spriteCollections.ContainsKey(map.ID))
+                {
+                    var cachemap = ServerContextBase.GlobalMapCache
+                        .Select(i => i.Value).FirstOrDefault(n => n.Name.Equals(map.Name) && n.ID != map.ID);
+
+                    if (cachemap != null) map = cachemap;
+                }
+
+                var obj = (SpriteCollection<T>)_spriteCollections[map.ID][typeof(T)];
+                var queryResult = obj.Query(predicate);
+                {
+                    return queryResult;
+                }
+            }
+
+            return null;
+        }
+
+        public IEnumerable<T> QueryAll<T>(Area map, Predicate<T> predicate) where T : Sprite
+        {
+            if (map == null)
+            {
+                var values = _spriteCollections.Select(i => (SpriteCollection<T>)i.Value[typeof(T)]);
+                var stack = new List<T>();
+
+                foreach (var obj in values)
+                    if (obj.Any())
+                        stack.AddRange(obj.QueryAll(predicate));
+
+                return stack;
+            }
+
+            {
+                if (!_spriteCollections.ContainsKey(map.ID))
+                {
+                    var cachemap = ServerContextBase.GlobalMapCache
+                        .Select(i => i.Value).FirstOrDefault(n => n.Name.Equals(map.Name) && n.ID != map.ID);
+
+                    if (cachemap != null) map = cachemap;
+                }
+
+                var obj = (SpriteCollection<T>)_spriteCollections[map.ID][typeof(T)];
+                var queryResult = obj.QueryAll(predicate);
+                {
+                    return queryResult;
+                }
+            }
+        }
+
+        public void RemoveAllGameObjects<T>(T[] objects) where T : Sprite
+        {
+            if (objects == null)
+                return;
+
+            for (uint i = 0; i < objects.Length; i++)
+                RemoveGameObject(objects[i]);
+        }
+
+        public void RemoveGameObject<T>(T obj) where T : Sprite
+        {
+            if (!_spriteCollections.ContainsKey(obj.CurrentMapId))
+                return;
+
+            var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
+            objCollection.Delete(obj);
+        }
+    }
+
     public class SpriteCollection<T> : IEnumerable<T>
-        where T : Sprite
+            where T : Sprite
     {
         public readonly List<T> Values;
 
         public SpriteCollection(IEnumerable<T> values)
         {
             Values = new List<T>(values);
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return Values.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public T Query(Predicate<T> predicate)
-        {
-            for (var i = Values.Count - 1; i >= 0; i--)
-            {
-                var subject = predicate(Values[i]);
-
-                if (subject) return Values[i];
-            }
-
-            return default;
-        }
-
-        public IEnumerable<T> QueryAll(Predicate<T> predicate)
-        {
-            for (var i = Values.Count - 1; i >= 0; i--)
-                if (i < Values.Count)
-                {
-                    var subject = predicate(Values[i % Math.Max(i, Values.Count)]);
-
-                    if (subject) yield return Values[i];
-                }
         }
 
         public bool Add(T obj)
@@ -84,120 +164,38 @@ namespace Darkages.Network.Object
                 if (subject == predicate) Values.RemoveAt(i);
             }
         }
-    }
 
-    public sealed class ObjectService
-    {
-        private readonly Dictionary<int, IDictionary<Type, object>> _spriteCollections =
-            new Dictionary<int, IDictionary<Type, object>>();
-
-        public ObjectService()
+        public IEnumerator<T> GetEnumerator()
         {
-            foreach (var map in ServerContextBase.GlobalMapCache.Values)
-                _spriteCollections.Add(map.ID, new Dictionary<Type, object>
-                {
-                    {typeof(Monster), new SpriteCollection<Monster>(Enumerable.Empty<Monster>())},
-                    {typeof(Aisling), new SpriteCollection<Aisling>(Enumerable.Empty<Aisling>())},
-                    {typeof(Mundane), new SpriteCollection<Mundane>(Enumerable.Empty<Mundane>())},
-                    {typeof(Item), new SpriteCollection<Item>(Enumerable.Empty<Item>())},
-                    {typeof(Money), new SpriteCollection<Money>(Enumerable.Empty<Money>())}
-                });
+            return Values.GetEnumerator();
         }
 
-
-        public T Query<T>(Area map, Predicate<T> predicate) where T : Sprite
+        public T Query(Predicate<T> predicate)
         {
-            if (map == null)
+            for (var i = Values.Count - 1; i >= 0; i--)
             {
-                var values = _spriteCollections.Select(i => (SpriteCollection<T>) i.Value[typeof(T)]);
+                var subject = predicate(Values[i]);
 
-                foreach (var obj in values)
-                    if (obj.Any())
-                        return obj.Query(predicate);
-            }
-            else
-            {
-                if (!_spriteCollections.ContainsKey(map.ID))
-                {
-                    var cachemap = ServerContextBase.GlobalMapCache
-                        .Select(i => i.Value).FirstOrDefault(n => n.Name.Equals(map.Name) && n.ID != map.ID);
-
-                    if (cachemap != null) map = cachemap;
-                }
-
-                var obj = (SpriteCollection<T>) _spriteCollections[map.ID][typeof(T)];
-                var queryResult = obj.Query(predicate);
-                {
-                    return queryResult;
-                }
+                if (subject) return Values[i];
             }
 
-            return null;
+            return default;
         }
 
-        public IEnumerable<T> QueryAll<T>(Area map, Predicate<T> predicate) where T : Sprite
+        public IEnumerable<T> QueryAll(Predicate<T> predicate)
         {
-            if (map == null)
-            {
-                var values = _spriteCollections.Select(i => (SpriteCollection<T>) i.Value[typeof(T)]);
-                var stack = new List<T>();
-
-                foreach (var obj in values)
-                    if (obj.Any())
-                        stack.AddRange(obj.QueryAll(predicate));
-
-                return stack;
-            }
-
-            {
-                if (!_spriteCollections.ContainsKey(map.ID))
+            for (var i = Values.Count - 1; i >= 0; i--)
+                if (i < Values.Count)
                 {
-                    var cachemap = ServerContextBase.GlobalMapCache
-                        .Select(i => i.Value).FirstOrDefault(n => n.Name.Equals(map.Name) && n.ID != map.ID);
+                    var subject = predicate(Values[i % Math.Max(i, Values.Count)]);
 
-                    if (cachemap != null) map = cachemap;
+                    if (subject) yield return Values[i];
                 }
-
-
-                var obj = (SpriteCollection<T>) _spriteCollections[map.ID][typeof(T)];
-                var queryResult = obj.QueryAll(predicate);
-                {
-                    return queryResult;
-                }
-            }
         }
 
-        public void RemoveAllGameObjects<T>(T[] objects) where T : Sprite
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            if (objects == null)
-                return;
-
-            for (uint i = 0; i < objects.Length; i++)
-                RemoveGameObject(objects[i]);
-        }
-
-        public void AddGameObject<T>(T obj) where T : Sprite
-        {
-            if (obj.XPos >= byte.MaxValue)
-                return;
-
-            if (obj.YPos >= byte.MaxValue)
-                return;
-
-            if (!_spriteCollections.ContainsKey(obj.CurrentMapId))
-                return;
-
-            var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
-            objCollection.Add(obj);
-        }
-
-        public void RemoveGameObject<T>(T obj) where T : Sprite
-        {
-            if (!_spriteCollections.ContainsKey(obj.CurrentMapId))
-                return;
-
-            var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
-            objCollection.Delete(obj);
+            return GetEnumerator();
         }
     }
 }

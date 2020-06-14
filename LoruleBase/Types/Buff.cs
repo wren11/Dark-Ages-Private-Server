@@ -1,10 +1,10 @@
 ﻿#region
 
-using System;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Newtonsoft.Json;
+using System;
 
 #endregion
 
@@ -18,32 +18,12 @@ namespace Darkages.Types
             Timer = new GameServerTimer(TimeSpan.FromSeconds(1.0));
         }
 
-        [JsonProperty] public virtual string Name { get; set; }
-
-
-        [JsonProperty] public virtual int Length { get; set; }
-
-
-        [JsonProperty] public virtual byte Icon { get; set; }
-
-
-        [JsonProperty] public virtual int value { get; set; }
-
-
         [JsonProperty] public virtual bool Cancelled { get; set; }
-
-
+        [JsonProperty] public virtual byte Icon { get; set; }
+        [JsonProperty] public virtual int Length { get; set; }
+        [JsonProperty] public virtual string Name { get; set; }
         [JsonProperty] public GameServerTimer Timer { get; set; }
-
-        public bool Has(string name)
-        {
-            return Name.Equals(name);
-        }
-
-        public virtual void OnApplied(Sprite Affected, Buff buff)
-        {
-            if (Affected.Buffs.TryAdd(buff.Name, buff)) Display(Affected);
-        }
+        [JsonProperty] public virtual int value { get; set; }
 
         public void Display(Sprite Affected)
         {
@@ -63,7 +43,17 @@ namespace Darkages.Types
                 colorInt = 6;
 
             (Affected as Aisling)?.Client
-                .Send(new ServerFormat3A(Icon, (byte) colorInt));
+                .Send(new ServerFormat3A(Icon, (byte)colorInt));
+        }
+
+        public bool Has(string name)
+        {
+            return Name.Equals(name);
+        }
+
+        public virtual void OnApplied(Sprite Affected, Buff buff)
+        {
+            if (Affected.Buffs.TryAdd(buff.Name, buff)) Display(Affected);
         }
 
         public virtual void OnDurationUpdate(Sprite Affected, Buff buff)

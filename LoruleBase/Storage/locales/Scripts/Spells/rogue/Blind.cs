@@ -1,11 +1,11 @@
 ﻿#region
 
-using System;
-using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
+using System;
+using System.Linq;
 
 #endregion
 
@@ -42,7 +42,7 @@ namespace Darkages.Storage.locales.Scripts.Spells.rogue
                 var action = new ServerFormat1A
                 {
                     Serial = sprite.Serial,
-                    Number = (byte) (aisling.Path
+                    Number = (byte)(aisling.Path
                                      == Class.Priest ? 0x80 :
                         aisling.Path
                         == Class.Wizard ? 0x88 : 0x06),
@@ -70,7 +70,6 @@ namespace Darkages.Storage.locales.Scripts.Spells.rogue
                     return;
                 }
             }
-
 
             if (Spell.RollDice(rnd))
                 OnSuccess(sprite, target);

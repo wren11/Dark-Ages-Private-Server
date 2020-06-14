@@ -1,12 +1,12 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -19,15 +19,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             : base(server, mundane)
         {
         }
-
-        public override void OnGossip(GameServer server, GameClient client, string message)
-        {
-        }
-
-        public override void TargetAcquired(Sprite Target)
-        {
-        }
-
 
         public override void OnClick(GameServer server, GameClient client)
         {
@@ -46,6 +37,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
                 client.SendOptionsDialog(Mundane, "You have already chosen your path.");
             }
+        }
+
+        public override void OnGossip(GameServer server, GameClient client, string message)
+        {
         }
 
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
@@ -74,7 +69,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             else
             {
                 client.Aisling.ClassID = responseID;
-                client.Aisling.Path = (Class) responseID;
+                client.Aisling.Path = (Class)responseID;
 
                 client.SendOptionsDialog(Mundane, $"You are now a {Convert.ToString(client.Aisling.Path)}");
 
@@ -177,7 +172,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     Spell.GiveTo(client.Aisling, "Needle Trap", 1);
                     Spell.GiveTo(client.Aisling, "Stiletto Trap", 1);
 
-
                     var item = Item.Create(client.Aisling, ServerContextBase.GlobalItemTemplateCache["Snow Secret"]);
                     {
                         item.GiveTo(client.Aisling);
@@ -189,8 +183,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 client.Aisling.LegendBook.AddLegend(new Legend.LegendItem
                 {
                     Category = "Class",
-                    Color = (byte) LegendColor.Blue,
-                    Icon = (byte) LegendIcon.Victory,
+                    Color = (byte)LegendColor.Blue,
+                    Icon = (byte)LegendIcon.Victory,
                     Value = $"Devoted to the path of {Convert.ToString(client.Aisling.Path)} "
                 });
 
@@ -199,6 +193,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 Task.Delay(350).ContinueWith(ct => { client.Aisling.Animate(5); });
             }
+        }
+
+        public override void TargetAcquired(Sprite Target)
+        {
         }
     }
 }

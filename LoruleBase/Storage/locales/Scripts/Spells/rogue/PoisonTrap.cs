@@ -16,28 +16,19 @@ namespace Darkages.Assets.locales.Scripts.Traps
         {
         }
 
-        public override void OnFailed(Sprite sprite, Sprite target)
-        {
-        }
-
-        public override void OnSuccess(Sprite sprite, Sprite target)
-        {
-        }
-
-        public override void OnUse(Sprite sprite, Sprite target)
-        {
-            Trap.Set(sprite, 300, 0, OnTriggeredBy);
-
-            if (sprite is Aisling)
-                (sprite as Aisling).Client.SendMessage(0x02, $"You Cast {Spell.Template.Name}");
-        }
-
-
         public override void OnActivated(Sprite sprite)
         {
         }
 
+        public override void OnFailed(Sprite sprite, Sprite target)
+        {
+        }
+
         public override void OnSelectionToggle(Sprite sprite)
+        {
+        }
+
+        public override void OnSuccess(Sprite sprite, Sprite target)
         {
         }
 
@@ -51,11 +42,19 @@ namespace Darkages.Assets.locales.Scripts.Traps
                 {
                     if (target is Monster || target is Mundane || target is Aisling)
                         target.Show(Scope.NearbyAislings,
-                            new ServerFormat29((uint) target.Serial, (uint) target.Serial,
+                            new ServerFormat29((uint)target.Serial, (uint)target.Serial,
                                 Spell.Template.TargetAnimation, 0, 100));
                 }
                 ;
             }
+        }
+
+        public override void OnUse(Sprite sprite, Sprite target)
+        {
+            Trap.Set(sprite, 300, 0, OnTriggeredBy);
+
+            if (sprite is Aisling)
+                (sprite as Aisling).Client.SendMessage(0x02, $"You Cast {Spell.Template.Name}");
         }
     }
 }

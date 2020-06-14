@@ -31,10 +31,10 @@ namespace MenuInterpreter
             }
         }
 
-        public int Id { get; }
-        public MenuItemType Type { get; }
-        public string Text { get; set; }
         public Answer[] Answers { get; }
+        public int Id { get; }
+        public string Text { get; set; }
+        public MenuItemType Type { get; }
 
         public int GetNextItemId(int answerId)
         {

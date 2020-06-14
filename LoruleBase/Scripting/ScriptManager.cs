@@ -8,19 +8,6 @@ using System.Reflection;
 
 namespace Darkages.Scripting
 {
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class ScriptAttribute : Attribute
-    {
-        public ScriptAttribute(string name, string author = "", string description = "")
-        {
-            Name = name;
-            Author = author;
-        }
-
-        public string Name { get; }
-        public string Author { get; }
-    }
-
     public static class ScriptManager
     {
         private static readonly Dictionary<string, Type> scripts = new Dictionary<string, Type>();
@@ -48,33 +35,15 @@ namespace Darkages.Scripting
             }
         }
 
-        public static TScript LoadEach<TScript>(string name, params object[] args)
-            where TScript : class
-        {
-            if (string.IsNullOrEmpty(name))
-                return null;
-
-            Type script;
-
-            if (scripts.TryGetValue(name, out script))
-            {
-                var instance = Activator.CreateInstance(script, args);
-                return instance as TScript;
-            }
-
-            return null;
-        }
-
         public static Dictionary<string, TScript> Load<TScript>(string values, params object[] args)
             where TScript : class
         {
             if (values == null)
                 return null;
 
-            var names = values.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+            var names = values.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
             var data = new Dictionary<string, TScript>();
-
 
             foreach (var name in names)
             {
@@ -96,5 +65,35 @@ namespace Darkages.Scripting
 
             return data;
         }
+
+        public static TScript LoadEach<TScript>(string name, params object[] args)
+                    where TScript : class
+        {
+            if (string.IsNullOrEmpty(name))
+                return null;
+
+            Type script;
+
+            if (scripts.TryGetValue(name, out script))
+            {
+                var instance = Activator.CreateInstance(script, args);
+                return instance as TScript;
+            }
+
+            return null;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+    public class ScriptAttribute : Attribute
+    {
+        public ScriptAttribute(string name, string author = "", string description = "")
+        {
+            Name = name;
+            Author = author;
+        }
+
+        public string Author { get; }
+        public string Name { get; }
     }
 }

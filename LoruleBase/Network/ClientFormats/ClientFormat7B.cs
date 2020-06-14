@@ -8,13 +8,8 @@
             Command = 0x7B;
         }
 
-        public byte Type { get; set; }
-
-        #region Type 0 Variables
-
         public string Name { get; set; }
-
-        #endregion
+        public byte Type { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -25,21 +20,17 @@
             if (Type == 0x00)
                 Name = reader.ReadStringA();
 
-            #endregion
+            #endregion Type 0
 
             #region Type 1
 
             if (Type == 0x01 && reader.Packet.Data.Length > 2) Name = reader.ReadStringB();
 
-            #endregion
+            #endregion Type 1
         }
 
         public override void Serialize(NetworkPacketWriter writer)
         {
         }
-
-        #region Type 1 Variables
-
-        #endregion
     }
 }

@@ -14,7 +14,6 @@
             Command = 0x60;
         }
 
-
         public override void Serialize(NetworkPacketReader reader)
         {
         }

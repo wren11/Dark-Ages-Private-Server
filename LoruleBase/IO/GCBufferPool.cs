@@ -8,19 +8,19 @@ namespace Darkages.IO
 {
     public class GCBufferPool : IBufferPool
     {
-        public byte[] Take(int size)
+        public void Dispose()
         {
-            return new byte[size];
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public void Return(byte[] buffer)
         {
         }
 
-        public void Dispose()
+        public byte[] Take(int size)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            return new byte[size];
         }
 
         protected virtual void Dispose(bool disposing)

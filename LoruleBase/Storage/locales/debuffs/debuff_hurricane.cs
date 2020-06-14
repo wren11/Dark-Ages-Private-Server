@@ -9,11 +9,10 @@ namespace Darkages.Storage.locales.debuffs
 {
     public class debuff_hurricane : Debuff
     {
-        public override string Name => "hurricane";
+        public StatusOperator AcModifer => new StatusOperator(Operator.Add, 30);
         public override byte Icon => 116;
         public override int Length => 1;
-
-        public StatusOperator AcModifer => new StatusOperator(Operator.Add, 30);
+        public override string Name => "hurricane";
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {

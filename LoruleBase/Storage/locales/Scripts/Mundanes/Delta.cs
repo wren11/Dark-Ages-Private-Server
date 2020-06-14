@@ -1,12 +1,12 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -17,12 +17,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
     {
         public Dialog SequenceMenu = new Dialog();
 
-
         public Delta(GameServer server, Mundane mundane) : base(server, mundane)
         {
             Mundane.Template.QuestKey = "delta_quest";
 
-            SequenceMenu.DisplayImage = (ushort) Mundane.Template.Image;
+            SequenceMenu.DisplayImage = (ushort)Mundane.Template.Image;
             SequenceMenu.Sequences.Add(new DialogSequence
             {
                 Title = Mundane.Template.Name,
@@ -84,7 +83,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     StateObject = SequenceMenu
                 };
 
-
             if (!client.Aisling.Position.IsNearby(client.DlgSession.SessionPosition))
                 return;
 
@@ -94,18 +92,103 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             QuestComposite(client);
         }
 
+        public override void OnGossip(GameServer server, GameClient client, string message)
+        {
+        }
+
+        public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
+        {
+            var quest = client.Aisling.Quests.FirstOrDefault(i =>
+                i.Name == Mundane.Template.QuestKey);
+
+            if (client.DlgSession != null && client.DlgSession.Serial == SequenceMenu.Serial)
+                switch (responseID)
+                {
+                    case 0:
+                        SequenceMenu.SequenceIndex = 0;
+                        client.DlgSession = null;
+
+                        break;
+
+                    case 1:
+                        if (SequenceMenu.CanMoveNext)
+                        {
+                            SequenceMenu.MoveNext(client);
+                            SequenceMenu.Invoke(client);
+                        }
+
+                        break;
+
+                    case 0x0010:
+                        client.SendOptionsDialog(Mundane, "I need you to kill some zombies for me. {=u(5)");
+
+                        if (quest != null)
+                        {
+                            quest.Started = true;
+                            quest.TimeStarted = DateTime.UtcNow;
+                        }
+
+                        break;
+
+                    case 0x0011:
+                        client.SendOptionsDialog(Mundane, "I will suck, I mean scratch your back, if you scratch mine.",
+                            new OptionsDataItem(0x0010, "Sounds good. it better be good but."),
+                            new OptionsDataItem(0x0012, "fuck off mate.")
+                        );
+                        break;
+
+                    case 0x0012:
+                        quest = null;
+                        client.SendOptionsDialog(Mundane, "Well then, I will leave you alone.");
+                        break;
+
+                    case ushort.MaxValue:
+                        if (SequenceMenu.CanMoveBack)
+                        {
+                            var idx = (ushort)(SequenceMenu.SequenceIndex - 1);
+
+                            SequenceMenu.SequenceIndex = idx;
+                            client.DlgSession.Sequence = idx;
+
+                            client.Send(new ServerFormat30(client, SequenceMenu));
+                        }
+
+                        break;
+
+                    case 0x0017:
+                        if (quest != null && !quest.Rewarded && !quest.Completed)
+                        {
+                            quest.OnCompleted(client.Aisling);
+
+                            client.TransitionToMap(client.Aisling.Map, new Position(56, 42));
+
+                            if (SequenceMenu.CanMoveNext)
+                            {
+                                SequenceMenu.MoveNext(client);
+                                SequenceMenu.Invoke(client);
+                            }
+                        }
+
+                        break;
+                }
+        }
+
+        public override void TargetAcquired(Sprite Target)
+        {
+        }
+
         private void QuestComposite(GameClient client)
         {
             var quest = client.Aisling.Quests.FirstOrDefault(i => i.Name == Mundane.Template.QuestKey);
 
             if (quest == null)
             {
-                quest = new Quest {Name = Mundane.Template.QuestKey};
+                quest = new Quest { Name = Mundane.Template.QuestKey };
                 quest.LegendRewards.Add(new Legend.LegendItem
                 {
                     Category = "Quest",
-                    Color = (byte) LegendColor.Blue,
-                    Icon = (byte) LegendIcon.Victory,
+                    Color = (byte)LegendColor.Blue,
+                    Icon = (byte)LegendIcon.Victory,
                     Value = "Scratched Delta's Back."
                 });
                 quest.ExpRewards.Add(1000);
@@ -120,15 +203,13 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 quest.SpellRewards.Add("beag ioc fein");
 
-
                 client.Aisling.Quests.Add(quest);
             }
 
             quest.QuestStages = new List<QuestStep<Template>>();
 
-
-            var q1 = new QuestStep<Template> {Type = QuestType.Accept};
-            var q2 = new QuestStep<Template> {Type = QuestType.HasItem};
+            var q1 = new QuestStep<Template> { Type = QuestType.Accept };
+            var q2 = new QuestStep<Template> { Type = QuestType.HasItem };
 
             q2.Prerequisites.Add(new QuestRequirement
             {
@@ -139,7 +220,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             quest.QuestStages.Add(q1);
             quest.QuestStages.Add(q2);
-
 
             if (!quest.Started)
             {
@@ -159,87 +239,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
                 SequenceMenu.Invoke(client);
             }
-        }
-
-
-        public override void OnGossip(GameServer server, GameClient client, string message)
-        {
-        }
-
-        public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
-        {
-            var quest = client.Aisling.Quests.FirstOrDefault(i =>
-                i.Name == Mundane.Template.QuestKey);
-
-            if (client.DlgSession != null && client.DlgSession.Serial == SequenceMenu.Serial)
-                switch (responseID)
-                {
-                    case 0:
-                        SequenceMenu.SequenceIndex = 0;
-                        client.DlgSession = null;
-
-                        break;
-                    case 1:
-                        if (SequenceMenu.CanMoveNext)
-                        {
-                            SequenceMenu.MoveNext(client);
-                            SequenceMenu.Invoke(client);
-                        }
-
-                        break;
-                    case 0x0010:
-                        client.SendOptionsDialog(Mundane, "I need you to kill some zombies for me. {=u(5)");
-
-                        if (quest != null)
-                        {
-                            quest.Started = true;
-                            quest.TimeStarted = DateTime.UtcNow;
-                        }
-
-                        break;
-                    case 0x0011:
-                        client.SendOptionsDialog(Mundane, "I will suck, I mean scratch your back, if you scratch mine.",
-                            new OptionsDataItem(0x0010, "Sounds good. it better be good but."),
-                            new OptionsDataItem(0x0012, "fuck off mate.")
-                        );
-                        break;
-                    case 0x0012:
-                        quest = null;
-                        client.SendOptionsDialog(Mundane, "Well then, I will leave you alone.");
-                        break;
-                    case ushort.MaxValue:
-                        if (SequenceMenu.CanMoveBack)
-                        {
-                            var idx = (ushort) (SequenceMenu.SequenceIndex - 1);
-
-                            SequenceMenu.SequenceIndex = idx;
-                            client.DlgSession.Sequence = idx;
-
-                            client.Send(new ServerFormat30(client, SequenceMenu));
-                        }
-
-                        break;
-                    case 0x0017:
-                        if (quest != null && !quest.Rewarded && !quest.Completed)
-                        {
-                            quest.OnCompleted(client.Aisling);
-
-                            client.TransitionToMap(client.Aisling.Map, new Position(56, 42));
-
-
-                            if (SequenceMenu.CanMoveNext)
-                            {
-                                SequenceMenu.MoveNext(client);
-                                SequenceMenu.Invoke(client);
-                            }
-                        }
-
-                        break;
-                }
-        }
-
-        public override void TargetAcquired(Sprite Target)
-        {
         }
     }
 }

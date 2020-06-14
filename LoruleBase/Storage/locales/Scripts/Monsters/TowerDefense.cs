@@ -1,10 +1,10 @@
 ﻿#region
 
-using System;
-using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
+using System.Linq;
 
 #endregion
 
@@ -19,10 +19,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             Monster.Template.SpawnSize = 100;
             Monster.Template.SpawnMax = 100;
             Monster.Template.SpawnRate = 1;
-        }
-
-        public override void OnSkulled(GameClient client)
-        {
         }
 
         public override void OnApproach(GameClient client)
@@ -75,6 +71,10 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             Monster.Target = null;
         }
 
+        public override void OnSkulled(GameClient client)
+        {
+        }
+
         public override void Update(TimeSpan elapsedTime)
         {
             if (!Monster.IsAlive)
@@ -94,7 +94,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         {
             if (!Monster.CanMove)
                 return;
-
 
             if (Monster.Template.Waypoints.Count > 0)
                 Monster.Patrol(ignoreWalls);

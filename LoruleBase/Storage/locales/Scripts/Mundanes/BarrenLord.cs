@@ -1,10 +1,10 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System.Collections.Generic;
 
 #endregion
 
@@ -18,15 +18,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
         }
 
-        public override void OnGossip(GameServer server, GameClient client, string message)
-        {
-        }
-
-        public override void TargetAcquired(Sprite Target)
-        {
-        }
-
-
         public override void OnClick(GameServer server, GameClient client)
         {
             var options = new List<OptionsDataItem>();
@@ -34,6 +25,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             options.Add(new OptionsDataItem(0x0002, "No."));
 
             client.SendOptionsDialog(Mundane, "You seek redemption?", options.ToArray());
+        }
+
+        public override void OnGossip(GameServer server, GameClient client, string message)
+        {
         }
 
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
@@ -55,6 +50,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 client.SendStats(StatusFlags.All);
                 client.Aisling.GoHome();
             }
+        }
+
+        public override void TargetAcquired(Sprite Target)
+        {
         }
     }
 }

@@ -12,7 +12,6 @@ namespace Darkages.Scripting.Scripts.Skills
     {
         public Skill _skill;
 
-
         public Sprite Target;
 
         public Assail(Skill skill) : base(skill)
@@ -27,7 +26,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 {
                     var client = (sprite as Aisling).Client;
                     client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29(Skill.Template.MissAnimation, (ushort) Target.XPos, (ushort) Target.YPos));
+                        new ServerFormat29(Skill.Template.MissAnimation, (ushort)Target.XPos, (ushort)Target.YPos));
                 }
         }
 
@@ -40,12 +39,11 @@ namespace Darkages.Scripting.Scripts.Skills
                 var action = new ServerFormat1A
                 {
                     Serial = client.Aisling.Serial,
-                    Number = (byte) (client.Aisling.Path == Class.Warrior
+                    Number = (byte)(client.Aisling.Path == Class.Warrior
                         ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01
                         : 0x01),
                     Speed = 20
                 };
-
 
                 var enemy = client.Aisling.GetInfront();
                 var success = false;
@@ -75,9 +73,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (!i.Attackable)
                             continue;
 
-
                         Target = i;
-
 
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
                         success = true;
@@ -85,14 +81,14 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (i is Aisling)
                         {
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial, byte.MinValue,
+                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial, byte.MinValue,
                                     Skill.Template.TargetAnimation, 100));
                             (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
                         }
 
                         if (i is Monster || i is Mundane || i is Aisling)
                             client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial,
+                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
                                     Skill.Template.TargetAnimation, 0, 100));
                     }
                 }
@@ -103,7 +99,6 @@ namespace Darkages.Scripting.Scripts.Skills
                 client.Aisling.Show(Scope.NearbyAislings, action);
             }
         }
-
 
         public override void OnUse(Sprite sprite)
         {
@@ -126,7 +121,6 @@ namespace Darkages.Scripting.Scripts.Skills
                     return;
 
                 var enemy = sprite.GetInfront();
-
 
                 var action = new ServerFormat1A
                 {
@@ -160,7 +154,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (Skill.Template.TargetAnimation > 0)
                             if (i is Monster || i is Mundane || i is Aisling)
                                 sprite.Show(Scope.NearbyAislings,
-                                    new ServerFormat29((uint) sprite.Serial, (uint) i.Serial,
+                                    new ServerFormat29((uint)sprite.Serial, (uint)i.Serial,
                                         Skill.Template.TargetAnimation, 0, 100));
 
                         sprite.Show(Scope.NearbyAislings, action);

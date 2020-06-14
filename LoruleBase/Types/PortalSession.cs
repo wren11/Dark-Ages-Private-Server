@@ -1,10 +1,10 @@
 ﻿#region
 
-using System;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using Newtonsoft.Json;
+using System;
 
 #endregion
 
@@ -17,9 +17,9 @@ namespace Darkages
             IsMapOpen = false;
         }
 
-        public bool IsMapOpen { get; set; }
-        public int FieldNumber { get; set; } = 1;
         public DateTime DateOpened { get; set; }
+        public int FieldNumber { get; set; } = 1;
+        public bool IsMapOpen { get; set; }
 
         [JsonIgnore]
         public WorldMapTemplate Template

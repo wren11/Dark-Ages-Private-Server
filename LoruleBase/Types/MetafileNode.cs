@@ -15,7 +15,7 @@ namespace Darkages.Types
             Atoms.AddRange(atoms);
         }
 
-        public string Name { get; }
         public StringCollection Atoms { get; }
+        public string Name { get; }
     }
 }

@@ -1,10 +1,10 @@
 ﻿#region
 
-using System;
-using System.Threading.Tasks;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -39,18 +39,16 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
                 var action = new ServerFormat1A
                 {
                     Serial = sprite.Serial,
-                    Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                    Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 :
                         client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                     Speed = 30
                 };
-
 
                 sprite.Client.SendStats(StatusFlags.StructB);
 
                 Task.Run(() =>
                 {
                     var obj = Clone<Monster>(target as Monster);
-
 
                     var posA = new Position(obj.XPos - 1, obj.YPos);
                     var posB = new Position(obj.XPos + 1, obj.YPos);
@@ -94,7 +92,6 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
                 client.SendStats(StatusFlags.All);
             }
         }
-
 
         public override void OnUse(Sprite sprite, Sprite target)
         {

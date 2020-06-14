@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using Darkages.Types;
+using System;
 
 #endregion
 
@@ -15,17 +15,6 @@ namespace Darkages.Network.Game.Components
         }
 
         public GameServerTimer Timer { get; set; }
-
-        public override void Update(TimeSpan elapsedTime)
-        {
-            Timer.Update(elapsedTime);
-
-            if (Timer.Elapsed)
-            {
-                SpawnMundanes();
-                Timer.Reset();
-            }
-        }
 
         public void SpawnMundanes()
         {
@@ -50,6 +39,17 @@ namespace Darkages.Network.Game.Components
                     continue;
 
                 Mundane.Create(mundane.Value);
+            }
+        }
+
+        public override void Update(TimeSpan elapsedTime)
+        {
+            Timer.Update(elapsedTime);
+
+            if (Timer.Elapsed)
+            {
+                Lorule.Update(SpawnMundanes);
+                Timer.Reset();
             }
         }
     }

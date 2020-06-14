@@ -9,16 +9,31 @@ namespace Darkages
 {
     public interface IServerContext
     {
-        void Start(IServerConstants config, Action<string> log, Action<Exception> error);
-        void Shutdown();
         void InitFromConfig(string storagePath);
+
+        void Shutdown();
+
+        void Start(IServerConstants config, Action<string> log, Action<Exception> error);
     }
 
     public class ServerContext : ServerContextBase, IServerContext
     {
         public static object SyncLock = new object();
-        public static Action<string> Logger { get; set; }
         public static Action<Exception> Error { get; set; }
+        public static Action<string> Logger { get; set; }
+
+        public void InitFromConfig(string storagePath)
+        {
+            StoragePath = storagePath;
+
+            if (!Directory.Exists(StoragePath))
+                Directory.CreateDirectory(StoragePath);
+        }
+
+        public virtual void Shutdown()
+        {
+            DisposeGame();
+        }
 
         public virtual void Start(IServerConstants config, Action<string> log, Action<Exception> error)
         {
@@ -27,19 +42,6 @@ namespace Darkages
             Config = config ?? throw new ArgumentNullException(nameof(config));
 
             Startup();
-        }
-
-        public virtual void Shutdown()
-        {
-            DisposeGame();
-        }
-
-        public void InitFromConfig(string storagePath)
-        {
-            StoragePath = storagePath;
-
-            if (!Directory.Exists(StoragePath))
-                Directory.CreateDirectory(StoragePath);
         }
     }
 }

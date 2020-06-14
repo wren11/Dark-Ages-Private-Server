@@ -8,9 +8,8 @@
             Command = 0x19;
         }
 
-        public string Name { get; set; }
-
         public string Message { get; set; }
+        public string Name { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

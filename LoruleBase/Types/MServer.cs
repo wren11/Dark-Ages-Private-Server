@@ -31,14 +31,10 @@ namespace Darkages.Types
             set => Address = IPAddress.Parse(value);
         }
 
-        [XmlElement("Port")] public ushort Port { get; set; }
-
-        [XmlElement("Guid")] public byte Guid { get; set; }
-
-        [XmlElement("Name")] public string Name { get; set; }
-
         [XmlElement("Desc")] public string Description { get; set; }
-
+        [XmlElement("Guid")] public byte Guid { get; set; }
         [XmlElement("ID")] public byte ID { get; set; }
+        [XmlElement("Name")] public string Name { get; set; }
+        [XmlElement("Port")] public ushort Port { get; set; }
     }
 }

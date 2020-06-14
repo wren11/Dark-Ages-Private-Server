@@ -14,9 +14,9 @@ namespace Darkages.Network.ServerFormats
             Command = 0x00;
         }
 
+        public uint Hash { get; set; }
         public SecurityParameters Parameters { get; set; }
         public byte Type { get; set; }
-        public uint Hash { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

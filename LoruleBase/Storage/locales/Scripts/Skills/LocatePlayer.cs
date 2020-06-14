@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Linq;
 using Darkages.Scripting;
 using Darkages.Types;
+using System.Linq;
 
 #endregion
 
@@ -13,16 +13,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
     {
         public LocatePlayer(Skill skill) : base(skill)
         {
-        }
-
-        public override void OnUse(Sprite sprite)
-        {
-            var nearest = GetObjects<Aisling>(sprite.Map,
-                    i => i.Serial != sprite.Serial && i.CurrentMapId == sprite.CurrentMapId)
-                .OrderBy(i => i.Position.DistanceFrom(sprite.Position)).FirstOrDefault();
-
-
-            OnSuccess(sprite);
         }
 
         public override void OnFailed(Sprite sprite)
@@ -46,6 +36,15 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                 aisling.Client.SendMessage(0x08, msg);
             }
+        }
+
+        public override void OnUse(Sprite sprite)
+        {
+            var nearest = GetObjects<Aisling>(sprite.Map,
+                    i => i.Serial != sprite.Serial && i.CurrentMapId == sprite.CurrentMapId)
+                .OrderBy(i => i.Position.DistanceFrom(sprite.Position)).FirstOrDefault();
+
+            OnSuccess(sprite);
         }
     }
 }

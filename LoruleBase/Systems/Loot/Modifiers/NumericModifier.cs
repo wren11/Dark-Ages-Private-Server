@@ -6,6 +6,19 @@ using System;
 
 namespace Darkages.Systems.Loot.Modifiers
 {
+    public enum Operation
+    {
+        Add,
+
+        Subtract,
+
+        Divide,
+
+        Multiply,
+
+        Equal
+    }
+
     [Serializable]
     public class NumericModifier : BaseModifier
     {
@@ -21,9 +34,9 @@ namespace Darkages.Systems.Loot.Modifiers
             Operation = operation;
         }
 
-        public Operation Operation { get; set; }
-        public double Min { get; set; }
         public double Max { get; set; }
+        public double Min { get; set; }
+        public Operation Operation { get; set; }
 
         public override void Apply(object itemToModify)
         {
@@ -39,36 +52,28 @@ namespace Darkages.Systems.Loot.Modifiers
                 case Operation.Add:
                     value += number;
                     break;
+
                 case Operation.Subtract:
                     value -= number;
                     break;
+
                 case Operation.Divide:
                     value /= number;
                     break;
+
                 case Operation.Multiply:
                     value *= number;
                     break;
+
                 case Operation.Equal:
                     value = number;
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(Operation));
             }
 
             SetValue(itemToModify, Convert.ChangeType(value, value.GetType()));
         }
-    }
-
-    public enum Operation
-    {
-        Add,
-
-        Subtract,
-
-        Divide,
-
-        Multiply,
-
-        Equal
     }
 }

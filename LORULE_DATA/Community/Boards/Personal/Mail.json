@@ -3,50 +3,50 @@
     {
       "Command": 49,
       "Secured": true,
-      "Owner": "lol",
-      "TopicId": 876,
-      "PostId": 2,
       "BoardId": 0,
-      "Read": false,
       "DatePosted": "2020-03-30T14:53:52.9806805Z",
-      "Sender": "lol",
       "Message": "jgfhj",
+      "Owner": "lol",
+      "PostId": 2,
+      "Read": false,
       "Recipient": "lol",
-      "Subject": "lol"
+      "Sender": "lol",
+      "Subject": "lol",
+      "TopicId": 876
     },
     {
       "Command": 49,
       "Secured": true,
-      "Owner": "lol",
-      "TopicId": 1140,
-      "PostId": 3,
       "BoardId": 0,
-      "Read": false,
       "DatePosted": "2020-04-30T11:52:59.3459229Z",
-      "Sender": "lol",
       "Message": "test",
+      "Owner": "lol",
+      "PostId": 3,
+      "Read": false,
       "Recipient": "test",
-      "Subject": "test"
+      "Sender": "lol",
+      "Subject": "test",
+      "TopicId": 1140
     },
     {
       "Command": 49,
       "Secured": true,
-      "Owner": "lol",
-      "TopicId": 616,
-      "PostId": 4,
       "BoardId": 0,
-      "Read": false,
       "DatePosted": "2020-04-30T11:53:04.8690295Z",
-      "Sender": "lol",
       "Message": "hi",
+      "Owner": "lol",
+      "PostId": 4,
+      "Read": false,
       "Recipient": "hi",
-      "Subject": "hi"
+      "Sender": "lol",
+      "Subject": "hi",
+      "TopicId": 616
     }
   ],
   "Command": 49,
   "Secured": true,
   "Index": 0,
   "IsMail": true,
-  "Subject": "Mail",
-  "LetterId": 0
+  "LetterId": 0,
+  "Subject": "Mail"
 }

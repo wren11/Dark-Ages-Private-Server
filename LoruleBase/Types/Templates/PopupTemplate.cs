@@ -1,23 +1,37 @@
 ﻿#region
 
+using Darkages.Common;
+using Darkages.Network.Game;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Darkages.Common;
-using Darkages.Network.Game;
 
 #endregion
 
 namespace Darkages.Types
 {
-    public class PopupTemplate : Template
+    public enum TriggerType
     {
-        public string YamlKey { get; set; }
+        ItemDrop,
+        UserClick,
+        MapRandom,
+        MapLocation,
+        UserGossip,
+        ItemPickup,
+        ItemOnUse,
+        SkillOnUse,
+        SpellOnUse
+    }
 
-        public int Timeout { get; set; }
-        public bool Ephemeral { get; set; }
-        public ushort SpriteId { get; set; }
-        public TriggerType TypeOfTrigger { get; set; }
+    public class ItemClickPopup : PopupTemplate
+    {
+        public ItemClickPopup()
+        {
+            TypeOfTrigger = TriggerType.ItemOnUse;
+        }
+
+        public bool ConsumeItem { get; set; }
+        public string ItemTemplateName { get; set; }
     }
 
     public class ItemDropPopup : PopupTemplate
@@ -38,55 +52,6 @@ namespace Darkages.Types
         }
 
         public string ItemName { get; set; }
-    }
-
-    public class UserClickPopup : PopupTemplate
-    {
-        public UserClickPopup()
-        {
-            TypeOfTrigger = TriggerType.UserClick;
-        }
-
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int MapId { get; set; }
-    }
-
-    public class UserWalkPopup : PopupTemplate
-    {
-        public UserWalkPopup()
-        {
-            TypeOfTrigger = TriggerType.MapLocation;
-        }
-
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int MapId { get; set; }
-    }
-
-    public class ItemClickPopup : PopupTemplate
-    {
-        public ItemClickPopup()
-        {
-            TypeOfTrigger = TriggerType.ItemOnUse;
-        }
-
-        public string ItemTemplateName { get; set; }
-
-        public bool ConsumeItem { get; set; }
-    }
-
-    public enum TriggerType
-    {
-        ItemDrop,
-        UserClick,
-        MapRandom,
-        MapLocation,
-        UserGossip,
-        ItemPickup,
-        ItemOnUse,
-        SkillOnUse,
-        SpellOnUse
     }
 
     public class Popup
@@ -119,31 +84,13 @@ namespace Darkages.Types
 
         public int Owner { get; set; }
 
-        public List<int> Users { get; set; }
-
         public PopupTemplate Template { get; set; }
-
-
-        public static Popup Get(Predicate<Popup> predicate)
-        {
-            return Popups.Find(predicate);
-        }
-
-        public static Popup GetById(uint id)
-        {
-            return Get(i => i.Id == id);
-        }
+        public List<int> Users { get; set; }
 
         public static void Add(Popup obj)
         {
             _popups.Add(obj);
         }
-
-        public static void Remove(Popup obj)
-        {
-            _popups.RemoveWhere(i => i.Id == obj.Id);
-        }
-
 
         public static Popup Create(GameClient client, PopupTemplate template)
         {
@@ -160,5 +107,53 @@ namespace Darkages.Types
 
             return popup;
         }
+
+        public static Popup Get(Predicate<Popup> predicate)
+        {
+            return Popups.Find(predicate);
+        }
+
+        public static Popup GetById(uint id)
+        {
+            return Get(i => i.Id == id);
+        }
+
+        public static void Remove(Popup obj)
+        {
+            _popups.RemoveWhere(i => i.Id == obj.Id);
+        }
+    }
+
+    public class PopupTemplate : Template
+    {
+        public bool Ephemeral { get; set; }
+        public ushort SpriteId { get; set; }
+        public int Timeout { get; set; }
+        public TriggerType TypeOfTrigger { get; set; }
+        public string YamlKey { get; set; }
+    }
+
+    public class UserClickPopup : PopupTemplate
+    {
+        public UserClickPopup()
+        {
+            TypeOfTrigger = TriggerType.UserClick;
+        }
+
+        public int MapId { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+    }
+
+    public class UserWalkPopup : PopupTemplate
+    {
+        public UserWalkPopup()
+        {
+            TypeOfTrigger = TriggerType.MapLocation;
+        }
+
+        public int MapId { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 }

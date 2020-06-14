@@ -8,7 +8,7 @@
             Item = _item;
         }
 
-        public int Slot { get; set; }
         public Item Item { get; set; }
+        public int Slot { get; set; }
     }
 }

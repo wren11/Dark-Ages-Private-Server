@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.IO;
 using Darkages.Common;
 using Darkages.Compression;
 using Darkages.IO;
+using System.IO;
 
 #endregion
 
@@ -13,9 +13,8 @@ namespace Darkages.Types
     {
         public byte[] Data => DeflatedData;
 
-        public ushort Size => (ushort) DeflatedData.Length;
-
         public uint Hash { get; private set; }
+        public ushort Size => (ushort)DeflatedData.Length;
 
         public static Notification FromFile(string filename)
         {

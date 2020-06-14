@@ -2,7 +2,8 @@
 {
     public interface IMenuParser
     {
-        ParseResult Parse(string filePath);
         Interpreter CreateInterpreterFromFile(string filePath);
+
+        ParseResult Parse(string filePath);
     }
 }

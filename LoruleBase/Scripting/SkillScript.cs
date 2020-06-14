@@ -14,12 +14,13 @@ namespace Darkages.Scripting
             Skill = skill;
         }
 
+        public bool IsScriptDefault { get; set; }
         public Skill Skill { get; set; }
 
-        public bool IsScriptDefault { get; set; }
+        public abstract void OnFailed(Sprite sprite);
+
+        public abstract void OnSuccess(Sprite sprite);
 
         public abstract void OnUse(Sprite sprite);
-        public abstract void OnFailed(Sprite sprite);
-        public abstract void OnSuccess(Sprite sprite);
     }
 }

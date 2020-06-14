@@ -9,9 +9,9 @@ namespace Darkages.Storage.locales.debuffs
 {
     public class debuff_sleep : Debuff
     {
-        public override string Name => "sleep";
         public override byte Icon => 90;
         public override int Length => 8;
+        public override string Name => "sleep";
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {

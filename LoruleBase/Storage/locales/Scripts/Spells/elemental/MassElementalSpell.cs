@@ -1,10 +1,10 @@
 ﻿#region
 
-using System;
 using Darkages.Common;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
 
 #endregion
 
@@ -51,12 +51,10 @@ namespace Darkages.Storage.locales.Scripts.Spells
                         .SendMessage(0x02,
                             $"{client.Aisling.Username} Attacks you with {Spell.Template.Name}.");
 
-
                 var dmg = rand.Next(20 * sprite.Level, 50 * sprite.Level);
                 var basePower = (Spell.Level + sprite.Int) * dmg * 0.1;
 
-
-                target.ApplyDamage(sprite, (int) basePower, Spell.Template.ElementalProperty, Spell.Template.Sound);
+                target.ApplyDamage(sprite, (int)basePower, Spell.Template.ElementalProperty, Spell.Template.Sound);
 
                 client.SendMessage(0x02, $"you cast {Spell.Template.Name}");
                 client.SendAnimation(Spell.Template.Animation, target, sprite);
@@ -64,7 +62,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 var action = new ServerFormat1A
                 {
                     Serial = sprite.Serial,
-                    Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                    Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 :
                         client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                     Speed = 30
                 };
@@ -76,7 +74,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 var dmg = rand.Next(20 * sprite.Level, 50 * sprite.Level);
                 var basePower = target.Level * dmg * 0.1;
 
-                target.ApplyDamage(sprite, (int) basePower, Spell.Template.ElementalProperty, Spell.Template.Sound);
+                target.ApplyDamage(sprite, (int)basePower, Spell.Template.ElementalProperty, Spell.Template.Sound);
 
                 if (target is Aisling)
                     (target as Aisling).Client
@@ -95,7 +93,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 sprite.Show(Scope.NearbyAislings, action);
             }
         }
-
 
         public override void OnUse(Sprite sprite, Sprite target)
         {
@@ -151,7 +148,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 var action = new ServerFormat1A
                 {
                     Serial = sprite.Serial,
-                    Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                    Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 :
                         client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                     Speed = 30
                 };
@@ -175,7 +172,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     if (t.CurrentHp == 0)
                         continue;
 
-
                     var dmg = sprite.GetBaseDamage(t, MonsterDamageType.Elemental);
 
                     t.ApplyDamage(sprite, dmg, Spell.Template.ElementalProperty, Spell.Template.Sound);
@@ -188,11 +184,10 @@ namespace Darkages.Storage.locales.Scripts.Spells
                         Speed = 30
                     };
 
-
                     var hpbar = new ServerFormat13
                     {
                         Serial = t.Serial,
-                        Health = (ushort) (100 * t.CurrentHp / t.MaximumHp),
+                        Health = (ushort)(100 * t.CurrentHp / t.MaximumHp),
                         Sound = Spell.Template.Sound
                     };
 

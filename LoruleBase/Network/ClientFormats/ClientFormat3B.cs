@@ -10,8 +10,8 @@
             Command = 0x3B;
         }
 
-        public ushort TopicIndex { get; set; }
         public ushort BoardIndex { get; set; }
+        public ushort TopicIndex { get; set; }
         public byte Type { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)

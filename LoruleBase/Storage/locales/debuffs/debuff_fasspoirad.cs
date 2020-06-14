@@ -8,11 +8,10 @@ namespace Darkages.Storage.locales.debuffs
 {
     public class debuff_fasspoirad : Debuff
     {
-        public override string Name => "fas spiorad";
+        public StatusOperator AcModifer => new StatusOperator(Operator.Remove, 50);
         public override byte Icon => 26;
         public override int Length => 2;
-
-        public StatusOperator AcModifer => new StatusOperator(Operator.Remove, 50);
+        public override string Name => "fas spiorad";
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {

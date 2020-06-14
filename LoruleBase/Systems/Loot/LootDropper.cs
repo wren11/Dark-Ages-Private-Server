@@ -1,11 +1,11 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Darkages.Common;
 using Darkages.Systems.Loot.Extensions;
 using Darkages.Systems.Loot.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -14,6 +14,22 @@ namespace Darkages.Systems.Loot
     public class LootDropper : ILootDropper
     {
         public static long GlobalRolls;
+
+        public event EventHandler<EventArgs> OnDropCompleted;
+
+        public event EventHandler<EventArgs> OnDropStarted;
+
+        public static T Pick<T>(IEnumerable<T> items) where T : class, IWeighable
+        {
+            var itemList = items as IList<T> ?? items.ToList();
+            if (itemList == null || !itemList.Any())
+                throw new ArgumentException("Items cannot be null or empty", nameof(items));
+
+            var selectedItem = itemList.WeightedChoice(
+                itemList.Sum(item => item.Weight));
+
+            return selectedItem;
+        }
 
         public ILootDefinition Drop(ILootTable lootTable, string name)
         {
@@ -80,21 +96,6 @@ namespace Darkages.Systems.Loot
 
             GlobalRolls++;
             return null;
-        }
-
-        public event EventHandler<EventArgs> OnDropStarted;
-        public event EventHandler<EventArgs> OnDropCompleted;
-
-        public static T Pick<T>(IEnumerable<T> items) where T : class, IWeighable
-        {
-            var itemList = items as IList<T> ?? items.ToList();
-            if (itemList == null || !itemList.Any())
-                throw new ArgumentException("Items cannot be null or empty", nameof(items));
-
-            var selectedItem = itemList.WeightedChoice(
-                itemList.Sum(item => item.Weight));
-
-            return selectedItem;
         }
     }
 }

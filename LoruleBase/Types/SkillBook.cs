@@ -1,10 +1,10 @@
 ﻿#region
 
+using Darkages.Network.Object;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Darkages.Network.Object;
 
 #endregion
 
@@ -23,37 +23,11 @@ namespace Darkages.Types
             Skills[36] = new Skill();
         }
 
-
         public int Length => Skills.Count;
-
-        public Skill FindInSlot(int Slot)
-        {
-            return Skills[Slot];
-        }
 
         public void Assign(Skill skill)
         {
             Set(skill);
-        }
-
-        public new Skill[] Get(Predicate<Skill> prediate)
-        {
-            return Skills.Values.Where(i => i != null && prediate(i)).ToArray();
-        }
-
-        public void Swap(Skill A, Skill B)
-        {
-            A = Interlocked.Exchange(ref B, A);
-        }
-
-        public void Set(Skill s)
-        {
-            Skills[s.Slot] = Clone<Skill>(s);
-        }
-
-        public void Set(Skill s, bool clone = false)
-        {
-            Skills[s.Slot] = clone ? Clone<Skill>(s) : s;
         }
 
         public void Clear(Skill s)
@@ -61,11 +35,22 @@ namespace Darkages.Types
             Skills[s.Slot] = null;
         }
 
-        public Skill Remove(byte movingFrom)
+        public int FindEmpty()
         {
-            var copy = Skills[movingFrom];
-            Skills[movingFrom] = null;
-            return copy;
+            for (var i = 0; i < Length; i++)
+                if (Skills[i + 1] == null)
+                    return i + 1;
+            return -1;
+        }
+
+        public Skill FindInSlot(int Slot)
+        {
+            return Skills[Slot];
+        }
+
+        public new Skill[] Get(Predicate<Skill> prediate)
+        {
+            return Skills.Values.Where(i => i != null && prediate(i)).ToArray();
         }
 
         public bool Has(Skill s)
@@ -80,13 +65,26 @@ namespace Darkages.Types
                 .FirstOrDefault(i => i.Name.Equals(s.Name)) != null;
         }
 
-
-        public int FindEmpty()
+        public Skill Remove(byte movingFrom)
         {
-            for (var i = 0; i < Length; i++)
-                if (Skills[i + 1] == null)
-                    return i + 1;
-            return -1;
+            var copy = Skills[movingFrom];
+            Skills[movingFrom] = null;
+            return copy;
+        }
+
+        public void Set(Skill s)
+        {
+            Skills[s.Slot] = Clone<Skill>(s);
+        }
+
+        public void Set(Skill s, bool clone = false)
+        {
+            Skills[s.Slot] = clone ? Clone<Skill>(s) : s;
+        }
+
+        public void Swap(Skill A, Skill B)
+        {
+            A = Interlocked.Exchange(ref B, A);
         }
     }
 }

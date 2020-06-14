@@ -8,8 +8,8 @@
             Command = 0x03;
         }
 
-        public string Username { get; set; }
         public string Password { get; set; }
+        public string Username { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

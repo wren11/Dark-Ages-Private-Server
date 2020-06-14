@@ -1,8 +1,8 @@
 ﻿#region
 
+using Darkages.Compression;
 using System;
 using System.IO;
-using Darkages.Compression;
 
 #endregion
 

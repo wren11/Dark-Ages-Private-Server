@@ -1,12 +1,12 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -21,7 +21,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             Mundane.Template.QuestKey = "sunup_quest";
 
-            SequenceMenu.DisplayImage = (ushort) Mundane.Template.Image;
+            SequenceMenu.DisplayImage = (ushort)Mundane.Template.Image;
             SequenceMenu.Sequences.Add(new DialogSequence
             {
                 Title = Mundane.Template.Name,
@@ -64,14 +64,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             });
         }
 
-        public override void OnGossip(GameServer server, GameClient client, string message)
-        {
-        }
-
-        public override void TargetAcquired(Sprite Target)
-        {
-        }
-
         public override void OnClick(GameServer server, GameClient client)
         {
             if (client.DlgSession == null)
@@ -88,7 +80,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     StateObject = SequenceMenu
                 };
 
-
             if (!client.Aisling.Position.IsNearby(client.DlgSession.SessionPosition))
                 return;
 
@@ -98,18 +89,107 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             QuestComposite(client);
         }
 
+        public override void OnGossip(GameServer server, GameClient client, string message)
+        {
+        }
+
+        public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
+        {
+            var quest = client.Aisling.Quests.FirstOrDefault(i =>
+                i.Name == Mundane.Template.QuestKey);
+
+            if (client.DlgSession != null && client.DlgSession.Serial == SequenceMenu.Serial)
+                switch (responseID)
+                {
+                    case 0:
+                        SequenceMenu.SequenceIndex = 0;
+                        client.DlgSession = null;
+
+                        break;
+
+                    case 1:
+                        if (SequenceMenu.CanMoveNext)
+                        {
+                            SequenceMenu.MoveNext(client);
+                            SequenceMenu.Invoke(client);
+                        }
+
+                        ;
+                        break;
+
+                    case 0x0010:
+                        client.SendOptionsDialog(Mundane, "Please go back and find my Sachel that i lost back there.");
+
+                        if (quest != null)
+                        {
+                            quest.Started = true;
+                            quest.TimeStarted = DateTime.UtcNow;
+                        }
+
+                        break;
+
+                    case 0x0011:
+                        client.SendOptionsDialog(Mundane, "If you help me, I'll get you over this gate.",
+                            new OptionsDataItem(0x0010, "Ok sounds like a plan mate."),
+                            new OptionsDataItem(0x0012, "fuck you and fuck the gate.")
+                        );
+                        break;
+
+                    case 0x0012:
+                        client.SendOptionsDialog(Mundane,
+                            "well stand here with your dick in your hand all day. because you can't leave other wise.");
+                        break;
+
+                    case ushort.MaxValue:
+                        if (SequenceMenu.CanMoveBack)
+                        {
+                            var idx = (ushort)(SequenceMenu.SequenceIndex - 1);
+
+                            SequenceMenu.SequenceIndex = idx;
+                            client.DlgSession.Sequence = idx;
+
+                            client.Send(new ServerFormat30(client, SequenceMenu));
+                        }
+
+                        break;
+
+                    case 0x0015:
+                        if (quest != null && !quest.Rewarded && !quest.Completed)
+                            quest.OnCompleted(client.Aisling);
+                        break;
+
+                    case 0x0016:
+                        if (quest != null && !quest.Rewarded && !quest.Completed)
+                            quest.OnCompleted(client.Aisling);
+                        break;
+
+                    case 0x0017:
+                        if (quest != null && !quest.Rewarded && !quest.Completed)
+                        {
+                            quest.OnCompleted(client.Aisling);
+                            client.TransitionToMap(client.Aisling.Map, new Position(17, 20));
+                        }
+
+                        break;
+                }
+        }
+
+        public override void TargetAcquired(Sprite Target)
+        {
+        }
+
         private void QuestComposite(GameClient client)
         {
             var quest = client.Aisling.Quests.FirstOrDefault(i => i.Name == Mundane.Template.QuestKey);
 
             if (quest == null)
             {
-                quest = new Quest {Name = Mundane.Template.QuestKey};
+                quest = new Quest { Name = Mundane.Template.QuestKey };
                 quest.LegendRewards.Add(new Legend.LegendItem
                 {
                     Category = "Quest",
-                    Color = (byte) LegendColor.Blue,
-                    Icon = (byte) LegendIcon.Victory,
+                    Color = (byte)LegendColor.Blue,
+                    Icon = (byte)LegendIcon.Victory,
                     Value = "Aided Sunup at the Refugee Camp"
                 });
 
@@ -126,8 +206,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             quest.QuestStages = new List<QuestStep<Template>>();
 
-            var q1 = new QuestStep<Template> {Type = QuestType.Accept};
-            var q2 = new QuestStep<Template> {Type = QuestType.SingleItemHandIn};
+            var q1 = new QuestStep<Template> { Type = QuestType.Accept };
+            var q2 = new QuestStep<Template> { Type = QuestType.SingleItemHandIn };
 
             q2.Prerequisites.Add(new QuestRequirement
             {
@@ -156,79 +236,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
                 SequenceMenu.Invoke(client);
             }
-        }
-
-        public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
-        {
-            var quest = client.Aisling.Quests.FirstOrDefault(i =>
-                i.Name == Mundane.Template.QuestKey);
-
-            if (client.DlgSession != null && client.DlgSession.Serial == SequenceMenu.Serial)
-                switch (responseID)
-                {
-                    case 0:
-                        SequenceMenu.SequenceIndex = 0;
-                        client.DlgSession = null;
-
-                        break;
-                    case 1:
-                        if (SequenceMenu.CanMoveNext)
-                        {
-                            SequenceMenu.MoveNext(client);
-                            SequenceMenu.Invoke(client);
-                        }
-
-                        ;
-                        break;
-                    case 0x0010:
-                        client.SendOptionsDialog(Mundane, "Please go back and find my Sachel that i lost back there.");
-
-                        if (quest != null)
-                        {
-                            quest.Started = true;
-                            quest.TimeStarted = DateTime.UtcNow;
-                        }
-
-                        break;
-                    case 0x0011:
-                        client.SendOptionsDialog(Mundane, "If you help me, I'll get you over this gate.",
-                            new OptionsDataItem(0x0010, "Ok sounds like a plan mate."),
-                            new OptionsDataItem(0x0012, "fuck you and fuck the gate.")
-                        );
-                        break;
-                    case 0x0012:
-                        client.SendOptionsDialog(Mundane,
-                            "well stand here with your dick in your hand all day. because you can't leave other wise.");
-                        break;
-                    case ushort.MaxValue:
-                        if (SequenceMenu.CanMoveBack)
-                        {
-                            var idx = (ushort) (SequenceMenu.SequenceIndex - 1);
-
-                            SequenceMenu.SequenceIndex = idx;
-                            client.DlgSession.Sequence = idx;
-
-                            client.Send(new ServerFormat30(client, SequenceMenu));
-                        }
-
-                        break;
-                    case 0x0015:
-                        if (quest != null && !quest.Rewarded && !quest.Completed)
-                            quest.OnCompleted(client.Aisling);
-                        break;
-                    case 0x0016:
-                        if (quest != null && !quest.Rewarded && !quest.Completed)
-                            quest.OnCompleted(client.Aisling);
-                        break;
-                    case 0x0017:
-                        if (quest != null && !quest.Rewarded && !quest.Completed)
-                        {
-                            quest.OnCompleted(client.Aisling);
-                            client.TransitionToMap(client.Aisling.Map, new Position(17, 20));
-                        }
-
-                        break;
-                }
         }
     }
 }

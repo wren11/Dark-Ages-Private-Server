@@ -18,7 +18,6 @@ namespace Darkages.Network.ServerFormats
             Command = 0x6F;
         }
 
-
         public override void Serialize(NetworkPacketReader reader)
         {
         }

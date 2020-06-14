@@ -1,10 +1,5 @@
 ﻿#region
 
-using System;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Threading;
 using Darkages;
 using Darkages.Network.Object;
 using Microsoft.Extensions.Configuration;
@@ -14,11 +9,21 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Extensions.Logging;
 using Serilog.Formatting.Compact;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using System.Threading;
 
 #endregion
 
 namespace Lorule.GameServer
 {
+    public interface IServer
+    {
+        void Log(string logMessage);
+    }
+
     public static class Program
     {
         private static void Main(string[] args)
@@ -64,11 +69,6 @@ namespace Lorule.GameServer
         }
     }
 
-    public interface IServer
-    {
-        void Log(string logMessage);
-    }
-
     public class Server : IServer
     {
         private readonly ILogger<Server> _logger;
@@ -90,14 +90,14 @@ namespace Lorule.GameServer
 
         public string LoruleVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-        public void Log(string logMessage)
-        {
-            _logger.LogInformation(logMessage);
-        }
-
         public void Error(Exception ex)
         {
             _logger.LogError(ex, ex.Message + "\n" + ex.StackTrace);
+        }
+
+        public void Log(string logMessage)
+        {
+            _logger.LogInformation(logMessage);
         }
     }
 }

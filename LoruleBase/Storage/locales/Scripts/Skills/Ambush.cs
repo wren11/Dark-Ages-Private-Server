@@ -1,10 +1,10 @@
 ﻿#region
 
-using System;
-using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
+using System.Linq;
 
 #endregion
 
@@ -57,7 +57,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                     var blocks = target.Position.SurroundingContent(sprite.Map);
 
-
                     if (blocks.Length > 0)
                     {
                         var selections = blocks.Where(i => i.Content == TileContent.Item
@@ -79,10 +78,8 @@ namespace Darkages.Storage.locales.Scripts.Skills
                                 return;
                             }
 
-
                         targetPosition = selection.Position;
                     }
-
 
                     if (targetPosition != null)
                     {
@@ -93,7 +90,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                         if (!sprite.Facing(target.XPos, target.YPos, out direction))
                         {
-                            sprite.Direction = (byte) direction;
+                            sprite.Direction = (byte)direction;
 
                             if (sprite.Position.IsNextTo(target.Position))
                                 sprite.Turn();
@@ -107,7 +104,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         else
                         {
                             sprite.Show(Scope.NearbyAislings, new ServerFormat0E(sprite.Serial));
-                            sprite.Show(Scope.NearbyAislings, new ServerFormat07(new[] {sprite}));
+                            sprite.Show(Scope.NearbyAislings, new ServerFormat07(new[] { sprite }));
                         }
 
                         return;

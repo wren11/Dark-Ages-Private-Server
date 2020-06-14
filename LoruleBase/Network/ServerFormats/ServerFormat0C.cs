@@ -20,11 +20,11 @@
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((uint) Serial);
-            writer.Write((ushort) X);
-            writer.Write((ushort) Y);
+            writer.Write((uint)Serial);
+            writer.Write((ushort)X);
+            writer.Write((ushort)Y);
             writer.Write(Direction);
-            writer.Write((byte) 0x00);
+            writer.Write((byte)0x00);
         }
     }
 }

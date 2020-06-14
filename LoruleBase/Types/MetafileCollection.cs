@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Darkages.Network;
+using System.Collections.Generic;
 
 #endregion
 
@@ -26,7 +26,7 @@ namespace Darkages.Types
         public void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(
-                (ushort) Count);
+                (ushort)Count);
 
             foreach (var metafile in this)
             {

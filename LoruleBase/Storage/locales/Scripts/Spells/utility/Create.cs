@@ -1,9 +1,9 @@
 ﻿#region
 
-using System;
-using System.Linq;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
+using System.Linq;
 
 #endregion
 
@@ -28,11 +28,9 @@ namespace Darkages.Storage.locales.Scripts.Spells
         {
             var spellArgs = Arguments ?? throw new ArgumentNullException(nameof(Arguments));
 
-
             if (spellArgs == "die") sprite.CurrentHp = 0;
 
             if (spellArgs == "+hit") sprite._Hit += 10;
-
 
             spellArgs = spellArgs.Trim();
 

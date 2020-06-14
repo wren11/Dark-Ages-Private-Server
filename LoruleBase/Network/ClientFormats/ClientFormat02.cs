@@ -12,7 +12,6 @@
             Command = 0x02;
         }
 
-
         public override void Serialize(NetworkPacketReader reader)
         {
             AislingUsername = reader.ReadStringA();

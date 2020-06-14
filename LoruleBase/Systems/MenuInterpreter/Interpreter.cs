@@ -1,10 +1,10 @@
 ﻿#region
 
+using Darkages.Network.Game;
+using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Darkages.Network.Game;
-using Darkages.Types;
 
 #endregion
 
@@ -12,10 +12,6 @@ namespace MenuInterpreter
 {
     public class Interpreter
     {
-        public delegate void CheckpointHandler(GameClient client, CheckpointHandlerArgs args);
-
-        public delegate void MovedToNextStepHandler(GameClient client, MenuItem previous, MenuItem current);
-
         private readonly IDictionary<string, CheckpointHandler> _checkpointHandlers =
             new Dictionary<string, CheckpointHandler>();
 
@@ -49,13 +45,26 @@ namespace MenuInterpreter
             Start();
         }
 
+        public delegate void CheckpointHandler(GameClient client, CheckpointHandlerArgs args);
+
+        public delegate void MovedToNextStepHandler(GameClient client, MenuItem previous, MenuItem current);
+
+        public event MovedToNextStepHandler OnMovedToNextStep;
+
+        public Sprite Actor { get; internal set; }
         public GameClient Client { get; set; }
 
         public bool IsFinished { get; private set; }
 
-        public Sprite Actor { get; internal set; }
+        public MenuItem GetCurrentStep()
+        {
+            return _currentItem;
+        }
 
-        public event MovedToNextStepHandler OnMovedToNextStep;
+        public List<HistoryItem> GetHistory()
+        {
+            return _history;
+        }
 
         public MenuItem Move(int answerId)
         {
@@ -113,16 +122,6 @@ namespace MenuInterpreter
             return _currentItem;
         }
 
-        public MenuItem GetCurrentStep()
-        {
-            return _currentItem;
-        }
-
-        public List<HistoryItem> GetHistory()
-        {
-            return _history;
-        }
-
         public void RegisterCheckpointHandler(string checkpointType, CheckpointHandler handler)
         {
             _checkpointHandlers[checkpointType] = handler;
@@ -156,14 +155,6 @@ namespace MenuInterpreter
                 _currentItem = Move(0);
         }
 
-        private int TryPassCheckpoint(int answerId)
-        {
-            if (_currentItem.Type != MenuItemType.Checkpoint)
-                return answerId;
-
-            return PassCheckpoint(_currentItem as CheckpointMenuItem);
-        }
-
         private int PassCheckpoint(CheckpointMenuItem checkpoint)
         {
             if (_checkpointHandlers.ContainsKey(checkpoint.Text) == false) return Constants.CheckpointOnFail;
@@ -181,6 +172,14 @@ namespace MenuInterpreter
             return args.Result
                 ? Constants.CheckpointOnSuccess
                 : Constants.CheckpointOnFail;
+        }
+
+        private int TryPassCheckpoint(int answerId)
+        {
+            if (_currentItem.Type != MenuItemType.Checkpoint)
+                return answerId;
+
+            return PassCheckpoint(_currentItem as CheckpointMenuItem);
         }
 
         #endregion Private methods

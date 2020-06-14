@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Collections.Generic;
-using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
+using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -27,7 +27,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 {
                     var client = (sprite as Aisling).Client;
                     client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29(Skill.Template.MissAnimation, (ushort) Target.XPos, (ushort) Target.YPos));
+                        new ServerFormat29(Skill.Template.MissAnimation, (ushort)Target.XPos, (ushort)Target.YPos));
                 }
         }
 
@@ -44,16 +44,15 @@ namespace Darkages.Scripting.Scripts.Skills
                     Speed = 20
                 };
 
-
                 var enemy = client.Aisling.GetInfront();
 
                 if (enemy != null)
                     foreach (var i in from i in enemy
-                        where i != null
-                        where client.Aisling.Serial != i.Serial
-                        where !(i is Money)
-                        where i.Attackable
-                        select i)
+                                      where i != null
+                                      where client.Aisling.Serial != i.Serial
+                                      where !(i is Money)
+                                      where i.Attackable
+                                      select i)
                     {
                         if (i is Monster monster)
                         {
@@ -81,16 +80,15 @@ namespace Darkages.Scripting.Scripts.Skills
                                 (i as Aisling).Client.Revive();
                             }
 
-
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial, byte.MinValue,
+                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial, byte.MinValue,
                                     Skill.Template.TargetAnimation, 100));
                             (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
                         }
 
                         if (i is Monster || i is Mundane || i is Aisling)
                             client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial,
+                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
                                     Skill.Template.TargetAnimation, 0, 100));
                     }
 

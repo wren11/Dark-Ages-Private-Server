@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Collections.Generic;
-using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
+using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -39,7 +39,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 var action = new ServerFormat1A
                 {
                     Serial = sprite.Serial,
-                    Number = (byte) (client.Aisling.Path == Class.Warrior
+                    Number = (byte)(client.Aisling.Path == Class.Warrior
                         ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01
                         : 0x01),
                     Speed = 20
@@ -53,7 +53,6 @@ namespace Darkages.Scripting.Scripts.Skills
                     {
                         if (i == null)
                             continue;
-
 
                         if (client.Aisling.Serial == i.Serial)
                             continue;
@@ -72,7 +71,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         i.Target = client.Aisling;
 
                         client.Aisling.Show(Scope.NearbyAislings,
-                            new ServerFormat29(Skill.Template.TargetAnimation, (ushort) i.XPos, (ushort) i.YPos));
+                            new ServerFormat29(Skill.Template.TargetAnimation, (ushort)i.XPos, (ushort)i.YPos));
                     }
 
                     client.Aisling.Show(Scope.NearbyAislings, action);
@@ -123,7 +122,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (i is Aisling || i is Monster)
                         {
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29(Skill.Template.TargetAnimation, (ushort) i.XPos, (ushort) i.YPos));
+                                new ServerFormat29(Skill.Template.TargetAnimation, (ushort)i.XPos, (ushort)i.YPos));
 
                             var dmg = 50 * (sprite.Str + Skill.Level) / 100;
                             i.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);

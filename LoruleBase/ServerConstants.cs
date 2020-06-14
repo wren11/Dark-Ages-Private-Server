@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Darkages.Types;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 #endregion
 
@@ -10,7 +10,6 @@ namespace Darkages
 {
     public interface IServerConstants
     {
-        bool MultiUserLogin { get; set; }
         bool AssailsCancelSpells { get; set; }
         string BadRequestMessage { get; set; }
         byte BaseAC { get; set; }
@@ -29,21 +28,27 @@ namespace Darkages
         string ChantPrefix { get; set; }
         string ChantSuffix { get; set; }
         int ClickLootDistance { get; set; }
+        int ClientVersion { get; set; }
         string ConAddedMessage { get; set; }
         int ConnectionCapacity { get; set; }
         string CursedItemMessage { get; set; }
         double DayTimeInterval { get; set; }
         int DeathHPPenalty { get; set; }
         int DeathMap { get; set; }
+        int DeathMapX { get; set; }
+        int DeathMapY { get; set; }
+        string DeathReepingMessage { get; set; }
         bool DebugMode { get; set; }
         ItemColor DefaultItemColor { get; set; }
         uint DefaultItemDurability { get; set; }
         uint DefaultItemValue { get; set; }
+        bool DevMode { get; set; }
         string DexAddedMessage { get; set; }
         string DoesNotFitMessage { get; set; }
         int ERRORCAP { get; set; }
         double FasNadurStrength { get; set; }
-        string GameMaster { get; set; }
+        List<string> GameMasters { get; set; }
+        bool GiveAssailOnCreate { get; }
         double GlobalBaseSkillDelay { get; set; }
         double GlobalSpawnTimer { get; set; }
         double GroupExpBonus { get; set; }
@@ -53,10 +58,13 @@ namespace Darkages
         string HelperMenuTemplateKey { get; set; }
         int HpGainFactor { get; set; }
         string IntAddedMessage { get; set; }
+        string ItemNotRequiredMsg { get; set; }
         string LevelUpMessage { get; set; }
         double LingerState { get; set; }
+        int LOGIN_PORT { get; set; }
         int LootTableStackSize { get; set; }
         int MaxCarryGold { get; set; }
+        int MaxHP { get; set; }
         string MerchantBuy { get; set; }
         string MerchantBuyMessage { get; set; }
         string MerchantCancelMessage { get; set; }
@@ -72,11 +80,13 @@ namespace Darkages
         int MonsterSpellSuccessRate { get; set; }
         double MorFasNadurStrength { get; set; }
         int MpGainFactor { get; set; }
+        bool MultiUserLogin { get; set; }
         double MundaneRespawnInterval { get; set; }
         string NoManaMessage { get; set; }
         string NotEnoughGoldToDropMsg { get; set; }
         double PingInterval { get; set; }
         int PlayerLevelCap { get; set; }
+        int PVPMap { get; set; }
         string ReapMessage { get; set; }
         string ReapMessageDuringAction { get; set; }
         int RefreshRate { get; set; }
@@ -99,6 +109,9 @@ namespace Darkages
         short TransitionPointX { get; set; }
         short TransitionPointY { get; set; }
         int TransitionZone { get; set; }
+        bool UseLobby { get; set; }
+        bool UseLoruleItemRarity { get; set; }
+        bool UseLoruleVariants { get; set; }
         string UserDroppedGoldMsg { get; set; }
         int VeryNearByProximity { get; set; }
         int WarpCheckRate { get; set; }
@@ -107,147 +120,88 @@ namespace Darkages
         int WithinRangeProximity { get; set; }
         string WrongClassMessage { get; set; }
         string YouDroppedGoldMsg { get; set; }
-        int MaxHP { get; set; }
-        bool UseLoruleVariants { get; set; }
-        bool UseLoruleItemRarity { get; set; }
-        string ItemNotRequiredMsg { get; set; }
-        string DeathReepingMessage { get; set; }
-        int DeathMapX { get; set; }
-        int DeathMapY { get; set; }
-        int PVPMap { get; set; }
-        bool DevMode { get; set; }
-        int ClientVersion { get; set; }
-        bool UseLobby { get; set; }
-        int LOGIN_PORT { get; set; }
-        bool GiveAssailOnCreate { get; }
+    }
+
+    public class GameSetting
+    {
+        [JsonProperty] public bool Enabled { get; set; }
+        [JsonProperty] public string SettingOff { get; set; }
+        [JsonProperty] public string SettingOn { get; set; }
     }
 
     public class ServerConstants : IServerConstants
     {
-        public bool MultiUserLogin { get; set; }
-
         public bool AssailsCancelSpells { get; set; }
-
         public string BadRequestMessage { get; set; }
-
         public byte BaseAC { get; set; } = 170;
-
         public byte BaseMR { get; set; } = 70;
-
         public byte BaseStatAttribute { get; set; }
-
         public bool CancelCastingWhenWalking { get; set; }
-
         public bool CancelWalkingIfRefreshing { get; set; }
-
         public bool CanMoveDuringReap { get; set; }
-
         public string CantAttack { get; set; }
-
         public string CantCarryMoreMsg { get; set; }
-
         public string CantDoThat { get; set; }
-
         public string CantDropItemMsg { get; set; }
-
         public string CantEquipThatMessage { get; set; }
-
         public string CantUseThat { get; set; }
-
         public string CantWearYetMessage { get; set; }
-
         public string ChantPrefix { get; set; }
-
         public string ChantSuffix { get; set; }
-
         public int ClickLootDistance { get; set; }
-
+        public int ClientVersion { get; set; }
         public string ConAddedMessage { get; set; }
-
         public int ConnectionCapacity { get; set; }
-
         public string CursedItemMessage { get; set; }
-
         public double DayTimeInterval { get; set; }
-
         public int DeathHPPenalty { get; set; }
-
         public int DeathMap { get; set; }
-
+        public int DeathMapX { get; set; }
+        public int DeathMapY { get; set; }
+        public string DeathReepingMessage { get; set; }
         public bool DebugMode { get; set; }
-
         [JsonProperty] public ItemColor DefaultItemColor { get; set; }
-
         public uint DefaultItemDurability { get; set; }
-
         public uint DefaultItemValue { get; set; }
-
+        public bool DevMode { get; set; }
         public string DexAddedMessage { get; set; }
-
         public string DoesNotFitMessage { get; set; }
-
         public int ERRORCAP { get; set; }
-
         public double FasNadurStrength { get; set; }
-
-        public string GameMaster { get; set; }
-
+        public List<string> GameMasters { get; set; }
+        public bool GiveAssailOnCreate { get; set; }
         public double GlobalBaseSkillDelay { get; set; }
-
         public double GlobalSpawnTimer { get; set; }
-
         public double GroupExpBonus { get; set; }
-
         public string GroupRequestDeclinedMsg { get; set; }
-
         public string HandShakeMessage { get; set; }
-
         public int HelperMenuId { get; set; }
-
         public string HelperMenuTemplateKey { get; set; }
-
         public int HpGainFactor { get; set; }
-
         public string IntAddedMessage { get; set; }
-
+        public string ItemNotRequiredMsg { get; set; }
         public string LevelUpMessage { get; set; }
-
         public double LingerState { get; set; }
-
+        public int LOGIN_PORT { get; set; }
         public int LootTableStackSize { get; set; }
-
         public int MaxCarryGold { get; set; }
-
+        public int MaxHP { get; set; }
         public string MerchantBuy { get; set; }
-
         public string MerchantBuyMessage { get; set; }
-
         public string MerchantCancelMessage { get; set; }
-
         public string MerchantConfirmMessage { get; set; }
-
         public string MerchantRefuseTradeMessage { get; set; }
-
         public string MerchantSell { get; set; }
-
         public string MerchantStackErrorMessage { get; set; }
-
         public string MerchantTradeCompletedMessage { get; set; }
-
         public string MerchantTradeErrorMessage { get; set; }
-
         public string MerchantWarningMessage { get; set; }
-
         public double MessageClearInterval { get; set; }
-
         public int MinimumHp { get; set; }
-
         public int MonsterSpellSuccessRate { get; set; }
-
         public double MorFasNadurStrength { get; set; }
-
         public int MpGainFactor { get; set; }
-
+        public bool MultiUserLogin { get; set; }
         public double MundaneRespawnInterval { get; set; }
 
         public string NoManaMessage { get; set; }
@@ -258,6 +212,7 @@ namespace Darkages
 
         public int PlayerLevelCap { get; set; }
 
+        public int PVPMap { get; set; }
         public string ReapMessage { get; set; }
 
         public string ReapMessageDuringAction { get; set; }
@@ -302,6 +257,9 @@ namespace Darkages
 
         public int TransitionZone { get; set; }
 
+        public bool UseLobby { get; set; }
+        public bool UseLoruleItemRarity { get; set; }
+        public bool UseLoruleVariants { get; set; }
         public string UserDroppedGoldMsg { get; set; }
 
         public int VeryNearByProximity { get; set; }
@@ -317,40 +275,5 @@ namespace Darkages
         public string WrongClassMessage { get; set; }
 
         public string YouDroppedGoldMsg { get; set; }
-
-        public int MaxHP { get; set; }
-
-        public bool UseLoruleVariants { get; set; }
-
-        public bool UseLoruleItemRarity { get; set; }
-
-        public string ItemNotRequiredMsg { get; set; }
-
-        public string DeathReepingMessage { get; set; }
-
-        public int DeathMapX { get; set; }
-
-        public int DeathMapY { get; set; }
-
-        public int PVPMap { get; set; }
-
-        public bool DevMode { get; set; }
-
-        public int ClientVersion { get; set; }
-
-        public bool UseLobby { get; set; }
-
-        public int LOGIN_PORT { get; set; }
-
-        public bool GiveAssailOnCreate { get; set; }
-    }
-
-    public class GameSetting
-    {
-        [JsonProperty] public string SettingOn { get; set; }
-
-        [JsonProperty] public string SettingOff { get; set; }
-
-        [JsonProperty] public bool Enabled { get; set; }
     }
 }

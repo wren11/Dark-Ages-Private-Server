@@ -26,7 +26,6 @@ namespace Darkages.Types
         LongRanged = 1 << 14,
         Trap = 1 << 15,
 
-
         NormalEquipment = Equipable | Repairable | Tradeable | Sellable | Bankable | Dropable,
         NormalEquipPerish = NormalEquipment | Perishable,
         NormalEquipElementPerish = NormalEquipment | Perishable | Elemental,

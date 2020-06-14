@@ -1,13 +1,176 @@
 ﻿#region
 
+using Darkages.Types;
 using System.Collections.Generic;
 using System.Linq;
-using Darkages.Types;
 
 #endregion
 
 namespace Darkages.Network.ServerFormats
 {
+    public interface IDialogData : IFormattable
+    {
+        byte Type { get; }
+    }
+
+    public class BankingData : IDialogData
+    {
+        public BankingData(ushort step, IEnumerable<byte> items)
+        {
+            Step = step;
+            Items = items;
+        }
+
+        public IEnumerable<byte> Items { get; set; }
+        public ushort Step { get; set; }
+
+        public byte Type => 0x05;
+
+        public void Serialize(NetworkPacketReader reader)
+        {
+        }
+
+        public void Serialize(NetworkPacketWriter writer)
+        {
+            writer.Write((byte)Step);
+            writer.Write(
+                (short)Items.Count());
+
+            foreach (var item in Items)
+                writer.Write(item);
+        }
+    }
+
+    public class ItemSellData : IDialogData
+    {
+        public ItemSellData(ushort step, IEnumerable<byte> items)
+        {
+            Step = step;
+            Items = items;
+        }
+
+        public IEnumerable<byte> Items { get; set; }
+        public ushort Step { get; set; }
+
+        public byte Type => 0x05;
+
+        public void Serialize(NetworkPacketReader reader)
+        {
+        }
+
+        public void Serialize(NetworkPacketWriter writer)
+        {
+            writer.Write(Type);
+            writer.Write(
+                (short)Items.Count());
+
+            foreach (var item in Items)
+                writer.Write(item);
+        }
+    }
+
+    public class ItemShopData : IDialogData
+    {
+        public ItemShopData(ushort step, IEnumerable<ItemTemplate> items)
+        {
+            Step = step;
+            Items = items;
+        }
+
+        public IEnumerable<ItemTemplate> Items { get; set; }
+        public ushort Step { get; set; }
+
+        public byte Type => 0x04;
+
+        public void Serialize(NetworkPacketReader reader)
+        {
+        }
+
+        public void Serialize(NetworkPacketWriter writer)
+        {
+            writer.Write(Step);
+            writer.Write((ushort)Items.Count());
+
+            foreach (var item in Items)
+            {
+                writer.Write(item.DisplayImage);
+                writer.Write((byte)item.Color);
+                writer.Write(item.Value);
+                writer.WriteStringA(item.Name);
+                writer.WriteStringA(item.Class.ToString());
+            }
+        }
+    }
+
+    public class OptionsData : List<OptionsDataItem>, IDialogData
+    {
+        public OptionsData(IEnumerable<OptionsDataItem> collection)
+            : base(collection)
+        {
+        }
+
+        public byte Type => 0x00;
+
+        public void Serialize(NetworkPacketReader reader)
+        {
+        }
+
+        public void Serialize(NetworkPacketWriter writer)
+        {
+            writer.Write(
+                (byte)Count);
+
+            foreach (var option in this)
+                if (option.Text != null)
+                {
+                    writer.WriteStringA(option.Text);
+                    writer.Write(option.Step);
+                }
+        }
+    }
+
+    public class OptionsDataItem
+    {
+        public OptionsDataItem(short step, string text)
+        {
+            Step = step;
+            Text = text;
+        }
+
+        public short Step { get; set; }
+        public string Text { get; set; }
+    }
+
+    public class OptionsPlusArgsData : List<OptionsDataItem>, IDialogData
+    {
+        public OptionsPlusArgsData(IEnumerable<OptionsDataItem> collection, string args)
+            : base(collection)
+        {
+            Args = args;
+        }
+
+        public string Args { get; set; }
+
+        public byte Type => 0x01;
+
+        public void Serialize(NetworkPacketReader reader)
+        {
+        }
+
+        public void Serialize(NetworkPacketWriter writer)
+        {
+            writer.WriteStringA(Args);
+            writer.Write(
+                (byte)Count);
+
+            foreach (var option in this)
+            {
+                writer.WriteStringA(option.Text);
+                writer.Write(option.Step);
+            }
+        }
+    }
+
     public class PopupFormat : NetworkFormat
     {
         public PopupFormat(Popup lpPopup, string lptext, IDialogData data)
@@ -23,8 +186,8 @@ namespace Darkages.Network.ServerFormats
         }
 
         public Popup _popup { get; set; }
-        public string Text { get; set; }
         public IDialogData Data { get; set; }
+        public string Text { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -32,16 +195,16 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte) 0x00);
-            writer.Write((byte) 0x01);
-            writer.Write((uint) _popup.Id);
-            writer.Write((byte) 0x02);
+            writer.Write((byte)0x00);
+            writer.Write((byte)0x01);
+            writer.Write((uint)_popup.Id);
+            writer.Write((byte)0x02);
             writer.Write(_popup.Template.SpriteId);
-            writer.Write((byte) 0x00);
-            writer.Write((byte) 0x01);
-            writer.Write((byte) 0x02);
-            writer.Write((byte) 0x01);
-            writer.Write((byte) 0x00);
+            writer.Write((byte)0x00);
+            writer.Write((byte)0x01);
+            writer.Write((byte)0x02);
+            writer.Write((byte)0x01);
+            writer.Write((byte)0x00);
             writer.WriteStringB(_popup.Template.Name);
             writer.WriteStringB(Text);
             writer.Write(Data);
@@ -76,275 +239,22 @@ namespace Darkages.Network.ServerFormats
         public override void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(Data.Type);
-            writer.Write((byte) 0x01);
-            writer.Write((uint) Mundane.Serial);
-            writer.Write((byte) 0x02);
+            writer.Write((byte)0x01);
+            writer.Write((uint)Mundane.Serial);
+            writer.Write((byte)0x02);
 
-            writer.Write((ushort) Mundane.Template.Image);
-            writer.Write((byte) 0x00);
+            writer.Write((ushort)Mundane.Template.Image);
+            writer.Write((byte)0x00);
 
-            writer.Write((byte) 0x01);
-            writer.Write((byte) 0x02);
-            writer.Write((byte) 0x01);
+            writer.Write((byte)0x01);
+            writer.Write((byte)0x02);
+            writer.Write((byte)0x01);
 
             writer.Write(byte.MinValue);
 
             writer.WriteStringB(Mundane.Template.Name);
             writer.WriteStringB(Text);
             writer.Write(Data);
-        }
-    }
-
-    public interface IDialogData : IFormattable
-    {
-        byte Type { get; }
-    }
-
-    public class OptionsDataItem
-    {
-        public OptionsDataItem(short step, string text)
-        {
-            Step = step;
-            Text = text;
-        }
-
-        public string Text { get; set; }
-        public short Step { get; set; }
-    }
-
-    public class OptionsData : List<OptionsDataItem>, IDialogData
-    {
-        public OptionsData(IEnumerable<OptionsDataItem> collection)
-            : base(collection)
-        {
-        }
-
-        public byte Type => 0x00;
-
-        public void Serialize(NetworkPacketReader reader)
-        {
-        }
-
-        public void Serialize(NetworkPacketWriter writer)
-        {
-            writer.Write(
-                (byte) Count);
-
-            foreach (var option in this)
-                if (option.Text != null)
-                {
-                    writer.WriteStringA(option.Text);
-                    writer.Write(option.Step);
-                }
-        }
-    }
-
-    public class OptionsPlusArgsData : List<OptionsDataItem>, IDialogData
-    {
-        public OptionsPlusArgsData(IEnumerable<OptionsDataItem> collection, string args)
-            : base(collection)
-        {
-            Args = args;
-        }
-
-        public string Args { get; set; }
-
-        public byte Type => 0x01;
-
-        public void Serialize(NetworkPacketReader reader)
-        {
-        }
-
-        public void Serialize(NetworkPacketWriter writer)
-        {
-            writer.WriteStringA(Args);
-            writer.Write(
-                (byte) Count);
-
-            foreach (var option in this)
-            {
-                writer.WriteStringA(option.Text);
-                writer.Write(option.Step);
-            }
-        }
-    }
-
-    public class TextInputData : IDialogData
-    {
-        public ushort Step { get; set; }
-
-        public byte Type => 0x02;
-
-        public void Serialize(NetworkPacketReader reader)
-        {
-        }
-
-        public void Serialize(NetworkPacketWriter writer)
-        {
-            writer.Write(Step);
-        }
-    }
-
-    public class ItemShopData : IDialogData
-    {
-        public ItemShopData(ushort step, IEnumerable<ItemTemplate> items)
-        {
-            Step = step;
-            Items = items;
-        }
-
-        public IEnumerable<ItemTemplate> Items { get; set; }
-        public ushort Step { get; set; }
-
-        public byte Type => 0x04;
-
-        public void Serialize(NetworkPacketReader reader)
-        {
-        }
-
-        public void Serialize(NetworkPacketWriter writer)
-        {
-            writer.Write(Step);
-            writer.Write((ushort) Items.Count());
-
-            foreach (var item in Items)
-            {
-                writer.Write(item.DisplayImage);
-                writer.Write((byte) item.Color);
-                writer.Write(item.Value);
-                writer.WriteStringA(item.Name);
-                writer.WriteStringA(item.Class.ToString());
-            }
-        }
-    }
-
-    public class WithdrawBankData : IDialogData
-    {
-        public WithdrawBankData(ushort step, Bank data)
-        {
-            Step = step;
-            Data = data;
-        }
-
-        public Bank Data { get; set; }
-        public ushort Step { get; set; }
-
-        public byte Type => 0x04;
-
-        public void Serialize(NetworkPacketReader reader)
-        {
-        }
-
-        public void Serialize(NetworkPacketWriter writer)
-        {
-            writer.Write(Step);
-            writer.Write((ushort) Data.Items.Count);
-
-            foreach (var str in Data.Items.Keys)
-            {
-                if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(str))
-                    continue;
-
-                var item = ServerContextBase.GlobalItemTemplateCache[str];
-
-                if (item == null)
-                    continue;
-
-                writer.Write(item.DisplayImage);
-                writer.Write((byte) item.Color);
-                writer.Write((uint) Data.Items[str]);
-                writer.WriteStringA(item.Name);
-                writer.WriteStringA(item.Class.ToString());
-            }
-        }
-    }
-
-    public class BankingData : IDialogData
-    {
-        public BankingData(ushort step, IEnumerable<byte> items)
-        {
-            Step = step;
-            Items = items;
-        }
-
-        public IEnumerable<byte> Items { get; set; }
-        public ushort Step { get; set; }
-
-        public byte Type => 0x05;
-
-        public void Serialize(NetworkPacketReader reader)
-        {
-        }
-
-        public void Serialize(NetworkPacketWriter writer)
-        {
-            writer.Write((byte) Step);
-            writer.Write(
-                (short) Items.Count());
-
-            foreach (var item in Items)
-                writer.Write(item);
-        }
-    }
-
-    public class ItemSellData : IDialogData
-    {
-        public ItemSellData(ushort step, IEnumerable<byte> items)
-        {
-            Step = step;
-            Items = items;
-        }
-
-        public IEnumerable<byte> Items { get; set; }
-        public ushort Step { get; set; }
-
-        public byte Type => 0x05;
-
-        public void Serialize(NetworkPacketReader reader)
-        {
-        }
-
-        public void Serialize(NetworkPacketWriter writer)
-        {
-            writer.Write(Type);
-            writer.Write(
-                (short) Items.Count());
-
-            foreach (var item in Items)
-                writer.Write(item);
-        }
-    }
-
-    public class SpellAcquireData : IDialogData
-    {
-        public SpellAcquireData(ushort step, IEnumerable<SpellTemplate> spells)
-        {
-            Step = step;
-            Spells = spells;
-        }
-
-        public IEnumerable<SpellTemplate> Spells { get; set; }
-        public ushort Step { get; set; }
-
-        public byte Type => 0x06;
-
-        public void Serialize(NetworkPacketReader reader)
-        {
-        }
-
-        public void Serialize(NetworkPacketWriter writer)
-        {
-            writer.Write(Step);
-            writer.Write(
-                (ushort) Spells.Count());
-
-            foreach (var spell in Spells)
-            {
-                writer.Write((byte) 0x02);
-                writer.Write((ushort) spell.Icon);
-                writer.Write((byte) 0x00);
-                writer.WriteStringA(spell.Name);
-            }
         }
     }
 
@@ -369,14 +279,68 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write(Step);
             writer.Write(
-                (ushort) Skills.Count());
+                (ushort)Skills.Count());
 
             foreach (var skill in Skills)
             {
-                writer.Write((byte) 0x03);
-                writer.Write((ushort) skill.Icon);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x03);
+                writer.Write((ushort)skill.Icon);
+                writer.Write((byte)0x00);
                 writer.WriteStringA(skill.Name);
+            }
+        }
+    }
+
+    public class SkillForfeitData : IDialogData
+    {
+        public SkillForfeitData(ushort step)
+        {
+            Step = step;
+        }
+
+        public ushort Step { get; set; }
+
+        public byte Type => 0x09;
+
+        public void Serialize(NetworkPacketReader reader)
+        {
+        }
+
+        public void Serialize(NetworkPacketWriter writer)
+        {
+            writer.Write(Step);
+        }
+    }
+
+    public class SpellAcquireData : IDialogData
+    {
+        public SpellAcquireData(ushort step, IEnumerable<SpellTemplate> spells)
+        {
+            Step = step;
+            Spells = spells;
+        }
+
+        public IEnumerable<SpellTemplate> Spells { get; set; }
+        public ushort Step { get; set; }
+
+        public byte Type => 0x06;
+
+        public void Serialize(NetworkPacketReader reader)
+        {
+        }
+
+        public void Serialize(NetworkPacketWriter writer)
+        {
+            writer.Write(Step);
+            writer.Write(
+                (ushort)Spells.Count());
+
+            foreach (var spell in Spells)
+            {
+                writer.Write((byte)0x02);
+                writer.Write((ushort)spell.Icon);
+                writer.Write((byte)0x00);
+                writer.WriteStringA(spell.Name);
             }
         }
     }
@@ -402,16 +366,11 @@ namespace Darkages.Network.ServerFormats
         }
     }
 
-    public class SkillForfeitData : IDialogData
+    public class TextInputData : IDialogData
     {
-        public SkillForfeitData(ushort step)
-        {
-            Step = step;
-        }
-
         public ushort Step { get; set; }
 
-        public byte Type => 0x09;
+        public byte Type => 0x02;
 
         public void Serialize(NetworkPacketReader reader)
         {
@@ -420,6 +379,47 @@ namespace Darkages.Network.ServerFormats
         public void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(Step);
+        }
+    }
+
+    public class WithdrawBankData : IDialogData
+    {
+        public WithdrawBankData(ushort step, Bank data)
+        {
+            Step = step;
+            Data = data;
+        }
+
+        public Bank Data { get; set; }
+        public ushort Step { get; set; }
+
+        public byte Type => 0x04;
+
+        public void Serialize(NetworkPacketReader reader)
+        {
+        }
+
+        public void Serialize(NetworkPacketWriter writer)
+        {
+            writer.Write(Step);
+            writer.Write((ushort)Data.Items.Count);
+
+            foreach (var str in Data.Items.Keys)
+            {
+                if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(str))
+                    continue;
+
+                var item = ServerContextBase.GlobalItemTemplateCache[str];
+
+                if (item == null)
+                    continue;
+
+                writer.Write(item.DisplayImage);
+                writer.Write((byte)item.Color);
+                writer.Write((uint)Data.Items[str]);
+                writer.WriteStringA(item.Name);
+                writer.WriteStringA(item.Class.ToString());
+            }
         }
     }
 }

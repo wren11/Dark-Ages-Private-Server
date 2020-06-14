@@ -1,9 +1,9 @@
 ﻿#region
 
-using System;
-using System.Threading.Tasks;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
+using System;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -12,10 +12,9 @@ namespace Darkages.Scripting.Scripts.Skills
     [Script("Charge", "Dean")]
     public class Charge : SkillScript
     {
-        private readonly Random rand = new Random();
         public Skill _skill;
-
         public Sprite Target;
+        private readonly Random rand = new Random();
 
         public Charge(Skill skill) : base(skill)
         {
@@ -84,7 +83,6 @@ namespace Darkages.Scripting.Scripts.Skills
                             if (sprite.Direction == 3)
                                 position.X++;
 
-
                             aisling.Client.WarpTo(position);
                         }
                     }
@@ -105,9 +103,8 @@ namespace Darkages.Scripting.Scripts.Skills
                 {
                     if (Target is Monster || Target is Mundane || Target is Aisling)
                         Target.Show(Scope.NearbyAislings,
-                            new ServerFormat29((uint) sprite.Serial, (uint) Target.Serial,
+                            new ServerFormat29((uint)sprite.Serial, (uint)Target.Serial,
                                 Skill.Template.TargetAnimation, 0, 100));
-
 
                     sprite.Show(Scope.NearbyAislings, action);
                 }

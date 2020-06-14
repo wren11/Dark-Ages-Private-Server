@@ -15,10 +15,10 @@ namespace Darkages.Network.ClientFormats
             Command = 0x39;
         }
 
-        public byte Type { get; set; }
+        public string Args { get; set; }
         public int Serial { get; set; }
         public ushort Step { get; set; }
-        public string Args { get; set; }
+        public byte Type { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

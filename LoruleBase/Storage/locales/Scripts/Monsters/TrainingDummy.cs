@@ -1,12 +1,12 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 #endregion
 
@@ -28,13 +28,18 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         {
         }
 
-        public override void OnSkulled(GameClient client)
-        {
-            Monster.Animate(24);
-        }
-
         public override void OnAttacked(GameClient client)
         {
+        }
+
+        public override void OnCast(GameClient client)
+        {
+        }
+
+        public override void OnClick(GameClient client)
+        {
+            client.SendMessage(0x02,
+                $"(Lv {Monster.Template.Level}, HP: {Monster.CurrentHp}/{Monster.MaximumHp}, AC: {Monster.Ac}, O: {Monster.OffenseElement}, D: {Monster.DefenseElement})");
         }
 
         public override void OnDamaged(GameClient client, int dmg, Sprite source)
@@ -60,13 +65,10 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             Monster.Show(Scope.NearbyAislings,
                 new ServerFormat0D
                 {
-                    Serial = Monster.Serial, Text = $"{client.Aisling.Username}'s {cls}: {dmg} DMG.\n",
+                    Serial = Monster.Serial,
+                    Text = $"{client.Aisling.Username}'s {cls}: {dmg} DMG.\n",
                     Type = 0x01
                 });
-        }
-
-        public override void OnCast(GameClient client)
-        {
         }
 
         public override void OnDeath(GameClient client)
@@ -74,14 +76,13 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             Monster.CurrentHp = Monster.Template.MaximumHP;
         }
 
-        public override void OnClick(GameClient client)
-        {
-            client.SendMessage(0x02,
-                $"(Lv {Monster.Template.Level}, HP: {Monster.CurrentHp}/{Monster.MaximumHp}, AC: {Monster.Ac}, O: {Monster.OffenseElement}, D: {Monster.DefenseElement})");
-        }
-
         public override void OnLeave(GameClient client)
         {
+        }
+
+        public override void OnSkulled(GameClient client)
+        {
+            Monster.Animate(24);
         }
 
         public override void Update(TimeSpan elapsedTime)

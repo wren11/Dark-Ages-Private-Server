@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Threading.Tasks;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -18,31 +18,6 @@ namespace Darkages.Scripting.Scripts.Skills
         public Destroyer(Skill skill) : base(skill)
         {
             _skill = skill;
-        }
-
-        public override void OnFailed(Sprite sprite)
-        {
-            if (sprite is Aisling)
-            {
-                var client = (sprite as Aisling).Client;
-                if (Target != null)
-                    client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29(Skill.Template.MissAnimation, (ushort) Target.XPos, (ushort) Target.YPos));
-            }
-        }
-
-        public override void OnSuccess(Sprite sprite)
-        {
-        }
-
-        public override void OnUse(Sprite sprite)
-        {
-            if (sprite is Aisling)
-            {
-                var client = (sprite as Aisling).Client;
-                if (client.Aisling != null)
-                    DestroyAll(client);
-            }
         }
 
         public void DestroyAll(GameClient client)
@@ -69,6 +44,31 @@ namespace Darkages.Scripting.Scripts.Skills
                     obj.ApplyDamage(client.Aisling, -1, false, 40);
                 }
             });
+        }
+
+        public override void OnFailed(Sprite sprite)
+        {
+            if (sprite is Aisling)
+            {
+                var client = (sprite as Aisling).Client;
+                if (Target != null)
+                    client.Aisling.Show(Scope.NearbyAislings,
+                        new ServerFormat29(Skill.Template.MissAnimation, (ushort)Target.XPos, (ushort)Target.YPos));
+            }
+        }
+
+        public override void OnSuccess(Sprite sprite)
+        {
+        }
+
+        public override void OnUse(Sprite sprite)
+        {
+            if (sprite is Aisling)
+            {
+                var client = (sprite as Aisling).Client;
+                if (client.Aisling != null)
+                    DestroyAll(client);
+            }
         }
     }
 }

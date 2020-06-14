@@ -1,10 +1,10 @@
 ﻿#region
 
+using Darkages.Common;
+using Darkages.Network.Object;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Darkages.Common;
-using Darkages.Network.Object;
 
 #endregion
 
@@ -12,31 +12,9 @@ namespace Darkages.Types
 {
     public class Party : ObjectManager
     {
-        public string LeaderName { get; set; }
         public int Id { get; set; }
-
+        public string LeaderName { get; set; }
         public List<Aisling> PartyMembers => GetObjects<Aisling>(null, sprite => sprite.GroupId == Id).ToList();
-
-        public static Party CreateParty(Aisling partyLeader)
-        {
-            if (partyLeader == null) throw new ArgumentNullException(nameof(partyLeader));
-
-            if (partyLeader.GroupId != 0)
-                return null;
-
-            var party = new Party {LeaderName = partyLeader.Username};
-            var pendingId = Generator.GenerateNumber();
-
-            while (ServerContextBase.GlobalGroupCache.ContainsKey(pendingId))
-                pendingId = Generator.GenerateNumber();
-
-            party.Id = pendingId;
-            party.LeaderName = partyLeader.Username;
-            partyLeader.GroupId = party.Id;
-
-            ServerContextBase.GlobalGroupCache.Add(party.Id, party);
-            return party;
-        }
 
         public static bool AddPartyMember(Aisling partyLeader, Aisling playerToAdd)
         {
@@ -91,6 +69,38 @@ namespace Darkages.Types
             return true;
         }
 
+        public static Party CreateParty(Aisling partyLeader)
+        {
+            if (partyLeader == null) throw new ArgumentNullException(nameof(partyLeader));
+
+            if (partyLeader.GroupId != 0)
+                return null;
+
+            var party = new Party { LeaderName = partyLeader.Username };
+            var pendingId = Generator.GenerateNumber();
+
+            while (ServerContextBase.GlobalGroupCache.ContainsKey(pendingId))
+                pendingId = Generator.GenerateNumber();
+
+            party.Id = pendingId;
+            party.LeaderName = partyLeader.Username;
+            partyLeader.GroupId = party.Id;
+
+            ServerContextBase.GlobalGroupCache.Add(party.Id, party);
+            return party;
+        }
+
+        public static void DisbandParty(Party group)
+        {
+            if (!ServerContextBase.GlobalGroupCache.ContainsKey(group.Id)) return;
+            if (!ServerContextBase.GlobalGroupCache.Remove(group.Id, out var removedValue)) return;
+            foreach (var player in group.PartyMembers)
+            {
+                player.GroupId = 0;
+                player.Client.SendMessage("The party has now been disbanded.");
+            }
+        }
+
         public static void RemovePartyMember(Aisling playerToRemove)
         {
             if (ServerContextBase.GlobalGroupCache.ContainsKey(playerToRemove.GroupId))
@@ -121,17 +131,6 @@ namespace Darkages.Types
                             player.Client.SendMessage($"{nextPlayer.Username} is now the party leader.");
                     }
                 }
-            }
-        }
-
-        public static void DisbandParty(Party group)
-        {
-            if (!ServerContextBase.GlobalGroupCache.ContainsKey(group.Id)) return;
-            if (!ServerContextBase.GlobalGroupCache.Remove(group.Id, out var removedValue)) return;
-            foreach (var player in group.PartyMembers)
-            {
-                player.GroupId = 0;
-                player.Client.SendMessage("The party has now been disbanded.");
             }
         }
 

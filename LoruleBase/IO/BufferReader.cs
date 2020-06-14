@@ -17,6 +17,16 @@ namespace Darkages.IO
         {
         }
 
+        public override short ReadInt16()
+        {
+            return (short)ReadUInt16();
+        }
+
+        public override int ReadInt32()
+        {
+            return (int)ReadUInt32();
+        }
+
         public IPAddress ReadIPAddress()
         {
             var ipBuffer = new byte[4];
@@ -27,18 +37,6 @@ namespace Darkages.IO
             ipBuffer[0] = ReadByte();
 
             return new IPAddress(ipBuffer);
-        }
-
-        public string ReadStringA()
-        {
-            return encoding.GetString(
-                ReadBytes(ReadByte()));
-        }
-
-        public string ReadStringB()
-        {
-            return encoding.GetString(
-                ReadBytes(ReadUInt16()));
         }
 
         public override string ReadString()
@@ -54,26 +52,28 @@ namespace Darkages.IO
             return text;
         }
 
-        public override short ReadInt16()
+        public string ReadStringA()
         {
-            return (short) ReadUInt16();
+            return encoding.GetString(
+                ReadBytes(ReadByte()));
+        }
+
+        public string ReadStringB()
+        {
+            return encoding.GetString(
+                ReadBytes(ReadUInt16()));
         }
 
         public override ushort ReadUInt16()
         {
-            return (ushort) ((
+            return (ushort)((
                                  ReadByte() << 8) |
                              ReadByte());
         }
 
-        public override int ReadInt32()
-        {
-            return (int) ReadUInt32();
-        }
-
         public override uint ReadUInt32()
         {
-            return (uint) ((
+            return (uint)((
                                ReadUInt16() << 16) |
                            ReadUInt16());
         }

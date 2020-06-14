@@ -20,7 +20,7 @@
         {
             writer.Write(Size);
             writer.Write(Data);
-            writer.Write((byte) 0x02);
+            writer.Write((byte)0x02);
         }
     }
 }

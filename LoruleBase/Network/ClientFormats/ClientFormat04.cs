@@ -9,8 +9,8 @@
         }
 
         public byte Gender { get; set; }
-        public byte HairStyle { get; set; }
         public byte HairColor { get; set; }
+        public byte HairStyle { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

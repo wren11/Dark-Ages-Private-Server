@@ -1,12 +1,12 @@
 ﻿#region
 
+using Darkages.Network.Game.Components;
+using Darkages.Network.Object;
+using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Darkages.Network.Game.Components;
-using Darkages.Network.Object;
-using Darkages.Types;
 
 #endregion
 
@@ -14,12 +14,11 @@ namespace Darkages.Network.Game
 {
     public partial class GameServer
     {
+        public ObjectService ObjectFactory = new ObjectService();
+        public Dictionary<Type, GameServerComponent> ServerComponents;
         private readonly TimeSpan _heavyUpdateSpan;
 
         private DateTime _lastHeavyUpdate = DateTime.UtcNow;
-
-        public ObjectService ObjectFactory = new ObjectService();
-        public Dictionary<Type, GameServerComponent> ServerComponents;
 
         public GameServer(int capacity) : base(capacity)
         {
@@ -28,127 +27,10 @@ namespace Darkages.Network.Game
             InitializeGameServer();
         }
 
-        private void AutoSave(GameClient client)
-        {
-            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContextBase.Config.SaveRate) client.Save();
-        }
-
-        private void MainServerLoop()
-        {
-            _lastHeavyUpdate = DateTime.UtcNow;
-
-            while (ServerContextBase.Running)
-            {
-                var elapsedTime = DateTime.UtcNow - _lastHeavyUpdate;
-
-                try
-                {
-                    UpdateClients(elapsedTime);
-                    UpdateComponents(elapsedTime);
-                }
-                catch (Exception e)
-                {
-                    ServerContext.Logger("Error in MainServerLoop().");
-                    ServerContext.Error(e);
-
-                    continue;
-                }
-
-                _lastHeavyUpdate = DateTime.UtcNow;
-                Thread.Sleep(_heavyUpdateSpan);
-            }
-        }
-
-        public void InitializeGameServer()
-        {
-            InitComponentCache();
-        }
-
-        private void InitComponentCache()
-        {
-            lock (ServerContext.SyncLock)
-            {
-                ServerComponents = new Dictionary<Type, GameServerComponent>
-                {
-                    [typeof(Save)] = new Save(this),
-                    [typeof(ObjectComponent)] = new ObjectComponent(this),
-                    [typeof(MonolithComponent)] = new MonolithComponent(this),
-                    [typeof(DaytimeComponent)] = new DaytimeComponent(this),
-                    [typeof(MundaneComponent)] = new MundaneComponent(this),
-                    [typeof(MessageComponent)] = new MessageComponent(this),
-                    [typeof(PingComponent)] = new PingComponent(this)
-                };
-            }
-        }
-
-
-        private void UpdateComponents(TimeSpan elapsedTime)
-        {
-            try
-            {
-                lock (ServerComponents)
-                {
-                    foreach (var component in ServerComponents.Values)
-                        component.Update(elapsedTime);
-                }
-            }
-            catch (Exception e)
-            {
-                ServerContext.Error(e);
-            }
-        }
-
-        private void UpdateAreas(TimeSpan elapsedTime)
-        {
-            var values = ServerContextBase.GlobalMapCache.Select(i => i.Value).ToArray();
-
-            try
-            {
-                lock (values)
-                {
-                    foreach (var area in values)
-                        area.Update(elapsedTime);
-                }
-            }
-            catch (Exception e)
-            {
-                ServerContext.Error(e);
-            }
-        }
-
-        public void UpdateClients(TimeSpan elapsedTime)
-        {
-            lock (Clients)
-            {
-                try
-                {
-                    foreach (var client in Clients.Where(client => client?.Aisling != null))
-                    {
-                        client.Aisling.Map?.Update(elapsedTime);
-
-                        ObjectComponent.UpdateClientObjects(client.Aisling);
-
-                        if (!client.IsWarping)
-                            Pulse(elapsedTime, client);
-                        else if (client.IsWarping && !client.InMapTransition)
-                            if (client.CanSendLocation && !client.IsRefreshing &&
-                                client.Aisling.CurrentMapId == ServerContextBase.Config.PVPMap)
-                                client.SendLocation();
-                    }
-                }
-                catch
-                {
-                }
-            }
-        }
-
-        private void Pulse(TimeSpan elapsedTime, GameClient client)
-        {
-            client.Update(elapsedTime);
-        }
-
         public override void ClientDisconnected(GameClient client)
         {
+            if (client == null) throw new ArgumentNullException(nameof(client));
+
             if (client?.Aisling == null)
                 return;
 
@@ -177,11 +59,16 @@ namespace Darkages.Network.Game
             }
         }
 
+        public void InitializeGameServer()
+        {
+            InitComponentCache();
+        }
+
         public override void Start(int port)
         {
             base.Start(port);
 
-            var serverThread = new Thread(MainServerLoop) {Priority = ThreadPriority.Highest};
+            var serverThread = new Thread(MainServerLoop) { Priority = ThreadPriority.Highest };
 
             try
             {
@@ -191,6 +78,108 @@ namespace Darkages.Network.Game
             catch (ThreadAbortException)
             {
                 ServerContextBase.Running = false;
+            }
+        }
+
+        public void UpdateClients(TimeSpan elapsedTime)
+        {
+            lock (Clients)
+            {
+                foreach (var client in Clients.Where(client => client?.Aisling != null))
+                {
+                    client.Aisling.Map?.Update(elapsedTime);
+
+                    ObjectComponent.UpdateClientObjects(client.Aisling);
+
+                    if (!client.IsWarping)
+                        Pulse(elapsedTime, client);
+                    else if (client.IsWarping && !client.InMapTransition)
+                        if (client.CanSendLocation && !client.IsRefreshing &&
+                            client.Aisling.CurrentMapId == ServerContextBase.Config.PVPMap)
+                            client.SendLocation();
+                }
+            }
+        }
+
+        private static void Pulse(TimeSpan elapsedTime, IGameClient client)
+        {
+            Lorule.Update(() => { client.Update(elapsedTime); });
+        }
+
+        private void AutoSave(GameClient client)
+        {
+            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContextBase.Config.SaveRate) client.Save();
+        }
+
+        private void InitComponentCache()
+        {
+            lock (ServerContext.SyncLock)
+            {
+                ServerComponents = new Dictionary<Type, GameServerComponent>
+                {
+                    [typeof(Save)] = new Save(this),
+                    [typeof(ObjectComponent)] = new ObjectComponent(this),
+                    [typeof(MonolithComponent)] = new MonolithComponent(this),
+                    [typeof(DaytimeComponent)] = new DaytimeComponent(this),
+                    [typeof(MundaneComponent)] = new MundaneComponent(this),
+                    [typeof(MessageComponent)] = new MessageComponent(this),
+                    [typeof(PingComponent)] = new PingComponent(this)
+                };
+            }
+        }
+
+        private void MainServerLoop()
+        {
+            _lastHeavyUpdate = DateTime.UtcNow;
+
+            while (true)
+            {
+                var elapsedTime = DateTime.UtcNow - _lastHeavyUpdate;
+
+                Lorule.Update(() =>
+                {
+                    UpdateClients(elapsedTime);
+                    UpdateComponents(elapsedTime);
+                });
+
+                _lastHeavyUpdate = DateTime.UtcNow;
+                Thread.Sleep(_heavyUpdateSpan);
+            }
+        }
+
+        private void UpdateAreas(TimeSpan elapsedTime)
+        {
+            var values = ServerContextBase.GlobalMapCache.Select(i => i.Value).ToArray();
+
+            try
+            {
+                lock (values)
+                {
+                    foreach (var area in values)
+                        area.Update(elapsedTime);
+                }
+            }
+            catch (Exception e)
+            {
+                ServerContext.Error(e);
+            }
+        }
+
+        private void UpdateComponents(TimeSpan elapsedTime)
+        {
+            try
+            {
+                lock (ServerComponents)
+                {
+                    foreach (var component in ServerComponents.Values)
+                    {
+                        component.Update(elapsedTime);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ServerContext.Error(e);
             }
         }
     }

@@ -1,10 +1,10 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System.Collections.Generic;
 
 #endregion
 
@@ -63,7 +63,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
         }
 
-
         public override void OnClick(GameServer server, GameClient client)
         {
             var options = new List<OptionsDataItem>
@@ -83,26 +82,27 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             switch (responseID)
             {
                 case 0x0001:
-                {
-                    var options = new List<OptionsDataItem>
+                    {
+                        var options = new List<OptionsDataItem>
                     {
                         new OptionsDataItem(0x03, "Yes")
                     };
-                    client.SendOptionsDialog(Mundane,
-                        "You must sacrifice vast experience and prove you are worthy to wear the title of Master. Only The most powerful of Aislings pass the requirements needed to proceed. Do you wish to continue?",
-                        options.ToArray());
-                }
+                        client.SendOptionsDialog(Mundane,
+                            "You must sacrifice vast experience and prove you are worthy to wear the title of Master. Only The most powerful of Aislings pass the requirements needed to proceed. Do you wish to continue?",
+                            options.ToArray());
+                    }
                     break;
+
                 case 0x0003:
-                {
-                    var options = new List<OptionsDataItem>
+                    {
+                        var options = new List<OptionsDataItem>
                     {
                         new OptionsDataItem(0x03, "I'm ready.")
                     };
-                    client.SendOptionsDialog(Mundane,
-                        $"To become a master {client.Aisling.Path}, You must have earned {ExpReqs[client.Aisling.Path]} Experience.\nYou must also have obtained the item {ItemsReqs[client.Aisling.Path]}\nHave At least {HPReqs[client.Aisling.Path]} Health and {MPReqs[client.Aisling.Path]} Mana Points\nAnd Finally, You must have mastered using {MaxSkillReqs[client.Aisling.Path]}.",
-                        options.ToArray());
-                }
+                        client.SendOptionsDialog(Mundane,
+                            $"To become a master {client.Aisling.Path}, You must have earned {ExpReqs[client.Aisling.Path]} Experience.\nYou must also have obtained the item {ItemsReqs[client.Aisling.Path]}\nHave At least {HPReqs[client.Aisling.Path]} Health and {MPReqs[client.Aisling.Path]} Mana Points\nAnd Finally, You must have mastered using {MaxSkillReqs[client.Aisling.Path]}.",
+                            options.ToArray());
+                    }
                     break;
             }
         }

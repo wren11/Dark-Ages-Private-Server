@@ -1,12 +1,12 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -17,7 +17,6 @@ namespace Darkages.Types
         public static readonly int LENGTH = 59;
 
         public Dictionary<int, Item> Items = new Dictionary<int, Item>();
-
 
         public Inventory()
         {
@@ -31,34 +30,21 @@ namespace Darkages.Types
 
         public int Length => Items.Count;
 
-        public Item FindInSlot(int Slot)
-        {
-            if (Items.ContainsKey(Slot)) return Items[Slot];
-
-            return null;
-        }
-
         public void Assign(Item Item)
         {
             if (Item != null) Set(Item);
         }
 
-        public new Item[] Get(Predicate<Item> prediate)
+        public bool CanPickup(Aisling player, Item LpItem)
         {
-            return Items.Values.Where(i => i != null && prediate(i)).ToArray();
-        }
+            if (player == null || LpItem == null)
+                return false;
 
-        public Item Has(Predicate<Item> prediate)
-        {
-            return Items.Values.FirstOrDefault(i => i != null && prediate(i));
-        }
+            if (LpItem.Template == null)
+                return false;
 
-        public void Set(Item s)
-        {
-            if (s == null)
-                return;
-
-            if (Items.ContainsKey(s.Slot)) Items[s.Slot] = Clone<Item>(s);
+            return player.CurrentWeight + LpItem.Template.CarryWeight < player.MaximumWeight &&
+                   FindEmpty() != byte.MaxValue;
         }
 
         public byte FindEmpty()
@@ -76,12 +62,44 @@ namespace Darkages.Types
             return byte.MaxValue;
         }
 
-        public void Set(Item s, bool clone = false)
+        public Item FindInSlot(int Slot)
         {
-            if (s == null)
-                return;
+            if (Items.ContainsKey(Slot)) return Items[Slot];
 
-            if (Items.ContainsKey(s.Slot)) Items[s.Slot] = clone ? Clone<Item>(s) : s;
+            return null;
+        }
+
+        public new Item[] Get(Predicate<Item> prediate)
+        {
+            return Items.Values.Where(i => i != null && prediate(i)).ToArray();
+        }
+
+        public Item Has(Predicate<Item> prediate)
+        {
+            return Items.Values.FirstOrDefault(i => i != null && prediate(i));
+        }
+
+        public int Has(Template templateContext)
+        {
+            var items = Items.Where(i => i.Value != null && i.Value.Template.Name == templateContext.Name)
+                .Select(i => i.Value).ToList();
+
+            var anyItem = items.FirstOrDefault();
+
+            if (anyItem?.Template == null)
+                return 0;
+
+            var result = anyItem.Template.CanStack ? items.Sum(i => i.Stacks) : items.Count;
+
+            return result;
+        }
+
+        public int HasCount(Template templateContext)
+        {
+            var items = Items.Where(i => i.Value != null && i.Value.Template.Name == templateContext.Name)
+                .Select(i => i.Value).ToList();
+
+            return items.Count;
         }
 
         public void Remove(GameClient client, Item item)
@@ -104,42 +122,6 @@ namespace Darkages.Types
             return null;
         }
 
-        public int Has(Template templateContext)
-        {
-            var items = Items.Where(i => i.Value != null && i.Value.Template.Name == templateContext.Name)
-                .Select(i => i.Value).ToList();
-
-            var anyItem = items.FirstOrDefault();
-
-            if (anyItem?.Template == null)
-                return 0;
-
-            var result = anyItem.Template.CanStack ? items.Sum(i => i.Stacks) : items.Count;
-
-            return result;
-        }
-
-
-        public int HasCount(Template templateContext)
-        {
-            var items = Items.Where(i => i.Value != null && i.Value.Template.Name == templateContext.Name)
-                .Select(i => i.Value).ToList();
-
-            return items.Count;
-        }
-
-        public bool CanPickup(Aisling player, Item LpItem)
-        {
-            if (player == null || LpItem == null)
-                return false;
-
-            if (LpItem.Template == null)
-                return false;
-
-            return player.CurrentWeight + LpItem.Template.CarryWeight < player.MaximumWeight &&
-                   FindEmpty() != byte.MaxValue;
-        }
-
         public void RemoveRange(GameClient client, Item item, int range)
         {
             var remaining = item.Stacks - range;
@@ -158,11 +140,27 @@ namespace Darkages.Types
             }
             else
             {
-                item.Stacks = (byte) remaining;
+                item.Stacks = (byte)remaining;
                 client.Aisling.Inventory.Set(item, false);
 
                 client.Send(new ServerFormat0F(item));
             }
+        }
+
+        public void Set(Item s)
+        {
+            if (s == null)
+                return;
+
+            if (Items.ContainsKey(s.Slot)) Items[s.Slot] = Clone<Item>(s);
+        }
+
+        public void Set(Item s, bool clone = false)
+        {
+            if (s == null)
+                return;
+
+            if (Items.ContainsKey(s.Slot)) Items[s.Slot] = clone ? Clone<Item>(s) : s;
         }
 
         public void UpdateSlot(GameClient client, Item item)

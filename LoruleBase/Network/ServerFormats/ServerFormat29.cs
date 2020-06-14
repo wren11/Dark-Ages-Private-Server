@@ -37,7 +37,6 @@
             Speed = speed;
         }
 
-
         public override void Serialize(NetworkPacketReader reader)
         {
         }
@@ -46,10 +45,10 @@
         {
             if (CasterSerial == 0)
             {
-                writer.Write((uint) 0);
+                writer.Write((uint)0);
                 writer.Write(CasterEffect);
-                writer.Write((byte) 0x00);
-                writer.Write((byte) Speed);
+                writer.Write((byte)0x00);
+                writer.Write((byte)Speed);
                 writer.Write(X);
                 writer.Write(Y);
             }

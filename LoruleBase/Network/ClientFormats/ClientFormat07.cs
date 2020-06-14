@@ -14,9 +14,8 @@ namespace Darkages.Network.ClientFormats
             Command = 0x07;
         }
 
-
-        public Position Position { get; set; }
         public byte PickupType { get; set; }
+        public Position Position { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

@@ -5,7 +5,9 @@
         public byte Command;
 
         public bool Secured;
+
         public abstract void Serialize(NetworkPacketReader reader);
+
         public abstract void Serialize(NetworkPacketWriter writer);
     }
 }

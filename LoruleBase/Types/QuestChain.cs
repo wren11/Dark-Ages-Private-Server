@@ -11,12 +11,6 @@ namespace Darkages.Types
     {
         private readonly List<Quest> Quests = new List<Quest>();
 
-        private int Index { get; set; }
-
-        public bool CurrentQuestCompleted => CurrentQuest.Completed;
-
-        public Quest GetNextQuest => NextQuest;
-
         public bool AllQuestsCompleted => Quests.TrueForAll(i => i.Completed);
 
         public Quest CurrentQuest
@@ -30,6 +24,9 @@ namespace Darkages.Types
             }
         }
 
+        public bool CurrentQuestCompleted => CurrentQuest.Completed;
+        public Quest GetNextQuest => NextQuest;
+
         public Quest NextQuest
         {
             get
@@ -42,6 +39,7 @@ namespace Darkages.Types
         }
 
         public Quest First => Quests.FirstOrDefault();
+        private int Index { get; set; }
 
         public void AddQuest(Quest lpQuest)
         {

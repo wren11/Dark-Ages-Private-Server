@@ -11,9 +11,8 @@ namespace Darkages.Compression
     {
         [XmlIgnore] public byte[] DeflatedData { get; set; }
 
-        [XmlIgnore] public byte[] InflatedData { get; set; }
-
         [XmlIgnore] public string Filename { get; set; }
+        [XmlIgnore] public byte[] InflatedData { get; set; }
 
         public static T Load<T>(string filename, bool deflated = true)
             where T : CompressableObject, new()
@@ -64,7 +63,6 @@ namespace Darkages.Compression
         {
             InflatedData = CompressionProvider.Inflate(DeflatedData);
         }
-
 
         public virtual void Load(MemoryStream stream)
         {

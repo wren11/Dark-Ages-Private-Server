@@ -1,9 +1,9 @@
 ﻿#region
 
-using System;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
 
 #endregion
 
@@ -64,20 +64,19 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         i.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
 
                         sprite.CurrentHp -= dmg * 2;
-                        ((Aisling) sprite).Client.SendStats(StatusFlags.StructB);
-
+                        ((Aisling)sprite).Client.SendStats(StatusFlags.StructB);
 
                         if (i is Aisling)
                         {
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial, byte.MinValue,
+                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial, byte.MinValue,
                                     Skill.Template.TargetAnimation, 100));
                             (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
                         }
 
                         if (i is Monster || i is Mundane || i is Aisling)
                             client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial,
+                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
                                     Skill.Template.TargetAnimation, 0, 100));
                     }
 
@@ -117,9 +116,8 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 if (target == null)
                     return;
 
-
                 target.Show(Scope.NearbyAislings,
-                    new ServerFormat29((uint) target.Serial, (uint) target.Serial,
+                    new ServerFormat29((uint)target.Serial, (uint)target.Serial,
                         Skill.Template.TargetAnimation, 0, 100));
 
                 var dmg = Convert.ToInt32(target.CurrentHp / 3);
@@ -133,7 +131,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     Number = 0x82,
                     Speed = 20
                 };
-
 
                 target.Show(Scope.NearbyAislings, action);
             }

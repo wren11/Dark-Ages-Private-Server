@@ -9,9 +9,9 @@ namespace Darkages.Storage.locales.debuffs
 {
     public class debuff_frozen : Debuff
     {
-        public override string Name => "frozen";
         public override byte Icon => 50;
         public override int Length => 4;
+        public override string Name => "frozen";
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {

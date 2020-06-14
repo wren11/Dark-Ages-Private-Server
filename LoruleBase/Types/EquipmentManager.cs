@@ -1,10 +1,10 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -21,71 +21,59 @@ namespace Darkages.Types
                 Equipment[i] = null;
         }
 
+        public EquipmentSlot Belt => this[ItemSlots.Waist];
+        public EquipmentSlot Boots => this[ItemSlots.Foot];
         [JsonIgnore] public GameClient Client { get; set; }
 
-        [JsonIgnore] public int Length => Equipment?.Count ?? 0;
-
+        public EquipmentSlot DisplayHelm => this[ItemSlots.Coat];
         public Dictionary<int, EquipmentSlot> Equipment { get; set; }
-
+        public EquipmentSlot Greaves => this[ItemSlots.Leg];
+        [JsonIgnore] public int Length => Equipment?.Count ?? 0;
+        public EquipmentSlot LGauntlet => this[ItemSlots.LArm];
+        public EquipmentSlot LRing => this[ItemSlots.LHand];
+        public EquipmentSlot Overcoat => this[ItemSlots.Trousers];
+        public EquipmentSlot RGauntlet => this[ItemSlots.RArm];
+        public EquipmentSlot RRing => this[ItemSlots.RHand];
+        public EquipmentSlot Armor => this[ItemSlots.Armor];
+        public EquipmentSlot Earring => this[ItemSlots.Earring];
+        public EquipmentSlot FirstAcc => this[ItemSlots.FirstAcc];
+        public EquipmentSlot Helmet => this[ItemSlots.Helmet];
+        public EquipmentSlot Necklace => this[ItemSlots.Necklace];
+        public EquipmentSlot SecondAcc => this[ItemSlots.SecondAcc];
+        public EquipmentSlot Shield => this[ItemSlots.Shield];
+        public EquipmentSlot Weapon => this[ItemSlots.Weapon];
         public EquipmentSlot this[byte idx] => Equipment.ContainsKey(idx) ? Equipment[idx] : null;
 
-        public EquipmentSlot Weapon => this[ItemSlots.Weapon];
-
-        public EquipmentSlot Armor => this[ItemSlots.Armor];
-
-        public EquipmentSlot Shield => this[ItemSlots.Shield];
-
-        public EquipmentSlot Helmet => this[ItemSlots.Helmet];
-
-        public EquipmentSlot Earring => this[ItemSlots.Earring];
-
-        public EquipmentSlot Necklace => this[ItemSlots.Necklace];
-
-        public EquipmentSlot LRing => this[ItemSlots.LHand];
-
-        public EquipmentSlot RRing => this[ItemSlots.RHand];
-
-        public EquipmentSlot LGauntlet => this[ItemSlots.LArm];
-
-        public EquipmentSlot RGauntlet => this[ItemSlots.RArm];
-
-        public EquipmentSlot Belt => this[ItemSlots.Waist];
-
-        public EquipmentSlot Greaves => this[ItemSlots.Leg];
-
-        public EquipmentSlot Boots => this[ItemSlots.Foot];
-
-        public EquipmentSlot FirstAcc => this[ItemSlots.FirstAcc];
-
-        public EquipmentSlot Overcoat => this[ItemSlots.Trousers];
-
-        public EquipmentSlot DisplayHelm => this[ItemSlots.Coat];
-
-        public EquipmentSlot SecondAcc => this[ItemSlots.SecondAcc];
-
-        private void OnEquipmentRemoved(byte displayslot)
+        public void Add(int displayslot, Item item)
         {
-            if (Equipment[displayslot] == null)
+            if (Client == null)
                 return;
 
-            foreach (var script in Equipment[displayslot].Item?.Scripts.Values)
-                script.UnEquipped(Client.Aisling, displayslot);
+            if (displayslot <= 0 || displayslot > 17)
+                return;
 
-            Equipment[displayslot].Item.Equipped = false;
+            if (item?.Template == null)
+                return;
 
-            Client.SendStats(StatusFlags.All);
-            Client.UpdateDisplay();
+            if (!item.Template.Flags.HasFlag(ItemFlags.Equipable))
+                return;
+
+            if (Equipment == null)
+                Equipment = new Dictionary<int, EquipmentSlot>();
+
+            if (RemoveFromExisting(displayslot))
+                AddEquipment(displayslot, item);
         }
 
-        private void OnEquipmentAdded(byte displayslot)
+        public void AddEquipment(int displayslot, Item item)
         {
-            foreach (var script in Equipment[displayslot].Item?.Scripts.Values)
-                script.Equipped(Client.Aisling, displayslot);
+            Equipment[displayslot] = new EquipmentSlot(displayslot, item);
 
-            Equipment[displayslot].Item.Equipped = true;
+            RemoveFromInventory(item);
 
-            Client.SendStats(StatusFlags.All);
-            Client.UpdateDisplay();
+            DisplayToEquipment((byte)displayslot, item);
+
+            OnEquipmentAdded((byte)displayslot);
         }
 
         public void DecreaseDurability()
@@ -124,6 +112,63 @@ namespace Darkages.Types
             }
         }
 
+        public void DisplayToEquipment(byte displayslot, Item item)
+        {
+            Client.Send(new ServerFormat37(item, displayslot));
+        }
+
+        public bool RemoveFromExisting(int displayslot, bool returnit = true)
+        {
+            if (Equipment[displayslot] == null)
+                return true;
+
+            var itemObj = Equipment[displayslot].Item;
+
+            if (itemObj == null)
+                return false;
+
+            RemoveFromSlot(displayslot);
+
+            if (returnit)
+                if (itemObj.GiveTo(Client.Aisling, false))
+                    return true;
+
+            return HandleUnreturnedItem(itemObj);
+        }
+
+        public bool RemoveFromInventory(Item item, bool handleWeight = false)
+        {
+            if (Client.Aisling.Inventory.Remove(item.Slot) != null)
+            {
+                Client.Send(new ServerFormat10(item.Slot));
+
+                if (handleWeight)
+                {
+                    Client.Aisling.CurrentWeight -= item.Template.CarryWeight;
+                    if (Client.Aisling.CurrentWeight < 0)
+                        Client.Aisling.CurrentWeight = 0;
+
+                    Client.SendStats(StatusFlags.StructA);
+                }
+
+                Client.LastItemDropped = item;
+                return true;
+            }
+
+            return true;
+        }
+
+        private bool HandleUnreturnedItem(Item itemObj)
+        {
+            Client.Aisling.CurrentWeight -= itemObj.Template.CarryWeight;
+
+            if (Client.Aisling.CurrentWeight < 0)
+                Client.Aisling.CurrentWeight = 0;
+
+            Client.DelObject(itemObj);
+            return true;
+        }
+
         private void ManageDurabilitySignals(Item item)
         {
             if (item.Durability > item.Template.MaxDurability)
@@ -153,105 +198,40 @@ namespace Darkages.Types
             }
         }
 
-        #region Core Methods
-
-        public void Add(int displayslot, Item item)
+        private void OnEquipmentAdded(byte displayslot)
         {
-            if (Client == null)
-                return;
+            foreach (var script in Equipment[displayslot].Item?.Scripts.Values)
+                script.Equipped(Client.Aisling, displayslot);
 
-            if (displayslot <= 0 || displayslot > 17)
-                return;
+            Equipment[displayslot].Item.Equipped = true;
 
-            if (item?.Template == null)
-                return;
-
-            if (!item.Template.Flags.HasFlag(ItemFlags.Equipable))
-                return;
-
-            if (Equipment == null)
-                Equipment = new Dictionary<int, EquipmentSlot>();
-
-
-            if (RemoveFromExisting(displayslot))
-                AddEquipment(displayslot, item);
+            Client.SendStats(StatusFlags.All);
+            Client.UpdateDisplay();
         }
 
-        public bool RemoveFromExisting(int displayslot, bool returnit = true)
+        private void OnEquipmentRemoved(byte displayslot)
         {
             if (Equipment[displayslot] == null)
-                return true;
+                return;
 
-            var itemObj = Equipment[displayslot].Item;
+            foreach (var script in Equipment[displayslot].Item?.Scripts.Values)
+                script.UnEquipped(Client.Aisling, displayslot);
 
-            if (itemObj == null)
-                return false;
+            Equipment[displayslot].Item.Equipped = false;
 
-            RemoveFromSlot(displayslot);
-
-            if (returnit)
-                if (itemObj.GiveTo(Client.Aisling, false))
-                    return true;
-
-            return HandleUnreturnedItem(itemObj);
+            Client.SendStats(StatusFlags.All);
+            Client.UpdateDisplay();
         }
 
-        private bool HandleUnreturnedItem(Item itemObj)
-        {
-            Client.Aisling.CurrentWeight -= itemObj.Template.CarryWeight;
-
-            if (Client.Aisling.CurrentWeight < 0)
-                Client.Aisling.CurrentWeight = 0;
-
-            Client.DelObject(itemObj);
-            return true;
-        }
+        #region Core Methods
 
         private void RemoveFromSlot(int displayslot)
         {
-            Client.Aisling.Show(Scope.Self, new ServerFormat38((byte) displayslot));
+            Client.Aisling.Show(Scope.Self, new ServerFormat38((byte)displayslot));
 
-            OnEquipmentRemoved((byte) displayslot);
+            OnEquipmentRemoved((byte)displayslot);
 
             Equipment[displayslot] = null;
-        }
-
-        public void AddEquipment(int displayslot, Item item)
-        {
-            Equipment[displayslot] = new EquipmentSlot(displayslot, item);
-
-            RemoveFromInventory(item);
-
-            DisplayToEquipment((byte) displayslot, item);
-
-            OnEquipmentAdded((byte) displayslot);
-        }
-
-        public void DisplayToEquipment(byte displayslot, Item item)
-        {
-            Client.Send(new ServerFormat37(item, displayslot));
-        }
-
-        public bool RemoveFromInventory(Item item, bool handleWeight = false)
-        {
-            if (Client.Aisling.Inventory.Remove(item.Slot) != null)
-            {
-                Client.Send(new ServerFormat10(item.Slot));
-
-                if (handleWeight)
-                {
-                    Client.Aisling.CurrentWeight -= item.Template.CarryWeight;
-                    if (Client.Aisling.CurrentWeight < 0)
-                        Client.Aisling.CurrentWeight = 0;
-
-                    Client.SendStats(StatusFlags.StructA);
-                }
-
-                Client.LastItemDropped = item;
-                return true;
-            }
-
-            return true;
         }
 
         #endregion

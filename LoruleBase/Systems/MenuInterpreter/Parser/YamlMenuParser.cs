@@ -27,18 +27,6 @@ namespace MenuInterpreter.Parser
             RenewState();
         }
 
-        public ParseResult Parse(string filePath)
-        {
-            RenewState();
-
-            var fileData = File.ReadAllText(filePath);
-
-            var input = new StringReader(fileData);
-            var result = _deserializer.Deserialize<ParseResult>(input);
-
-            return result;
-        }
-
         public Interpreter CreateInterpreterFromFile(string filePath)
         {
             var parsed = Parse(filePath);
@@ -95,7 +83,7 @@ namespace MenuInterpreter.Parser
                         GetLinkedId(checkpoint.fail));
 
                     var newId = GetIdForCheckpoint(checkpoint.id);
-                    var item = new CheckpointMenuItem(newId, checkpoint.type, new[] {onSuccess, onFail})
+                    var item = new CheckpointMenuItem(newId, checkpoint.type, new[] { onSuccess, onFail })
                     {
                         Value = checkpoint.value,
                         Amount = checkpoint.amount
@@ -109,31 +97,16 @@ namespace MenuInterpreter.Parser
             return new Interpreter(items, startItem);
         }
 
-        private void RenewState()
+        public ParseResult Parse(string filePath)
         {
-            _currentId = 0;
-            _stepIds = new Dictionary<KeyValuePair<int, int>, int>();
-            _menuIds = new Dictionary<int, int>();
-        }
+            RenewState();
 
-        private int GetNextId()
-        {
-            return ++_currentId;
-        }
+            var fileData = File.ReadAllText(filePath);
 
-        private int GetIdForStep(int seqId, int stepId)
-        {
-            var k = new KeyValuePair<int, int>(seqId, stepId);
-            if (_stepIds.ContainsKey(k) == false) _stepIds.Add(k, GetNextId());
+            var input = new StringReader(fileData);
+            var result = _deserializer.Deserialize<ParseResult>(input);
 
-            return _stepIds[k];
-        }
-
-        private int GetIdForMenu(int menuId)
-        {
-            if (_menuIds.ContainsKey(menuId) == false) _menuIds.Add(menuId, GetNextId());
-
-            return _menuIds[menuId];
+            return result;
         }
 
         private int GetIdForCheckpoint(int checkpointId)
@@ -143,6 +116,20 @@ namespace MenuInterpreter.Parser
             return _checkpointIds[checkpointId];
         }
 
+        private int GetIdForMenu(int menuId)
+        {
+            if (_menuIds.ContainsKey(menuId) == false) _menuIds.Add(menuId, GetNextId());
+
+            return _menuIds[menuId];
+        }
+
+        private int GetIdForStep(int seqId, int stepId)
+        {
+            var k = new KeyValuePair<int, int>(seqId, stepId);
+            if (_stepIds.ContainsKey(k) == false) _stepIds.Add(k, GetNextId());
+
+            return _stepIds[k];
+        }
 
         private int GetLinkedId(Answer answer, int currentSequenceId)
         {
@@ -177,6 +164,18 @@ namespace MenuInterpreter.Parser
             if (link.checkpoint.HasValue) return GetIdForCheckpoint(link.checkpoint.Value);
 
             return Constants.NoLink;
+        }
+
+        private int GetNextId()
+        {
+            return ++_currentId;
+        }
+
+        private void RenewState()
+        {
+            _currentId = 0;
+            _stepIds = new Dictionary<KeyValuePair<int, int>, int>();
+            _menuIds = new Dictionary<int, int>();
         }
     }
 }

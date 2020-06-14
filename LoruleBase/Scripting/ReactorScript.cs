@@ -15,9 +15,12 @@ namespace Darkages.Scripting
 
         public Reactor Reactor { get; set; }
 
-        public abstract void OnTriggered(Aisling aisling);
-        public abstract void OnClose(Aisling aisling);
-        public abstract void OnNext(Aisling aisling);
         public abstract void OnBack(Aisling aisling);
+
+        public abstract void OnClose(Aisling aisling);
+
+        public abstract void OnNext(Aisling aisling);
+
+        public abstract void OnTriggered(Aisling aisling);
     }
 }

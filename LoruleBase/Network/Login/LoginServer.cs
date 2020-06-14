@@ -1,14 +1,14 @@
 ﻿#region
 
-using System;
-using System.Linq;
-using System.Net;
-using System.Text;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.ServerFormats;
 using Darkages.Storage;
 using Darkages.Types;
 using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Net;
+using System.Text;
 
 #endregion
 
@@ -26,6 +26,33 @@ namespace Darkages.Network.Login
         public static MServerTable MServerTable { get; set; }
         public static Notification Notification { get; set; }
 
+        public override void ClientConnected(LoginClient client)
+        {
+            client.Send(new ServerFormat7E());
+        }
+
+        public void LoginAsAisling(LoginClient client, Aisling aisling)
+        {
+            if (aisling != null)
+            {
+                var redirect = new Redirect
+                {
+                    Serial = Convert.ToString(client.Serial),
+                    Salt = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
+                    Seed = Convert.ToString(client.Encryption.Parameters.Seed),
+                    Name = JsonConvert.SerializeObject(new { player = aisling.Username, developer = "wren" })
+                };
+
+                ServerContextBase.Redirects.Add(aisling.Username.ToLower());
+
+                client.SendMessageBox(0x00, "\0");
+                client.Send(new ServerFormat03
+                {
+                    EndPoint = new IPEndPoint(Address, ServerContextBase.Config.SERVER_PORT),
+                    Redirect = redirect
+                });
+            }
+        }
 
         protected virtual void Format00Handler(LoginClient client, ClientFormat00 format)
         {
@@ -40,10 +67,14 @@ namespace Darkages.Network.Login
 
             if (ServerContextBase.Config.DevMode)
             {
-                var aisling = StorageManager.AislingBucket.Load(ServerContextBase.Config.GameMaster);
+                if (ServerContextBase.Config.GameMasters != null)
+                    foreach (var gm in ServerContextBase.Config.GameMasters)
+                    {
+                        var aisling = StorageManager.AislingBucket.Load(gm);
 
-                if (aisling != null)
-                    LoginAsAisling(client, aisling);
+                        if (aisling != null)
+                            LoginAsAisling(client, aisling);
+                    }
             }
         }
 
@@ -62,26 +93,6 @@ namespace Darkages.Network.Login
                 client.SendMessageBox(0x03, "Character Already Exists.\0");
                 client.CreateInfo = null;
             }
-        }
-
-        protected override void Format04Handler(LoginClient client, ClientFormat04 format)
-        {
-            if (client.CreateInfo == null)
-            {
-                ClientDisconnected(client);
-                return;
-            }
-
-            var template = Aisling.Create();
-            template.Display = (BodySprite) (format.Gender * 16);
-            template.Username = client.CreateInfo.AislingUsername;
-            template.Password = client.CreateInfo.AislingPassword;
-            template.Gender = (Gender) format.Gender;
-            template.HairColor = format.HairColor;
-            template.HairStyle = format.HairStyle;
-
-            StorageManager.AislingBucket.Save(template);
-            client.SendMessageBox(0x00, "\0");
         }
 
         protected override void Format03Handler(LoginClient client, ClientFormat03 format)
@@ -129,30 +140,24 @@ namespace Darkages.Network.Login
             LoginAsAisling(client, aisling);
         }
 
-        public void LoginAsAisling(LoginClient client, Aisling aisling)
+        protected override void Format04Handler(LoginClient client, ClientFormat04 format)
         {
-            if (aisling != null)
+            if (client.CreateInfo == null)
             {
-                var redirect = new Redirect
-                {
-                    Serial = Convert.ToString(client.Serial),
-                    Salt = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
-                    Seed = Convert.ToString(client.Encryption.Parameters.Seed),
-                    Name = JsonConvert.SerializeObject(new {player = aisling.Username, developer = "wren"})
-                };
-
-                ServerContextBase.Redirects.Add(aisling.Username.ToLower());
-
-                if (aisling.Username.Equals(ServerContextBase.Config.GameMaster,
-                    StringComparison.CurrentCultureIgnoreCase)) aisling.GameMaster = true;
-
-                client.SendMessageBox(0x00, "\0");
-                client.Send(new ServerFormat03
-                {
-                    EndPoint = new IPEndPoint(Address, ServerContextBase.Config.SERVER_PORT),
-                    Redirect = redirect
-                });
+                ClientDisconnected(client);
+                return;
             }
+
+            var template = Aisling.Create();
+            template.Display = (BodySprite)(format.Gender * 16);
+            template.Username = client.CreateInfo.AislingUsername;
+            template.Password = client.CreateInfo.AislingPassword;
+            template.Gender = (Gender)format.Gender;
+            template.HairColor = format.HairColor;
+            template.HairStyle = format.HairStyle;
+
+            StorageManager.AislingBucket.Save(template);
+            client.SendMessageBox(0x00, "\0");
         }
 
         protected override void Format0BHandler(LoginClient client, ClientFormat0B format)
@@ -259,11 +264,6 @@ namespace Darkages.Network.Login
                 {
                     Type = 0x01
                 });
-        }
-
-        public override void ClientConnected(LoginClient client)
-        {
-            client.Send(new ServerFormat7E());
         }
     }
 }

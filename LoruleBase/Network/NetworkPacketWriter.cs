@@ -1,9 +1,9 @@
 ﻿#region
 
+using Darkages.IO;
 using System;
 using System.Net;
 using System.Text;
-using Darkages.IO;
 
 #endregion
 
@@ -20,14 +20,20 @@ namespace Darkages.Network
 
         public byte[] Buffer { get; }
 
+        public bool IsEmpty => Buffer == null || Buffer.Length == 0;
         public int Position { get; set; }
 
-        public bool IsEmpty => Buffer == null || Buffer.Length == 0;
+        public NetworkPacket ToPacket()
+        {
+            if (Position > 0) return new NetworkPacket(Buffer, Position);
+
+            return null;
+        }
 
         public void Write(bool value)
         {
             Write(
-                (byte) (value ? 1 : 0));
+                (byte)(value ? 1 : 0));
         }
 
         public void Write(byte value)
@@ -43,41 +49,53 @@ namespace Darkages.Network
 
         public void Write(sbyte value)
         {
-            Buffer[Position++] = (byte) value;
+            Buffer[Position++] = (byte)value;
         }
 
         public void Write(short value)
         {
             Write(
-                (ushort) value);
+                (ushort)value);
         }
 
         public void Write(ushort value)
         {
             Write(
-                (byte) (value >> 8));
+                (byte)(value >> 8));
             Write(
-                (byte) value);
+                (byte)value);
         }
 
         public void Write(int value)
         {
             Write(
-                (uint) value);
+                (uint)value);
         }
 
         public void Write(uint value)
         {
             Write(
-                (ushort) (value >> 16));
+                (ushort)(value >> 16));
             Write(
-                (ushort) value);
+                (ushort)value);
         }
 
         public void Write<T>(T value)
             where T : IFormattable
         {
             value.Serialize(this);
+        }
+
+        public void Write(IPEndPoint endPoint)
+        {
+            var ipBytes = endPoint.Address.GetAddressBytes();
+
+            Write(ipBytes[3]);
+            Write(ipBytes[2]);
+            Write(ipBytes[1]);
+            Write(ipBytes[0]);
+            Write(
+                (ushort)endPoint.Port);
         }
 
         public void WriteString(string value)
@@ -91,7 +109,7 @@ namespace Darkages.Network
             var count = encoding.GetByteCount(value);
 
             Write(
-                (byte) count);
+                (byte)count);
 
             encoding.GetBytes(value, 0, value.Length, Buffer, Position);
             Position += count;
@@ -102,29 +120,10 @@ namespace Darkages.Network
             var count = encoding.GetByteCount(value);
 
             Write(
-                (ushort) count);
+                (ushort)count);
 
             encoding.GetBytes(value, 0, value.Length, Buffer, Position);
             Position += count;
-        }
-
-        public void Write(IPEndPoint endPoint)
-        {
-            var ipBytes = endPoint.Address.GetAddressBytes();
-
-            Write(ipBytes[3]);
-            Write(ipBytes[2]);
-            Write(ipBytes[1]);
-            Write(ipBytes[0]);
-            Write(
-                (ushort) endPoint.Port);
-        }
-
-        public NetworkPacket ToPacket()
-        {
-            if (Position > 0) return new NetworkPacket(Buffer, Position);
-
-            return null;
         }
     }
 }

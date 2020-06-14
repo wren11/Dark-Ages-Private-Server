@@ -1,11 +1,11 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Darkages.Network.Object;
 using Darkages.Storage;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -19,14 +19,13 @@ namespace Darkages.Types
             Items = new HashSet<Item>();
         }
 
-        public ISet<Item> Items { get; set; }
-        public string OwnerName { get; set; }
         public DateTime DateReleased { get; set; }
+        public ISet<Item> Items { get; set; }
         public Position Location { get; set; }
         public int MapId { get; set; }
-        public Item ReaperBag { get; set; }
-
         [JsonIgnore] public Aisling Owner { get; set; }
+        public string OwnerName { get; set; }
+        public Item ReaperBag { get; set; }
 
         public void GenerateReeper()
         {
@@ -50,14 +49,8 @@ namespace Darkages.Types
                 CarryWeight = 1
             };
 
-
             ReaperBag = Item.Create(Owner, itemTemplate, true);
             ReaperBag?.Release(Owner, Owner.Position);
-        }
-
-        private void FindOwner()
-        {
-            if (Owner == null) Owner = StorageManager.AislingBucket.Load(OwnerName);
         }
 
         public void RecoverItems(Aisling Owner)
@@ -74,7 +67,6 @@ namespace Darkages.Types
                 if (nitem.GiveTo(Owner))
                     Owner.Client.SendMessage(0x02, $"You have recovered {item.Template.Name}.");
             }
-
 
             Items = new HashSet<Item>();
             {
@@ -108,13 +100,29 @@ namespace Darkages.Types
             }
         }
 
-        private void ReepGold()
+        private void Add(Item obj, bool wasEquipped = false)
         {
-            var gold = Owner.GoldPoints;
+            if (obj == null || obj.Template == null)
+                return;
+
+            if (wasEquipped)
             {
-                Money.Create(Owner, gold, Owner.Position);
-                Owner.GoldPoints = 0;
+                if (obj.Template.Flags.HasFlag(ItemFlags.PerishIFEquipped)) return;
             }
+            else
+            {
+                if (obj.Template.Flags.HasFlag(ItemFlags.Perishable)) return;
+            }
+
+            lock (Items)
+            {
+                Items.Add(obj);
+            }
+        }
+
+        private void FindOwner()
+        {
+            if (Owner == null) Owner = StorageManager.AislingBucket.Load(OwnerName);
         }
 
         private void ReepEquipment()
@@ -149,6 +157,14 @@ namespace Darkages.Types
             }
         }
 
+        private void ReepGold()
+        {
+            var gold = Owner.GoldPoints;
+            {
+                Money.Create(Owner, gold, Owner.Position);
+                Owner.GoldPoints = 0;
+            }
+        }
 
         private void ReepInventory()
         {
@@ -176,26 +192,6 @@ namespace Darkages.Types
                     var copy = ObjectManager.Clone<Item>(obj);
                     Add(copy);
                 }
-            }
-        }
-
-        private void Add(Item obj, bool wasEquipped = false)
-        {
-            if (obj == null || obj.Template == null)
-                return;
-
-            if (wasEquipped)
-            {
-                if (obj.Template.Flags.HasFlag(ItemFlags.PerishIFEquipped)) return;
-            }
-            else
-            {
-                if (obj.Template.Flags.HasFlag(ItemFlags.Perishable)) return;
-            }
-
-            lock (Items)
-            {
-                Items.Add(obj);
             }
         }
     }

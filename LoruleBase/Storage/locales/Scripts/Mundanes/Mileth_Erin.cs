@@ -1,10 +1,10 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System.Collections.Generic;
 
 #endregion
 
@@ -158,6 +158,51 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     script.OnTriggered(client.Aisling);
         }
 
+        public override void OnGossip(GameServer server, GameClient client, string message)
+        {
+        }
+
+        public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
+        {
+            switch (responseID)
+            {
+                case 0x002A:
+                    {
+                        if (!client.Aisling.AcceptQuest(Actor.Quest)) return;
+
+                        client.SendOptionsDialog(Mundane,
+                            "Alright now we're talking. I am going to need some materials. Bring me 2 pieces of Wolf's Teeth, 1 Silver Earrings, and 2 Pieces of Spider's Silk. I will do the rest.",
+                            new OptionsDataItem(0x006A, "Continue"));
+                    }
+                    break;
+
+                case 0x006A:
+                    {
+                        client.SendOptionsDialog(Mundane,
+                            "You can find Wolf's Teeth from the Wolves in the Woodlands,\nsome Spider's Silk from the Spiders here in Mileth Crypt,\nand the Silver Earrings from the Armory in Mileth. Come back when you have the items.");
+                    }
+                    break;
+
+                case 0x001B:
+                    {
+                        client.Aisling.DestroyReactor(Actor);
+                        client.SendOptionsDialog(Mundane, "So be it. Goodluck Aisling.");
+                    }
+                    break;
+
+                case 0x004A:
+                    {
+                        foreach (var script in Actor.Decorators.Values)
+                            script.OnTriggered(client.Aisling);
+                    }
+                    break;
+            }
+        }
+
+        public override void TargetAcquired(Sprite Target)
+        {
+        }
+
         private void QuestCompleted(Aisling aisling, DialogSequence b)
         {
             aisling.Client.SendOptionsDialog(Mundane,
@@ -173,49 +218,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 subject.Completed = true;
             }
-        }
-
-        public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
-        {
-            switch (responseID)
-            {
-                case 0x002A:
-                {
-                    if (!client.Aisling.AcceptQuest(Actor.Quest)) return;
-
-                    client.SendOptionsDialog(Mundane,
-                        "Alright now we're talking. I am going to need some materials. Bring me 2 pieces of Wolf's Teeth, 1 Silver Earrings, and 2 Pieces of Spider's Silk. I will do the rest.",
-                        new OptionsDataItem(0x006A, "Continue"));
-                }
-                    break;
-                case 0x006A:
-                {
-                    client.SendOptionsDialog(Mundane,
-                        "You can find Wolf's Teeth from the Wolves in the Woodlands,\nsome Spider's Silk from the Spiders here in Mileth Crypt,\nand the Silver Earrings from the Armory in Mileth. Come back when you have the items.");
-                }
-                    break;
-                case 0x001B:
-                {
-                    client.Aisling.DestroyReactor(Actor);
-                    client.SendOptionsDialog(Mundane, "So be it. Goodluck Aisling.");
-                }
-                    break;
-
-                case 0x004A:
-                {
-                    foreach (var script in Actor.Decorators.Values)
-                        script.OnTriggered(client.Aisling);
-                }
-                    break;
-            }
-        }
-
-        public override void TargetAcquired(Sprite Target)
-        {
-        }
-
-        public override void OnGossip(GameServer server, GameClient client, string message)
-        {
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿#region
 
-using System.Collections.ObjectModel;
-using System.IO;
 using Darkages.Compression;
 using Darkages.IO;
 using Darkages.Network;
+using System.Collections.ObjectModel;
+using System.IO;
 
 #endregion
 
@@ -17,22 +17,9 @@ namespace Darkages.Types
             Nodes = new Collection<MetafileNode>();
         }
 
-        public Collection<MetafileNode> Nodes { get; set; }
         public uint Hash { get; set; }
         public string Name { get; set; }
-
-        public void Serialize(NetworkPacketReader reader)
-        {
-        }
-
-        public void Serialize(NetworkPacketWriter writer)
-        {
-            writer.WriteStringA(Name);
-            writer.Write(Hash);
-            writer.Write(
-                (ushort) DeflatedData.Length);
-            writer.Write(DeflatedData);
-        }
+        public Collection<MetafileNode> Nodes { get; set; }
 
         public override void Load(MemoryStream stream)
         {
@@ -62,17 +49,30 @@ namespace Darkages.Types
             using (var writer = new BufferWriter(stream))
             {
                 writer.Write(
-                    (ushort) Nodes.Count);
+                    (ushort)Nodes.Count);
 
                 foreach (var node in Nodes)
                 {
                     writer.WriteStringA(node.Name);
                     writer.Write(
-                        (ushort) node.Atoms.Count);
+                        (ushort)node.Atoms.Count);
 
                     foreach (var atom in node.Atoms) writer.WriteStringB(atom);
                 }
             }
+        }
+
+        public void Serialize(NetworkPacketReader reader)
+        {
+        }
+
+        public void Serialize(NetworkPacketWriter writer)
+        {
+            writer.WriteStringA(Name);
+            writer.Write(Hash);
+            writer.Write(
+                (ushort)DeflatedData.Length);
+            writer.Write(DeflatedData);
         }
     }
 }

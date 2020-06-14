@@ -8,11 +8,9 @@ namespace Darkages.Storage.locales.Buffs
 {
     public class buff_spell_reflect : Buff
     {
-        public override string Name => "deireas faileas";
-
         public override byte Icon => 54;
-
         public override int Length => 12;
+        public override string Name => "deireas faileas";
 
         public override void OnApplied(Sprite Affected, Buff buff)
         {
@@ -29,7 +27,6 @@ namespace Darkages.Storage.locales.Buffs
         public override void OnEnded(Sprite Affected, Buff buff)
         {
             Affected.SpellReflect = false;
-
 
             if (Affected is Aisling)
                 (Affected as Aisling)

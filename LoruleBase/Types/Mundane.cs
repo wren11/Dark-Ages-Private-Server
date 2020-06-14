@@ -1,14 +1,14 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 #endregion
 
@@ -16,37 +16,15 @@ namespace Darkages.Types
 {
     public class Mundane : Sprite
     {
-        [JsonIgnore] private int ChatIdx = new ThreadLocal<int>(() => 0, true).Value;
-
         [JsonIgnore] public List<SkillScript> SkillScripts = new List<SkillScript>();
-
         [JsonIgnore] public List<SpellScript> SpellScripts = new List<SpellScript>();
-
         [JsonIgnore] public int WaypointIndex;
-
-        public MundaneTemplate Template { get; set; }
-
-        [JsonIgnore] public Dictionary<string, MundaneScript> Scripts { get; set; }
-
-        [JsonIgnore] public SkillScript DefaultSkill => SkillScripts.Find(i => i.IsScriptDefault) ?? null;
-
-        [JsonIgnore] public SpellScript DefaultSpell => SpellScripts.Find(i => i.IsScriptDefault) ?? null;
-
+        [JsonIgnore] private int ChatIdx = new ThreadLocal<int>(() => 0, true).Value;
         [JsonIgnore] public Position CurrentWaypoint => Template.Waypoints[WaypointIndex] ?? null;
-
-
-        public void InitMundane()
-        {
-            if (Template.Spells != null)
-                foreach (var spellscriptstr in Template.Spells)
-                    LoadSpellScript(spellscriptstr);
-
-            if (Template.Skills != null)
-                foreach (var skillscriptstr in Template.Skills)
-                    LoadSkillScript(skillscriptstr);
-
-            LoadSkillScript("Assail", true);
-        }
+        [JsonIgnore] public SkillScript DefaultSkill => SkillScripts.Find(i => i.IsScriptDefault) ?? null;
+        [JsonIgnore] public SpellScript DefaultSpell => SpellScripts.Find(i => i.IsScriptDefault) ?? null;
+        [JsonIgnore] public Dictionary<string, MundaneScript> Scripts { get; set; }
+        public MundaneTemplate Template { get; set; }
 
         public static void Create(MundaneTemplate template)
         {
@@ -63,7 +41,6 @@ namespace Darkages.Types
                 else
                     return;
 
-
             var npc = new Mundane
             {
                 Template = template
@@ -78,7 +55,6 @@ namespace Darkages.Types
             if (npc.Template.WalkRate == 0)
                 npc.Template.WalkRate = 2;
 
-
             npc.CurrentMapId = npc.Template.AreaID;
             lock (Generator.Random)
             {
@@ -87,8 +63,8 @@ namespace Darkages.Types
 
             npc.XPos = template.X;
             npc.YPos = template.Y;
-            npc._MaximumHp = (int) (template.Level / 0.1 * 15);
-            npc._MaximumMp = (int) (template.Level / 0.1 * 5);
+            npc._MaximumHp = (int)(template.Level / 0.1 * 15);
+            npc._MaximumMp = (int)(template.Level / 0.1 * 5);
             npc.Template.MaximumHp = npc.MaximumHp;
             npc.Template.MaximumMp = npc.MaximumMp;
 
@@ -97,10 +73,9 @@ namespace Darkages.Types
             npc.Direction = npc.Template.Direction;
             npc.CurrentMapId = npc.Template.AreaID;
 
-            npc.BonusAc = (int) (70 - npc.Template.Level * 0.5 / 1.0);
+            npc.BonusAc = (int)(70 - npc.Template.Level * 0.5 / 1.0);
 
             if (npc.BonusAc < -70) npc.BonusAc = -70;
-
 
             npc.DefenseElement = Generator.RandomEnumValue<ElementManager.Element>();
             npc.OffenseElement = Generator.RandomEnumValue<ElementManager.Element>();
@@ -116,6 +91,19 @@ namespace Darkages.Types
             npc.InitMundane();
 
             npc.AddObject(npc);
+        }
+
+        public void InitMundane()
+        {
+            if (Template.Spells != null)
+                foreach (var spellscriptstr in Template.Spells)
+                    LoadSpellScript(spellscriptstr);
+
+            if (Template.Skills != null)
+                foreach (var skillscriptstr in Template.Skills)
+                    LoadSkillScript(skillscriptstr);
+
+            LoadSkillScript("Assail", true);
         }
 
         public void LoadSkillScript(string skillscriptstr, bool primary = false)
@@ -137,19 +125,6 @@ namespace Darkages.Types
             }
         }
 
-        private void LoadSpellScript(string spellscriptstr, bool primary = false)
-        {
-            var scripts = ScriptManager.Load<SpellScript>(spellscriptstr,
-                Spell.Create(1, ServerContextBase.GlobalSpellTemplateCache[spellscriptstr]));
-
-            foreach (var script in scripts.Values)
-                if (script != null)
-                {
-                    script.IsScriptDefault = primary;
-                    SpellScripts.Add(script);
-                }
-        }
-
         public void OnDeath()
         {
             RemoveActiveTargets();
@@ -158,12 +133,17 @@ namespace Darkages.Types
                 CurrentHp = Template.MaximumHp;
         }
 
-        private void RemoveActiveTargets()
+        public void Patrol()
         {
-            var nearbyMonsters = GetObjects<Monster>(Map, i => WithinRangeOf(this));
-            foreach (var nearby in nearbyMonsters)
-                if (nearby.Target != null && nearby.Target.Serial == Serial)
-                    nearby.Target = null;
+            if (CurrentWaypoint != null) WalkTo(CurrentWaypoint.X, CurrentWaypoint.Y);
+
+            if (Position.DistanceFrom(CurrentWaypoint) <= 2 || CurrentWaypoint == null)
+            {
+                if (WaypointIndex + 1 < Template.Waypoints.Count)
+                    WaypointIndex++;
+                else
+                    WaypointIndex = 0;
+            }
         }
 
         public void Update(TimeSpan update)
@@ -213,7 +193,7 @@ namespace Darkages.Types
                     {
                         lock (Generator.Random)
                         {
-                            Direction = (byte) Generator.Random.Next(0, 4);
+                            Direction = (byte)Generator.Random.Next(0, 4);
                         }
 
                         Turn();
@@ -290,14 +270,13 @@ namespace Darkages.Types
                         {
                             if (!Facing(target, out var direction))
                             {
-                                Direction = (byte) direction;
+                                Direction = (byte)direction;
                                 Turn();
                             }
                             else
                             {
                                 target.Target = this;
                                 DefaultSkill?.OnUse(this);
-
 
                                 if (SkillScripts.Count > 0 && target.Target != null)
                                 {
@@ -353,17 +332,25 @@ namespace Darkages.Types
             }
         }
 
-        public void Patrol()
+        private void LoadSpellScript(string spellscriptstr, bool primary = false)
         {
-            if (CurrentWaypoint != null) WalkTo(CurrentWaypoint.X, CurrentWaypoint.Y);
+            var scripts = ScriptManager.Load<SpellScript>(spellscriptstr,
+                Spell.Create(1, ServerContextBase.GlobalSpellTemplateCache[spellscriptstr]));
 
-            if (Position.DistanceFrom(CurrentWaypoint) <= 2 || CurrentWaypoint == null)
-            {
-                if (WaypointIndex + 1 < Template.Waypoints.Count)
-                    WaypointIndex++;
-                else
-                    WaypointIndex = 0;
-            }
+            foreach (var script in scripts.Values)
+                if (script != null)
+                {
+                    script.IsScriptDefault = primary;
+                    SpellScripts.Add(script);
+                }
+        }
+
+        private void RemoveActiveTargets()
+        {
+            var nearbyMonsters = GetObjects<Monster>(Map, i => WithinRangeOf(this));
+            foreach (var nearby in nearbyMonsters)
+                if (nearby.Target != null && nearby.Target.Serial == Serial)
+                    nearby.Target = null;
         }
     }
 }

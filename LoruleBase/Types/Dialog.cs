@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
+using System.Collections.Generic;
 
 #endregion
 
@@ -13,7 +13,6 @@ namespace Darkages.Types
     {
         public List<DialogSequence> Sequences = new List<DialogSequence>();
 
-
         public Dialog()
         {
             lock (Generator.Random)
@@ -22,13 +21,13 @@ namespace Darkages.Types
             }
         }
 
+        public bool CanMoveBack => SequenceIndex - 1 >= 0;
+        public bool CanMoveNext => SequenceIndex + 1 < Sequences.Count;
         public DialogSequence Current => Sequences[SequenceIndex];
 
-        public int Serial { get; set; }
-        public int SequenceIndex { get; set; }
-        public bool CanMoveNext => SequenceIndex + 1 < Sequences.Count;
-        public bool CanMoveBack => SequenceIndex - 1 >= 0;
         public ushort DisplayImage { get; set; }
+        public int SequenceIndex { get; set; }
+        public int Serial { get; set; }
 
         public DialogSequence Invoke(GameClient client)
         {
@@ -44,7 +43,7 @@ namespace Darkages.Types
             if (CanMoveNext)
                 SequenceIndex++;
 
-            client.DlgSession.Sequence = (ushort) SequenceIndex;
+            client.DlgSession.Sequence = (ushort)SequenceIndex;
         }
     }
 }

@@ -14,14 +14,10 @@ namespace Darkages.Types
             Items = new List<Item>();
         }
 
-        public Aisling Trader { get; set; }
-
-        public List<Item> Items { get; set; }
-
-        public int Gold { get; set; }
-
         public bool Confirmed { get; set; }
-
+        public int Gold { get; set; }
+        public List<Item> Items { get; set; }
+        public Aisling Trader { get; set; }
         public int Weight { get; set; }
     }
 }

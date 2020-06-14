@@ -1,8 +1,8 @@
 ﻿#region
 
+using Darkages.Types;
 using System;
 using System.Linq;
-using Darkages.Types;
 
 #endregion
 
@@ -32,14 +32,14 @@ namespace Darkages.Network.ServerFormats
             packet.Write(Aisling.Nation);
             packet.WriteStringA(Aisling.ClanRank);
 
-            packet.Write((byte) 0x07);
-            packet.Write((byte) 0x0);
-            packet.Write((byte) 0x0);
-            packet.Write((byte) 0x0);
-            packet.Write((byte) 0x0);
-            packet.Write((byte) 0x0);
-            packet.Write((byte) 0x0);
-            packet.Write((byte) 0x0);
+            packet.Write((byte)0x07);
+            packet.Write((byte)0x0);
+            packet.Write((byte)0x0);
+            packet.Write((byte)0x0);
+            packet.Write((byte)0x0);
+            packet.Write((byte)0x0);
+            packet.Write((byte)0x0);
+            packet.Write((byte)0x0);
 
             var isGrouped = Aisling.GroupParty != null && Aisling.GroupParty.PartyMembers != null &&
                             Aisling.GroupParty != null &&
@@ -61,11 +61,11 @@ namespace Darkages.Network.ServerFormats
                 packet.WriteStringA(partyMessage);
             }
 
-            packet.Write((byte) Aisling.PartyStatus);
-            packet.Write((byte) 0x00);
-            packet.Write((byte) Aisling.ClassID);
+            packet.Write((byte)Aisling.PartyStatus);
+            packet.Write((byte)0x00);
+            packet.Write((byte)Aisling.ClassID);
             packet.Write(Aisling.Nation);
-            packet.Write((byte) 0x01);
+            packet.Write((byte)0x01);
             packet.WriteStringA(Convert.ToString(Aisling.Stage
                                                  != ClassStage.Class
                 ? Aisling.Stage.ToString()
@@ -73,21 +73,19 @@ namespace Darkages.Network.ServerFormats
 
             packet.WriteStringA(Aisling.Clan);
 
-
             var legendSubjects = from subject in Aisling.LegendBook.LegendMarks
-                group subject by subject
+                                 group subject by subject
                 into g
-                let count = g.Count()
-                orderby count descending
-                select new
-                {
-                    Value = Aisling.LegendBook.LegendMarks.Find(i => i.Value == g.Key.Value),
-                    Count = Aisling.LegendBook.LegendMarks.Count(i => i.Value == g.Key.Value)
-                };
-
+                                 let count = g.Count()
+                                 orderby count descending
+                                 select new
+                                 {
+                                     Value = Aisling.LegendBook.LegendMarks.Find(i => i.Value == g.Key.Value),
+                                     Count = Aisling.LegendBook.LegendMarks.Count(i => i.Value == g.Key.Value)
+                                 };
 
             var exactCount = legendSubjects.Distinct().Count();
-            packet.Write((byte) exactCount);
+            packet.Write((byte)exactCount);
 
             foreach (var obj in legendSubjects.Distinct().ToList())
             {
@@ -98,11 +96,11 @@ namespace Darkages.Network.ServerFormats
                 packet.WriteStringA($"{legend.Value} {(obj.Count > 1 ? "(" + obj.Count + ")" : "")}");
             }
 
-            packet.Write((byte) 0x00);
-            packet.Write((ushort) Aisling.Display);
-            packet.Write((byte) 0x02);
-            packet.Write((uint) 0x00);
-            packet.Write((byte) 0x00);
+            packet.Write((byte)0x00);
+            packet.Write((ushort)Aisling.Display);
+            packet.Write((byte)0x02);
+            packet.Write((uint)0x00);
+            packet.Write((byte)0x00);
         }
     }
 }

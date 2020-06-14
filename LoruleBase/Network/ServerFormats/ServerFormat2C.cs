@@ -4,7 +4,6 @@
     {
         public short Icon;
 
-
         public byte Slot;
         public string Text;
 

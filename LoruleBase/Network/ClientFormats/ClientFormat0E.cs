@@ -2,6 +2,12 @@
 {
     public class ClientFormat0E : NetworkFormat
     {
+        public ClientFormat0E()
+        {
+            Secured = true;
+            Command = 0x0E;
+        }
+
         public enum MsgType : byte
         {
             Normal = 0,
@@ -9,14 +15,8 @@
             Chant = 2
         }
 
-        public ClientFormat0E()
-        {
-            Secured = true;
-            Command = 0x0E;
-        }
-
-        public byte Type { get; set; }
         public string Text { get; set; }
+        public byte Type { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

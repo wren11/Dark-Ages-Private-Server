@@ -40,11 +40,9 @@
     {
     }
 
-
     public class ClientFormat1A
     {
     }
-
 
     public class ClientFormat1E
     {
@@ -82,7 +80,6 @@
     {
     }
 
-
     public class ClientFormat2B
     {
     }
@@ -91,11 +88,9 @@
     {
     }
 
-
     public class ClientFormat31
     {
     }
-
 
     public class ClientFormat33
     {
@@ -117,7 +112,6 @@
     {
     }
 
-
     public class ClientFormat3C
     {
     }
@@ -125,7 +119,6 @@
     public class ClientFormat3D
     {
     }
-
 
     public class ClientFormat40
     {
@@ -150,7 +143,6 @@
     public class ClientFormat49
     {
     }
-
 
     public class ClientFormat4C
     {
@@ -239,7 +231,6 @@
     public class ClientFormat65
     {
     }
-
 
     public class ClientFormat67
     {

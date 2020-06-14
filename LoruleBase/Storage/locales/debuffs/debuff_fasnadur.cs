@@ -8,9 +8,9 @@ namespace Darkages.Storage.locales.debuffs
 {
     public class debuff_fasnadur : Debuff
     {
-        public override string Name => "fas nadur";
         public override byte Icon => 119;
         public override int Length => 90;
+        public override string Name => "fas nadur";
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {

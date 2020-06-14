@@ -1,7 +1,8 @@
 ﻿#region
 
-using System;
 using Darkages.Network.ServerFormats;
+using System;
+using System.Linq;
 
 #endregion
 
@@ -23,19 +24,19 @@ namespace Darkages.Network.Game.Components
         {
             _timer.Update(elapsedTime);
 
-            if (_timer.Elapsed)
-            {
-                _timer.Reset();
+            if (!_timer.Elapsed)
+                return;
 
-                var format20 = new ServerFormat20 {Shade = _shade};
+            _timer.Reset();
 
-                foreach (var client in Server.Clients)
-                    if (client != null)
-                        client.Send(format20);
+            var format20 = new ServerFormat20 { Shade = _shade };
 
-                _shade += 1;
-                _shade %= 18;
-            }
+            if (Server.Clients != null)
+                foreach (var client in Server.Clients.Where(client => client != null))
+                    client.Send(format20);
+
+            _shade += 1;
+            _shade %= 18;
         }
     }
 }

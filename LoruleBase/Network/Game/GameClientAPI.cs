@@ -1,11 +1,11 @@
 ﻿#region
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -13,52 +13,34 @@ namespace Darkages.Network.Game
 {
     public partial class GameClient : IGameClient
     {
-        public void Port(int i, int x = 0, int y = 0)
+        public bool CastSpell(string spellName, Sprite caster, Sprite target)
         {
-            TransitionToMap(i, new Position(x, y));
-
-            SystemMessage("Port: Success.");
-        }
-
-        public void Spawn(string t, int x, int y, int c)
-        {
-            var name = t.Replace("-", string.Empty).Trim();
-
-            var obj = ServerContextBase.GlobalMonsterTemplateCache
-                .FirstOrDefault(i => i.Name.Equals(name, StringComparison.CurrentCulture));
-
-            if (obj != null)
+            if (ServerContextBase.GlobalSpellTemplateCache.ContainsKey(spellName))
             {
-                for (var i = 0; i < c; i++)
+                var scripts = ScriptManager.Load<SpellScript>(spellName,
+                    Spell.Create(1, ServerContextBase.GlobalSpellTemplateCache[spellName]));
                 {
-                    var mon = Monster.Create(obj, Aisling.Map);
-                    if (mon != null)
-                    {
-                        mon.XPos = x;
-                        mon.YPos = y;
+                    foreach (var script in scripts.Values) script.OnUse(caster, target);
 
-                        AddObject(mon);
-                    }
+                    return true;
                 }
+            }
 
-                SystemMessage("spawnMonster: Success.");
-            }
-            else
-            {
-                SystemMessage("spawnMonster: Failed.");
-            }
+            return false;
         }
 
-        public void LearnEverything()
+        public async Task Effect(ushort n, int d = 1000, int r = 1)
         {
-            foreach (var skill in ServerContextBase.GlobalSkillTemplateCache.Values)
-                Skill.GiveTo(Aisling, skill.Name);
+            if (r <= 0)
+                r = 1;
 
-            foreach (var spell in ServerContextBase.GlobalSpellTemplateCache.Values)
-                Spell.GiveTo(Aisling, spell.Name);
+            for (var i = 0; i < r; i++)
+            {
+                Aisling.SendAnimation(n, Aisling, Aisling);
 
-            LoadSkillBook();
-            LoadSpellBook();
+                foreach (var obj in Aisling.MonstersNearby()) obj.SendAnimation(n, obj.Position);
+                await Task.Delay(d);
+            }
         }
 
         public void ForgetSkill(string s)
@@ -99,48 +81,6 @@ namespace Darkages.Network.Game
             LoadSpellBook();
         }
 
-
-        public void GiveExp(int a)
-        {
-            Monster.DistributeExperience(Aisling, a);
-        }
-
-        public void Recover()
-        {
-            Revive();
-        }
-
-
-        public void GiveStr(byte v = 1)
-        {
-            Aisling._Str += v;
-
-            if (Aisling._Str > ServerContextBase.Config.StatCap)
-                Aisling._Str = ServerContextBase.Config.StatCap;
-
-            SendStats(StatusFlags.All);
-        }
-
-        public void GiveInt(byte v = 1)
-        {
-            Aisling._Int += v;
-
-            if (Aisling._Int > ServerContextBase.Config.StatCap)
-                Aisling._Int = ServerContextBase.Config.StatCap;
-
-            SendStats(StatusFlags.All);
-        }
-
-        public void GiveWis(byte v = 1)
-        {
-            Aisling._Wis += v;
-
-            if (Aisling._Wis > ServerContextBase.Config.StatCap)
-                Aisling._Wis = ServerContextBase.Config.StatCap;
-
-            SendStats(StatusFlags.All);
-        }
-
         public void GiveCon(byte v = 1)
         {
             Aisling._Wis += v;
@@ -161,6 +101,11 @@ namespace Darkages.Network.Game
             SendStats(StatusFlags.All);
         }
 
+        public void GiveExp(int a)
+        {
+            Monster.DistributeExperience(Aisling, a);
+        }
+
         public void GiveHp(int v = 1)
         {
             Aisling._MaximumHp += v;
@@ -169,6 +114,25 @@ namespace Darkages.Network.Game
                 Aisling._MaximumHp = ServerContextBase.Config.MaxHP;
 
             SendStats(StatusFlags.All);
+        }
+
+        public void GiveInt(byte v = 1)
+        {
+            Aisling._Int += v;
+
+            if (Aisling._Int > ServerContextBase.Config.StatCap)
+                Aisling._Int = ServerContextBase.Config.StatCap;
+
+            SendStats(StatusFlags.All);
+        }
+
+        public bool GiveItem(string itemName)
+        {
+            var item = Item.Create(Aisling, itemName);
+
+            if (item != null) return item.GiveTo(Aisling);
+
+            return false;
         }
 
         public void GiveMp(int v = 1)
@@ -181,47 +145,41 @@ namespace Darkages.Network.Game
             SendStats(StatusFlags.All);
         }
 
-        public async Task Effect(ushort n, int d = 1000, int r = 1)
-        {
-            if (r <= 0)
-                r = 1;
-
-            for (var i = 0; i < r; i++)
-            {
-                Aisling.SendAnimation(n, Aisling, Aisling);
-
-                foreach (var obj in Aisling.MonstersNearby()) obj.SendAnimation(n, obj.Position);
-                await Task.Delay(d);
-            }
-        }
-
-        public void StressTest()
-        {
-            Task.Run(async () =>
-            {
-                for (var n = 0; n < 5000; n++)
-                for (byte i = 0; i < 100; i++)
-                    await Effect(i, 500);
-            });
-        }
-
         public void GiveScar()
         {
             Aisling.LegendBook.AddLegend(new Legend.LegendItem
             {
                 Category = "Event",
-                Color = (byte) LegendColor.LightOrange,
-                Icon = (byte) LegendIcon.Rogue,
+                Color = (byte)LegendColor.LightOrange,
+                Icon = (byte)LegendIcon.Rogue,
                 Value = "Scar of Sgrios"
             });
         }
 
-        public void RevivePlayer(string u)
+        public void GiveStr(byte v = 1)
         {
-            var user = GetObject<Aisling>(null, i => i.Username.Equals(u, StringComparison.OrdinalIgnoreCase));
+            Aisling._Str += v;
 
-            if (user != null && user.LoggedIn)
-                user.Client.Revive();
+            if (Aisling._Str > ServerContextBase.Config.StatCap)
+                Aisling._Str = ServerContextBase.Config.StatCap;
+
+            SendStats(StatusFlags.All);
+        }
+
+        public bool GiveTutorialArmor()
+        {
+            var item = Aisling.Gender == Gender.Male ? "Shirt" : "Blouse";
+            return GiveItem(item);
+        }
+
+        public void GiveWis(byte v = 1)
+        {
+            Aisling._Wis += v;
+
+            if (Aisling._Wis > ServerContextBase.Config.StatCap)
+                Aisling._Wis = ServerContextBase.Config.StatCap;
+
+            SendStats(StatusFlags.All);
         }
 
         public void KillPlayer(string u)
@@ -232,32 +190,47 @@ namespace Darkages.Network.Game
                 user.CurrentHp = 0;
         }
 
-        public bool GiveItem(string itemName)
+        public void LearnEverything()
         {
-            var item = Item.Create(Aisling, itemName);
+            foreach (var skill in ServerContextBase.GlobalSkillTemplateCache.Values)
+                Skill.GiveTo(Aisling, skill.Name);
 
-            if (item != null) return item.GiveTo(Aisling);
+            foreach (var spell in ServerContextBase.GlobalSpellTemplateCache.Values)
+                Spell.GiveTo(Aisling, spell.Name);
 
-            return false;
+            LoadSkillBook();
+            LoadSpellBook();
         }
 
-        public bool GiveTutorialArmor()
+        public GameClient LoggedIn(bool state)
         {
-            var item = Aisling.Gender == Gender.Male ? "Shirt" : "Blouse";
-            return GiveItem(item);
+            Aisling.LoggedIn = state;
+
+            return this;
         }
 
-        public bool CastSpell(string spellName, Sprite caster, Sprite target)
+        public void OpenBoard(string n)
         {
-            if (ServerContextBase.GlobalSpellTemplateCache.ContainsKey(spellName))
+            if (ServerContextBase.GlobalBoardCache.ContainsKey(n))
             {
-                var scripts = ScriptManager.Load<SpellScript>(spellName,
-                    Spell.Create(1, ServerContextBase.GlobalSpellTemplateCache[spellName]));
-                {
-                    foreach (var script in scripts.Values) script.OnUse(caster, target);
+                var boardListObj = ServerContextBase.GlobalBoardCache[n];
 
-                    return true;
-                }
+                if (boardListObj != null && boardListObj.Any())
+                    Send(new BoardList(boardListObj));
+            }
+        }
+
+        public bool PlayerUseSkill(string spellname)
+        {
+            var skill = Aisling.SkillBook
+                .Get(i => i.Template.Name.Equals(spellname, StringComparison.OrdinalIgnoreCase))
+                .FirstOrDefault();
+
+            if (skill != null)
+            {
+                foreach (var script in skill.Scripts?.Values)
+                    script.OnUse(Aisling);
+                return true;
             }
 
             return false;
@@ -280,22 +253,74 @@ namespace Darkages.Network.Game
             return false;
         }
 
-        public bool PlayerUseSkill(string spellname)
+        public void Port(int i, int x = 0, int y = 0)
         {
-            var skill = Aisling.SkillBook
-                .Get(i => i.Template.Name.Equals(spellname, StringComparison.OrdinalIgnoreCase))
-                .FirstOrDefault();
+            TransitionToMap(i, new Position(x, y));
 
-            if (skill != null)
-            {
-                foreach (var script in skill.Scripts?.Values)
-                    script.OnUse(Aisling);
-                return true;
-            }
-
-            return false;
+            SystemMessage("Port: Success.");
         }
 
+        public void Recover()
+        {
+            Revive();
+        }
+
+        public void ReloadObjects(bool all = false)
+        {
+            var objs = GetObjects(null, i => i != null && i.Serial != Aisling.Serial,
+                all ? Get.All : Get.Items | Get.Money | Get.Monsters | Get.Mundanes);
+
+            foreach (var obj in objs) obj.Remove();
+
+            ServerContextBase.LoadAndCacheStorage();
+        }
+
+        public void RevivePlayer(string u)
+        {
+            var user = GetObject<Aisling>(null, i => i.Username.Equals(u, StringComparison.OrdinalIgnoreCase));
+
+            if (user != null && user.LoggedIn)
+                user.Client.Revive();
+        }
+
+        public void Spawn(string t, int x, int y, int c)
+        {
+            var name = t.Replace("-", string.Empty).Trim();
+
+            var obj = ServerContextBase.GlobalMonsterTemplateCache
+                .FirstOrDefault(i => i.Name.Equals(name, StringComparison.CurrentCulture));
+
+            if (obj != null)
+            {
+                for (var i = 0; i < c; i++)
+                {
+                    var mon = Monster.Create(obj, Aisling.Map);
+                    if (mon != null)
+                    {
+                        mon.XPos = x;
+                        mon.YPos = y;
+
+                        AddObject(mon);
+                    }
+                }
+
+                SystemMessage("spawnMonster: Success.");
+            }
+            else
+            {
+                SystemMessage("spawnMonster: Failed.");
+            }
+        }
+
+        public void StressTest()
+        {
+            Task.Run(async () =>
+            {
+                for (var n = 0; n < 5000; n++)
+                    for (byte i = 0; i < 100; i++)
+                        await Effect(i, 500);
+            });
+        }
 
         public bool TakeAwayItem(string item)
         {
@@ -319,34 +344,6 @@ namespace Darkages.Network.Game
             }
 
             return false;
-        }
-
-        public void OpenBoard(string n)
-        {
-            if (ServerContextBase.GlobalBoardCache.ContainsKey(n))
-            {
-                var boardListObj = ServerContextBase.GlobalBoardCache[n];
-
-                if (boardListObj != null && boardListObj.Any())
-                    Send(new BoardList(boardListObj));
-            }
-        }
-
-        public void ReloadObjects(bool all = false)
-        {
-            var objs = GetObjects(null, i => i != null && i.Serial != Aisling.Serial,
-                all ? Get.All : Get.Items | Get.Money | Get.Monsters | Get.Mundanes);
-
-            foreach (var obj in objs) obj.Remove();
-
-            ServerContextBase.LoadAndCacheStorage();
-        }
-
-        public GameClient LoggedIn(bool state)
-        {
-            Aisling.LoggedIn = state;
-
-            return this;
         }
     }
 }

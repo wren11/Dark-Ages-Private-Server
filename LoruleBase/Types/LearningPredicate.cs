@@ -1,10 +1,10 @@
 ﻿#region
 
+using Darkages.Network.Game;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Darkages.Network.Game;
 
 #endregion
 
@@ -12,10 +12,9 @@ namespace Darkages.Types
 {
     public class ItemPredicate
     {
-        public string Item { get; set; }
         public int AmountRequired { get; set; }
-
         public bool IsMet { get; set; }
+        public string Item { get; set; }
 
         public void Validate(GameClient client)
         {
@@ -35,11 +34,10 @@ namespace Darkages.Types
 
     public class LearningPredicate
     {
-        private Template _template;
         public List<ushort> Areas_Visited_Required = new List<ushort>();
         public List<ItemPredicate> Items_Required = new List<ItemPredicate>();
-
         public List<string> Quests_Completed_Required = new List<string>();
+        private Template _template;
 
         public LearningPredicate(Template template)
         {
@@ -51,30 +49,21 @@ namespace Darkages.Types
             _template = null;
         }
 
-        public ClassStage Stage_Required { get; set; }
         public Class Class_Required { get; set; }
-
-        public int ExpLevel_Required { get; set; }
-        public int Str_Required { get; set; }
-        public int Int_Required { get; set; }
-        public int Wis_Required { get; set; }
-        public int Dex_Required { get; set; }
         public int Con_Required { get; set; }
+        public int Dex_Required { get; set; }
+        public int ExpLevel_Required { get; set; }
         public int Gold_Required { get; set; }
-
-        public string Skill_Required { get; set; }
+        public int Int_Required { get; set; }
         public int Skill_Level_Required { get; set; }
+        public string Skill_Required { get; set; }
         public int Skill_Tier_Required { get; set; }
-
-        public string Spell_Required { get; set; }
         public int Spell_Level_Required { get; set; }
+        public string Spell_Required { get; set; }
         public int Spell_Tier_Required { get; set; }
-
-
-        private string Script =>
-            _template is SkillTemplate
-                ? AreaAndPosition((_template as SkillTemplate).NpcKey)
-                : AreaAndPosition((_template as SpellTemplate).NpcKey);
+        public ClassStage Stage_Required { get; set; }
+        public int Str_Required { get; set; }
+        public int Wis_Required { get; set; }
 
         internal string[] MetaData
             => new[]
@@ -87,30 +76,14 @@ namespace Darkages.Types
                 $"{(_template.Description != "" ? _template.Description : _template.Name)} \n\n$Items Required: {(Items_Required.Count > 0 ? string.Join(",", Items_Required.Select(i => i.AmountRequired + " " + i.Item)) : "None")} $gold: {(Gold_Required > 0 ? Gold_Required : 0)}\n\n{Script ?? "unknown."}"
             };
 
-        private string AreaAndPosition(string npcKey)
+        private string Script =>
+                    _template is SkillTemplate
+                ? AreaAndPosition((_template as SkillTemplate).NpcKey)
+                : AreaAndPosition((_template as SpellTemplate).NpcKey);
+
+        public void AssociatedWith<T>(T template) where T : Template
         {
-            if (!ServerContextBase.GlobalMundaneTemplateCache.ContainsKey(npcKey)) return "Secret!";
-
-            var npc = ServerContextBase.GlobalMundaneTemplateCache[npcKey];
-
-            if (!ServerContextBase.GlobalMapCache.ContainsKey(npc.AreaID))
-                return "Secret!";
-
-            var map = ServerContextBase.GlobalMapCache[npc.AreaID];
-            {
-                return $"From Who: {npc.Name}\nFrom Where:{map.Name} - (Coordinates: {npc.X},{npc.Y})";
-            }
-        }
-
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-
-            sb.Append(
-                $"Stats Required: ({Str_Required} STR, {Int_Required} INT, {Wis_Required} WIS, {Con_Required} CON, {Dex_Required} DEX)");
-            sb.Append("\nDo you wish to learn this new ability?");
-            return sb.ToString();
+            _template = template;
         }
 
         public bool IsMet(Aisling player, Action<string, bool> callbackMsg = null)
@@ -141,6 +114,140 @@ namespace Darkages.Types
             }
 
             return ready;
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            sb.Append(
+                $"Stats Required: ({Str_Required} STR, {Int_Required} INT, {Wis_Required} WIS, {Con_Required} CON, {Dex_Required} DEX)");
+            sb.Append("\nDo you wish to learn this new ability?");
+            return sb.ToString();
+        }
+
+        private static bool CheckPredicates(Action<string, bool> callbackMsg,
+            Dictionary<int, Tuple<bool, object>> result)
+        {
+            if (result == null || result.Count == 0)
+                return false;
+
+            var predicate_result = result.ToList().TrueForAll(i => i.Value.Item1);
+
+            if (predicate_result)
+            {
+                callbackMsg?.Invoke("You have met all prerequisites, Do you wish to proceed?.", true);
+                return true;
+            }
+
+            var sb = string.Empty;
+            {
+                var errorCaps = result.Select(i => i.Value).Distinct();
+
+                sb += "{=sYou are not worthy., \n{=u";
+                foreach (var predicate in errorCaps)
+                    if (predicate != null && !predicate.Item1)
+                        sb += (string)predicate.Item2 + "\n";
+            }
+
+            callbackMsg?.Invoke(sb, false);
+            return false;
+        }
+
+        private string AreaAndPosition(string npcKey)
+        {
+            if (!ServerContextBase.GlobalMundaneTemplateCache.ContainsKey(npcKey)) return "Secret!";
+
+            var npc = ServerContextBase.GlobalMundaneTemplateCache[npcKey];
+
+            if (!ServerContextBase.GlobalMapCache.ContainsKey(npc.AreaID))
+                return "Secret!";
+
+            var map = ServerContextBase.GlobalMapCache[npc.AreaID];
+            {
+                return $"From Who: {npc.Name}\nFrom Where:{map.Name} - (Coordinates: {npc.X},{npc.Y})";
+            }
+        }
+
+        private int CHeckAttributePredicates(Aisling player, Dictionary<int, Tuple<bool, object>> result, int n)
+        {
+            result[n++] = new Tuple<bool, object>(player.ExpLevel >= ExpLevel_Required,
+                $"Go level more. (Level {ExpLevel_Required} Required)");
+            result[n++] = new Tuple<bool, object>(player.Str >= Str_Required,
+                $"You are not strong enough. ({Str_Required} Str Required)");
+            result[n++] = new Tuple<bool, object>(player.Int >= Int_Required,
+                $"You are not smart enough.  ({Int_Required} Int Required)");
+            result[n++] = new Tuple<bool, object>(player.Wis >= Wis_Required,
+                $"You are not wise enough. ({Wis_Required} Wis Required)");
+            result[n++] = new Tuple<bool, object>(player.Con >= Con_Required,
+                $"You lack stamina. ({Con_Required} Con Required)");
+            result[n++] = new Tuple<bool, object>(player.Dex >= Dex_Required,
+                $"You are not nimble enough. ({Dex_Required} Dex Required)");
+            result[n++] = new Tuple<bool, object>(player.GoldPoints >= Gold_Required,
+                $"You best come back when you got the cash. ({Gold_Required} Gold Required)");
+            result[n++] = new Tuple<bool, object>(player.Stage == Stage_Required, "You must transcend further first");
+            result[n++] =
+                new Tuple<bool, object>(player.Path == Class_Required, "You should not be here, " + player.Path);
+
+            return n;
+        }
+
+        private int CheckItemPredicates(Aisling player, Dictionary<int, Tuple<bool, object>> result, int n)
+        {
+            if (Items_Required != null && Items_Required.Count > 0)
+            {
+                var msg = new StringBuilder(ServerContextBase.Config.ItemNotRequiredMsg);
+
+                var items = Items_Required.Select(i => $"{i.Item} ({i.AmountRequired}) ");
+
+                foreach (var itemstrs in items) msg.Append(itemstrs);
+
+                var errorMsg = msg.ToString();
+
+                var formatted = errorMsg.Replace(") ", "), ").TrimEnd(',', ' ');
+
+                foreach (var ir in Items_Required)
+                {
+                    if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(ir.Item))
+                    {
+                        result[n] = new Tuple<bool, object>(false, formatted);
+
+                        break;
+                    }
+
+                    var item = ServerContextBase.GlobalItemTemplateCache[ir.Item];
+
+                    if (item == null)
+                    {
+                        result[n] = new Tuple<bool, object>(false, formatted);
+                        break;
+                    }
+
+                    var item_obtained = player.Inventory.Get(i => i.Template.Name.Equals(item.Name));
+
+                    var item_total = 0;
+
+                    foreach (var itemObj in item_obtained)
+                    {
+                        var itemcount = 0;
+                        if (itemObj.Template.CanStack)
+                            itemcount += itemObj.Stacks;
+                        else
+                            itemcount++;
+
+                        item_total += itemcount;
+                    }
+
+                    if (item_total >= ir.AmountRequired)
+                        result[n] = new Tuple<bool, object>(true, string.Empty);
+                    else
+                        result[n] = new Tuple<bool, object>(false, formatted);
+
+                    n++;
+                }
+            }
+
+            return n;
         }
 
         private int CheckQuestPredicates(Aisling player, Dictionary<int, Tuple<bool, object>> result, int n)
@@ -202,124 +309,6 @@ namespace Darkages.Types
             }
 
             return n;
-        }
-
-        private int CHeckAttributePredicates(Aisling player, Dictionary<int, Tuple<bool, object>> result, int n)
-        {
-            result[n++] = new Tuple<bool, object>(player.ExpLevel >= ExpLevel_Required,
-                $"Go level more. (Level {ExpLevel_Required} Required)");
-            result[n++] = new Tuple<bool, object>(player.Str >= Str_Required,
-                $"You are not strong enough. ({Str_Required} Str Required)");
-            result[n++] = new Tuple<bool, object>(player.Int >= Int_Required,
-                $"You are not smart enough.  ({Int_Required} Int Required)");
-            result[n++] = new Tuple<bool, object>(player.Wis >= Wis_Required,
-                $"You are not wise enough. ({Wis_Required} Wis Required)");
-            result[n++] = new Tuple<bool, object>(player.Con >= Con_Required,
-                $"You lack stamina. ({Con_Required} Con Required)");
-            result[n++] = new Tuple<bool, object>(player.Dex >= Dex_Required,
-                $"You are not nimble enough. ({Dex_Required} Dex Required)");
-            result[n++] = new Tuple<bool, object>(player.GoldPoints >= Gold_Required,
-                $"You best come back when you got the cash. ({Gold_Required} Gold Required)");
-            result[n++] = new Tuple<bool, object>(player.Stage == Stage_Required, "You must transcend further first");
-            result[n++] =
-                new Tuple<bool, object>(player.Path == Class_Required, "You should not be here, " + player.Path);
-
-            return n;
-        }
-
-        private int CheckItemPredicates(Aisling player, Dictionary<int, Tuple<bool, object>> result, int n)
-        {
-            if (Items_Required != null && Items_Required.Count > 0)
-            {
-                var msg = new StringBuilder(ServerContextBase.Config.ItemNotRequiredMsg);
-
-                var items = Items_Required.Select(i => $"{i.Item} ({i.AmountRequired}) ");
-
-                foreach (var itemstrs in items) msg.Append(itemstrs);
-
-                var errorMsg = msg.ToString();
-
-                var formatted = errorMsg.Replace(") ", "), ").TrimEnd(',', ' ');
-
-                foreach (var ir in Items_Required)
-                {
-                    if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(ir.Item))
-                    {
-                        result[n] = new Tuple<bool, object>(false, formatted);
-
-                        break;
-                    }
-
-
-                    var item = ServerContextBase.GlobalItemTemplateCache[ir.Item];
-
-                    if (item == null)
-                    {
-                        result[n] = new Tuple<bool, object>(false, formatted);
-                        break;
-                    }
-
-
-                    var item_obtained = player.Inventory.Get(i => i.Template.Name.Equals(item.Name));
-
-
-                    var item_total = 0;
-
-                    foreach (var itemObj in item_obtained)
-                    {
-                        var itemcount = 0;
-                        if (itemObj.Template.CanStack)
-                            itemcount += itemObj.Stacks;
-                        else
-                            itemcount++;
-
-                        item_total += itemcount;
-                    }
-
-                    if (item_total >= ir.AmountRequired)
-                        result[n] = new Tuple<bool, object>(true, string.Empty);
-                    else
-                        result[n] = new Tuple<bool, object>(false, formatted);
-
-
-                    n++;
-                }
-            }
-
-            return n;
-        }
-
-        public void AssociatedWith<T>(T template) where T : Template
-        {
-            _template = template;
-        }
-
-        private static bool CheckPredicates(Action<string, bool> callbackMsg,
-            Dictionary<int, Tuple<bool, object>> result)
-        {
-            if (result == null || result.Count == 0)
-                return false;
-
-            var predicate_result = result.ToList().TrueForAll(i => i.Value.Item1);
-
-            if (predicate_result)
-            {
-                callbackMsg?.Invoke("You have met all prerequisites, Do you wish to proceed?.", true);
-                return true;
-            }
-
-            var sb = string.Empty;
-            {
-                var errorCaps = result.Select(i => i.Value).Distinct();
-
-                sb += "{=sYou are not worthy., \n{=u";
-                foreach (var predicate in errorCaps)
-                    if (predicate != null && !predicate.Item1)
-                        sb += (string) predicate.Item2 + "\n";
-            }
-
-            callbackMsg?.Invoke(sb, false);
-            return false;
         }
     }
 }

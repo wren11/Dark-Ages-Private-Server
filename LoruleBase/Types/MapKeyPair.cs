@@ -8,8 +8,7 @@
             Key = _key;
         }
 
-        public int Number { get; set; }
-
         public ushort Key { get; set; }
+        public int Number { get; set; }
     }
 }

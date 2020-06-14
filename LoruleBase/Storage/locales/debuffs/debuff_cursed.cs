@@ -48,7 +48,6 @@ namespace Darkages.Storage.locales.debuffs
                     .SendStats(StatusFlags.StructD);
             }
 
-
             base.OnEnded(Affected, debuff);
         }
     }

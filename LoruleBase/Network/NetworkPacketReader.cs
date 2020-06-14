@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.Text;
 using Darkages.Types;
+using System.Text;
 
 #endregion
 
@@ -9,39 +9,18 @@ namespace Darkages.Network
 {
     public class NetworkPacketReader
     {
-        private readonly Encoding _encoding = Encoding.GetEncoding(0x3B5);
-
         public NetworkPacket Packet;
         public int Position;
+        private readonly Encoding _encoding = Encoding.GetEncoding(0x3B5);
 
         public bool GetCanRead()
         {
             return Position + 1 < Packet.Data.Length;
         }
 
-        public T ReadObject<T>()
-            where T : IFormattable, new()
-        {
-            var result = new T();
-
-            result.Serialize(this);
-
-            return result;
-        }
-
         public bool ReadBool()
         {
             return ReadByte() != 0;
-        }
-
-        public Position ReadPosition()
-        {
-            var pos = new Position
-            {
-                X = ReadUInt16(),
-                Y = ReadUInt16()
-            };
-            return pos;
         }
 
         public byte ReadByte()
@@ -73,6 +52,36 @@ namespace Darkages.Network
             return array;
         }
 
+        public short ReadInt16()
+        {
+            return (short)ReadUInt16();
+        }
+
+        public int ReadInt32()
+        {
+            return (int)ReadUInt32();
+        }
+
+        public T ReadObject<T>()
+                                                    where T : IFormattable, new()
+        {
+            var result = new T();
+
+            result.Serialize(this);
+
+            return result;
+        }
+
+        public Position ReadPosition()
+        {
+            var pos = new Position
+            {
+                X = ReadUInt16(),
+                Y = ReadUInt16()
+            };
+            return pos;
+        }
+
         public string ReadStringA()
         {
             var length = ReadByte();
@@ -93,26 +102,16 @@ namespace Darkages.Network
             return result;
         }
 
-        public short ReadInt16()
-        {
-            return (short) ReadUInt16();
-        }
-
         public ushort ReadUInt16()
         {
-            return (ushort) ((
+            return (ushort)((
                                  ReadByte() << 8) |
                              ReadByte());
         }
 
-        public int ReadInt32()
-        {
-            return (int) ReadUInt32();
-        }
-
         public uint ReadUInt32()
         {
-            return (uint) ((
+            return (uint)((
                                ReadUInt16() << 0x10) +
                            ReadUInt16());
         }

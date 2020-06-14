@@ -37,7 +37,6 @@ namespace Darkages.Storage.locales.Scripts.Items
             {
                 var client = (sprite as Aisling).Client;
 
-
                 if (Item.Template.Flags.HasFlag(ItemFlags.Equipable))
                 {
                     if (!client.CheckReqs(client, Item))

@@ -2,14 +2,8 @@
 {
     public class ServerFormat0D : NetworkFormat
     {
-        public enum MsgType : byte
-        {
-            Chant = 2,
-            Normal = 0,
-            Shout = 1
-        }
-
         public int Serial;
+
         public string Text;
 
         public byte Type;
@@ -18,6 +12,13 @@
         {
             Secured = true;
             Command = 0x0D;
+        }
+
+        public enum MsgType : byte
+        {
+            Chant = 2,
+            Normal = 0,
+            Shout = 1
         }
 
         public override void Serialize(NetworkPacketReader reader)

@@ -1,12 +1,12 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -30,7 +30,6 @@ namespace Darkages.Types
 
         public List<DialogSequence> Sequences = new List<DialogSequence>();
 
-
         public Reactor()
         {
             lock (Generator.Random)
@@ -39,49 +38,22 @@ namespace Darkages.Types
             }
         }
 
-        public string ScriptKey { get; set; }
-
         public string CallBackScriptKey { get; set; }
-
         public ReactorQualifer CallerType { get; set; }
-
-        public int MapId { get; set; }
-
-        public string CallingReactor { get; set; }
-
-        public Position Location { get; set; }
-
-        public Quest Quest { get; set; }
-
-        [JsonIgnore] public int Index { get; set; }
-
-        [JsonIgnore] public DialogSequence Current => Sequences[Index] ?? null;
-
-        [JsonIgnore] public Dictionary<string, ReactorScript> Decorators { get; set; }
-
-        public string DecoratorScript { get; set; }
-
-        [JsonIgnore] public ReactorScript PostScript { get; set; }
-
-        public bool CanActAgain { get; set; }
-
-        public bool Completed { get; set; }
-
-        public GameServerTimer WhenCanActAgain { get; set; }
-
         public string CallingNpc { get; set; }
-
-        public void Update(GameClient client)
-        {
-            if (client.Aisling.CanReact)
-            {
-                client.Aisling.CanReact = false;
-
-                if (Decorators != null)
-                    foreach (var script in Decorators.Values)
-                        script?.OnTriggered(client.Aisling);
-            }
-        }
+        public string CallingReactor { get; set; }
+        public bool CanActAgain { get; set; }
+        public bool Completed { get; set; }
+        [JsonIgnore] public DialogSequence Current => Sequences[Index] ?? null;
+        [JsonIgnore] public Dictionary<string, ReactorScript> Decorators { get; set; }
+        public string DecoratorScript { get; set; }
+        [JsonIgnore] public int Index { get; set; }
+        public Position Location { get; set; }
+        public int MapId { get; set; }
+        [JsonIgnore] public ReactorScript PostScript { get; set; }
+        public Quest Quest { get; set; }
+        public string ScriptKey { get; set; }
+        public GameServerTimer WhenCanActAgain { get; set; }
 
         public void Goto(GameClient client, int Idx)
         {
@@ -153,6 +125,18 @@ namespace Darkages.Types
 
             var first = Sequences[Index = 0];
             if (first != null) client.Send(new ReactorSequence(client, first));
+        }
+
+        public void Update(GameClient client)
+        {
+            if (client.Aisling.CanReact)
+            {
+                client.Aisling.CanReact = false;
+
+                if (Decorators != null)
+                    foreach (var script in Decorators.Values)
+                        script?.OnTriggered(client.Aisling);
+            }
         }
     }
 }

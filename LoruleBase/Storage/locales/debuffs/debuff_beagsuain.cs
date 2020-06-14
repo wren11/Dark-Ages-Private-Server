@@ -9,9 +9,9 @@ namespace Darkages.Storage.locales.debuffs
 {
     public class debuff_beagsuain : Debuff
     {
-        public override string Name => "beag suain";
         public override byte Icon => 38;
         public override int Length => 5;
+        public override string Name => "beag suain";
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {

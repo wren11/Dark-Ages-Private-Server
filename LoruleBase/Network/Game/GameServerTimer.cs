@@ -14,15 +14,11 @@ namespace Darkages.Network.Game
             Delay = delay;
         }
 
-        public TimeSpan Timer { get; set; }
-
         public TimeSpan Delay { get; set; }
-
-        public bool Elapsed => Timer >= Delay;
-
         public bool Disabled { get; set; }
-
+        public bool Elapsed => Timer >= Delay;
         public int Tick { get; set; }
+        public TimeSpan Timer { get; set; }
 
         public void Reset()
         {

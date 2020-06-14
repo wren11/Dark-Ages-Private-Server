@@ -1,11 +1,11 @@
 ﻿#region
 
-using System;
-using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
+using System;
+using System.Linq;
 
 #endregion
 
@@ -15,7 +15,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
     public class puinsein : SpellScript
     {
         private readonly Random rand = new Random();
-
 
         public puinsein(Spell spell) : base(spell)
         {
@@ -42,7 +41,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
                 client.TrainSpell(Spell);
 
-
                 var debuff = new Debuff_poison("puinsein", 200, 35, 25, 0.08);
                 var curses = target.Debuffs.Values.OfType<Debuff_poison>().ToList();
 
@@ -63,7 +61,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                         var action = new ServerFormat1A
                         {
                             Serial = sprite.Serial,
-                            Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                            Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 :
                                 client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                             Speed = 30
                         };

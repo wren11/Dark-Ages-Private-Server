@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.IO;
-using System.Text;
 using Darkages.Scripting;
 using Darkages.Types;
+using System.IO;
+using System.Text;
 
 #endregion
 
@@ -13,6 +13,14 @@ namespace Darkages.Storage.locales.Scripts.Skills
     public class LocateMonster : SkillScript
     {
         public LocateMonster(Skill skill) : base(skill)
+        {
+        }
+
+        public override void OnFailed(Sprite sprite)
+        {
+        }
+
+        public override void OnSuccess(Sprite sprite)
         {
         }
 
@@ -30,14 +38,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                 File.WriteAllText("objdump.txt", sb.ToString());
             }
-        }
-
-        public override void OnFailed(Sprite sprite)
-        {
-        }
-
-        public override void OnSuccess(Sprite sprite)
-        {
         }
     }
 }

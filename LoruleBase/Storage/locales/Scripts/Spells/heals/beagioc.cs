@@ -22,10 +22,9 @@ namespace Darkages.Storage.locales.Scripts.Spells
         {
         }
 
-
         public override void OnUse(Sprite sprite, Sprite target)
         {
-            var healValue = (int) (200 + Spell.Level * sprite.Wis * 0.05);
+            var healValue = (int)(200 + Spell.Level * sprite.Wis * 0.05);
 
             sprite.Aisling(sprite)
                 ?.HasManaFor(Spell)

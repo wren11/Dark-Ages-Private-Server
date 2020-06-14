@@ -1,8 +1,8 @@
 ﻿#region
 
-using System;
 using Darkages.Common;
 using Darkages.Network.ServerFormats;
+using System;
 
 #endregion
 
@@ -12,25 +12,8 @@ namespace Darkages.Types
     {
         public int Amount { get; set; }
 
-        public MoneySprites Type { get; set; }
-
         public ushort Image { get; set; }
-
-        public void GiveTo(int amount, Aisling aisling)
-        {
-            if (aisling.GoldPoints + amount < ServerContextBase.Config.MaxCarryGold)
-            {
-                aisling.GoldPoints += amount;
-
-                if (aisling.GoldPoints > ServerContextBase.Config.MaxCarryGold)
-                    aisling.GoldPoints = int.MaxValue;
-
-                aisling.Client.SendMessage(0x03, $"You've Received {amount} coins.");
-                aisling.Client.Send(new ServerFormat08(aisling, StatusFlags.StructC));
-
-                Remove();
-            }
-        }
+        public MoneySprites Type { get; set; }
 
         public static void Create(Sprite parent, int amount, Position location)
         {
@@ -50,18 +33,32 @@ namespace Darkages.Types
             money.XPos = location.X;
             money.YPos = location.Y;
 
+            var mt = (int)money.Type;
 
-            var mt = (int) money.Type;
-
-            if (mt > 0) money.Image = (ushort) (mt + 0x8000);
+            if (mt > 0) money.Image = (ushort)(mt + 0x8000);
 
             parent.AddObject(money);
+        }
+
+        public void GiveTo(int amount, Aisling aisling)
+        {
+            if (aisling.GoldPoints + amount < ServerContextBase.Config.MaxCarryGold)
+            {
+                aisling.GoldPoints += amount;
+
+                if (aisling.GoldPoints > ServerContextBase.Config.MaxCarryGold)
+                    aisling.GoldPoints = int.MaxValue;
+
+                aisling.Client.SendMessage(0x03, $"You've Received {amount} coins.");
+                aisling.Client.Send(new ServerFormat08(aisling, StatusFlags.StructC));
+
+                Remove();
+            }
         }
 
         private void CalcAmount(int amount)
         {
             Amount = amount;
-
 
             if (Amount > 0 && Amount < 10)
                 Type = MoneySprites.SilverCoin;

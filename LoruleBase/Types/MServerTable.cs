@@ -1,11 +1,11 @@
 ﻿#region
 
+using Darkages.Compression;
+using Darkages.IO;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Xml.Serialization;
-using Darkages.Compression;
-using Darkages.IO;
 
 #endregion
 
@@ -18,13 +18,11 @@ namespace Darkages.Types
             Servers = new Collection<MServer>();
         }
 
+        [XmlIgnore] public byte[] Data => DeflatedData;
+        [XmlIgnore] public uint Hash { get; set; }
         public Collection<MServer> Servers { get; set; }
 
-        [XmlIgnore] public ushort Size => (ushort) DeflatedData.Length;
-
-        [XmlIgnore] public byte[] Data => DeflatedData;
-
-        [XmlIgnore] public uint Hash { get; set; }
+        [XmlIgnore] public ushort Size => (ushort)DeflatedData.Length;
 
         public static MServerTable FromFile(string filename)
         {
@@ -65,7 +63,7 @@ namespace Darkages.Types
                         Port = reader.ReadUInt16()
                     };
 
-                    var text = reader.ReadString().Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
+                    var text = reader.ReadString().Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
                     server.Name = text[0];
                     server.Description = text[1];
@@ -82,7 +80,7 @@ namespace Darkages.Types
             using (var writer = new BufferWriter(stream))
             {
                 writer.Write(
-                    (byte) Servers.Count);
+                    (byte)Servers.Count);
 
                 foreach (var server in Servers)
                 {

@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
+using System.Collections.Generic;
 
 #endregion
 
@@ -117,7 +117,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         public override void OnClick(GameServer server, GameClient client)
         {
             client.Aisling.CanReact = true;
-
 
             client.Aisling.ActiveReactor = Clone<Reactor>(reactor);
             client.Aisling.ActiveReactor.Sequences = new List<DialogSequence>(reactor.Sequences);

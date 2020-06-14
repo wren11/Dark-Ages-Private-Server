@@ -31,21 +31,36 @@ namespace Darkages.Network
             Offset = 0;
         }
 
-        public byte[] Data { get; private set; }
-
         public long Capacity => Data.Length;
-
-        public long Size { get; private set; }
-
+        public byte[] Data { get; private set; }
         public long Offset { get; private set; }
-
+        public long Size { get; private set; }
         public byte this[int index] => Data[index];
 
         #region Memory buffer methods
 
-        public override string ToString()
+        public long Append(byte[] buffer)
         {
-            return ExtractString(0, Size);
+            Reserve(Size + buffer.Length);
+            Array.Copy(buffer, 0, Data, Size, buffer.Length);
+            Size += buffer.Length;
+            return buffer.Length;
+        }
+
+        public long Append(byte[] buffer, long offset, long size)
+        {
+            Reserve(Size + size);
+            Array.Copy(buffer, offset, Data, Size, size);
+            Size += size;
+            return size;
+        }
+
+        public long Append(string text)
+        {
+            Reserve(Size + Encoding.UTF8.GetMaxByteCount(text.Length));
+            long result = Encoding.UTF8.GetBytes(text, 0, text.Length, Data, (int)Size);
+            Size += result;
+            return result;
         }
 
         public void Clear()
@@ -60,7 +75,7 @@ namespace Darkages.Network
             if (offset + size > Size)
                 throw new ArgumentException("Invalid offset & size!", nameof(offset));
 
-            return Encoding.UTF8.GetString(Data, (int) offset, (int) size);
+            return Encoding.UTF8.GetString(Data, (int)offset, (int)size);
         }
 
         public void Remove(long offset, long size)
@@ -110,6 +125,11 @@ namespace Darkages.Network
             Offset += offset;
         }
 
+        public override string ToString()
+        {
+            return ExtractString(0, Size);
+        }
+
         public void Unshift(long offset)
         {
             Offset -= offset;
@@ -118,31 +138,6 @@ namespace Darkages.Network
         #endregion
 
         #region Buffer I/O methods
-
-        public long Append(byte[] buffer)
-        {
-            Reserve(Size + buffer.Length);
-            Array.Copy(buffer, 0, Data, Size, buffer.Length);
-            Size += buffer.Length;
-            return buffer.Length;
-        }
-
-        public long Append(byte[] buffer, long offset, long size)
-        {
-            Reserve(Size + size);
-            Array.Copy(buffer, offset, Data, Size, size);
-            Size += size;
-            return size;
-        }
-
-        public long Append(string text)
-        {
-            Reserve(Size + Encoding.UTF8.GetMaxByteCount(text.Length));
-            long result = Encoding.UTF8.GetBytes(text, 0, text.Length, Data, (int) Size);
-            Size += result;
-            return result;
-        }
-
         #endregion
     }
 }

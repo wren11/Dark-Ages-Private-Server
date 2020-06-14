@@ -13,7 +13,6 @@
             Command = 0x1A;
         }
 
-
         public ServerFormat1A(int serial, byte number, short speed) : this()
         {
             Serial = serial;

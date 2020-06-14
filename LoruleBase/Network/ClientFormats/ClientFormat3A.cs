@@ -8,12 +8,10 @@
             Command = 0x3A;
         }
 
-        public ushort ScriptId { get; set; }
-        public ushort Step { get; set; }
-        public uint Serial { get; set; }
-
         public string Input { get; set; }
-
+        public ushort ScriptId { get; set; }
+        public uint Serial { get; set; }
+        public ushort Step { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -22,11 +20,9 @@
             var scriptid = reader.ReadUInt16();
             var step = reader.ReadUInt16();
 
-
             if (reader.ReadByte() == 0x02)
                 if (reader.GetCanRead())
                     Input = reader.ReadStringA();
-
 
             ScriptId = scriptid;
             Step = step;

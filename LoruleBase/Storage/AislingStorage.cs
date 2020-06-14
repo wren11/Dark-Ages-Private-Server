@@ -1,8 +1,8 @@
 ﻿#region
 
+using Newtonsoft.Json;
 using System;
 using System.IO;
-using Newtonsoft.Json;
 
 #endregion
 
@@ -47,7 +47,6 @@ namespace Darkages.Storage
             try
             {
                 var path = Path.Combine(StoragePath, $"{obj.Username.ToLower()}.json");
-
 
                 var objString = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
                 {

@@ -14,91 +14,15 @@ public class Cache<K, T> : IDisposable
     #region Constructor and class members
 
     private readonly Dictionary<K, T> cache = new Dictionary<K, T>();
-    private readonly Dictionary<K, Timer> timers = new Dictionary<K, Timer>();
     private readonly ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
-
+    private readonly Dictionary<K, Timer> timers = new Dictionary<K, Timer>();
     #endregion
 
     #region IDisposable implementation & Clear
 
     private bool disposed;
 
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposed)
-        {
-            disposed = true;
-
-            if (disposing)
-            {
-                Clear();
-                locker.Dispose();
-            }
-        }
-    }
-
-    public void Clear()
-    {
-        locker.EnterWriteLock();
-        try
-        {
-            try
-            {
-                foreach (var t in timers.Values)
-                    t.Dispose();
-            }
-            catch (Exception)
-            {
-            }
-
-            timers.Clear();
-            cache.Clear();
-        }
-        finally
-        {
-            locker.ExitWriteLock();
-        }
-    }
-
-    #endregion
-
-    #region CheckTimer
-
-    private void CheckTimer(K key, int cacheTimeout, bool restartTimerIfExists)
-    {
-        if (timers.TryGetValue(key, out var timer))
-        {
-            if (restartTimerIfExists)
-                timer.Change(
-                    cacheTimeout == Timeout.Infinite ? Timeout.Infinite : cacheTimeout * 1000,
-                    Timeout.Infinite);
-        }
-        else
-        {
-            timers.Add(
-                key,
-                new Timer(
-                    RemoveByTimer,
-                    key,
-                    cacheTimeout == Timeout.Infinite ? Timeout.Infinite : cacheTimeout * 1000,
-                    Timeout.Infinite));
-        }
-    }
-
-    private void RemoveByTimer(object state)
-    {
-        Remove((K) state);
-    }
-
-    #endregion
-
-    #region AddOrUpdate, Get, Remove, Exists, Clear
+    public T this[K key] => Get(key);
 
     public void AddOrUpdate(K key, T cacheObject, int cacheTimeout, bool restartTimerIfExists = false)
     {
@@ -128,7 +52,49 @@ public class Cache<K, T> : IDisposable
         AddOrUpdate(key, cacheObject, Timeout.Infinite);
     }
 
-    public T this[K key] => Get(key);
+    public void Clear()
+    {
+        locker.EnterWriteLock();
+        try
+        {
+            try
+            {
+                foreach (var t in timers.Values)
+                    t.Dispose();
+            }
+            catch (Exception)
+            {
+            }
+
+            timers.Clear();
+            cache.Clear();
+        }
+        finally
+        {
+            locker.ExitWriteLock();
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    public bool Exists(K key)
+    {
+        if (disposed) return false;
+
+        locker.EnterReadLock();
+        try
+        {
+            return cache.ContainsKey(key);
+        }
+        finally
+        {
+            locker.ExitReadLock();
+        }
+    }
 
     public T Get(K key)
     {
@@ -145,25 +111,6 @@ public class Cache<K, T> : IDisposable
         }
     }
 
-    public bool TryGet(K key, out T value)
-    {
-        if (disposed)
-        {
-            value = default;
-            return false;
-        }
-
-        locker.EnterReadLock();
-        try
-        {
-            return cache.TryGetValue(key, out value);
-        }
-        finally
-        {
-            locker.ExitReadLock();
-        }
-    }
-
     public void Remove(Predicate<K> keyPattern)
     {
         if (disposed) return;
@@ -172,8 +119,8 @@ public class Cache<K, T> : IDisposable
         try
         {
             var removers = (from k in cache.Keys
-                where keyPattern(k)
-                select k).ToList();
+                            where keyPattern(k)
+                            select k).ToList();
 
             foreach (var workKey in removers)
             {
@@ -222,14 +169,18 @@ public class Cache<K, T> : IDisposable
         }
     }
 
-    public bool Exists(K key)
+    public bool TryGet(K key, out T value)
     {
-        if (disposed) return false;
+        if (disposed)
+        {
+            value = default;
+            return false;
+        }
 
         locker.EnterReadLock();
         try
         {
-            return cache.ContainsKey(key);
+            return cache.TryGetValue(key, out value);
         }
         finally
         {
@@ -237,6 +188,53 @@ public class Cache<K, T> : IDisposable
         }
     }
 
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposed)
+        {
+            disposed = true;
+
+            if (disposing)
+            {
+                Clear();
+                locker.Dispose();
+            }
+        }
+    }
+
+    #endregion
+
+    #region CheckTimer
+
+    private void CheckTimer(K key, int cacheTimeout, bool restartTimerIfExists)
+    {
+        if (timers.TryGetValue(key, out var timer))
+        {
+            if (restartTimerIfExists)
+                timer.Change(
+                    cacheTimeout == Timeout.Infinite ? Timeout.Infinite : cacheTimeout * 1000,
+                    Timeout.Infinite);
+        }
+        else
+        {
+            timers.Add(
+                key,
+                new Timer(
+                    RemoveByTimer,
+                    key,
+                    cacheTimeout == Timeout.Infinite ? Timeout.Infinite : cacheTimeout * 1000,
+                    Timeout.Infinite));
+        }
+    }
+
+    private void RemoveByTimer(object state)
+    {
+        Remove((K)state);
+    }
+
+    #endregion
+
+    #region AddOrUpdate, Get, Remove, Exists, Clear
     #endregion
 }
 

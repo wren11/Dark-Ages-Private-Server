@@ -14,6 +14,22 @@ namespace Darkages.Storage.locales.Scripts.Items
         {
         }
 
+        public override void Equipped(Sprite sprite, byte displayslot)
+        {
+            if (sprite is Aisling)
+            {
+                var client = (sprite as Aisling).Client;
+
+                if (Item.Template == null)
+                    return;
+
+                Item.ApplyModifers(client);
+
+                client.Aisling.Weapon = Item.Template.Image;
+                client.Aisling.UsingTwoHanded = Item.Template.Flags.HasFlag(ItemFlags.TwoHanded);
+            }
+        }
+
         public override void OnUse(Sprite sprite, byte slot)
         {
             if (sprite == null)
@@ -49,23 +65,6 @@ namespace Darkages.Storage.locales.Scripts.Items
                 {
                     client.Aisling.EquipmentManager.Add(Item.Template.EquipmentSlot, Item);
                 }
-            }
-        }
-
-
-        public override void Equipped(Sprite sprite, byte displayslot)
-        {
-            if (sprite is Aisling)
-            {
-                var client = (sprite as Aisling).Client;
-
-                if (Item.Template == null)
-                    return;
-
-                Item.ApplyModifers(client);
-
-                client.Aisling.Weapon = Item.Template.Image;
-                client.Aisling.UsingTwoHanded = Item.Template.Flags.HasFlag(ItemFlags.TwoHanded);
             }
         }
 

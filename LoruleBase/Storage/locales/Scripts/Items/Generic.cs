@@ -33,7 +33,6 @@ namespace Darkages.Storage.locales.Scripts.Items
             {
                 var client = (sprite as Aisling).Client;
 
-
                 if (Item.Template.Flags.HasFlag(ItemFlags.Equipable))
                 {
                     if (Item.Template.EquipmentSlot == ItemSlots.LArm || Item.Template.EquipmentSlot == ItemSlots.RArm)

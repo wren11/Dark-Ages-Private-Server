@@ -16,7 +16,7 @@ namespace Darkages.Types
             Y = y;
         }
 
-        public Position(int x, int y) : this((ushort) x, (ushort) y)
+        public Position(int x, int y) : this((ushort)x, (ushort)y)
         {
         }
 
@@ -26,47 +26,6 @@ namespace Darkages.Types
 
         public ushort X { get; set; }
         public ushort Y { get; set; }
-
-        public int DistanceFrom(ushort X, ushort Y)
-        {
-            double XDiff = Math.Abs(X - this.X);
-            double YDiff = Math.Abs(Y - this.Y);
-
-            return (int) (XDiff > YDiff ? XDiff : YDiff);
-        }
-
-        public int DistanceFrom(Position pos)
-        {
-            return DistanceFrom(pos.X, pos.Y);
-        }
-
-
-        public bool IsNearby(Position pos)
-        {
-            return pos.DistanceFrom(X, Y) <= ServerContextBase.Config.VeryNearByProximity;
-        }
-
-        public static Position operator +(Position a, Direction b)
-        {
-            var location = new Position(a.X, a.Y);
-            switch (b)
-            {
-                case Direction.North:
-                    location.Y--;
-                    return location;
-                case Direction.East:
-                    location.X++;
-                    return location;
-                case Direction.South:
-                    location.Y++;
-                    return location;
-                case Direction.West:
-                    location.X--;
-                    return location;
-            }
-
-            return location;
-        }
 
         public static Direction operator -(Position a, Position b)
         {
@@ -80,6 +39,59 @@ namespace Darkages.Types
                 return Direction.East;
 
             return Direction.UnDefined;
+        }
+
+        public static Position operator +(Position a, Direction b)
+        {
+            var location = new Position(a.X, a.Y);
+            switch (b)
+            {
+                case Direction.North:
+                    location.Y--;
+                    return location;
+
+                case Direction.East:
+                    location.X++;
+                    return location;
+
+                case Direction.South:
+                    location.Y++;
+                    return location;
+
+                case Direction.West:
+                    location.X--;
+                    return location;
+            }
+
+            return location;
+        }
+
+        public int DistanceFrom(ushort X, ushort Y)
+        {
+            double XDiff = Math.Abs(X - this.X);
+            double YDiff = Math.Abs(Y - this.Y);
+
+            return (int)(XDiff > YDiff ? XDiff : YDiff);
+        }
+
+        public int DistanceFrom(Position pos)
+        {
+            return DistanceFrom(pos.X, pos.Y);
+        }
+
+        public bool IsNearby(Position pos)
+        {
+            return pos.DistanceFrom(X, Y) <= ServerContextBase.Config.VeryNearByProximity;
+        }
+
+        public bool IsNextTo(Position pos, int distance = 1)
+        {
+            if (X == pos.X && Y + distance == pos.Y) return true;
+            if (X == pos.X && Y - distance == pos.Y) return true;
+            if (X == pos.X + distance && Y == pos.Y) return true;
+            if (X == pos.X - distance && Y == pos.Y) return true;
+
+            return false;
         }
 
         public TileContentPosition[] SurroundingContent(Area map)
@@ -106,19 +118,7 @@ namespace Darkages.Types
                     new Position(X, Y + 1),
                     map.ObjectGrid[X, Y + 1].Sprites.Count == 0 ? TileContent.Wall : TileContent.None));
 
-
             return list.ToArray();
-        }
-
-
-        public bool IsNextTo(Position pos, int distance = 1)
-        {
-            if (X == pos.X && Y + distance == pos.Y) return true;
-            if (X == pos.X && Y - distance == pos.Y) return true;
-            if (X == pos.X + distance && Y == pos.Y) return true;
-            if (X == pos.X - distance && Y == pos.Y) return true;
-
-            return false;
         }
 
         public class TileContentPosition
@@ -129,8 +129,8 @@ namespace Darkages.Types
                 Content = content;
             }
 
-            public Position Position { get; set; }
             public TileContent Content { get; set; }
+            public Position Position { get; set; }
         }
     }
 }

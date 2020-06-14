@@ -1,10 +1,10 @@
 ﻿#region
 
+using Darkages.Network.Object;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Darkages.Network.Object;
 
 #endregion
 
@@ -23,8 +23,26 @@ namespace Darkages.Types
             Spells[36] = new Spell();
         }
 
-
         public int Length => Spells.Count;
+
+        public void Assign(Spell spell)
+        {
+            Set(spell);
+        }
+
+        public void Clear(Spell s)
+        {
+            Spells[s.Slot] = null;
+        }
+
+        public int FindEmpty()
+        {
+            for (var i = 0; i < Length; i++)
+                if (Spells[i + 1] == null)
+                    return i + 1;
+
+            return -1;
+        }
 
         public Spell FindInSlot(int Slot)
         {
@@ -38,42 +56,9 @@ namespace Darkages.Types
             return null;
         }
 
-
-        public void Assign(Spell spell)
-        {
-            Set(spell);
-        }
-
         public new Spell[] Get(Predicate<Spell> prediate)
         {
             return Spells.Values.Where(i => i != null && prediate(i)).ToArray();
-        }
-
-        public void Swap(Spell A, Spell B)
-        {
-            A = Interlocked.Exchange(ref B, A);
-        }
-
-        public void Set(Spell s)
-        {
-            Spells[s.Slot] = Clone<Spell>(s);
-        }
-
-        public void Set(Spell s, bool clone = false)
-        {
-            Spells[s.Slot] = clone ? Clone<Spell>(s) : s;
-        }
-
-        public void Clear(Spell s)
-        {
-            Spells[s.Slot] = null;
-        }
-
-        public Spell Remove(byte movingFrom)
-        {
-            var copy = Spells[movingFrom];
-            Spells[movingFrom] = null;
-            return copy;
         }
 
         public bool Has(Spell s)
@@ -96,14 +81,26 @@ namespace Darkages.Types
             return obj != null;
         }
 
-
-        public int FindEmpty()
+        public Spell Remove(byte movingFrom)
         {
-            for (var i = 0; i < Length; i++)
-                if (Spells[i + 1] == null)
-                    return i + 1;
+            var copy = Spells[movingFrom];
+            Spells[movingFrom] = null;
+            return copy;
+        }
 
-            return -1;
+        public void Set(Spell s)
+        {
+            Spells[s.Slot] = Clone<Spell>(s);
+        }
+
+        public void Set(Spell s, bool clone = false)
+        {
+            Spells[s.Slot] = clone ? Clone<Spell>(s) : s;
+        }
+
+        public void Swap(Spell A, Spell B)
+        {
+            A = Interlocked.Exchange(ref B, A);
         }
     }
 }

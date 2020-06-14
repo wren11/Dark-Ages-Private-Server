@@ -10,9 +10,9 @@ namespace Darkages.Systems.Loot.Interfaces
     {
         ICollection<IModifier> Modifiers { get; }
 
-        void ModifyItem(object item);
-
         IModifierSet Add(IModifier modifier);
+
+        void ModifyItem(object item);
 
         IModifierSet Remove(IModifier modifier);
     }

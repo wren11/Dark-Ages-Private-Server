@@ -3,22 +3,22 @@
     {
       "Command": 49,
       "Secured": true,
-      "Owner": "lol",
-      "TopicId": 1140,
-      "PostId": 1,
       "BoardId": 2,
-      "Read": false,
       "DatePosted": "2020-04-30T11:52:46.3749775Z",
-      "Sender": "lol",
       "Message": "test",
+      "Owner": "lol",
+      "PostId": 1,
+      "Read": false,
       "Recipient": null,
-      "Subject": "test"
+      "Sender": "lol",
+      "Subject": "test",
+      "TopicId": 1140
     }
   ],
   "Command": 49,
   "Secured": true,
   "Index": 2,
   "IsMail": false,
-  "Subject": "Rankings",
-  "LetterId": 2
+  "LetterId": 2,
+  "Subject": "Rankings"
 }

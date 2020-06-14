@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Darkages.Systems.Loot.Interfaces;
 using Darkages.Types;
+using System.Collections.Generic;
 
 #endregion
 
@@ -17,8 +17,14 @@ namespace Darkages.Systems.Loot
             Modifiers = new List<IModifier>();
         }
 
-        public double Weight { get; set; }
         public ICollection<IModifier> Modifiers { get; }
+        public double Weight { get; set; }
+
+        public IModifierSet Add(IModifier modifier)
+        {
+            Modifiers.Add(modifier);
+            return this;
+        }
 
         public void ModifyItem(object item)
         {
@@ -27,12 +33,6 @@ namespace Darkages.Systems.Loot
 
             foreach (var modifier in Modifiers)
                 modifier.Apply(item);
-        }
-
-        public IModifierSet Add(IModifier modifier)
-        {
-            Modifiers.Add(modifier);
-            return this;
         }
 
         public IModifierSet Remove(IModifier modifier)

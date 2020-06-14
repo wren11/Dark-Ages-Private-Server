@@ -1,9 +1,9 @@
 ﻿#region
 
+using Darkages.Systems.Loot.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Darkages.Systems.Loot.Interfaces;
 
 #endregion
 
@@ -17,20 +17,13 @@ namespace Darkages.Systems.Loot
             Children = new List<ILootDefinition>();
         }
 
+        public ICollection<ILootDefinition> Children { get; }
         public string Name { get; set; }
         public double Weight { get; set; }
-
-        public ICollection<ILootDefinition> Children { get; }
 
         public ILootTable Add(ILootDefinition item)
         {
             Children.Add(item);
-            return this;
-        }
-
-        public ILootTable Remove(ILootDefinition item)
-        {
-            Children.Remove(item);
             return this;
         }
 
@@ -39,9 +32,15 @@ namespace Darkages.Systems.Loot
             if (string.IsNullOrEmpty(name))
                 return this;
 
-            var names = name.Split(new[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
+            var names = name.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
             return Find(names);
+        }
+
+        public ILootTable Remove(ILootDefinition item)
+        {
+            Children.Remove(item);
+            return this;
         }
 
         private ILootDefinition Find(IReadOnlyList<string> names)

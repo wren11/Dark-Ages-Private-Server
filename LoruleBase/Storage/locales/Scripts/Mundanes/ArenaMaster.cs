@@ -1,10 +1,10 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System.Collections.Generic;
 
 #endregion
 
@@ -15,14 +15,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
     {
         public ArenaMaster(GameServer server, Mundane mundane)
             : base(server, mundane)
-        {
-        }
-
-        public override void TargetAcquired(Sprite Target)
-        {
-        }
-
-        public override void OnGossip(GameServer server, GameClient client, string message)
         {
         }
 
@@ -38,6 +30,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             client.SendOptionsDialog(Mundane, "Give the orders.", options.ToArray());
         }
 
+        public override void OnGossip(GameServer server, GameClient client, string message)
+        {
+        }
+
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
         {
             if (responseID == 0x0006)
@@ -51,11 +47,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 client.SendStats(StatusFlags.All);
                 client.Refresh();
 
-                client.Aisling.PortalSession = new PortalSession {IsMapOpen = false};
+                client.Aisling.PortalSession = new PortalSession { IsMapOpen = false };
                 client.Aisling.PortalSession.TransitionToMap(client);
                 client.CloseDialog();
             }
-
 
             if (responseID == 0x0001)
             {
@@ -121,6 +116,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     client.CloseDialog();
                 }
             }
+        }
+
+        public override void TargetAcquired(Sprite Target)
+        {
         }
     }
 }

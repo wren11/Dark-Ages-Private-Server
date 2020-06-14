@@ -19,7 +19,6 @@ namespace Darkages.Storage.locales.debuffs
             if (AcModifer.Option == Operator.Add)
                 Affected.BonusAc += AcModifer.Value;
 
-
             base.OnApplied(Affected, debuff);
         }
 

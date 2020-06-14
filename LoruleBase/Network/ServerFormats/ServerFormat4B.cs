@@ -15,9 +15,9 @@
             ItemSlot = itemSlot;
         }
 
-        public byte Type { get; set; }
-        public uint Serial { get; set; }
         public byte ItemSlot { get; set; }
+        public uint Serial { get; set; }
+        public byte Type { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -27,21 +27,21 @@
         {
             if (Type == 0)
             {
-                writer.Write((ushort) 0x06);
-                writer.Write((byte) 0x4A);
-                writer.Write((byte) 0x00);
+                writer.Write((ushort)0x06);
+                writer.Write((byte)0x4A);
+                writer.Write((byte)0x00);
                 writer.Write(Serial);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Type == 1)
             {
-                writer.Write((ushort) 0x07);
-                writer.Write((byte) 0x4A);
-                writer.Write((byte) 0x01);
+                writer.Write((ushort)0x07);
+                writer.Write((byte)0x4A);
+                writer.Write((byte)0x01);
                 writer.Write(Serial);
                 writer.Write(ItemSlot);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
         }
     }

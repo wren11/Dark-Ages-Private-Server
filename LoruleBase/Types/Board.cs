@@ -1,13 +1,13 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Darkages.Network;
 using Darkages.Network.Game;
 using Darkages.Storage;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 #endregion
 
@@ -38,44 +38,11 @@ namespace Darkages.Types
             IsMail = isMail;
         }
 
+        [JsonIgnore] public GameClient Client { get; set; }
         public ushort Index { get; set; }
         public bool IsMail { get; set; }
-
-        [JsonIgnore] public GameClient Client { get; set; }
-
-        public string Subject { get; set; }
-
         public ushort LetterId { get; set; }
-
-        public override void Serialize(NetworkPacketReader reader)
-        {
-        }
-
-        public override void Serialize(NetworkPacketWriter writer)
-        {
-            writer.Write((byte) (IsMail ? 0x04 : 0x02));
-            writer.Write((byte) 0x01);
-            writer.Write((ushort) (IsMail ? 0x00 : LetterId));
-            writer.WriteStringA(IsMail ? "Mail" : Subject);
-
-
-            if (IsMail && Client != null)
-                Posts = Posts.Where(i => i.Recipient != null &&
-                                         i.Recipient.Equals(Client.Aisling.Username,
-                                             StringComparison.OrdinalIgnoreCase)).ToList();
-
-            writer.Write((byte) Posts.Count);
-            foreach (var post in Posts)
-            {
-                writer.Write((byte) (!post.Read ? 0 : 1));
-                writer.Write(post.PostId);
-                writer.WriteStringA(post.Sender);
-                writer.Write((byte) post.DatePosted.Month);
-                writer.Write((byte) post.DatePosted.Day);
-                writer.WriteStringA(post.Subject);
-            }
-        }
-
+        public string Subject { get; set; }
 
         public static List<Board> CacheFromStorage(string dir)
         {
@@ -126,10 +93,37 @@ namespace Darkages.Types
             if (ServerContextBase.Paused)
                 return;
 
-
             var path = Path.Combine(StoragePath, $"{key}\\{Subject}.json");
             var objString = JsonConvert.SerializeObject(this, StorageManager.Settings);
             File.WriteAllText(path, objString);
+        }
+
+        public override void Serialize(NetworkPacketReader reader)
+        {
+        }
+
+        public override void Serialize(NetworkPacketWriter writer)
+        {
+            writer.Write((byte)(IsMail ? 0x04 : 0x02));
+            writer.Write((byte)0x01);
+            writer.Write((ushort)(IsMail ? 0x00 : LetterId));
+            writer.WriteStringA(IsMail ? "Mail" : Subject);
+
+            if (IsMail && Client != null)
+                Posts = Posts.Where(i => i.Recipient != null &&
+                                         i.Recipient.Equals(Client.Aisling.Username,
+                                             StringComparison.OrdinalIgnoreCase)).ToList();
+
+            writer.Write((byte)Posts.Count);
+            foreach (var post in Posts)
+            {
+                writer.Write((byte)(!post.Read ? 0 : 1));
+                writer.Write(post.PostId);
+                writer.WriteStringA(post.Sender);
+                writer.Write((byte)post.DatePosted.Month);
+                writer.Write((byte)post.DatePosted.Day);
+                writer.WriteStringA(post.Subject);
+            }
         }
     }
 }

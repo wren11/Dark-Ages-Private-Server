@@ -1,8 +1,8 @@
 ﻿#region
 
-using System;
 using Darkages.Scripting;
 using Darkages.Types;
+using System;
 
 #endregion
 

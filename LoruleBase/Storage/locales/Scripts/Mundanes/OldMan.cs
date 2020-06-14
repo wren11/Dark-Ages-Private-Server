@@ -1,12 +1,12 @@
 ﻿#region
 
-using System.Collections.Generic;
-using System.IO;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
 using MenuInterpreter;
 using MenuInterpreter.Parser;
+using System.Collections.Generic;
+using System.IO;
 
 #endregion
 
@@ -32,7 +32,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         public OldMan(GameServer server, Mundane mundane) : base(server, mundane)
         {
         }
-
 
         public void LoadScriptInterpreter(GameClient client)
         {
@@ -83,10 +82,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             }
         }
 
-        public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
-        {
-        }
-
         public override void OnClick(GameServer server, GameClient client)
         {
             if (client.MenuInterpter == null)
@@ -99,15 +94,18 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             {
             }
 
-
             client.ShowCurrentMenu(Mundane, null, client.MenuInterpter.GetCurrentStep());
         }
 
-        public override void TargetAcquired(Sprite Target)
+        public override void OnGossip(GameServer server, GameClient client, string message)
         {
         }
 
-        public override void OnGossip(GameServer server, GameClient client, string message)
+        public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
+        {
+        }
+
+        public override void TargetAcquired(Sprite Target)
         {
         }
     }

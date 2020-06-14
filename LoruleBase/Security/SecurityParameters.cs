@@ -1,9 +1,9 @@
 ﻿#region
 
-using System;
-using System.Text;
 using Darkages.Common;
 using Darkages.Network;
+using System;
+using System.Text;
 using IFormattable = Darkages.Network.IFormattable;
 
 #endregion
@@ -19,7 +19,7 @@ namespace Darkages.Security
 
         public SecurityParameters()
         {
-            Seed = (byte) Generator.Random.Next(0, 9);
+            Seed = (byte)Generator.Random.Next(0, 9);
             Salt = Generator.GenerateString(9).ToByteArray();
         }
 
@@ -29,8 +29,8 @@ namespace Darkages.Security
             Salt = key;
         }
 
-        public byte Seed { get; set; }
         public byte[] Salt { get; set; }
+        public byte Seed { get; set; }
 
         public void Serialize(NetworkPacketReader reader)
         {
@@ -42,7 +42,7 @@ namespace Darkages.Security
         {
             writer.Write(Seed);
             writer.Write(
-                (byte) Salt.Length);
+                (byte)Salt.Length);
             writer.Write(Salt);
         }
     }

@@ -1,9 +1,9 @@
 ﻿#region
 
-using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System.Linq;
 
 #endregion
 
@@ -36,7 +36,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     var action = new ServerFormat1A
                     {
                         Serial = sprite.Serial,
-                        Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                        Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 :
                             client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                         Speed = 30
                     };
@@ -62,7 +62,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                                 var hpbar = new ServerFormat13
                                 {
                                     Serial = obj.Serial,
-                                    Health = (ushort) (100 * obj.CurrentHp / obj.MaximumHp),
+                                    Health = (ushort)(100 * obj.CurrentHp / obj.MaximumHp),
                                     Sound = 8
                                 };
                                 obj.Show(Scope.NearbyAislings, hpbar);
@@ -89,7 +89,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 var hpbar = new ServerFormat13
                 {
                     Serial = sprite.Serial,
-                    Health = (ushort) (100 * sprite.CurrentHp / sprite.MaximumHp),
+                    Health = (ushort)(100 * sprite.CurrentHp / sprite.MaximumHp),
                     Sound = 8
                 };
 

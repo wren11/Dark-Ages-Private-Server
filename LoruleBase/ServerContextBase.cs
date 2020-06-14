@@ -1,17 +1,17 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Storage;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 
 #endregion
 
@@ -137,7 +137,6 @@ namespace Darkages
             ServerContext.Logger($"Map Templates Loaded: {GlobalMapCache.Count}");
         }
 
-
         private static void StartServers()
         {
 #if DEBUG
@@ -158,7 +157,6 @@ namespace Darkages
                 ServerContext.Error(e);
             }
         }
-
 
         protected static void DisposeGame()
         {
@@ -282,7 +280,6 @@ namespace Darkages
 
             Paused = false;
 
-
             var blind = new SpellTemplate();
             blind.Name = "blind";
             blind.Icon = 114;
@@ -309,7 +306,6 @@ namespace Darkages
             GlobalSpellTemplateCache.Add("blind", blind);
         }
 
-
         private static void LoadExtensions()
         {
             ServerContext.Logger("Loading Extensions...");
@@ -326,25 +322,25 @@ namespace Darkages
         private static void CacheDebuffs()
         {
             var listOfDebuffs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
-                from assemblyType in domainAssembly.GetTypes()
-                where typeof(Debuff).IsAssignableFrom(assemblyType)
-                select assemblyType).ToArray();
+                                 from assemblyType in domainAssembly.GetTypes()
+                                 where typeof(Debuff).IsAssignableFrom(assemblyType)
+                                 select assemblyType).ToArray();
 
             foreach (var debuff in listOfDebuffs)
                 if (GlobalDeBuffCache != null)
-                    GlobalDeBuffCache[debuff.Name] = (Debuff) Activator.CreateInstance(debuff);
+                    GlobalDeBuffCache[debuff.Name] = (Debuff)Activator.CreateInstance(debuff);
         }
 
         private static void CacheBuffs()
         {
             var listOfBuffs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
-                from assemblyType in domainAssembly.GetTypes()
-                where typeof(Buff).IsAssignableFrom(assemblyType)
-                select assemblyType).ToArray();
+                               from assemblyType in domainAssembly.GetTypes()
+                               where typeof(Buff).IsAssignableFrom(assemblyType)
+                               select assemblyType).ToArray();
 
             foreach (var buff in listOfBuffs)
                 if (GlobalBuffCache != null)
-                    GlobalBuffCache[buff.Name] = (Buff) Activator.CreateInstance(buff);
+                    GlobalBuffCache[buff.Name] = (Buff)Activator.CreateInstance(buff);
         }
 
         private static void BindTemplates()

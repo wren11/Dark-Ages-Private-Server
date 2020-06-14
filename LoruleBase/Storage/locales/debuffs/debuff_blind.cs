@@ -9,9 +9,9 @@ namespace Darkages.Storage.locales.debuffs
 {
     public class debuff_blind : Debuff
     {
-        public override string Name => "blind";
         public override byte Icon => 114;
         public override int Length => 7;
+        public override string Name => "blind";
 
         public override void OnApplied(Sprite affected, Debuff debuff)
         {

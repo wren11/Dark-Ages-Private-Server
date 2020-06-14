@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.IO;
 using Darkages.Types;
 using Newtonsoft.Json;
+using System.IO;
 
 #endregion
 
@@ -18,6 +18,20 @@ namespace Darkages.Storage
 
             if (!Directory.Exists(StoragePath))
                 Directory.CreateDirectory(StoragePath);
+        }
+
+        public void CacheFromStorage()
+        {
+            var area_dir = StoragePath;
+            if (!Directory.Exists(area_dir))
+                return;
+            var area_names = Directory.GetFiles(area_dir, "*.json", SearchOption.TopDirectoryOnly);
+
+            foreach (var area in area_names)
+            {
+                var obj = StorageManager.WarpBucket.Load(Path.GetFileNameWithoutExtension(area));
+                ServerContextBase.GlobalWarpTemplateCache.Add(obj);
+            }
         }
 
         public WarpTemplate Load(string Name)
@@ -39,24 +53,9 @@ namespace Darkages.Storage
             if (ServerContextBase.Paused)
                 return;
 
-
             var path = Path.Combine(StoragePath, $"{obj.Name.ToLower()}.json");
             var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
             File.WriteAllText(path, objString);
-        }
-
-        public void CacheFromStorage()
-        {
-            var area_dir = StoragePath;
-            if (!Directory.Exists(area_dir))
-                return;
-            var area_names = Directory.GetFiles(area_dir, "*.json", SearchOption.TopDirectoryOnly);
-
-            foreach (var area in area_names)
-            {
-                var obj = StorageManager.WarpBucket.Load(Path.GetFileNameWithoutExtension(area));
-                ServerContextBase.GlobalWarpTemplateCache.Add(obj);
-            }
         }
     }
 }

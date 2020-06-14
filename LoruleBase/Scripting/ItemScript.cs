@@ -16,9 +16,7 @@ namespace Darkages.Scripting
 
         public Item Item { get; set; }
 
-        public abstract void OnUse(Sprite sprite, byte slot);
         public abstract void Equipped(Sprite sprite, byte displayslot);
-        public abstract void UnEquipped(Sprite sprite, byte displayslot);
 
         public virtual void OnDropped(Sprite sprite, Position dropped_position, Area map)
         {
@@ -27,5 +25,9 @@ namespace Darkages.Scripting
         public virtual void OnPickedUp(Sprite sprite, Position picked_position, Area map)
         {
         }
+
+        public abstract void OnUse(Sprite sprite, byte slot);
+
+        public abstract void UnEquipped(Sprite sprite, byte displayslot);
     }
 }

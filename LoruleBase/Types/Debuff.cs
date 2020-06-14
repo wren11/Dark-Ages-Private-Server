@@ -1,10 +1,10 @@
 ﻿#region
 
-using System;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Newtonsoft.Json;
+using System;
 
 #endregion
 
@@ -18,17 +18,33 @@ namespace Darkages.Types
             Timer = new GameServerTimer(TimeSpan.FromSeconds(1));
         }
 
-        [JsonProperty] public virtual string Name { get; set; }
-
-        [JsonProperty] public virtual int Length { get; set; }
-
-        [JsonProperty] public virtual byte Icon { get; set; }
-
+        [JsonProperty] public ushort Animation { get; set; }
         [JsonProperty] public virtual bool Cancelled { get; set; }
-
+        [JsonProperty] public virtual byte Icon { get; set; }
+        [JsonProperty] public virtual int Length { get; set; }
+        [JsonProperty] public virtual string Name { get; set; }
         [JsonProperty] public GameServerTimer Timer { get; set; }
 
-        [JsonProperty] public ushort Animation { get; set; }
+        public void Display(Sprite Affected)
+        {
+            var colorInt = 0;
+
+            if ((Length - Timer.Tick).IsWithin(0, 10))
+                colorInt = 1;
+            else if ((Length - Timer.Tick).IsWithin(10, 20))
+                colorInt = 2;
+            else if ((Length - Timer.Tick).IsWithin(20, 30))
+                colorInt = 3;
+            else if ((Length - Timer.Tick).IsWithin(30, 60))
+                colorInt = 4;
+            else if ((Length - Timer.Tick).IsWithin(60, 90))
+                colorInt = 5;
+            else if ((Length - Timer.Tick).IsWithin(90, short.MaxValue))
+                colorInt = 6;
+
+            (Affected as Aisling)?.Client
+                .Send(new ServerFormat3A(Icon, (byte)colorInt));
+        }
 
         public bool Has(string name)
         {
@@ -69,27 +85,6 @@ namespace Darkages.Types
                 Timer.Tick++;
                 Timer.Reset();
             }
-        }
-
-        public void Display(Sprite Affected)
-        {
-            var colorInt = 0;
-
-            if ((Length - Timer.Tick).IsWithin(0, 10))
-                colorInt = 1;
-            else if ((Length - Timer.Tick).IsWithin(10, 20))
-                colorInt = 2;
-            else if ((Length - Timer.Tick).IsWithin(20, 30))
-                colorInt = 3;
-            else if ((Length - Timer.Tick).IsWithin(30, 60))
-                colorInt = 4;
-            else if ((Length - Timer.Tick).IsWithin(60, 90))
-                colorInt = 5;
-            else if ((Length - Timer.Tick).IsWithin(90, short.MaxValue))
-                colorInt = 6;
-
-            (Affected as Aisling)?.Client
-                .Send(new ServerFormat3A(Icon, (byte) colorInt));
         }
     }
 }

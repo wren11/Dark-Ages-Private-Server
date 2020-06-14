@@ -8,9 +8,9 @@
             Command = 0x2E;
         }
 
-        public byte Type { get; set; }
         public string Name { get; set; }
         public bool ShowOnMap { get; set; }
+        public byte Type { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

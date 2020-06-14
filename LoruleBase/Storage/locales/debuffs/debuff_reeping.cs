@@ -1,8 +1,8 @@
 ﻿#region
 
-using System;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
+using System;
 
 #endregion
 
@@ -11,14 +11,14 @@ namespace Darkages.Storage.locales.debuffs
     public class debuff_reeping : Debuff
     {
         public readonly Random _rnd = new Random();
-        public override string Name => "skulled";
+        public int Count => Messages.Length;
         public override byte Icon => 89;
         public override int Length => ServerContextBase.Config.SkullLength;
 
         public string[] Messages =>
-            ServerContextBase.Config.ReapMessage.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
+            ServerContextBase.Config.ReapMessage.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 
-        public int Count => Messages.Length;
+        public override string Name => "skulled";
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {
@@ -26,7 +26,6 @@ namespace Darkages.Storage.locales.debuffs
             if (Affected is Aisling)
                 if ((Affected as Aisling).GameMaster)
                     return;
-
 
             base.OnApplied(Affected, debuff);
 
@@ -87,7 +86,6 @@ namespace Darkages.Storage.locales.debuffs
                 };
 
                 (Affected as Aisling).Show(Scope.Self, hpbar);
-
 
                 (Affected as Aisling)
                     .Client

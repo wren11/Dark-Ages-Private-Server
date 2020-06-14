@@ -1,11 +1,11 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using MenuInterpreter;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -13,168 +13,149 @@ namespace Darkages.Network.Game
 {
     public interface IGameClient
     {
-        GameServer Server { get; set; }
-
         Aisling Aisling { get; set; }
-
-        GameServerTimer HpRegenTimer { get; set; }
-
-        GameServerTimer MpRegenTimer { get; set; }
-
-        Interpreter MenuInterpter { get; set; }
-
-        DialogSession DlgSession { get; set; }
-
-        Item LastItemDropped { get; set; }
-
         DateTime BoardOpened { get; set; }
-
-        DateTime LastWhisperMessageSent { get; set; }
-
-        DateTime LastAssail { get; set; }
-
-        DateTime LastMessageSent { get; set; }
-
-        DateTime LastPingResponse { get; set; }
-
-        DateTime LastWarp { get; set; }
-
-        DateTime LastScriptExecuted { get; set; }
-
-        DateTime LastPing { get; set; }
-
-        DateTime LastSave { get; set; }
-
-        DateTime LastClientRefresh { get; set; }
-
-        DateTime LastMovement { get; set; }
-
-        bool IsRefreshing { get; }
-
-        bool IsWarping { get; }
-
         bool CanSendLocation { get; }
-
-        bool WasUpdatingMapRecently { get; }
-
-        DateTime LastLocationSent { get; set; }
-
-        DateTime LastMapUpdated { get; set; }
-
-        ushort LastBoardActivated { get; set; }
-
-        bool ShouldUpdateMap { get; set; }
-
+        DialogSession DlgSession { get; set; }
+        GameServerTimer HpRegenTimer { get; set; }
+        bool IsRefreshing { get; }
+        bool IsWarping { get; }
         byte LastActivatedLost { get; set; }
-
-        PendingSell PendingItemSessions { get; set; }
-
+        DateTime LastAssail { get; set; }
+        ushort LastBoardActivated { get; set; }
+        DateTime LastClientRefresh { get; set; }
+        Item LastItemDropped { get; set; }
+        DateTime LastLocationSent { get; set; }
+        DateTime LastMapUpdated { get; set; }
         TimeSpan LastMenuStarted { get; }
-        void Port(int i, int x = 0, int y = 0);
-
-        void Spawn(string t, int x, int y, int c);
-
-        void LearnEverything();
-        void ForgetSkill(string s);
-        void ForgetSpell(string s);
-        void GiveExp(int a);
-        void Recover();
-        void GiveStr(byte v = 1);
-        void GiveInt(byte v = 1);
-        void GiveWis(byte v = 1);
-        void GiveCon(byte v = 1);
-        void GiveDex(byte v = 1);
-        void GiveHp(int v = 1);
-        void GiveMp(int v = 1);
-        Task Effect(ushort n, int d = 1000, int r = 1);
-        void StressTest();
-        void GiveScar();
-        void RevivePlayer(string u);
-        void KillPlayer(string u);
-        bool GiveItem(string itemName);
-        bool GiveTutorialArmor();
-        bool CastSpell(string spellName, Sprite caster, Sprite target);
-        bool PlayerUseSpell(string spellname, Sprite target);
-        bool PlayerUseSkill(string spellname);
-        bool TakeAwayItem(string item);
-        bool TakeAwayItem(Item item);
-        void OpenBoard(string n);
-        void ReloadObjects(bool all = false);
-        GameClient LoggedIn(bool state);
-
-        void BuildSettings();
-
-        void WarpTo(WarpTemplate warps);
-
-        GameClient LearnSpell(Mundane source, SpellTemplate subject, string message);
-
-        GameClient LearnSkill(Mundane source, SkillTemplate subject, string message);
-
-        bool PayPrerequisites(LearningPredicate prerequisites);
-
-        GameClient PayItemPrerequisites(LearningPredicate prerequisites);
-
-        GameClient TransitionToMap(Area area, Position position);
-
-        GameClient TransitionToMap(int area, Position position);
-
-        GameClient CloseDialog();
-
-        void Update(TimeSpan elapsedTime);
-
-        GameClient DoUpdate(TimeSpan elapsedTime);
-
-        GameClient UpdateReactors(TimeSpan elapsedTime);
-
-        GameClient SystemMessage(string lpmessage);
-
-        GameClient StatusCheck();
-
-        GameClient HandleTimeOuts();
-
-        GameClient UpdateStatusBar(TimeSpan elapsedTime);
-
-        GameClient Load();
-
-        GameClient SetAislingStartupVariables();
-
-        GameClient Regen(TimeSpan elapsedTime);
-
-        GameClient InitSpellBar();
-
-        GameClient LoadEquipment();
+        DateTime LastMessageSent { get; set; }
+        DateTime LastMovement { get; set; }
+        DateTime LastPing { get; set; }
+        DateTime LastPingResponse { get; set; }
+        DateTime LastSave { get; set; }
+        DateTime LastScriptExecuted { get; set; }
+        DateTime LastWarp { get; set; }
+        DateTime LastWhisperMessageSent { get; set; }
+        Interpreter MenuInterpter { get; set; }
+        GameServerTimer MpRegenTimer { get; set; }
+        PendingSell PendingItemSessions { get; set; }
+        GameServer Server { get; set; }
+        bool ShouldUpdateMap { get; set; }
+        bool WasUpdatingMapRecently { get; }
 
         GameClient AislingToGhostForm();
 
-        GameClient GhostFormToAisling();
+        void BuildSettings();
 
-        GameClient LoadSpellBook();
+        bool CastSpell(string spellName, Sprite caster, Sprite target);
 
-        GameClient LoadSkillBook();
+        bool CheckReqs(GameClient client, Item item);
 
-        GameClient LoadInventory();
+        GameClient CloseDialog();
 
-        GameClient UpdateDisplay();
+        GameClient DoUpdate(TimeSpan elapsedTime);
 
-        GameClient Refresh(bool delete = false);
-
-        GameClient LeaveArea(bool update = false, bool delete = false);
+        Task Effect(ushort n, int d = 1000, int r = 1);
 
         GameClient EnterArea();
 
-        GameClient SendMusic();
+        void ForgetSkill(string s);
 
-        GameClient SendSound(byte sound, Scope scope = Scope.Self);
+        void ForgetSpell(string s);
+
+        GameClient GhostFormToAisling();
+
+        void GiveCon(byte v = 1);
+
+        void GiveDex(byte v = 1);
+
+        void GiveExp(int a);
+
+        void GiveHp(int v = 1);
+
+        void GiveInt(byte v = 1);
+
+        bool GiveItem(string itemName);
+
+        void GiveMp(int v = 1);
+
+        void GiveScar();
+
+        void GiveStr(byte v = 1);
+
+        bool GiveTutorialArmor();
+
+        void GiveWis(byte v = 1);
+
+        GameClient HandleTimeOuts();
+
+        GameClient InitSpellBar();
 
         GameClient Insert();
 
+        void Interupt();
+
+        void KillPlayer(string u);
+
+        void LearnEverything();
+
+        GameClient LearnSkill(Mundane source, SkillTemplate subject, string message);
+
+        GameClient LearnSpell(Mundane source, SpellTemplate subject, string message);
+
+        GameClient LeaveArea(bool update = false, bool delete = false);
+
+        GameClient Load();
+
+        GameClient LoadEquipment();
+
+        GameClient LoadInventory();
+
+        GameClient LoadSkillBook();
+
+        GameClient LoadSpellBook();
+
+        GameClient LoggedIn(bool state);
+
+        void OpenBoard(string n);
+
+        GameClient PayItemPrerequisites(LearningPredicate prerequisites);
+
+        bool PayPrerequisites(LearningPredicate prerequisites);
+
+        bool PlayerUseSkill(string spellname);
+
+        bool PlayerUseSpell(string spellname, Sprite target);
+
+        void Port(int i, int x = 0, int y = 0);
+
+        void Recover();
+
+        GameClient Refresh(bool delete = false);
+
         GameClient RefreshMap();
 
-        GameClient SendSerial();
+        GameClient Regen(TimeSpan elapsedTime);
 
-        GameClient SendLocation();
+        void ReloadObjects(bool all = false);
+
+        void RepairEquipment(IEnumerable<Item> gear);
+
+        bool Revive();
+
+        void RevivePlayer(string u);
 
         GameClient Save();
+
+        void Say(string message, byte type = 0x00);
+
+        void SendAnimation(ushort animation, Sprite to, Sprite from, byte speed = 100);
+
+        void SendItemSellDialog(Mundane mundane, string text, ushort step, IEnumerable<byte> items);
+
+        void SendItemShopDialog(Mundane mundane, string text, ushort step, IEnumerable<ItemTemplate> items);
+
+        GameClient SendLocation();
 
         GameClient SendMessage(byte type, string text);
 
@@ -182,48 +163,66 @@ namespace Darkages.Network.Game
 
         void SendMessage(Scope scope, byte type, string text);
 
-        void Say(string message, byte type = 0x00);
-
-        void SendAnimation(ushort animation, Sprite to, Sprite from, byte speed = 100);
-
-        void SendItemShopDialog(Mundane mundane, string text, ushort step, IEnumerable<ItemTemplate> items);
-
-        void SendItemSellDialog(Mundane mundane, string text, ushort step, IEnumerable<byte> items);
+        GameClient SendMusic();
 
         void SendOptionsDialog(Mundane mundane, string text, params OptionsDataItem[] options);
 
-        void SendPopupDialog(Popup popup, string text, params OptionsDataItem[] options);
-
         void SendOptionsDialog(Mundane mundane, string text, string args, params OptionsDataItem[] options);
 
-        void SendSkillLearnDialog(Mundane mundane, string text, ushort step, IEnumerable<SkillTemplate> skills);
-
-        void SendSpellLearnDialog(Mundane mundane, string text, ushort step, IEnumerable<SpellTemplate> spells);
-
-        void SendSkillForgetDialog(Mundane mundane, string text, ushort step);
-
-        void SendSpellForgetDialog(Mundane mundane, string text, ushort step);
-
-        GameClient SendStats(StatusFlags flags);
+        void SendPopupDialog(Popup popup, string text, params OptionsDataItem[] options);
 
         GameClient SendProfileUpdate();
 
-        void TrainSpell(Spell spell);
+        GameClient SendSerial();
 
-        void TrainSkill(Skill skill);
+        void SendSkillForgetDialog(Mundane mundane, string text, ushort step);
 
-        void Interupt();
+        void SendSkillLearnDialog(Mundane mundane, string text, ushort step, IEnumerable<SkillTemplate> skills);
 
-        void WarpTo(Position position);
+        GameClient SendSound(byte sound, Scope scope = Scope.Self);
 
-        void RepairEquipment(IEnumerable<Item> gear);
+        void SendSpellForgetDialog(Mundane mundane, string text, ushort step);
 
-        bool Revive();
+        void SendSpellLearnDialog(Mundane mundane, string text, ushort step, IEnumerable<SpellTemplate> spells);
 
-        bool CheckReqs(GameClient client, Item item);
+        GameClient SendStats(StatusFlags flags);
+
+        GameClient SetAislingStartupVariables();
 
         void ShowCurrentMenu(Sprite obj, MenuItem currentitem, MenuItem nextitem);
 
         void ShowCurrentMenu(Popup popup, MenuItem currentitem, MenuItem nextitem);
+
+        void Spawn(string t, int x, int y, int c);
+
+        GameClient StatusCheck();
+
+        void StressTest();
+
+        GameClient SystemMessage(string lpmessage);
+
+        bool TakeAwayItem(string item);
+
+        bool TakeAwayItem(Item item);
+
+        void TrainSkill(Skill skill);
+
+        void TrainSpell(Spell spell);
+
+        GameClient TransitionToMap(Area area, Position position);
+
+        GameClient TransitionToMap(int area, Position position);
+
+        void Update(TimeSpan elapsedTime);
+
+        GameClient UpdateDisplay();
+
+        GameClient UpdateReactors(TimeSpan elapsedTime);
+
+        GameClient UpdateStatusBar(TimeSpan elapsedTime);
+
+        void WarpTo(WarpTemplate warps);
+
+        void WarpTo(Position position);
     }
 }

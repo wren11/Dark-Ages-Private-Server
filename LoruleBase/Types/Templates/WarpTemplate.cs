@@ -1,13 +1,19 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Collections.Generic;
 
 #endregion
 
 namespace Darkages.Types
 {
+    public enum WarpType
+    {
+        Map,
+        World
+    }
+
     public class WarpTemplate : Template
     {
         public WarpTemplate()
@@ -15,25 +21,17 @@ namespace Darkages.Types
             Activations = new List<Warp>();
         }
 
+        [JsonProperty] public int ActivationMapId { get; set; }
+        public List<Warp> Activations { get; set; }
         [JsonProperty] public byte LevelRequired { get; set; }
 
-        [JsonProperty] public int WarpRadius { get; set; }
-
-        public List<Warp> Activations { get; set; }
         public Warp To { get; set; }
+        [JsonProperty] public int WarpRadius { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public WarpType WarpType { get; set; }
 
-        [JsonProperty] public int ActivationMapId { get; set; }
-
-        public int WorldTransionWarpId { get; set; }
         public int WorldResetWarpId { get; set; }
-    }
-
-    public enum WarpType
-    {
-        Map,
-        World
+        public int WorldTransionWarpId { get; set; }
     }
 }

@@ -8,11 +8,11 @@
             Command = 0x08;
         }
 
+        public int ItemAmount { get; set; }
         public byte ItemSlot { get; set; }
+        public short Unknown { get; set; }
         public short X { get; set; }
         public short Y { get; set; }
-        public int ItemAmount { get; set; }
-        public short Unknown { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

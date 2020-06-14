@@ -28,11 +28,11 @@ namespace Darkages.Storage.locales.Scripts.Items
             obj?.Remove();
         }
 
-        public override void OnUse(Sprite sprite, byte slot)
+        public override void OnPickedUp(Sprite sprite, Position pickedPosition, Area map)
         {
         }
 
-        public override void OnPickedUp(Sprite sprite, Position pickedPosition, Area map)
+        public override void OnUse(Sprite sprite, byte slot)
         {
         }
 

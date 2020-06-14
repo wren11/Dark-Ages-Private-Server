@@ -1,10 +1,10 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
+using System.Collections.Generic;
 
 #endregion
 
@@ -21,6 +21,39 @@ namespace Darkages.Storage.locales.Scripts.Skills
             _skill = skill;
         }
 
+        public List<Sprite> GetInCone(Sprite sprite, int distance)
+        {
+            var result = new List<Sprite>();
+            var objects = GetObjects(sprite.Map, i => i.WithinRangeOf(sprite, distance),
+                Get.Aislings | Get.Monsters | Get.Mundanes);
+            foreach (var obj in objects)
+                if (sprite.Position.DistanceFrom(obj.Position) <= distance)
+                {
+                    if ((Direction)sprite.Direction == Direction.North)
+                    {
+                        if (obj.YPos <= sprite.YPos)
+                            result.Add(obj);
+                    }
+                    else if ((Direction)sprite.Direction == Direction.South)
+                    {
+                        if (obj.YPos >= sprite.YPos)
+                            result.Add(obj);
+                    }
+                    else if ((Direction)sprite.Direction == Direction.East)
+                    {
+                        if (obj.XPos >= sprite.XPos)
+                            result.Add(obj);
+                    }
+                    else if ((Direction)sprite.Direction == Direction.West)
+                    {
+                        if (obj.XPos <= sprite.XPos)
+                            result.Add(obj);
+                    }
+                }
+
+            return result;
+        }
+
         public override void OnFailed(Sprite sprite)
         {
             if (sprite is Aisling)
@@ -30,39 +63,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 client.SendMessage(0x02,
                     string.IsNullOrEmpty(Skill.Template.FailMessage) ? Skill.Template.FailMessage : "failed.");
             }
-        }
-
-        public List<Sprite> GetInCone(Sprite sprite, int distance)
-        {
-            var result = new List<Sprite>();
-            var objects = GetObjects(sprite.Map, i => i.WithinRangeOf(sprite, distance),
-                Get.Aislings | Get.Monsters | Get.Mundanes);
-            foreach (var obj in objects)
-                if (sprite.Position.DistanceFrom(obj.Position) <= distance)
-                {
-                    if ((Direction) sprite.Direction == Direction.North)
-                    {
-                        if (obj.YPos <= sprite.YPos)
-                            result.Add(obj);
-                    }
-                    else if ((Direction) sprite.Direction == Direction.South)
-                    {
-                        if (obj.YPos >= sprite.YPos)
-                            result.Add(obj);
-                    }
-                    else if ((Direction) sprite.Direction == Direction.East)
-                    {
-                        if (obj.XPos >= sprite.XPos)
-                            result.Add(obj);
-                    }
-                    else if ((Direction) sprite.Direction == Direction.West)
-                    {
-                        if (obj.XPos <= sprite.XPos)
-                            result.Add(obj);
-                    }
-                }
-
-            return result;
         }
 
         public override void OnSuccess(Sprite sprite)
@@ -87,7 +87,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         if (i == null)
                             continue;
 
-
                         if (client.Aisling.Serial == i.Serial)
                             continue;
 
@@ -97,7 +96,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         var debuff = new debuff_hurricane();
                         if (!i.HasDebuff(debuff.Name)) debuff.OnApplied(i, debuff);
 
-                        var dmg = (int) (client.Aisling.Invisible
+                        var dmg = (int)(client.Aisling.Invisible
                             ? 2
                             : 1 * (client.Aisling.Str + client.Aisling.Con) * 0.05 * Skill.Level);
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
@@ -108,7 +107,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         if (i is Aisling)
                         {
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial, byte.MinValue,
+                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial, byte.MinValue,
                                     Skill.Template.TargetAnimation, 100));
 
                             (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
@@ -116,7 +115,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                         if (i is Monster || i is Mundane)
                             client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial,
+                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
                                     Skill.Template.TargetAnimation, 0, 100));
                     }
 
@@ -158,9 +157,8 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 if (target == null)
                     return;
 
-
                 target.Show(Scope.NearbyAislings,
-                    new ServerFormat29((uint) target.Serial, (uint) target.Serial,
+                    new ServerFormat29((uint)target.Serial, (uint)target.Serial,
                         Skill.Template.TargetAnimation, 0, 100));
 
                 var dmg = 50 * sprite.Str / 100;
@@ -172,7 +170,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     Number = 0x82,
                     Speed = 20
                 };
-
 
                 target.Show(Scope.NearbyAislings, action);
             }

@@ -14,9 +14,9 @@ namespace Darkages.Network.ClientFormats
             Command = 0x10;
         }
 
-        public SecurityParameters Parameters { get; set; }
-        public string Name { get; set; }
         public int Id { get; set; }
+        public string Name { get; set; }
+        public SecurityParameters Parameters { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

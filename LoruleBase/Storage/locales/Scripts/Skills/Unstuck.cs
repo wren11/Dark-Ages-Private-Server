@@ -14,19 +14,19 @@ namespace Darkages.Storage.locales.Scripts.Skills
         {
         }
 
-        public override void OnUse(Sprite sprite)
-        {
-            if (sprite is Aisling)
-            {
-            }
-        }
-
         public override void OnFailed(Sprite sprite)
         {
         }
 
         public override void OnSuccess(Sprite sprite)
         {
+        }
+
+        public override void OnUse(Sprite sprite)
+        {
+            if (sprite is Aisling)
+            {
+            }
         }
     }
 }

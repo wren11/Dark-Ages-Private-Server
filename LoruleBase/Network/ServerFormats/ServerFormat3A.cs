@@ -17,6 +17,13 @@
             Length = length;
         }
 
+        private enum IconStatus : ushort
+        {
+            Active = 0,
+            Available = 266,
+            Unavailable = 532
+        }
+
         public override void Serialize(NetworkPacketReader reader)
         {
         }
@@ -25,13 +32,6 @@
         {
             writer.Write(Icon);
             writer.Write(Length);
-        }
-
-        private enum IconStatus : ushort
-        {
-            Active = 0,
-            Available = 266,
-            Unavailable = 532
         }
     }
 }

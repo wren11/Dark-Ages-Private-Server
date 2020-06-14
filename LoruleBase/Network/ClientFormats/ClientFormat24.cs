@@ -9,9 +9,9 @@
         }
 
         public int GoldAmount { get; set; }
+        public short Unknown { get; set; }
         public short X { get; set; }
         public short Y { get; set; }
-        public short Unknown { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {

@@ -1,11 +1,11 @@
 ﻿#region
 
-using System;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
+using System;
 
 #endregion
 
@@ -14,8 +14,8 @@ namespace Darkages.Storage.locales.Scripts.Skills
     [Script("Wolf Fang Fist", "Dean")]
     public class Wff : SkillScript
     {
-        private readonly Random rand = new Random();
         public Skill _skill;
+        private readonly Random rand = new Random();
 
         public Wff(Skill skill) : base(skill)
         {
@@ -49,7 +49,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     return;
                 }
 
-
                 foreach (var target in i)
                 {
                     if (target is Money)
@@ -67,20 +66,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     }
                 }
             }
-        }
-
-        private void Apply(GameClient client, Debuff debuff, Sprite target)
-        {
-            var action = new ServerFormat1A
-            {
-                Serial = client.Aisling.Serial,
-                Number = 0x02,
-                Speed = 40
-            };
-            client.Aisling.Show(Scope.NearbyAislings, action);
-
-            target.ApplyDamage(client.Aisling, 0, false, Skill.Template.Sound);
-            debuff.OnApplied(target, debuff);
         }
 
         public override void OnUse(Sprite sprite)
@@ -118,6 +103,20 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     }
                 }
             }
+        }
+
+        private void Apply(GameClient client, Debuff debuff, Sprite target)
+        {
+            var action = new ServerFormat1A
+            {
+                Serial = client.Aisling.Serial,
+                Number = 0x02,
+                Speed = 40
+            };
+            client.Aisling.Show(Scope.NearbyAislings, action);
+
+            target.ApplyDamage(client.Aisling, 0, false, Skill.Template.Sound);
+            debuff.OnApplied(target, debuff);
         }
     }
 }

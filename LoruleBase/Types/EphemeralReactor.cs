@@ -1,7 +1,7 @@
 ﻿#region
 
-using System;
 using Darkages.Network.Game;
+using System;
 
 #endregion
 
@@ -17,8 +17,8 @@ namespace Darkages
             _timer = new GameServerTimer(TimeSpan.FromSeconds(lpTimeout));
         }
 
-        public string YamlKey { get; set; }
         public bool Expired { get; set; }
+        public string YamlKey { get; set; }
 
         public void Update(TimeSpan elapsedTime)
         {

@@ -11,6 +11,10 @@
             Command = 0x43;
         }
 
+        public short X { get; set; }
+
+        public short Y { get; set; }
+
         public override void Serialize(NetworkPacketReader reader)
         {
             Type = reader.ReadByte();
@@ -22,7 +26,6 @@
             {
             }
 
-
             if (Type == 0x03)
             {
                 X = reader.ReadInt16();
@@ -33,13 +36,5 @@
         public override void Serialize(NetworkPacketWriter writer)
         {
         }
-
-        #region Type 3 Variables
-
-        public short X { get; set; }
-
-        public short Y { get; set; }
-
-        #endregion
     }
 }

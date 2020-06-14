@@ -10,42 +10,17 @@ namespace Darkages.Common
 {
     public static class Generator
     {
+        public static Collection<int> GeneratedNumbers;
+        public static Collection<string> GeneratedStrings;
         public static Random Random;
 
         public static volatile int SERIAL;
-
-        public static Collection<int> GeneratedNumbers;
-        public static Collection<string> GeneratedStrings;
 
         static Generator()
         {
             Random = new Random();
             GeneratedNumbers = new Collection<int>();
             GeneratedStrings = new Collection<string>();
-        }
-
-        public static T RandomEnumValue<T>()
-        {
-            lock (Random)
-            {
-                var v = Enum.GetValues(typeof(T));
-                return (T) v.GetValue(Random.Next(1, v.Length));
-            }
-        }
-
-        public static int GenerateNumber()
-        {
-            var id = 0;
-
-            do
-            {
-                lock (Random)
-                {
-                    id = Random.Next();
-                }
-            } while (GeneratedNumbers.Contains(id));
-
-            return id;
         }
 
         public static string CreateString(int size)
@@ -71,6 +46,21 @@ namespace Darkages.Common
             return value.ToString();
         }
 
+        public static int GenerateNumber()
+        {
+            var id = 0;
+
+            do
+            {
+                lock (Random)
+                {
+                    id = Random.Next();
+                }
+            } while (GeneratedNumbers.Contains(id));
+
+            return id;
+        }
+
         public static string GenerateString(int size)
         {
             string s;
@@ -83,6 +73,15 @@ namespace Darkages.Common
             GeneratedStrings.Add(s);
 
             return s;
+        }
+
+        public static T RandomEnumValue<T>()
+        {
+            lock (Random)
+            {
+                var v = Enum.GetValues(typeof(T));
+                return (T)v.GetValue(Random.Next(1, v.Length));
+            }
         }
     }
 }

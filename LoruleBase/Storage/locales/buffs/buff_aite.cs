@@ -9,10 +9,9 @@ namespace Darkages.Storage.locales.Buffs
 {
     public class buff_aite : Buff
     {
-        public override string Name => "aite";
-
-        public override int Length => 3000;
         public override byte Icon => 11;
+        public override int Length => 3000;
+        public override string Name => "aite";
 
         public override void OnApplied(Sprite Affected, Buff buff)
         {
@@ -27,8 +26,8 @@ namespace Darkages.Storage.locales.Buffs
         public override void OnDurationUpdate(Sprite Affected, Buff buff)
         {
             Affected.Show(Scope.NearbyAislings,
-                new ServerFormat29((uint) Affected.Serial,
-                    (uint) Affected.Serial, 168, 168, 100));
+                new ServerFormat29((uint)Affected.Serial,
+                    (uint)Affected.Serial, 168, 168, 100));
 
             base.OnDurationUpdate(Affected, buff);
         }

@@ -20,8 +20,8 @@ namespace Darkages.Network.ServerFormats
             Command = 0x37;
         }
 
-        public Item Item { get; set; }
         public byte EquipmentSlot { get; set; }
+        public Item Item { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -31,7 +31,7 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write(EquipmentSlot);
             writer.Write(Item.DisplayImage);
-            writer.Write((byte) 0x03);
+            writer.Write((byte)0x03);
             writer.WriteStringA(Item.Template.Name);
             writer.WriteStringA(Item.DisplayName);
             writer.Write(Item.Durability);

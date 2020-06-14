@@ -4,7 +4,6 @@
     {
     }
 
-
     public class ServerFormat09
     {
     }
@@ -81,7 +80,6 @@
     {
     }
 
-
     public class ServerFormat35
     {
     }
@@ -101,7 +99,6 @@
     public class ServerFormat41
     {
     }
-
 
     public class ServerFormat43
     {
@@ -126,7 +123,6 @@
     public class ServerFormat4A
     {
     }
-
 
     public class ServerFormat4D
     {

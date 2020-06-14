@@ -10,16 +10,6 @@ namespace Darkages.Common
     {
         private static readonly Encoding encoding = Encoding.GetEncoding(949);
 
-        public static byte[] ToByteArray(this string str)
-        {
-            return encoding.GetBytes(str);
-        }
-
-        public static bool IsWithin(this int value, int minimum, int maximum)
-        {
-            return value >= minimum && value <= maximum;
-        }
-
         public static int Clamp(this int value, int min, int max)
         {
             if (value < min)
@@ -28,6 +18,16 @@ namespace Darkages.Common
                 return max;
 
             return value;
+        }
+
+        public static bool IsWithin(this int value, int minimum, int maximum)
+        {
+            return value >= minimum && value <= maximum;
+        }
+
+        public static byte[] ToByteArray(this string str)
+        {
+            return encoding.GetBytes(str);
         }
     }
 }

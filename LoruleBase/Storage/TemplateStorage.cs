@@ -1,9 +1,9 @@
 ﻿#region
 
-using System;
-using System.IO;
 using Darkages.Types;
 using Newtonsoft.Json;
+using System;
+using System.IO;
 
 #endregion
 
@@ -45,20 +45,8 @@ namespace Darkages.Storage
             if (tmp is PopupTemplate)
                 StoragePath = StoragePath.Replace("%", "Popups");
 
-
             if (!Directory.Exists(StoragePath))
                 Directory.CreateDirectory(StoragePath);
-        }
-
-
-        public Template LoadFromStorage(Template existing)
-        {
-            var template = StorageManager.ItemBucket.Load<ItemTemplate>(existing.Name);
-            if (template == null)
-                return null;
-
-            ServerContextBase.GlobalItemTemplateCache[template.Name] = template;
-            return template;
         }
 
         public void CacheFromStorage()
@@ -80,107 +68,110 @@ namespace Darkages.Storage
                 switch (tmp)
                 {
                     case SkillTemplate _:
-                    {
-                        var template =
-                            StorageManager.SkillBucket.Load<SkillTemplate>(Path.GetFileNameWithoutExtension(asset));
-                        if (template != null)
-                            ServerContextBase.GlobalSkillTemplateCache[template.Name] = template;
+                        {
+                            var template =
+                                StorageManager.SkillBucket.Load<SkillTemplate>(Path.GetFileNameWithoutExtension(asset));
+                            if (template != null)
+                                ServerContextBase.GlobalSkillTemplateCache[template.Name] = template;
 
-                        break;
-                    }
+                            break;
+                        }
 
                     case SpellTemplate _:
-                    {
-                        var template =
-                            StorageManager.SpellBucket.Load<SpellTemplate>(Path.GetFileNameWithoutExtension(asset));
-                        if (template != null)
-                            ServerContextBase.GlobalSpellTemplateCache[template.Name] = template;
-                        break;
-                    }
+                        {
+                            var template =
+                                StorageManager.SpellBucket.Load<SpellTemplate>(Path.GetFileNameWithoutExtension(asset));
+                            if (template != null)
+                                ServerContextBase.GlobalSpellTemplateCache[template.Name] = template;
+                            break;
+                        }
 
                     case Reactor _:
-                    {
-                        var template =
-                            StorageManager.ReactorBucket.Load<Reactor>(Path.GetFileNameWithoutExtension(asset));
-                        if (template != null)
-                            ServerContextBase.GlobalReactorCache[template.Name] = template;
-                        break;
-                    }
+                        {
+                            var template =
+                                StorageManager.ReactorBucket.Load<Reactor>(Path.GetFileNameWithoutExtension(asset));
+                            if (template != null)
+                                ServerContextBase.GlobalReactorCache[template.Name] = template;
+                            break;
+                        }
 
                     case MonsterTemplate _:
-                    {
-                        var template =
-                            StorageManager.MonsterBucket.Load<MonsterTemplate>(Path.GetFileNameWithoutExtension(asset),
-                                asset);
-
-                        if (template != null)
                         {
-                            ServerContextBase.GlobalMonsterTemplateCache.Add(template);
-                            template.NextAvailableSpawn = DateTime.UtcNow;
-                        }
+                            var template =
+                                StorageManager.MonsterBucket.Load<MonsterTemplate>(Path.GetFileNameWithoutExtension(asset),
+                                    asset);
 
-                        break;
-                    }
+                            if (template != null)
+                            {
+                                ServerContextBase.GlobalMonsterTemplateCache.Add(template);
+                                template.NextAvailableSpawn = DateTime.UtcNow;
+                            }
+
+                            break;
+                        }
 
                     case MundaneTemplate _:
-                    {
-                        var template =
-                            StorageManager.MundaneBucket.Load<MundaneTemplate>(Path.GetFileNameWithoutExtension(asset));
-                        if (template != null)
-                            ServerContextBase.GlobalMundaneTemplateCache[template.Name] = template;
-                        break;
-                    }
-
-                    case ItemTemplate _:
-                    {
-                        var template =
-                            StorageManager.ItemBucket.Load<ItemTemplate>(Path.GetFileNameWithoutExtension(asset));
-                        if (template != null)
-                            ServerContextBase.GlobalItemTemplateCache[template.Name] = template;
-                        break;
-                    }
-
-                    case WorldMapTemplate _:
-                    {
-                        var template =
-                            StorageManager.WorldMapBucket.Load<WorldMapTemplate>(
-                                Path.GetFileNameWithoutExtension(asset));
-                        if (template != null)
-                            ServerContextBase.GlobalWorldMapTemplateCache[template.WorldIndex] = template;
-                        break;
-                    }
-
-                    case PopupTemplate _:
-                    {
-                        var template =
-                            StorageManager.PopupBucket.Load<PopupTemplate>(Path.GetFileNameWithoutExtension(asset));
-
-                        switch (template.TypeOfTrigger)
                         {
-                            case TriggerType.UserClick:
-                                template = StorageManager.PopupBucket.Load<UserClickPopup>(
-                                    Path.GetFileNameWithoutExtension(asset));
-                                ServerContextBase.GlobalPopupCache.Add(template);
-                                break;
-                            case TriggerType.ItemDrop:
-                                template = StorageManager.PopupBucket.Load<ItemDropPopup>(
-                                    Path.GetFileNameWithoutExtension(asset));
-                                ServerContextBase.GlobalPopupCache.Add(template);
-                                break;
-                            case TriggerType.ItemPickup:
-                                template = StorageManager.PopupBucket.Load<ItemPickupPopup>(
-                                    Path.GetFileNameWithoutExtension(asset));
-                                ServerContextBase.GlobalPopupCache.Add(template);
-                                break;
-                            case TriggerType.MapLocation:
-                                template = StorageManager.PopupBucket.Load<UserWalkPopup>(
-                                    Path.GetFileNameWithoutExtension(asset));
-                                ServerContextBase.GlobalPopupCache.Add(template);
-                                break;
+                            var template =
+                                StorageManager.MundaneBucket.Load<MundaneTemplate>(Path.GetFileNameWithoutExtension(asset));
+                            if (template != null)
+                                ServerContextBase.GlobalMundaneTemplateCache[template.Name] = template;
+                            break;
                         }
 
-                        break;
-                    }
+                    case ItemTemplate _:
+                        {
+                            var template =
+                                StorageManager.ItemBucket.Load<ItemTemplate>(Path.GetFileNameWithoutExtension(asset));
+                            if (template != null)
+                                ServerContextBase.GlobalItemTemplateCache[template.Name] = template;
+                            break;
+                        }
+
+                    case WorldMapTemplate _:
+                        {
+                            var template =
+                                StorageManager.WorldMapBucket.Load<WorldMapTemplate>(
+                                    Path.GetFileNameWithoutExtension(asset));
+                            if (template != null)
+                                ServerContextBase.GlobalWorldMapTemplateCache[template.WorldIndex] = template;
+                            break;
+                        }
+
+                    case PopupTemplate _:
+                        {
+                            var template =
+                                StorageManager.PopupBucket.Load<PopupTemplate>(Path.GetFileNameWithoutExtension(asset));
+
+                            switch (template.TypeOfTrigger)
+                            {
+                                case TriggerType.UserClick:
+                                    template = StorageManager.PopupBucket.Load<UserClickPopup>(
+                                        Path.GetFileNameWithoutExtension(asset));
+                                    ServerContextBase.GlobalPopupCache.Add(template);
+                                    break;
+
+                                case TriggerType.ItemDrop:
+                                    template = StorageManager.PopupBucket.Load<ItemDropPopup>(
+                                        Path.GetFileNameWithoutExtension(asset));
+                                    ServerContextBase.GlobalPopupCache.Add(template);
+                                    break;
+
+                                case TriggerType.ItemPickup:
+                                    template = StorageManager.PopupBucket.Load<ItemPickupPopup>(
+                                        Path.GetFileNameWithoutExtension(asset));
+                                    ServerContextBase.GlobalPopupCache.Add(template);
+                                    break;
+
+                                case TriggerType.MapLocation:
+                                    template = StorageManager.PopupBucket.Load<UserWalkPopup>(
+                                        Path.GetFileNameWithoutExtension(asset));
+                                    ServerContextBase.GlobalPopupCache.Add(template);
+                                    break;
+                            }
+
+                            break;
+                        }
                 }
             }
         }
@@ -196,6 +187,32 @@ namespace Darkages.Storage
             using var f = new StreamReader(s);
             var obj = JsonConvert.DeserializeObject<TD>(f.ReadToEnd(), StorageManager.Settings);
             return obj;
+        }
+
+        public Template LoadFromStorage(Template existing)
+        {
+            var template = StorageManager.ItemBucket.Load<ItemTemplate>(existing.Name);
+            if (template == null)
+                return null;
+
+            ServerContextBase.GlobalItemTemplateCache[template.Name] = template;
+            return template;
+        }
+
+        public FileInfo MakeUnique(string path)
+        {
+            var dir = Path.GetDirectoryName(path);
+            var fileName = Path.GetFileNameWithoutExtension(path);
+            var fileExt = Path.GetExtension(path);
+
+            for (var i = 1; ; ++i)
+            {
+                if (!File.Exists(path))
+                    return new FileInfo(path);
+
+                if (dir != null)
+                    path = Path.Combine(dir, fileName + " " + i + fileExt);
+            }
         }
 
         public void Save(T obj, bool replace = false)
@@ -223,22 +240,6 @@ namespace Darkages.Storage
                     TypeNameHandling = TypeNameHandling.All
                 });
                 File.WriteAllText(path, objString);
-            }
-        }
-
-        public FileInfo MakeUnique(string path)
-        {
-            var dir = Path.GetDirectoryName(path);
-            var fileName = Path.GetFileNameWithoutExtension(path);
-            var fileExt = Path.GetExtension(path);
-
-            for (var i = 1;; ++i)
-            {
-                if (!File.Exists(path))
-                    return new FileInfo(path);
-
-                if (dir != null)
-                    path = Path.Combine(dir, fileName + " " + i + fileExt);
             }
         }
     }

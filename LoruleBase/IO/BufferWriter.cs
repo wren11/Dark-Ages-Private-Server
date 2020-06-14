@@ -27,22 +27,6 @@ namespace Darkages.IO
             base.Write(ipBuffer[0]);
         }
 
-        public void WriteStringA(string value)
-        {
-            var length = (byte) encoding.GetByteCount(value);
-
-            base.Write(length);
-            base.Write(encoding.GetBytes(value));
-        }
-
-        public void WriteStringB(string value)
-        {
-            var length = (ushort) encoding.GetByteCount(value);
-
-            Write(length);
-            base.Write(encoding.GetBytes(value));
-        }
-
         public override void Write(string value)
         {
             base.Write(encoding.GetBytes(value + '\0'));
@@ -86,6 +70,22 @@ namespace Darkages.IO
                 (byte) (value >> 8),
                 (byte) value
             });
+        }
+
+        public void WriteStringA(string value)
+        {
+            var length = (byte)encoding.GetByteCount(value);
+
+            base.Write(length);
+            base.Write(encoding.GetBytes(value));
+        }
+
+        public void WriteStringB(string value)
+        {
+            var length = (ushort)encoding.GetByteCount(value);
+
+            Write(length);
+            base.Write(encoding.GetBytes(value));
         }
     }
 }

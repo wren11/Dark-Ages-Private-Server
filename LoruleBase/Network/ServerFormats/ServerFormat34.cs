@@ -22,32 +22,29 @@ namespace Darkages.Network.ServerFormats
         {
         }
 
-
         public override void Serialize(NetworkPacketWriter writer)
         {
             var legends = Aisling.LegendBook.LegendMarks.Select(i => i);
 
             var q = legends.GroupBy(x => x)
-                .Select(g => new {V = g.Key, C = g.Count()})
+                .Select(g => new { V = g.Key, C = g.Count() })
                 .OrderByDescending(x => x.C).ToArray();
 
-
-            writer.Write((uint) Aisling.Serial);
+            writer.Write((uint)Aisling.Serial);
 
             BuildEquipment(writer);
 
-            writer.Write((byte) Aisling.ActiveStatus);
+            writer.Write((byte)Aisling.ActiveStatus);
             writer.WriteStringA(Aisling.Username);
             writer.Write(Aisling.Nation);
             writer.WriteStringA($"Lev {Aisling.ExpLevel}");
-            writer.Write((byte) Aisling.PartyStatus);
+            writer.Write((byte)Aisling.PartyStatus);
 
             writer.WriteStringA(Aisling.ClanTitle);
             writer.WriteStringA(Aisling.Path.ToString());
             writer.WriteStringA(Aisling.Clan);
 
-
-            writer.Write((byte) q.Length);
+            writer.Write((byte)q.Length);
             foreach (var mark in q)
             {
                 writer.Write(mark.V.Icon);
@@ -59,16 +56,16 @@ namespace Darkages.Network.ServerFormats
 
             if (Aisling.PictureData != null)
             {
-                writer.Write((ushort) (Aisling.PictureData.Length + Aisling.ProfileMessage.Length + 4));
-                writer.Write((ushort) Aisling.PictureData.Length);
-                writer.Write(Aisling.PictureData ?? new byte[] {0x00});
+                writer.Write((ushort)(Aisling.PictureData.Length + Aisling.ProfileMessage.Length + 4));
+                writer.Write((ushort)Aisling.PictureData.Length);
+                writer.Write(Aisling.PictureData ?? new byte[] { 0x00 });
                 writer.WriteStringB(Aisling.ProfileMessage ?? string.Empty);
             }
             else
             {
-                writer.Write((ushort) 4);
-                writer.Write((ushort) 0);
-                writer.Write(new byte[] {0x00});
+                writer.Write((ushort)4);
+                writer.Write((ushort)0);
+                writer.Write(new byte[] { 0x00 });
                 writer.WriteStringB(string.Empty);
             }
         }
@@ -83,7 +80,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.Armor != null)
@@ -94,7 +91,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.Shield != null)
@@ -105,7 +102,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.DisplayHelm != null)
@@ -116,7 +113,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.Earring != null)
@@ -127,7 +124,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.Necklace != null)
@@ -138,7 +135,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.LRing != null)
@@ -149,7 +146,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.RRing != null)
@@ -160,7 +157,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.LGauntlet != null)
@@ -171,7 +168,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.RGauntlet != null)
@@ -182,7 +179,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.Belt != null)
@@ -193,7 +190,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.Greaves != null)
@@ -204,7 +201,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.FirstAcc != null)
@@ -215,7 +212,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.Boots != null)
@@ -226,7 +223,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.Overcoat != null)
@@ -237,7 +234,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.Helmet != null)
@@ -248,7 +245,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
 
             if (Aisling.EquipmentManager.SecondAcc != null)
@@ -259,7 +256,7 @@ namespace Darkages.Network.ServerFormats
             else
             {
                 writer.Write(ushort.MinValue);
-                writer.Write((byte) 0x00);
+                writer.Write((byte)0x00);
             }
         }
     }

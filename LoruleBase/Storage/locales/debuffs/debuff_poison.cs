@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.Linq;
 using Darkages.Types;
+using System.Linq;
 
 #endregion
 
@@ -24,8 +24,8 @@ namespace Darkages.Storage.locales.debuffs
             IsSpreading = spread;
         }
 
-        public double Modifier { get; set; }
         public bool IsSpreading { get; set; }
+        public double Modifier { get; set; }
 
         public override void OnApplied(Sprite Affected, Debuff debuff)
         {
@@ -54,7 +54,7 @@ namespace Darkages.Storage.locales.debuffs
             if (Affected is Aisling)
             {
                 (Affected as Aisling)
-                    .Client.SendAnimation((ushort) (Animation == 0 ? 25 : Animation), Affected, Affected);
+                    .Client.SendAnimation((ushort)(Animation == 0 ? 25 : Animation), Affected, Affected);
 
                 ApplyPoison(Affected);
 
@@ -86,14 +86,24 @@ namespace Darkages.Storage.locales.debuffs
             base.OnDurationUpdate(Affected, debuff);
         }
 
+        public override void OnEnded(Sprite Affected, Debuff debuff)
+        {
+            if (Affected is Aisling)
+                (Affected as Aisling)
+                    .Client
+                    .SendMessage(0x02, "you feel better now.");
+
+            base.OnEnded(Affected, debuff);
+        }
+
         private void ApplyPoison(Sprite Affected)
         {
             if (IsSpreading)
             {
                 var nearby = (from v in Affected.MonstersNearby()
-                    where v.Serial != Affected.Serial &&
-                          !v.HasDebuff(Name)
-                    select v).ToList();
+                              where v.Serial != Affected.Serial &&
+                                    !v.HasDebuff(Name)
+                              select v).ToList();
 
                 if (nearby.Count > 0)
                     foreach (var near in nearby)
@@ -104,25 +114,14 @@ namespace Darkages.Storage.locales.debuffs
                     }
             }
 
-
             if (Modifier <= 0.0)
                 Modifier = 0.3;
 
             if (Affected.CurrentHp > 0)
             {
-                var cap = (int) (Affected.CurrentHp - Affected.CurrentHp * Modifier);
+                var cap = (int)(Affected.CurrentHp - Affected.CurrentHp * Modifier);
                 if (cap > 0) Affected.CurrentHp = cap;
             }
-        }
-
-        public override void OnEnded(Sprite Affected, Debuff debuff)
-        {
-            if (Affected is Aisling)
-                (Affected as Aisling)
-                    .Client
-                    .SendMessage(0x02, "you feel better now.");
-
-            base.OnEnded(Affected, debuff);
         }
     }
 }

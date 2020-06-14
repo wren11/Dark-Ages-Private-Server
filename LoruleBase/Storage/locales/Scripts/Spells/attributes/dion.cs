@@ -1,10 +1,10 @@
 ﻿#region
 
-using System;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.Buffs;
 using Darkages.Types;
+using System;
 
 #endregion
 
@@ -44,7 +44,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     var action = new ServerFormat1A
                     {
                         Serial = sprite.Serial,
-                        Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                        Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 :
                             client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                         Speed = 30
                     };
@@ -83,7 +83,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
                         (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.Config.NoManaMessage);
                     return;
                 }
-
 
                 client.SendStats(StatusFlags.StructB);
             }

@@ -1,14 +1,14 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -32,372 +32,211 @@ namespace Darkages.Types
             Sgrios
         }
 
-        public ItemTemplate Template { get; set; }
-
+        [JsonIgnore] public Sprite[] AuthenticatedAislings { get; set; }
+        public byte Color { get; set; }
+        public bool Cursed { get; set; }
+        public ushort DisplayImage { get; set; }
+        [JsonIgnore] public string DisplayName => getDisplayName();
+        public uint Durability { get; set; }
+        [JsonIgnore] public bool Equipped { get; set; }
+        [JsonProperty] public bool Identifed { get; set; }
+        public ushort Image { get; set; }
+        [JsonProperty] public Variance ItemVariance { get; set; } = Variance.None;
+        public uint Owner { get; set; }
         [JsonIgnore] public Dictionary<string, ItemScript> Scripts { get; set; }
-
+        public byte Slot { get; set; }
+        public ushort Stacks { get; set; }
+        public ItemTemplate Template { get; set; }
+        public Type Type { get; set; }
+        public int Upgrades { get; set; }
+        public bool[] Warnings { get; set; }
         [JsonIgnore] public Dictionary<string, WeaponScript> WeaponScripts { get; set; }
 
-        [JsonIgnore] public Sprite[] AuthenticatedAislings { get; set; }
-
-        public bool Cursed { get; set; }
-
-        public uint Owner { get; set; }
-
-        public ushort Image { get; set; }
-
-        public ushort DisplayImage { get; set; }
-
-        public ushort Stacks { get; set; }
-
-        public byte Slot { get; set; }
-
-        public uint Durability { get; set; }
-
-        public bool[] Warnings { get; set; }
-
-        public byte Color { get; set; }
-
-        public int Upgrades { get; set; }
-
-        public Type Type { get; set; }
-
-
-        [JsonIgnore] public string DisplayName => getDisplayName();
-
-        [JsonIgnore] public bool Equipped { get; set; }
-
-        [JsonProperty] public bool Identifed { get; set; }
-
-        [JsonProperty] public Variance ItemVariance { get; set; } = Variance.None;
-
-        private string getDisplayName()
+        public static void ApplyQuality(Item obj)
         {
-            var upgradeName = "";
-
-            if (Upgrades == 4) upgradeName = "{=fRare";
-
-            if (Upgrades == 5) upgradeName = "{=pEpic";
-
-            if (Upgrades == 6) upgradeName = "{=sLegendary";
-
-            if (Upgrades == 7) upgradeName = "{=bGodly";
-
-            if (Upgrades == 8) upgradeName = "{=uForsaken";
-
-            if (ItemVariance != Variance.None && Identifed)
-                return $"{upgradeName} {ItemVariance.ToString()} {Template.Name}";
-
-            if (upgradeName != "") return $"{upgradeName} {Template.Name}";
-
-            return Template.Name;
-        }
-
-        public bool CanCarry(Sprite sprite)
-        {
-            if ((sprite as Aisling).CurrentWeight + Template.CarryWeight > (sprite as Aisling).MaximumWeight)
+            try
             {
-                (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02, ServerContextBase.Config.ToWeakToLift);
-                return false;
-            }
+                if (obj.Template == null)
+                    return;
 
-            return true;
-        }
+                var template = (ItemTemplate)StorageManager.ItemBucket.LoadFromStorage(obj.Template);
+                if (template == null)
+                    return;
 
+                obj.Template = new ItemTemplate();
+                obj.Template.AcModifer = template.AcModifer;
+                obj.Template.CanStack = template.CanStack;
+                obj.Template.CarryWeight = template.CarryWeight;
+                obj.Template.Class = template.Class;
+                obj.Template.Color = template.Color;
+                obj.Template.ConModifer = template.ConModifer;
+                obj.Template.DefenseElement = template.DefenseElement;
+                obj.Template.DexModifer = template.DexModifer;
+                obj.Template.DisplayImage = template.DisplayImage;
+                obj.Template.DmgMax = template.DmgMax;
+                obj.Template.DmgMin = template.DmgMin;
+                obj.Template.DmgModifer = template.DmgModifer;
+                obj.Template.DropRate = template.DropRate;
+                obj.Template.EquipmentSlot = template.EquipmentSlot;
+                obj.Template.Flags = template.Flags;
+                obj.Template.Gender = template.Gender;
+                obj.Template.HasPants = template.HasPants;
+                obj.Template.HealthModifer = template.HealthModifer;
+                obj.Template.HitModifer = template.HitModifer;
+                obj.Template.ID = template.ID;
+                obj.Template.Image = template.Image;
+                obj.Template.IntModifer = template.IntModifer;
+                obj.Template.LevelRequired = template.LevelRequired;
+                obj.Template.ManaModifer = template.ManaModifer;
+                obj.Template.MaxDurability = template.MaxDurability;
+                obj.Template.MaxStack = template.MaxStack;
+                obj.Template.MrModifer = template.MrModifer;
+                obj.Template.Name = template.Name;
+                obj.Template.NpcKey = template.NpcKey;
+                obj.Template.OffenseElement = template.OffenseElement;
+                obj.Template.ScriptName = template.ScriptName;
+                obj.Template.SpellOperator = template.SpellOperator;
+                obj.Template.StageRequired = template.StageRequired;
+                obj.Template.StrModifer = template.StrModifer;
+                obj.Template.Value = template.Value;
+                obj.Template.Weight = template.Weight;
+                obj.Template.WisModifer = template.WisModifer;
 
-        public bool GiveTo(Sprite sprite, bool CheckWeight = true)
-        {
-            if (sprite is Aisling)
-            {
-                Owner = (uint) sprite.Serial;
-
-
-                #region stackable items
-
-                if (Template.Flags.HasFlag(ItemFlags.Stackable))
+                if (obj.Upgrades > 0)
                 {
-                    var num_stacks = (byte) Stacks;
+                    if (obj.Template.AcModifer != null)
+                        if (obj.Template.AcModifer.Option == Operator.Remove)
+                            obj.Template.AcModifer.Value -= -obj.Upgrades;
 
-                    if (num_stacks <= 0)
-                        num_stacks = 1;
+                    if (obj.Template.MrModifer != null)
+                        if (obj.Template.MrModifer.Option == Operator.Add)
+                            obj.Template.MrModifer.Value += obj.Upgrades * 10;
 
-                    var item = (sprite as Aisling).Inventory.Get(i => i != null && i.Template.Name == Template.Name
-                                                                                && i.Stacks + num_stacks <
-                                                                                i.Template.MaxStack).FirstOrDefault();
+                    if (obj.Template.HealthModifer != null)
+                        if (obj.Template.HealthModifer.Option == Operator.Add)
+                            obj.Template.HealthModifer.Value += 500 * obj.Upgrades;
 
-                    if (item != null)
-                    {
-                        Slot = item.Slot;
+                    if (obj.Template.ManaModifer != null)
+                        if (obj.Template.ManaModifer.Option == Operator.Add)
+                            obj.Template.ManaModifer.Value += 300 * obj.Upgrades;
 
-                        item.Stacks += num_stacks;
+                    if (obj.Template.StrModifer != null)
+                        if (obj.Template.StrModifer.Option == Operator.Add)
+                            obj.Template.StrModifer.Value += obj.Upgrades;
 
-                        (sprite as Aisling).Client.Aisling.Inventory.Set(item, false);
+                    if (obj.Template.IntModifer != null)
+                        if (obj.Template.IntModifer.Option == Operator.Add)
+                            obj.Template.IntModifer.Value += obj.Upgrades;
 
-                        (sprite as Aisling).Client.Send(new ServerFormat10(item.Slot));
+                    if (obj.Template.WisModifer != null)
+                        if (obj.Template.WisModifer.Option == Operator.Add)
+                            obj.Template.WisModifer.Value += obj.Upgrades;
+                    if (obj.Template.ConModifer != null)
+                        if (obj.Template.ConModifer.Option == Operator.Add)
+                            obj.Template.ConModifer.Value += obj.Upgrades;
 
-                        (sprite as Aisling).Client.Send(new ServerFormat0F(item));
+                    if (obj.Template.DexModifer != null)
+                        if (obj.Template.DexModifer.Option == Operator.Add)
+                            obj.Template.DexModifer.Value += obj.Upgrades;
 
-                        (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
-                            $"Received {DisplayName}, You now have ({(item.Stacks == 0 ? item.Stacks + 1 : item.Stacks)})");
+                    if (obj.Template.DmgModifer != null)
+                        if (obj.Template.DmgModifer.Option == Operator.Add)
+                            obj.Template.DmgModifer.Value += obj.Upgrades;
 
-                        return true;
-                    }
+                    if (obj.Template.HitModifer != null)
+                        if (obj.Template.HitModifer.Option == Operator.Add)
+                            obj.Template.HitModifer.Value += obj.Upgrades;
 
-                    if (Stacks <= 0)
-                        Stacks = 1;
+                    obj.Template.LevelRequired -= (byte)obj.Upgrades;
+                    obj.Template.Value *= (byte)obj.Upgrades;
+                    obj.Template.MaxDurability += (byte)(1500 * obj.Upgrades);
+                    obj.Template.DmgMax += 100 * obj.Upgrades;
+                    obj.Template.DmgMin += 20 * obj.Upgrades;
 
-                    if (CheckWeight)
-                        if (!CanCarry(sprite))
-                            return false;
-
-                    Slot = (sprite as Aisling).Inventory.FindEmpty();
-
-                    if (Slot == byte.MaxValue)
-                    {
-                        (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
-                            ServerContextBase.Config.CantCarryMoreMsg);
-                        return false;
-                    }
-
-                    (sprite as Aisling).Inventory.Set(this, false);
-                    var format = new ServerFormat0F(this);
-                    (sprite as Aisling).Show(Scope.Self, format);
-                    (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
-                        $"{DisplayName} Received.");
-
-                    if (CheckWeight)
-                    {
-                        (sprite as Aisling).CurrentWeight += Template.CarryWeight;
-                        (sprite as Aisling).Client.SendStats(StatusFlags.StructA);
-                    }
-
-                    return true;
-                }
-
-                #endregion
-
-                #region not stackable items
-
-                {
-                    Slot = (sprite as Aisling).Inventory.FindEmpty();
-
-                    if (Slot == byte.MaxValue)
-                    {
-                        (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
-                            ServerContextBase.Config.CantCarryMoreMsg);
-                        return false;
-                    }
-
-                    if (CheckWeight)
-                        if (!CanCarry(sprite))
-                            return false;
-
-
-                    (sprite as Aisling).Inventory.Assign(this);
-                    var format = new ServerFormat0F(this);
-                    (sprite as Aisling).Show(Scope.Self, format);
-
-                    if (CheckWeight)
-                    {
-                        (sprite as Aisling).CurrentWeight += Template.CarryWeight;
-                        (sprite as Aisling).Client?.SendStats(StatusFlags.StructA);
-                    }
-
-                    return true;
-                }
-
-                #endregion
-            }
-
-            return false;
-        }
-
-        public void RemoveModifiers(GameClient client)
-        {
-            if (client == null || client.Aisling == null)
-                return;
-
-            #region Armor class Modifers
-
-            if (Template.AcModifer != null)
-            {
-                if (Template.AcModifer.Option == Operator.Add)
-                    client.Aisling.BonusAc -= Template.AcModifer.Value;
-                if (Template.AcModifer.Option == Operator.Remove)
-                    client.Aisling.BonusAc += Template.AcModifer.Value;
-
-                client.SendMessage(0x03, $"E: {Template.Name}, AC: {client.Aisling.Ac}");
-                client.SendStats(StatusFlags.StructD);
-            }
-
-            #endregion
-
-            #region Lines
-
-            if (Template.SpellOperator != null)
-            {
-                var op = Template.SpellOperator;
-
-                for (var i = 0; i < client.Aisling.SpellBook.Spells.Count; i++)
-                {
-                    var spell = client.Aisling.SpellBook.FindInSlot(i);
-
-                    if (spell?.Template == null)
-                        continue;
-
-                    spell.Lines = spell.Template.BaseLines;
-
-                    if (spell.Lines > spell.Template.MaxLines)
-                        spell.Lines = spell.Template.MaxLines;
-
-                    UpdateSpellSlot(client, spell.Slot);
+                    if (obj.Template.LevelRequired <= 0 || obj.Template.LevelRequired > 99)
+                        obj.Template.LevelRequired = 1;
                 }
             }
-
-            #endregion
-
-            #region MR
-
-            if (Template.MrModifer != null)
+            catch (Exception e)
             {
-                if (Template.MrModifer.Option == Operator.Add)
-                    client.Aisling.BonusMr -= (byte) Template.MrModifer.Value;
-                if (Template.MrModifer.Option == Operator.Remove)
-                    client.Aisling.BonusMr += (byte) Template.MrModifer.Value;
+                ServerContext.Error(e);
+            }
+        }
 
-                if (client.Aisling.BonusMr < 0)
-                    client.Aisling.BonusMr = 0;
+        public static Item Create(Sprite owner, string item, bool curse = false)
+        {
+            if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(item))
+                return null;
+
+            var template = ServerContextBase.GlobalItemTemplateCache[item];
+            return Create(owner, template, curse);
+        }
+
+        public static Item Create(Sprite Owner, ItemTemplate itemtemplate, bool curse = false)
+        {
+            if (Owner == null)
+                return null;
+
+            var template =
+                (ItemTemplate)StorageManager.ItemBucket.LoadFromStorage(itemtemplate);
+
+            if (itemtemplate != null && template == null)
+                template = itemtemplate;
+
+            var obj = new Item
+            {
+                AbandonedDate = DateTime.UtcNow,
+                Template = template,
+                XPos = Owner.XPos,
+                YPos = Owner.YPos,
+                Image = template.Image,
+                DisplayImage = template.DisplayImage,
+                CurrentMapId = Owner.CurrentMapId,
+                Cursed = curse,
+                Owner = (uint)Owner.Serial,
+                Durability = template.MaxDurability,
+                OffenseElement = template.OffenseElement,
+                DefenseElement = template.DefenseElement
+            };
+
+            if (obj.Template == null)
+                obj.Template = template;
+
+            obj.Warnings = new[] { false, false, false };
+
+            obj.AuthenticatedAislings = null;
+
+            if (obj.Color == 0)
+                obj.Color = (byte)ServerContextBase.Config.DefaultItemColor;
+
+            if (obj.Template.Flags.HasFlag(ItemFlags.Repairable))
+            {
+                if (obj.Template.MaxDurability == uint.MinValue)
+                {
+                    obj.Template.MaxDurability = ServerContextBase.Config.DefaultItemDurability;
+                    obj.Durability = ServerContextBase.Config.DefaultItemDurability;
+                }
+
+                if (obj.Template.Value == uint.MinValue)
+                    obj.Template.Value = ServerContextBase.Config.DefaultItemValue;
             }
 
-            #endregion
-
-            #region Health
-
-            if (Template.HealthModifer != null)
+            if (obj.Template.Flags.HasFlag(ItemFlags.QuestRelated))
             {
-                if (Template.HealthModifer.Option == Operator.Add)
-                    client.Aisling.BonusHp -= Template.HealthModifer.Value;
-                if (Template.HealthModifer.Option == Operator.Remove)
-                    client.Aisling.BonusHp += Template.HealthModifer.Value;
-
-                if (client.Aisling.BonusHp < 0)
-                    client.Aisling.BonusHp = ServerContextBase.Config.MinimumHp;
+                obj.Template.MaxDurability = 0;
+                obj.Durability = 0;
             }
 
-            #endregion
-
-            #region Mana
-
-            if (Template.ManaModifer != null)
+            lock (Generator.Random)
             {
-                if (Template.ManaModifer.Option == Operator.Add)
-                    client.Aisling.BonusMp -= Template.ManaModifer.Value;
-                if (Template.ManaModifer.Option == Operator.Remove)
-                    client.Aisling.BonusMp += Template.ManaModifer.Value;
+                obj.Serial = Generator.GenerateNumber();
             }
 
-            #endregion
+            obj.Scripts = ScriptManager.Load<ItemScript>(template.ScriptName, obj);
+            if (!string.IsNullOrEmpty(obj.Template.WeaponScript))
+                obj.WeaponScripts = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
 
-            #region Regen
-
-            if (Template.RegenModifer != null)
-            {
-                if (Template.RegenModifer.Option == Operator.Add)
-                    client.Aisling.BonusRegen -= Template.RegenModifer.Value;
-                if (Template.RegenModifer.Option == Operator.Remove)
-                    client.Aisling.BonusRegen += Template.RegenModifer.Value;
-            }
-
-            #endregion
-
-            #region Str
-
-            if (Template.StrModifer != null)
-            {
-                if (Template.StrModifer.Option == Operator.Add)
-                    client.Aisling.BonusStr -= (byte) Template.StrModifer.Value;
-                if (Template.StrModifer.Option == Operator.Remove)
-                    client.Aisling.BonusStr += (byte) Template.StrModifer.Value;
-            }
-
-            #endregion
-
-            #region Int
-
-            if (Template.IntModifer != null)
-            {
-                if (Template.IntModifer.Option == Operator.Add)
-                    client.Aisling.BonusInt -= (byte) Template.IntModifer.Value;
-                if (Template.IntModifer.Option == Operator.Remove)
-                    client.Aisling.BonusInt += (byte) Template.IntModifer.Value;
-            }
-
-            #endregion
-
-            #region Wis
-
-            if (Template.WisModifer != null)
-            {
-                if (Template.WisModifer.Option == Operator.Add)
-                    client.Aisling.BonusWis -= (byte) Template.WisModifer.Value;
-                if (Template.WisModifer.Option == Operator.Remove)
-                    client.Aisling.BonusWis += (byte) Template.WisModifer.Value;
-            }
-
-            #endregion
-
-            #region Con
-
-            if (Template.ConModifer != null)
-            {
-                if (Template.ConModifer.Option == Operator.Add)
-                    client.Aisling.BonusCon -= (byte) Template.ConModifer.Value;
-                if (Template.ConModifer.Option == Operator.Remove)
-                    client.Aisling.BonusCon += (byte) Template.ConModifer.Value;
-
-                if (client.Aisling.BonusCon < 0)
-                    client.Aisling.BonusCon = ServerContextBase.Config.BaseStatAttribute;
-                if (client.Aisling.BonusCon > 255)
-                    client.Aisling.BonusCon = 255;
-            }
-
-            #endregion
-
-            #region Dex
-
-            if (Template.DexModifer != null)
-            {
-                if (Template.DexModifer.Option == Operator.Add)
-                    client.Aisling.BonusDex -= (byte) Template.DexModifer.Value;
-                if (Template.DexModifer.Option == Operator.Remove)
-                    client.Aisling.BonusDex += (byte) Template.DexModifer.Value;
-            }
-
-            #endregion
-
-            #region Hit
-
-            if (Template.HitModifer != null)
-            {
-                if (Template.HitModifer.Option == Operator.Add)
-                    client.Aisling.BonusHit -= (byte) Template.HitModifer.Value;
-                if (Template.HitModifer.Option == Operator.Remove)
-                    client.Aisling.BonusHit += (byte) Template.HitModifer.Value;
-            }
-
-            #endregion
-
-            #region Dmg
-
-            if (Template.DmgModifer != null)
-            {
-                if (Template.DmgModifer.Option == Operator.Add)
-                    client.Aisling.BonusDmg -= (byte) Template.DmgModifer.Value;
-                if (Template.DmgModifer.Option == Operator.Remove)
-                    client.Aisling.BonusDmg += (byte) Template.DmgModifer.Value;
-            }
-
-            #endregion
+            return obj;
         }
 
         public void ApplyModifers(GameClient client)
@@ -487,9 +326,9 @@ namespace Darkages.Types
             if (Template.MrModifer != null)
             {
                 if (Template.MrModifer.Option == Operator.Add)
-                    client.Aisling.BonusMr += (byte) Template.MrModifer.Value;
+                    client.Aisling.BonusMr += (byte)Template.MrModifer.Value;
                 if (Template.MrModifer.Option == Operator.Remove)
-                    client.Aisling.BonusMr -= (byte) Template.MrModifer.Value;
+                    client.Aisling.BonusMr -= (byte)Template.MrModifer.Value;
 
                 if (client.Aisling.BonusMr < 0)
                     client.Aisling.BonusMr = 0;
@@ -543,9 +382,9 @@ namespace Darkages.Types
             if (Template.StrModifer != null)
             {
                 if (Template.StrModifer.Option == Operator.Add)
-                    client.Aisling.BonusStr += (byte) Template.StrModifer.Value;
+                    client.Aisling.BonusStr += (byte)Template.StrModifer.Value;
                 if (Template.StrModifer.Option == Operator.Remove)
-                    client.Aisling.BonusStr -= (byte) Template.StrModifer.Value;
+                    client.Aisling.BonusStr -= (byte)Template.StrModifer.Value;
             }
 
             #endregion
@@ -555,9 +394,9 @@ namespace Darkages.Types
             if (Template.IntModifer != null)
             {
                 if (Template.IntModifer.Option == Operator.Add)
-                    client.Aisling.BonusInt += (byte) Template.IntModifer.Value;
+                    client.Aisling.BonusInt += (byte)Template.IntModifer.Value;
                 if (Template.IntModifer.Option == Operator.Remove)
-                    client.Aisling.BonusInt -= (byte) Template.IntModifer.Value;
+                    client.Aisling.BonusInt -= (byte)Template.IntModifer.Value;
             }
 
             #endregion
@@ -567,9 +406,9 @@ namespace Darkages.Types
             if (Template.WisModifer != null)
             {
                 if (Template.WisModifer.Option == Operator.Add)
-                    client.Aisling.BonusWis += (byte) Template.WisModifer.Value;
+                    client.Aisling.BonusWis += (byte)Template.WisModifer.Value;
                 if (Template.WisModifer.Option == Operator.Remove)
-                    client.Aisling.BonusWis -= (byte) Template.WisModifer.Value;
+                    client.Aisling.BonusWis -= (byte)Template.WisModifer.Value;
             }
 
             #endregion
@@ -579,9 +418,9 @@ namespace Darkages.Types
             if (Template.ConModifer != null)
             {
                 if (Template.ConModifer.Option == Operator.Add)
-                    client.Aisling.BonusCon += (byte) Template.ConModifer.Value;
+                    client.Aisling.BonusCon += (byte)Template.ConModifer.Value;
                 if (Template.ConModifer.Option == Operator.Remove)
-                    client.Aisling.BonusCon -= (byte) Template.ConModifer.Value;
+                    client.Aisling.BonusCon -= (byte)Template.ConModifer.Value;
             }
 
             #endregion
@@ -591,9 +430,9 @@ namespace Darkages.Types
             if (Template.DexModifer != null)
             {
                 if (Template.DexModifer.Option == Operator.Add)
-                    client.Aisling.BonusDex += (byte) Template.DexModifer.Value;
+                    client.Aisling.BonusDex += (byte)Template.DexModifer.Value;
                 if (Template.DexModifer.Option == Operator.Remove)
-                    client.Aisling.BonusDex -= (byte) Template.DexModifer.Value;
+                    client.Aisling.BonusDex -= (byte)Template.DexModifer.Value;
             }
 
             #endregion
@@ -603,9 +442,9 @@ namespace Darkages.Types
             if (Template.HitModifer != null)
             {
                 if (Template.HitModifer.Option == Operator.Add)
-                    client.Aisling.BonusHit += (byte) Template.HitModifer.Value;
+                    client.Aisling.BonusHit += (byte)Template.HitModifer.Value;
                 if (Template.HitModifer.Option == Operator.Remove)
-                    client.Aisling.BonusHit -= (byte) Template.HitModifer.Value;
+                    client.Aisling.BonusHit -= (byte)Template.HitModifer.Value;
             }
 
             #endregion
@@ -615,223 +454,134 @@ namespace Darkages.Types
             if (Template.DmgModifer != null)
             {
                 if (Template.DmgModifer.Option == Operator.Add)
-                    client.Aisling.BonusDmg += (byte) Template.DmgModifer.Value;
+                    client.Aisling.BonusDmg += (byte)Template.DmgModifer.Value;
                 if (Template.DmgModifer.Option == Operator.Remove)
-                    client.Aisling.BonusDmg -= (byte) Template.DmgModifer.Value;
+                    client.Aisling.BonusDmg -= (byte)Template.DmgModifer.Value;
             }
 
             #endregion
         }
 
-        public void UpdateSpellSlot(GameClient client, byte slot)
+        public bool CanCarry(Sprite sprite)
         {
-            var a = client.Aisling.SpellBook.Remove(slot);
-            client.Send(new ServerFormat18(slot));
-
-            if (a != null)
+            if ((sprite as Aisling).CurrentWeight + Template.CarryWeight > (sprite as Aisling).MaximumWeight)
             {
-                a.Slot = slot;
-                client.Aisling.SpellBook.Set(a, false);
-                client.Send(new ServerFormat17(a));
+                (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02, ServerContextBase.Config.ToWeakToLift);
+                return false;
             }
+
+            return true;
         }
 
-        public static Item Create(Sprite owner, string item, bool curse = false)
+        public bool GiveTo(Sprite sprite, bool CheckWeight = true)
         {
-            if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(item))
-                return null;
-
-            var template = ServerContextBase.GlobalItemTemplateCache[item];
-            return Create(owner, template, curse);
-        }
-
-        public static Item Create(Sprite Owner, ItemTemplate itemtemplate, bool curse = false)
-        {
-            if (Owner == null)
-                return null;
-
-            var template =
-                (ItemTemplate) StorageManager.ItemBucket.LoadFromStorage(itemtemplate);
-
-            if (itemtemplate != null && template == null)
-                template = itemtemplate;
-
-            var obj = new Item
+            if (sprite is Aisling)
             {
-                AbandonedDate = DateTime.UtcNow,
-                Template = template,
-                XPos = Owner.XPos,
-                YPos = Owner.YPos,
-                Image = template.Image,
-                DisplayImage = template.DisplayImage,
-                CurrentMapId = Owner.CurrentMapId,
-                Cursed = curse,
-                Owner = (uint) Owner.Serial,
-                Durability = template.MaxDurability,
-                OffenseElement = template.OffenseElement,
-                DefenseElement = template.DefenseElement
-            };
+                Owner = (uint)sprite.Serial;
 
-            if (obj.Template == null)
-                obj.Template = template;
+                #region stackable items
 
-            obj.Warnings = new[] {false, false, false};
-
-            obj.AuthenticatedAislings = null;
-
-            if (obj.Color == 0)
-                obj.Color = (byte) ServerContextBase.Config.DefaultItemColor;
-
-            if (obj.Template.Flags.HasFlag(ItemFlags.Repairable))
-            {
-                if (obj.Template.MaxDurability == uint.MinValue)
+                if (Template.Flags.HasFlag(ItemFlags.Stackable))
                 {
-                    obj.Template.MaxDurability = ServerContextBase.Config.DefaultItemDurability;
-                    obj.Durability = ServerContextBase.Config.DefaultItemDurability;
+                    var num_stacks = (byte)Stacks;
+
+                    if (num_stacks <= 0)
+                        num_stacks = 1;
+
+                    var item = (sprite as Aisling).Inventory.Get(i => i != null && i.Template.Name == Template.Name
+                                                                                && i.Stacks + num_stacks <
+                                                                                i.Template.MaxStack).FirstOrDefault();
+
+                    if (item != null)
+                    {
+                        Slot = item.Slot;
+
+                        item.Stacks += num_stacks;
+
+                        (sprite as Aisling).Client.Aisling.Inventory.Set(item, false);
+
+                        (sprite as Aisling).Client.Send(new ServerFormat10(item.Slot));
+
+                        (sprite as Aisling).Client.Send(new ServerFormat0F(item));
+
+                        (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
+                            $"Received {DisplayName}, You now have ({(item.Stacks == 0 ? item.Stacks + 1 : item.Stacks)})");
+
+                        return true;
+                    }
+
+                    if (Stacks <= 0)
+                        Stacks = 1;
+
+                    if (CheckWeight)
+                        if (!CanCarry(sprite))
+                            return false;
+
+                    Slot = (sprite as Aisling).Inventory.FindEmpty();
+
+                    if (Slot == byte.MaxValue)
+                    {
+                        (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
+                            ServerContextBase.Config.CantCarryMoreMsg);
+                        return false;
+                    }
+
+                    (sprite as Aisling).Inventory.Set(this, false);
+                    var format = new ServerFormat0F(this);
+                    (sprite as Aisling).Show(Scope.Self, format);
+                    (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
+                        $"{DisplayName} Received.");
+
+                    if (CheckWeight)
+                    {
+                        (sprite as Aisling).CurrentWeight += Template.CarryWeight;
+                        (sprite as Aisling).Client.SendStats(StatusFlags.StructA);
+                    }
+
+                    return true;
                 }
 
-                if (obj.Template.Value == uint.MinValue)
-                    obj.Template.Value = ServerContextBase.Config.DefaultItemValue;
-            }
+                #endregion
 
-            if (obj.Template.Flags.HasFlag(ItemFlags.QuestRelated))
-            {
-                obj.Template.MaxDurability = 0;
-                obj.Durability = 0;
-            }
+                #region not stackable items
 
-
-            lock (Generator.Random)
-            {
-                obj.Serial = Generator.GenerateNumber();
-            }
-
-            obj.Scripts = ScriptManager.Load<ItemScript>(template.ScriptName, obj);
-            if (!string.IsNullOrEmpty(obj.Template.WeaponScript))
-                obj.WeaponScripts = ScriptManager.Load<WeaponScript>(obj.Template.WeaponScript, obj);
-
-
-            return obj;
-        }
-
-        public static void ApplyQuality(Item obj)
-        {
-            try
-            {
-                if (obj.Template == null)
-                    return;
-
-                var template = (ItemTemplate) StorageManager.ItemBucket.LoadFromStorage(obj.Template);
-                if (template == null)
-                    return;
-
-
-                obj.Template = new ItemTemplate();
-                obj.Template.AcModifer = template.AcModifer;
-                obj.Template.CanStack = template.CanStack;
-                obj.Template.CarryWeight = template.CarryWeight;
-                obj.Template.Class = template.Class;
-                obj.Template.Color = template.Color;
-                obj.Template.ConModifer = template.ConModifer;
-                obj.Template.DefenseElement = template.DefenseElement;
-                obj.Template.DexModifer = template.DexModifer;
-                obj.Template.DisplayImage = template.DisplayImage;
-                obj.Template.DmgMax = template.DmgMax;
-                obj.Template.DmgMin = template.DmgMin;
-                obj.Template.DmgModifer = template.DmgModifer;
-                obj.Template.DropRate = template.DropRate;
-                obj.Template.EquipmentSlot = template.EquipmentSlot;
-                obj.Template.Flags = template.Flags;
-                obj.Template.Gender = template.Gender;
-                obj.Template.HasPants = template.HasPants;
-                obj.Template.HealthModifer = template.HealthModifer;
-                obj.Template.HitModifer = template.HitModifer;
-                obj.Template.ID = template.ID;
-                obj.Template.Image = template.Image;
-                obj.Template.IntModifer = template.IntModifer;
-                obj.Template.LevelRequired = template.LevelRequired;
-                obj.Template.ManaModifer = template.ManaModifer;
-                obj.Template.MaxDurability = template.MaxDurability;
-                obj.Template.MaxStack = template.MaxStack;
-                obj.Template.MrModifer = template.MrModifer;
-                obj.Template.Name = template.Name;
-                obj.Template.NpcKey = template.NpcKey;
-                obj.Template.OffenseElement = template.OffenseElement;
-                obj.Template.ScriptName = template.ScriptName;
-                obj.Template.SpellOperator = template.SpellOperator;
-                obj.Template.StageRequired = template.StageRequired;
-                obj.Template.StrModifer = template.StrModifer;
-                obj.Template.Value = template.Value;
-                obj.Template.Weight = template.Weight;
-                obj.Template.WisModifer = template.WisModifer;
-
-                if (obj.Upgrades > 0)
                 {
-                    if (obj.Template.AcModifer != null)
-                        if (obj.Template.AcModifer.Option == Operator.Remove)
-                            obj.Template.AcModifer.Value -= -obj.Upgrades;
+                    Slot = (sprite as Aisling).Inventory.FindEmpty();
 
-                    if (obj.Template.MrModifer != null)
-                        if (obj.Template.MrModifer.Option == Operator.Add)
-                            obj.Template.MrModifer.Value += obj.Upgrades * 10;
+                    if (Slot == byte.MaxValue)
+                    {
+                        (sprite as Aisling).Client.SendMessage(Scope.Self, 0x02,
+                            ServerContextBase.Config.CantCarryMoreMsg);
+                        return false;
+                    }
 
-                    if (obj.Template.HealthModifer != null)
-                        if (obj.Template.HealthModifer.Option == Operator.Add)
-                            obj.Template.HealthModifer.Value += 500 * obj.Upgrades;
+                    if (CheckWeight)
+                        if (!CanCarry(sprite))
+                            return false;
 
-                    if (obj.Template.ManaModifer != null)
-                        if (obj.Template.ManaModifer.Option == Operator.Add)
-                            obj.Template.ManaModifer.Value += 300 * obj.Upgrades;
+                    (sprite as Aisling).Inventory.Assign(this);
+                    var format = new ServerFormat0F(this);
+                    (sprite as Aisling).Show(Scope.Self, format);
 
-                    if (obj.Template.StrModifer != null)
-                        if (obj.Template.StrModifer.Option == Operator.Add)
-                            obj.Template.StrModifer.Value += obj.Upgrades;
+                    if (CheckWeight)
+                    {
+                        (sprite as Aisling).CurrentWeight += Template.CarryWeight;
+                        (sprite as Aisling).Client?.SendStats(StatusFlags.StructA);
+                    }
 
-                    if (obj.Template.IntModifer != null)
-                        if (obj.Template.IntModifer.Option == Operator.Add)
-                            obj.Template.IntModifer.Value += obj.Upgrades;
-
-                    if (obj.Template.WisModifer != null)
-                        if (obj.Template.WisModifer.Option == Operator.Add)
-                            obj.Template.WisModifer.Value += obj.Upgrades;
-                    if (obj.Template.ConModifer != null)
-                        if (obj.Template.ConModifer.Option == Operator.Add)
-                            obj.Template.ConModifer.Value += obj.Upgrades;
-
-                    if (obj.Template.DexModifer != null)
-                        if (obj.Template.DexModifer.Option == Operator.Add)
-                            obj.Template.DexModifer.Value += obj.Upgrades;
-
-                    if (obj.Template.DmgModifer != null)
-                        if (obj.Template.DmgModifer.Option == Operator.Add)
-                            obj.Template.DmgModifer.Value += obj.Upgrades;
-
-                    if (obj.Template.HitModifer != null)
-                        if (obj.Template.HitModifer.Option == Operator.Add)
-                            obj.Template.HitModifer.Value += obj.Upgrades;
-
-                    obj.Template.LevelRequired -= (byte) obj.Upgrades;
-                    obj.Template.Value *= (byte) obj.Upgrades;
-                    obj.Template.MaxDurability += (byte) (1500 * obj.Upgrades);
-                    obj.Template.DmgMax += 100 * obj.Upgrades;
-                    obj.Template.DmgMin += 20 * obj.Upgrades;
-
-
-                    if (obj.Template.LevelRequired <= 0 || obj.Template.LevelRequired > 99)
-                        obj.Template.LevelRequired = 1;
+                    return true;
                 }
+
+                #endregion
             }
-            catch (Exception e)
-            {
-                ServerContext.Error(e);
-            }
+
+            return false;
         }
 
         public void Release(Sprite owner, Position position)
         {
             XPos = position.X;
             YPos = position.Y;
-
 
             lock (Generator.Random)
             {
@@ -851,6 +601,229 @@ namespace Darkages.Types
 
             if (owner is Aisling)
                 ShowTo(owner as Aisling);
+        }
+
+        public void RemoveModifiers(GameClient client)
+        {
+            if (client == null || client.Aisling == null)
+                return;
+
+            #region Armor class Modifers
+
+            if (Template.AcModifer != null)
+            {
+                if (Template.AcModifer.Option == Operator.Add)
+                    client.Aisling.BonusAc -= Template.AcModifer.Value;
+                if (Template.AcModifer.Option == Operator.Remove)
+                    client.Aisling.BonusAc += Template.AcModifer.Value;
+
+                client.SendMessage(0x03, $"E: {Template.Name}, AC: {client.Aisling.Ac}");
+                client.SendStats(StatusFlags.StructD);
+            }
+
+            #endregion
+
+            #region Lines
+
+            if (Template.SpellOperator != null)
+            {
+                var op = Template.SpellOperator;
+
+                for (var i = 0; i < client.Aisling.SpellBook.Spells.Count; i++)
+                {
+                    var spell = client.Aisling.SpellBook.FindInSlot(i);
+
+                    if (spell?.Template == null)
+                        continue;
+
+                    spell.Lines = spell.Template.BaseLines;
+
+                    if (spell.Lines > spell.Template.MaxLines)
+                        spell.Lines = spell.Template.MaxLines;
+
+                    UpdateSpellSlot(client, spell.Slot);
+                }
+            }
+
+            #endregion
+
+            #region MR
+
+            if (Template.MrModifer != null)
+            {
+                if (Template.MrModifer.Option == Operator.Add)
+                    client.Aisling.BonusMr -= (byte)Template.MrModifer.Value;
+                if (Template.MrModifer.Option == Operator.Remove)
+                    client.Aisling.BonusMr += (byte)Template.MrModifer.Value;
+
+                if (client.Aisling.BonusMr < 0)
+                    client.Aisling.BonusMr = 0;
+            }
+
+            #endregion
+
+            #region Health
+
+            if (Template.HealthModifer != null)
+            {
+                if (Template.HealthModifer.Option == Operator.Add)
+                    client.Aisling.BonusHp -= Template.HealthModifer.Value;
+                if (Template.HealthModifer.Option == Operator.Remove)
+                    client.Aisling.BonusHp += Template.HealthModifer.Value;
+
+                if (client.Aisling.BonusHp < 0)
+                    client.Aisling.BonusHp = ServerContextBase.Config.MinimumHp;
+            }
+
+            #endregion
+
+            #region Mana
+
+            if (Template.ManaModifer != null)
+            {
+                if (Template.ManaModifer.Option == Operator.Add)
+                    client.Aisling.BonusMp -= Template.ManaModifer.Value;
+                if (Template.ManaModifer.Option == Operator.Remove)
+                    client.Aisling.BonusMp += Template.ManaModifer.Value;
+            }
+
+            #endregion
+
+            #region Regen
+
+            if (Template.RegenModifer != null)
+            {
+                if (Template.RegenModifer.Option == Operator.Add)
+                    client.Aisling.BonusRegen -= Template.RegenModifer.Value;
+                if (Template.RegenModifer.Option == Operator.Remove)
+                    client.Aisling.BonusRegen += Template.RegenModifer.Value;
+            }
+
+            #endregion
+
+            #region Str
+
+            if (Template.StrModifer != null)
+            {
+                if (Template.StrModifer.Option == Operator.Add)
+                    client.Aisling.BonusStr -= (byte)Template.StrModifer.Value;
+                if (Template.StrModifer.Option == Operator.Remove)
+                    client.Aisling.BonusStr += (byte)Template.StrModifer.Value;
+            }
+
+            #endregion
+
+            #region Int
+
+            if (Template.IntModifer != null)
+            {
+                if (Template.IntModifer.Option == Operator.Add)
+                    client.Aisling.BonusInt -= (byte)Template.IntModifer.Value;
+                if (Template.IntModifer.Option == Operator.Remove)
+                    client.Aisling.BonusInt += (byte)Template.IntModifer.Value;
+            }
+
+            #endregion
+
+            #region Wis
+
+            if (Template.WisModifer != null)
+            {
+                if (Template.WisModifer.Option == Operator.Add)
+                    client.Aisling.BonusWis -= (byte)Template.WisModifer.Value;
+                if (Template.WisModifer.Option == Operator.Remove)
+                    client.Aisling.BonusWis += (byte)Template.WisModifer.Value;
+            }
+
+            #endregion
+
+            #region Con
+
+            if (Template.ConModifer != null)
+            {
+                if (Template.ConModifer.Option == Operator.Add)
+                    client.Aisling.BonusCon -= (byte)Template.ConModifer.Value;
+                if (Template.ConModifer.Option == Operator.Remove)
+                    client.Aisling.BonusCon += (byte)Template.ConModifer.Value;
+
+                if (client.Aisling.BonusCon < 0)
+                    client.Aisling.BonusCon = ServerContextBase.Config.BaseStatAttribute;
+                if (client.Aisling.BonusCon > 255)
+                    client.Aisling.BonusCon = 255;
+            }
+
+            #endregion
+
+            #region Dex
+
+            if (Template.DexModifer != null)
+            {
+                if (Template.DexModifer.Option == Operator.Add)
+                    client.Aisling.BonusDex -= (byte)Template.DexModifer.Value;
+                if (Template.DexModifer.Option == Operator.Remove)
+                    client.Aisling.BonusDex += (byte)Template.DexModifer.Value;
+            }
+
+            #endregion
+
+            #region Hit
+
+            if (Template.HitModifer != null)
+            {
+                if (Template.HitModifer.Option == Operator.Add)
+                    client.Aisling.BonusHit -= (byte)Template.HitModifer.Value;
+                if (Template.HitModifer.Option == Operator.Remove)
+                    client.Aisling.BonusHit += (byte)Template.HitModifer.Value;
+            }
+
+            #endregion
+
+            #region Dmg
+
+            if (Template.DmgModifer != null)
+            {
+                if (Template.DmgModifer.Option == Operator.Add)
+                    client.Aisling.BonusDmg -= (byte)Template.DmgModifer.Value;
+                if (Template.DmgModifer.Option == Operator.Remove)
+                    client.Aisling.BonusDmg += (byte)Template.DmgModifer.Value;
+            }
+
+            #endregion
+        }
+
+        public void UpdateSpellSlot(GameClient client, byte slot)
+        {
+            var a = client.Aisling.SpellBook.Remove(slot);
+            client.Send(new ServerFormat18(slot));
+
+            if (a != null)
+            {
+                a.Slot = slot;
+                client.Aisling.SpellBook.Set(a, false);
+                client.Send(new ServerFormat17(a));
+            }
+        }
+
+        private string getDisplayName()
+        {
+            var upgradeName = "";
+
+            if (Upgrades == 4) upgradeName = "{=fRare";
+
+            if (Upgrades == 5) upgradeName = "{=pEpic";
+
+            if (Upgrades == 6) upgradeName = "{=sLegendary";
+
+            if (Upgrades == 7) upgradeName = "{=bGodly";
+
+            if (Upgrades == 8) upgradeName = "{=uForsaken";
+
+            if (ItemVariance != Variance.None && Identifed)
+                return $"{upgradeName} {ItemVariance.ToString()} {Template.Name}";
+
+            if (upgradeName != "") return $"{upgradeName} {Template.Name}";
+
+            return Template.Name;
         }
     }
 }

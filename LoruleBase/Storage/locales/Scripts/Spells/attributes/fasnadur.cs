@@ -51,7 +51,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     var action = new ServerFormat1A
                     {
                         Serial = sprite.Serial,
-                        Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
+                        Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 :
                             client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                         Speed = 30
                     };
@@ -123,7 +123,6 @@ namespace Darkages.Storage.locales.Scripts.Spells
 
             if (sprite.CurrentMp < 0)
                 sprite.CurrentMp = 0;
-
 
             OnSuccess(sprite, target);
 

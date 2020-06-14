@@ -2,6 +2,18 @@
 {
     public class ServerFormat0A : NetworkFormat
     {
+        public ServerFormat0A(byte type, string text) : this()
+        {
+            Type = type;
+            Text = text;
+        }
+
+        public ServerFormat0A()
+        {
+            Secured = true;
+            Command = 0x0A;
+        }
+
         public enum MsgType
         {
             Action = 2,
@@ -15,20 +27,8 @@
             Test = 8
         }
 
-        public ServerFormat0A(byte type, string text) : this()
-        {
-            Type = type;
-            Text = text;
-        }
-
-        public ServerFormat0A()
-        {
-            Secured = true;
-            Command = 0x0A;
-        }
-
-        public byte Type { get; set; }
         public string Text { get; set; }
+        public byte Type { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
         {
