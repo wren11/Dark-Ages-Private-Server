@@ -5,6 +5,7 @@ using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 #endregion
@@ -34,28 +35,43 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
         {
+            var skills = ServerContextBase.GlobalSkillTemplateCache.Select(i => i.Value)
+                .Where(i => i.NpcKey.Equals(Mundane.Template.Name)).ToArray();
+
+            var availableSkillTemplates = new List<SkillTemplate>();
+
+            foreach (var skill in skills)
+            {
+                if (skill.Prerequisites != null)
+                {
+                    if (skill.Prerequisites.Class_Required == client.Aisling.Path)
+                    {
+                        availableSkillTemplates.Add(skill);
+                    }
+                }
+
+                if (skill.LearningRequirements != null &&
+                    skill.LearningRequirements.TrueForAll(i => i.Class_Required == client.Aisling.Path))
+                {
+                    availableSkillTemplates.Add(skill);
+                }
+            }
+
             switch (responseID)
             {
                 case 0x0001:
-                    var skills = ServerContextBase.GlobalSkillTemplateCache.Select(i => i.Value)
-                        .Where(i => i.Prerequisites != null && i.NpcKey.Equals(Mundane.Template.Name)
-                                                            && i.Prerequisites.Class_Required == client.Aisling.Path)
-                        .ToList();
-                    var learned_skills = client.Aisling.SkillBook.Skills.Where(i => i.Value != null)
-                        .Select(i => i.Value.Template)
-                        .ToList();
+                    var learnedSkills = client.Aisling.SkillBook.Skills.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
+                    var newSkills = availableSkillTemplates.Except(learnedSkills).ToList();
 
-                    var new_skills = skills.Except(learned_skills).ToList();
-
-                    new_skills = new_skills.OrderBy(i =>
+                    newSkills = newSkills.OrderBy(i =>
                         Math.Abs(i.Prerequisites.ExpLevel_Required - client.Aisling.ExpLevel)).ToList();
 
-                    if (new_skills.Count > 0)
+                    if (newSkills.Count > 0)
                     {
                         client.SendSkillLearnDialog(Mundane,
                             "Not even the Gods of Lorule posess the power these abilities can bring you.\nYou are lucky I'm even showing these to you. Choose Wisely young Aisling,\nYou have been chosen.",
                             0x0003,
-                            new_skills.Where(i => i.Prerequisites.Class_Required == client.Aisling.Path));
+                            newSkills.Where(i => i.Prerequisites.Class_Required == client.Aisling.Path));
                     }
                     else
                     {

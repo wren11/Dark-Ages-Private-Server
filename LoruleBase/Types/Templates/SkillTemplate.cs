@@ -1,4 +1,6 @@
-﻿namespace Darkages.Types
+﻿using System.Collections.Generic;
+
+namespace Darkages.Types
 {
     public class SkillTemplate : Template
     {
@@ -8,6 +10,7 @@
         public string FailMessage { get; set; }
         public byte Icon { get; set; }
 
+        public List<LearningPredicate> LearningRequirements { get; set; } = new List<LearningPredicate>();
         public double LevelRate { get; set; }
         public int MaxLevel { get; set; }
         public ushort MissAnimation { get; set; }

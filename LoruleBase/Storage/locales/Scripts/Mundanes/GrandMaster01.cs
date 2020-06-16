@@ -5,6 +5,7 @@ using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 #endregion
@@ -33,27 +34,39 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
         {
+            var spells = ServerContextBase.GlobalSpellTemplateCache.Select(i => i.Value)
+                .Where(i => i.NpcKey.Equals(Mundane.Template.Name)).ToArray();
+
+            var availableSpellTemplates = new List<SpellTemplate>();
+
+            foreach (var skill in spells)
+            {
+                if (skill.Prerequisites != null)
+                {
+                    if (skill.Prerequisites.Class_Required == client.Aisling.Path)
+                    {
+                        availableSpellTemplates.Add(skill);
+                    }
+                }
+
+                if (skill.LearningRequirements != null &&
+                    skill.LearningRequirements.TrueForAll(i => i.Class_Required == client.Aisling.Path))
+                {
+                    availableSpellTemplates.Add(skill);
+                }
+            }
+
             switch (responseID)
             {
                 case 0x0001:
-                    var skills = ServerContextBase.GlobalSpellTemplateCache.Select(i => i.Value)
-                        .Where(i => i.Prerequisites != null && i.NpcKey != null &&
-                                    i.NpcKey.ToLower().Equals(Mundane.Template.Name.ToLower())
-                                    && i.Prerequisites.Class_Required == client.Aisling.Path).ToList();
-                    var learned_skills = client.Aisling.SpellBook.Spells.Where(i => i.Value != null)
-                        .Select(i => i.Value.Template)
-                        .ToList();
+                    var learnedSpells = client.Aisling.SpellBook.Spells.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
+                    var newSpells = availableSpellTemplates.Except(learnedSpells).ToList();
 
-                    var new_skills = skills.Except(learned_skills).ToList();
-
-                    new_skills = new_skills.OrderBy(i =>
-                        Math.Abs(i.Prerequisites.ExpLevel_Required - client.Aisling.ExpLevel)).ToList();
-
-                    if (new_skills.Count > 0)
+                    if (newSpells.Count > 0)
                     {
                         client.SendSpellLearnDialog(Mundane, "Only the dedicated can unlock the power of magic.",
                             0x0003,
-                            new_skills.Where(i => i.Prerequisites.Class_Required == client.Aisling.Path));
+                            newSpells.Where(i => i.Prerequisites.Class_Required == client.Aisling.Path));
                     }
                     else
                     {

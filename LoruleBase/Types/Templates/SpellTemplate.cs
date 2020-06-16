@@ -1,4 +1,7 @@
-﻿namespace Darkages.Types
+﻿using System;
+using System.Collections.Generic;
+
+namespace Darkages.Types
 {
     public class SpellTemplate : Template
     {
@@ -28,6 +31,7 @@
         public ElementManager.Element ElementalProperty { get; set; }
         public byte Icon { get; set; }
         public bool IsTrap { get; set; }
+        public List<LearningPredicate> LearningRequirements { get; set; } = new List<LearningPredicate>();
         public double LevelRate { get; set; }
         public int ManaCost { get; set; }
         public byte MaxLevel { get; set; }

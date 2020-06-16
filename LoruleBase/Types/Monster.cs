@@ -321,11 +321,14 @@ namespace Darkages.Types
             if (exp <= 0)
                 exp = 1;
 
-            var bonus = exp * (1 + player.GroupParty.PartyMembers.Count - 1) * ServerContextBase.Config.GroupExpBonus /
-                        100;
+            if (player.GroupParty != null)
+            {
+                var bonus = exp * (1 + player.GroupParty.PartyMembers.Count - 1) * ServerContextBase.Config.GroupExpBonus /
+                            100;
 
-            if (bonus > 0)
-                exp += bonus;
+                if (bonus > 0)
+                    exp += bonus;
+            }
 
             player.ExpTotal += (uint)exp;
             player.ExpNext -= (uint)exp;

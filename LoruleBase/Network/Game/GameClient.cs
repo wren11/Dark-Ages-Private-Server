@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using ServiceStack.Logging;
 
 #endregion
 
@@ -269,32 +270,56 @@ namespace Darkages.Network.Game
 
         public GameClient LearnSkill(Mundane source, SkillTemplate subject, string message)
         {
-            if (PayPrerequisites(subject.Prerequisites))
-            {
-                Skill.GiveTo(this, subject.Name);
-                SendOptionsDialog(source, message);
+            var canLearn = false;
 
-                Aisling.Show(Scope.NearbyAislings,
-                    new ServerFormat29((uint)Aisling.Serial, (uint)source.Serial,
-                        subject?.TargetAnimation ?? 124,
-                        subject?.TargetAnimation ?? 124, 100));
+            if (subject.Prerequisites != null)
+            {
+                canLearn = PayPrerequisites(subject.Prerequisites);
             }
+
+            if (subject.LearningRequirements != null && subject.LearningRequirements.Any())
+            {
+                canLearn = subject.LearningRequirements.TrueForAll(PayPrerequisites);
+            }
+
+            if (!canLearn)
+                return this;
+
+            Skill.GiveTo(this, subject.Name);
+            SendOptionsDialog(source, message);
+
+            Aisling.Show(Scope.NearbyAislings,
+                new ServerFormat29((uint)Aisling.Serial, (uint)source.Serial,
+                    subject?.TargetAnimation ?? 124,
+                    subject?.TargetAnimation ?? 124, 100));
 
             return this;
         }
 
         public GameClient LearnSpell(Mundane source, SpellTemplate subject, string message)
         {
-            if (PayPrerequisites(subject.Prerequisites))
-            {
-                Spell.GiveTo(this, subject.Name);
-                SendOptionsDialog(source, message);
+            var canLearn = false;
 
-                Aisling.Show(Scope.NearbyAislings,
-                    new ServerFormat29((uint)Aisling.Serial, (uint)source.Serial,
-                        subject?.TargetAnimation ?? 124,
-                        subject?.TargetAnimation ?? 124, 100));
+            if (subject.Prerequisites != null)
+            {
+                canLearn = PayPrerequisites(subject.Prerequisites);
             }
+
+            if (subject.LearningRequirements != null && subject.LearningRequirements.Any())
+            {
+                canLearn = subject.LearningRequirements.TrueForAll(PayPrerequisites);
+            }
+
+            if (!canLearn)
+                return this;
+
+            Spell.GiveTo(this, subject.Name);
+            SendOptionsDialog(source, message);
+
+            Aisling.Show(Scope.NearbyAislings,
+                new ServerFormat29((uint)Aisling.Serial, (uint)source.Serial,
+                    subject?.TargetAnimation ?? 124,
+                    subject?.TargetAnimation ?? 124, 100));
 
             return this;
         }

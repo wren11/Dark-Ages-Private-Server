@@ -242,7 +242,8 @@ namespace Darkages
                 AnimalForm = AnimalForm.None
             };
 
-            if (ServerContextBase.Config.GiveAssailOnCreate) Skill.GiveTo(result, "Assail", 1);
+            if (ServerContextBase.Config.GiveAssailOnCreate)
+                Skill.GiveTo(result, "Assail", 1);
 
             if (ServerContextBase.Config.DevMode)
             {

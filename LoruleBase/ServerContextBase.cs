@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Sockets;
 
 #endregion
@@ -279,31 +280,6 @@ namespace Darkages
             LoadExtensions();
 
             Paused = false;
-
-            var blind = new SpellTemplate();
-            blind.Name = "blind";
-            blind.Icon = 114;
-            blind.Animation = 42;
-            blind.BaseLines = 4;
-            blind.MaxLines = 9;
-            blind.MinLines = 1;
-            blind.Cooldown = 3;
-            blind.ManaCost = 100;
-            blind.Debuff = new debuff_blind();
-            blind.ScriptKey = "blind";
-            blind.NpcKey = "dar";
-            blind.Pane = Pane.Spells;
-            blind.LevelRate = 0.03;
-            blind.TargetType = SpellTemplate.SpellUseType.ChooseTarget;
-            blind.Sound = 1;
-            blind.TargetAnimation = 114;
-            blind.Prerequisites = new LearningPredicate();
-            blind.Prerequisites.Class_Required = Class.Wizard;
-            blind.Prerequisites.Con_Required = 20;
-            blind.Prerequisites.Int_Required = 65;
-            blind.Prerequisites.Gold_Required = 100000;
-
-            GlobalSpellTemplateCache.Add("blind", blind);
         }
 
         private static void LoadExtensions()
@@ -349,6 +325,20 @@ namespace Darkages
                 spell.Prerequisites?.AssociatedWith(spell);
             foreach (var skill in GlobalSkillTemplateCache.Values)
                 skill.Prerequisites?.AssociatedWith(skill);
+
+            foreach (var spell in GlobalSpellTemplateCache.Values)
+            {
+                if (spell?.LearningRequirements == null) continue;
+                foreach (var req in spell.LearningRequirements)
+                    req.AssociatedWith(spell);
+            }
+
+            foreach (var skill in GlobalSkillTemplateCache.Values)
+            {
+                if (skill?.LearningRequirements == null) continue;
+                foreach (var req in skill.LearningRequirements)
+                    req.AssociatedWith(skill);
+            }
         }
     }
 }
