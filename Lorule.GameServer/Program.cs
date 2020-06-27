@@ -19,7 +19,7 @@ using System.Threading;
 
 namespace Lorule.GameServer
 {
-    //updated
+    //updated again
     public interface IServer
     {
         void Log(string logMessage);
