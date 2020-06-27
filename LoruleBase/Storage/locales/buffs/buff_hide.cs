@@ -20,7 +20,7 @@ namespace Darkages.Storage.locales.Buffs
                 var client = (Affected as Aisling).Client;
                 if (client.Aisling != null && !client.Aisling.Dead)
                 {
-                    client.Aisling.Flags = AislingFlags.Invisible;
+                    client.Aisling.Invisible = true;
 
                     if (client.Aisling.Invisible) client.SendMessage(0x02, "You blend in to the shadows.");
 
@@ -55,7 +55,7 @@ namespace Darkages.Storage.locales.Buffs
             {
                 var client = (Affected as Aisling).Client;
                 {
-                    client.Aisling.Flags ^= AislingFlags.Invisible;
+                    client.Aisling.Invisible = false;
                     client.UpdateDisplay();
 
                     base.OnEnded(Affected, buff);

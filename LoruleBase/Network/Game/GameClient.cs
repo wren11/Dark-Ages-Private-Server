@@ -76,11 +76,10 @@ namespace Darkages.Network.Game
 
         public GameClient AislingToGhostForm()
         {
-            Aisling.Flags = AislingFlags.Dead;
-            {
-                HpRegenTimer.Disabled = true;
-                MpRegenTimer.Disabled = true;
-            }
+            Aisling.Flags = AislingFlags.Ghost;
+
+            HpRegenTimer.Disabled = true;
+            MpRegenTimer.Disabled = true;
 
             Refresh(true);
 
@@ -211,13 +210,10 @@ namespace Darkages.Network.Game
         public GameClient GhostFormToAisling()
         {
             Aisling.Flags = AislingFlags.Normal;
-            {
-                HpRegenTimer.Disabled = false;
-                MpRegenTimer.Disabled = false;
-            }
+            HpRegenTimer.Disabled = false;
+            MpRegenTimer.Disabled = false;
 
             Refresh(true);
-
             return this;
         }
 

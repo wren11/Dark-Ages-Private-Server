@@ -87,8 +87,6 @@ namespace Darkages.Network.Game
             {
                 foreach (var client in Clients.Where(client => client?.Aisling != null))
                 {
-                    client.Aisling.Map?.Update(elapsedTime);
-
                     ObjectComponent.UpdateClientObjects(client.Aisling);
 
                     if (!client.IsWarping)
@@ -140,10 +138,10 @@ namespace Darkages.Network.Game
                 {
                     UpdateClients(elapsedTime);
                     UpdateComponents(elapsedTime);
+                    UpdateAreas(elapsedTime);
+                    _lastHeavyUpdate = DateTime.UtcNow;
+                    Thread.Sleep(_heavyUpdateSpan);
                 });
-
-                _lastHeavyUpdate = DateTime.UtcNow;
-                Thread.Sleep(_heavyUpdateSpan);
             }
         }
 

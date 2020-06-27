@@ -2583,11 +2583,23 @@ namespace Darkages.Network.Game
 
             ServerContext.Logger(client.Aisling.Username + " : " + ServerContextBase.Config.ServerWelcomeMessage);
 
-            return client.Load()
+            if (client.Aisling.Dead || client.Aisling.CurrentHp <= 0)
+            {
+                client.Aisling.WarpToHell();
+            }
+
+            var playerObjAisling = client.Load()
                 .SendStats(StatusFlags.All)
                 .SendMessage(0x02, ServerContextBase.Config.ServerWelcomeMessage)
                 .EnterArea()
                 .LoggedIn(true).Aisling;
+
+            if (playerObjAisling.Dead || playerObjAisling.CurrentHp <= 0)
+            {
+                playerObjAisling.WarpToHell();
+            }
+
+            return playerObjAisling;
         }
 
         private void MenuInterpter_OnMovedToNextStep(GameClient client, MenuItem previous, MenuItem current)

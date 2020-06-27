@@ -3,6 +3,7 @@
 using Darkages.Network.ServerFormats;
 using System;
 using System.Linq;
+using Darkages.Types;
 
 #endregion
 
@@ -31,9 +32,27 @@ namespace Darkages.Network.Game.Components
 
             var format20 = new ServerFormat20 { Shade = _shade };
 
-            if (Server.Clients != null)
-                foreach (var client in Server.Clients.Where(client => client != null))
-                    client.Send(format20);
+            if (Server.Clients == null) return;
+
+            foreach (var client in Server.Clients.Where(client => client != null))
+            {
+                if (client.Aisling != null && !client.Aisling.LoggedIn)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    client.Send(
+                        client.Aisling?.Map != null && client.Aisling.Map.Flags.HasFlag(MapFlags.HasDayNight)
+                            ? format20
+                            : new ServerFormat20());
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
 
             _shade += 1;
             _shade %= 18;

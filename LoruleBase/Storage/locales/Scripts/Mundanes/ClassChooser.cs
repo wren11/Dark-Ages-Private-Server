@@ -22,7 +22,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnClick(GameServer server, GameClient client)
         {
-            if (client.Aisling.ClassID == 0)
+            if (client.Aisling.Path == Class.Peasant)
             {
                 var options = new List<OptionsDataItem>
                 {
@@ -68,7 +68,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             }
             else
             {
-                client.Aisling.ClassID = responseID;
                 client.Aisling.Path = (Class)responseID;
 
                 client.SendOptionsDialog(Mundane, $"You are now a {Convert.ToString(client.Aisling.Path)}");

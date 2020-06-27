@@ -87,7 +87,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                     if (client.Aisling.Invisible && Skill.Template.PostQualifers == PostQualifer.BreakInvisible)
                     {
-                        client.Aisling.Flags = AislingFlags.Normal;
+                        client.Aisling.Invisible = false;
                         client.Refresh();
                     }
 

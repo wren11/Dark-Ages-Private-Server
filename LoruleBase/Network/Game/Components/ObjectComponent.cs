@@ -74,35 +74,6 @@ namespace Darkages.Network.Game.Components
 
                     switch (obj)
                     {
-                        case Mundane sprite:
-                            {
-                                if (sprite is Mundane mundane)
-                                {
-                                    var template = mundane.Template;
-
-                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Monks))
-                                        if (myplayer.ClassID != 5)
-                                            skip = true;
-
-                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Warriors))
-                                        if (myplayer.ClassID != 1)
-                                            skip = true;
-
-                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Rogues))
-                                        if (myplayer.ClassID != 2)
-                                            skip = true;
-
-                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Wizards))
-                                        if (myplayer.ClassID != 3)
-                                            skip = true;
-
-                                    if (template.ViewingQualifer.HasFlag(ViewQualifer.Priests))
-                                        if (myplayer.ClassID != 4)
-                                            skip = true;
-                                }
-
-                                break;
-                            }
                         case Money money:
                             {
                                 var goldSetting = myplayer.GameSettings.Find(i =>

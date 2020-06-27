@@ -96,7 +96,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 {
                     if (client.Aisling.Invisible && Skill.Template.PostQualifers.HasFlag(PostQualifer.BreakInvisible))
                     {
-                        client.Aisling.Flags = AislingFlags.Normal;
+                        client.Aisling.Invisible = false;
                         client.Refresh();
                     }
 

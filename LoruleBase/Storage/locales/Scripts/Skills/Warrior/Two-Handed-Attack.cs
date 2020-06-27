@@ -111,7 +111,7 @@ namespace Darkages.Scripting.Scripts.Skills
                     client.TrainSkill(Skill);
                     if (client.Aisling.Invisible)
                     {
-                        client.Aisling.Flags = AislingFlags.Normal;
+                        client.Aisling.Invisible = false;
                         client.Refresh();
                     }
 

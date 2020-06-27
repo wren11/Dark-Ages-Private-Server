@@ -36,7 +36,6 @@ namespace Darkages
             OffenseElement = ElementManager.Element.None;
             DefenseElement = ElementManager.Element.None;
             Clan = string.Empty;
-            Flags = AislingFlags.Normal;
             LegendBook = new Legend();
             ClanTitle = string.Empty;
             ClanRank = string.Empty;
@@ -76,9 +75,15 @@ namespace Darkages
         public string Clan { get; set; }
         public string ClanRank { get; set; }
         public string ClanTitle { get; set; }
-        public int ClassID { get; set; }
         public DateTime Created { get; set; }
         public int CurrentWeight { get; set; }
+
+        [JsonIgnore]
+        public bool Dead
+        {
+            get { return CurrentHp <= 0; }
+        }
+
         public List<int> DiscoveredMaps { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
@@ -86,19 +91,16 @@ namespace Darkages
 
         public EquipmentManager EquipmentManager { get; set; }
         [JsonIgnore] public ExchangeSession Exchange { get; set; }
+
         public int ExpLevel { get; set; }
         public uint ExpNext { get; set; }
         public uint ExpTotal { get; set; }
         public int FaceColor { get; set; }
         public int FaceStyle { get; set; }
-        [JsonIgnore] public int FieldNumber { get; set; } = 1;
-
-        [JsonConverter(typeof(StringEnumConverter))]
-        public AislingFlags Flags { get; set; }
-
+        public AislingFlags Flags { get; internal set; }
         public bool GameMaster { get; set; }
-
         public int GamePoints { get; set; }
+
         public List<ClientGameSettings> GameSettings { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
@@ -124,6 +126,7 @@ namespace Darkages
         public byte HeadAccessory2 { get; set; }
         public int Helmet { get; set; }
         public Inventory Inventory { get; set; }
+        public bool Invisible { get; set; }
         [JsonIgnore] public bool IsCastingSpell { get; set; }
         public DateTime LastLogged { get; set; }
         [JsonIgnore] public int LastMapId { get; set; }
@@ -161,7 +164,7 @@ namespace Darkages
         public Class Path { get; set; }
 
         public byte[] PictureData { get; set; }
-        public PortalSession PortalSession { get; set; }
+        [JsonIgnore] public PortalSession PortalSession { get; set; }
         [JsonIgnore] [Browsable(false)] public new Position Position => new Position(XPos, YPos);
         public string ProfileMessage { get; set; }
         [JsonIgnore] public bool ProfileOpen { get; set; }
@@ -172,7 +175,9 @@ namespace Darkages
         public byte Shield { get; set; }
         public SkillBook SkillBook { get; set; }
         [JsonIgnore] public bool Skulled => HasDebuff("skulled");
+
         public SpellBook SpellBook { get; set; }
+
         public ClassStage Stage { get; set; }
         public int StatPoints { get; set; }
         public int Title { get; set; }
@@ -180,9 +185,7 @@ namespace Darkages
         public string Username { get; set; }
         [JsonIgnore] public bool UsingTwoHanded { get; set; }
         public ushort Weapon { get; set; }
-        public int World { get; set; } = 1;
-        [JsonIgnore] public bool Dead => Flags.HasFlag(AislingFlags.Dead);
-        [JsonIgnore] public bool Invisible => Flags.HasFlag(AislingFlags.Invisible);
+        public int World { get; set; } = 2;
         [JsonIgnore] public List<Aisling> PartyMembers => GroupParty?.PartyMembers;
 
         public static Aisling Create()
@@ -202,9 +205,7 @@ namespace Darkages
                 ExpNext = 600,
                 Gender = 0,
                 Title = 0,
-                Flags = 0,
                 CurrentMapId = ServerContextBase.Config.StartingMap,
-                ClassID = 0,
                 Stage = ClassStage.Class,
                 Path = Class.Peasant,
                 CurrentHp = 60,
@@ -363,11 +364,6 @@ namespace Darkages
             return IsDead();
         }
 
-        public bool CanSeeHidden()
-        {
-            return Flags.HasFlag(AislingFlags.SeeInvisible);
-        }
-
         public Aisling Cast(Spell spell, Sprite target, byte actionSpeed = 30)
         {
             var action = new ServerFormat1A
@@ -408,7 +404,7 @@ namespace Darkages
 
         public bool CastDeath()
         {
-            if (!Client.Aisling.Flags.HasFlag(AislingFlags.Dead))
+            if (!Client.Aisling.Flags.HasFlag(AislingFlags.Ghost))
             {
                 LastMapId = CurrentMapId;
                 LastPosition = Position;
@@ -647,7 +643,7 @@ namespace Darkages
 
         public bool IsDead()
         {
-            var result = Flags.HasFlag(AislingFlags.Dead);
+            var result = Flags.HasFlag(AislingFlags.Ghost);
 
             return result;
         }
@@ -752,14 +748,7 @@ namespace Darkages
             for (var i = 0; i < 2; i++)
                 RemoveBuffsAndDebuffs();
 
-            Client.LeaveArea(true, true);
-            XPos = ServerContextBase.Config.DeathMapX;
-            YPos = ServerContextBase.Config.DeathMapY;
-            Direction = 0;
-            Client.Aisling.CurrentMapId = ServerContextBase.Config.DeathMap;
-            Client.EnterArea();
-
-            UpdateStats();
+            WarpToHell();
         }
 
         public override string ToString()
@@ -782,6 +771,18 @@ namespace Darkages
         public void UpdateStats()
         {
             Client?.SendStats(StatusFlags.All);
+        }
+
+        public void WarpToHell()
+        {
+            Client.LeaveArea(true, true);
+            XPos = ServerContextBase.Config.DeathMapX;
+            YPos = ServerContextBase.Config.DeathMapY;
+            Direction = 0;
+            Client.Aisling.CurrentMapId = ServerContextBase.Config.DeathMap;
+            Client.EnterArea();
+
+            UpdateStats();
         }
 
         #region Reactor Stuff

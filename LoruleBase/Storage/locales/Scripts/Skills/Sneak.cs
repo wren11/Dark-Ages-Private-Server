@@ -38,9 +38,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 var client = (sprite as Aisling).Client;
                 if (client.Aisling != null && !client.Aisling.Dead)
                 {
-                    client.Aisling.Flags = client.Aisling.Flags == AislingFlags.Invisible
-                        ? AislingFlags.Normal
-                        : AislingFlags.Invisible;
+                    client.Aisling.Invisible = true;
 
                     if (client.Aisling.Invisible)
                     {

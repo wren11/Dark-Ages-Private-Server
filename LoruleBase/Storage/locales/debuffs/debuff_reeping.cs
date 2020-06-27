@@ -133,7 +133,7 @@ namespace Darkages.Storage.locales.debuffs
                 };
 
                 (Affected as Aisling).Show(Scope.Self, hpbar);
-                (Affected as Aisling).Flags = AislingFlags.Dead;
+                (Affected as Aisling).Flags = AislingFlags.Ghost;
                 (Affected as Aisling).CastDeath();
                 (Affected as Aisling).SendToHell();
             }

@@ -74,7 +74,7 @@ namespace Darkages.Network.ServerFormats
 
             foreach (var user in users)
             {
-                writer.Write((byte)user.ClassID);
+                writer.Write((byte)user.Path);
                 writer.Write((byte)(
                     user.Serial == Client.Aisling.Serial
                         ? ListColor.Tan

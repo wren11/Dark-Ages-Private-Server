@@ -115,20 +115,12 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (Monster.IsConfused || Monster.IsFrozen || Monster.IsParalyzed || Monster.IsSleeping)
                 return;
 
-            if (Monster.Target != null && Monster.TaggedAislings.Count > 0 && Monster.Template.EngagedWalkingSpeed > 0)
-                Monster.WalkTimer.Delay = TimeSpan.FromMilliseconds(Monster.Template.EngagedWalkingSpeed);
-
-            if (Monster.Target != null && Monster.Target is Aisling)
-                if ((Monster.Target as Aisling).Invisible)
-                {
-                    ClearTarget();
-                    Monster.WalkTimer.Update(elapsedTime);
-                    return;
-                }
-
             Monster.BashTimer.Update(elapsedTime);
             Monster.CastTimer.Update(elapsedTime);
             Monster.WalkTimer.Update(elapsedTime);
+
+            if (Monster.Target != null && Monster.TaggedAislings.Count > 0 && Monster.Template.EngagedWalkingSpeed > 0)
+                Monster.WalkTimer.Delay = TimeSpan.FromMilliseconds(Monster.Template.EngagedWalkingSpeed);
 
             try
             {
@@ -151,7 +143,8 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 {
                     Monster.WalkTimer.Reset();
 
-                    if (Monster.WalkEnabled) Walk();
+                    if (Monster.WalkEnabled)
+                        Walk();
                 }
             }
             catch (Exception e)
@@ -183,14 +176,6 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 ClearTarget();
                 return;
             }
-
-            if (Monster.Target != null)
-                if (!Monster.Facing(Target.XPos, Target.YPos, out var direction))
-                {
-                    Monster.Direction = (byte)direction;
-                    Monster.Turn();
-                    return;
-                }
 
             if (Monster != null && Monster.Target != null && SkillScripts.Count > 0)
             {

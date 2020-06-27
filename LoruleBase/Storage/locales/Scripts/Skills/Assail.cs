@@ -109,7 +109,7 @@ namespace Darkages.Scripting.Scripts.Skills
 
                 if (aisling.Invisible)
                 {
-                    aisling.Flags = AislingFlags.Normal;
+                    aisling.Invisible = false;
                     aisling.Client.Refresh();
                 }
 

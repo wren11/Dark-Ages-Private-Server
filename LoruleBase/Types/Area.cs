@@ -20,7 +20,6 @@ namespace Darkages
         [JsonIgnore] public bool Ready;
         [JsonIgnore] private static readonly byte[] Sotp = File.ReadAllBytes("sotp.dat");
 
-        [JsonIgnore] private readonly GameServerTimer _updateTimer = new GameServerTimer(TimeSpan.FromMilliseconds(10));
         [JsonIgnore] public TileGrid[,] ObjectGrid { get; set; }
         [JsonIgnore] public TileContent[,] Tile { get; set; }
 
@@ -112,14 +111,7 @@ namespace Darkages
 
         public void Update(TimeSpan elapsedTime)
         {
-            _updateTimer.Update(elapsedTime);
-
-            if (!_updateTimer.Elapsed)
-                return;
-
             UpdateAreaObjects(elapsedTime);
-
-            _updateTimer.Reset();
         }
 
         public void UpdateAreaObjects(TimeSpan elapsedTime)
