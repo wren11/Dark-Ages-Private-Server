@@ -69,6 +69,7 @@ namespace Darkages.Network.Game
         public GameServerTimer MpRegenTimer { get; set; }
         [JsonIgnore] public PendingSell PendingItemSessions { get; set; }
         public GameServer Server { get; set; }
+        public bool ShouldSave { get; set; }
         public bool ShouldUpdateMap { get; set; }
 
         public bool WasUpdatingMapRecently =>
@@ -524,6 +525,21 @@ namespace Darkages.Network.Game
 
         public GameClient LoadSpellBook()
         {
+            if (Aisling.GameMaster)
+            {
+                foreach (var spell in ServerContextBase.GlobalSpellTemplateCache.Select(i => i.Value))
+                {
+                    if (spell.Name.ToLower().StartsWith("[gm]"))
+                    {
+                        if (Spell.GiveTo(Aisling, spell.Name, 1))
+                        {
+                            ServerContext.Logger(
+                                $"[GM] -> Spell {spell.Name} Given to GameMaster {Aisling.Username}.");
+                        }
+                    }
+                }
+            }
+
             lock (_syncObj)
             {
                 Lorule.Update(() =>
@@ -566,21 +582,6 @@ namespace Darkages.Network.Game
                             });
                         else
                             spell.NextAvailableUse = DateTime.UtcNow;
-                    }
-
-                    if (Aisling.GameMaster)
-                    {
-                        foreach (var spell in ServerContextBase.GlobalSpellTemplateCache.Select(i => i.Value))
-                        {
-                            if (spell.Name.StartsWith("[GM]"))
-                            {
-                                if (Spell.GiveTo(Aisling, spell.Name, 1))
-                                {
-                                    ServerContext.Logger(
-                                        $"[GM] -> Spell {spell.Name} Given to GameMaster {Aisling.Username}.");
-                                }
-                            }
-                        }
                     }
                 });
             }
@@ -740,10 +741,13 @@ namespace Darkages.Network.Game
 
         public GameClient Save()
         {
-            StorageManager.AislingBucket.Save(Aisling);
-            LastSave = DateTime.UtcNow;
+            if (ShouldSave)
+            {
+                StorageManager.AislingBucket.Save(Aisling);
+                LastSave = DateTime.UtcNow;
 
-            ServerContext.Logger($"Aisling {Aisling.Username} data has been saved.");
+                ServerContext.Logger($"Aisling {Aisling.Username} data has been saved.");
+            }
 
             return this;
         }

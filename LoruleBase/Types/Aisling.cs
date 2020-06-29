@@ -244,7 +244,7 @@ namespace Darkages
                 XPos = ServerContextBase.Config.StartingPosition.X,
                 YPos = ServerContextBase.Config.StartingPosition.Y,
                 AnimalForm = AnimalForm.None,
-                Nation = "Mileth Kingdom"
+                Nation = "Mileth"
             };
 
             if (ServerContextBase.Config.GiveAssailOnCreate)
