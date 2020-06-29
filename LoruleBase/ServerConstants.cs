@@ -82,6 +82,7 @@ namespace Darkages
         int MpGainFactor { get; set; }
         bool MultiUserLogin { get; set; }
         double MundaneRespawnInterval { get; set; }
+        double NationReturnHours { get; }
         string NoManaMessage { get; set; }
         string NotEnoughGoldToDropMsg { get; set; }
         double PingInterval { get; set; }
@@ -203,28 +204,18 @@ namespace Darkages
         public int MpGainFactor { get; set; }
         public bool MultiUserLogin { get; set; }
         public double MundaneRespawnInterval { get; set; }
-
+        public double NationReturnHours { get; set; }
         public string NoManaMessage { get; set; }
-
         public string NotEnoughGoldToDropMsg { get; set; }
-
         public double PingInterval { get; set; }
-
         public int PlayerLevelCap { get; set; }
-
         public int PVPMap { get; set; }
         public string ReapMessage { get; set; }
-
         public string ReapMessageDuringAction { get; set; }
-
         public int RefreshRate { get; set; }
-
         public int RegenRate { get; set; }
-
         public string RepairItemMessage { get; set; }
-
         public double SaveRate { get; set; }
-
         public int SERVER_PORT { get; set; }
 
         public string SERVER_TITLE { get; set; }

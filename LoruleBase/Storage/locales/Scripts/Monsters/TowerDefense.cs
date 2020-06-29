@@ -40,7 +40,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void OnDeath(GameClient client)
         {
-            var remaining = GetObjects<Monster>(client.Aisling.Map, i => i.CurrentMapId == client.Aisling.AreaID
+            var remaining = GetObjects<Monster>(client.Aisling.Map, i => i.CurrentMapId == client.Aisling.AreaId
                                                                          && i.Template.Name == Monster.Template.Name)
                 .Count();
 

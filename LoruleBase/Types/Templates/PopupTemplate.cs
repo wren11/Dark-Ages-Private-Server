@@ -85,6 +85,7 @@ namespace Darkages.Types
         public int Owner { get; set; }
 
         public PopupTemplate Template { get; set; }
+
         public List<int> Users { get; set; }
 
         public static void Add(Popup obj)

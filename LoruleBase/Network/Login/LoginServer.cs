@@ -54,7 +54,7 @@ namespace Darkages.Network.Login
             }
         }
 
-        protected virtual void Format00Handler(LoginClient client, ClientFormat00 format)
+        protected override void Format00Handler(LoginClient client, ClientFormat00 format)
         {
             if (ServerContextBase.Config.UseLobby)
                 if (format.Version == ServerContextBase.Config.ClientVersion)

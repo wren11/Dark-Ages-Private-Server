@@ -45,6 +45,9 @@ namespace Darkages.Storage
             if (tmp is PopupTemplate)
                 StoragePath = StoragePath.Replace("%", "Popups");
 
+            if (tmp is NationTemplate)
+                StoragePath = StoragePath.Replace("%", "Nations");
+
             if (!Directory.Exists(StoragePath))
                 Directory.CreateDirectory(StoragePath);
         }
@@ -125,6 +128,14 @@ namespace Darkages.Storage
                                 StorageManager.ItemBucket.Load<ItemTemplate>(Path.GetFileNameWithoutExtension(asset));
                             if (template != null)
                                 ServerContextBase.GlobalItemTemplateCache[template.Name] = template;
+                            break;
+                        }
+                    case NationTemplate _:
+                        {
+                            var template =
+                                StorageManager.NationBucket.Load<NationTemplate>(Path.GetFileNameWithoutExtension(asset));
+                            if (template != null)
+                                ServerContextBase.GlobalNationTemplateCache[template.Name] = template;
                             break;
                         }
 

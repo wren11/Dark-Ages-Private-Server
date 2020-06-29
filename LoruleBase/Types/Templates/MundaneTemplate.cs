@@ -1,11 +1,11 @@
 ﻿#region
 
-using Darkages.Network.Game;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Darkages.Network.Game;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -32,7 +32,6 @@ namespace Darkages.Types
         }
 
         public int AreaID { get; set; }
-        public bool AttackPlayers { get; set; }
         [Browsable(false)] [JsonIgnore] public GameServerTimer AttackTimer { get; set; }
         public int CastRate { get; set; }
         [Browsable(false)] [JsonIgnore] public GameServerTimer ChatTimer { get; set; }
@@ -40,7 +39,6 @@ namespace Darkages.Types
         public byte Direction { get; set; }
         public bool EnableAttacking { get; set; }
         public bool EnableCasting { get; set; }
-        public bool EnableSpeech { get; set; }
         public bool EnableTurning { get; set; }
         public bool EnableWalking { get; set; }
         public short Image { get; set; }

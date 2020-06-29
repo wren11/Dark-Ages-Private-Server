@@ -20,6 +20,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using Darkages.Network.Login;
 
 #endregion
 
@@ -255,6 +256,10 @@ namespace Darkages.Network.Game
             client.SendMessage(0x07, msg);
         }
 
+        protected override void Format00Handler(LoginClient client, ClientFormat00 format)
+        {
+        }
+
         protected override void Format05Handler(GameClient client, ClientFormat05 format)
         {
             if (client?.Aisling?.Map == null)
@@ -318,7 +323,7 @@ namespace Darkages.Network.Game
             {
                 client.LastMovement = DateTime.UtcNow;
 
-                if (client.Aisling.AreaID == ServerContextBase.Config.TransitionZone)
+                if (client.Aisling.AreaId == ServerContextBase.Config.TransitionZone)
                 {
                     client.Aisling.PortalSession = new PortalSession { IsMapOpen = false };
                     client.Aisling.PortalSession.TransitionToMap(client);
@@ -641,11 +646,14 @@ namespace Darkages.Network.Game
                 if (spellReq == null)
                     return;
 
-                if (client.Aisling.IsSleeping ||
-                    client.Aisling.IsFrozen && !(spellReq.Template.Name == "ao suain"))
+                //abort cast?
+                if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
                 {
-                    CancelIfCasting(client);
-                    return;
+                    if (spellReq.Template.Name != "ao suain" && spellReq.Template.Name != "ao pramh")
+                    {
+                        CancelIfCasting(client);
+                        return;
+                    }
                 }
 
                 if (client.Aisling.ActiveSpellInfo != null)
@@ -2288,12 +2296,6 @@ namespace Darkages.Network.Game
 
             #endregion
 
-            if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
-            {
-                client.Interupt();
-                return;
-            }
-
             var lines = format.Lines;
 
             if (lines <= 0)
@@ -2327,12 +2329,6 @@ namespace Darkages.Network.Game
                 return;
 
             #endregion
-
-            if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
-            {
-                client.Interupt();
-                return;
-            }
 
             var chant = format.Message;
             var subject = chant.IndexOf(" Lev", StringComparison.Ordinal);
@@ -2516,6 +2512,7 @@ namespace Darkages.Network.Game
 
             Party.RemovePartyMember(client.Aisling);
 
+            client.Aisling.LastLogged = DateTime.UtcNow;
             client.Aisling.ActiveReactor = null;
             client.Aisling.ActiveSequence = null;
             client.CloseDialog();
@@ -2573,7 +2570,6 @@ namespace Darkages.Network.Game
             client.Aisling.Client = client;
             client.Aisling.LoggedIn = false;
 
-            client.Aisling.LastLogged = DateTime.UtcNow;
             client.LastScriptExecuted = DateTime.UtcNow;
 
             client.Aisling.CurrentMapId = client.Aisling.Map.ID;
@@ -2591,13 +2587,25 @@ namespace Darkages.Network.Game
             var playerObjAisling = client.Load()
                 .SendStats(StatusFlags.All)
                 .SendMessage(0x02, ServerContextBase.Config.ServerWelcomeMessage)
-                .EnterArea()
                 .LoggedIn(true).Aisling;
 
+            //send player to death map if they are dead.
             if (playerObjAisling.Dead || playerObjAisling.CurrentHp <= 0)
             {
                 playerObjAisling.WarpToHell();
             }
+
+            //send player to nation if they have been offline awhile.
+            if (playerObjAisling.PlayerNation.PastCurfew(playerObjAisling))
+            {
+                playerObjAisling.CurrentMapId = playerObjAisling.PlayerNation.AreaId;
+                playerObjAisling.X = playerObjAisling.PlayerNation.MapPosition.X;
+                playerObjAisling.Y = playerObjAisling.PlayerNation.MapPosition.Y;
+
+                client.Aisling.LastLogged = DateTime.UtcNow;
+            }
+
+            client.EnterArea();
 
             return playerObjAisling;
         }

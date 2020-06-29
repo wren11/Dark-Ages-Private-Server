@@ -47,6 +47,9 @@ namespace Darkages
         public static Dictionary<string, ItemTemplate> GlobalItemTemplateCache =
             new Dictionary<string, ItemTemplate>();
 
+        public static Dictionary<string, NationTemplate> GlobalNationTemplateCache =
+            new Dictionary<string, NationTemplate>();
+
         public static Dictionary<string, MundaneTemplate> GlobalMundaneTemplateCache =
             new Dictionary<string, MundaneTemplate>();
 
@@ -83,6 +86,12 @@ namespace Darkages
         public static IPAddress IpAddress { get; } = IPAddress.Parse(File.ReadAllText("server.tbl"));
 
         public static string GlobalMessage { get; set; }
+
+        public static void LoadNationsTemplates()
+        {
+            StorageManager.NationBucket.CacheFromStorage();
+            ServerContext.Logger($"Nation Templates Loaded: {GlobalNationTemplateCache.Count}");
+        }
 
         public static void LoadSkillTemplates()
         {
@@ -266,6 +275,7 @@ namespace Darkages
 
             EmptyCacheCollectors();
             LoadMaps();
+            LoadNationsTemplates();
             LoadSkillTemplates();
             LoadSpellTemplates();
             LoadItemTemplates();

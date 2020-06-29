@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using Darkages.Network.Login;
 
 #endregion
 
@@ -127,6 +128,8 @@ namespace Darkages.Network
             _listener.Listen(ServerContextBase.Config?.ConnectionCapacity ?? 1000);
             _listener.BeginAccept(EndConnectClient, _listener);
         }
+
+        protected abstract void Format00Handler(LoginClient client, ClientFormat00 format);
 
         protected virtual void Format01Handler(TClient client, ClientFormat01 format)
         {

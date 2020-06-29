@@ -331,9 +331,9 @@ namespace Darkages.Network.Game
 
         public GameClient Load()
         {
-            if (Aisling == null || Aisling.AreaID == 0)
+            if (Aisling == null || Aisling.AreaId == 0)
                 return null;
-            if (!ServerContextBase.GlobalMapCache.ContainsKey(Aisling.AreaID))
+            if (!ServerContextBase.GlobalMapCache.ContainsKey(Aisling.AreaId))
                 return null;
 
             SetAislingStartupVariables();
@@ -1165,16 +1165,11 @@ namespace Darkages.Network.Game
         public void Update(TimeSpan elapsedTime)
         {
             #region Sanity Checks
-
             if (Aisling == null)
                 return;
 
             if (!Aisling.LoggedIn)
                 return;
-
-            if ((DateTime.UtcNow - Aisling.LastLogged).TotalMilliseconds < ServerContextBase.Config.LingerState)
-                return;
-
             #endregion
 
             var distance = Aisling.Position.DistanceFrom(Aisling.LastPosition.X, Aisling.LastPosition.Y);

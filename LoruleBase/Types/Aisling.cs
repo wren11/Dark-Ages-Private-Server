@@ -63,7 +63,7 @@ namespace Darkages
         public ActivityStatus ActiveStatus { get; set; }
 
         public AnimalForm AnimalForm { get; set; }
-        [JsonIgnore] public int AreaID => CurrentMapId;
+        [JsonIgnore] public int AreaId => CurrentMapId;
         public ushort Armor { get; set; }
         public Bank BankManager { get; set; }
         public byte Blind { get; set; }
@@ -78,11 +78,7 @@ namespace Darkages
         public DateTime Created { get; set; }
         public int CurrentWeight { get; set; }
 
-        [JsonIgnore]
-        public bool Dead
-        {
-            get { return CurrentHp <= 0; }
-        }
+        [JsonIgnore] public bool Dead => IsDead();
 
         public List<int> DiscoveredMaps { get; set; }
 
@@ -151,7 +147,7 @@ namespace Darkages
         public int MaximumWeight => (int)(ExpLevel / 4 + _Str + ServerContextBase.Config.WeightIncreaseModifer);
 
         public byte NameColor { get; set; }
-        public byte Nation { get; set; }
+        public string Nation { get; set; } = "Mileth"; // default nation.
         public byte OverCoat { get; set; }
         public byte Pants { get; set; }
 
@@ -164,6 +160,17 @@ namespace Darkages
         public Class Path { get; set; }
 
         public byte[] PictureData { get; set; }
+
+        [JsonIgnore]
+        public NationTemplate PlayerNation
+        {
+            get
+            {
+                if (Nation != null) return ServerContextBase.GlobalNationTemplateCache[Nation];
+                throw new InvalidOperationException();
+            }
+        }
+
         [JsonIgnore] public PortalSession PortalSession { get; set; }
         [JsonIgnore] [Browsable(false)] public new Position Position => new Position(XPos, YPos);
         public string ProfileMessage { get; set; }
@@ -190,9 +197,6 @@ namespace Darkages
 
         public static Aisling Create()
         {
-            var fractions = Enum.GetValues(typeof(Fraction));
-            var randomFraction = (int)fractions.GetValue(Generator.Random.Next(fractions.Length));
-
             var result = new Aisling
             {
                 Username = string.Empty,
@@ -239,8 +243,8 @@ namespace Darkages
                 LastLogged = DateTime.UtcNow,
                 XPos = ServerContextBase.Config.StartingPosition.X,
                 YPos = ServerContextBase.Config.StartingPosition.Y,
-                Nation = (byte)randomFraction,
-                AnimalForm = AnimalForm.None
+                AnimalForm = AnimalForm.None,
+                Nation = "Mileth Kingdom"
             };
 
             if (ServerContextBase.Config.GiveAssailOnCreate)
@@ -252,31 +256,6 @@ namespace Darkages
                 foreach (var temp in ServerContextBase.GlobalSkillTemplateCache) Skill.GiveTo(result, temp.Value.Name);
             }
 
-            if (result.Nation == 1)
-                result.LegendBook.AddLegend(new Legend.LegendItem
-                {
-                    Category = "Event",
-                    Color = (byte)LegendColor.Orange,
-                    Icon = (byte)LegendIcon.Community,
-                    Value = "Lorule Citizen."
-                });
-            else if (result.Nation == 2)
-                result.LegendBook.AddLegend(new Legend.LegendItem
-                {
-                    Category = "Event",
-                    Color = (byte)LegendColor.LightGreen,
-                    Icon = (byte)LegendIcon.Community,
-                    Value = "Lividia Citizen."
-                });
-            else if (result.Nation == 3)
-                result.LegendBook.AddLegend(new Legend.LegendItem
-                {
-                    Category = "Event",
-                    Color = (byte)LegendColor.Darkgreen,
-                    Icon = (byte)LegendIcon.Community,
-                    Value = "Amongst the Exile."
-                });
-
             return result;
         }
 
@@ -284,7 +263,7 @@ namespace Darkages
         {
             lock (syncLock)
             {
-                if (!Quests.Any(i => i.Name == lpQuest.Name))
+                if (Quests.All(i => i.Name != lpQuest.Name))
                 {
                     Quests.Add(lpQuest);
 

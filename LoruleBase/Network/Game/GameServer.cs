@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Darkages.Network.ClientFormats;
+using Darkages.Network.Login;
 
 #endregion
 
@@ -36,11 +38,9 @@ namespace Darkages.Network.Game
 
             try
             {
-                if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
-                    client.Save();
-
                 Party.RemovePartyMember(client.Aisling);
 
+                client.Aisling.LastLogged = DateTime.UtcNow;
                 client.Aisling.ActiveReactor = null;
                 client.Aisling.ActiveSequence = null;
                 client.CloseDialog();
@@ -48,6 +48,9 @@ namespace Darkages.Network.Game
                 client.MenuInterpter = null;
                 client.Aisling.CancelExchange();
                 client.Aisling.Remove(true);
+
+                if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
+                    client.Save();
             }
             catch (Exception e)
             {
@@ -87,14 +90,17 @@ namespace Darkages.Network.Game
             {
                 foreach (var client in Clients.Where(client => client?.Aisling != null))
                 {
-                    ObjectComponent.UpdateClientObjects(client.Aisling);
+                    if (client.Aisling.LoggedIn)
+                    {
+                        ObjectComponent.UpdateClientObjects(client.Aisling);
 
-                    if (!client.IsWarping)
-                        Pulse(elapsedTime, client);
-                    else if (client.IsWarping && !client.InMapTransition)
-                        if (client.CanSendLocation && !client.IsRefreshing &&
-                            client.Aisling.CurrentMapId == ServerContextBase.Config.PVPMap)
-                            client.SendLocation();
+                        if (!client.IsWarping)
+                            Pulse(elapsedTime, client);
+                        else if (client.IsWarping && !client.InMapTransition)
+                            if (client.CanSendLocation && !client.IsRefreshing &&
+                                client.Aisling.CurrentMapId == ServerContextBase.Config.PVPMap)
+                                client.SendLocation();
+                    }
                 }
             }
         }

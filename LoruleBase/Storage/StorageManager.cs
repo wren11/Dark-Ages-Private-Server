@@ -21,8 +21,8 @@ namespace Darkages.Storage
 
         public static TemplateStorage<MundaneTemplate> MundaneBucket = new TemplateStorage<MundaneTemplate>();
 
+        public static TemplateStorage<NationTemplate> NationBucket = new TemplateStorage<NationTemplate>();
         public static TemplateStorage<PopupTemplate> PopupBucket = new TemplateStorage<PopupTemplate>();
-
         public static TemplateStorage<Reactor> ReactorBucket = new TemplateStorage<Reactor>();
 
         public static JsonSerializerSettings Settings = new JsonSerializerSettings
@@ -36,8 +36,7 @@ namespace Darkages.Storage
 
         public static TemplateStorage<SpellTemplate> SpellBucket = new TemplateStorage<SpellTemplate>();
 
-        public static WarpStorage WarpBucket
-                            = new WarpStorage();
+        public static WarpStorage WarpBucket = new WarpStorage();
 
         public static TemplateStorage<WorldMapTemplate> WorldMapBucket = new TemplateStorage<WorldMapTemplate>();
 
