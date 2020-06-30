@@ -290,14 +290,22 @@ namespace Darkages.Types
             return element;
         }
 
-        public static float Sqrt(float x)
+        public static float Sqrt(float number)
         {
-            float xhalf = 0.5f * x;
-            int i = BitConverter.SingleToInt32Bits(x);
-            i = 0x5f3759df - (i >> 1);
-            x = BitConverter.Int32BitsToSingle(i);
-            x = x * (1.5f - xhalf * x * x);
-            return x;
+            ulong i;
+            var x = number * 0.5f;
+            var y = number;
+
+            unsafe
+            {
+                i = *(ulong*)&y;
+                i = 0x5F3759DF - (i >> 1);
+                y = *(float*)&i;
+                y = y * (1.5f - x * y * y);
+                y = y * (1.5f - x * y * y);
+            }
+
+            return number * y;
         }
 
         public Aisling Aisling(Sprite obj)

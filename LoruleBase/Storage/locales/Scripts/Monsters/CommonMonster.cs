@@ -1,13 +1,28 @@
-﻿#region
+﻿///************************************************************************
+//Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
+//Copyright(C) 2018 TrippyInc Pty Ltd
+//
+//This program is free software: you can redistribute it and/or modify
+//it under the terms of the GNU General Public License as published by
+//the Free Software Foundation, either version 3 of the License, or
+//(at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program.If not, see<http://www.gnu.org/licenses/>.
+//*************************************************************************/
 
-using Darkages.Network.Game;
-using Darkages.Scripting;
-using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-#endregion
+using Darkages.Network.Game;
+using Darkages.Network.Game.Components;
+using Darkages.Scripting;
+using Darkages.Types;
 
 namespace Darkages.Storage.locales.Scripts.Monsters
 {
@@ -115,12 +130,20 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (Monster.IsConfused || Monster.IsFrozen || Monster.IsParalyzed || Monster.IsSleeping)
                 return;
 
+            if (Monster.Target != null && Monster.TaggedAislings.Count > 0 && Monster.Template.EngagedWalkingSpeed > 0)
+                Monster.WalkTimer.Delay = TimeSpan.FromMilliseconds(Monster.Template.EngagedWalkingSpeed);
+
+            if (Monster.Target != null && Monster.Target is Aisling)
+                if ((Monster.Target as Aisling).Invisible)
+                {
+                    ClearTarget();
+                    Monster.WalkTimer.Update(elapsedTime);
+                    return;
+                }
+
             Monster.BashTimer.Update(elapsedTime);
             Monster.CastTimer.Update(elapsedTime);
             Monster.WalkTimer.Update(elapsedTime);
-
-            if (Monster.Target != null && Monster.TaggedAislings.Count > 0 && Monster.Template.EngagedWalkingSpeed > 0)
-                Monster.WalkTimer.Delay = TimeSpan.FromMilliseconds(Monster.Template.EngagedWalkingSpeed);
 
             try
             {
@@ -143,13 +166,12 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 {
                     Monster.WalkTimer.Reset();
 
-                    if (Monster.WalkEnabled)
-                        Walk();
+                    if (Monster.WalkEnabled) Walk();
                 }
             }
             catch (Exception e)
             {
-                ServerContext.Error(e);
+                //ignore
             }
         }
 
@@ -176,6 +198,14 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 ClearTarget();
                 return;
             }
+
+            if (Monster.Target != null)
+                if (!Monster.Facing(Target.XPos, Target.YPos, out var direction))
+                {
+                    Monster.Direction = (byte)direction;
+                    Monster.Turn();
+                    return;
+                }
 
             if (Monster != null && Monster.Target != null && SkillScripts.Count > 0)
             {
@@ -256,7 +286,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             }
             catch (Exception e)
             {
-                ServerContext.Error(e);
+                //ignore
             }
         }
 
@@ -279,7 +309,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             }
             catch (Exception e)
             {
-                ServerContext.Error(e);
+                //ignore
             }
         }
 
@@ -363,7 +393,10 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     Monster.BashEnabled = false;
                     Monster.CastEnabled = true;
 
-                    if (!Monster.WalkTo(Target.XPos, Target.YPos)) Monster.Wander();
+                    if (!Monster.WalkTo(Target.XPos, Target.YPos))
+                    {
+                        Monster.Wander();
+                    }
                 }
             }
             else
