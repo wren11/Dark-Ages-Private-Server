@@ -540,21 +540,32 @@ namespace Darkages
 
         public void GoHome()
         {
-            var DestinationMap = ServerContextBase.Config.TransitionZone;
+            Client.CloseDialog();
+            Client.LeaveArea(true, true);
 
-            if (ServerContextBase.GlobalMapCache.ContainsKey(DestinationMap))
+            if (string.IsNullOrEmpty(Client.Aisling.Nation))
             {
-                var targetMap = ServerContextBase.GlobalMapCache[DestinationMap];
+                var destinationMap = ServerContextBase.Config.TransitionZone;
 
-                Client.LeaveArea(true, true);
-                Client.Aisling.XPos = ServerContextBase.Config.TransitionPointX;
-                Client.Aisling.YPos = ServerContextBase.Config.TransitionPointY;
-                Client.Aisling.CurrentMapId = DestinationMap;
-                Client.EnterArea();
-                Client.Refresh();
+                if (ServerContextBase.GlobalMapCache.ContainsKey(destinationMap))
+                {
+                    Client.Aisling.XPos = ServerContextBase.Config.TransitionPointX;
+                    Client.Aisling.YPos = ServerContextBase.Config.TransitionPointY;
+                    Client.Aisling.CurrentMapId = destinationMap;
+                }
+            }
+            else
+            {
+                if (PlayerNation != null)
+                {
+                    Client.Aisling.XPos = PlayerNation.MapPosition.X;
+                    Client.Aisling.YPos = PlayerNation.MapPosition.Y;
+                    Client.Aisling.CurrentMapId = PlayerNation.AreaId;
+                }
             }
 
-            Client.CloseDialog();
+            Client.EnterArea();
+            Client.Refresh();
         }
 
         public bool HasCompletedQuest(string lpName)

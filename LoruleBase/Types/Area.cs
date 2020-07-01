@@ -162,7 +162,8 @@ namespace Darkages
                     obj.Skulled = true;
                 }
 
-                foreach (var script in obj.Scripts.Values) script?.Update(elapsedTime);
+                foreach (var script in obj.Scripts.Values)
+                    script?.Update(elapsedTime);
 
                 if (obj.TrapsAreNearby())
                 {

@@ -119,7 +119,7 @@ namespace Darkages.Network.Game
             {
                 ServerComponents = new Dictionary<Type, GameServerComponent>
                 {
-                    [typeof(Save)] = new Save(this),
+                    [typeof(SaveComponent)] = new SaveComponent(this),
                     [typeof(ObjectComponent)] = new ObjectComponent(this),
                     [typeof(MonolithComponent)] = new MonolithComponent(this),
                     [typeof(DaytimeComponent)] = new DaytimeComponent(this),

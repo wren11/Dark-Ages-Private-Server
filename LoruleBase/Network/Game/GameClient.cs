@@ -69,7 +69,6 @@ namespace Darkages.Network.Game
         public GameServerTimer MpRegenTimer { get; set; }
         [JsonIgnore] public PendingSell PendingItemSessions { get; set; }
         public GameServer Server { get; set; }
-        public bool ShouldSave { get; set; }
         public bool ShouldUpdateMap { get; set; }
 
         public bool WasUpdatingMapRecently =>
@@ -741,13 +740,9 @@ namespace Darkages.Network.Game
 
         public GameClient Save()
         {
-            if (ShouldSave)
-            {
-                StorageManager.AislingBucket.Save(Aisling);
-                LastSave = DateTime.UtcNow;
-
-                ServerContext.Logger($"Aisling {Aisling.Username} data has been saved.");
-            }
+            StorageManager.AislingBucket.Save(Aisling);
+            LastSave = DateTime.UtcNow;
+            ServerContext.Logger($"Aisling {Aisling.Username} data has been saved.");
 
             return this;
         }

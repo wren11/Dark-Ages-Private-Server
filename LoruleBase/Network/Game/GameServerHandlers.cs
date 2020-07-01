@@ -2598,10 +2598,7 @@ namespace Darkages.Network.Game
             //send player to nation if they have been offline awhile.
             if (playerObjAisling.PlayerNation.PastCurfew(playerObjAisling))
             {
-                playerObjAisling.CurrentMapId = playerObjAisling.PlayerNation.AreaId;
-                playerObjAisling.X = playerObjAisling.PlayerNation.MapPosition.X;
-                playerObjAisling.Y = playerObjAisling.PlayerNation.MapPosition.Y;
-
+                playerObjAisling.GoHome();
                 client.Aisling.LastLogged = DateTime.UtcNow;
             }
 

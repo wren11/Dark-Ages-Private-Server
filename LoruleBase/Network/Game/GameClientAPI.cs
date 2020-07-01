@@ -5,6 +5,7 @@ using Darkages.Scripting;
 using Darkages.Types;
 using System;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Threading.Tasks;
 
 #endregion
@@ -180,6 +181,12 @@ namespace Darkages.Network.Game
                 Aisling._Wis = ServerContextBase.Config.StatCap;
 
             SendStats(StatusFlags.All);
+        }
+
+        public bool IsBehind(Sprite sprite)
+        {
+            var delta = (sprite.Direction - Aisling.Direction);
+            return Aisling.Position.IsNextTo(sprite.Position) && delta == -1;
         }
 
         public void KillPlayer(string u)

@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 
@@ -39,14 +40,13 @@ namespace Darkages.Scripting.Scripts.Skills
                 var action = new ServerFormat1A
                 {
                     Serial = client.Aisling.Serial,
-                    Number = (byte)(client.Aisling.Path == Class.Warrior
-                        ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01
-                        : 0x01),
+                    Number = (byte)(client.Aisling.Path == Class.Warrior ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01 : 0x01),
                     Speed = 20
                 };
 
                 var enemy = client.Aisling.GetInfront();
                 var success = false;
+
                 if (enemy != null)
                 {
                     var imp = 10 + Skill.Level;
@@ -55,24 +55,11 @@ namespace Darkages.Scripting.Scripts.Skills
                     dmg += dmg * imp / 100;
 
                     if (sprite.EmpoweredAssail)
-                        if (sprite is Aisling)
-                            if ((sprite as Aisling).Weapon == 0)
-                                dmg *= 3;
+                        if (((Aisling)sprite).Weapon == 0)
+                            dmg *= 3;
 
-                    foreach (var i in enemy)
+                    foreach (var i in from i in enemy where i != null where client.Aisling.Serial != i.Serial where !(i is Money) where i.Attackable select i)
                     {
-                        if (i == null)
-                            continue;
-
-                        if (client.Aisling.Serial == i.Serial)
-                            continue;
-
-                        if (i is Money)
-                            continue;
-
-                        if (!i.Attackable)
-                            continue;
-
                         Target = i;
 
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
@@ -130,20 +117,9 @@ namespace Darkages.Scripting.Scripts.Skills
                 };
 
                 if (enemy != null)
-                    foreach (var i in enemy)
+                {
+                    foreach (var i in from i in enemy where i != null where sprite.Serial != i.Serial where !(i is Money) where i.Attackable select i)
                     {
-                        if (i == null)
-                            continue;
-
-                        if (sprite.Serial == i.Serial)
-                            continue;
-
-                        if (i is Money)
-                            continue;
-
-                        if (!i.Attackable)
-                            continue;
-
                         Target = i;
 
                         var dmg = sprite.GetBaseDamage(Target, MonsterDamageType.Physical);
@@ -159,6 +135,7 @@ namespace Darkages.Scripting.Scripts.Skills
 
                         sprite.Show(Scope.NearbyAislings, action);
                     }
+                }
             }
         }
     }

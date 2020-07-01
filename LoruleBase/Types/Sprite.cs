@@ -366,7 +366,16 @@ namespace Darkages.Types
             if (!CanBeAttackedHere(damageDealingSprite))
                 return;
 
-            if (Map.Flags.HasFlag(MapFlags.PlayerKill)) dmg = (int)(dmg * 0.75);
+            if (Map.Flags.HasFlag(MapFlags.PlayerKill))
+                dmg = (int)(dmg * 0.75);
+
+            if (damageDealingSprite is Aisling _aisling)
+            {
+                if (_aisling.Client.IsBehind(this))
+                {
+                    dmg += (int)((dmg + ServerContextBase.Config.BehindDamageMod) / 1.99);
+                }
+            }
 
             if (dmg == -1)
             {

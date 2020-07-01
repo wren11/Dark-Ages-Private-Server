@@ -6,11 +6,11 @@ using System;
 
 namespace Darkages.Network.Game.Components
 {
-    public class Save : GameServerComponent
+    public class SaveComponent : GameServerComponent
     {
         private readonly GameServerTimer _timer;
 
-        public Save(GameServer server) : base(server)
+        public SaveComponent(GameServer server) : base(server)
         {
             _timer = new GameServerTimer(TimeSpan.FromSeconds(45));
         }
@@ -22,6 +22,14 @@ namespace Darkages.Network.Game.Components
             if (_timer.Elapsed)
             {
                 ServerContextBase.SaveCommunityAssets();
+
+                if (ServerContextBase.Game != null)
+                    if (ServerContextBase.Game.Clients != null)
+                        foreach (var client in ServerContextBase.Game.Clients)
+                        {
+                            client?.Save();
+                        }
+
                 _timer.Reset();
             }
         }

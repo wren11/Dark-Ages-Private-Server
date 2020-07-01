@@ -15,6 +15,7 @@ namespace Darkages
         byte BaseAC { get; set; }
         byte BaseMR { get; set; }
         byte BaseStatAttribute { get; set; }
+        double BehindDamageMod { get; set; }
         bool CancelCastingWhenWalking { get; set; }
         bool CancelWalkingIfRefreshing { get; set; }
         bool CanMoveDuringReap { get; set; }
@@ -137,6 +138,7 @@ namespace Darkages
         public byte BaseAC { get; set; } = 170;
         public byte BaseMR { get; set; } = 70;
         public byte BaseStatAttribute { get; set; }
+        public double BehindDamageMod { get; set; }
         public bool CancelCastingWhenWalking { get; set; }
         public bool CancelWalkingIfRefreshing { get; set; }
         public bool CanMoveDuringReap { get; set; }

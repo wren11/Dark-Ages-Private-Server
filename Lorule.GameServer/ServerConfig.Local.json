@@ -149,6 +149,7 @@
 		"UseLobby": false,
 		"ClientVersion": 718,
 		"LogObjectsAdded": false,
-		"LogObjectsRemoved": false
+		"LogObjectsRemoved": false,
+		"BehindDamageMod": 0.45
 	}
 }
