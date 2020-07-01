@@ -36,7 +36,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
         {
             var skills = ServerContextBase.GlobalSkillTemplateCache.Select(i => i.Value)
-                .Where(i => i.NpcKey.Equals(Mundane.Template.Name)).ToArray();
+                .Where(i => i.NpcKey != null && i.NpcKey.Equals(Mundane.Template.Name)).ToArray();
 
             var availableSkillTemplates = new List<SkillTemplate>();
 

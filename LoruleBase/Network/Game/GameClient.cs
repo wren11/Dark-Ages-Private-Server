@@ -936,6 +936,9 @@ namespace Darkages.Network.Game
             LastPingResponse = DateTime.UtcNow;
             PendingItemSessions = null;
             LastLocationSent = DateTime.UtcNow;
+            LastMovement = DateTime.UtcNow;
+            LastClientRefresh = DateTime.UtcNow;
+            LastMessageSent = DateTime.UtcNow;
 
             BoardOpened = DateTime.UtcNow;
             {

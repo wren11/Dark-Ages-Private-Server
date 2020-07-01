@@ -778,7 +778,7 @@ namespace Darkages.Network.Game
 
         protected override void Format19Handler(GameClient client, ClientFormat19 format)
         {
-            if (client == null || client.Aisling == null)
+            if (client?.Aisling == null)
                 return;
 
             if (format == null)
@@ -842,10 +842,7 @@ namespace Darkages.Network.Game
         {
             #region Sanity Checks (alot can go wrong if you remove this)
 
-            if (client == null || client.Aisling == null)
-                return;
-
-            if (client.Aisling.Map == null || !client.Aisling.Map.Ready)
+            if (client?.Aisling?.Map == null || !client.Aisling.Map.Ready)
                 return;
 
             if (!client.Aisling.LoggedIn)
@@ -1368,7 +1365,6 @@ namespace Darkages.Network.Game
                             ServerContextBase.Config.HelperMenuTemplateKey]
                     });
 
-                    client.SendSound(12);
                     helper.OnResponse(this, client, format.Step, format.Args);
                 }
             }
