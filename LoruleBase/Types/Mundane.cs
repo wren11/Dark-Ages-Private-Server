@@ -85,7 +85,7 @@ namespace Darkages.Types
             npc.Template.AttackTimer = new GameServerTimer(TimeSpan.FromMilliseconds(450));
             npc.Template.EnableTurning = false;
             npc.Template.WalkTimer = new GameServerTimer(TimeSpan.FromSeconds(npc.Template.WalkRate));
-            npc.Template.ChatTimer = new GameServerTimer(TimeSpan.FromSeconds(Generator.Random.Next(25, 40)));
+            npc.Template.ChatTimer = new GameServerTimer(TimeSpan.FromSeconds(npc.Template.ChatRate));
             npc.Template.TurnTimer = new GameServerTimer(TimeSpan.FromSeconds(npc.Template.TurnRate));
             npc.Template.SpellTimer = new GameServerTimer(TimeSpan.FromSeconds(npc.Template.CastRate));
             npc.InitMundane();

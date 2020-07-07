@@ -49,7 +49,7 @@ namespace Darkages.Network.ServerFormats
                             writer.Write((ushort)sprite.YPos);
                             writer.Write((uint)sprite.Serial);
                             writer.Write((sprite as Item).DisplayImage);
-                            writer.Write(byte.MinValue);
+                            writer.Write((sprite as Item).Color);
                             writer.Write(byte.MinValue);
                             writer.Write(byte.MinValue);
                         }

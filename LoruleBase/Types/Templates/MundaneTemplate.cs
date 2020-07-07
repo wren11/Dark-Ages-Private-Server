@@ -34,6 +34,7 @@ namespace Darkages.Types
         public int AreaID { get; set; }
         [Browsable(false)] [JsonIgnore] public GameServerTimer AttackTimer { get; set; }
         public int CastRate { get; set; }
+        public int ChatRate { get; set; }
         [Browsable(false)] [JsonIgnore] public GameServerTimer ChatTimer { get; set; }
         public List<string> DefaultMerchantStock { get; set; } = new List<string>();
         public byte Direction { get; set; }

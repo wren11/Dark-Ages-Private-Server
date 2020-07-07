@@ -1,6 +1,7 @@
 ﻿#region
 
 using Darkages.Types;
+using Darkages.Types.Templates;
 using Newtonsoft.Json;
 
 #endregion
@@ -22,8 +23,12 @@ namespace Darkages.Storage
         public static TemplateStorage<MundaneTemplate> MundaneBucket = new TemplateStorage<MundaneTemplate>();
 
         public static TemplateStorage<NationTemplate> NationBucket = new TemplateStorage<NationTemplate>();
+
         public static TemplateStorage<PopupTemplate> PopupBucket = new TemplateStorage<PopupTemplate>();
+
         public static TemplateStorage<Reactor> ReactorBucket = new TemplateStorage<Reactor>();
+
+        public static TemplateStorage<ServerTemplate> ServerArgBucket = new TemplateStorage<ServerTemplate>();
 
         public static JsonSerializerSettings Settings = new JsonSerializerSettings
         {

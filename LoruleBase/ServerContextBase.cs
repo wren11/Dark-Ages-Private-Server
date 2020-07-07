@@ -13,6 +13,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Sockets;
+using Darkages.Types.Templates;
 
 #endregion
 
@@ -74,6 +75,9 @@ namespace Darkages
         public static Dictionary<int, Party> GlobalGroupCache
             = new Dictionary<int, Party>();
 
+        public static Dictionary<string, ServerTemplate> GlobalServerVarCache
+            = new Dictionary<string, ServerTemplate>();
+
         public static ICollection<string> Redirects = new List<string>();
 
         public static Board[] Community = new Board[7];
@@ -127,6 +131,12 @@ namespace Darkages
         {
             StorageManager.WarpBucket.CacheFromStorage();
             ServerContext.Logger($"Warp Templates Loaded: {GlobalWarpTemplateCache.Count}");
+        }
+
+        public static void LoadServerTemplates()
+        {
+            StorageManager.ServerArgBucket.CacheFromStorage();
+            ServerContext.Logger($"Server Templates Loaded: {GlobalServerVarCache.Count}");
         }
 
         public static void LoadWorldMapTemplates()
@@ -275,6 +285,7 @@ namespace Darkages
 
             EmptyCacheCollectors();
             LoadMaps();
+            LoadServerTemplates();
             LoadNationsTemplates();
             LoadSkillTemplates();
             LoadSpellTemplates();
@@ -288,6 +299,15 @@ namespace Darkages
             BindTemplates();
             LoadMetaDatabase();
             LoadExtensions();
+
+            //update something in the template
+            GlobalServerVarCache["GameServerVars"].Variables["test"] = 2;
+
+            //save the template.
+            StorageManager.ServerArgBucket.Save(GlobalServerVarCache["GameServerVars"], true);
+
+            //access stuff from the template.
+            var guards = GlobalServerVarCache["GameServerVars"].Politics.Count(i => i.Rank == 1);
 
             Paused = false;
         }

@@ -4,6 +4,7 @@ using Darkages.Types;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using Darkages.Types.Templates;
 
 #endregion
 
@@ -47,6 +48,9 @@ namespace Darkages.Storage
 
             if (tmp is NationTemplate)
                 StoragePath = StoragePath.Replace("%", "Nations");
+
+            if (tmp is ServerTemplate)
+                StoragePath = StoragePath.Replace("%", "ServerVars");
 
             if (!Directory.Exists(StoragePath))
                 Directory.CreateDirectory(StoragePath);
@@ -146,6 +150,19 @@ namespace Darkages.Storage
                                     Path.GetFileNameWithoutExtension(asset));
                             if (template != null)
                                 ServerContextBase.GlobalWorldMapTemplateCache[template.WorldIndex] = template;
+                            break;
+                        }
+                    case ServerTemplate _:
+                        {
+                            var template =
+                                StorageManager.ServerArgBucket.Load<ServerTemplate>(
+                                    Path.GetFileNameWithoutExtension(asset));
+
+                            if (template != null)
+                            {
+                                ServerContextBase.GlobalServerVarCache[template.Name] = template;
+                            }
+
                             break;
                         }
 

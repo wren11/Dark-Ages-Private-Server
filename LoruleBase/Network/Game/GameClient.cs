@@ -109,6 +109,7 @@ namespace Darkages.Network.Game
             {
                 if (item.Durability > 0)
                 {
+                    client.Aisling.EquipmentManager.Add(item.Template.EquipmentSlot, item);
                     return true;
                 }
             }
