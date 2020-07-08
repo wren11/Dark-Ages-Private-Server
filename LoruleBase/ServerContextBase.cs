@@ -300,15 +300,6 @@ namespace Darkages
             LoadMetaDatabase();
             LoadExtensions();
 
-            //update something in the template
-            GlobalServerVarCache["GameServerVars"].Variables["test"] = 2;
-
-            //save the template.
-            StorageManager.ServerArgBucket.Save(GlobalServerVarCache["GameServerVars"], true);
-
-            //access stuff from the template.
-            var guards = GlobalServerVarCache["GameServerVars"].Politics.Count(i => i.Rank == 1);
-
             Paused = false;
         }
 
