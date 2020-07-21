@@ -3,6 +3,8 @@
 		"Location": "C:\\Users\\Dean\\Documents\\GitHub\\DarkAges-Lorule-Server\\LORULE_DATA"
 	},
 	"ServerConfig": {
+		"LogClientPackets": true,
+		"LogServerPackets": true,
 		"MultiUserLogin": false,
 		"AssailsCancelSpells": true,
 		"BadRequestMessage": "(Invalid Request)",
@@ -145,8 +147,8 @@
 		"DeathMapX": 21,
 		"DeathMapY": 21,
 		"PVPMap": 509,
-		"DevMode": true,
-		"UseLobby": true,
+		"DevMode": false,
+		"UseLobby": false,
 		"ClientVersion": 718,
 		"LogObjectsAdded": false,
 		"LogObjectsRemoved": false,

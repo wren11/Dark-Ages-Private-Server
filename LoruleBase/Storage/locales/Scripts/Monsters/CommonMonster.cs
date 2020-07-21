@@ -169,7 +169,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     if (Monster.WalkEnabled) Walk();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //ignore
             }
@@ -284,7 +284,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                         }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //ignore
             }
@@ -307,7 +307,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                         }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //ignore
             }

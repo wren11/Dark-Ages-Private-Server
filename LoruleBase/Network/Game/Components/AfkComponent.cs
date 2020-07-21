@@ -16,7 +16,7 @@ namespace Darkages.Network.Game.Components
 
         public void Pulse(GameClient client)
         {
-            client.Aisling.Show(Scope.NearbyAislings,
+            client.Aisling?.Show(Scope.NearbyAislings,
                 new ServerFormat1A(client.Aisling.Serial, 16, 20));
         }
 

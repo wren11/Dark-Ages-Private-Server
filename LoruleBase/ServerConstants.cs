@@ -62,7 +62,9 @@ namespace Darkages
         string ItemNotRequiredMsg { get; set; }
         string LevelUpMessage { get; set; }
         double LingerState { get; set; }
+        bool LogClientPackets { get; set; }
         int LOGIN_PORT { get; set; }
+        bool LogServerPackets { get; set; }
         int LootTableStackSize { get; set; }
         int MaxCarryGold { get; set; }
         int MaxHP { get; set; }
@@ -185,7 +187,9 @@ namespace Darkages
         public string ItemNotRequiredMsg { get; set; }
         public string LevelUpMessage { get; set; }
         public double LingerState { get; set; }
+        public bool LogClientPackets { get; set; }
         public int LOGIN_PORT { get; set; }
+        public bool LogServerPackets { get; set; }
         public int LootTableStackSize { get; set; }
         public int MaxCarryGold { get; set; }
         public int MaxHP { get; set; }
