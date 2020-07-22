@@ -77,6 +77,16 @@ namespace Darkages.Types
 
             if (npc.BonusAc < -70) npc.BonusAc = -70;
 
+            if (npc.Template.ChatRate == 0)
+            {
+                npc.Template.ChatRate = 10;
+            }
+
+            if (npc.Template.TurnRate == 0)
+            {
+                npc.Template.TurnRate = 8;
+            }
+
             npc.DefenseElement = Generator.RandomEnumValue<ElementManager.Element>();
             npc.OffenseElement = Generator.RandomEnumValue<ElementManager.Element>();
 

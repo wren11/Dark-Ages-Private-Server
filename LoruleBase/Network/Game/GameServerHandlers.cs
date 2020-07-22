@@ -2,6 +2,7 @@
 
 using Darkages.Common;
 using Darkages.Network.ClientFormats;
+using Darkages.Network.Login;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage;
@@ -20,7 +21,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using Darkages.Network.Login;
 
 #endregion
 
@@ -2364,9 +2364,7 @@ namespace Darkages.Network.Game
         {
             if (format.Type == 0x00)
             {
-                Console.WriteLine("Client Requested Metafile: {0}", format.Name);
-
-                client.FlushAndSend(new ServerFormat6F
+                client.Send(new ServerFormat6F
                 {
                     Type = 0x00,
                     Name = format.Name
@@ -2374,7 +2372,7 @@ namespace Darkages.Network.Game
             }
 
             if (format.Type == 0x01)
-                client.FlushAndSend(new ServerFormat6F
+                client.Send(new ServerFormat6F
                 {
                     Type = 0x01
                 });
@@ -2382,36 +2380,32 @@ namespace Darkages.Network.Game
 
         private static void CheckWarpTransitions(GameClient client)
         {
-            foreach (var warps in ServerContextBase.GlobalWarpTemplateCache)
+            foreach (var warps in ServerContextBase.GlobalWarpTemplateCache.Where(warps => warps.ActivationMapId == client.Aisling.CurrentMapId))
             {
-                if (warps.ActivationMapId != client.Aisling.CurrentMapId)
-                    continue;
-
-                foreach (var o in warps.Activations)
-                    if (o.Location.DistanceFrom(client.Aisling.Position) <= warps.WarpRadius)
+                foreach (var o in warps.Activations.Where(o => o.Location.DistanceFrom(client.Aisling.Position) <= warps.WarpRadius))
+                {
+                    if (warps.WarpType == WarpType.Map)
                     {
-                        if (warps.WarpType == WarpType.Map)
-                        {
-                            client.WarpTo(warps);
-                            break;
-                        }
-
-                        if (warps.WarpType == WarpType.World)
-                        {
-                            if (!ServerContextBase.GlobalWorldMapTemplateCache.ContainsKey(warps.To.PortalKey))
-                                return;
-
-                            client.Aisling.PortalSession = new PortalSession
-                            {
-                                FieldNumber = warps.To.PortalKey
-                            };
-
-                            if (client.Aisling.World != warps.To.PortalKey) client.Aisling.World = warps.To.PortalKey;
-
-                            client.Aisling.PortalSession.TransitionToMap(client);
-                            break;
-                        }
+                        client.WarpTo(warps);
+                        break;
                     }
+
+                    if (warps.WarpType != WarpType.World)
+                        continue;
+
+                    if (!ServerContextBase.GlobalWorldMapTemplateCache.ContainsKey(warps.To.PortalKey))
+                        return;
+
+                    client.Aisling.PortalSession = new PortalSession
+                    {
+                        FieldNumber = warps.To.PortalKey
+                    };
+
+                    if (client.Aisling.World != warps.To.PortalKey) client.Aisling.World = warps.To.PortalKey;
+
+                    client.Aisling.PortalSession.TransitionToMap(client);
+                    break;
+                }
             }
         }
 
@@ -2428,14 +2422,17 @@ namespace Darkages.Network.Game
             }
 
             client.Aisling.Map.OnLoaded();
+            Thread.Sleep(50);
         }
 
         private static void ValidateRedirect(GameClient client, dynamic redirect)
         {
             #region
 
-            if (redirect.developer.Value == redirect.player.Value) Spell.GiveTo(client.Aisling, "[GM] Create Item", 1);
-
+            if (redirect.developer.Value == redirect.player.Value)
+            {
+                client.Aisling.GameMaster = true;
+            }
             #endregion
         }
 
@@ -2476,7 +2473,8 @@ namespace Darkages.Network.Game
             try
             {
                 dynamic redirect = JsonConvert.DeserializeObject(format.Name);
-                if (LoadPlayer(client, redirect.player.Value) != null) ValidateRedirect(client, redirect);
+                if (LoadPlayer(client, redirect.player.Value) != null)
+                    ValidateRedirect(client, redirect);
             }
             catch (JsonReaderException)
             {

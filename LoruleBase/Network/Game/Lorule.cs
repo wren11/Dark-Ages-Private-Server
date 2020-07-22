@@ -8,12 +8,14 @@ namespace Darkages.Network.Game
         {
             if (operation == null)
                 return false;
+
             try
             {
                 operation.Invoke();
             }
-            catch
+            catch (Exception exception)
             {
+                ServerContext.Error(exception);
                 return false;
             }
 

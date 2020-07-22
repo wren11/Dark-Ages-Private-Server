@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ServiceStack.Logging;
 
@@ -334,6 +335,7 @@ namespace Darkages.Network.Game
         {
             if (Aisling == null || Aisling.AreaId == 0)
                 return null;
+
             if (!ServerContextBase.GlobalMapCache.ContainsKey(Aisling.AreaId))
                 return null;
 
@@ -343,6 +345,8 @@ namespace Darkages.Network.Game
             {
                 try
                 {
+                    Thread.Sleep(100);
+
                     return InitSpellBar()
                         .LoadInventory()
                         .LoadSkillBook()
@@ -425,6 +429,7 @@ namespace Darkages.Network.Game
             foreach (var format in formats)
                 Aisling.Client.Send(format);
 
+            Thread.Sleep(50);
             return this;
         }
 
@@ -435,10 +440,8 @@ namespace Darkages.Network.Game
                 var itemsAvailable = Aisling.Inventory.Items.Values
                     .Where(i => i != null && i.Template != null).ToArray();
 
-                for (var i = 0; i < itemsAvailable.Length; i++)
+                foreach (var item in itemsAvailable)
                 {
-                    var item = itemsAvailable[i];
-
                     if (string.IsNullOrEmpty(item.Template.Name))
                         continue;
 
@@ -483,6 +486,8 @@ namespace Darkages.Network.Game
                 }
             }
 
+            Thread.Sleep(50);
+
             return this;
         }
 
@@ -495,10 +500,8 @@ namespace Darkages.Network.Game
 
                 var formats = new List<NetworkFormat>();
 
-                for (var i = 0; i < skillsAvailable.Length; i++)
+                foreach (var skill in skillsAvailable)
                 {
-                    var skill = skillsAvailable[i];
-
                     if (skill.Template != null)
                         if (ServerContextBase.GlobalSkillTemplateCache.ContainsKey(skill.Template.Name))
                         {
@@ -520,6 +523,7 @@ namespace Darkages.Network.Game
                 }
             }
 
+            Thread.Sleep(50);
             return this;
         }
 
@@ -529,13 +533,13 @@ namespace Darkages.Network.Game
             {
                 foreach (var spell in ServerContextBase.GlobalSpellTemplateCache.Select(i => i.Value))
                 {
-                    if (spell.Name.ToLower().StartsWith("[gm]"))
+                    if (!spell.Name.ToLower().StartsWith("[gm]"))
+                        continue;
+
+                    if (Spell.GiveTo(Aisling, spell.Name, 1))
                     {
-                        if (Spell.GiveTo(Aisling, spell.Name, 1))
-                        {
-                            ServerContext.Logger(
-                                $"[GM] -> Spell {spell.Name} Given to GameMaster {Aisling.Username}.");
-                        }
+                        ServerContext.Logger(
+                            $"[GM] -> Spell {spell.Name} Given to GameMaster {Aisling.Username}.");
                     }
                 }
             }
@@ -547,10 +551,8 @@ namespace Darkages.Network.Game
                     var spellsAvailable = Aisling.SpellBook.Spells.Values
                         .Where(i => i != null && i.Template != null).ToArray();
 
-                    for (var i = 0; i < spellsAvailable.Length; i++)
+                    foreach (var spell in spellsAvailable)
                     {
-                        var spell = spellsAvailable[i];
-
                         if (spell.Template != null)
                             if (ServerContextBase.GlobalSpellTemplateCache.ContainsKey(spell.Template.Name))
                             {
@@ -570,22 +572,26 @@ namespace Darkages.Network.Game
                         Send(new ServerFormat17(spell));
 
                         if (spell.NextAvailableUse.Year > 1)
+                        {
+                            var spell1 = spell;
                             Task.Delay(1000).ContinueWith(ct =>
                             {
-                                var delta = (int)Math.Abs((DateTime.UtcNow - spell.NextAvailableUse).TotalSeconds);
-                                var offset = Math.Abs(spell.Template.Cooldown - delta);
+                                var delta = (int)Math.Abs((DateTime.UtcNow - spell1.NextAvailableUse).TotalSeconds);
+                                var offset = Math.Abs(spell1.Template.Cooldown - delta);
 
-                                if (delta <= spell.Template.Cooldown)
+                                if (delta <= spell1.Template.Cooldown)
                                     Send(new ServerFormat3F(0,
-                                        spell.Slot,
+                                        spell1.Slot,
                                         delta));
                             });
+                        }
                         else
                             spell.NextAvailableUse = DateTime.UtcNow;
                     }
                 });
             }
 
+            Thread.Sleep(50);
             return this;
         }
 
