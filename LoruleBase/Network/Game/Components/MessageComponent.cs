@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -17,8 +18,9 @@ namespace Darkages.Network.Game.Components
         }
 
         public GameServerTimer Timer { get; set; }
+        public override UpdateType UpdateMethodType => UpdateType.Sync;
 
-        public override void Update(TimeSpan elapsedTime)
+        public override Task Update(TimeSpan elapsedTime)
         {
             Timer.Update(elapsedTime);
 
@@ -34,6 +36,8 @@ namespace Darkages.Network.Game.Components
                     }
                 }
             }
+
+            return Task.CompletedTask;
         }
 
         private static bool Predicate(GameClient client)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 
@@ -14,13 +15,15 @@ namespace Darkages.Network.Game.Components
             _timer = new GameServerTimer(TimeSpan.FromSeconds(6));
         }
 
+        public override UpdateType UpdateMethodType => UpdateType.Sync;
+
         public void Pulse(GameClient client)
         {
             client.Aisling?.Show(Scope.NearbyAislings,
                 new ServerFormat1A(client.Aisling.Serial, 16, 20));
         }
 
-        public override void Update(TimeSpan elapsedTime)
+        public override Task Update(TimeSpan elapsedTime)
         {
             _timer.Update(elapsedTime);
 
@@ -30,6 +33,7 @@ namespace Darkages.Network.Game.Components
                     if (ServerContextBase.Game.Clients != null)
                         foreach (var client in from client in ServerContextBase.Game.Clients
                                                where client != null
+
                                                let afk = (DateTime.UtcNow - client.LastMovement).TotalMinutes > 3
                                                          && (DateTime.UtcNow - client.LastClientRefresh).TotalMinutes > 3
                                                where afk
@@ -40,6 +44,8 @@ namespace Darkages.Network.Game.Components
 
                 _timer.Reset();
             }
+
+            return Task.CompletedTask;
         }
     }
 }

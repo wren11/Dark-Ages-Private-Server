@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -123,9 +124,12 @@ namespace Darkages
                 if (objectCache == null || objectCache.Length <= 0)
                     return;
 
-                UpdateMonsterObjects(elapsedTime, objectCache.OfType<Monster>());
-                UpdateMundaneObjects(elapsedTime, objectCache.OfType<Mundane>());
-                UpdateItemObjects(elapsedTime, objectCache.OfType<Money>().Concat<Sprite>(objectCache.OfType<Item>()));
+                Task.Run(() =>
+                {
+                    UpdateMonsterObjects(elapsedTime, objectCache.OfType<Monster>());
+                    UpdateMundaneObjects(elapsedTime, objectCache.OfType<Mundane>());
+                    UpdateItemObjects(elapsedTime, objectCache.OfType<Money>().Concat<Sprite>(objectCache.OfType<Item>()));
+                });
             }
         }
 

@@ -15,7 +15,7 @@ namespace Darkages.Network
 
         public NetworkPacketWriter()
         {
-            Buffer = BufferPool.Take(0x8192);
+            Buffer = BufferPool.Take(0xFFFF);
         }
 
         public byte[] Buffer { get; }

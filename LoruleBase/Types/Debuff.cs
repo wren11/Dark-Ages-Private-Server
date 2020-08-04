@@ -5,6 +5,7 @@ using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 
 #endregion
 
@@ -58,7 +59,13 @@ namespace Darkages.Types
 
         public virtual void OnDurationUpdate(Sprite Affected, Debuff buff)
         {
+            var start = new Stopwatch();
+            start.Start();
             Display(Affected);
+            start.Stop();
+
+            if (Affected is Aisling aisling)
+                aisling.Client.Say(start.Elapsed.ToString(), 0x02);
         }
 
         public virtual void OnEnded(Sprite Affected, Debuff debuff)

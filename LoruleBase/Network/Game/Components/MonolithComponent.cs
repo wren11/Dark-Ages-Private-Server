@@ -3,6 +3,7 @@
 using Darkages.Types;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -18,7 +19,7 @@ namespace Darkages.Network.Game.Components
             _timer = new GameServerTimer(TimeSpan.FromMilliseconds(ServerContextBase.Config.GlobalSpawnTimer));
         }
 
-        public bool Updating { get; set; } = true;
+        public override UpdateType UpdateMethodType => UpdateType.Async;
 
         public void CreateFromTemplate(MonsterTemplate template, Area map)
         {
@@ -28,18 +29,17 @@ namespace Darkages.Network.Game.Components
                 AddObject(newObj);
         }
 
-        public override void Update(TimeSpan elapsedTime)
+        public override Task Update(TimeSpan elapsedTime)
         {
-            if (Updating)
-            {
-                _timer.Update(elapsedTime);
+            _timer.Update(elapsedTime);
 
-                if (_timer.Elapsed)
-                {
-                    _timer.Reset();
-                    Lorule.Update(ManageSpawns);
-                }
+            if (_timer.Elapsed)
+            {
+                _timer.Reset();
+                Lorule.Update(ManageSpawns);
             }
+
+            return Task.CompletedTask;
         }
 
         private void ManageSpawns()

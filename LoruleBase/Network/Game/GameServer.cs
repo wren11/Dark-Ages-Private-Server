@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -26,6 +27,8 @@ namespace Darkages.Network.Game
 
             InitializeGameServer();
         }
+
+        public delegate void ComponentDelegate(TimeSpan elapsedSpan);
 
         public override void ClientDisconnected(GameClient client)
         {
@@ -88,17 +91,17 @@ namespace Darkages.Network.Game
             {
                 foreach (var client in Clients.Where(client => client?.Aisling != null))
                 {
-                    if (client.Aisling.LoggedIn)
-                    {
-                        ObjectComponent.UpdateClientObjects(client.Aisling);
+                    if (!client.Aisling.LoggedIn)
+                        continue;
 
-                        if (!client.IsWarping)
-                            Pulse(elapsedTime, client);
-                        else if (client.IsWarping && !client.InMapTransition)
-                            if (client.CanSendLocation && !client.IsRefreshing &&
-                                client.Aisling.CurrentMapId == ServerContextBase.Config.PVPMap)
-                                client.SendLocation();
-                    }
+                    ObjectComponent.UpdateClientObjects(client.Aisling);
+
+                    if (!client.IsWarping)
+                        Pulse(elapsedTime, client);
+                    else if (client.IsWarping && !client.InMapTransition)
+                        if (client.CanSendLocation && !client.IsRefreshing &&
+                            client.Aisling.CurrentMapId == ServerContextBase.Config.PVPMap)
+                            client.SendLocation();
                 }
             }
         }
@@ -135,15 +138,16 @@ namespace Darkages.Network.Game
         {
             _lastHeavyUpdate = DateTime.UtcNow;
 
-            while (true)
+            while (ServerContextBase.Running)
             {
                 var elapsedTime = DateTime.UtcNow - _lastHeavyUpdate;
 
                 Lorule.Update(() =>
                 {
                     UpdateClients(elapsedTime);
-                    UpdateComponents(elapsedTime);
+                    UpdateComponentsAsync(elapsedTime);
                     UpdateAreas(elapsedTime);
+
                     _lastHeavyUpdate = DateTime.UtcNow;
                     Thread.Sleep(_heavyUpdateSpan);
                 });
@@ -168,15 +172,23 @@ namespace Darkages.Network.Game
             }
         }
 
-        private void UpdateComponents(TimeSpan elapsedTime)
+        private async Task UpdateComponentsAsync(TimeSpan elapsedTime)
         {
             try
             {
-                lock (ServerComponents)
+                var components = ServerComponents.Select(i => i.Value);
+
+                foreach (var component in components)
                 {
-                    foreach (var component in ServerComponents.Values)
+                    switch (component.UpdateMethodType)
                     {
-                        component.Update(elapsedTime);
+                        case UpdateType.Sync:
+                            _ = component.Update(elapsedTime);
+                            break;
+
+                        case UpdateType.Async:
+                            await component.Update(elapsedTime);
+                            break;
                     }
                 }
             }

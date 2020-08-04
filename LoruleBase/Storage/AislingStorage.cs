@@ -22,21 +22,19 @@ namespace Darkages.Storage
 
         public bool Saving { get; set; }
 
-        public Aisling Load(string Name)
+        public Aisling Load(string name)
         {
-            var path = Path.Combine(StoragePath, $"{Name.ToLower()}.json");
+            var path = Path.Combine(StoragePath, $"{name.ToLower()}.json");
 
             if (!File.Exists(path))
                 return null;
 
-            using (var s = File.OpenRead(path))
-            using (var f = new StreamReader(s))
+            using var s = File.OpenRead(path);
+            using var f = new StreamReader(s);
+            return JsonConvert.DeserializeObject<Aisling>(f.ReadToEnd(), new JsonSerializerSettings
             {
-                return JsonConvert.DeserializeObject<Aisling>(f.ReadToEnd(), new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.All
-                });
-            }
+                TypeNameHandling = TypeNameHandling.All
+            });
         }
 
         public void Save(Aisling obj)

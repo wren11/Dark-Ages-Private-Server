@@ -147,7 +147,7 @@
 		"DeathMapX": 21,
 		"DeathMapY": 21,
 		"PVPMap": 509,
-		"DevMode": false,
+		"DevMode": true,
 		"UseLobby": false,
 		"ClientVersion": 718,
 		"LogObjectsAdded": false,

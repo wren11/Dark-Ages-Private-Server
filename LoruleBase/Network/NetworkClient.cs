@@ -15,14 +15,12 @@ namespace Darkages.Network
         {
             Reader = new NetworkPacketReader();
             Writer = new NetworkPacketWriter();
-
             Encryption = new SecurityProvider();
         }
 
         public SecurityProvider Encryption { get; set; }
         public bool InMapTransition { get; set; }
         public byte Ordinal { get; set; }
-        public Session<NetworkClient> PacketSender { get; set; }
         public NetworkPacketReader Reader { get; set; }
         public int Serial { get; set; }
         public NetworkSocket Session { get; set; }
@@ -60,12 +58,7 @@ namespace Darkages.Network
                     ServerContext.Logger("< " + packet.ToString());
                 }
 
-                if (PacketSender == null)
-                {
-                    PacketSender = new Session<NetworkClient>(this, Session);
-                }
-
-                PacketSender?.SendAsync(array);
+                Session.ConnectedSocket.Send(array);
             }
         }
 

@@ -4,6 +4,7 @@ using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -18,7 +19,9 @@ namespace Darkages.Network.Game.Components
             _timer = new GameServerTimer(TimeSpan.FromSeconds(45));
         }
 
-        public override void Update(TimeSpan elapsedTime)
+        public override UpdateType UpdateMethodType => UpdateType.Sync;
+
+        public override Task Update(TimeSpan elapsedTime)
         {
             _timer.Update(elapsedTime);
 
@@ -35,6 +38,8 @@ namespace Darkages.Network.Game.Components
 
                 _timer.Reset();
             }
+
+            return Task.CompletedTask;
         }
     }
 }

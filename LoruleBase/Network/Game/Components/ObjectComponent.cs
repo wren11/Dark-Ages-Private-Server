@@ -5,6 +5,7 @@ using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -17,6 +18,8 @@ namespace Darkages.Network.Game.Components
         public ObjectComponent(GameServer server) : base(server)
         {
         }
+
+        public override UpdateType UpdateMethodType => UpdateType.Async;
 
         public static void AddObjects(List<Sprite> payload, Aisling myplayer, Sprite[] objectsToAdd)
         {
@@ -154,7 +157,7 @@ namespace Darkages.Network.Game.Components
             });
         }
 
-        public override void Update(TimeSpan elapsedTime)
+        public override Task Update(TimeSpan elapsedTime)
         {
             Timer.Update(elapsedTime);
 
@@ -163,6 +166,8 @@ namespace Darkages.Network.Game.Components
                 Lorule.Update(UpdateObjects);
                 Timer.Reset();
             }
+
+            return Task.CompletedTask;
         }
 
         private void UpdateObjects()
