@@ -1,9 +1,16 @@
 ﻿#region
 
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
 using System.Net.Sockets;
+using System.Threading.Tasks;
+using Darkages.Network.Login;
 
 #endregion
 
@@ -16,6 +23,8 @@ namespace Darkages.Network
             Reader = new NetworkPacketReader();
             Writer = new NetworkPacketWriter();
             Encryption = new SecurityProvider();
+
+            SendBuffer = new ConcurrentQueue<byte[]>();
         }
 
         public SecurityProvider Encryption { get; set; }
@@ -23,17 +32,17 @@ namespace Darkages.Network
         public byte Ordinal { get; set; }
         public NetworkPacketReader Reader { get; set; }
         public int Serial { get; set; }
-        public NetworkSocket Session { get; set; }
+        public NetworkSocket WorkingSocket { get; set; }
         public NetworkPacketWriter Writer { get; set; }
+        private ConcurrentQueue<byte[]> SendBuffer { get; set; }
+
+        public void EmptyBuffers()
+        {
+            SendBuffer = new ConcurrentQueue<byte[]>();
+        }
 
         public void FlushAndSend(NetworkFormat format)
         {
-            if (Session.ConnectedSocket == null)
-                return;
-
-            if (!Session.ConnectedSocket.Connected)
-                return;
-
             lock (Writer)
             {
                 Writer.Position = 0;
@@ -52,13 +61,40 @@ namespace Darkages.Network
                     Encryption.Transform(packet);
 
                 var array = packet.ToArray();
+                WorkingSocket.ConnectedSocket.Send(array, array.Length, SocketFlags.None);
+            }
+        }
 
-                if (ServerContextBase.Config.LogClientPackets)
-                {
-                    ServerContext.Logger("< " + packet.ToString());
-                }
+        public void FlushBuffers()
+        {
+            if (WorkingSocket == null)
+                return;
 
-                Session.ConnectedSocket.Send(array);
+            if (!WorkingSocket.ConnectedSocket.Connected)
+                return;
+
+            if (SendBuffer == null)
+                return;
+
+            var data = SendBuffer.SelectMany(i => i);
+            var enumerable = data.ToArray();
+
+            if (!enumerable.Any())
+                return;
+
+            var packet = enumerable;
+
+            try
+            {
+                WorkingSocket.ConnectedSocket.Send(packet, packet.Length, SocketFlags.None);
+            }
+            catch (Exception)
+            {
+                //Ignore
+            }
+            finally
+            {
+                EmptyBuffers();
             }
         }
 
@@ -92,17 +128,37 @@ namespace Darkages.Network
             Reader.Packet = packet;
             format.Serialize(Reader);
             Reader.Position = -1;
-
-            if (ServerContextBase.Config.LogServerPackets)
-            {
-                ServerContext.Logger("> " + packet.ToString());
-            }
         }
 
         public void Send(NetworkFormat format)
         {
-            if (Session.ConnectedSocket.Connected)
+            if (this is LoginClient)
+            {
                 FlushAndSend(format);
+                return;
+            }
+
+            lock (Writer)
+            {
+                Writer.Position = 0;
+                Writer.Write(format.Command);
+
+                if (format.Secured)
+                    Writer.Write(Ordinal++);
+
+                format.Serialize(Writer);
+
+                var packet = Writer.ToPacket();
+                if (packet == null)
+                    return;
+
+                if (format.Secured)
+                    Encryption.Transform(packet);
+
+                var array = packet.ToArray();
+                SendBuffer.Enqueue(array);
+                FlushBuffers();
+            }
         }
 
         public void Send(NetworkPacketWriter lpData)
@@ -112,8 +168,8 @@ namespace Darkages.Network
 
             var array = packet.ToArray();
 
-            if (Session.ConnectedSocket.Connected)
-                Session.ConnectedSocket.Send(array, SocketFlags.None);
+            if (WorkingSocket.ConnectedSocket.Connected)
+                WorkingSocket.ConnectedSocket.Send(array, SocketFlags.None);
         }
 
         public void Send(byte[] data)
@@ -131,8 +187,8 @@ namespace Darkages.Network
 
                 var array = packet.ToArray();
 
-                if (Session.ConnectedSocket.Connected)
-                    Session.ConnectedSocket.Send(array, SocketFlags.None);
+                if (WorkingSocket.ConnectedSocket.Connected)
+                    WorkingSocket.ConnectedSocket.Send(array, SocketFlags.None);
             }
         }
 

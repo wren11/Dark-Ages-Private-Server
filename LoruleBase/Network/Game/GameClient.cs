@@ -14,7 +14,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ServiceStack.Logging;
 
 #endregion
 
@@ -189,7 +188,7 @@ namespace Darkages.Network.Game
 
         public GameClient DoUpdate(TimeSpan elapsedTime)
         {
-            if (!Session.ConnectedSocket.Connected)
+            if (!WorkingSocket.ConnectedSocket.Connected)
             {
                 Aisling.Remove(true);
                 Server.ClientDisconnected(this);

@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -21,6 +20,9 @@ namespace Darkages
         [JsonIgnore] public bool Ready;
         [JsonIgnore] private static readonly byte[] Sotp = File.ReadAllBytes("sotp.dat");
 
+        private readonly GameServerTimer objectUpdateTimer = new GameServerTimer(TimeSpan.FromMilliseconds(15));
+
+        private Sprite[] objectCache = null;
         [JsonIgnore] public TileGrid[,] ObjectGrid { get; set; }
         [JsonIgnore] public TileContent[,] Tile { get; set; }
 
@@ -112,24 +114,31 @@ namespace Darkages
 
         public void Update(TimeSpan elapsedTime)
         {
-            UpdateAreaObjects(elapsedTime);
+            objectUpdateTimer.Update(elapsedTime);
+
+            if (objectUpdateTimer.Elapsed)
+            {
+                objectUpdateTimer.Reset();
+
+                objectCache = GetAreaObjects();
+
+                if (objectCache != null && objectCache.Length > 0)
+                {
+                    UpdateAreaObjects(elapsedTime);
+                }
+            }
         }
 
         public void UpdateAreaObjects(TimeSpan elapsedTime)
         {
             lock (ServerContext.SyncLock)
             {
-                var objectCache = GetAreaObjects();
-
                 if (objectCache == null || objectCache.Length <= 0)
                     return;
 
-                Task.Run(() =>
-                {
-                    UpdateMonsterObjects(elapsedTime, objectCache.OfType<Monster>());
-                    UpdateMundaneObjects(elapsedTime, objectCache.OfType<Mundane>());
-                    UpdateItemObjects(elapsedTime, objectCache.OfType<Money>().Concat<Sprite>(objectCache.OfType<Item>()));
-                });
+                UpdateMonsterObjects(elapsedTime, objectCache.OfType<Monster>());
+                UpdateMundaneObjects(elapsedTime, objectCache.OfType<Mundane>());
+                UpdateItemObjects(elapsedTime, objectCache.OfType<Money>().Concat<Sprite>(objectCache.OfType<Item>()));
             }
         }
 

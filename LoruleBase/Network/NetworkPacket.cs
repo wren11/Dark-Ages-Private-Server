@@ -33,7 +33,8 @@ namespace Darkages.Network
             buffer[3] = Command;
             buffer[4] = Ordinal;
 
-            for (var i = 0; i < Data.Length; i++) buffer[i + 5] = Data[i];
+            for (var i = 0; i < Data.Length; i++)
+                buffer[i + 5] = Data[i];
 
             return buffer;
         }

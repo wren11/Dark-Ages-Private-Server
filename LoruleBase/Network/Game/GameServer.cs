@@ -18,12 +18,18 @@ namespace Darkages.Network.Game
         public ObjectService ObjectFactory = new ObjectService();
         public Dictionary<Type, GameServerComponent> ServerComponents;
         private readonly TimeSpan _heavyUpdateSpan;
+        private readonly TimeSpan _UpdateNormalSpan;
+        private readonly TimeSpan _UpdateSpan;
 
         private DateTime _lastHeavyUpdate = DateTime.UtcNow;
+        private DateTime _lastNormalUpdate = DateTime.UtcNow;
+        private DateTime _lastUpdate = DateTime.UtcNow;
 
         public GameServer(int capacity) : base(capacity)
         {
             _heavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 60);
+            _UpdateSpan = TimeSpan.FromSeconds(1.0 / 60);
+            _UpdateNormalSpan = TimeSpan.FromSeconds(1.0 / 60);
 
             InitializeGameServer();
         }
@@ -72,11 +78,15 @@ namespace Darkages.Network.Game
         {
             base.Start(port);
 
-            var serverThread = new Thread(MainServerLoop) { Priority = ThreadPriority.Highest };
+            var serverThread1 = new Thread(MainServerLoop1) { Priority = ThreadPriority.Normal };
+            var serverThread2 = new Thread(MainServerLoop2) { Priority = ThreadPriority.Normal };
+            var serverThread3 = new Thread(MainServerLoop3) { Priority = ThreadPriority.Normal };
 
             try
             {
-                serverThread.Start();
+                serverThread1.Start();
+                serverThread2.Start();
+                serverThread3.Start();
                 ServerContextBase.Running = true;
             }
             catch (ThreadAbortException)
@@ -95,6 +105,7 @@ namespace Darkages.Network.Game
                         continue;
 
                     ObjectComponent.UpdateClientObjects(client.Aisling);
+                    client.FlushBuffers();
 
                     if (!client.IsWarping)
                         Pulse(elapsedTime, client);
@@ -108,7 +119,10 @@ namespace Darkages.Network.Game
 
         private static void Pulse(TimeSpan elapsedTime, IGameClient client)
         {
-            Lorule.Update(() => { client.Update(elapsedTime); });
+            Lorule.Update(() =>
+            {
+                client.Update(elapsedTime);
+            });
         }
 
         private void AutoSave(GameClient client)
@@ -134,7 +148,7 @@ namespace Darkages.Network.Game
             }
         }
 
-        private void MainServerLoop()
+        private void MainServerLoop1()
         {
             _lastHeavyUpdate = DateTime.UtcNow;
 
@@ -145,11 +159,45 @@ namespace Darkages.Network.Game
                 Lorule.Update(() =>
                 {
                     UpdateClients(elapsedTime);
-                    UpdateComponentsAsync(elapsedTime);
-                    UpdateAreas(elapsedTime);
 
                     _lastHeavyUpdate = DateTime.UtcNow;
                     Thread.Sleep(_heavyUpdateSpan);
+                });
+            }
+        }
+
+        private void MainServerLoop2()
+        {
+            _lastUpdate = DateTime.UtcNow;
+
+            while (ServerContextBase.Running)
+            {
+                var elapsedTime = DateTime.UtcNow - _lastUpdate;
+
+                Lorule.Update(() =>
+                {
+                    UpdateComponents(elapsedTime);
+
+                    _lastUpdate = DateTime.UtcNow;
+                    Thread.Sleep(_UpdateSpan);
+                });
+            }
+        }
+
+        private void MainServerLoop3()
+        {
+            _lastNormalUpdate = DateTime.UtcNow;
+
+            while (ServerContextBase.Running)
+            {
+                var elapsedTime = DateTime.UtcNow - _lastNormalUpdate;
+
+                Lorule.Update(() =>
+                {
+                    UpdateAreas(elapsedTime);
+
+                    _lastNormalUpdate = DateTime.UtcNow;
+                    Thread.Sleep(_UpdateNormalSpan);
                 });
             }
         }
@@ -172,7 +220,7 @@ namespace Darkages.Network.Game
             }
         }
 
-        private async Task UpdateComponentsAsync(TimeSpan elapsedTime)
+        private async void UpdateComponents(TimeSpan elapsedTime)
         {
             try
             {
@@ -180,16 +228,7 @@ namespace Darkages.Network.Game
 
                 foreach (var component in components)
                 {
-                    switch (component.UpdateMethodType)
-                    {
-                        case UpdateType.Sync:
-                            _ = component.Update(elapsedTime);
-                            break;
-
-                        case UpdateType.Async:
-                            await component.Update(elapsedTime);
-                            break;
-                    }
+                    await component.Update(elapsedTime);
                 }
             }
             catch (Exception e)
