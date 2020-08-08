@@ -15,6 +15,7 @@ namespace Darkages.Network.Game
             }
             catch (Exception exception)
             {
+                Console.WriteLine(exception.Message);
                 ServerContext.Error(exception);
                 return false;
             }

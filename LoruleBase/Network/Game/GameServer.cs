@@ -78,20 +78,20 @@ namespace Darkages.Network.Game
         {
             base.Start(port);
 
-            var serverThread1 = new Thread(MainServerLoop1) { Priority = ThreadPriority.Normal };
-            var serverThread2 = new Thread(MainServerLoop2) { Priority = ThreadPriority.Normal };
-            var serverThread3 = new Thread(MainServerLoop3) { Priority = ThreadPriority.Normal };
+            var serverThread1 = new Thread(MainServerLoop1) { Priority = ThreadPriority.Normal, IsBackground = true };
+            var serverThread2 = new Thread(MainServerLoop2) { Priority = ThreadPriority.Normal, IsBackground = true };
+            var serverThread3 = new Thread(MainServerLoop3) { Priority = ThreadPriority.Normal, IsBackground = true };
 
             try
             {
                 serverThread1.Start();
                 serverThread2.Start();
                 serverThread3.Start();
+
                 ServerContextBase.Running = true;
             }
             catch (ThreadAbortException)
             {
-                ServerContextBase.Running = false;
             }
         }
 
@@ -152,7 +152,7 @@ namespace Darkages.Network.Game
         {
             _lastHeavyUpdate = DateTime.UtcNow;
 
-            while (ServerContextBase.Running)
+            while (true)
             {
                 var elapsedTime = DateTime.UtcNow - _lastHeavyUpdate;
 
@@ -170,7 +170,7 @@ namespace Darkages.Network.Game
         {
             _lastUpdate = DateTime.UtcNow;
 
-            while (ServerContextBase.Running)
+            while (true)
             {
                 var elapsedTime = DateTime.UtcNow - _lastUpdate;
 
@@ -188,7 +188,7 @@ namespace Darkages.Network.Game
         {
             _lastNormalUpdate = DateTime.UtcNow;
 
-            while (ServerContextBase.Running)
+            while (true)
             {
                 var elapsedTime = DateTime.UtcNow - _lastNormalUpdate;
 
