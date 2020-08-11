@@ -33,3 +33,4 @@ git\*
 GitStuff/~$ItemDisplays.xlsx
 *.crdata
 Lorule - Live.sln.CodeItRight.xml
+Lorule.GameServer/ServerConfig.Local.json

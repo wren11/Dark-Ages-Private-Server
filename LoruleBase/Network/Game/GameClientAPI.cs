@@ -30,6 +30,41 @@ namespace Darkages.Network.Game
             return false;
         }
 
+        public void GuildMessage(GameClient client, string message)
+        {
+            if (ServerContextBase.Game.Clients != null && Aisling.Clan != "")
+                foreach (var client2 in from client2 in ServerContextBase.Game.Clients
+                                        where client2 != null && client2.Aisling.Clan == client.Aisling.Clan
+                                        select client2)
+                {
+                    if (client2 != null)
+                    {
+                        client2.SendMessage(0xC, message);
+                    }
+                }
+            else
+            {
+                client.SendMessage(0x02, "You have no guild");
+                return;
+            }
+        }
+        public void PartyMessage(GameClient client, string message)
+        {
+            if (Aisling.GroupId != 0)
+            {
+                foreach (var client2 in client.Aisling.PartyMembers)
+                    if (client2 != null)
+                    {
+                        client2.Client.SendMessage(0xB, message);
+                    }
+            }
+            else
+            {
+                client.SendMessage(0x02, "You have no party");
+                return;
+            }
+        }
+
         public async Task Effect(ushort n, int d = 1000, int r = 1)
         {
             if (r <= 0)
