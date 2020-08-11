@@ -27,9 +27,9 @@ namespace Darkages.Network.Game
 
         public GameServer(int capacity) : base(capacity)
         {
-            _heavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 60);
-            _UpdateSpan = TimeSpan.FromSeconds(1.0 / 60);
-            _UpdateNormalSpan = TimeSpan.FromSeconds(1.0 / 60);
+            _heavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
+            _UpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
+            _UpdateNormalSpan = TimeSpan.FromSeconds(1.0 / 30);
 
             InitializeGameServer();
         }
@@ -80,13 +80,11 @@ namespace Darkages.Network.Game
 
             var serverThread1 = new Thread(MainServerLoop1) { Priority = ThreadPriority.Normal, IsBackground = true };
             var serverThread2 = new Thread(MainServerLoop2) { Priority = ThreadPriority.Normal, IsBackground = true };
-            var serverThread3 = new Thread(MainServerLoop3) { Priority = ThreadPriority.Normal, IsBackground = true };
 
             try
             {
                 serverThread1.Start();
                 serverThread2.Start();
-                serverThread3.Start();
 
                 ServerContextBase.Running = true;
             }
@@ -105,10 +103,12 @@ namespace Darkages.Network.Game
                         continue;
 
                     ObjectComponent.UpdateClientObjects(client.Aisling);
-                    client.FlushBuffers();
 
                     if (!client.IsWarping)
+                    {
                         Pulse(elapsedTime, client);
+                        client.FlushBuffers();
+                    }
                     else if (client.IsWarping && !client.InMapTransition)
                         if (client.CanSendLocation && !client.IsRefreshing &&
                             client.Aisling.CurrentMapId == ServerContextBase.Config.PVPMap)
@@ -159,7 +159,7 @@ namespace Darkages.Network.Game
                 Lorule.Update(() =>
                 {
                     UpdateClients(elapsedTime);
-
+                    UpdateComponents(elapsedTime);
                     _lastHeavyUpdate = DateTime.UtcNow;
                     Thread.Sleep(_heavyUpdateSpan);
                 });
@@ -176,47 +176,11 @@ namespace Darkages.Network.Game
 
                 Lorule.Update(() =>
                 {
-                    UpdateComponents(elapsedTime);
+                    //UpdateComponents(elapsedTime);
 
                     _lastUpdate = DateTime.UtcNow;
                     Thread.Sleep(_UpdateSpan);
                 });
-            }
-        }
-
-        private void MainServerLoop3()
-        {
-            _lastNormalUpdate = DateTime.UtcNow;
-
-            while (true)
-            {
-                var elapsedTime = DateTime.UtcNow - _lastNormalUpdate;
-
-                Lorule.Update(() =>
-                {
-                    UpdateAreas(elapsedTime);
-
-                    _lastNormalUpdate = DateTime.UtcNow;
-                    Thread.Sleep(_UpdateNormalSpan);
-                });
-            }
-        }
-
-        private void UpdateAreas(TimeSpan elapsedTime)
-        {
-            var values = ServerContextBase.GlobalMapCache.Select(i => i.Value).ToArray();
-
-            try
-            {
-                lock (values)
-                {
-                    foreach (var area in values)
-                        area.Update(elapsedTime);
-                }
-            }
-            catch (Exception e)
-            {
-                ServerContext.Error(e);
             }
         }
 

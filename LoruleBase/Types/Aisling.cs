@@ -146,6 +146,7 @@ namespace Darkages
         [JsonIgnore]
         public int MaximumWeight => (int)(ExpLevel / 4 + _Str + ServerContextBase.Config.WeightIncreaseModifer);
 
+        public ushort MonsterForm { get; set; } = 0;
         public byte NameColor { get; set; }
         public string Nation { get; set; } = "Mileth"; // default nation.
         public byte OverCoat { get; set; }
@@ -237,7 +238,6 @@ namespace Darkages
                 SkillBook = new SkillBook(),
                 SpellBook = new SpellBook(),
                 Inventory = new Inventory(),
-                EquipmentManager = new EquipmentManager(null),
                 BankManager = new Bank(),
                 Created = DateTime.UtcNow,
                 LastLogged = DateTime.UtcNow,

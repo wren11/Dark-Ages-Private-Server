@@ -12,9 +12,11 @@ namespace Darkages.Types
 {
     public class EquipmentManager
     {
-        public EquipmentManager(GameClient _client)
+        private readonly GameClient _client;
+
+        public EquipmentManager(GameClient client)
         {
-            Client = _client;
+            _client = client;
             Equipment = new Dictionary<int, EquipmentSlot>();
 
             for (byte i = 1; i < 18; i++)
@@ -23,7 +25,6 @@ namespace Darkages.Types
 
         public EquipmentSlot Belt => this[ItemSlots.Waist];
         public EquipmentSlot Boots => this[ItemSlots.Foot];
-        [JsonIgnore] public GameClient Client { get; set; }
 
         public EquipmentSlot DisplayHelm => this[ItemSlots.Coat];
         public Dictionary<int, EquipmentSlot> Equipment { get; set; }
@@ -46,7 +47,7 @@ namespace Darkages.Types
 
         public void Add(int displayslot, Item item)
         {
-            if (Client == null)
+            if (_client == null)
                 return;
 
             if (displayslot <= 0 || displayslot > 17)
@@ -107,14 +108,14 @@ namespace Darkages.Types
                     continue;
 
                 if (RemoveFromExisting(item.Template.EquipmentSlot))
-                    Client.SendMessage(0x02,
+                    _client.SendMessage(0x02,
                         $"{item.Template.Name} has broken.");
             }
         }
 
         public void DisplayToEquipment(byte displayslot, Item item)
         {
-            Client.Send(new ServerFormat37(item, displayslot));
+            _client.Send(new ServerFormat37(item, displayslot));
         }
 
         public bool RemoveFromExisting(int displayslot, bool returnit = true)
@@ -130,7 +131,7 @@ namespace Darkages.Types
             RemoveFromSlot(displayslot);
 
             if (returnit)
-                if (itemObj.GiveTo(Client.Aisling, false))
+                if (itemObj.GiveTo(_client.Aisling, false))
                     return true;
 
             return HandleUnreturnedItem(itemObj);
@@ -138,20 +139,20 @@ namespace Darkages.Types
 
         public bool RemoveFromInventory(Item item, bool handleWeight = false)
         {
-            if (Client.Aisling.Inventory.Remove(item.Slot) != null)
+            if (_client.Aisling.Inventory.Remove(item.Slot) != null)
             {
-                Client.Send(new ServerFormat10(item.Slot));
+                _client.Send(new ServerFormat10(item.Slot));
 
                 if (handleWeight)
                 {
-                    Client.Aisling.CurrentWeight -= item.Template.CarryWeight;
-                    if (Client.Aisling.CurrentWeight < 0)
-                        Client.Aisling.CurrentWeight = 0;
+                    _client.Aisling.CurrentWeight -= item.Template.CarryWeight;
+                    if (_client.Aisling.CurrentWeight < 0)
+                        _client.Aisling.CurrentWeight = 0;
 
-                    Client.SendStats(StatusFlags.StructA);
+                    _client.SendStats(StatusFlags.StructA);
                 }
 
-                Client.LastItemDropped = item;
+                _client.LastItemDropped = item;
                 return true;
             }
 
@@ -160,12 +161,12 @@ namespace Darkages.Types
 
         private bool HandleUnreturnedItem(Item itemObj)
         {
-            Client.Aisling.CurrentWeight -= itemObj.Template.CarryWeight;
+            _client.Aisling.CurrentWeight -= itemObj.Template.CarryWeight;
 
-            if (Client.Aisling.CurrentWeight < 0)
-                Client.Aisling.CurrentWeight = 0;
+            if (_client.Aisling.CurrentWeight < 0)
+                _client.Aisling.CurrentWeight = 0;
 
-            Client.DelObject(itemObj);
+            _client.DelObject(itemObj);
             return true;
         }
 
@@ -180,19 +181,19 @@ namespace Darkages.Types
             {
                 if (p10 <= 10 && !item.Warnings[0])
                 {
-                    Client.SendMessage(0x02,
+                    _client.SendMessage(0x02,
                         $"{item.Template.Name} is almost broken!. Please repair it soon (< 10%)");
                     item.Warnings[0] = true;
                 }
                 else if (p10 <= 30 && p10 > 10 && !item.Warnings[1])
                 {
-                    Client.SendMessage(0x02,
+                    _client.SendMessage(0x02,
                         $"{item.Template.Name} is wearing out soon. Please repair it ASAP. (< 30%)");
                     item.Warnings[1] = true;
                 }
                 else if (p10 <= 50 && p10 > 30 && !item.Warnings[2])
                 {
-                    Client.SendMessage(0x02, $"{item.Template.Name} will need a repair soon. (< 50%)");
+                    _client.SendMessage(0x02, $"{item.Template.Name} will need a repair soon. (< 50%)");
                     item.Warnings[2] = true;
                 }
             }
@@ -201,12 +202,12 @@ namespace Darkages.Types
         private void OnEquipmentAdded(byte displayslot)
         {
             foreach (var script in Equipment[displayslot].Item?.Scripts.Values)
-                script.Equipped(Client.Aisling, displayslot);
+                script.Equipped(_client.Aisling, displayslot);
 
             Equipment[displayslot].Item.Equipped = true;
 
-            Client.SendStats(StatusFlags.All);
-            Client.UpdateDisplay();
+            _client.SendStats(StatusFlags.All);
+            _client.UpdateDisplay();
         }
 
         private void OnEquipmentRemoved(byte displayslot)
@@ -215,19 +216,19 @@ namespace Darkages.Types
                 return;
 
             foreach (var script in Equipment[displayslot].Item?.Scripts.Values)
-                script.UnEquipped(Client.Aisling, displayslot);
+                script.UnEquipped(_client.Aisling, displayslot);
 
             Equipment[displayslot].Item.Equipped = false;
 
-            Client.SendStats(StatusFlags.All);
-            Client.UpdateDisplay();
+            _client.SendStats(StatusFlags.All);
+            _client.UpdateDisplay();
         }
 
         #region Core Methods
 
         private void RemoveFromSlot(int displayslot)
         {
-            Client.Aisling.Show(Scope.Self, new ServerFormat38((byte)displayslot));
+            _client.Aisling.Show(Scope.Self, new ServerFormat38((byte)displayslot));
 
             OnEquipmentRemoved((byte)displayslot);
 

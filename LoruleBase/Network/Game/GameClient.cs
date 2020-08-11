@@ -196,6 +196,8 @@ namespace Darkages.Network.Game
                 return this;
             }
 
+            Aisling.Map?.Update(this, elapsedTime);
+
             return HandleTimeOuts()
                 .StatusCheck()
                 .Regen(elapsedTime)

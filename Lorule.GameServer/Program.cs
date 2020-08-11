@@ -27,7 +27,7 @@ namespace Lorule.GameServer
 
     public static class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             var providers = new LoggerProviderCollection();
 
@@ -73,13 +73,11 @@ namespace Lorule.GameServer
     public class Server : IServer
     {
         private readonly ILogger<Server> _logger;
-        private readonly IObjectManager _objectManager;
 
         public Server(ILogger<Server> logger, IServerContext context, IServerConstants configConstants,
-            IOptions<LoruleOptions> loruleOptions, IObjectManager objectManager)
+            IOptions<LoruleOptions> loruleOptions)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _objectManager = objectManager ?? throw new ArgumentNullException(nameof(objectManager));
 
             if (loruleOptions.Value.Location == null)
                 return;

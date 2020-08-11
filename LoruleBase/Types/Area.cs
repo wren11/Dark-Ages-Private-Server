@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using ServiceStack.Messaging;
 
 #endregion
 
@@ -26,9 +28,9 @@ namespace Darkages
         [JsonIgnore] public TileGrid[,] ObjectGrid { get; set; }
         [JsonIgnore] public TileContent[,] Tile { get; set; }
 
-        public Sprite[] GetAreaObjects()
+        public Sprite[] GetAreaObjects(GameClient client)
         {
-            return GetObjects(this, i => i != null, Get.All).ToArray();
+            return GetObjects(this, i => i.WithinRangeOf(client.Aisling), Get.All).ToArray();
         }
 
         public byte[] GetRowData(int row)
@@ -112,7 +114,7 @@ namespace Darkages
             return Sotp[lWall - 1] == 0x0F && Sotp[rWall - 1] == 0x0F;
         }
 
-        public void Update(TimeSpan elapsedTime)
+        public void Update(GameClient client, TimeSpan elapsedTime)
         {
             objectUpdateTimer.Update(elapsedTime);
 
@@ -120,12 +122,12 @@ namespace Darkages
             {
                 objectUpdateTimer.Reset();
 
-                objectCache = GetAreaObjects();
+                objectCache = GetAreaObjects(client);
+            }
 
-                if (objectCache != null && objectCache.Length > 0)
-                {
-                    UpdateAreaObjects(elapsedTime);
-                }
+            if (objectCache != null && objectCache.Length > 0)
+            {
+                UpdateAreaObjects(elapsedTime);
             }
         }
 
@@ -136,76 +138,65 @@ namespace Darkages
                 if (objectCache == null || objectCache.Length <= 0)
                     return;
 
-                UpdateMonsterObjects(elapsedTime, objectCache.OfType<Monster>());
-                UpdateMundaneObjects(elapsedTime, objectCache.OfType<Mundane>());
-                UpdateItemObjects(elapsedTime, objectCache.OfType<Money>().Concat<Sprite>(objectCache.OfType<Item>()));
-            }
-        }
-
-        public void UpdateItemObjects(TimeSpan elapsedTime, IEnumerable<Sprite> objects)
-        {
-            foreach (var obj in objects)
-                if (obj != null)
+                foreach (var obj in objectCache)
                 {
+                    switch (obj)
+                    {
+                        case Monster monster when monster.Map == null || monster.Scripts == null:
+                            continue;
+                        case Monster monster:
+                            {
+                                if (obj.CurrentHp <= 0x0 && obj.Target != null && !monster.Skulled)
+                                {
+                                    foreach (var script in monster.Scripts.Values.Where(script => obj.Target?.Client != null))
+                                        script?.OnDeath(obj.Target.Client);
+
+                                    monster.Skulled = true;
+                                }
+
+                                foreach (var script in monster.Scripts.Values)
+                                    script?.Update(elapsedTime);
+
+                                if (obj.TrapsAreNearby())
+                                {
+                                    var nextTrap = Trap.Traps.Select(i => i.Value)
+                                        .FirstOrDefault(i => i.Location.X == obj.X && i.Location.Y == obj.Y);
+
+                                    if (nextTrap != null)
+                                        Trap.Activate(nextTrap, obj);
+                                }
+
+                                monster.UpdateBuffs(elapsedTime);
+                                monster.UpdateDebuffs(elapsedTime);
+                                monster.LastUpdated = DateTime.UtcNow;
+                                break;
+                            }
+                        case Item item:
+                            {
+                                var stale = !((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3);
+
+                                if (item.Cursed && stale)
+                                {
+                                    item.AuthenticatedAislings = null;
+                                    item.Cursed = false;
+                                }
+
+                                break;
+                            }
+                        case Mundane mundane:
+                            {
+                                if (mundane.CurrentHp <= 0)
+                                    mundane.CurrentHp = mundane.Template.MaximumHp;
+
+                                mundane.UpdateBuffs(elapsedTime);
+                                mundane.UpdateDebuffs(elapsedTime);
+                                mundane.Update(elapsedTime);
+                                break;
+                            }
+                    }
+
                     obj.LastUpdated = DateTime.UtcNow;
-
-                    if (!(obj is Item item)) continue;
-                    if (!((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3)) continue;
-                    if (!item.Cursed) continue;
-
-                    item.AuthenticatedAislings = null;
-                    item.Cursed = false;
                 }
-        }
-
-        public void UpdateMonsterObjects(TimeSpan elapsedTime, IEnumerable<Monster> objects)
-        {
-            var enumerable = objects as Monster[] ?? objects.ToArray();
-
-            foreach (var obj in enumerable)
-            {
-                if (obj?.Map == null || obj.Scripts == null)
-                    continue;
-
-                if (obj.CurrentHp <= 0x0 && obj.Target != null && !obj.Skulled)
-                {
-                    foreach (var script in obj.Scripts.Values.Where(script => obj.Target?.Client != null))
-                        script?.OnDeath(obj.Target.Client);
-
-                    obj.Skulled = true;
-                }
-
-                foreach (var script in obj.Scripts.Values)
-                    script?.Update(elapsedTime);
-
-                if (obj.TrapsAreNearby())
-                {
-                    var nextTrap = Trap.Traps.Select(i => i.Value)
-                        .FirstOrDefault(i => i.Location.X == obj.X && i.Location.Y == obj.Y);
-
-                    if (nextTrap != null) Trap.Activate(nextTrap, obj);
-                }
-
-                obj.UpdateBuffs(elapsedTime);
-                obj.UpdateDebuffs(elapsedTime);
-                obj.LastUpdated = DateTime.UtcNow;
-            }
-        }
-
-        public void UpdateMundaneObjects(TimeSpan elapsedTime, IEnumerable<Mundane> objects)
-        {
-            foreach (var obj in objects)
-            {
-                if (obj == null)
-                    continue;
-
-                if (obj.CurrentHp <= 0)
-                    obj.CurrentHp = obj.Template.MaximumHp;
-
-                obj.UpdateBuffs(elapsedTime);
-                obj.UpdateDebuffs(elapsedTime);
-                obj.Update(elapsedTime);
-                obj.LastUpdated = DateTime.UtcNow;
             }
         }
     }

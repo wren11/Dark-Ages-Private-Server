@@ -3,17 +3,15 @@
 using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Storage;
-using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
+using Darkages.Types.Templates;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Net.Sockets;
-using Darkages.Types.Templates;
 
 #endregion
 
@@ -192,16 +190,14 @@ namespace Darkages
         {
             ServerContext.Logger(string.Format($"{Config.SERVER_TITLE} Loading..."));
 
+            try
             {
-                try
-                {
-                    LoadAndCacheStorage();
-                    StartServers();
-                }
-                catch (Exception e)
-                {
-                    ServerContext.Logger(string.Format("Startup Error.", e.Message));
-                }
+                LoadAndCacheStorage();
+                StartServers();
+            }
+            catch (Exception e)
+            {
+                ServerContext.Logger(string.Format("Startup Error.", e.Message));
             }
         }
 
