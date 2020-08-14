@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Sockets;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,7 +26,6 @@ namespace Darkages.Network.Game
         public bool MapUpdating;
         private readonly object _syncObj = new object();
 
-        [JsonConstructor]
         public GameClient()
         {
             HpRegenTimer = new GameServerTimer(
@@ -67,7 +68,7 @@ namespace Darkages.Network.Game
         public DateTime LastWhisperMessageSent { get; set; }
         public Interpreter MenuInterpter { get; set; }
         public GameServerTimer MpRegenTimer { get; set; }
-        [JsonIgnore] public PendingSell PendingItemSessions { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore] public PendingSell PendingItemSessions { get; set; }
         public GameServer Server { get; set; }
         public bool ShouldUpdateMap { get; set; }
 
@@ -188,15 +189,13 @@ namespace Darkages.Network.Game
 
         public GameClient DoUpdate(TimeSpan elapsedTime)
         {
-            if (!WorkingSocket.ConnectedSocket.Connected)
+            if (!Socket.Connected)
             {
                 Aisling.Remove(true);
                 Server.ClientDisconnected(this);
 
                 return this;
             }
-
-            Aisling.Map?.Update(this, elapsedTime);
 
             return HandleTimeOuts()
                 .StatusCheck()
@@ -792,7 +791,7 @@ namespace Darkages.Network.Game
 
         public GameClient SendMessage(byte type, string text)
         {
-            FlushAndSend(new ServerFormat0A(type, text));
+            Send(new ServerFormat0A(type, text));
             LastMessageSent = DateTime.UtcNow;
 
             return this;
@@ -800,7 +799,7 @@ namespace Darkages.Network.Game
 
         public GameClient SendMessage(string text)
         {
-            FlushAndSend(new ServerFormat0A(0x02, text));
+            Send(new ServerFormat0A(0x02, text));
             LastMessageSent = DateTime.UtcNow;
 
             return this;
@@ -885,7 +884,7 @@ namespace Darkages.Network.Game
 
         public GameClient SendProfileUpdate()
         {
-            Send(new byte[] { 73, 0x00 });
+            Send(new byte[] { 73, 0 });
 
             return this;
         }

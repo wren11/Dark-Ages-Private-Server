@@ -71,7 +71,7 @@ namespace Darkages.Network
             if (ServerContextBase.Game == null)
                 return;
 
-            ServerContext.Logger($"Connection From {0} Established. {client.WorkingSocket.ConnectedSocket.RemoteEndPoint}");
+            ServerContext.Logger($"Connection From {0} Established. {client.Socket.RemoteEndPoint}");
         }
 
         public virtual void ClientDataReceived(TClient client, NetworkPacket packet)
@@ -104,9 +104,8 @@ namespace Darkages.Network
             if (client == null)
                 return;
 
-            if (client.WorkingSocket != null &&
-                client.WorkingSocket.ConnectedSocket.Connected)
-                client.WorkingSocket.ConnectedSocket.Disconnect(false);
+            if (client.Socket.Connected)
+                client.Socket.Disconnect(false);
 
             RemoveClient(client);
         }
@@ -1157,15 +1156,12 @@ namespace Darkages.Network
             {
                 if (_listener == null || !_listening) return;
 
-                var socket = _listener.EndAccept(result);
-                var handler = (Socket)result.AsyncState;
-
                 var client = new TClient
                 {
-                    WorkingSocket = new NetworkSocket(socket)
+                    State = new NetworkSocket(_listener.EndAccept(result))
                 };
 
-                if (client.WorkingSocket.ConnectedSocket.Connected)
+                if (client.Socket.Connected)
                 {
                     lock (Generator.Random)
                     {
@@ -1176,7 +1172,7 @@ namespace Darkages.Network
                     {
                         ClientConnected(client);
 
-                        client.WorkingSocket.BeginReceiveHeader(EndReceiveHeader, out var error, client);
+                        client.State.BeginReceiveHeader(EndReceiveHeader, out var error, client);
 
                         if (error != SocketError.IOPending && error != SocketError.Success) ClientDisconnected(client);
                     }
@@ -1203,7 +1199,7 @@ namespace Darkages.Network
                 if (!(result.AsyncState is TClient client))
                     return;
 
-                var bytes = client.WorkingSocket.EndReceiveHeader(result, out var error);
+                var bytes = client.State.EndReceiveHeader(result, out var error);
 
                 if (bytes == 0 ||
                     error != SocketError.Success)
@@ -1212,10 +1208,10 @@ namespace Darkages.Network
                     return;
                 }
 
-                if (client.WorkingSocket.HeaderComplete)
-                    client.WorkingSocket.BeginReceivePacket(EndReceivePacket, out error, client);
+                if (client.State.HeaderComplete)
+                    client.State.BeginReceivePacket(EndReceivePacket, out error, client);
                 else
-                    client.WorkingSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                    client.State.BeginReceiveHeader(EndReceiveHeader, out error, client);
             }
             catch (Exception e)
             {
@@ -1229,7 +1225,7 @@ namespace Darkages.Network
             {
                 if (result.AsyncState is TClient client)
                 {
-                    var bytes = client.WorkingSocket.EndReceivePacket(result, out var error);
+                    var bytes = client.State.EndReceivePacket(result, out var error);
 
                     if (bytes == 0 ||
                         error != SocketError.Success)
@@ -1238,14 +1234,15 @@ namespace Darkages.Network
                         return;
                     }
 
-                    if (client.WorkingSocket.PacketComplete)
+                    if (client.State.PacketComplete)
                     {
-                        ClientDataReceived(client, client.WorkingSocket.ToPacket());
-                        client.WorkingSocket.BeginReceiveHeader(EndReceiveHeader, out error, client);
+
+                        ClientDataReceived(client, client.State.ToPacket());
+                        client.State.BeginReceiveHeader(EndReceiveHeader, out error, client);
                     }
                     else
                     {
-                        client.WorkingSocket.BeginReceivePacket(EndReceivePacket, out error, client);
+                        client.State.BeginReceivePacket(EndReceivePacket, out error, client);
                     }
                 }
             }

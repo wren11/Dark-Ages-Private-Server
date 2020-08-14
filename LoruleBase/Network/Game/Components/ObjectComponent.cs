@@ -13,13 +13,16 @@ namespace Darkages.Network.Game.Components
 {
     public class ObjectComponent : GameServerComponent
     {
-        public GameServerTimer Timer = new GameServerTimer(TimeSpan.FromMilliseconds(1000));
+        public GameServerTimer Timer = new GameServerTimer(TimeSpan.FromMilliseconds(100));
+        private readonly GameServerTimer objectUpdateTimer = new GameServerTimer(TimeSpan.FromMilliseconds(5));
 
         public ObjectComponent(GameServer server) : base(server)
         {
         }
 
         public override UpdateType UpdateMethodType => UpdateType.Async;
+
+        private Sprite[] _objectCache = null;
 
         public static void AddObjects(List<Sprite> payload, Aisling myplayer, Sprite[] objectsToAdd)
         {
@@ -157,6 +160,11 @@ namespace Darkages.Network.Game.Components
             });
         }
 
+        public Sprite[] GetAreaObjects(Area area)
+        {
+            return GetObjects(area, i => i.CurrentMapId == area.ID, Get.All).ToArray();
+        }
+
         public override Task Update(TimeSpan elapsedTime)
         {
             Timer.Update(elapsedTime);
@@ -167,7 +175,101 @@ namespace Darkages.Network.Game.Components
                 Timer.Reset();
             }
 
+            objectUpdateTimer.Update(elapsedTime);
+
+            if (objectUpdateTimer.Elapsed)
+            {
+                foreach (var area in ServerContextBase.GlobalMapCache)
+                {
+                    if (!area.Value.Ready)
+                        continue;
+
+                    lock (ServerContext.SyncLock)
+                    {
+                        _objectCache = GetAreaObjects(area.Value);
+
+                        if (_objectCache != null && _objectCache.Length > 0)
+                        {
+                            UpdateAreaObjects(elapsedTime);
+                        }
+                    }
+                }
+
+                objectUpdateTimer.Reset();
+
+            }
+
             return Task.CompletedTask;
+        }
+
+        public void UpdateAreaObjects(TimeSpan elapsedTime)
+        {
+            lock (ServerContext.SyncLock)
+            {
+                if (_objectCache == null || _objectCache.Length <= 0)
+                    return;
+
+                foreach (var obj in _objectCache)
+                {
+                    switch (obj)
+                    {
+                        case Monster monster when monster.Map == null || monster.Scripts == null:
+                            continue;
+                        case Monster monster:
+                        {
+                            if (obj.CurrentHp <= 0x0 && obj.Target != null && !monster.Skulled)
+                            {
+                                foreach (var script in monster.Scripts.Values.Where(
+                                    script => obj.Target?.Client != null))
+                                    script?.OnDeath(obj.Target.Client);
+
+                                monster.Skulled = true;
+                            }
+
+                            foreach (var script in monster.Scripts.Values)
+                                script?.Update(elapsedTime);
+
+                            if (obj.TrapsAreNearby())
+                            {
+                                var nextTrap = Trap.Traps.Select(i => i.Value)
+                                    .FirstOrDefault(i => i.Location.X == obj.X && i.Location.Y == obj.Y);
+
+                                if (nextTrap != null)
+                                    Trap.Activate(nextTrap, obj);
+                            }
+
+                            monster.UpdateBuffs(elapsedTime);
+                            monster.UpdateDebuffs(elapsedTime);
+                            monster.LastUpdated = DateTime.UtcNow;
+                            break;
+                        }
+                        case Item item:
+                        {
+                            var stale = !((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3);
+
+                            if (item.Cursed && stale)
+                            {
+                                item.AuthenticatedAislings = null;
+                                item.Cursed = false;
+                            }
+
+                            break;
+                        }
+                        case Mundane mundane:
+                        {
+                            if (mundane.CurrentHp <= 0)
+                                mundane.CurrentHp = mundane.Template.MaximumHp;
+
+                            mundane.UpdateBuffs(elapsedTime);
+                            mundane.UpdateDebuffs(elapsedTime);
+                            mundane.Update(elapsedTime);
+                            break;
+                        }
+                    }
+
+                    obj.LastUpdated = DateTime.UtcNow;
+                }
+            }
         }
 
         private void UpdateObjects()

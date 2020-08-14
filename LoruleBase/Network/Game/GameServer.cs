@@ -17,24 +17,16 @@ namespace Darkages.Network.Game
     {
         public ObjectService ObjectFactory = new ObjectService();
         public Dictionary<Type, GameServerComponent> ServerComponents;
-        private readonly TimeSpan _heavyUpdateSpan;
-        private readonly TimeSpan _UpdateNormalSpan;
-        private readonly TimeSpan _UpdateSpan;
+        private readonly TimeSpan _frameRate;
 
-        private DateTime _lastHeavyUpdate = DateTime.UtcNow;
-        private DateTime _lastNormalUpdate = DateTime.UtcNow;
-        private DateTime _lastUpdate = DateTime.UtcNow;
+        private DateTime _lastFrameUpdate = DateTime.UtcNow;
 
         public GameServer(int capacity) : base(capacity)
         {
-            _heavyUpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
-            _UpdateSpan = TimeSpan.FromSeconds(1.0 / 30);
-            _UpdateNormalSpan = TimeSpan.FromSeconds(1.0 / 30);
+            _frameRate = TimeSpan.FromSeconds(1.0 / 30);
 
             InitializeGameServer();
         }
-
-        public delegate void ComponentDelegate(TimeSpan elapsedSpan);
 
         public override void ClientDisconnected(GameClient client)
         {
@@ -78,13 +70,11 @@ namespace Darkages.Network.Game
         {
             base.Start(port);
 
-            var serverThread1 = new Thread(MainServerLoop1) { Priority = ThreadPriority.Normal, IsBackground = true };
-            var serverThread2 = new Thread(MainServerLoop2) { Priority = ThreadPriority.Normal, IsBackground = true };
+            var serverThread1 = new Thread(Update) { Priority = ThreadPriority.Normal, IsBackground = true };
 
             try
             {
                 serverThread1.Start();
-                serverThread2.Start();
 
                 ServerContextBase.Running = true;
             }
@@ -95,19 +85,16 @@ namespace Darkages.Network.Game
 
         public void UpdateClients(TimeSpan elapsedTime)
         {
-            lock (Clients)
+            lock (ServerContext.SyncLock)
             {
                 foreach (var client in Clients.Where(client => client?.Aisling != null))
                 {
                     if (!client.Aisling.LoggedIn)
                         continue;
 
-                    ObjectComponent.UpdateClientObjects(client.Aisling);
-
                     if (!client.IsWarping)
                     {
                         Pulse(elapsedTime, client);
-                        client.FlushBuffers();
                     }
                     else if (client.IsWarping && !client.InMapTransition)
                         if (client.CanSendLocation && !client.IsRefreshing &&
@@ -119,10 +106,7 @@ namespace Darkages.Network.Game
 
         private static void Pulse(TimeSpan elapsedTime, IGameClient client)
         {
-            Lorule.Update(() =>
-            {
-                client.Update(elapsedTime);
-            });
+            client.Update(elapsedTime);
         }
 
         private void AutoSave(GameClient client)
@@ -147,39 +131,33 @@ namespace Darkages.Network.Game
                 };
             }
         }
+        public static ManualResetEvent GameServerUpdateToken = new ManualResetEvent(false);
 
-        private void MainServerLoop1()
+        // Main Server Update Thread
+        private void Update()
         {
-            _lastHeavyUpdate = DateTime.UtcNow;
+            _lastFrameUpdate = DateTime.UtcNow;
 
             while (true)
             {
-                var elapsedTime = DateTime.UtcNow - _lastHeavyUpdate;
+                var elapsedTime = DateTime.UtcNow - _lastFrameUpdate;
+
+                GameServerUpdateToken.Reset();
 
                 Lorule.Update(() =>
                 {
-                    UpdateClients(elapsedTime);
-                    UpdateComponents(elapsedTime);
-                    _lastHeavyUpdate = DateTime.UtcNow;
-                    Thread.Sleep(_heavyUpdateSpan);
-                });
-            }
-        }
 
-        private void MainServerLoop2()
-        {
-            _lastUpdate = DateTime.UtcNow;
+                    Task.Run(() =>
+                    {
+                        UpdateClients(elapsedTime);
+                        UpdateComponents(elapsedTime);
+                    });
 
-            while (true)
-            {
-                var elapsedTime = DateTime.UtcNow - _lastUpdate;
 
-                Lorule.Update(() =>
-                {
-                    //UpdateComponents(elapsedTime);
+                    GameServerUpdateToken.WaitOne();
 
-                    _lastUpdate = DateTime.UtcNow;
-                    Thread.Sleep(_UpdateSpan);
+                    _lastFrameUpdate = DateTime.UtcNow;
+                    Thread.Sleep(_frameRate);
                 });
             }
         }
@@ -198,6 +176,10 @@ namespace Darkages.Network.Game
             catch (Exception e)
             {
                 ServerContext.Error(e);
+            }
+            finally
+            { 
+                GameServerUpdateToken.Set();
             }
         }
     }

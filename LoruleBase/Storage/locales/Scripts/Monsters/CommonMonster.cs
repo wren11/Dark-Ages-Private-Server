@@ -1,4 +1,7 @@
-﻿///************************************************************************
+﻿using Darkages.Network.Game;
+using Darkages.Scripting;
+using Darkages.Types;
+///************************************************************************
 //Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
 //
@@ -19,10 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Darkages.Network.Game;
-using Darkages.Network.Game.Components;
-using Darkages.Scripting;
-using Darkages.Types;
 
 namespace Darkages.Storage.locales.Scripts.Monsters
 {
@@ -149,24 +148,25 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             {
                 if (Monster.BashTimer.Elapsed)
                 {
-                    Monster.BashTimer.Reset();
-
                     if (Monster.BashEnabled)
                         Bash();
+
+                    Monster.BashTimer.Reset();
+
                 }
 
                 if (Monster.CastTimer.Elapsed)
                 {
-                    Monster.CastTimer.Reset();
-
                     if (Monster.CastEnabled) CastSpell();
+
+                    Monster.CastTimer.Reset();
                 }
 
                 if (Monster.WalkTimer.Elapsed)
                 {
-                    Monster.WalkTimer.Reset();
-
                     if (Monster.WalkEnabled) Walk();
+
+                    Monster.WalkTimer.Reset();
                 }
             }
             catch (Exception)

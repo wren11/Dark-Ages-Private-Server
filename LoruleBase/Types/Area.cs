@@ -8,8 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using ServiceStack.Messaging;
+using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 
 #endregion
 
@@ -21,17 +23,9 @@ namespace Darkages
         [JsonIgnore] public ushort Hash;
         [JsonIgnore] public bool Ready;
         [JsonIgnore] private static readonly byte[] Sotp = File.ReadAllBytes("sotp.dat");
-
-        private readonly GameServerTimer objectUpdateTimer = new GameServerTimer(TimeSpan.FromMilliseconds(15));
-
-        private Sprite[] objectCache = null;
         [JsonIgnore] public TileGrid[,] ObjectGrid { get; set; }
         [JsonIgnore] public TileContent[,] Tile { get; set; }
 
-        public Sprite[] GetAreaObjects(GameClient client)
-        {
-            return GetObjects(this, i => i.WithinRangeOf(client.Aisling), Get.All).ToArray();
-        }
 
         public byte[] GetRowData(int row)
         {
@@ -112,92 +106,6 @@ namespace Darkages
                 return Sotp[lWall - 1] == 0x0F;
 
             return Sotp[lWall - 1] == 0x0F && Sotp[rWall - 1] == 0x0F;
-        }
-
-        public void Update(GameClient client, TimeSpan elapsedTime)
-        {
-            objectUpdateTimer.Update(elapsedTime);
-
-            if (objectUpdateTimer.Elapsed)
-            {
-                objectUpdateTimer.Reset();
-
-                objectCache = GetAreaObjects(client);
-            }
-
-            if (objectCache != null && objectCache.Length > 0)
-            {
-                UpdateAreaObjects(elapsedTime);
-            }
-        }
-
-        public void UpdateAreaObjects(TimeSpan elapsedTime)
-        {
-            lock (ServerContext.SyncLock)
-            {
-                if (objectCache == null || objectCache.Length <= 0)
-                    return;
-
-                foreach (var obj in objectCache)
-                {
-                    switch (obj)
-                    {
-                        case Monster monster when monster.Map == null || monster.Scripts == null:
-                            continue;
-                        case Monster monster:
-                            {
-                                if (obj.CurrentHp <= 0x0 && obj.Target != null && !monster.Skulled)
-                                {
-                                    foreach (var script in monster.Scripts.Values.Where(script => obj.Target?.Client != null))
-                                        script?.OnDeath(obj.Target.Client);
-
-                                    monster.Skulled = true;
-                                }
-
-                                foreach (var script in monster.Scripts.Values)
-                                    script?.Update(elapsedTime);
-
-                                if (obj.TrapsAreNearby())
-                                {
-                                    var nextTrap = Trap.Traps.Select(i => i.Value)
-                                        .FirstOrDefault(i => i.Location.X == obj.X && i.Location.Y == obj.Y);
-
-                                    if (nextTrap != null)
-                                        Trap.Activate(nextTrap, obj);
-                                }
-
-                                monster.UpdateBuffs(elapsedTime);
-                                monster.UpdateDebuffs(elapsedTime);
-                                monster.LastUpdated = DateTime.UtcNow;
-                                break;
-                            }
-                        case Item item:
-                            {
-                                var stale = !((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3);
-
-                                if (item.Cursed && stale)
-                                {
-                                    item.AuthenticatedAislings = null;
-                                    item.Cursed = false;
-                                }
-
-                                break;
-                            }
-                        case Mundane mundane:
-                            {
-                                if (mundane.CurrentHp <= 0)
-                                    mundane.CurrentHp = mundane.Template.MaximumHp;
-
-                                mundane.UpdateBuffs(elapsedTime);
-                                mundane.UpdateDebuffs(elapsedTime);
-                                mundane.Update(elapsedTime);
-                                break;
-                            }
-                    }
-
-                    obj.LastUpdated = DateTime.UtcNow;
-                }
-            }
         }
     }
 

@@ -319,7 +319,7 @@ namespace Darkages
             trader.Client.SendStats(StatusFlags.StructC);
             Client.SendStats(StatusFlags.StructC);
 
-            var packet = new NetworkPacketWriter();
+            var packet = new NetworkPacketWriter(Client);
             packet.Write((byte)0x42);
             packet.Write((byte)0x00);
 
@@ -328,7 +328,7 @@ namespace Darkages
             packet.WriteStringA("Trade was aborted.");
             Client.Send(packet);
 
-            packet = new NetworkPacketWriter();
+            packet = new NetworkPacketWriter(Client);
             packet.Write((byte)0x42);
             packet.Write((byte)0x00);
 

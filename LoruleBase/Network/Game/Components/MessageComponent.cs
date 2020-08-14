@@ -26,8 +26,6 @@ namespace Darkages.Network.Game.Components
 
             if (Timer.Elapsed)
             {
-                Timer.Reset();
-
                 lock (ServerContext.SyncLock)
                 {
                     foreach (var client in Server.Clients.Where(Predicate).Where(Selector))
@@ -35,6 +33,9 @@ namespace Darkages.Network.Game.Components
                         client.SendMessage(0x01, "\0");
                     }
                 }
+
+                Timer.Reset();
+
             }
 
             return Task.CompletedTask;

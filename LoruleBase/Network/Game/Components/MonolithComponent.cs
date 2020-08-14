@@ -35,8 +35,9 @@ namespace Darkages.Network.Game.Components
 
             if (_timer.Elapsed)
             {
-                _timer.Reset();
                 Lorule.Update(ManageSpawns);
+                _timer.Reset();
+
             }
 
             return Task.CompletedTask;

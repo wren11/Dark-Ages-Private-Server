@@ -2,6 +2,7 @@
 
 using Darkages.Network.ServerFormats;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 #endregion
@@ -26,15 +27,14 @@ namespace Darkages.Network.Game.Components
 
             if (Timer.Elapsed)
             {
-                Timer.Reset();
+                foreach (var client in Server.Clients.Where(client => client != null &&
+                                                                      client.Aisling != null))
+                {
+                    client.Send(new ServerFormat3B());
+                    client.LastPing = DateTime.UtcNow;
+                }
 
-                foreach (var client in Server.Clients)
-                    if (client != null &&
-                        client.Aisling != null)
-                    {
-                        client.Send(new ServerFormat3B());
-                        client.LastPing = DateTime.UtcNow;
-                    }
+                Timer.Reset();
             }
 
             return Task.CompletedTask;

@@ -9,6 +9,7 @@ using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using Darkages.Network.Login;
 
@@ -18,33 +19,41 @@ namespace Darkages.Network
 {
     public abstract partial class NetworkClient : ObjectManager
     {
+        public bool InMapTransition { get; set; }
+        public byte Ordinal { get; set; }
+        public int Serial { get; set; }
+
+        public NetworkPacketReader Reader { get; set; }
+        public NetworkPacketWriter Writer { get; set; }
+        public SecurityProvider Encryption { get; set; }
+
+        private protected NetworkStream PacketStream = default;
+
+        public static ManualResetEvent NetworkingResetEventToken = new ManualResetEvent(false);
+
         protected NetworkClient()
         {
             Reader = new NetworkPacketReader();
-            Writer = new NetworkPacketWriter();
+            Writer = new NetworkPacketWriter(this);
             Encryption = new SecurityProvider();
-
-            SendBuffer = new ConcurrentQueue<byte[]>();
         }
 
-        public SecurityProvider Encryption { get; set; }
-        public bool InMapTransition { get; set; }
-        public byte Ordinal { get; set; }
-        public NetworkPacketReader Reader { get; set; }
-        public int Serial { get; set; }
-        public NetworkSocket WorkingSocket { get; set; }
-        public NetworkPacketWriter Writer { get; set; }
-        private ConcurrentQueue<byte[]> SendBuffer { get; set; }
-
-        public void EmptyBuffers()
+        internal NetworkSocket State
         {
-            SendBuffer = new ConcurrentQueue<byte[]>();
+            get; set;
         }
+
+        public Socket Socket => State.Socket;
 
         public void FlushAndSend(NetworkFormat format)
         {
-            lock (Writer)
+            if (!Socket.Connected)
+                return;
+
+            lock (ServerContext.SyncLock)
             {
+                PacketStream ??= new NetworkStream(Socket);
+
                 Writer.Position = 0;
                 Writer.Write(format.Command);
 
@@ -61,40 +70,24 @@ namespace Darkages.Network
                     Encryption.Transform(packet);
 
                 var array = packet.ToArray();
-                WorkingSocket.ConnectedSocket.Send(array, array.Length, SocketFlags.None);
+                NetworkingResetEventToken.Reset();
+                PacketStream.BeginWrite(array, 0, array.Length, SendCompleted, Socket);
+                NetworkingResetEventToken.WaitOne();
             }
         }
 
-        public void FlushBuffers()
+        private void SendCompleted(IAsyncResult ar)
         {
-            if (WorkingSocket == null)
+            NetworkingResetEventToken.Set();
+
+            var socket = (Socket) ar.AsyncState;
+            if (socket == null)
                 return;
 
-            if (!WorkingSocket.ConnectedSocket.Connected)
-                return;
-
-            if (SendBuffer == null)
-                return;
-
-            var data = SendBuffer.SelectMany(i => i);
-            var enumerable = data.ToArray();
-
-            if (!enumerable.Any())
-                return;
-
-            var packet = enumerable;
-
-            try
+            var dataSent = socket.EndSend(ar);
+            if (dataSent == 0)
             {
-                WorkingSocket.ConnectedSocket.Send(packet, packet.Length, SocketFlags.None);
-            }
-            catch (Exception)
-            {
-                //Ignore
-            }
-            finally
-            {
-                EmptyBuffers();
+                //TODO
             }
         }
 
@@ -130,51 +123,32 @@ namespace Darkages.Network
             Reader.Position = -1;
         }
 
-        public void Send(NetworkFormat format)
-        {
-            if (this is LoginClient)
-            {
-                FlushAndSend(format);
-                return;
-            }
+        public void Send(NetworkFormat format) => FlushAndSend(format);
 
-            lock (Writer)
-            {
-                Writer.Position = 0;
-                Writer.Write(format.Command);
-
-                if (format.Secured)
-                    Writer.Write(Ordinal++);
-
-                format.Serialize(Writer);
-
-                var packet = Writer.ToPacket();
-                if (packet == null)
-                    return;
-
-                if (format.Secured)
-                    Encryption.Transform(packet);
-
-                var array = packet.ToArray();
-                SendBuffer.Enqueue(array);
-                FlushBuffers();
-            }
-        }
 
         public void Send(NetworkPacketWriter lpData)
         {
-            var packet = lpData.ToPacket();
-            Encryption.Transform(packet);
+            if (!Socket.Connected)
+                return;
 
-            var array = packet.ToArray();
+            lock (ServerContext.SyncLock)
+            {
+                var packet = lpData.ToPacket();
+                Encryption.Transform(packet);
 
-            if (WorkingSocket.ConnectedSocket.Connected)
-                WorkingSocket.ConnectedSocket.Send(array, SocketFlags.None);
+                var array = packet.ToArray();
+
+                if (Socket.Connected)
+                    Socket.Send(array, SocketFlags.None);
+            }
         }
 
         public void Send(byte[] data)
         {
-            lock (Writer)
+            if (!Socket.Connected)
+                return;
+
+            lock (ServerContext.SyncLock)
             {
                 Writer.Position = 0;
                 Writer.Write(data);
@@ -187,8 +161,8 @@ namespace Darkages.Network
 
                 var array = packet.ToArray();
 
-                if (WorkingSocket.ConnectedSocket.Connected)
-                    WorkingSocket.ConnectedSocket.Send(array, SocketFlags.None);
+                if (Socket.Connected)
+                    Socket.Send(array, SocketFlags.None);
             }
         }
 

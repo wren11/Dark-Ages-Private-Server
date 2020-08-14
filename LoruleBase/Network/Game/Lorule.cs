@@ -9,6 +9,7 @@ namespace Darkages.Network.Game
             if (operation == null)
                 return false;
 
+#if DEBUG
             try
             {
                 operation.Invoke();
@@ -19,6 +20,7 @@ namespace Darkages.Network.Game
                 ServerContext.Error(exception);
                 return false;
             }
+#endif
 
             return true;
         }

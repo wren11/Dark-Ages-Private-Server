@@ -2,39 +2,41 @@
 
 using System;
 using System.Net.Sockets;
+using Darkages.Network.Object;
 
 #endregion
 
 namespace Darkages.Network
 {
-    public class NetworkSocket
+    public class NetworkSocket : ObjectManager
     {
-        private static readonly int headerLength = 3;
+        const int HeaderLength = 3;
 
-        private readonly byte[] header = new byte[0x0003];
-        private readonly byte[] packet = new byte[0xFFFF];
+        private readonly byte[] _header = new byte[HeaderLength];
+        private readonly byte[] _packet = new byte[0xFFFF];
 
-        private int headerOffset;
-        private int packetLength;
-        private int packetOffset;
+        private int _headerOffset;
+        private int _packetLength;
+        private int _packetOffset;
+
+        public bool HeaderComplete => _headerOffset == HeaderLength;
+
+        public bool PacketComplete => _packetOffset == _packetLength;
+
+        internal Socket Socket;
 
         public NetworkSocket(Socket socket)
         {
-            ConnectedSocket = socket;
+            Socket = socket;
         }
 
-        public Socket ConnectedSocket { get; }
-
-        public bool HeaderComplete => headerOffset == headerLength;
-
-        public bool PacketComplete => packetOffset == packetLength;
 
         public virtual IAsyncResult BeginReceiveHeader(AsyncCallback callback, out SocketError error, object state)
         {
-            return ConnectedSocket.BeginReceive(
-                header,
-                headerOffset,
-                headerLength - headerOffset,
+            return Socket.BeginReceive(
+                _header,
+                _headerOffset,
+                HeaderLength - _headerOffset,
                 SocketFlags.None,
                 out error,
                 callback,
@@ -43,10 +45,10 @@ namespace Darkages.Network
 
         public virtual IAsyncResult BeginReceivePacket(AsyncCallback callback, out SocketError error, object state)
         {
-            return ConnectedSocket.BeginReceive(
-                packet,
-                packetOffset,
-                packetLength - packetOffset,
+            return Socket.BeginReceive(
+                _packet,
+                _packetOffset,
+                _packetLength - _packetOffset,
                 SocketFlags.None,
                 out error,
                 callback,
@@ -55,41 +57,39 @@ namespace Darkages.Network
 
         public virtual int EndReceiveHeader(IAsyncResult result, out SocketError error)
         {
-            var bytes = ConnectedSocket.EndReceive(result, out error);
+            var bytes = Socket.EndReceive(result, out error);
 
-            if (bytes == 0 ||
-                error != SocketError.Success)
+            if (bytes == 0)
                 return 0;
 
-            headerOffset += bytes;
+            _headerOffset += bytes;
 
-            if (HeaderComplete)
-            {
-                packetLength = (header[1] << 8) | header[2];
-                packetOffset = 0;
-            }
+            if (!HeaderComplete)
+                return bytes;
+
+            _packetLength = (_header[1] << 8) | _header[2];
+            _packetOffset = 0;
 
             return bytes;
         }
 
         public virtual int EndReceivePacket(IAsyncResult result, out SocketError error)
         {
-            var bytes = ConnectedSocket.EndReceive(result, out error);
+            var bytes = Socket.EndReceive(result, out error);
 
-            if (bytes == 0 ||
-                error != SocketError.Success)
+            if (bytes == 0)
                 return 0;
 
-            packetOffset += bytes;
+            _packetOffset += bytes;
 
-            if (PacketComplete) headerOffset = 0;
+            if (PacketComplete) _headerOffset = 0;
 
             return bytes;
         }
 
         public NetworkPacket ToPacket()
         {
-            return PacketComplete ? new NetworkPacket(packet, packetLength) : null;
+            return PacketComplete ? new NetworkPacket(_packet, _packetLength) : null;
         }
     }
 }

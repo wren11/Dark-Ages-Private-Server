@@ -2,6 +2,7 @@
 
 using System;
 using System.Globalization;
+using System.Net.Sockets;
 
 #endregion
 
@@ -9,18 +10,24 @@ namespace Darkages.Network
 {
     public class NetworkPacket
     {
-        public byte Command;
-        public byte[] Data;
-        public byte Ordinal;
+        public byte Ordinal { get; }
+        public byte Command { get; }
+        public byte[] Data { get; }
 
-        public NetworkPacket(byte[] array, int count)
+        public NetworkPacket(byte[] array, long count)
         {
             Command = array[0];
-            Ordinal = array[1];
-            Data = count - 2 > 0 ? new byte[count - 2] : new byte[count];
 
-            if (Data.Length != 0)
-                System.Buffer.BlockCopy(array, 2, Data, 0, Data.Length);
+            if (Command == byte.MaxValue)
+                return;
+
+            Ordinal = array[1];
+            Data = count - 2 > 0 ? new byte[count - 0x2] : new byte[count];
+
+            if (Data.Length >= 2)
+            {
+                Buffer.BlockCopy(array, 2, Data, 0, Data.Length);
+            }
         }
 
         public byte[] ToArray()

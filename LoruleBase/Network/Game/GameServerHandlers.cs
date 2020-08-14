@@ -2090,7 +2090,7 @@ namespace Darkages.Network.Game
                         player.Exchange = new ExchangeSession(trader);
                         trader.Exchange = new ExchangeSession(player);
 
-                        var packet = new NetworkPacketWriter();
+                        var packet = new NetworkPacketWriter(client);
                         packet.Write((byte)0x42);
                         packet.Write((byte)0x00);
                         packet.Write((byte)0x00);
@@ -2098,7 +2098,7 @@ namespace Darkages.Network.Game
                         packet.WriteStringA(trader.Username);
                         client.Send(packet);
 
-                        packet = new NetworkPacketWriter();
+                        packet = new NetworkPacketWriter(client);
                         packet.Write((byte)0x42);
                         packet.Write((byte)0x00);
                         packet.Write((byte)0x00);
@@ -2137,7 +2137,7 @@ namespace Darkages.Network.Game
                                 player.Exchange.Items.Add(item);
                                 player.Exchange.Weight += item.Template.CarryWeight;
 
-                                var packet = new NetworkPacketWriter();
+                                var packet = new NetworkPacketWriter(client);
                                 packet.Write((byte)0x42);
                                 packet.Write((byte)0x00);
 
@@ -2149,7 +2149,7 @@ namespace Darkages.Network.Game
                                 packet.WriteStringA(item.DisplayName);
                                 client.Send(packet);
 
-                                packet = new NetworkPacketWriter();
+                                packet = new NetworkPacketWriter(client);
                                 packet.Write((byte)0x42);
                                 packet.Write((byte)0x00);
 
@@ -2197,7 +2197,7 @@ namespace Darkages.Network.Game
                         player.Exchange.Gold = gold;
                         player.Client.SendStats(StatusFlags.StructC);
 
-                        var packet = new NetworkPacketWriter();
+                        var packet = new NetworkPacketWriter(client);
                         packet.Write((byte)0x42);
                         packet.Write((byte)0x00);
 
@@ -2206,7 +2206,7 @@ namespace Darkages.Network.Game
                         packet.Write((uint)gold);
                         client.Send(packet);
 
-                        packet = new NetworkPacketWriter();
+                        packet = new NetworkPacketWriter(client);
                         packet.Write((byte)0x42);
                         packet.Write((byte)0x00);
 
@@ -2255,7 +2255,7 @@ namespace Darkages.Network.Game
                         if (trader.Exchange.Confirmed)
                             player.FinishExchange();
 
-                        var packet = new NetworkPacketWriter();
+                        var packet = new NetworkPacketWriter(client);
                         packet.Write((byte)0x42);
                         packet.Write((byte)0x00);
 
@@ -2264,7 +2264,7 @@ namespace Darkages.Network.Game
                         packet.WriteStringA("Trade was completed.");
                         client.Send(packet);
 
-                        packet = new NetworkPacketWriter();
+                        packet = new NetworkPacketWriter(client);
                         packet.Write((byte)0x42);
                         packet.Write((byte)0x00);
 
