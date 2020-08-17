@@ -101,7 +101,7 @@ namespace Darkages.Network.Game.Components
             }
         }
 
-        public static void BeginUpdatingMap(Area area)
+        public void BeginUpdatingMap(Area area)
         {
             if (!WorkerThreads.ContainsKey(area.ID))
             {
@@ -144,7 +144,7 @@ namespace Darkages.Network.Game.Components
 
         #endregion
 
-        public static void UpdateAreaObjects(Area area)
+        public void UpdateAreaObjects(Area area)
         {
             bool Leave() => !area.GetObjects(area, i => i?.Map != null && i.Map.Ready, Get.Aislings).Any();
 
@@ -152,6 +152,9 @@ namespace Darkages.Network.Game.Components
 
             while (true)
             {
+                if (!area.Ready)
+                    continue;
+
                 if (Leave()) break;
 
                 var elapsedTime = DateTime.UtcNow - _lastFrameUpdate;

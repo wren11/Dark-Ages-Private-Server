@@ -345,8 +345,6 @@ namespace Darkages.Network.Game
             {
                 try
                 {
-                    Thread.Sleep(100);
-
                     return InitSpellBar()
                         .LoadInventory()
                         .LoadSkillBook()
@@ -429,7 +427,6 @@ namespace Darkages.Network.Game
             foreach (var format in formats)
                 Aisling.Client.Send(format);
 
-            Thread.Sleep(50);
             return this;
         }
 
@@ -486,7 +483,6 @@ namespace Darkages.Network.Game
                 }
             }
 
-            Thread.Sleep(50);
 
             return this;
         }
@@ -523,7 +519,6 @@ namespace Darkages.Network.Game
                 }
             }
 
-            Thread.Sleep(50);
             return this;
         }
 
@@ -591,7 +586,6 @@ namespace Darkages.Network.Game
                 });
             }
 
-            Thread.Sleep(50);
             return this;
         }
 

@@ -85,14 +85,13 @@ namespace Darkages.Network.Game
 
         public void UpdateClients(TimeSpan elapsedTime)
         {
-            lock (ServerContext.SyncLock)
+            foreach (var client in Clients.Where(client => client?.Aisling != null))
             {
-                foreach (var client in Clients.Where(client => client?.Aisling != null))
+                try
                 {
+
                     if (!client.Aisling.LoggedIn)
                         continue;
-
-                    ObjectComponent.UpdateClientObjects(client.Aisling);
 
                     if (!client.IsWarping)
                     {
@@ -102,6 +101,10 @@ namespace Darkages.Network.Game
                         if (client.CanSendLocation && !client.IsRefreshing &&
                             client.Aisling.CurrentMapId == ServerContextBase.Config.PVPMap)
                             client.SendLocation();
+                }
+                catch
+                {
+                    // ignored
                 }
             }
         }
@@ -146,10 +149,11 @@ namespace Darkages.Network.Game
                 {
                     UpdateClients(elapsedTime);
                     UpdateComponents(elapsedTime);
-
-                    _lastFrameUpdate = DateTime.UtcNow;
-                    Thread.Sleep(_frameRate);
                 });
+
+
+                _lastFrameUpdate = DateTime.UtcNow;
+                Thread.Sleep(_frameRate);
             }
         }
 
@@ -157,11 +161,19 @@ namespace Darkages.Network.Game
         {
             try
             {
+
                 var components = ServerComponents.Select(i => i.Value);
 
                 foreach (var component in components)
                 {
-                    component.Update(elapsedTime);
+                    try
+                    {
+                        component.Update(elapsedTime);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
             }
             catch (Exception e)
