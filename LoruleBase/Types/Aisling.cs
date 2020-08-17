@@ -244,7 +244,8 @@ namespace Darkages
                 XPos = ServerContextBase.Config.StartingPosition.X,
                 YPos = ServerContextBase.Config.StartingPosition.Y,
                 AnimalForm = AnimalForm.None,
-                Nation = "Mileth"
+                Nation = "Mileth",
+                EquipmentManager = new EquipmentManager(null),
             };
 
             if (ServerContextBase.Config.GiveAssailOnCreate)
