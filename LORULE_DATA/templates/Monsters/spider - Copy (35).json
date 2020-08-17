@@ -1,0 +1,60 @@
+{
+  "$type": "Darkages.Types.MonsterTemplate, Darkages.Server",
+  "Drops": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+    	"Spider's Eye",
+      "Spider's Silk",
+    ]
+  },
+  "Image": 16437,
+  "ScriptName": "Common Monster",
+  "DefinedX": 0,
+  "DefinedY": 0,
+  "LootType": 2,
+  "MoodType": 8,
+  "SpawnType": 2,
+  "ElementQualifier": 0,
+  "PathQualifer": 1,
+  "Level": 5,
+  "Experience": 360,
+  "MaximumHP": 680,
+  "MaximumMP": 0,
+  "Str":7,
+  "Int":3,
+  "Wis":3,
+  "Con":3,
+  "Dex":7,
+  "Ac": 67,
+  "AreaID": 3029,
+  "MovementSpeed": 450,
+  "CastSpeed": 2500,
+  "SpawnMax": 5000,
+  "SpawnRate": 1,
+  "SpawnSize": 50,
+  "AttackSpeed": 2000,
+  "IgnoreCollision": true,
+  "ImageVarience": 0,
+  "SpawnOnlyOnActiveMaps": false,
+  "Grow": false,
+  "SpellScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": []
+  },
+  "SkillScripts": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+    	"Assail"
+    ]
+  },
+  "DefenseElement": 0,
+  "OffenseElement": 0,
+  "Waypoints": null,
+  "UpdateMapWide": false,
+  "FamilyKey": null,
+  "BaseName": "Spider 5s",
+  "EngagedWalkingSpeed": 1000,
+  "Name": "Spider 5s",
+  "Description": "These arachnids are relatively harmless, but will defend themselves if attacked.",
+  "Group": null
+}

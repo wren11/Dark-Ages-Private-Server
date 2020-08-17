@@ -9,18 +9,19 @@ namespace Darkages.Network.Game
             if (operation == null)
                 return false;
 
-#if DEBUG
             try
             {
                 operation.Invoke();
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception.Message);
-                ServerContext.Error(exception);
+                if (!exception.Message.Contains("Collection"))
+                {
+                    ServerContext.Error(exception);
+                }
+
                 return false;
             }
-#endif
 
             return true;
         }

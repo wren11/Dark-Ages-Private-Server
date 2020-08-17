@@ -1,6 +1,7 @@
 ﻿using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
+
 ///************************************************************************
 //Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
@@ -129,50 +130,25 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (Monster.IsConfused || Monster.IsFrozen || Monster.IsParalyzed || Monster.IsSleeping)
                 return;
 
-            if (Monster.Target != null && Monster.TaggedAislings.Count > 0 && Monster.Template.EngagedWalkingSpeed > 0)
-                Monster.WalkTimer.Delay = TimeSpan.FromMilliseconds(Monster.Template.EngagedWalkingSpeed);
-
-            if (Monster.Target != null && Monster.Target is Aisling)
-                if ((Monster.Target as Aisling).Invisible)
-                {
-                    ClearTarget();
-                    Monster.WalkTimer.Update(elapsedTime);
-                    return;
-                }
-
-            Monster.BashTimer.Update(elapsedTime);
-            Monster.CastTimer.Update(elapsedTime);
-            Monster.WalkTimer.Update(elapsedTime);
-
-            try
+            if (Monster.CurrentHp <= 0)
             {
-                if (Monster.BashTimer.Elapsed)
+                if (Monster.Target != null && !Monster.Skulled)
                 {
-                    if (Monster.BashEnabled)
-                        Bash();
-
-                    Monster.BashTimer.Reset();
-
-                }
-
-                if (Monster.CastTimer.Elapsed)
-                {
-                    if (Monster.CastEnabled) CastSpell();
-
-                    Monster.CastTimer.Reset();
-                }
-
-                if (Monster.WalkTimer.Elapsed)
-                {
-                    if (Monster.WalkEnabled) Walk();
-
-                    Monster.WalkTimer.Reset();
+                    foreach (var script in Monster.Scripts.Values.Where(script => Monster.Target?.Client != null))
+                    {
+                        script?.OnDeath(Monster.Target.Client);
+                    }
+                    Monster.Skulled = true;
                 }
             }
-            catch (Exception)
-            {
-                //ignore
-            }
+
+            Monster.UpdateBuffs(elapsedTime);
+
+            Monster.UpdateDebuffs(elapsedTime);
+
+            HandleMonsterState(elapsedTime);
+
+            Monster.LastUpdated = DateTime.UtcNow;
         }
 
         private void Bash()
@@ -264,6 +240,53 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             Monster.BashEnabled = false;
             Monster.WalkEnabled = true;
             Monster.Target = null;
+        }
+
+        private void HandleMonsterState(TimeSpan elapsedTime)
+        {
+            if (Monster.Target != null && Monster.TaggedAislings.Count > 0 && Monster.Template.EngagedWalkingSpeed > 0)
+                Monster.WalkTimer.Delay = TimeSpan.FromMilliseconds(Monster.Template.EngagedWalkingSpeed);
+
+            if (Monster.Target != null && Monster.Target is Aisling)
+                if ((Monster.Target as Aisling).Invisible)
+                {
+                    ClearTarget();
+                    Monster.WalkTimer.Update(elapsedTime);
+                    return;
+                }
+
+            Monster.BashTimer.Update(elapsedTime);
+            Monster.CastTimer.Update(elapsedTime);
+            Monster.WalkTimer.Update(elapsedTime);
+
+            try
+            {
+                if (Monster.BashTimer.Elapsed)
+                {
+                    if (Monster.BashEnabled)
+                        Bash();
+
+                    Monster.BashTimer.Reset();
+                }
+
+                if (Monster.CastTimer.Elapsed)
+                {
+                    if (Monster.CastEnabled) CastSpell();
+
+                    Monster.CastTimer.Reset();
+                }
+
+                if (Monster.WalkTimer.Elapsed)
+                {
+                    if (Monster.WalkEnabled) Walk();
+
+                    Monster.WalkTimer.Reset();
+                }
+            }
+            catch (Exception)
+            {
+                //ignore
+            }
         }
 
         private void LoadSkillScript(string skillscriptstr, bool primary = false)

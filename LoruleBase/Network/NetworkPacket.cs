@@ -10,10 +10,6 @@ namespace Darkages.Network
 {
     public class NetworkPacket
     {
-        public byte Ordinal { get; }
-        public byte Command { get; }
-        public byte[] Data { get; }
-
         public NetworkPacket(byte[] array, long count)
         {
             Command = array[0];
@@ -24,11 +20,15 @@ namespace Darkages.Network
             Ordinal = array[1];
             Data = count - 2 > 0 ? new byte[count - 0x2] : new byte[count];
 
-            if (Data.Length >= 2)
+            if (Data.Length > 0)
             {
                 Buffer.BlockCopy(array, 2, Data, 0, Data.Length);
             }
         }
+
+        public byte Command { get; }
+        public byte[] Data { get; }
+        public byte Ordinal { get; }
 
         public byte[] ToArray()
         {

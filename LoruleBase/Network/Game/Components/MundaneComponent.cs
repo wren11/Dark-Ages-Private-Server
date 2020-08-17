@@ -16,7 +16,6 @@ namespace Darkages.Network.Game.Components
         }
 
         public GameServerTimer Timer { get; set; }
-        public override UpdateType UpdateMethodType => UpdateType.Async;
 
         public void SpawnMundanes()
         {
@@ -44,7 +43,7 @@ namespace Darkages.Network.Game.Components
             }
         }
 
-        public override Task Update(TimeSpan elapsedTime)
+        public override void Update(TimeSpan elapsedTime)
         {
             Timer.Update(elapsedTime);
 
@@ -53,8 +52,6 @@ namespace Darkages.Network.Game.Components
                 Lorule.Update(SpawnMundanes);
                 Timer.Reset();
             }
-
-            return Task.CompletedTask;
         }
     }
 }

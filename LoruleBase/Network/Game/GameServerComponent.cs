@@ -9,12 +9,6 @@ using System.Threading.Tasks;
 
 namespace Darkages.Network.Game
 {
-    public enum UpdateType
-    {
-        Async,
-        Sync
-    }
-
     public abstract class GameServerComponent : ObjectManager
     {
         public GameServerComponent(GameServer server)
@@ -24,8 +18,6 @@ namespace Darkages.Network.Game
 
         [JsonIgnore] public GameServer Server { get; }
 
-        public abstract UpdateType UpdateMethodType { get; }
-
-        public abstract Task Update(TimeSpan elapsedTime);
+        public abstract void Update(TimeSpan elapsedTime);
     }
 }

@@ -95,6 +95,7 @@ namespace Darkages.Types
         public Collection<string> SpellScripts { get; set; }
 
         public bool UpdateMapWide { get; set; }
+        public double UpdateRate { get; set; } = 1000;
         [JsonProperty] public List<Position> Waypoints { get; set; }
 
         public bool ReadyToSpawn()

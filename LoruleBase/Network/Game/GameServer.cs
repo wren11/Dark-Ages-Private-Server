@@ -70,7 +70,7 @@ namespace Darkages.Network.Game
         {
             base.Start(port);
 
-            var serverThread1 = new Thread(Update) { Priority = ThreadPriority.Normal, IsBackground = true };
+            var serverThread1 = new Thread(Update) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
 
             try
             {
@@ -91,6 +91,8 @@ namespace Darkages.Network.Game
                 {
                     if (!client.Aisling.LoggedIn)
                         continue;
+
+                    ObjectComponent.UpdateClientObjects(client.Aisling);
 
                     if (!client.IsWarping)
                     {
@@ -131,9 +133,7 @@ namespace Darkages.Network.Game
                 };
             }
         }
-        public static ManualResetEvent GameServerUpdateToken = new ManualResetEvent(false);
 
-        // Main Server Update Thread
         private void Update()
         {
             _lastFrameUpdate = DateTime.UtcNow;
@@ -142,19 +142,10 @@ namespace Darkages.Network.Game
             {
                 var elapsedTime = DateTime.UtcNow - _lastFrameUpdate;
 
-                GameServerUpdateToken.Reset();
-
                 Lorule.Update(() =>
                 {
-
-                    Task.Run(() =>
-                    {
-                        UpdateClients(elapsedTime);
-                        UpdateComponents(elapsedTime);
-                    });
-
-
-                    GameServerUpdateToken.WaitOne();
+                    UpdateClients(elapsedTime);
+                    UpdateComponents(elapsedTime);
 
                     _lastFrameUpdate = DateTime.UtcNow;
                     Thread.Sleep(_frameRate);
@@ -162,7 +153,7 @@ namespace Darkages.Network.Game
             }
         }
 
-        private async void UpdateComponents(TimeSpan elapsedTime)
+        private void UpdateComponents(TimeSpan elapsedTime)
         {
             try
             {
@@ -170,16 +161,12 @@ namespace Darkages.Network.Game
 
                 foreach (var component in components)
                 {
-                    await component.Update(elapsedTime);
+                    component.Update(elapsedTime);
                 }
             }
             catch (Exception e)
             {
                 ServerContext.Error(e);
-            }
-            finally
-            { 
-                GameServerUpdateToken.Set();
             }
         }
     }

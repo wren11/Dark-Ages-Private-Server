@@ -15,15 +15,13 @@ namespace Darkages.Network.Game.Components
             _timer = new GameServerTimer(TimeSpan.FromSeconds(6));
         }
 
-        public override UpdateType UpdateMethodType => UpdateType.Sync;
-
         public void Pulse(GameClient client)
         {
             client.Aisling?.Show(Scope.NearbyAislings,
                 new ServerFormat1A(client.Aisling.Serial, 16, 20));
         }
 
-        public override Task Update(TimeSpan elapsedTime)
+        public override void Update(TimeSpan elapsedTime)
         {
             _timer.Update(elapsedTime);
 
@@ -44,8 +42,6 @@ namespace Darkages.Network.Game.Components
 
                 _timer.Reset();
             }
-
-            return Task.CompletedTask;
         }
     }
 }

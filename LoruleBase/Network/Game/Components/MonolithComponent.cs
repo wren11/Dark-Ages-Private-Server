@@ -19,8 +19,6 @@ namespace Darkages.Network.Game.Components
             _timer = new GameServerTimer(TimeSpan.FromMilliseconds(ServerContextBase.Config.GlobalSpawnTimer));
         }
 
-        public override UpdateType UpdateMethodType => UpdateType.Async;
-
         public void CreateFromTemplate(MonsterTemplate template, Area map)
         {
             var newObj = Monster.Create(template, map);
@@ -29,7 +27,7 @@ namespace Darkages.Network.Game.Components
                 AddObject(newObj);
         }
 
-        public override Task Update(TimeSpan elapsedTime)
+        public override void Update(TimeSpan elapsedTime)
         {
             _timer.Update(elapsedTime);
 
@@ -37,10 +35,7 @@ namespace Darkages.Network.Game.Components
             {
                 Lorule.Update(ManageSpawns);
                 _timer.Reset();
-
             }
-
-            return Task.CompletedTask;
         }
 
         private void ManageSpawns()

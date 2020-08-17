@@ -5,7 +5,7 @@ using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 
 #endregion
 
@@ -13,31 +13,30 @@ namespace Darkages.Network.Game.Components
 {
     public class ObjectComponent : GameServerComponent
     {
+        public static Dictionary<int, Thread> WorkerThreads = new Dictionary<int, Thread>();
         public GameServerTimer Timer = new GameServerTimer(TimeSpan.FromMilliseconds(100));
-        private readonly GameServerTimer objectUpdateTimer = new GameServerTimer(TimeSpan.FromMilliseconds(5));
+        private static DateTime _lastFrameUpdate = DateTime.UtcNow;
 
         public ObjectComponent(GameServer server) : base(server)
         {
         }
 
-        public override UpdateType UpdateMethodType => UpdateType.Async;
+        #region Underlying Object Managers
 
-        private Sprite[] _objectCache = null;
-
-        public static void AddObjects(List<Sprite> payload, Aisling myplayer, Sprite[] objectsToAdd)
+        public static void AddObjects(List<Sprite> payload, Aisling player, Sprite[] objectsToAdd)
         {
             if (payload == null) throw new ArgumentNullException(nameof(payload));
-            if (myplayer == null) throw new ArgumentNullException(nameof(myplayer));
+            if (player == null) throw new ArgumentNullException(nameof(player));
 
             foreach (var obj in objectsToAdd)
             {
-                if (obj.Serial == myplayer.Serial)
+                if (obj.Serial == player.Serial)
                     continue;
 
-                if (myplayer.View.Contains(obj))
+                if (player.View.Contains(obj))
                     continue;
 
-                if (!myplayer.View.Add(obj))
+                if (!player.View.Add(obj))
                     continue;
 
                 if (obj is Monster monster)
@@ -46,32 +45,32 @@ namespace Darkages.Network.Game.Components
 
                     if (valueCollection != null)
                         foreach (var script in valueCollection)
-                            script.OnApproach(myplayer.Client);
+                            script.OnApproach(player.Client);
                 }
 
                 if (obj is Aisling otherplayer)
                 {
-                    if (!myplayer.Dead && !otherplayer.Dead)
+                    if (!player.Dead && !otherplayer.Dead)
                     {
-                        if (myplayer.Invisible)
-                            otherplayer.ShowTo(myplayer);
+                        if (player.Invisible)
+                            otherplayer.ShowTo(player);
                         else
-                            myplayer.ShowTo(otherplayer);
+                            player.ShowTo(otherplayer);
 
                         if (otherplayer.Invisible)
-                            myplayer.ShowTo(otherplayer);
+                            player.ShowTo(otherplayer);
                         else
-                            otherplayer.ShowTo(myplayer);
+                            otherplayer.ShowTo(player);
                     }
                     else
                     {
-                        if (myplayer.Dead)
+                        if (player.Dead)
                             if (otherplayer.CanSeeGhosts())
-                                myplayer.ShowTo(otherplayer);
+                                player.ShowTo(otherplayer);
 
                         if (otherplayer.Dead)
-                            if (myplayer.CanSeeGhosts())
-                                otherplayer.ShowTo(myplayer);
+                            if (player.CanSeeGhosts())
+                                otherplayer.ShowTo(player);
                     }
                 }
                 else
@@ -82,13 +81,13 @@ namespace Darkages.Network.Game.Components
                     {
                         case Money money:
                             {
-                                var goldSetting = myplayer.GameSettings.Find(i =>
+                                var goldSetting = player.GameSettings.Find(i =>
                                     i.EnabledSettingStr.Contains("AUTO LOOT GOLD"));
 
                                 if (goldSetting != null)
                                     if (goldSetting.Enabled)
                                     {
-                                        money.GiveTo(money.Amount, myplayer);
+                                        money.GiveTo(money.Amount, player);
                                         skip = true;
                                     }
 
@@ -99,6 +98,18 @@ namespace Darkages.Network.Game.Components
                     if (!skip)
                         payload.Add(obj);
                 }
+            }
+        }
+
+        public static void BeginUpdatingMap(Area area)
+        {
+            if (!WorkerThreads.ContainsKey(area.ID))
+            {
+                WorkerThreads[area.ID] = new Thread(() => UpdateAreaObjects(area))
+                {
+                    IsBackground = true
+                };
+                WorkerThreads[area.ID].Start();
             }
         }
 
@@ -131,6 +142,104 @@ namespace Darkages.Network.Game.Components
             }
         }
 
+        #endregion
+
+        public static void UpdateAreaObjects(Area area)
+        {
+            bool Leave() => !area.GetObjects(area, i => i?.Map != null && i.Map.Ready, Get.Aislings).Any();
+
+            var frameRate = TimeSpan.FromSeconds(1.0 / 30);
+
+            while (true)
+            {
+                if (Leave()) break;
+
+                var elapsedTime = DateTime.UtcNow - _lastFrameUpdate;
+
+                static bool Predicate(Sprite n) => true;
+
+                var objectCache = area.GetObjects(area, Predicate, Get.Items | Get.Money | Get.Monsters | Get.Mundanes);
+
+                if (objectCache == null)
+                    return;
+
+                foreach (var obj in objectCache)
+                {
+                    switch (obj)
+                    {
+                        case Aisling aisling:
+                            break;
+
+                        case Monster monster when monster.Map == null || monster.Scripts == null:
+                            continue;
+                        case Monster monster:
+                            {
+                                if (obj.CurrentHp <= 0x0 && obj.Target != null && !monster.Skulled)
+                                {
+                                    foreach (var script in monster.Scripts.Values.Where(
+                                        script => obj.Target?.Client != null))
+                                        script?.OnDeath(obj.Target.Client);
+
+                                    monster.Skulled = true;
+                                }
+
+                                foreach (var script in monster.Scripts.Values)
+                                    script?.Update(elapsedTime);
+
+                                if (obj.TrapsAreNearby())
+                                {
+                                    var nextTrap = Trap.Traps.Select(i => i.Value)
+                                        .FirstOrDefault(i => i.Location.X == obj.X && i.Location.Y == obj.Y);
+
+                                    if (nextTrap != null)
+                                        Trap.Activate(nextTrap, obj);
+                                }
+
+                                monster.UpdateBuffs(elapsedTime);
+                                monster.UpdateDebuffs(elapsedTime);
+                                monster.LastUpdated = DateTime.UtcNow;
+                                break;
+                            }
+                        case Item item:
+                            {
+                                var stale = !((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3);
+
+                                if (item.Cursed && stale)
+                                {
+                                    item.AuthenticatedAislings = null;
+                                    item.Cursed = false;
+                                }
+
+                                break;
+                            }
+                        case Money money:
+                            break;
+
+                        case Mundane mundane:
+                            {
+                                if (mundane.CurrentHp <= 0)
+                                    mundane.CurrentHp = mundane.Template.MaximumHp;
+
+                                mundane.UpdateBuffs(elapsedTime);
+                                mundane.UpdateDebuffs(elapsedTime);
+                                mundane.Update(elapsedTime);
+                                break;
+                            }
+                    }
+
+                    obj.LastUpdated = DateTime.UtcNow;
+                }
+
+                _lastFrameUpdate = DateTime.UtcNow;
+                Thread.Sleep(frameRate);
+            }
+
+            if (WorkerThreads.ContainsKey(area.ID))
+            {
+                WorkerThreads.Remove(area.ID);
+            }
+        }
+
         public static void UpdateClientObjects(Aisling user)
         {
             Lorule.Update(() =>
@@ -140,8 +249,7 @@ namespace Darkages.Network.Game.Components
                 if (!user.LoggedIn || !user.Map.Ready)
                     return;
 
-                var objects = user.GetObjects(user.Map, selector => selector != null && selector.Serial != user.Serial,
-                    Get.All).ToArray();
+                var objects = user.GetObjects(user.Map, selector => selector != null && selector.Serial != user.Serial, Get.All).ToArray();
                 var objectsInView = objects.Where(s => s.WithinRangeOf(user)).ToArray();
                 var objectsNotInView = objects.Where(s => !s.WithinRangeOf(user)).ToArray();
                 var objectsToRemove = objectsNotInView.Except(objectsInView).ToArray();
@@ -160,116 +268,15 @@ namespace Darkages.Network.Game.Components
             });
         }
 
-        public Sprite[] GetAreaObjects(Area area)
-        {
-            return GetObjects(area, i => i.CurrentMapId == area.ID, Get.All).ToArray();
-        }
-
-        public override Task Update(TimeSpan elapsedTime)
+        public override void Update(TimeSpan elapsedTime)
         {
             Timer.Update(elapsedTime);
 
-            if (Timer.Elapsed)
-            {
-                Lorule.Update(UpdateObjects);
-                Timer.Reset();
-            }
+            if (!Timer.Elapsed)
+                return;
 
-            objectUpdateTimer.Update(elapsedTime);
-
-            if (objectUpdateTimer.Elapsed)
-            {
-                foreach (var area in ServerContextBase.GlobalMapCache)
-                {
-                    if (!area.Value.Ready)
-                        continue;
-
-                    lock (ServerContext.SyncLock)
-                    {
-                        _objectCache = GetAreaObjects(area.Value);
-
-                        if (_objectCache != null && _objectCache.Length > 0)
-                        {
-                            UpdateAreaObjects(elapsedTime);
-                        }
-                    }
-                }
-
-                objectUpdateTimer.Reset();
-
-            }
-
-            return Task.CompletedTask;
-        }
-
-        public void UpdateAreaObjects(TimeSpan elapsedTime)
-        {
-            lock (ServerContext.SyncLock)
-            {
-                if (_objectCache == null || _objectCache.Length <= 0)
-                    return;
-
-                foreach (var obj in _objectCache)
-                {
-                    switch (obj)
-                    {
-                        case Monster monster when monster.Map == null || monster.Scripts == null:
-                            continue;
-                        case Monster monster:
-                        {
-                            if (obj.CurrentHp <= 0x0 && obj.Target != null && !monster.Skulled)
-                            {
-                                foreach (var script in monster.Scripts.Values.Where(
-                                    script => obj.Target?.Client != null))
-                                    script?.OnDeath(obj.Target.Client);
-
-                                monster.Skulled = true;
-                            }
-
-                            foreach (var script in monster.Scripts.Values)
-                                script?.Update(elapsedTime);
-
-                            if (obj.TrapsAreNearby())
-                            {
-                                var nextTrap = Trap.Traps.Select(i => i.Value)
-                                    .FirstOrDefault(i => i.Location.X == obj.X && i.Location.Y == obj.Y);
-
-                                if (nextTrap != null)
-                                    Trap.Activate(nextTrap, obj);
-                            }
-
-                            monster.UpdateBuffs(elapsedTime);
-                            monster.UpdateDebuffs(elapsedTime);
-                            monster.LastUpdated = DateTime.UtcNow;
-                            break;
-                        }
-                        case Item item:
-                        {
-                            var stale = !((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3);
-
-                            if (item.Cursed && stale)
-                            {
-                                item.AuthenticatedAislings = null;
-                                item.Cursed = false;
-                            }
-
-                            break;
-                        }
-                        case Mundane mundane:
-                        {
-                            if (mundane.CurrentHp <= 0)
-                                mundane.CurrentHp = mundane.Template.MaximumHp;
-
-                            mundane.UpdateBuffs(elapsedTime);
-                            mundane.UpdateDebuffs(elapsedTime);
-                            mundane.Update(elapsedTime);
-                            break;
-                        }
-                    }
-
-                    obj.LastUpdated = DateTime.UtcNow;
-                }
-            }
+            UpdateObjects();
+            Timer.Reset();
         }
 
         private void UpdateObjects()
@@ -277,7 +284,11 @@ namespace Darkages.Network.Game.Components
             var connectedUsers = Server.Clients.Where(i =>
                 i?.Aisling?.Map != null && i.Aisling.Map.Ready).Select(i => i.Aisling).ToArray();
 
-            foreach (var user in connectedUsers) UpdateClientObjects(user);
+            foreach (var user in connectedUsers)
+            {
+                BeginUpdatingMap(user.Map);
+                UpdateClientObjects(user);
+            }
         }
     }
 }

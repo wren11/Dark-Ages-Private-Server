@@ -10,26 +10,25 @@ namespace Darkages.Network
 {
     public class NetworkSocket : ObjectManager
     {
-        const int HeaderLength = 3;
+        internal Socket Socket;
+        private const int HeaderLength = 3;
 
         private readonly byte[] _header = new byte[HeaderLength];
-        private readonly byte[] _packet = new byte[0xFFFF];
+        private readonly byte[] _packet = new byte[1024];
 
         private int _headerOffset;
         private int _packetLength;
         private int _packetOffset;
 
-        public bool HeaderComplete => _headerOffset == HeaderLength;
-
-        public bool PacketComplete => _packetOffset == _packetLength;
-
-        internal Socket Socket;
-
         public NetworkSocket(Socket socket)
         {
+            ConfigureTcpSocket(socket);
             Socket = socket;
         }
 
+        public bool HeaderComplete => _headerOffset == HeaderLength;
+
+        public bool PacketComplete => _packetOffset == _packetLength;
 
         public virtual IAsyncResult BeginReceiveHeader(AsyncCallback callback, out SocketError error, object state)
         {
@@ -90,6 +89,39 @@ namespace Darkages.Network
         public NetworkPacket ToPacket()
         {
             return PacketComplete ? new NetworkPacket(_packet, _packetLength) : null;
+        }
+
+        private static void ConfigureTcpSocket(Socket tcpSocket)
+        {
+            tcpSocket.LingerState = new LingerOption(true, 10);
+            tcpSocket.NoDelay = true;
+            tcpSocket.ReceiveBufferSize = 256;
+            tcpSocket.ReceiveTimeout = 0;
+            tcpSocket.SendBufferSize = 256;
+            tcpSocket.SendTimeout = 0;
+            tcpSocket.Ttl = 42;
+
+            Console.WriteLine("Tcp Socket configured:");
+
+            Console.WriteLine($"  ExclusiveAddressUse {tcpSocket.ExclusiveAddressUse}");
+
+            Console.WriteLine($"  LingerState {tcpSocket.LingerState.Enabled}, {tcpSocket.LingerState.LingerTime}");
+
+            Console.WriteLine($"  NoDelay {tcpSocket.NoDelay}");
+
+            Console.WriteLine($"  ReceiveBufferSize {tcpSocket.ReceiveBufferSize}");
+
+            Console.WriteLine($"  ReceiveTimeout {tcpSocket.ReceiveTimeout}");
+
+            Console.WriteLine($"  SendBufferSize {tcpSocket.SendBufferSize}");
+
+            Console.WriteLine($"  SendTimeout {tcpSocket.SendTimeout}");
+
+            Console.WriteLine($"  Ttl {tcpSocket.Ttl}");
+
+            Console.WriteLine($"  IsBound {tcpSocket.IsBound}");
+
+            Console.WriteLine("");
         }
     }
 }

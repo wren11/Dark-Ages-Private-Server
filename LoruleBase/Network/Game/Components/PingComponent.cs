@@ -19,9 +19,8 @@ namespace Darkages.Network.Game.Components
         }
 
         public GameServerTimer Timer { get; set; }
-        public override UpdateType UpdateMethodType => UpdateType.Sync;
 
-        public override Task Update(TimeSpan elapsedTime)
+        public override void Update(TimeSpan elapsedTime)
         {
             Timer.Update(elapsedTime);
 
@@ -36,8 +35,6 @@ namespace Darkages.Network.Game.Components
 
                 Timer.Reset();
             }
-
-            return Task.CompletedTask;
         }
     }
 }

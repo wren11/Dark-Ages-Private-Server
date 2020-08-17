@@ -5,6 +5,7 @@ using Darkages.Types;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 #endregion
@@ -21,7 +22,7 @@ namespace Darkages.Network.Object
 
         T GetObject<T>(Area map, Predicate<T> p) where T : Sprite;
 
-        Sprite GetObject(Area Map, Predicate<Sprite> p, ObjectManager.Get selections);
+        Sprite GetObject(Area map, Predicate<Sprite> p, ObjectManager.Get selections);
 
         T GetObjectByName<T>(string name, Area map = null) where T : Sprite, new();
 
@@ -30,6 +31,7 @@ namespace Darkages.Network.Object
         IEnumerable<Sprite> GetObjects(Area map, Predicate<Sprite> p, ObjectManager.Get selections);
     }
 
+    [SuppressMessage("ReSharper", "MergeCastWithTypeCheck")]
     public class ObjectManager : IObjectManager
     {
         [Flags]
@@ -55,40 +57,11 @@ namespace Darkages.Network.Object
                 TypeNameHandling = TypeNameHandling.All
             });
 
-            if (source is Item)
-            {
-                (obj as Item).Template = (source as Item).Template;
-                (obj as Item).Scripts =
-                    ScriptManager.Load<ItemScript>((source as Item).Template.ScriptName, obj as Item);
-            }
-
-            if (source is Skill)
-            {
-                (obj as Skill).Template = (source as Skill).Template;
-                (obj as Skill).Scripts =
-                    ScriptManager.Load<SkillScript>((source as Skill).Template.ScriptName, obj as Skill);
-            }
-
-            if (source is Spell)
-            {
-                (obj as Spell).Template = (source as Spell).Template;
-                (obj as Spell).Scripts =
-                    ScriptManager.Load<SpellScript>((source as Spell).Template.ScriptKey, obj as Spell);
-            }
-
-            if (source is Monster)
-            {
-                (obj as Monster).Template = (source as Monster).Template;
-                (obj as Monster).Scripts =
-                    ScriptManager.Load<MonsterScript>((source as Monster).Template.ScriptName, obj as Monster);
-            }
-
-            if (source is Mundane)
-            {
-                (obj as Mundane).Template = (source as Mundane).Template;
-                (obj as Mundane).Scripts =
-                    ScriptManager.Load<MundaneScript>((source as Mundane).Template.ScriptKey, obj as Mundane);
-            }
+            CloneItem(source, obj);
+            CloneSkill(source, obj);
+            CloseSpell(source, obj);
+            CloneMonster(source, obj);
+            CloneMundane(source, obj);
 
             return obj;
         }
@@ -116,9 +89,9 @@ namespace Darkages.Network.Object
             return ServerContextBase.Game?.ObjectFactory.Query(map, p);
         }
 
-        public Sprite GetObject(Area Map, Predicate<Sprite> p, Get selections)
+        public Sprite GetObject(Area map, Predicate<Sprite> p, Get selections)
         {
-            return GetObjects(Map, p, selections).FirstOrDefault();
+            return GetObjects(map, p, selections).FirstOrDefault();
         }
 
         public T GetObjectByName<T>(string name, Area map = null)
@@ -165,6 +138,56 @@ namespace Darkages.Network.Object
                 bucket.AddRange(GetObjects<Item>(map, p));
 
             return bucket;
+        }
+
+        private static void CloneItem<T>(object source, T obj)
+        {
+            if (source is Item)
+            {
+                (obj as Item).Template = (source as Item).Template;
+                (obj as Item).Scripts =
+                    ScriptManager.Load<ItemScript>((source as Item).Template.ScriptName, obj as Item);
+            }
+        }
+
+        private static void CloneMonster<T>(object source, T obj)
+        {
+            if (source is Monster)
+            {
+                (obj as Monster).Template = (source as Monster).Template;
+                (obj as Monster).Scripts =
+                    ScriptManager.Load<MonsterScript>((source as Monster).Template.ScriptName, obj as Monster);
+            }
+        }
+
+        private static void CloneMundane<T>(object source, T obj)
+        {
+            if (source is Mundane)
+            {
+                (obj as Mundane).Template = (source as Mundane).Template;
+                (obj as Mundane).Scripts =
+                    ScriptManager.Load<MundaneScript>((source as Mundane).Template.ScriptKey, obj as Mundane);
+            }
+        }
+
+        private static void CloneSkill<T>(object source, T obj)
+        {
+            if (source is Skill)
+            {
+                (obj as Skill).Template = (source as Skill).Template;
+                (obj as Skill).Scripts =
+                    ScriptManager.Load<SkillScript>((source as Skill).Template.ScriptName, obj as Skill);
+            }
+        }
+
+        private static void CloseSpell<T>(object source, T obj)
+        {
+            if (source is Spell)
+            {
+                (obj as Spell).Template = (source as Spell).Template;
+                (obj as Spell).Scripts =
+                    ScriptManager.Load<SpellScript>((source as Spell).Template.ScriptKey, obj as Spell);
+            }
         }
     }
 }

@@ -19,16 +19,6 @@ namespace Darkages.Network
 {
     public abstract partial class NetworkClient : ObjectManager
     {
-        public bool InMapTransition { get; set; }
-        public byte Ordinal { get; set; }
-        public int Serial { get; set; }
-
-        public NetworkPacketReader Reader { get; set; }
-        public NetworkPacketWriter Writer { get; set; }
-        public SecurityProvider Encryption { get; set; }
-
-        private protected NetworkStream PacketStream = default;
-
         public static ManualResetEvent NetworkingResetEventToken = new ManualResetEvent(false);
 
         protected NetworkClient()
@@ -38,12 +28,18 @@ namespace Darkages.Network
             Encryption = new SecurityProvider();
         }
 
+        public SecurityProvider Encryption { get; set; }
+        public bool InMapTransition { get; set; }
+        public byte Ordinal { get; set; }
+        public NetworkPacketReader Reader { get; set; }
+        public int Serial { get; set; }
+        public NetworkPacketWriter Writer { get; set; }
+        public Socket Socket => State.Socket;
+
         internal NetworkSocket State
         {
             get; set;
         }
-
-        public Socket Socket => State.Socket;
 
         public void FlushAndSend(NetworkFormat format)
         {
@@ -52,8 +48,6 @@ namespace Darkages.Network
 
             lock (ServerContext.SyncLock)
             {
-                PacketStream ??= new NetworkStream(Socket);
-
                 Writer.Position = 0;
                 Writer.Write(format.Command);
 
@@ -71,23 +65,24 @@ namespace Darkages.Network
 
                 var array = packet.ToArray();
                 NetworkingResetEventToken.Reset();
-                PacketStream.BeginWrite(array, 0, array.Length, SendCompleted, Socket);
-                NetworkingResetEventToken.WaitOne();
-            }
-        }
 
-        private void SendCompleted(IAsyncResult ar)
-        {
-            NetworkingResetEventToken.Set();
+                try
+                {
+                    Socket.BeginSend(
+                        array,
+                        0,
+                        array.Length,
+                        SocketFlags.None,
+                        SendCompleted,
+                        Socket
+                    );
 
-            var socket = (Socket) ar.AsyncState;
-            if (socket == null)
-                return;
-
-            var dataSent = socket.EndSend(ar);
-            if (dataSent == 0)
-            {
-                //TODO
+                    NetworkingResetEventToken.WaitOne();
+                }
+                catch (SocketException)
+                {
+                    NetworkingResetEventToken.Set();
+                }
             }
         }
 
@@ -124,7 +119,6 @@ namespace Darkages.Network
         }
 
         public void Send(NetworkFormat format) => FlushAndSend(format);
-
 
         public void Send(NetworkPacketWriter lpData)
         {
@@ -185,6 +179,21 @@ namespace Darkages.Network
 
             for (var i = 0; i < value.Data.Length - 6; i++)
                 value.Data[6 + i] ^= (byte)(((byte)(P(value) + 0x28) + i + 2) % 256);
+        }
+
+        private void SendCompleted(IAsyncResult ar)
+        {
+            NetworkingResetEventToken.Set();
+
+            var socket = (Socket)ar.AsyncState;
+            if (socket == null)
+                return;
+
+            var dataSent = socket.EndSend(ar);
+            if (dataSent == 0)
+            {
+                //TODO
+            }
         }
 
         #region Server Formats
