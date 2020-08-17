@@ -14,7 +14,7 @@ namespace Darkages.Network.Game.Components
     public class ObjectComponent : GameServerComponent
     {
         public GameServerTimer Timer = new GameServerTimer(TimeSpan.FromMilliseconds(100));
-        private readonly GameServerTimer objectUpdateTimer = new GameServerTimer(TimeSpan.FromMilliseconds(5));
+        private readonly GameServerTimer _objectUpdateTimer = new GameServerTimer(TimeSpan.FromMilliseconds(5));
 
         public ObjectComponent(GameServer server) : base(server)
         {
@@ -171,13 +171,13 @@ namespace Darkages.Network.Game.Components
 
             if (Timer.Elapsed)
             {
-                Lorule.Update(UpdateObjects);
+                UpdateObjects();
                 Timer.Reset();
             }
 
-            objectUpdateTimer.Update(elapsedTime);
+            _objectUpdateTimer.Update(elapsedTime);
 
-            if (objectUpdateTimer.Elapsed)
+            if (_objectUpdateTimer.Elapsed)
             {
                 foreach (var area in ServerContextBase.GlobalMapCache)
                 {
@@ -195,7 +195,7 @@ namespace Darkages.Network.Game.Components
                     }
                 }
 
-                objectUpdateTimer.Reset();
+                _objectUpdateTimer.Reset();
 
             }
 
@@ -274,10 +274,15 @@ namespace Darkages.Network.Game.Components
 
         private void UpdateObjects()
         {
-            var connectedUsers = Server.Clients.Where(i =>
-                i?.Aisling?.Map != null && i.Aisling.Map.Ready).Select(i => i.Aisling).ToArray();
+            Lorule.Update(() =>
+            {
+                var connectedUsers = Server.Clients.Where(i =>
+                    i?.Aisling?.Map != null && i.Aisling.Map.Ready).Select(i => i.Aisling).ToArray();
 
-            foreach (var user in connectedUsers) UpdateClientObjects(user);
+                foreach (var user in connectedUsers)
+                    UpdateClientObjects(user);
+
+            });
         }
     }
 }

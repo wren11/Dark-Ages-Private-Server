@@ -2567,7 +2567,7 @@ namespace Darkages.Network.Game
             client.LastScriptExecuted = DateTime.UtcNow;
 
             client.Aisling.CurrentMapId = client.Aisling.Map.ID;
-            client.Aisling.EquipmentManager = new EquipmentManager(client);
+            client.Aisling.EquipmentManager.Client = client;
             client.Aisling.CurrentWeight = 0;
             client.Aisling.ActiveStatus = ActivityStatus.Awake;
 

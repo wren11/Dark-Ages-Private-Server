@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -20,6 +19,7 @@ namespace Darkages.Network.Game
         private readonly TimeSpan _frameRate;
 
         private DateTime _lastFrameUpdate = DateTime.UtcNow;
+        private DateTime _lastUpdateUpdate = DateTime.UtcNow;
 
         public GameServer(int capacity) : base(capacity)
         {
@@ -71,10 +71,12 @@ namespace Darkages.Network.Game
             base.Start(port);
 
             var serverThread1 = new Thread(Update) { Priority = ThreadPriority.Normal, IsBackground = true };
+            var serverThread2 = new Thread(Worker) { Priority = ThreadPriority.Normal, IsBackground = true };
 
             try
             {
                 serverThread1.Start();
+                serverThread2.Start();
 
                 ServerContextBase.Running = true;
             }
@@ -131,7 +133,6 @@ namespace Darkages.Network.Game
                 };
             }
         }
-        public static ManualResetEvent GameServerUpdateToken = new ManualResetEvent(false);
 
         // Main Server Update Thread
         private void Update()
@@ -142,21 +143,29 @@ namespace Darkages.Network.Game
             {
                 var elapsedTime = DateTime.UtcNow - _lastFrameUpdate;
 
-                GameServerUpdateToken.Reset();
+                Lorule.Update(() =>
+                {
+                    UpdateClients(elapsedTime);
+
+                    _lastFrameUpdate = DateTime.UtcNow;
+                    Thread.Sleep(_frameRate);
+                });
+            }
+        }
+
+        private void Worker()
+        {
+            _lastUpdateUpdate = DateTime.UtcNow;
+
+            while (true)
+            {
+                var elapsedTime = DateTime.UtcNow - _lastUpdateUpdate;
 
                 Lorule.Update(() =>
                 {
+                    UpdateComponents(elapsedTime);
 
-                    Task.Run(() =>
-                    {
-                        UpdateClients(elapsedTime);
-                        UpdateComponents(elapsedTime);
-                    });
-
-
-                    GameServerUpdateToken.WaitOne();
-
-                    _lastFrameUpdate = DateTime.UtcNow;
+                    _lastUpdateUpdate = DateTime.UtcNow;
                     Thread.Sleep(_frameRate);
                 });
             }
@@ -176,10 +185,6 @@ namespace Darkages.Network.Game
             catch (Exception e)
             {
                 ServerContext.Error(e);
-            }
-            finally
-            { 
-                GameServerUpdateToken.Set();
             }
         }
     }
