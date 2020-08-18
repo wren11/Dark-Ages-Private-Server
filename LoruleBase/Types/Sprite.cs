@@ -1254,12 +1254,12 @@ namespace Darkages.Types
                     allowGhostWalk = true;
             }
 
-            if (!allowGhostWalk)
+            if (!allowGhostWalk && this is Aisling)
             {
-                if (Map.IsWall(savedX, savedY, this is Aisling))
+                if (Map?.IsWall(savedX, savedY, this is Aisling) ?? false)
                     return false;
 
-                if (!Map.ObjectGrid[savedX, savedY].IsPassable(this, this is Aisling))
+                if (!Map?.ObjectGrid[savedX, savedY].IsPassable(this, this is Aisling) ?? false)
                     return false;
             }
 
