@@ -14,7 +14,7 @@ namespace Darkages.Network
         private const int HeaderLength = 3;
 
         private readonly byte[] _header = new byte[HeaderLength];
-        private readonly byte[] _packet = new byte[1024];
+        private readonly byte[] _packet = new byte[0xFFFF];
 
         private int _headerOffset;
         private int _packetLength;
@@ -93,13 +93,9 @@ namespace Darkages.Network
 
         private static void ConfigureTcpSocket(Socket tcpSocket)
         {
-            tcpSocket.LingerState = new LingerOption(true, 10);
             tcpSocket.NoDelay = true;
-            tcpSocket.ReceiveBufferSize = 256;
-            tcpSocket.ReceiveTimeout = 0;
-            tcpSocket.SendBufferSize = 256;
-            tcpSocket.SendTimeout = 0;
-            tcpSocket.Ttl = 42;
+            tcpSocket.ReceiveBufferSize = 0xFFFF;
+            tcpSocket.SendBufferSize = 0xFFFF;
 
             Console.WriteLine("Tcp Socket configured:");
 

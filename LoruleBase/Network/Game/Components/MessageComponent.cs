@@ -21,20 +21,12 @@ namespace Darkages.Network.Game.Components
 
         public override void Update(TimeSpan elapsedTime)
         {
-            Timer.Update(elapsedTime);
-
-            if (Timer.Elapsed)
-            {
+            if (Timer.Update(elapsedTime))
                 lock (ServerContext.SyncLock)
                 {
                     foreach (var client in Server.Clients.Where(Predicate).Where(Selector))
-                    {
                         client.SendMessage(0x01, "\0");
-                    }
                 }
-
-                Timer.Reset();
-            }
         }
 
         private static bool Predicate(GameClient client)

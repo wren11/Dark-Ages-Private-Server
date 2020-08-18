@@ -19,8 +19,6 @@ namespace Darkages.Network
 {
     public abstract partial class NetworkClient : ObjectManager
     {
-        public static ManualResetEvent NetworkingResetEventToken = new ManualResetEvent(false);
-
         protected NetworkClient()
         {
             Reader = new NetworkPacketReader();
@@ -64,7 +62,6 @@ namespace Darkages.Network
                     Encryption.Transform(packet);
 
                 var array = packet.ToArray();
-                NetworkingResetEventToken.Reset();
 
                 try
                 {
@@ -76,12 +73,10 @@ namespace Darkages.Network
                         SendCompleted,
                         Socket
                     );
-
-                    NetworkingResetEventToken.WaitOne();
                 }
                 catch (SocketException)
                 {
-                    NetworkingResetEventToken.Set();
+                    //ignore
                 }
             }
         }
@@ -183,8 +178,6 @@ namespace Darkages.Network
 
         private void SendCompleted(IAsyncResult ar)
         {
-            NetworkingResetEventToken.Set();
-
             var socket = (Socket)ar.AsyncState;
             if (socket == null)
                 return;

@@ -22,19 +22,12 @@ namespace Darkages.Network.Game.Components
 
         public override void Update(TimeSpan elapsedTime)
         {
-            Timer.Update(elapsedTime);
-
-            if (Timer.Elapsed)
-            {
-                foreach (var client in Server.Clients.Where(client => client != null &&
-                                                                      client.Aisling != null))
+            if (Timer.Update(elapsedTime))
+                foreach (var client in Server.Clients.Where(client => client != null && client.Aisling != null))
                 {
                     client.Send(new ServerFormat3B());
                     client.LastPing = DateTime.UtcNow;
                 }
-
-                Timer.Reset();
-            }
         }
     }
 }

@@ -1189,32 +1189,43 @@ namespace Darkages.Types
 
         public void UpdateBuffs(TimeSpan elapsedTime)
         {
-            var buff_Copy = new List<Buff>(Buffs.Values).ToArray();
+            //var buff_Copy = new List<Buff>(Buffs.Values).ToArray();
 
-            if (buff_Copy.Length == 0)
-                return;
+            //if (buff_Copy.Length == 0)
+            //    return;
 
-            for (var i = 0; i < buff_Copy.Length; i++)
-                if (buff_Copy[i] != null)
-                    buff_Copy[i].Update(this, elapsedTime);
+            //for (var i = 0; i < buff_Copy.Length; i++)
+            //    if (buff_Copy[i] != null)
+            //        buff_Copy[i].Update(this, elapsedTime);
+
+            foreach (var (keyValuePair, buff) in Buffs)
+            {
+                buff.Update(this, elapsedTime);
+            }
         }
 
         public void UpdateDebuffs(TimeSpan elapsedTime)
         {
-            if (Debuffs == null)
-                return;
+            foreach (var (keyValuePair, debuff) in Debuffs)
+            {
+                debuff.Update(this, elapsedTime);
+            }
 
-            if (Debuffs.Count == 0)
-                return;
 
-            var debuff_Copy = new List<Debuff>(Debuffs.Values).ToArray();
+            //if (Debuffs == null)
+            //    return;
 
-            if (debuff_Copy.Length == 0)
-                return;
+            //if (Debuffs.Count == 0)
+            //    return;
 
-            for (var i = 0; i < debuff_Copy.Length; i++)
-                if (debuff_Copy[i] != null)
-                    debuff_Copy[i].Update(this, elapsedTime);
+            //var debuff_Copy = new List<Debuff>(Debuffs.Values).ToArray();
+
+            //if (debuff_Copy.Length == 0)
+            //    return;
+
+            //for (var i = 0; i < debuff_Copy.Length; i++)
+            //    if (debuff_Copy[i] != null)
+            //        debuff_Copy[i].Update(this, elapsedTime);
         }
 
         public void UseSkillScript(string skillName)
@@ -1254,12 +1265,12 @@ namespace Darkages.Types
                     allowGhostWalk = true;
             }
 
-            if (!allowGhostWalk)
+            if (!allowGhostWalk && this is Aisling)
             {
-                if (Map.IsWall(savedX, savedY, this is Aisling))
+                if (Map?.IsWall(savedX, savedY, this is Aisling) ?? false)
                     return false;
 
-                if (!Map.ObjectGrid[savedX, savedY].IsPassable(this, this is Aisling))
+                if (!Map?.ObjectGrid[savedX, savedY].IsPassable(this, this is Aisling) ?? false)
                     return false;
             }
 

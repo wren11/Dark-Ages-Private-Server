@@ -8,7 +8,7 @@
   "Skills": null,
   "Image": 16455,
   "Level": 99,
-  "ScriptKey": "Banker",
+  "ScriptKey": "test",
   "EnableWalking": false,
   "EnableTurning": false,
   "EnableAttacking": false,
