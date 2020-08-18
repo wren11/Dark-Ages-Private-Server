@@ -22,6 +22,7 @@ using Darkages.Types;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Darkages.Storage.locales.Scripts.Monsters
@@ -130,25 +131,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (Monster.IsConfused || Monster.IsFrozen || Monster.IsParalyzed || Monster.IsSleeping)
                 return;
 
-            if (Monster.CurrentHp <= 0)
-            {
-                if (Monster.Target != null && !Monster.Skulled)
-                {
-                    foreach (var script in Monster.Scripts.Values.Where(script => Monster.Target?.Client != null))
-                    {
-                        script?.OnDeath(Monster.Target.Client);
-                    }
-                    Monster.Skulled = true;
-                }
-            }
-
-            Monster.UpdateBuffs(elapsedTime);
-
-            Monster.UpdateDebuffs(elapsedTime);
-
             HandleMonsterState(elapsedTime);
-
-            Monster.LastUpdated = DateTime.UtcNow;
         }
 
         private void Bash()
@@ -255,32 +238,28 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     return;
                 }
 
-            Monster.BashTimer.Update(elapsedTime);
-            Monster.CastTimer.Update(elapsedTime);
-            Monster.WalkTimer.Update(elapsedTime);
+            var a = Monster.BashTimer.Update(elapsedTime);
+            var b = Monster.CastTimer.Update(elapsedTime);
+            var c = Monster.WalkTimer.Update(elapsedTime);
+
+
 
             try
             {
-                if (Monster.BashTimer.Elapsed)
+                if (a)
                 {
                     if (Monster.BashEnabled)
                         Bash();
-
-                    Monster.BashTimer.Reset();
                 }
 
-                if (Monster.CastTimer.Elapsed)
+                if (b)
                 {
                     if (Monster.CastEnabled) CastSpell();
-
-                    Monster.CastTimer.Reset();
                 }
 
-                if (Monster.WalkTimer.Elapsed)
+                if (c)
                 {
                     if (Monster.WalkEnabled) Walk();
-
-                    Monster.WalkTimer.Reset();
                 }
             }
             catch (Exception)

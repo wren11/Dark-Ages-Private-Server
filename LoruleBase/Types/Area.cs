@@ -5,11 +5,13 @@ using Darkages.Network.Object;
 using Darkages.Types;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading;
+using ServiceStack;
 using ServiceStack.Messaging;
 using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 
@@ -106,6 +108,76 @@ namespace Darkages
                 return Sotp[lWall - 1] == 0x0F;
 
             return Sotp[lWall - 1] == 0x0F && Sotp[rWall - 1] == 0x0F;
+        }
+
+        public void Update(in TimeSpan elapsedTime)
+        {
+            UpdateAreaObjects(elapsedTime);
+        }
+
+
+        public void UpdateAreaObjects(TimeSpan elapsedTime)
+        {
+            var objectCache = GetObjects(this, sprite => sprite.AislingsNearby().Any(), Get.All);
+
+            foreach (var obj in objectCache)
+            {
+                switch (obj)
+                {
+                    case Monster monster when monster.Map == null || monster.Scripts == null:
+                        continue;
+                    case Monster monster:
+                    {
+                        if (obj.CurrentHp <= 0x0 && obj.Target != null && !monster.Skulled)
+                        {
+                            foreach (var script in monster.Scripts.Values.Where(script => obj.Target?.Client != null))
+                                script?.OnDeath(obj.Target.Client);
+
+                            monster.Skulled = true;
+                        }
+
+                        foreach (var script in monster.Scripts.Values)
+                            script?.Update(elapsedTime);
+
+                        if (obj.TrapsAreNearby())
+                        {
+                            var nextTrap = Trap.Traps.Select(i => i.Value)
+                                .FirstOrDefault(i => i.Location.X == obj.X && i.Location.Y == obj.Y);
+
+                            if (nextTrap != null)
+                                Trap.Activate(nextTrap, obj);
+                        }
+
+                        monster.UpdateBuffs(elapsedTime);
+                        monster.UpdateDebuffs(elapsedTime);
+                        break;
+                    }
+                    case Item item:
+                    {
+                        var stale = !((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3);
+
+                        if (item.Cursed && stale)
+                        {
+                            item.AuthenticatedAislings = null;
+                            item.Cursed = false;
+                        }
+
+                        break;
+                    }
+                    case Mundane mundane:
+                    {
+                        if (mundane.CurrentHp <= 0)
+                            mundane.CurrentHp = mundane.Template.MaximumHp;
+
+                        mundane.UpdateBuffs(elapsedTime);
+                        mundane.UpdateDebuffs(elapsedTime);
+                        mundane.Update(elapsedTime);
+                        break;
+                    }
+                }
+
+                obj.LastUpdated = DateTime.UtcNow;
+            }
         }
     }
 

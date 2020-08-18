@@ -29,13 +29,8 @@ namespace Darkages.Network.Game.Components
 
         public override void Update(TimeSpan elapsedTime)
         {
-            _timer.Update(elapsedTime);
-
-            if (_timer.Elapsed)
-            {
+            if (_timer.Update(elapsedTime))
                 Lorule.Update(ManageSpawns);
-                _timer.Reset();
-            }
         }
 
         private void ManageSpawns()
@@ -61,7 +56,8 @@ namespace Darkages.Network.Game.Components
                         continue;
 
                     if (count < template.SpawnMax)
-                        CreateFromTemplate(template, map);
+                        if (count < map.Rows * map.Cols / 6)
+                            CreateFromTemplate(template, map);
                 }
             }
         }

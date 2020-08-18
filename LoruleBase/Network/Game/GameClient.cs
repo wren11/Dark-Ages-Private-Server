@@ -674,40 +674,43 @@ namespace Darkages.Network.Game
         public GameClient Regen(TimeSpan elapsedTime)
         {
             if (Aisling.Con > Aisling.ExpLevel + 1)
-                HpRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContextBase.Config.RegenRate / 2);
+                HpRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContextBase.Config.RegenRate + 1 / 2);
 
             if (Aisling.Wis > Aisling.ExpLevel + 1)
-                MpRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContextBase.Config.RegenRate / 2);
+                MpRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContextBase.Config.RegenRate + 1 / 2);
+
+
+            bool a = false;
+            bool b = false;
 
             if (!HpRegenTimer.Disabled)
-                HpRegenTimer.Update(elapsedTime);
+                a = HpRegenTimer.Update(elapsedTime);
 
             if (!MpRegenTimer.Disabled)
-                MpRegenTimer.Update(elapsedTime);
+                b = MpRegenTimer.Update(elapsedTime);
 
-            if (HpRegenTimer.Elapsed && !HpRegenTimer.Disabled)
+            if (a && !HpRegenTimer.Disabled)
             {
-                HpRegenTimer.Reset();
-
                 var hpRegenSeed = (Aisling.Con - Aisling.ExpLevel).Clamp(0, 10) * 0.01;
                 var hpRegenAmount = Aisling.MaximumHp * (hpRegenSeed + 0.10);
 
                 hpRegenAmount += hpRegenAmount / 100 * (1 + Aisling.Regen);
 
                 Aisling.CurrentHp = (Aisling.CurrentHp + (int)hpRegenAmount).Clamp(0, Aisling.MaximumHp);
-                SendStats(StatusFlags.StructB);
             }
 
-            if (MpRegenTimer.Elapsed && !MpRegenTimer.Disabled)
+            if (b && !MpRegenTimer.Disabled)
             {
-                MpRegenTimer.Reset();
-
                 var mpRegenSeed = (Aisling.Wis - Aisling.ExpLevel).Clamp(0, 10) * 0.01;
                 var mpRegenAmount = Aisling.MaximumMp * (mpRegenSeed + 0.10);
 
                 mpRegenAmount += mpRegenAmount / 100 * (3 + Aisling.Regen);
 
                 Aisling.CurrentMp = (Aisling.CurrentMp + (int)mpRegenAmount).Clamp(0, Aisling.MaximumMp);
+            }
+
+            if (a || b)
+            {
                 SendStats(StatusFlags.StructB);
             }
 

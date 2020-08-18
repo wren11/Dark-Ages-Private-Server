@@ -55,14 +55,6 @@ namespace Darkages.Network.Object
             }
             else
             {
-                if (!_spriteCollections.ContainsKey(map.ID))
-                {
-                    var cachemap = ServerContextBase.GlobalMapCache
-                        .Select(i => i.Value).FirstOrDefault(n => n.Name.Equals(map.Name) && n.ID != map.ID);
-
-                    if (cachemap != null) map = cachemap;
-                }
-
                 var obj = (SpriteCollection<T>)_spriteCollections[map.ID][typeof(T)];
                 var queryResult = obj.Query(predicate);
                 {
@@ -88,15 +80,8 @@ namespace Darkages.Network.Object
             }
 
             {
-                if (!_spriteCollections.ContainsKey(map.ID))
-                {
-                    var cachemap = ServerContextBase.GlobalMapCache
-                        .Select(i => i.Value).FirstOrDefault(n => n.Name.Equals(map.Name) && n.ID != map.ID);
 
-                    if (cachemap != null) map = cachemap;
-                }
-
-                var obj = (SpriteCollection<T>)_spriteCollections[map.ID][typeof(T)];
+                var obj = (SpriteCollection<T>) _spriteCollections[map.ID][typeof(T)];
                 var queryResult = obj.QueryAll(predicate);
                 {
                     return queryResult;

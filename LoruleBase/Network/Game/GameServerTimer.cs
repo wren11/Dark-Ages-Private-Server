@@ -25,9 +25,17 @@ namespace Darkages.Network.Game
             Timer = TimeSpan.Zero;
         }
 
-        public void Update(TimeSpan elapsedTime)
+        public bool Update(TimeSpan elapsedTime)
         {
             Timer += elapsedTime;
+
+            if (Elapsed)
+            {
+                Reset();
+                return true;
+            }
+
+            return false;
         }
     }
 }

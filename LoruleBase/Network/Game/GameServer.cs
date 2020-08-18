@@ -70,16 +70,14 @@ namespace Darkages.Network.Game
         {
             base.Start(port);
 
-            var serverThread1 = new Thread(Update) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
-
             try
             {
-                serverThread1.Start();
-
                 ServerContextBase.Running = true;
+                Update();
             }
             catch (ThreadAbortException)
             {
+                ServerContextBase.Running = false;
             }
         }
 
@@ -89,7 +87,6 @@ namespace Darkages.Network.Game
             {
                 try
                 {
-
                     if (!client.Aisling.LoggedIn)
                         continue;
 
@@ -111,6 +108,7 @@ namespace Darkages.Network.Game
 
         private static void Pulse(TimeSpan elapsedTime, IGameClient client)
         {
+            ObjectComponent.UpdateClientObjects(client.Aisling);
             client.Update(elapsedTime);
         }
 
@@ -137,24 +135,34 @@ namespace Darkages.Network.Game
             }
         }
 
-        private void Update()
-        {
-            _lastFrameUpdate = DateTime.UtcNow;
+        // Set previous game time
+        private DateTime _previousGameTime;
 
-            while (true)
+        private async void Update()
+        {
+            _previousGameTime = DateTime.UtcNow;
+
+            while (ServerContextBase.Running)
             {
-                var elapsedTime = DateTime.UtcNow - _lastFrameUpdate;
+                var gameTime = DateTime.Now - _previousGameTime;
 
                 Lorule.Update(() =>
                 {
-                    UpdateClients(elapsedTime);
-                    UpdateComponents(elapsedTime);
+                    UpdateClients(gameTime);
+                    UpdateComponents(gameTime);
+
+                    foreach (var (_, map) in ServerContextBase.GlobalMapCache)
+                    {
+                        map.Update(gameTime);
+                    }
+
                 });
 
+                _previousGameTime += gameTime;
 
-                _lastFrameUpdate = DateTime.UtcNow;
-                Thread.Sleep(_frameRate);
+                await Task.Delay(8);
             }
+
         }
 
         private void UpdateComponents(TimeSpan elapsedTime)

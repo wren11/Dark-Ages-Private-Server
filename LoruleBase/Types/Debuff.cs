@@ -59,13 +59,7 @@ namespace Darkages.Types
 
         public virtual void OnDurationUpdate(Sprite Affected, Debuff buff)
         {
-            var start = new Stopwatch();
-            start.Start();
             Display(Affected);
-            start.Stop();
-
-            if (Affected is Aisling aisling)
-                aisling.Client.Say(start.Elapsed.ToString(), 0x02);
         }
 
         public virtual void OnEnded(Sprite Affected, Debuff debuff)
@@ -80,9 +74,7 @@ namespace Darkages.Types
             if (Timer.Disabled)
                 return;
 
-            Timer.Update(elapsedTime);
-
-            if (Timer.Elapsed)
+            if (Timer.Update(elapsedTime))
             {
                 if (Length - Timer.Tick > 0)
                     OnDurationUpdate(Affected, this);
@@ -90,7 +82,6 @@ namespace Darkages.Types
                     OnEnded(Affected, this);
 
                 Timer.Tick++;
-                Timer.Reset();
             }
         }
     }

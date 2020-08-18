@@ -45,13 +45,7 @@ namespace Darkages.Network.Game.Components
 
         public override void Update(TimeSpan elapsedTime)
         {
-            Timer.Update(elapsedTime);
-
-            if (Timer.Elapsed)
-            {
-                Lorule.Update(SpawnMundanes);
-                Timer.Reset();
-            }
+            if (Timer.Update(elapsedTime)) Lorule.Update(SpawnMundanes);
         }
     }
 }
