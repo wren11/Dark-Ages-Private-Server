@@ -1921,8 +1921,9 @@ namespace Darkages.Network.Game
                                 if (client.MenuInterpter != null)
                                     client.ShowCurrentMenu(obj as Mundane, null, client.MenuInterpter.GetCurrentStep());
                             }
-                            catch (Exception)
+                            catch
                             {
+                                //ignore
                             }
                         }
                         break;

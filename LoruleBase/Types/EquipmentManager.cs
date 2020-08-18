@@ -12,7 +12,7 @@ namespace Darkages.Types
 {
     public class EquipmentManager
     {
-        public GameClient Client { get; set; }
+        [JsonIgnore] public GameClient Client { get; set; }
 
         public EquipmentManager(GameClient client)
         {

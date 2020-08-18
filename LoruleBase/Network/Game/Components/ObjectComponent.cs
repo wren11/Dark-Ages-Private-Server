@@ -14,7 +14,7 @@ namespace Darkages.Network.Game.Components
     public class ObjectComponent : GameServerComponent
     {
         public static Dictionary<int, Thread> WorkerThreads = new Dictionary<int, Thread>();
-        public GameServerTimer Timer = new GameServerTimer(TimeSpan.FromMilliseconds(100));
+        public GameServerTimer Timer = new GameServerTimer(TimeSpan.FromMilliseconds(10));
         private static DateTime _lastFrameUpdate = DateTime.UtcNow;
 
         public ObjectComponent(GameServer server) : base(server)
@@ -148,34 +148,35 @@ namespace Darkages.Network.Game.Components
         {
             bool Leave() => !area.GetObjects(area, i => i?.Map != null && i.Map.Ready, Get.Aislings).Any();
 
+            static bool Predicate(Sprite n) => true;
+
             var frameRate = TimeSpan.FromSeconds(1.0 / 30);
 
             while (true)
             {
+                var elapsedTime = DateTime.UtcNow - _lastFrameUpdate;
+                var objectCache = area.GetObjects(area, Predicate, Get.Items | Get.Money | Get.Monsters | Get.Mundanes);
+
+                if (objectCache == null)
+                    continue;
+
                 if (!area.Ready)
                     continue;
 
                 if (Leave()) break;
 
-                var elapsedTime = DateTime.UtcNow - _lastFrameUpdate;
-
-                static bool Predicate(Sprite n) => true;
-
-                var objectCache = area.GetObjects(area, Predicate, Get.Items | Get.Money | Get.Monsters | Get.Mundanes);
-
-                if (objectCache == null)
-                    return;
-
-                foreach (var obj in objectCache)
+                try
                 {
-                    switch (obj)
+                    foreach (var obj in objectCache)
                     {
-                        case Aisling aisling:
-                            break;
+                        switch (obj)
+                        {
+                            case Aisling aisling:
+                                break;
 
-                        case Monster monster when monster.Map == null || monster.Scripts == null:
-                            continue;
-                        case Monster monster:
+                            case Monster monster when monster.Map == null || monster.Scripts == null:
+                                continue;
+                            case Monster monster:
                             {
                                 if (obj.CurrentHp <= 0x0 && obj.Target != null && !monster.Skulled)
                                 {
@@ -203,7 +204,7 @@ namespace Darkages.Network.Game.Components
                                 monster.LastUpdated = DateTime.UtcNow;
                                 break;
                             }
-                        case Item item:
+                            case Item item:
                             {
                                 var stale = !((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3);
 
@@ -215,10 +216,10 @@ namespace Darkages.Network.Game.Components
 
                                 break;
                             }
-                        case Money money:
-                            break;
+                            case Money money:
+                                break;
 
-                        case Mundane mundane:
+                            case Mundane mundane:
                             {
                                 if (mundane.CurrentHp <= 0)
                                     mundane.CurrentHp = mundane.Template.MaximumHp;
@@ -228,9 +229,14 @@ namespace Darkages.Network.Game.Components
                                 mundane.Update(elapsedTime);
                                 break;
                             }
-                    }
+                        }
 
-                    obj.LastUpdated = DateTime.UtcNow;
+                        obj.LastUpdated = DateTime.UtcNow;
+                    }
+                }
+                catch
+                {
+                    // ignored
                 }
 
                 _lastFrameUpdate = DateTime.UtcNow;
