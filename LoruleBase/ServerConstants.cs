@@ -46,6 +46,7 @@ namespace Darkages
         bool DevMode { get; set; }
         string DexAddedMessage { get; set; }
         string DoesNotFitMessage { get; set; }
+        bool DontSavePlayers { get; set; }
         int ERRORCAP { get; set; }
         double FasNadurStrength { get; set; }
         List<string> GameMasters { get; set; }
@@ -171,6 +172,7 @@ namespace Darkages
         public bool DevMode { get; set; }
         public string DexAddedMessage { get; set; }
         public string DoesNotFitMessage { get; set; }
+        public bool DontSavePlayers { get; set; }
         public int ERRORCAP { get; set; }
         public double FasNadurStrength { get; set; }
         public List<string> GameMasters { get; set; }

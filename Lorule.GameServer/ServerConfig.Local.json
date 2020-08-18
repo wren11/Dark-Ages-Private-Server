@@ -91,9 +91,9 @@
 		"SERVER_TITLE": "Lorule",
 		"ServerWelcomeMessage": "Welcome to Lorule, If you need help, Please use The [F1] menu.",
 		"GameMasters": [
-			"lol",
-			"wren"
+			"a"
 		],
+		"DontSavePlayers": true,
 		"Settings": [
 			{
 				"SettingOn": "Loot Mode  :Single",

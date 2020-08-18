@@ -42,6 +42,11 @@ namespace Darkages.Storage
             if (ServerContextBase.Paused)
                 return;
 
+            if (ServerContextBase.Config.DontSavePlayers)
+            {
+                return;
+            }
+
             try
             {
                 var path = Path.Combine(StoragePath, $"{obj.Username.ToLower()}.json");

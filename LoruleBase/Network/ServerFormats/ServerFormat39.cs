@@ -39,7 +39,7 @@ namespace Darkages.Network.ServerFormats
             packet.Write((byte)0x0);
             packet.Write((byte)0x0);
             packet.Write((byte)0x0);
-            packet.Write((byte)0x0);
+            packet.Write((byte)0x1);
 
             var isGrouped = Aisling.GroupParty != null && Aisling.GroupParty.PartyMembers != null &&
                             Aisling.GroupParty != null &&

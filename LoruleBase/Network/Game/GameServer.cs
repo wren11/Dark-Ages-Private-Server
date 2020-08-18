@@ -21,6 +21,9 @@ namespace Darkages.Network.Game
 
         private DateTime _lastFrameUpdate = DateTime.UtcNow;
 
+        // Set previous game time
+        private DateTime _previousGameTime;
+
         public GameServer(int capacity) : base(capacity)
         {
             _frameRate = TimeSpan.FromSeconds(1.0 / 30);
@@ -135,9 +138,6 @@ namespace Darkages.Network.Game
             }
         }
 
-        // Set previous game time
-        private DateTime _previousGameTime;
-
         private async void Update()
         {
             _previousGameTime = DateTime.UtcNow;
@@ -155,21 +155,18 @@ namespace Darkages.Network.Game
                     {
                         map.Update(gameTime);
                     }
-
                 });
 
                 _previousGameTime += gameTime;
 
-                await Task.Delay(8);
+                await Task.Delay(500);
             }
-
         }
 
         private void UpdateComponents(TimeSpan elapsedTime)
         {
             try
             {
-
                 var components = ServerComponents.Select(i => i.Value);
 
                 foreach (var component in components)
