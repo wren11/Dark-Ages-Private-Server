@@ -1,0 +1,40 @@
+start:
+    menu: 1
+
+menus:
+  - id: 1
+    text: "You throw the gem onto the ground."
+    options:
+      - id: 1
+        text: "Crack it open"
+        checkpoint: 1
+      - id: 2
+        text: "Combine"
+        checkpoint: 2
+        
+
+sequences:
+  - id: 1                                  
+    name: "Sequence 1"                  
+    steps:                          
+    - id: 1                                
+      text: "You cracked open the gem and found something!"               
+  - id: 2                                 
+    name: "Sequence 2"                  
+    steps:                          
+    - id: 1                                
+      text: "Nothing was found inside."                
+        
+
+checkpoints:
+  - id: 1
+    type: Call
+    value: >               
+        client.ShowShopMenu(client, (Mundane)actor, new string[] { "Dark Belt" });
+        result = true;
+    success:
+      step: 1
+      sequence: 1
+    fail:
+      step: 1
+      sequence: 2 
