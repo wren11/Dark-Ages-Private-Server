@@ -122,9 +122,6 @@ namespace Darkages.Network.Game
         {
             if (!client.Aisling.LoggedIn)
             {
-                client.Aisling.ActiveSpellInfo = null;
-                client.Aisling.IsCastingSpell = false;
-                client.Send(new ServerFormat48());
                 return;
             }
 
@@ -971,8 +968,8 @@ namespace Darkages.Network.Game
                     client.Aisling.GoldPoints = 0;
 
                 client.SendMessage(Scope.Self, 0x02, ServerContextBase.Config.YouDroppedGoldMsg);
-                client.SendMessage(Scope.NearbyAislingsExludingSelf, 0x02,
-                    ServerContextBase.Config.UserDroppedGoldMsg.Replace("noname", client.Aisling.Username));
+                client.SendMessage(Scope.NearbyAislingsExludingSelf, 0x02, ServerContextBase.Config.UserDroppedGoldMsg.Replace("noname", client.Aisling.Username));
+
                 Money.Create(client.Aisling, format.GoldAmount, new Position(format.X, format.Y));
                 client.SendStats(StatusFlags.StructC);
             }
@@ -2553,7 +2550,9 @@ namespace Darkages.Network.Game
                 return null;
             }
 
-            if (!ServerContextBase.Redirects.Contains(aisling.Username.ToLower())) base.ClientDisconnected(client);
+            if (!ServerContextBase.Redirects.Contains(aisling.Username.ToLower()))
+            {
+            }
 
             if (ServerContextBase.Redirects.Contains(aisling.Username.ToLower()))
                 ServerContextBase.Redirects.Remove(aisling.Username.ToLower());

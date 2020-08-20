@@ -55,29 +55,14 @@ namespace Darkages.Types
             return obj;
         }
 
-        public static bool GiveTo(Aisling Aisling, string spellname, byte slot)
-        {
-            var spellTemplate = ServerContextBase.GlobalSpellTemplateCache[spellname];
-
-            if (slot <= 0)
-                return false;
-
-            var spell = Create(slot, spellTemplate);
-
-            AttachScript(Aisling, spell);
-
-            Aisling.SpellBook.Assign(spell);
-
-            return true;
-        }
-
-        public static bool GiveTo(GameClient client, string args)
+        public static bool GiveTo(GameClient client, string args, byte level = 1, byte index = 0)
         {
             if (!ServerContextBase.GlobalSpellTemplateCache.ContainsKey(args))
                 return false;
 
             var spellTemplate = ServerContextBase.GlobalSpellTemplateCache[args];
-            var slot = client.Aisling.SpellBook.FindEmpty();
+
+            var slot = index == 0 ? client.Aisling.SpellBook.FindEmpty() : index;
 
             if (slot <= 0)
                 return false;
@@ -90,7 +75,7 @@ namespace Darkages.Types
 
             AttachScript(client.Aisling, spell);
             {
-                spell.Level = 1;
+                spell.Level = client.Aisling.GameMaster ? spellTemplate.MaxLevel : level;
                 client.Aisling.SpellBook.Assign(spell);
                 client.Aisling.SpellBook.Set(spell, false);
                 client.Send(new ServerFormat17(spell));
@@ -99,7 +84,7 @@ namespace Darkages.Types
             return true;
         }
 
-        public static bool GiveTo(Aisling Aisling, string spellname, int level = 100)
+        public static bool GiveTo(Aisling Aisling, string spellname, int level = 100, byte index = 0)
         {
             if (!ServerContextBase.GlobalSpellTemplateCache.ContainsKey(spellname))
                 return false;
@@ -109,7 +94,7 @@ namespace Darkages.Types
             if (Aisling.SpellBook.Has(spellTemplate))
                 return false;
 
-            var slot = Aisling.SpellBook.FindEmpty();
+            var slot = index == 0 ? Aisling.SpellBook.FindEmpty() : index;
 
             if (slot <= 0)
                 return false;

@@ -253,8 +253,11 @@ namespace Darkages
 
             if (ServerContextBase.Config.DevMode)
             {
-                foreach (var temp in ServerContextBase.GlobalSpellTemplateCache) Spell.GiveTo(result, temp.Value.Name);
-                foreach (var temp in ServerContextBase.GlobalSkillTemplateCache) Skill.GiveTo(result, temp.Value.Name);
+                foreach (var temp in ServerContextBase.GlobalSpellTemplateCache)
+                    Spell.GiveTo(result, temp.Value.Name);
+
+                foreach (var temp in ServerContextBase.GlobalSkillTemplateCache)
+                    Skill.GiveTo(result, temp.Value.Name);
             }
 
             return result;
@@ -424,17 +427,25 @@ namespace Darkages
                 {
                     if (target != null)
                     {
-                        if (target is Aisling tobj)
-                            foreach (var script in spell.Scripts.Values)
-                                script.OnUse(this, target as Aisling);
+                        {
+                            if (target is Aisling obj && obj.Serial == info.Target)
+                            {
+                                foreach (var script in spell.Scripts.Values)
+                                    script.OnUse(this, target as Aisling);
+                            }
+                        }
 
-                        if (target is Monster aobj)
-                            foreach (var script in spell.Scripts.Values)
-                                script.OnUse(this, aobj);
+                        {
+                            if (target is Monster obj && obj.Serial == info.Target)
+                                foreach (var script in spell.Scripts.Values)
+                                    script.OnUse(this, target as Monster);
+                        }
 
-                        if (target is Mundane)
-                            foreach (var script in spell.Scripts.Values)
-                                script.OnUse(this, target as Mundane);
+                        {
+                            if (target is Mundane obj && obj.Serial == info.Target)
+                                foreach (var script in spell.Scripts.Values)
+                                    script.OnUse(this, target as Mundane);
+                        }
                     }
                     else
                     {

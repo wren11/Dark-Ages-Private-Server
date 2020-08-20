@@ -35,11 +35,11 @@ namespace Darkages.Types
             Spells[s.Slot] = null;
         }
 
-        public int FindEmpty()
+        public int FindEmpty(int start = 0)
         {
             var slot = 0;
 
-            for (var i = 0; i < Length; i++)
+            for (var i = start; i < Length; i++)
                 if (Spells[i + 1] == null)
                 {
                     slot = i + 1;
@@ -49,12 +49,12 @@ namespace Darkages.Types
             return slot > 0 ? slot : -1;
         }
 
-        public Spell FindInSlot(int Slot)
+        public Spell FindInSlot(int slot)
         {
             Spell ret = null;
 
-            if (Spells.ContainsKey(Slot))
-                ret = Spells[Slot];
+            if (Spells.ContainsKey(slot))
+                ret = Spells[slot];
 
             if (ret != null && ret.Template != null) return ret;
 
@@ -101,11 +101,6 @@ namespace Darkages.Types
         public void Set(Spell s, bool clone = false)
         {
             Spells[s.Slot] = clone ? Clone<Spell>(s) : s;
-        }
-
-        public void Swap(Spell A, Spell B)
-        {
-            A = Interlocked.Exchange(ref B, A);
         }
     }
 }

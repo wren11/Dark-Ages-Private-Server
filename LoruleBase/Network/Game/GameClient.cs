@@ -556,31 +556,36 @@ namespace Darkages.Network.Game
                                 }
                             }
 
-                        spell.Lines = spell.Template.BaseLines;
-
-                        Spell.AttachScript(Aisling, spell);
+                        if (spell.Template != null)
                         {
-                            Aisling.SpellBook.Set(spell, false);
-                        }
+                            spell.Lines = spell.Template.BaseLines;
 
-                        Send(new ServerFormat17(spell));
-
-                        if (spell.NextAvailableUse.Year > 1)
-                        {
-                            var spell1 = spell;
-                            Task.Delay(1000).ContinueWith(ct =>
+                            Spell.AttachScript(Aisling, spell);
                             {
-                                var delta = (int)Math.Abs((DateTime.UtcNow - spell1.NextAvailableUse).TotalSeconds);
-                                var offset = Math.Abs(spell1.Template.Cooldown - delta);
+                                Aisling.SpellBook.Set(spell, false);
+                            }
 
-                                if (delta <= spell1.Template.Cooldown)
-                                    Send(new ServerFormat3F(0,
-                                        spell1.Slot,
-                                        delta));
-                            });
+                            Send(new ServerFormat17(spell));
+
+                            if (spell.NextAvailableUse.Year > 1)
+                            {
+                                var spell1 = spell;
+
+                                Task.Delay(1000).ContinueWith(ct =>
+                                {
+                                    var delta = (int)Math.Abs((DateTime.UtcNow - spell1.NextAvailableUse)
+                                        .TotalSeconds);
+                                    var offset = Math.Abs(spell1.Template.Cooldown - delta);
+
+                                    if (delta <= spell1.Template.Cooldown)
+                                        Send(new ServerFormat3F(0,
+                                            spell1.Slot,
+                                            delta));
+                                });
+                            }
+                            else
+                                spell.NextAvailableUse = DateTime.UtcNow;
                         }
-                        else
-                            spell.NextAvailableUse = DateTime.UtcNow;
                     }
                 });
             }

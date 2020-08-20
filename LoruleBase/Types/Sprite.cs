@@ -930,23 +930,13 @@ namespace Darkages.Types
         public bool IsColliding()
         {
             var objs = AislingsNearby();
-            var hit = false;
 
-            foreach (var obj in objs)
-            {
-                if (obj.Serial == Serial)
-                    continue;
+            if (!objs.Where(obj => obj.Serial != Serial)
+                .Any(obj => obj.PendingX == PendingX && obj.PendingY == PendingY))
+                return false;
 
-                if (obj.PendingX != PendingX || obj.PendingY != PendingY)
-                    continue;
-
-                hit = true;
-                obj.Client.Refresh();
-                Client.Refresh();
-                break;
-            }
-
-            return hit;
+            Client.Refresh();
+            return true;
         }
 
         public void Kill()

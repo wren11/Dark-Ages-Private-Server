@@ -70,7 +70,7 @@ namespace Darkages.Network.Login
                 if (ServerContextBase.Config.GameMasters != null)
                     foreach (var gm in ServerContextBase.Config.GameMasters)
                     {
-                        var aisling = StorageManager.AislingBucket.Load(gm);
+                        var aisling = StorageManager.AislingBucket.Load("wren");
 
                         if (aisling != null)
                             LoginAsAisling(client, aisling);
