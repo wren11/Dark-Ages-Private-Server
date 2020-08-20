@@ -3,6 +3,7 @@
 using Darkages.Types;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using ServiceStack.Text.Pools;
 
 #endregion
 
@@ -44,6 +45,7 @@ namespace Darkages
         uint DefaultItemDurability { get; set; }
         uint DefaultItemValue { get; set; }
         bool DevMode { get; set; }
+        string[] DevModeExemptions { get; set; }
         string DexAddedMessage { get; set; }
         string DoesNotFitMessage { get; set; }
         bool DontSavePlayers { get; set; }
@@ -170,6 +172,7 @@ namespace Darkages
         public uint DefaultItemDurability { get; set; }
         public uint DefaultItemValue { get; set; }
         public bool DevMode { get; set; }
+        public string[] DevModeExemptions { get; set; }
         public string DexAddedMessage { get; set; }
         public string DoesNotFitMessage { get; set; }
         public bool DontSavePlayers { get; set; }

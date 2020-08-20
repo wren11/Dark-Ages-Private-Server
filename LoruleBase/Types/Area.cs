@@ -28,7 +28,6 @@ namespace Darkages
         [JsonIgnore] public TileGrid[,] ObjectGrid { get; set; }
         [JsonIgnore] public TileContent[,] Tile { get; set; }
 
-
         public byte[] GetRowData(int row)
         {
             var buffer = new byte[Cols * 6];
@@ -56,7 +55,7 @@ namespace Darkages
             return buffer;
         }
 
-        public bool IsWall(int x, int y, bool IsAisling = false)
+        public bool IsWall(int x, int y, bool isAisling = false)
         {
             if (x < 0 || x >= Cols) return true;
 
@@ -115,7 +114,6 @@ namespace Darkages
             UpdateAreaObjects(elapsedTime);
         }
 
-
         public void UpdateAreaObjects(TimeSpan elapsedTime)
         {
             var objectCache = GetObjects(this, sprite => sprite.AislingsNearby().Any(), Get.All);
@@ -127,53 +125,53 @@ namespace Darkages
                     case Monster monster when monster.Map == null || monster.Scripts == null:
                         continue;
                     case Monster monster:
-                    {
-                        if (obj.CurrentHp <= 0x0 && obj.Target != null && !monster.Skulled)
                         {
-                            foreach (var script in monster.Scripts.Values.Where(script => obj.Target?.Client != null))
-                                script?.OnDeath(obj.Target.Client);
+                            if (obj.CurrentHp <= 0x0 && obj.Target != null && !monster.Skulled)
+                            {
+                                foreach (var script in monster.Scripts.Values.Where(script => obj.Target?.Client != null))
+                                    script?.OnDeath(obj.Target.Client);
 
-                            monster.Skulled = true;
+                                monster.Skulled = true;
+                            }
+
+                            foreach (var script in monster.Scripts.Values)
+                                script?.Update(elapsedTime);
+
+                            if (obj.TrapsAreNearby())
+                            {
+                                var nextTrap = Trap.Traps.Select(i => i.Value)
+                                    .FirstOrDefault(i => i.Location.X == obj.X && i.Location.Y == obj.Y);
+
+                                if (nextTrap != null)
+                                    Trap.Activate(nextTrap, obj);
+                            }
+
+                            monster.UpdateBuffs(elapsedTime);
+                            monster.UpdateDebuffs(elapsedTime);
+                            break;
                         }
-
-                        foreach (var script in monster.Scripts.Values)
-                            script?.Update(elapsedTime);
-
-                        if (obj.TrapsAreNearby())
-                        {
-                            var nextTrap = Trap.Traps.Select(i => i.Value)
-                                .FirstOrDefault(i => i.Location.X == obj.X && i.Location.Y == obj.Y);
-
-                            if (nextTrap != null)
-                                Trap.Activate(nextTrap, obj);
-                        }
-
-                        monster.UpdateBuffs(elapsedTime);
-                        monster.UpdateDebuffs(elapsedTime);
-                        break;
-                    }
                     case Item item:
-                    {
-                        var stale = !((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3);
-
-                        if (item.Cursed && stale)
                         {
-                            item.AuthenticatedAislings = null;
-                            item.Cursed = false;
+                            var stale = !((DateTime.UtcNow - item.AbandonedDate).TotalMinutes > 3);
+
+                            if (item.Cursed && stale)
+                            {
+                                item.AuthenticatedAislings = null;
+                                item.Cursed = false;
+                            }
+
+                            break;
                         }
-
-                        break;
-                    }
                     case Mundane mundane:
-                    {
-                        if (mundane.CurrentHp <= 0)
-                            mundane.CurrentHp = mundane.Template.MaximumHp;
+                        {
+                            if (mundane.CurrentHp <= 0)
+                                mundane.CurrentHp = mundane.Template.MaximumHp;
 
-                        mundane.UpdateBuffs(elapsedTime);
-                        mundane.UpdateDebuffs(elapsedTime);
-                        mundane.Update(elapsedTime);
-                        break;
-                    }
+                            mundane.UpdateBuffs(elapsedTime);
+                            mundane.UpdateDebuffs(elapsedTime);
+                            mundane.Update(elapsedTime);
+                            break;
+                        }
                 }
 
                 obj.LastUpdated = DateTime.UtcNow;
@@ -217,36 +215,39 @@ namespace Darkages
         {
             var length = 0;
 
-            foreach (var obj in Sprites)
+            lock (Sprites)
             {
-                if (obj.Serial == sprite.Serial)
+                foreach (var obj in Sprites)
                 {
-                    if (!isAisling)
+                    if (obj.Serial == sprite.Serial)
+                    {
+                        if (!isAisling)
+                            continue;
+
+                        return true;
+                    }
+
+                    if (obj.X == sprite.X && obj.Y == sprite.Y) continue;
+
+                    if (!(obj is Monster) && !(obj is Aisling) && !(obj is Mundane))
                         continue;
 
-                    return true;
+                    length++;
                 }
 
-                if (obj.X == sprite.X && obj.Y == sprite.Y) continue;
+                if (!isAisling)
+                    return length == 0;
 
-                if (!(obj is Monster) && !(obj is Aisling) && !(obj is Mundane))
-                    continue;
+                var updates = 0;
 
-                length++;
+                foreach (var s in Sprites)
+                {
+                    s.Update();
+                    updates++;
+                }
+
+                if (updates > 0) (sprite as Aisling)?.Client.Refresh();
             }
-
-            if (!isAisling)
-                return length == 0;
-
-            var updates = 0;
-
-            foreach (var s in Sprites)
-            {
-                s.Update();
-                updates++;
-            }
-
-            if (updates > 0) (sprite as Aisling)?.Client.Refresh();
 
             return length == 0;
         }

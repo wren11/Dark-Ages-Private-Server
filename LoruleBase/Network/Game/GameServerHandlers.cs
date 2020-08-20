@@ -1783,8 +1783,8 @@ namespace Darkages.Network.Game
                     return;
 
                 client.LeaveArea(true, true);
-                Thread.Sleep(50);
 
+                Thread.Sleep(100);
                 client.Send(new ServerFormat67());
                 client.Send(new ServerFormat15(client.Aisling.Map));
                 client.Send(new ServerFormat04(client.Aisling));
@@ -1796,6 +1796,7 @@ namespace Darkages.Network.Game
                 client.Aisling.X = selectedPortalNode.Destination.Location.X;
                 client.Aisling.Y = selectedPortalNode.Destination.Location.Y;
                 client.Refresh();
+
                 client.InMapTransition = false;
             }
         }

@@ -10,20 +10,19 @@ using System.Text;
 
 namespace Darkages.Network
 {
-    public class NetworkPacketWriter 
+    public class NetworkPacketWriter
     {
+        internal int Position;
         private readonly Encoding _encoding = Encoding.GetEncoding(949);
         private readonly byte[] Buffer;
-
-        public NetworkClient Client { get; }
-
-        internal int Position;
 
         public NetworkPacketWriter(NetworkClient client)
         {
             Client = client;
-            Buffer = BufferPool.Take(0xFFFF);
+            Buffer = Darkages.IO.BufferPool.Take(0xFFFF);
         }
+
+        public NetworkClient Client { get; }
 
         public NetworkPacket ToPacket()
         {

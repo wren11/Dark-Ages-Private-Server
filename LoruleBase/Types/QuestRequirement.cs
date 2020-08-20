@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Darkages.Types
 {
@@ -11,6 +12,9 @@ namespace Darkages.Types
 
         public bool IsMet(Aisling user, Func<Predicate<Template>, bool> predicate)
         {
+            if (ServerContextBase.Config.DevModeExemptions != null && (user.GameMaster && ServerContextBase.Config.DevModeExemptions.Contains("quests")))
+                return true;
+
             switch (Type)
             {
                 case QuestType.ItemHandIn:

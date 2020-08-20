@@ -88,6 +88,9 @@ namespace Darkages.Types
 
         public bool IsMet(Aisling player, Action<string, bool> callbackMsg = null)
         {
+            if (ServerContextBase.Config.DevModeExemptions != null && player.GameMaster && ServerContextBase.Config.DevModeExemptions.Contains("learning_predicates"))
+                return true;
+
             var result = new Dictionary<int, Tuple<bool, object>>();
             var n = 0;
             try

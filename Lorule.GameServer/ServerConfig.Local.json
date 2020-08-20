@@ -93,7 +93,7 @@
 		"GameMasters": [
 			"a"
 		],
-		"DontSavePlayers": true,
+		"DontSavePlayers": false,
 		"Settings": [
 			{
 				"SettingOn": "Loot Mode  :Single",
@@ -110,6 +110,10 @@
 				"SettingOff": "AUTO LOOT GOLD: Toggle",
 				"Enabled": false
 			}
+		],
+		"DevModeExemptions": [
+			"quests",
+			"learning_predicates"
 		],
 		"GiveAssailOnCreate": true,
 		"SkullLength": 10,

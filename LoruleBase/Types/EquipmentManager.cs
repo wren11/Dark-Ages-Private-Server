@@ -5,6 +5,7 @@ using Darkages.Network.ServerFormats;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
@@ -12,8 +13,6 @@ namespace Darkages.Types
 {
     public class EquipmentManager
     {
-        [JsonIgnore] public GameClient Client { get; set; }
-
         public EquipmentManager(GameClient client)
         {
             Client = client;
@@ -25,7 +24,7 @@ namespace Darkages.Types
 
         public EquipmentSlot Belt => this[ItemSlots.Waist];
         public EquipmentSlot Boots => this[ItemSlots.Foot];
-
+        [JsonIgnore] public GameClient Client { get; set; }
         public EquipmentSlot DisplayHelm => this[ItemSlots.Coat];
         public Dictionary<int, EquipmentSlot> Equipment { get; set; }
         public EquipmentSlot Greaves => this[ItemSlots.Leg];
@@ -80,13 +79,9 @@ namespace Darkages.Types
         public void DecreaseDurability()
         {
             var broken = new List<Item>();
-            foreach (var equipment in Equipment)
+
+            foreach (var item in Equipment.Select(equipment => equipment.Value?.Item).Where(item => item?.Template != null))
             {
-                var item = equipment.Value?.Item;
-
-                if (item?.Template == null)
-                    continue;
-
                 if (item.Template.Flags.HasFlag(ItemFlags.Repairable))
                 {
                     item.Durability--;
@@ -102,19 +97,15 @@ namespace Darkages.Types
                     broken.Add(item);
             }
 
-            foreach (var item in broken)
+            foreach (var item in broken.Where(item => item?.Template != null).Where(item => RemoveFromExisting(item.Template.EquipmentSlot)))
             {
-                if (item?.Template == null)
-                    continue;
-
-                if (RemoveFromExisting(item.Template.EquipmentSlot))
-                    Client.SendMessage(0x02,
-                        $"{item.Template.Name} has broken.");
+                Client.SendMessage(0x02,
+                    $"{item.Template.Name} has broken.");
             }
         }
 
         public void DisplayToEquipment(byte displayslot, Item item)
-        { 
+        {
             Client.Send(new ServerFormat37(item, displayslot));
         }
 
@@ -139,23 +130,21 @@ namespace Darkages.Types
 
         public bool RemoveFromInventory(Item item, bool handleWeight = false)
         {
-            if (Client.Aisling.Inventory.Remove(item.Slot) != null)
-            {
-                Client.Send(new ServerFormat10(item.Slot));
-
-                if (handleWeight)
-                {
-                    Client.Aisling.CurrentWeight -= item.Template.CarryWeight;
-                    if (Client.Aisling.CurrentWeight < 0)
-                        Client.Aisling.CurrentWeight = 0;
-
-                    Client.SendStats(StatusFlags.StructA);
-                }
-
-                Client.LastItemDropped = item;
+            if (Client.Aisling.Inventory.Remove(item.Slot) == null)
                 return true;
+
+            Client.Send(new ServerFormat10(item.Slot));
+
+            if (handleWeight)
+            {
+                Client.Aisling.CurrentWeight -= item.Template.CarryWeight;
+                if (Client.Aisling.CurrentWeight < 0)
+                    Client.Aisling.CurrentWeight = 0;
+
+                Client.SendStats(StatusFlags.StructA);
             }
 
+            Client.LastItemDropped = item;
             return true;
         }
 
@@ -201,10 +190,13 @@ namespace Darkages.Types
 
         private void OnEquipmentAdded(byte displayslot)
         {
-            foreach (var script in Equipment[displayslot].Item?.Scripts.Values)
-                script.Equipped(Client.Aisling, displayslot);
+            var scriptsValues = Equipment[displayslot].Item?.Scripts.Values;
+            if (scriptsValues != null)
+                foreach (var script in scriptsValues)
+                    script.Equipped(Client.Aisling, displayslot);
 
-            Equipment[displayslot].Item.Equipped = true;
+            var item = Equipment[displayslot].Item;
+            if (item != null) item.Equipped = true;
 
             Client.SendStats(StatusFlags.All);
             Client.UpdateDisplay();

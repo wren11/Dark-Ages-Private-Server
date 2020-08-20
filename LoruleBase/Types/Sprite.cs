@@ -220,6 +220,8 @@ namespace Darkages.Types
         [JsonIgnore] public int MaximumMp => _MaximumMp + BonusMp;
         [JsonIgnore] public byte Mr => (byte)(_Mr + BonusMr).Clamp(0, 70);
         public Element OffenseElement { get; set; }
+        [JsonIgnore] public int PendingX { get; set; }
+        [JsonIgnore] public int PendingY { get; set; }
         [JsonIgnore] public Position Position => new Position(XPos, YPos);
         [JsonIgnore] public int Regen => (_Regen + BonusRegen).Clamp(0, 300);
         public int Serial { get; set; }
@@ -925,6 +927,28 @@ namespace Darkages.Types
             nearbyAisling.Show(Scope.Self, new ServerFormat0E(Serial));
         }
 
+        public bool IsColliding()
+        {
+            var objs = AislingsNearby();
+            var hit = false;
+
+            foreach (var obj in objs)
+            {
+                if (obj.Serial == Serial)
+                    continue;
+
+                if (obj.PendingX != PendingX || obj.PendingY != PendingY)
+                    continue;
+
+                hit = true;
+                obj.Client.Refresh();
+                Client.Refresh();
+                break;
+            }
+
+            return hit;
+        }
+
         public void Kill()
         {
             CurrentHp = 0;
@@ -1211,7 +1235,6 @@ namespace Darkages.Types
                 debuff.Update(this, elapsedTime);
             }
 
-
             //if (Debuffs == null)
             //    return;
 
@@ -1254,10 +1277,10 @@ namespace Darkages.Types
         {
             var savedX = X;
             var savedY = Y;
-            var pendingX = X;
-            var pendingY = Y;
+            PendingX = X;
+            PendingY = Y;
 
-            bool allowGhostWalk = false;
+            var allowGhostWalk = false;
 
             if (this is Aisling aisling)
             {
@@ -1275,20 +1298,20 @@ namespace Darkages.Types
             }
 
             if (Direction == 0)
-                pendingY--;
+                PendingY--;
             else if (Direction == 1)
-                pendingX++;
+                PendingX++;
             else if (Direction == 2)
-                pendingY++;
+                PendingY++;
             else if (Direction == 3)
-                pendingX--;
+                PendingX--;
 
             if (!allowGhostWalk)
             {
-                if (Map.IsWall(pendingX, pendingY, this is Aisling))
+                if (Map != null && Map.IsWall(PendingX, PendingY, this is Aisling))
                     return false;
 
-                if (!Map.ObjectGrid[pendingX, pendingY].IsPassable(this, this is Aisling))
+                if (Map != null && !Map.ObjectGrid[PendingX, PendingY].IsPassable(this, this is Aisling))
                     return false;
             }
 
@@ -1300,8 +1323,18 @@ namespace Darkages.Types
                 Y = (short)savedY
             };
 
-            X = pendingX;
-            Y = pendingY;
+            if (this is Aisling)
+            {
+                if (IsColliding())
+                {
+                    X = savedX;
+                    Y = savedY;
+                    return false;
+                }
+            }
+
+            X = PendingX;
+            Y = PendingY;
 
             Show(Scope.NearbyAislingsExludingSelf, response);
             {

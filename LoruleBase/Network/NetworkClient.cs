@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Darkages.Network.Object;
@@ -11,6 +10,7 @@ using Darkages.Security;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Darkages.Network.ClientFormats;
 using Darkages.Network.Login;
 
 #endregion
@@ -19,6 +19,10 @@ namespace Darkages.Network
 {
     public abstract partial class NetworkClient : ObjectManager
     {
+        private readonly object _sendLock = new object();
+
+        private bool _sending;
+
         protected NetworkClient()
         {
             Reader = new NetworkPacketReader();
@@ -44,7 +48,7 @@ namespace Darkages.Network
             if (!Socket.Connected)
                 return;
 
-            lock (ServerContext.SyncLock)
+            lock (_sendLock)
             {
                 Writer.Position = 0;
                 Writer.Write(format.Command);
@@ -61,14 +65,24 @@ namespace Darkages.Network
                 if (format.Secured)
                     Encryption.Transform(packet);
 
-                var array = packet.ToArray();
+                var buffer = packet.ToArray();
+
+                if (buffer.Length <= 0)
+                {
+                    return;
+                }
+
+                if (_sending)
+                    return;
+
+                _sending = true;
 
                 try
                 {
                     Socket.BeginSend(
-                        array,
+                        buffer,
                         0,
-                        array.Length,
+                        buffer.Length,
                         SocketFlags.None,
                         SendCompleted,
                         Socket
@@ -85,6 +99,14 @@ namespace Darkages.Network
         {
             if (packet == null)
                 return;
+
+            if (InMapTransition && !(format is ClientFormat3F))
+            {
+                return;
+            }
+
+            if (format is ClientFormat3F && InMapTransition)
+                InMapTransition = false;
 
             if (format.Secured)
             {
@@ -119,6 +141,11 @@ namespace Darkages.Network
         {
             if (!Socket.Connected)
                 return;
+
+            if (InMapTransition)
+            {
+                return;
+            }
 
             lock (ServerContext.SyncLock)
             {
@@ -178,19 +205,11 @@ namespace Darkages.Network
 
         private void SendCompleted(IAsyncResult ar)
         {
-            var socket = (Socket)ar.AsyncState;
-            if (socket == null)
-                return;
-
-            var dataSent = socket.EndSend(ar);
-            if (dataSent == 0)
+            lock (_sendLock)
             {
-                //TODO
+                _sending = false;
             }
         }
-
-        #region Server Formats
-        #endregion
     }
 
     public abstract partial class NetworkClient

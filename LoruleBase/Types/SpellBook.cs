@@ -37,11 +37,16 @@ namespace Darkages.Types
 
         public int FindEmpty()
         {
+            var slot = 0;
+
             for (var i = 0; i < Length; i++)
                 if (Spells[i + 1] == null)
-                    return i + 1;
+                {
+                    slot = i + 1;
+                    break;
+                }
 
-            return -1;
+            return slot > 0 ? slot : -1;
         }
 
         public Spell FindInSlot(int Slot)

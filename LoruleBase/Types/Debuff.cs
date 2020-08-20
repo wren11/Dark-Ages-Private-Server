@@ -26,7 +26,7 @@ namespace Darkages.Types
         [JsonProperty] public virtual string Name { get; set; }
         [JsonProperty] public GameServerTimer Timer { get; set; }
 
-        public void Display(Sprite Affected)
+        public void Display(Sprite affected)
         {
             var colorInt = 0;
 
@@ -43,7 +43,7 @@ namespace Darkages.Types
             else if ((Length - Timer.Tick).IsWithin(90, short.MaxValue))
                 colorInt = 6;
 
-            (Affected as Aisling)?.Client
+            (affected as Aisling)?.Client
                 .Send(new ServerFormat3A(Icon, (byte)colorInt));
         }
 
@@ -52,24 +52,24 @@ namespace Darkages.Types
             return Name.Equals(name);
         }
 
-        public virtual void OnApplied(Sprite Affected, Debuff debuff)
+        public virtual void OnApplied(Sprite affected, Debuff debuff)
         {
-            if (Affected.Debuffs.TryAdd(debuff.Name, debuff)) Display(Affected);
+            if (affected.Debuffs.TryAdd(debuff.Name, debuff)) Display(affected);
         }
 
-        public virtual void OnDurationUpdate(Sprite Affected, Debuff buff)
+        public virtual void OnDurationUpdate(Sprite affected, Debuff buff)
         {
-            Display(Affected);
+            Display(affected);
         }
 
-        public virtual void OnEnded(Sprite Affected, Debuff debuff)
+        public virtual void OnEnded(Sprite affected, Debuff debuff)
         {
-            if (Affected.Debuffs.TryRemove(debuff.Name, out var removed))
-                (Affected as Aisling)?.Client
+            if (affected.Debuffs.TryRemove(debuff.Name, out var removed))
+                (affected as Aisling)?.Client
                     .Send(new ServerFormat3A(Icon, byte.MinValue));
         }
 
-        internal void Update(Sprite Affected, TimeSpan elapsedTime)
+        internal void Update(Sprite affected, TimeSpan elapsedTime)
         {
             if (Timer.Disabled)
                 return;
@@ -77,9 +77,9 @@ namespace Darkages.Types
             if (Timer.Update(elapsedTime))
             {
                 if (Length - Timer.Tick > 0)
-                    OnDurationUpdate(Affected, this);
+                    OnDurationUpdate(affected, this);
                 else
-                    OnEnded(Affected, this);
+                    OnEnded(affected, this);
 
                 Timer.Tick++;
             }

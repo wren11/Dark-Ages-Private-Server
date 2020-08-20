@@ -1,5 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk;Microsoft.NET.Sdk.Publish">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -7,7 +6,6 @@
     <FileVersion>1.5.0.0</FileVersion>
     <AssemblyVersion>1.5.0.0</AssemblyVersion>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <ErrorReport>none</ErrorReport>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -16,7 +14,6 @@
     <WarningLevel>1</WarningLevel>
     <Optimize>true</Optimize>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
@@ -26,15 +23,12 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0-dev-00839" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0-dev-00880" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\LoruleBase\LoruleBase.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="ServerConfig.Local.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>

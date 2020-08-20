@@ -135,7 +135,7 @@ namespace Darkages.Network.Game
                 }
             }
 
-            if (client.Aisling.Path != item.Template.Class && !(item.Template.Class == Class.Peasant))
+            if (client.Aisling.Path != item.Template.Class && item.Template.Class != Class.Peasant)
             {
                 if (client.Aisling.ExpLevel >= item.Template.LevelRequired)
                     message = ServerContextBase.Config.WrongClassMessage;
@@ -143,7 +143,7 @@ namespace Darkages.Network.Game
                     message = ServerContextBase.Config.CantWearYetMessage;
             }
 
-            if (!item.Template.Class.HasFlag(client.Aisling.Path) && !(item.Template.Class == Class.Peasant))
+            if (!item.Template.Class.HasFlag(client.Aisling.Path) && item.Template.Class != Class.Peasant)
                 message = "You are forbidden to wear that.";
 
             if (!(message != null && string.IsNullOrEmpty(message)))
@@ -483,7 +483,6 @@ namespace Darkages.Network.Game
                 }
             }
 
-
             return this;
         }
 
@@ -678,7 +677,6 @@ namespace Darkages.Network.Game
 
             if (Aisling.Wis > Aisling.ExpLevel + 1)
                 MpRegenTimer.Delay = TimeSpan.FromMilliseconds(ServerContextBase.Config.RegenRate + 1 / 2);
-
 
             bool a = false;
             bool b = false;
@@ -931,6 +929,14 @@ namespace Darkages.Network.Game
             Send(new ServerFormat08(Aisling, flags));
 
             return this;
+        }
+
+        public void SendThenUnclock(NetworkFormat format)
+        {
+            if (InMapTransition)
+            {
+                FlushAndSend(format);
+            }
         }
 
         public GameClient SetAislingStartupVariables()
