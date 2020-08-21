@@ -144,7 +144,7 @@ namespace Darkages.Network.Game
 
             while (ServerContextBase.Running)
             {
-                var gameTime = DateTime.Now - _previousGameTime;
+                var gameTime = DateTime.UtcNow - _previousGameTime;
 
                 Lorule.Update(() =>
                 {
