@@ -45,5 +45,13 @@ namespace Darkages.Systems.Loot
         {
             return $"Name: {Name}, Weight: {Weight}, Modifier Count: {Modifiers.Count}";
         }
+
+        public override string[] GetMetaData()
+        {
+            return new[]
+            {
+                ""
+            };
+        }
     }
 }

@@ -108,5 +108,13 @@ namespace Darkages.Types
 
             return false;
         }
+
+        public override string[] GetMetaData()
+        {
+            return new[]
+            {
+                ""
+            };
+        }
     }
 }

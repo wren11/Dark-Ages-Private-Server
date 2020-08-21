@@ -44,34 +44,35 @@ namespace Darkages.Types
             Name = Path.GetFileName(Filename);
         }
 
-        public override void Save(MemoryStream stream)
+        public override Stream Save(MemoryStream stream)
         {
-            using (var writer = new BufferWriter(stream))
+            using var writer = new BufferWriter(stream);
+            writer.Write(
+                (ushort)Nodes.Count);
+
+            foreach (var node in Nodes)
             {
+                writer.WriteStringA(node.Name);
                 writer.Write(
-                    (ushort)Nodes.Count);
+                    (ushort)node.Atoms.Count);
 
-                foreach (var node in Nodes)
-                {
-                    writer.WriteStringA(node.Name);
-                    writer.Write(
-                        (ushort)node.Atoms.Count);
-
-                    foreach (var atom in node.Atoms) writer.WriteStringB(atom);
-                }
+                foreach (var atom in node.Atoms)
+                    writer.WriteStringB(atom);
             }
+
+            return writer.BaseStream;
         }
 
         public void Serialize(NetworkPacketReader reader)
         {
+
         }
 
         public void Serialize(NetworkPacketWriter writer)
         {
             writer.WriteStringA(Name);
             writer.Write(Hash);
-            writer.Write(
-                (ushort)DeflatedData.Length);
+            writer.Write((ushort)DeflatedData.Length);
             writer.Write(DeflatedData);
         }
     }

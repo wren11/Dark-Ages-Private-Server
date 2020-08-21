@@ -46,5 +46,13 @@ namespace Darkages.Types
         public SpellUseType TargetType { get; set; }
         public string Text { get; set; }
         public Tier TierLevel { get; set; }
+
+        public override string[] GetMetaData()
+        {
+            return new[]
+            {
+                ""
+            };
+        }
     }
 }

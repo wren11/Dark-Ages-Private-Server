@@ -8,12 +8,6 @@ using System.Collections.Generic;
 
 namespace Darkages.Types
 {
-    public enum WarpType
-    {
-        Map,
-        World
-    }
-
     public class WarpTemplate : Template
     {
         public WarpTemplate()
@@ -33,5 +27,13 @@ namespace Darkages.Types
 
         public int WorldResetWarpId { get; set; }
         public int WorldTransionWarpId { get; set; }
+
+        public override string[] GetMetaData()
+        {
+            return new[]
+            {
+                ""
+            };
+        }
     }
 }

@@ -12,5 +12,13 @@ namespace Darkages.Types
         {
             return (DateTime.UtcNow - aisling.LastLogged).TotalHours > ServerContextBase.Config.NationReturnHours;
         }
+
+        public override string[] GetMetaData()
+        {
+            return new[]
+            {
+                ""
+            };
+        }
     }
 }

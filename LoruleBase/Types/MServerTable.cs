@@ -75,7 +75,7 @@ namespace Darkages.Types
             }
         }
 
-        public override void Save(MemoryStream stream)
+        public override Stream Save(MemoryStream stream)
         {
             using (var writer = new BufferWriter(stream))
             {
@@ -90,6 +90,8 @@ namespace Darkages.Types
                     writer.Write(server.Name + ";" + server.Description);
                     writer.Write(server.ID);
                 }
+
+                return writer.BaseStream;
             }
         }
     }

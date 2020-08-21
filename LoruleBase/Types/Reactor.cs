@@ -12,17 +12,6 @@ using System.Collections.Generic;
 
 namespace Darkages.Types
 {
-    public enum ReactorQualifer
-    {
-        Map = 0,
-        Object = 1,
-        Item = 3,
-        Skill = 4,
-        Spell = 5,
-        Reactor = 6,
-        Quest = 7
-    }
-
     [Serializable]
     public class Reactor : Template
     {
@@ -40,20 +29,28 @@ namespace Darkages.Types
 
         public string CallBackScriptKey { get; set; }
         public ReactorQualifer CallerType { get; set; }
-        public string CallingNpc { get; set; }
         public string CallingReactor { get; set; }
         public bool CanActAgain { get; set; }
-        public bool Completed { get; set; }
         [JsonIgnore] public DialogSequence Current => Sequences[Index] ?? null;
         [JsonIgnore] public Dictionary<string, ReactorScript> Decorators { get; set; }
-        public string DecoratorScript { get; set; }
         [JsonIgnore] public int Index { get; set; }
         public Position Location { get; set; }
-        public int MapId { get; set; }
-        [JsonIgnore] public ReactorScript PostScript { get; set; }
         public Quest Quest { get; set; }
         public string ScriptKey { get; set; }
+
+        [ObsoleteAttribute("This property is obsolete. and should not be used.", false)]
         public GameServerTimer WhenCanActAgain { get; set; }
+        [ObsoleteAttribute("This property is obsolete. and should not be used.", false)]
+        public int MapId { get; set; }
+        [ObsoleteAttribute("This property is obsolete. and should not be used.", false)]
+        [JsonIgnore] public ReactorScript PostScript { get; set; }
+        [ObsoleteAttribute("This property is obsolete. and should not be used.", false)]
+        public string DecoratorScript { get; set; }
+        [ObsoleteAttribute("This property is obsolete. and should not be used.", false)]
+        public bool Completed { get; set; }
+        [ObsoleteAttribute("This property is obsolete. and should not be used.", false)]
+        public string CallingNpc { get; set; }
+
 
         public void Goto(GameClient client, int Idx)
         {
@@ -137,6 +134,14 @@ namespace Darkages.Types
                     foreach (var script in Decorators.Values)
                         script?.OnTriggered(client.Aisling);
             }
+        }
+
+        public override string[] GetMetaData()
+        {
+            return new[]
+            {
+                ""
+            };
         }
     }
 }

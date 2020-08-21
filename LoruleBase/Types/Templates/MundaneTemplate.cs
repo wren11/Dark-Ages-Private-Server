@@ -61,5 +61,13 @@ namespace Darkages.Types
         [JsonProperty] public List<Position> Waypoints { get; set; }
         public ushort X { get; set; }
         public ushort Y { get; set; }
+
+        public override string[] GetMetaData()
+        {
+            return new[]
+            {
+                ""
+            };
+        }
     }
 }

@@ -23,5 +23,13 @@ namespace Darkages.Types.Templates
 
         [JsonProperty]
         public Dictionary<string, int> Variables = new Dictionary<string, int>();
+
+        public override string[] GetMetaData()
+        {
+            return new[]
+            {
+                ""
+            };
+        }
     }
 }

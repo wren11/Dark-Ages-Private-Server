@@ -23,5 +23,13 @@ namespace Darkages.Types
         public ushort TargetAnimation { get; set; }
         public Tier TierLevel { get; set; }
         public SkillScope Type { get; set; }
+
+        public override string[] GetMetaData()
+        {
+            return new[]
+            {
+                ""
+            };
+        }
     }
 }

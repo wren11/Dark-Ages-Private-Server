@@ -19,8 +19,6 @@ namespace Darkages.Network.Game
         public Dictionary<Type, GameServerComponent> ServerComponents;
         private readonly TimeSpan _frameRate;
 
-        private DateTime _lastFrameUpdate = DateTime.UtcNow;
-
         // Set previous game time
         private DateTime _previousGameTime;
 

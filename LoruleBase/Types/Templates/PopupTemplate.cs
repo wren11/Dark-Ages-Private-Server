@@ -132,6 +132,14 @@ namespace Darkages.Types
         public int Timeout { get; set; }
         public TriggerType TypeOfTrigger { get; set; }
         public string YamlKey { get; set; }
+
+        public override string[] GetMetaData()
+        {
+            return new[]
+            {
+                ""
+            };
+        }
     }
 
     public class UserClickPopup : PopupTemplate

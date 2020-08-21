@@ -1,24 +1,43 @@
-﻿namespace Darkages.Types
+﻿using System.ComponentModel;
+
+namespace Darkages.Types
 {
     public enum EquipSlot
     {
         None = 0,
+        [Description("Weapons")]
         Weapon = 1,
+        [Description("Armors")]
         Armor = 2,
+        [Description("Shields")]
         Shield = 3,
+        [Description("Helmets")]
         Helmet = 4,
+        [Description("Earrings")]
         Earring = 5,
+        [Description("Necklaces")]
         Necklace = 6,
+        [Description("Rings")]
         LHand = 7,
+        [Description("Rings")]
         RHand = 8,
+        [Description("Gauntlets")]
         LArm = 9,
+        [Description("Gauntlets")]
         RArm = 10,
+        [Description("Belts")]
         Waist = 11,
+        [Description("Greaves")]
         Leg = 12,
+        [Description("Boots")]
         Foot = 13,
+        [Description("Accessories")]
         FirstAcc = 14,
+        [Description("Accessories")]
         Trousers = 15,
+        [Description("Accessories")]
         Coat = 16,
+        [Description("Accessories")]
         SecondAcc = 17
     }
 

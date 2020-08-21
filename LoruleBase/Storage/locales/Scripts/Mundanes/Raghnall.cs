@@ -12,11 +12,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
     [Script("tut/Raghnall")]
     public class Raghnall : MundaneScript
     {
-        private readonly Reactor reactor;
+        private readonly Reactor _reactor;
 
         public Raghnall(GameServer server, Mundane mundane) : base(server, mundane)
         {
-            reactor = new Reactor
+            _reactor = new Reactor
             {
                 Name = "Tutorial : Combat",
                 CallerType = ReactorQualifer.Object,
@@ -118,10 +118,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             client.Aisling.CanReact = true;
 
-            client.Aisling.ActiveReactor = Clone<Reactor>(reactor);
-            client.Aisling.ActiveReactor.Sequences = new List<DialogSequence>(reactor.Sequences);
+            client.Aisling.ActiveReactor = Clone<Reactor>(_reactor);
+            client.Aisling.ActiveReactor.Sequences = new List<DialogSequence>(_reactor.Sequences);
             client.Aisling.ActiveReactor.Decorators =
-                ScriptManager.Load<ReactorScript>("Default Response Handler", reactor);
+                ScriptManager.Load<ReactorScript>("Default Response Handler", _reactor);
 
             client.Aisling.ActiveReactor.Update(client);
         }
@@ -130,11 +130,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
         }
 
-        public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
+        public override void OnResponse(GameServer server, GameClient client, ushort responseId, string args)
         {
         }
 
-        public override void TargetAcquired(Sprite Target)
+        public override void TargetAcquired(Sprite target)
         {
         }
     }

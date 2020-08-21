@@ -24,12 +24,13 @@ namespace Darkages
 
         public Dictionary<string, int> MonsterKillCounters = new Dictionary<string, int>();
 
-        [JsonIgnore] public List<Popup> Popups = new List<Popup>();
+        [JsonIgnore] public List<Popup> Popups;
 
         public Dictionary<string, DateTime> Reactions = new Dictionary<string, DateTime>();
 
         [JsonIgnore] public HashSet<Sprite> View = new HashSet<Sprite>();
-        private readonly object syncLock = new object();
+
+        private readonly object _syncLock = new object();
 
         public Aisling()
         {
@@ -105,16 +106,7 @@ namespace Darkages
         public int GoldPoints { get; set; }
 
         [JsonIgnore]
-        public Party GroupParty
-        {
-            get
-            {
-                if (ServerContextBase.GlobalGroupCache.ContainsKey(GroupId))
-                    return ServerContextBase.GlobalGroupCache[GroupId];
-
-                return null;
-            }
-        }
+        public Party GroupParty => ServerContextBase.GlobalGroupCache.ContainsKey(GroupId) ? ServerContextBase.GlobalGroupCache[GroupId] : null;
 
         public byte HairColor { get; set; }
         public byte HairStyle { get; set; }
@@ -265,7 +257,7 @@ namespace Darkages
 
         public bool AcceptQuest(Quest lpQuest)
         {
-            lock (syncLock)
+            lock (_syncLock)
             {
                 if (Quests.All(i => i.Name != lpQuest.Name))
                 {

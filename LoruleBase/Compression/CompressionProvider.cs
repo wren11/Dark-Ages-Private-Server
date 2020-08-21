@@ -16,7 +16,7 @@ namespace Darkages.Compression
             {
                 using (var oStream = new MemoryStream())
                 {
-                    using (var zStream = new ZlibStream(oStream, CompressionMode.Compress))
+                    using (var zStream = new ZlibStream(oStream, CompressionMode.Compress, CompressionLevel.BestSpeed))
                     {
                         CopyStream(iStream, zStream);
                         return oStream.ToArray();
@@ -29,7 +29,7 @@ namespace Darkages.Compression
         {
             using (var iStream = new MemoryStream(buffer))
             using (var oStream = new MemoryStream())
-            using (var zStream = new ZlibStream(oStream, CompressionMode.Decompress))
+            using (var zStream = new ZlibStream(oStream, CompressionMode.Decompress, CompressionLevel.BestSpeed))
             {
                 try
                 {
@@ -49,7 +49,8 @@ namespace Darkages.Compression
             var buffer = new byte[4096];
             int length;
 
-            while ((length = src.Read(buffer, 0, buffer.Length)) > 0) dst.Write(buffer, 0, length);
+            while ((length = src.Read(buffer, 0, buffer.Length)) > 0)
+                dst.Write(buffer, 0, length);
 
             dst.Flush();
         }

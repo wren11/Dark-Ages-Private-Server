@@ -1,7 +1,9 @@
 ﻿#region
 
+using System;
 using System.IO;
 using System.Xml.Serialization;
+using Darkages.Types;
 
 #endregion
 
@@ -32,10 +34,8 @@ namespace Darkages.Compression
 
             result.Filename = filename;
 
-            using (var stream = new MemoryStream(result.InflatedData))
-            {
-                result.Load(stream);
-            }
+            using var stream = new MemoryStream(result.InflatedData);
+            result.Load(stream);
 
             return result;
         }
@@ -68,8 +68,9 @@ namespace Darkages.Compression
         {
         }
 
-        public virtual void Save(MemoryStream stream)
+        public virtual Stream Save(MemoryStream stream)
         {
+            throw new NotImplementedException();
         }
     }
 }

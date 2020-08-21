@@ -1,9 +1,13 @@
 ﻿#region
 
+using System;
 using Darkages.Systems.Loot.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel;
+using EnumsNET;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using ServiceStack;
 using static Darkages.Types.ElementManager;
 
 #endregion
@@ -118,6 +122,38 @@ namespace Darkages.Types
         }
 
         [Category("Mods")] public StatusOperator WisModifer { get; set; }
+
+        public override string[] GetMetaData()
+        {
+            var categoryResolved = Enums.GetAttributes(typeof(EquipSlot), EquipmentSlot).ToArray();
+            var category = "Misc";
+
+            if (categoryResolved.Length > 0)
+            {
+                category = ((DescriptionAttribute) categoryResolved[0]).Description;
+            }
+
+            return new[]
+            {
+                LevelRequired.ToString(),
+                ((int)Class).ToString(),
+                CarryWeight.ToString(),
+                Gender switch
+                {
+                    Gender.Both => category,
+                    Gender.Female => "Female " + category,
+                    Gender.Male => "Male " + category,
+                    _ => throw new ArgumentOutOfRangeException()
+                },
+                Gender switch
+                {
+                    Gender.Both => "All",
+                    Gender.Female => "Female " + category,
+                    Gender.Male => "Male " + category,
+                    _ => throw new ArgumentOutOfRangeException()
+                } + $" Lev{LevelRequired}, Wt {CarryWeight}"
+            };
+        }
     }
 
     public class ItemUpgrade : ILootDefinition
