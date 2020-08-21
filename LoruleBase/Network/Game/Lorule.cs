@@ -1,4 +1,8 @@
-﻿using System;
+﻿#region
+
+using System;
+
+#endregion
 
 namespace Darkages.Network.Game
 {
@@ -15,10 +19,7 @@ namespace Darkages.Network.Game
             }
             catch (Exception exception)
             {
-                if (!exception.Message.Contains("Collection"))
-                {
-                    ServerContext.Error(exception);
-                }
+                if (!exception.Message.Contains("Collection")) ServerContext.Error(exception);
 
                 return false;
             }

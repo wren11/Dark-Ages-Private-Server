@@ -1,11 +1,11 @@
 ﻿#region
 
+using System;
+using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
-using System;
-using System.Linq;
 
 #endregion
 
@@ -24,7 +24,7 @@ namespace Darkages.Storage.locales.Scripts.Spells.rogue
         public override void OnFailed(Sprite sprite, Sprite target)
         {
             if (sprite is Aisling aisling)
-                aisling.Client.SendMessage(0x02, ServerContextBase.Config.SpellFailedMessage);
+                aisling.Client.SendMessage(0x02, ServerContext.Config.SpellFailedMessage);
         }
 
         public override void OnSuccess(Sprite sprite, Sprite target)
@@ -66,7 +66,7 @@ namespace Darkages.Storage.locales.Scripts.Spells.rogue
                 }
                 else
                 {
-                    aisling.Client.SendMessage(0x02, ServerContextBase.Config.NoManaMessage);
+                    aisling.Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
                     return;
                 }
             }

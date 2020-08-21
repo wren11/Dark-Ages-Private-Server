@@ -1,14 +1,14 @@
 ﻿#region
 
+using System;
+using System.Linq;
+using System.Net;
+using System.Text;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.ServerFormats;
 using Darkages.Storage;
 using Darkages.Types;
 using Newtonsoft.Json;
-using System;
-using System.Linq;
-using System.Net;
-using System.Text;
 
 #endregion
 
@@ -43,12 +43,12 @@ namespace Darkages.Network.Login
                     Name = JsonConvert.SerializeObject(new { player = aisling.Username, developer = "wren" })
                 };
 
-                ServerContextBase.Redirects.Add(aisling.Username.ToLower());
+                ServerContext.Redirects.Add(aisling.Username.ToLower());
 
                 client.SendMessageBox(0x00, "\0");
                 client.Send(new ServerFormat03
                 {
-                    EndPoint = new IPEndPoint(Address, ServerContextBase.Config.SERVER_PORT),
+                    EndPoint = new IPEndPoint(Address, ServerContext.Config.SERVER_PORT),
                     Redirect = redirect
                 });
             }
@@ -56,8 +56,8 @@ namespace Darkages.Network.Login
 
         protected override void Format00Handler(LoginClient client, ClientFormat00 format)
         {
-            if (ServerContextBase.Config.UseLobby)
-                if (format.Version == ServerContextBase.Config.ClientVersion)
+            if (ServerContext.Config.UseLobby)
+                if (format.Version == ServerContext.Config.ClientVersion)
                     client.Send(new ServerFormat00
                     {
                         Type = 0x00,
@@ -65,17 +65,18 @@ namespace Darkages.Network.Login
                         Parameters = client.Encryption.Parameters
                     });
 
-            if (ServerContextBase.Config.DevMode)
-            {
-                if (ServerContextBase.Config.GameMasters != null)
-                    foreach (var gm in ServerContextBase.Config.GameMasters)
+            if (ServerContext.Config.DevMode)
+                if (ServerContext.Config.GameMasters != null)
+                    foreach (var unused in ServerContext.Config.GameMasters)
                     {
-                        var aisling = StorageManager.AislingBucket.Load("wren");
+                        var aisling = StorageManager.AislingBucket.Load(unused);
 
                         if (aisling != null)
+                        {
                             LoginAsAisling(client, aisling);
+                            break;
+                        }
                     }
-            }
         }
 
         protected override void Format02Handler(LoginClient client, ClientFormat02 format)
@@ -127,9 +128,9 @@ namespace Darkages.Network.Login
                 return;
             }
 
-            if (!ServerContextBase.Config.MultiUserLogin)
+            if (!ServerContext.Config.MultiUserLogin)
             {
-                var aislings = ServerContextBase.Game.Clients.Where(i =>
+                var aislings = ServerContext.Game.Clients.Where(i =>
                     i?.Aisling != null && i.Aisling.LoggedIn &&
                     i.Aisling.Username.ToLower() == format.Username.ToLower());
 

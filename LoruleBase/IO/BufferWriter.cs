@@ -74,7 +74,7 @@ namespace Darkages.IO
 
         public void WriteStringA(string value)
         {
-            var length = (byte)encoding.GetByteCount(value);
+            var length = (byte) encoding.GetByteCount(value);
 
             base.Write(length);
             base.Write(encoding.GetBytes(value));
@@ -82,7 +82,7 @@ namespace Darkages.IO
 
         public void WriteStringB(string value)
         {
-            var length = (ushort)encoding.GetByteCount(value);
+            var length = (ushort) encoding.GetByteCount(value);
 
             Write(length);
             base.Write(encoding.GetBytes(value));

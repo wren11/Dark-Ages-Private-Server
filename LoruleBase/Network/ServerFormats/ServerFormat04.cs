@@ -4,8 +4,8 @@
     {
         public ServerFormat04(Aisling aisling) : this()
         {
-            X = (short)aisling.X;
-            Y = (short)aisling.Y;
+            X = (short) aisling.X;
+            Y = (short) aisling.Y;
         }
 
         public ServerFormat04()
@@ -26,9 +26,9 @@
             writer.Write(X);
             writer.Write(Y);
             writer.Write(
-                (short)0x000B);
+                (short) 0x000B);
             writer.Write(
-                (short)0x000B);
+                (short) 0x000B);
         }
     }
 }

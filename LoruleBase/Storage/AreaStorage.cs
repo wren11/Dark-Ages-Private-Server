@@ -1,10 +1,10 @@
 ﻿#region
 
-using Darkages.IO;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
+using Darkages.IO;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -16,7 +16,7 @@ namespace Darkages.Storage
 
         static AreaStorage()
         {
-            StoragePath = $@"{ServerContextBase.StoragePath}\areas";
+            StoragePath = $@"{ServerContext.StoragePath}\areas";
 
             if (!Directory.Exists(StoragePath))
                 Directory.CreateDirectory(StoragePath);
@@ -49,13 +49,13 @@ namespace Darkages.Storage
                 if (mapObj == null)
                     continue;
 
-                var mapFile = Directory.GetFiles($@"{ServerContextBase.StoragePath}\maps", $"lod{mapObj.ID}.map",
+                var mapFile = Directory.GetFiles($@"{ServerContext.StoragePath}\maps", $"lod{mapObj.ID}.map",
                     SearchOption.TopDirectoryOnly).FirstOrDefault();
 
                 if (mapFile != null && File.Exists(mapFile))
                 {
                     LoadMap(mapObj, mapFile, true);
-                    ServerContextBase.GlobalMapCache[mapObj.ID] = mapObj;
+                    ServerContext.GlobalMapCache[mapObj.ID] = mapObj;
                 }
             }
         }
@@ -90,7 +90,7 @@ namespace Darkages.Storage
 
         public void Save(Area obj)
         {
-            if (ServerContextBase.Paused)
+            if (ServerContext.Paused)
                 return;
 
             var path = Path.Combine(StoragePath, $"{obj.ContentName.ToLower()}.json");

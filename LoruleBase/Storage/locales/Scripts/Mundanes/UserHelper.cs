@@ -1,10 +1,10 @@
 ﻿#region
 
+using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System.Collections.Generic;
 
 #endregion
 
@@ -59,8 +59,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                 client.Aisling.GoHome();
                             else
                                 client.TransitionToMap(
-                                    ServerContextBase.GlobalMapCache[ServerContextBase.Config.StartingMap],
-                                    ServerContextBase.Config.StartingPosition);
+                                    ServerContext.GlobalMapCache[ServerContext.Config.StartingMap],
+                                    ServerContext.Config.StartingPosition);
                         }
                         break;
 
@@ -95,15 +95,15 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         {
                             client.Aisling.TutorialCompleted = true;
                             client.Aisling.ExpLevel = 11;
-                            client.Aisling._Str = ServerContextBase.Config.BaseStatAttribute;
-                            client.Aisling._Int = ServerContextBase.Config.BaseStatAttribute;
-                            client.Aisling._Wis = ServerContextBase.Config.BaseStatAttribute;
-                            client.Aisling._Con = ServerContextBase.Config.BaseStatAttribute;
-                            client.Aisling._Dex = ServerContextBase.Config.BaseStatAttribute;
-                            client.Aisling._MaximumHp = (ServerContextBase.Config.MinimumHp + 33) * 11;
-                            client.Aisling._MaximumMp = (ServerContextBase.Config.MinimumHp + 21) * 11;
+                            client.Aisling._Str = ServerContext.Config.BaseStatAttribute;
+                            client.Aisling._Int = ServerContext.Config.BaseStatAttribute;
+                            client.Aisling._Wis = ServerContext.Config.BaseStatAttribute;
+                            client.Aisling._Con = ServerContext.Config.BaseStatAttribute;
+                            client.Aisling._Dex = ServerContext.Config.BaseStatAttribute;
+                            client.Aisling._MaximumHp = (ServerContext.Config.MinimumHp + 33) * 11;
+                            client.Aisling._MaximumMp = (ServerContext.Config.MinimumHp + 21) * 11;
 
-                            client.Aisling.StatPoints = 11 * ServerContextBase.Config.StatsPerLevel;
+                            client.Aisling.StatPoints = 11 * ServerContext.Config.StatsPerLevel;
                             client.SendStats(StatusFlags.All);
 
                             client.SendMessage(0x02, "You have lost all memory...");

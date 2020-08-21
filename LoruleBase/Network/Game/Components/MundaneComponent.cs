@@ -1,8 +1,7 @@
 ﻿#region
 
-using Darkages.Types;
 using System;
-using System.Threading.Tasks;
+using Darkages.Types;
 
 #endregion
 
@@ -12,22 +11,22 @@ namespace Darkages.Network.Game.Components
     {
         public MundaneComponent(GameServer server) : base(server)
         {
-            Timer = new GameServerTimer(TimeSpan.FromSeconds(ServerContextBase.Config.MundaneRespawnInterval));
+            Timer = new GameServerTimer(TimeSpan.FromSeconds(ServerContext.Config.MundaneRespawnInterval));
         }
 
         public GameServerTimer Timer { get; set; }
 
         public void SpawnMundanes()
         {
-            foreach (var mundane in ServerContextBase.GlobalMundaneTemplateCache)
+            foreach (var mundane in ServerContext.GlobalMundaneTemplateCache)
             {
                 if (mundane.Value == null || mundane.Value.AreaID == 0)
                     continue;
 
-                if (!ServerContextBase.GlobalMapCache.ContainsKey(mundane.Value.AreaID))
+                if (!ServerContext.GlobalMapCache.ContainsKey(mundane.Value.AreaID))
                     continue;
 
-                var map = ServerContextBase.GlobalMapCache[mundane.Value.AreaID];
+                var map = ServerContext.GlobalMapCache[mundane.Value.AreaID];
 
                 if (map == null || !map.Ready)
                     continue;

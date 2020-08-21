@@ -18,7 +18,7 @@ namespace Darkages.Network.ClientFormats
 
         public override void Serialize(NetworkPacketReader reader)
         {
-            Status = (ActivityStatus)reader.ReadByte();
+            Status = (ActivityStatus) reader.ReadByte();
         }
 
         public override void Serialize(NetworkPacketWriter writer)

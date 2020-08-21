@@ -21,9 +21,9 @@
             writer.Write(Direction);
             writer.Write(LastX);
             writer.Write(LastY);
-            writer.Write((ushort)0x0B);
-            writer.Write((ushort)0x0B);
-            writer.Write((byte)0x01);
+            writer.Write((ushort) 0x0B);
+            writer.Write((ushort) 0x0B);
+            writer.Write((byte) 0x01);
         }
     }
 }

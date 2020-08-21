@@ -2,7 +2,7 @@
 {
     public class ServerFormat7E : NetworkFormat
     {
-        public string Text = ServerContextBase.Config?.HandShakeMessage ?? "CUNTS\n";
+        public string Text = ServerContext.Config?.HandShakeMessage ?? "CUNTS\n";
         public byte Type = 0x1B;
 
         public ServerFormat7E()

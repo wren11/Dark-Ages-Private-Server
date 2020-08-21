@@ -1,13 +1,13 @@
 ﻿#region
 
-using Darkages.Network.Game.Components;
-using Darkages.Network.Object;
-using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Darkages.Network.Game.Components;
+using Darkages.Network.Object;
+using Darkages.Types;
 
 #endregion
 
@@ -73,38 +73,34 @@ namespace Darkages.Network.Game
 
             try
             {
-                ServerContextBase.Running = true;
+                ServerContext.Running = true;
                 Update();
             }
             catch (ThreadAbortException)
             {
-                ServerContextBase.Running = false;
+                ServerContext.Running = false;
             }
         }
 
         public void UpdateClients(TimeSpan elapsedTime)
         {
             foreach (var client in Clients.Where(client => client?.Aisling != null))
-            {
                 try
                 {
                     if (!client.Aisling.LoggedIn)
                         continue;
 
                     if (!client.IsWarping)
-                    {
                         Pulse(elapsedTime, client);
-                    }
                     else if (client.IsWarping && !client.InMapTransition)
                         if (client.CanSendLocation && !client.IsRefreshing &&
-                            client.Aisling.CurrentMapId == ServerContextBase.Config.PVPMap)
+                            client.Aisling.CurrentMapId == ServerContext.Config.PVPMap)
                             client.SendLocation();
                 }
                 catch
                 {
                     // ignored
                 }
-            }
         }
 
         private static void Pulse(TimeSpan elapsedTime, IGameClient client)
@@ -115,7 +111,7 @@ namespace Darkages.Network.Game
 
         private void AutoSave(GameClient client)
         {
-            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContextBase.Config.SaveRate) client.Save();
+            if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContext.Config.SaveRate) client.Save();
         }
 
         private void InitComponentCache()
@@ -140,7 +136,7 @@ namespace Darkages.Network.Game
         {
             _previousGameTime = DateTime.UtcNow;
 
-            while (ServerContextBase.Running)
+            while (ServerContext.Running)
             {
                 var gameTime = DateTime.UtcNow - _previousGameTime;
 
@@ -149,10 +145,7 @@ namespace Darkages.Network.Game
                     UpdateClients(gameTime);
                     UpdateComponents(gameTime);
 
-                    foreach (var (_, map) in ServerContextBase.GlobalMapCache)
-                    {
-                        map.Update(gameTime);
-                    }
+                    foreach (var (_, map) in ServerContext.GlobalMapCache) map.Update(gameTime);
                 });
 
                 _previousGameTime += gameTime;
@@ -168,7 +161,6 @@ namespace Darkages.Network.Game
                 var components = ServerComponents.Select(i => i.Value);
 
                 foreach (var component in components)
-                {
                     try
                     {
                         component.Update(elapsedTime);
@@ -177,7 +169,6 @@ namespace Darkages.Network.Game
                     {
                         // ignored
                     }
-                }
             }
             catch (Exception e)
             {

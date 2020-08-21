@@ -1,4 +1,8 @@
-﻿using System;
+﻿#region
+
+using System;
+
+#endregion
 
 namespace Darkages.Types
 {
@@ -8,17 +12,17 @@ namespace Darkages.Types
         public Position MapPosition { get; set; }
         public byte NationId { get; set; }
 
-        public bool PastCurfew(Aisling aisling)
-        {
-            return (DateTime.UtcNow - aisling.LastLogged).TotalHours > ServerContextBase.Config.NationReturnHours;
-        }
-
         public override string[] GetMetaData()
         {
             return new[]
             {
                 ""
             };
+        }
+
+        public bool PastCurfew(Aisling aisling)
+        {
+            return (DateTime.UtcNow - aisling.LastLogged).TotalHours > ServerContext.Config.NationReturnHours;
         }
     }
 }

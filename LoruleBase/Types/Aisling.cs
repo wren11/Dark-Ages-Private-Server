@@ -1,16 +1,15 @@
 ﻿#region
 
-using Darkages.Common;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using Darkages.Network;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 
 #endregion
 
@@ -19,17 +18,11 @@ namespace Darkages
     public class Aisling : Sprite
     {
         public Dictionary<string, EphemeralReactor> ActiveReactors = new Dictionary<string, EphemeralReactor>();
-
         [JsonIgnore] public int DamageCounter = 0;
-
         public Dictionary<string, int> MonsterKillCounters = new Dictionary<string, int>();
-
         [JsonIgnore] public List<Popup> Popups;
-
         public Dictionary<string, DateTime> Reactions = new Dictionary<string, DateTime>();
-
         [JsonIgnore] public HashSet<Sprite> View = new HashSet<Sprite>();
-
         private readonly object _syncLock = new object();
 
         public Aisling()
@@ -106,7 +99,9 @@ namespace Darkages
         public int GoldPoints { get; set; }
 
         [JsonIgnore]
-        public Party GroupParty => ServerContextBase.GlobalGroupCache.ContainsKey(GroupId) ? ServerContextBase.GlobalGroupCache[GroupId] : null;
+        public Party GroupParty => ServerContext.GlobalGroupCache.ContainsKey(GroupId)
+            ? ServerContext.GlobalGroupCache[GroupId]
+            : null;
 
         public byte HairColor { get; set; }
         public byte HairStyle { get; set; }
@@ -124,10 +119,10 @@ namespace Darkages
         {
             get
             {
-                if (!ServerContextBase.GlobalGroupCache.ContainsKey(GroupId))
+                if (!ServerContext.GlobalGroupCache.ContainsKey(GroupId))
                     return false;
 
-                var group = ServerContextBase.GlobalGroupCache[GroupId];
+                var group = ServerContext.GlobalGroupCache[GroupId];
                 return group != null && group.LeaderName.ToLower() == Username.ToLower();
             }
         }
@@ -136,7 +131,7 @@ namespace Darkages
         public bool LoggedIn { get; set; }
 
         [JsonIgnore]
-        public int MaximumWeight => (int)(ExpLevel / 4 + _Str + ServerContextBase.Config.WeightIncreaseModifer);
+        public int MaximumWeight => (int)(ExpLevel / 4 + _Str + ServerContext.Config.WeightIncreaseModifer);
 
         public ushort MonsterForm { get; set; } = 0;
         public byte NameColor { get; set; }
@@ -159,7 +154,7 @@ namespace Darkages
         {
             get
             {
-                if (Nation != null) return ServerContextBase.GlobalNationTemplateCache[Nation];
+                if (Nation != null) return ServerContext.GlobalNationTemplateCache[Nation];
                 throw new InvalidOperationException();
             }
         }
@@ -202,7 +197,7 @@ namespace Darkages
                 ExpNext = 600,
                 Gender = 0,
                 Title = 0,
-                CurrentMapId = ServerContextBase.Config.StartingMap,
+                CurrentMapId = ServerContext.Config.StartingMap,
                 Stage = ClassStage.Class,
                 Path = Class.Peasant,
                 CurrentHp = 60,
@@ -233,22 +228,22 @@ namespace Darkages
                 BankManager = new Bank(),
                 Created = DateTime.UtcNow,
                 LastLogged = DateTime.UtcNow,
-                XPos = ServerContextBase.Config.StartingPosition.X,
-                YPos = ServerContextBase.Config.StartingPosition.Y,
+                XPos = ServerContext.Config.StartingPosition.X,
+                YPos = ServerContext.Config.StartingPosition.Y,
                 AnimalForm = AnimalForm.None,
                 Nation = "Mileth",
-                EquipmentManager = new EquipmentManager(null),
+                EquipmentManager = new EquipmentManager(null)
             };
 
-            if (ServerContextBase.Config.GiveAssailOnCreate)
+            if (ServerContext.Config.GiveAssailOnCreate)
                 Skill.GiveTo(result, "Assail", 1);
 
-            if (ServerContextBase.Config.DevMode)
+            if (ServerContext.Config.DevMode)
             {
-                foreach (var temp in ServerContextBase.GlobalSpellTemplateCache)
+                foreach (var temp in ServerContext.GlobalSpellTemplateCache)
                     Spell.GiveTo(result, temp.Value.Name);
 
-                foreach (var temp in ServerContextBase.GlobalSkillTemplateCache)
+                foreach (var temp in ServerContext.GlobalSkillTemplateCache)
                     Skill.GiveTo(result, temp.Value.Name);
             }
 
@@ -307,10 +302,10 @@ namespace Darkages
             GoldPoints += goldA;
             trader.GoldPoints += goldB;
 
-            if (trader.GoldPoints > ServerContextBase.Config.MaxCarryGold)
-                trader.GoldPoints = ServerContextBase.Config.MaxCarryGold;
-            if (GoldPoints > ServerContextBase.Config.MaxCarryGold)
-                GoldPoints = ServerContextBase.Config.MaxCarryGold;
+            if (trader.GoldPoints > ServerContext.Config.MaxCarryGold)
+                trader.GoldPoints = ServerContext.Config.MaxCarryGold;
+            if (GoldPoints > ServerContext.Config.MaxCarryGold)
+                GoldPoints = ServerContext.Config.MaxCarryGold;
 
             trader.Client.SendStats(StatusFlags.StructC);
             Client.SendStats(StatusFlags.StructC);
@@ -421,10 +416,8 @@ namespace Darkages
                     {
                         {
                             if (target is Aisling obj && obj.Serial == info.Target)
-                            {
                                 foreach (var script in spell.Scripts.Values)
                                     script.OnUse(this, target as Aisling);
-                            }
                         }
 
                         {
@@ -497,10 +490,10 @@ namespace Darkages
             GoldPoints += goldB;
             trader.GoldPoints += goldA;
 
-            if (trader.GoldPoints > ServerContextBase.Config.MaxCarryGold)
-                trader.GoldPoints = ServerContextBase.Config.MaxCarryGold;
-            if (GoldPoints > ServerContextBase.Config.MaxCarryGold)
-                GoldPoints = ServerContextBase.Config.MaxCarryGold;
+            if (trader.GoldPoints > ServerContext.Config.MaxCarryGold)
+                trader.GoldPoints = ServerContext.Config.MaxCarryGold;
+            if (GoldPoints > ServerContext.Config.MaxCarryGold)
+                GoldPoints = ServerContext.Config.MaxCarryGold;
 
             exchangeA.Items.Clear();
             exchangeB.Items.Clear();
@@ -522,7 +515,7 @@ namespace Darkages
 
         public bool GiveGold(int offer, bool SendClientUpdate = true)
         {
-            if (GoldPoints + offer < ServerContextBase.Config.MaxCarryGold)
+            if (GoldPoints + offer < ServerContext.Config.MaxCarryGold)
             {
                 GoldPoints += offer;
                 return true;
@@ -549,12 +542,12 @@ namespace Darkages
 
             if (string.IsNullOrEmpty(Client.Aisling.Nation))
             {
-                var destinationMap = ServerContextBase.Config.TransitionZone;
+                var destinationMap = ServerContext.Config.TransitionZone;
 
-                if (ServerContextBase.GlobalMapCache.ContainsKey(destinationMap))
+                if (ServerContext.GlobalMapCache.ContainsKey(destinationMap))
                 {
-                    Client.Aisling.XPos = ServerContextBase.Config.TransitionPointX;
-                    Client.Aisling.YPos = ServerContextBase.Config.TransitionPointY;
+                    Client.Aisling.XPos = ServerContext.Config.TransitionPointX;
+                    Client.Aisling.YPos = ServerContext.Config.TransitionPointY;
                     Client.Aisling.CurrentMapId = destinationMap;
                 }
             }
@@ -579,10 +572,10 @@ namespace Darkages
 
         public bool HasInInventory(string item, int count, out int found)
         {
-            var template = ServerContextBase.GlobalItemTemplateCache[item];
+            var template = ServerContext.GlobalItemTemplateCache[item];
             found = 0;
 
-            if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(item))
+            if (!ServerContext.GlobalItemTemplateCache.ContainsKey(item))
                 return false;
 
             if (template != null)
@@ -606,7 +599,7 @@ namespace Darkages
         {
             if (CurrentMp >= spell.Template.ManaCost)
                 return this;
-            Client.SendMessage(0x02, ServerContextBase.Config.NoManaMessage);
+            Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
 
             return null;
         }
@@ -719,10 +712,10 @@ namespace Darkages
 
         public void SendToHell()
         {
-            if (!ServerContextBase.GlobalMapCache.ContainsKey(ServerContextBase.Config.DeathMap))
+            if (!ServerContext.GlobalMapCache.ContainsKey(ServerContext.Config.DeathMap))
                 return;
 
-            if (CurrentMapId == ServerContextBase.Config.DeathMap)
+            if (CurrentMapId == ServerContext.Config.DeathMap)
                 return;
 
             Remains.Owner = this;
@@ -770,16 +763,17 @@ namespace Darkages
         public void WarpToHell()
         {
             Client.LeaveArea(true, true);
-            XPos = ServerContextBase.Config.DeathMapX;
-            YPos = ServerContextBase.Config.DeathMapY;
+            XPos = ServerContext.Config.DeathMapX;
+            YPos = ServerContext.Config.DeathMapY;
             Direction = 0;
-            Client.Aisling.CurrentMapId = ServerContextBase.Config.DeathMap;
+            Client.Aisling.CurrentMapId = ServerContext.Config.DeathMap;
             Client.EnterArea();
 
             UpdateStats();
         }
 
         #region Reactor Stuff
+
         #endregion
     }
 }

@@ -1,12 +1,12 @@
 ﻿#region
 
-using Darkages.Scripting;
-using Darkages.Types;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Darkages.Scripting;
+using Darkages.Types;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -69,24 +69,24 @@ namespace Darkages.Network.Object
         public void AddObject<T>(T obj, Predicate<T> p = null) where T : Sprite
         {
             if (p != null && p(obj))
-                ServerContextBase.Game.ObjectFactory.AddGameObject(obj);
+                ServerContext.Game.ObjectFactory.AddGameObject(obj);
             else if (p == null)
-                ServerContextBase.Game.ObjectFactory.AddGameObject(obj);
+                ServerContext.Game.ObjectFactory.AddGameObject(obj);
         }
 
         public void DelObject<T>(T obj) where T : Sprite
         {
-            ServerContextBase.Game?.ObjectFactory.RemoveGameObject(obj);
+            ServerContext.Game?.ObjectFactory.RemoveGameObject(obj);
         }
 
         public void DelObjects<T>(T[] obj) where T : Sprite
         {
-            ServerContextBase.Game?.ObjectFactory.RemoveAllGameObjects(obj);
+            ServerContext.Game?.ObjectFactory.RemoveAllGameObjects(obj);
         }
 
         public T GetObject<T>(Area map, Predicate<T> p) where T : Sprite
         {
-            return ServerContextBase.Game?.ObjectFactory.Query(map, p);
+            return ServerContext.Game?.ObjectFactory.Query(map, p);
         }
 
         public Sprite GetObject(Area map, Predicate<Sprite> p, Get selections)
@@ -95,7 +95,7 @@ namespace Darkages.Network.Object
         }
 
         public T GetObjectByName<T>(string name, Area map = null)
-                    where T : Sprite, new()
+            where T : Sprite, new()
         {
             var objType = new T();
 
@@ -116,7 +116,7 @@ namespace Darkages.Network.Object
 
         public IEnumerable<T> GetObjects<T>(Area map, Predicate<T> p) where T : Sprite
         {
-            return ServerContextBase.Game?.ObjectFactory.QueryAll(map, p);
+            return ServerContext.Game?.ObjectFactory.QueryAll(map, p);
         }
 
         public IEnumerable<Sprite> GetObjects(Area map, Predicate<Sprite> p, Get selections)

@@ -1,10 +1,10 @@
 ﻿#region
 
+using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System.Collections.Generic;
 
 #endregion
 
@@ -112,37 +112,37 @@ namespace Darkages.Assets.locales.Scripts.Mundanes
             switch (responseID)
             {
                 case 0x0010:
-                    {
-                        client.SendOptionsDialog(Mundane,
-                            "You can attack by using space bar. or by pressing the 's' key and clicking on 'Assail', Also notice how 'Assail' is in the first slot? this means you can press the '1' to activate it. The numpad also works too.\nHave you forgotten everything i taught you? Jesus christ we got a bright one here boys.");
-                    }
+                {
+                    client.SendOptionsDialog(Mundane,
+                        "You can attack by using space bar. or by pressing the 's' key and clicking on 'Assail', Also notice how 'Assail' is in the first slot? this means you can press the '1' to activate it. The numpad also works too.\nHave you forgotten everything i taught you? Jesus christ we got a bright one here boys.");
+                }
                     break;
 
                 case 0x0011:
-                    {
-                        client.CloseDialog();
-                    }
+                {
+                    client.CloseDialog();
+                }
                     break;
 
                 case 0x0012:
-                    {
-                        client.Aisling.TutorialCompleted = true;
-                        client.Aisling.ExpLevel = 11;
-                        client.Aisling._Str = ServerContextBase.Config.BaseStatAttribute;
-                        client.Aisling._Int = ServerContextBase.Config.BaseStatAttribute;
-                        client.Aisling._Wis = ServerContextBase.Config.BaseStatAttribute;
-                        client.Aisling._Con = ServerContextBase.Config.BaseStatAttribute;
-                        client.Aisling._Dex = ServerContextBase.Config.BaseStatAttribute;
-                        client.Aisling._MaximumHp = (ServerContextBase.Config.MinimumHp + 33) * 11;
-                        client.Aisling._MaximumMp = (ServerContextBase.Config.MinimumHp + 21) * 11;
+                {
+                    client.Aisling.TutorialCompleted = true;
+                    client.Aisling.ExpLevel = 11;
+                    client.Aisling._Str = ServerContext.Config.BaseStatAttribute;
+                    client.Aisling._Int = ServerContext.Config.BaseStatAttribute;
+                    client.Aisling._Wis = ServerContext.Config.BaseStatAttribute;
+                    client.Aisling._Con = ServerContext.Config.BaseStatAttribute;
+                    client.Aisling._Dex = ServerContext.Config.BaseStatAttribute;
+                    client.Aisling._MaximumHp = (ServerContext.Config.MinimumHp + 33) * 11;
+                    client.Aisling._MaximumMp = (ServerContext.Config.MinimumHp + 21) * 11;
 
-                        client.Aisling.StatPoints = 11 * ServerContextBase.Config.StatsPerLevel;
-                        client.SendStats(StatusFlags.All);
+                    client.Aisling.StatPoints = 11 * ServerContext.Config.StatsPerLevel;
+                    client.SendStats(StatusFlags.All);
 
-                        client.SendMessage(0x02, "You have lost all memory...");
-                        client.TransitionToMap(1006, new Position(2, 4));
-                        client.Aisling.TutorialCompleted = true;
-                    }
+                    client.SendMessage(0x02, "You have lost all memory...");
+                    client.TransitionToMap(1006, new Position(2, 4));
+                    client.Aisling.TutorialCompleted = true;
+                }
                     break;
             }
         }

@@ -1,10 +1,10 @@
 ﻿#region
 
-using Darkages.Types;
-using Newtonsoft.Json;
 using System;
 using System.IO;
+using Darkages.Types;
 using Darkages.Types.Templates;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -16,7 +16,7 @@ namespace Darkages.Storage
 
         static TemplateStorage()
         {
-            StoragePath = $@"{ServerContextBase.StoragePath}\templates";
+            StoragePath = $@"{ServerContext.StoragePath}\templates";
 
             var tmp = new T();
 
@@ -79,7 +79,7 @@ namespace Darkages.Storage
                             var template =
                                 StorageManager.SkillBucket.Load<SkillTemplate>(Path.GetFileNameWithoutExtension(asset));
                             if (template != null)
-                                ServerContextBase.GlobalSkillTemplateCache[template.Name] = template;
+                                ServerContext.GlobalSkillTemplateCache[template.Name] = template;
 
                             break;
                         }
@@ -89,7 +89,7 @@ namespace Darkages.Storage
                             var template =
                                 StorageManager.SpellBucket.Load<SpellTemplate>(Path.GetFileNameWithoutExtension(asset));
                             if (template != null)
-                                ServerContextBase.GlobalSpellTemplateCache[template.Name] = template;
+                                ServerContext.GlobalSpellTemplateCache[template.Name] = template;
                             break;
                         }
 
@@ -98,7 +98,7 @@ namespace Darkages.Storage
                             var template =
                                 StorageManager.ReactorBucket.Load<Reactor>(Path.GetFileNameWithoutExtension(asset));
                             if (template != null)
-                                ServerContextBase.GlobalReactorCache[template.Name] = template;
+                                ServerContext.GlobalReactorCache[template.Name] = template;
                             break;
                         }
 
@@ -110,7 +110,7 @@ namespace Darkages.Storage
 
                             if (template != null)
                             {
-                                ServerContextBase.GlobalMonsterTemplateCache.Add(template);
+                                ServerContext.GlobalMonsterTemplateCache.Add(template);
                                 template.NextAvailableSpawn = DateTime.UtcNow;
                             }
 
@@ -122,7 +122,7 @@ namespace Darkages.Storage
                             var template =
                                 StorageManager.MundaneBucket.Load<MundaneTemplate>(Path.GetFileNameWithoutExtension(asset));
                             if (template != null)
-                                ServerContextBase.GlobalMundaneTemplateCache[template.Name] = template;
+                                ServerContext.GlobalMundaneTemplateCache[template.Name] = template;
                             break;
                         }
 
@@ -131,7 +131,7 @@ namespace Darkages.Storage
                             var template =
                                 StorageManager.ItemBucket.Load<ItemTemplate>(Path.GetFileNameWithoutExtension(asset));
                             if (template != null)
-                                ServerContextBase.GlobalItemTemplateCache[template.Name] = template;
+                                ServerContext.GlobalItemTemplateCache[template.Name] = template;
                             break;
                         }
                     case NationTemplate _:
@@ -139,7 +139,7 @@ namespace Darkages.Storage
                             var template =
                                 StorageManager.NationBucket.Load<NationTemplate>(Path.GetFileNameWithoutExtension(asset));
                             if (template != null)
-                                ServerContextBase.GlobalNationTemplateCache[template.Name] = template;
+                                ServerContext.GlobalNationTemplateCache[template.Name] = template;
                             break;
                         }
 
@@ -149,7 +149,7 @@ namespace Darkages.Storage
                                 StorageManager.WorldMapBucket.Load<WorldMapTemplate>(
                                     Path.GetFileNameWithoutExtension(asset));
                             if (template != null)
-                                ServerContextBase.GlobalWorldMapTemplateCache[template.WorldIndex] = template;
+                                ServerContext.GlobalWorldMapTemplateCache[template.WorldIndex] = template;
                             break;
                         }
                     case ServerTemplate _:
@@ -158,10 +158,7 @@ namespace Darkages.Storage
                                 StorageManager.ServerArgBucket.Load<ServerTemplate>(
                                     Path.GetFileNameWithoutExtension(asset));
 
-                            if (template != null)
-                            {
-                                ServerContextBase.GlobalServerVarCache[template.Name] = template;
-                            }
+                            if (template != null) ServerContext.GlobalServerVarCache[template.Name] = template;
 
                             break;
                         }
@@ -176,25 +173,25 @@ namespace Darkages.Storage
                                 case TriggerType.UserClick:
                                     template = StorageManager.PopupBucket.Load<UserClickPopup>(
                                         Path.GetFileNameWithoutExtension(asset));
-                                    ServerContextBase.GlobalPopupCache.Add(template);
+                                    ServerContext.GlobalPopupCache.Add(template);
                                     break;
 
                                 case TriggerType.ItemDrop:
                                     template = StorageManager.PopupBucket.Load<ItemDropPopup>(
                                         Path.GetFileNameWithoutExtension(asset));
-                                    ServerContextBase.GlobalPopupCache.Add(template);
+                                    ServerContext.GlobalPopupCache.Add(template);
                                     break;
 
                                 case TriggerType.ItemPickup:
                                     template = StorageManager.PopupBucket.Load<ItemPickupPopup>(
                                         Path.GetFileNameWithoutExtension(asset));
-                                    ServerContextBase.GlobalPopupCache.Add(template);
+                                    ServerContext.GlobalPopupCache.Add(template);
                                     break;
 
                                 case TriggerType.MapLocation:
                                     template = StorageManager.PopupBucket.Load<UserWalkPopup>(
                                         Path.GetFileNameWithoutExtension(asset));
-                                    ServerContextBase.GlobalPopupCache.Add(template);
+                                    ServerContext.GlobalPopupCache.Add(template);
                                     break;
                             }
 
@@ -223,7 +220,7 @@ namespace Darkages.Storage
             if (template == null)
                 return null;
 
-            ServerContextBase.GlobalItemTemplateCache[template.Name] = template;
+            ServerContext.GlobalItemTemplateCache[template.Name] = template;
             return template;
         }
 

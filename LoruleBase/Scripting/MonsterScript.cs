@@ -1,9 +1,9 @@
 ﻿#region
 
+using System;
 using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Types;
-using System;
 
 #endregion
 

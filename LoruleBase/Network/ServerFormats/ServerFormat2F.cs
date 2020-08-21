@@ -1,8 +1,8 @@
 ﻿#region
 
-using Darkages.Types;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Types;
 
 #endregion
 
@@ -182,11 +182,11 @@ namespace Darkages.Network.ServerFormats
                 Data = data;
             }
 
-            _popup = lpPopup;
+            Popup = lpPopup;
         }
 
-        public Popup _popup { get; set; }
         public IDialogData Data { get; set; }
+        public Popup Popup { get; set; }
         public string Text { get; set; }
 
         public override void Serialize(NetworkPacketReader reader)
@@ -197,15 +197,15 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write((byte)0x00);
             writer.Write((byte)0x01);
-            writer.Write((uint)_popup.Id);
+            writer.Write((uint)Popup.Id);
             writer.Write((byte)0x02);
-            writer.Write(_popup.Template.SpriteId);
+            writer.Write(Popup.Template.SpriteId);
             writer.Write((byte)0x00);
             writer.Write((byte)0x01);
             writer.Write((byte)0x02);
             writer.Write((byte)0x01);
             writer.Write((byte)0x00);
-            writer.WriteStringB(_popup.Template.Name);
+            writer.WriteStringB(Popup.Template.Name);
             writer.WriteStringB(Text);
             writer.Write(Data);
         }
@@ -406,10 +406,10 @@ namespace Darkages.Network.ServerFormats
 
             foreach (var str in Data.Items.Keys)
             {
-                if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(str))
+                if (!ServerContext.GlobalItemTemplateCache.ContainsKey(str))
                     continue;
 
-                var item = ServerContextBase.GlobalItemTemplateCache[str];
+                var item = ServerContext.GlobalItemTemplateCache[str];
 
                 if (item == null)
                     continue;

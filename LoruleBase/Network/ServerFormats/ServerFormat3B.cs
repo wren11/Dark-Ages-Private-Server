@@ -24,7 +24,7 @@ namespace Darkages.Network.ServerFormats
         {
             Ping = DateTime.UtcNow;
 
-            writer.Write((ushort)0x0001);
+            writer.Write((ushort) 0x0001);
         }
     }
 }

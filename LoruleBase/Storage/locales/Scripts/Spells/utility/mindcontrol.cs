@@ -1,21 +1,19 @@
 ﻿#region
 
-using Darkages.Network.ServerFormats;
-using Darkages.Scripting;
-using Darkages.Storage.locales.debuffs;
-using Darkages.Types;
 using System;
+using Darkages.Scripting;
+using Darkages.Types;
 
 #endregion
 
 namespace Darkages.Assets.locales.Scripts.Spells.utility
 {
     [Script("mind control", "Dean")]
-    public class mindcontrol : SpellScript
+    public class Mindcontrol : SpellScript
     {
         private readonly Random rand = new Random();
 
-        public mindcontrol(Spell spell) : base(spell)
+        public Mindcontrol(Spell spell) : base(spell)
         {
         }
 
@@ -29,11 +27,10 @@ namespace Darkages.Assets.locales.Scripts.Spells.utility
 
         public override void OnUse(Sprite sprite, Sprite target)
         {
-            if (sprite is Aisling _playerAisling)
-            {
-                if (target is Aisling _targetAisling)
+            if (sprite is Aisling playerAisling)
+                if (target is Aisling targetAisling)
                 {
-                    var copy = (Sprite)sprite;
+                    var copy = sprite;
 
                     sprite = target;
                     target = copy;
@@ -44,7 +41,6 @@ namespace Darkages.Assets.locales.Scripts.Spells.utility
                     target.Client.Refresh();
                     sprite.Client.Refresh();
                 }
-            }
         }
     }
 }

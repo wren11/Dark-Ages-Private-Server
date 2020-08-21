@@ -30,13 +30,9 @@ namespace Darkages.Network.ServerFormats
         public override void Serialize(NetworkPacketWriter writer)
         {
             if (Aisling.GameMaster)
-            {
                 Flags |= 0x40;
-            }
             else
-            {
                 Flags |= 0x40 | 0x80;
-            }
 
             writer.Write(Flags);
 
@@ -89,7 +85,7 @@ namespace Darkages.Network.ServerFormats
             if ((Flags & 0x08) != 0)
             {
                 writer.Write(Aisling.ExpTotal);
-                writer.Write((uint)Aisling.ExpLevel >= ServerContextBase.Config.PlayerLevelCap
+                writer.Write((uint)Aisling.ExpLevel >= ServerContext.Config.PlayerLevelCap
                     ? 0
                     : Aisling.ExpNext);
                 writer.Write((uint)Aisling.AbpTotal);

@@ -1,9 +1,9 @@
 ﻿#region
 
+using System.Threading.Tasks;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -53,7 +53,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 var client = (sprite as Aisling).Client;
                 if (Target != null)
                     client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29(Skill.Template.MissAnimation, (ushort)Target.XPos, (ushort)Target.YPos));
+                        new ServerFormat29(Skill.Template.MissAnimation, (ushort) Target.XPos, (ushort) Target.YPos));
             }
         }
 

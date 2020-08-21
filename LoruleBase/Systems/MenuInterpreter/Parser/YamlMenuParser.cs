@@ -83,7 +83,7 @@ namespace MenuInterpreter.Parser
                         GetLinkedId(checkpoint.fail));
 
                     var newId = GetIdForCheckpoint(checkpoint.id);
-                    var item = new CheckpointMenuItem(newId, checkpoint.type, new[] { onSuccess, onFail })
+                    var item = new CheckpointMenuItem(newId, checkpoint.type, new[] {onSuccess, onFail})
                     {
                         Value = checkpoint.value,
                         Amount = checkpoint.amount

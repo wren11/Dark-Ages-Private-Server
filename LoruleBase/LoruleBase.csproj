@@ -16,13 +16,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="Enums.NET" Version="3.0.3" />
-    <PackageReference Include="Iconic.Zlib.Netstandard" Version="1.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.7.0-1.final" />
     <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="3.7.0-1.final" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="ServiceStack" Version="5.8.0" />
+    <PackageReference Include="SharpZipLib" Version="1.2.0" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.7.0" />
     <PackageReference Include="YamlDotNet" Version="8.1.2" />
   </ItemGroup>
@@ -46,6 +44,51 @@
     <None Update="zlib.net.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Compression\ZLib\Adler32.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Compression\ZLib\Deflate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Compression\ZLib\InfBlocks.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Compression\ZLib\InfCodes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Compression\ZLib\Inflate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Compression\ZLib\InfTree.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Compression\ZLib\StaticTree.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Compression\ZLib\SupportClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Compression\ZLib\Tree.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Compression\ZLib\ZInputStream.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Compression\ZLib\Zlib.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Compression\ZLib\ZOutputStream.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Compression\ZLib\ZStream.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Compression\ZLib\ZStreamException.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

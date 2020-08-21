@@ -1,5 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Linq;
+
+#endregion
 
 namespace Darkages.Types
 {
@@ -12,29 +16,19 @@ namespace Darkages.Types
 
         public bool IsMet(Aisling user, Func<Predicate<Template>, bool> predicate)
         {
-            if (ServerContextBase.Config.DevModeExemptions != null && (user.GameMaster && ServerContextBase.Config.DevModeExemptions.Contains("quests")))
+            if (ServerContext.Config.DevModeExemptions != null && user.GameMaster &&
+                ServerContext.Config.DevModeExemptions.Contains("quests"))
                 return true;
 
-            switch (Type)
+            return Type switch
             {
-                case QuestType.ItemHandIn:
-                    return predicate(i => user.Inventory.Has(TemplateContext) >= Amount);
-
-                case QuestType.KillCount:
-                    return predicate(i => user.HasKilled(Value, Amount));
-
-                case QuestType.HasItem:
-                    return predicate(i => user.Inventory.HasCount(TemplateContext) >= Amount);
-
-                case QuestType.SingleItemHandIn:
-                    return predicate(i => user.Inventory.HasCount(TemplateContext) >= Amount);
-
-                case QuestType.Gossip:
-                    return true;
-
-                default:
-                    return false;
-            }
+                QuestType.ItemHandIn => predicate(i => user.Inventory.Has(TemplateContext) >= Amount),
+                QuestType.KillCount => predicate(i => user.HasKilled(Value, Amount)),
+                QuestType.HasItem => predicate(i => user.Inventory.HasCount(TemplateContext) >= Amount),
+                QuestType.SingleItemHandIn => predicate(i => user.Inventory.HasCount(TemplateContext) >= Amount),
+                QuestType.Gossip => true,
+                _ => false
+            };
         }
     }
 }

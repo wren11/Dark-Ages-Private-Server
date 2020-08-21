@@ -1,12 +1,12 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 

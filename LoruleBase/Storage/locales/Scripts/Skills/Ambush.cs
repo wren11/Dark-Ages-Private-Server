@@ -1,10 +1,10 @@
 ﻿#region
 
+using System;
+using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Linq;
 
 #endregion
 
@@ -70,7 +70,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                             if (sprite is Aisling)
                             {
                                 (sprite as Aisling).Client.SendMessageBox(0x02,
-                                    ServerContextBase.Config.CantDoThat);
+                                    ServerContext.Config.CantDoThat);
                                 return;
                             }
                             else
@@ -90,7 +90,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                         if (!sprite.Facing(target.XPos, target.YPos, out direction))
                         {
-                            sprite.Direction = (byte)direction;
+                            sprite.Direction = (byte) direction;
 
                             if (sprite.Position.IsNextTo(target.Position))
                                 sprite.Turn();
@@ -104,7 +104,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         else
                         {
                             sprite.Show(Scope.NearbyAislings, new ServerFormat0E(sprite.Serial));
-                            sprite.Show(Scope.NearbyAislings, new ServerFormat07(new[] { sprite }));
+                            sprite.Show(Scope.NearbyAislings, new ServerFormat07(new[] {sprite}));
                         }
 
                         return;

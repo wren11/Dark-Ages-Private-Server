@@ -1,6 +1,10 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿#region
+
+using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+
+#endregion
 
 namespace Darkages.Types.Templates
 {
@@ -10,7 +14,7 @@ namespace Darkages.Types.Templates
         public int Nation { get; set; }
         public int NextRank { get; set; }
         public int Rank { get; set; }
-        [JsonIgnore] public bool TermEnded => (DateTime.UtcNow - TermStarted) > TermLength;
+        [JsonIgnore] public bool TermEnded => DateTime.UtcNow - TermStarted > TermLength;
         public TimeSpan TermLength { get; set; }
         public DateTime TermStarted { get; set; }
         public string User { get; set; }
@@ -18,11 +22,9 @@ namespace Darkages.Types.Templates
 
     public class ServerTemplate : Template
     {
-        [JsonProperty]
-        public ICollection<Politics> Politics = new List<Politics>();
+        [JsonProperty] public ICollection<Politics> Politics = new List<Politics>();
 
-        [JsonProperty]
-        public Dictionary<string, int> Variables = new Dictionary<string, int>();
+        [JsonProperty] public Dictionary<string, int> Variables = new Dictionary<string, int>();
 
         public override string[] GetMetaData()
         {

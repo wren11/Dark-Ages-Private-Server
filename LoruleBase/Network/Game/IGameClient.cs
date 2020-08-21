@@ -1,11 +1,11 @@
 ﻿#region
 
-using Darkages.Network.ServerFormats;
-using Darkages.Types;
-using MenuInterpreter;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Darkages.Network.ServerFormats;
+using Darkages.Types;
+using MenuInterpreter;
 
 #endregion
 

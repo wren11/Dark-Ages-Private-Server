@@ -2,7 +2,6 @@
 
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -14,7 +13,7 @@ namespace Darkages.Network.Game.Components
             : base(server)
         {
             Timer = new GameServerTimer(
-                TimeSpan.FromSeconds(ServerContextBase.Config.MessageClearInterval));
+                TimeSpan.FromSeconds(ServerContext.Config.MessageClearInterval));
         }
 
         public GameServerTimer Timer { get; set; }

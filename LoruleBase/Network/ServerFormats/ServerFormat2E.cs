@@ -30,12 +30,12 @@ namespace Darkages.Network.ServerFormats
             if (User == null)
                 return;
 
-            var portal = ServerContextBase.GlobalWorldMapTemplateCache[User.Client.Aisling.World];
+            var portal = ServerContext.GlobalWorldMapTemplateCache[User.Client.Aisling.World];
             var name = $"field{portal.FieldNumber:000}";
 
             writer.WriteStringA(name);
-            writer.Write((byte)portal.Portals.Count);
-            writer.Write((byte)portal.FieldNumber);
+            writer.Write((byte) portal.Portals.Count);
+            writer.Write((byte) portal.FieldNumber);
 
             foreach (var warps in portal.Portals)
             {
@@ -47,16 +47,16 @@ namespace Darkages.Network.ServerFormats
 
                 writer.WriteStringA(warps.DisplayName);
                 writer.Write(warps.Destination.AreaID);
-                writer.Write((short)warps.Destination.Location.X);
-                writer.Write((short)warps.Destination.Location.Y);
+                writer.Write((short) warps.Destination.Location.X);
+                writer.Write((short) warps.Destination.Location.Y);
             }
 
-            writer.Write((byte)Generator.Random.Next() % 255 + 1);
-            writer.Write((byte)Generator.Random.Next() % 255 + 1);
-            writer.Write((byte)Generator.Random.Next() % 255 + 1);
-            writer.Write((byte)Generator.Random.Next() % 255 + 1);
-            writer.Write((byte)Generator.Random.Next() % 255 + 1);
-            writer.Write((byte)Generator.Random.Next() % 255 + 1);
+            writer.Write((byte) Generator.Random.Next() % 255 + 1);
+            writer.Write((byte) Generator.Random.Next() % 255 + 1);
+            writer.Write((byte) Generator.Random.Next() % 255 + 1);
+            writer.Write((byte) Generator.Random.Next() % 255 + 1);
+            writer.Write((byte) Generator.Random.Next() % 255 + 1);
+            writer.Write((byte) Generator.Random.Next() % 255 + 1);
         }
     }
 }

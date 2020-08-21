@@ -13,11 +13,11 @@ namespace Darkages.Storage.locales.Buffs
         public override int Length => 10;
         public override string Name => "Hide";
 
-        public override void OnApplied(Sprite Affected, Buff buff)
+        public override void OnApplied(Sprite affected, Buff buff)
         {
-            if (Affected is Aisling _aisling)
+            if (affected is Aisling)
             {
-                var client = (Affected as Aisling).Client;
+                var client = (affected as Aisling).Client;
                 if (client.Aisling != null && !client.Aisling.Dead)
                 {
                     client.Aisling.Invisible = true;
@@ -29,10 +29,10 @@ namespace Darkages.Storage.locales.Buffs
                         Sound = 43
                     };
 
-                    Affected.Show(Scope.NearbyAislings, sound);
+                    affected.Show(Scope.NearbyAislings, sound);
                     client.UpdateDisplay();
 
-                    base.OnApplied(Affected, buff);
+                    base.OnApplied(affected, buff);
                 }
             }
         }

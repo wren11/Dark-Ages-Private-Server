@@ -1,9 +1,9 @@
 ﻿#region
 
+using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
-using System.Collections.Generic;
 
 #endregion
 

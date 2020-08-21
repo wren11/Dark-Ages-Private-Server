@@ -1,12 +1,12 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -35,7 +35,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
         {
-            var skills = ServerContextBase.GlobalSkillTemplateCache.Select(i => i.Value)
+            var skills = ServerContext.GlobalSkillTemplateCache.Select(i => i.Value)
                 .Where(i => i.NpcKey != null && i.NpcKey.Equals(Mundane.Template.Name)).ToArray();
 
             var availableSkillTemplates = new List<SkillTemplate>();
@@ -43,24 +43,19 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             foreach (var skill in skills)
             {
                 if (skill.Prerequisites != null)
-                {
                     if (skill.Prerequisites.Class_Required == client.Aisling.Path)
-                    {
                         availableSkillTemplates.Add(skill);
-                    }
-                }
 
                 if (skill.LearningRequirements != null &&
                     skill.LearningRequirements.TrueForAll(i => i.Class_Required == client.Aisling.Path))
-                {
                     availableSkillTemplates.Add(skill);
-                }
             }
 
             switch (responseID)
             {
                 case 0x0001:
-                    var learnedSkills = client.Aisling.SkillBook.Skills.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
+                    var learnedSkills = client.Aisling.SkillBook.Skills.Where(i => i.Value != null)
+                        .Select(i => i.Value.Template).ToList();
                     var newSkills = availableSkillTemplates.Except(learnedSkills).ToList();
 
                     newSkills = newSkills.OrderBy(i =>
@@ -119,14 +114,14 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 case 0x0004:
                     {
-                        var subject = ServerContextBase.GlobalSkillTemplateCache[args];
+                        var subject = ServerContext.GlobalSkillTemplateCache[args];
                         if (subject == null)
                             return;
 
                         if (subject.Prerequisites == null)
                         {
                             client.CloseDialog();
-                            client.SendMessage(0x02, ServerContextBase.Config.CantDoThat);
+                            client.SendMessage(0x02, ServerContext.Config.CantDoThat);
                         }
                         else
                         {
@@ -147,7 +142,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 case 0x0006:
                     {
-                        var subject = ServerContextBase.GlobalSkillTemplateCache[args];
+                        var subject = ServerContext.GlobalSkillTemplateCache[args];
                         if (subject == null)
                             return;
 
@@ -163,7 +158,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 case 0x0005:
                     {
-                        var subject = ServerContextBase.GlobalSkillTemplateCache[args];
+                        var subject = ServerContext.GlobalSkillTemplateCache[args];
                         if (subject == null)
                             return;
 

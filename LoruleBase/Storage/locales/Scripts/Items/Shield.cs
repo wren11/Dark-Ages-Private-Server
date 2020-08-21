@@ -25,7 +25,7 @@ namespace Darkages.Storage.locales.Scripts.Items
 
                 Item.ApplyModifers(client);
 
-                client.Aisling.Shield = (byte)Item.Template.Image;
+                client.Aisling.Shield = (byte) Item.Template.Image;
             }
         }
 

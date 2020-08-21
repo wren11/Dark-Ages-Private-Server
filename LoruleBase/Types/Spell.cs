@@ -1,5 +1,8 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
@@ -7,9 +10,6 @@ using Darkages.Scripting;
 using Darkages.Storage.locales.Buffs;
 using Darkages.Storage.locales.debuffs;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace Darkages.Types
         public byte Slot { get; set; }
         public SpellTemplate Template { get; set; }
 
-        public static void AttachScript(Aisling Aisling, Spell spell)
+        public static void AttachScript(Spell spell)
         {
             spell.Scripts = ScriptManager.Load<SpellScript>(spell.Template.ScriptKey, spell);
         }
@@ -57,10 +57,10 @@ namespace Darkages.Types
 
         public static bool GiveTo(GameClient client, string args, byte level = 1, byte index = 0)
         {
-            if (!ServerContextBase.GlobalSpellTemplateCache.ContainsKey(args))
+            if (!ServerContext.GlobalSpellTemplateCache.ContainsKey(args))
                 return false;
 
-            var spellTemplate = ServerContextBase.GlobalSpellTemplateCache[args];
+            var spellTemplate = ServerContext.GlobalSpellTemplateCache[args];
 
             var slot = index == 0 ? client.Aisling.SpellBook.FindEmpty() : index;
 
@@ -73,7 +73,7 @@ namespace Darkages.Types
             var spell = Create(slot, spellTemplate);
             spell.Template = spellTemplate;
 
-            AttachScript(client.Aisling, spell);
+            AttachScript(spell);
             {
                 spell.Level = client.Aisling.GameMaster ? spellTemplate.MaxLevel : level;
                 client.Aisling.SpellBook.Assign(spell);
@@ -86,10 +86,10 @@ namespace Darkages.Types
 
         public static bool GiveTo(Aisling Aisling, string spellname, int level = 100, byte index = 0)
         {
-            if (!ServerContextBase.GlobalSpellTemplateCache.ContainsKey(spellname))
+            if (!ServerContext.GlobalSpellTemplateCache.ContainsKey(spellname))
                 return false;
 
-            var spellTemplate = ServerContextBase.GlobalSpellTemplateCache[spellname];
+            var spellTemplate = ServerContext.GlobalSpellTemplateCache[spellname];
 
             if (Aisling.SpellBook.Has(spellTemplate))
                 return false;
@@ -102,7 +102,7 @@ namespace Darkages.Types
             var spell = Create(slot, spellTemplate);
             {
                 spell.Level = (byte)level;
-                AttachScript(Aisling, spell);
+                AttachScript(spell);
                 {
                     Aisling.SpellBook.Assign(spell);
                     Aisling.SpellBook.Set(spell, false);

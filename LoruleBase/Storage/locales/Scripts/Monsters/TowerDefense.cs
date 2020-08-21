@@ -1,10 +1,10 @@
 ﻿#region
 
+using System;
+using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Linq;
 
 #endregion
 

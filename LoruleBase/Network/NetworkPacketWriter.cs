@@ -1,10 +1,9 @@
 ﻿#region
 
-using Darkages.IO;
 using System;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
+using Darkages.IO;
 
 #endregion
 
@@ -19,7 +18,7 @@ namespace Darkages.Network
         public NetworkPacketWriter(NetworkClient client)
         {
             Client = client;
-            Buffer = Darkages.IO.BufferPool.Take(0xFFFF);
+            Buffer = BufferPool.Take(0xFFFF);
         }
 
         public NetworkClient Client { get; }
@@ -92,7 +91,7 @@ namespace Darkages.Network
 
         public void WriteString(string value)
         {
-            _encoding.GetBytes(value, 0, value.Length, Buffer, (int)Position);
+            _encoding.GetBytes(value, 0, value.Length, Buffer, Position);
             Position += _encoding.GetByteCount(value);
         }
 
@@ -102,7 +101,7 @@ namespace Darkages.Network
 
             Write((byte)count);
 
-            _encoding.GetBytes(value, 0, value.Length, Buffer, (int)Position);
+            _encoding.GetBytes(value, 0, value.Length, Buffer, Position);
 
             Position += count;
         }
@@ -113,7 +112,7 @@ namespace Darkages.Network
 
             Write((ushort)count);
 
-            _encoding.GetBytes(value, 0, value.Length, Buffer, (int)Position);
+            _encoding.GetBytes(value, 0, value.Length, Buffer, Position);
             Position += count;
         }
     }

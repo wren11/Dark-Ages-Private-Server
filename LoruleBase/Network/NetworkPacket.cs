@@ -2,7 +2,6 @@
 
 using System;
 using System.Globalization;
-using System.Net.Sockets;
 
 #endregion
 
@@ -20,10 +19,7 @@ namespace Darkages.Network
             Ordinal = array[1];
             Data = count - 2 > 0 ? new byte[count - 0x2] : new byte[count];
 
-            if (Data.Length > 0)
-            {
-                Buffer.BlockCopy(array, 2, Data, 0, Data.Length);
-            }
+            if (Data.Length > 0) Buffer.BlockCopy(array, 2, Data, 0, Data.Length);
         }
 
         public byte Command { get; }

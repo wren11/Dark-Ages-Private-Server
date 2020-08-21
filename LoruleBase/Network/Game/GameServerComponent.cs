@@ -1,9 +1,8 @@
 ﻿#region
 
+using System;
 using Darkages.Network.Object;
 using Newtonsoft.Json;
-using System;
-using System.Threading.Tasks;
 
 #endregion
 

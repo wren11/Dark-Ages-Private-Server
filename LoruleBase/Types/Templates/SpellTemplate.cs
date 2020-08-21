@@ -1,5 +1,8 @@
-﻿using System;
+﻿#region
+
 using System.Collections.Generic;
+
+#endregion
 
 namespace Darkages.Types
 {
@@ -49,10 +52,9 @@ namespace Darkages.Types
 
         public override string[] GetMetaData()
         {
-            return new[]
-            {
-                ""
-            };
+            if (Prerequisites != null) return Prerequisites.MetaData;
+
+            return default;
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿#region
 
+using System.Collections.Generic;
 using Darkages.Systems.Loot.Interfaces;
 using Darkages.Types;
-using System.Collections.Generic;
 
 #endregion
 
@@ -26,6 +26,14 @@ namespace Darkages.Systems.Loot
             return this;
         }
 
+        public override string[] GetMetaData()
+        {
+            return new[]
+            {
+                ""
+            };
+        }
+
         public void ModifyItem(object item)
         {
             if (Modifiers.Count == 0)
@@ -44,14 +52,6 @@ namespace Darkages.Systems.Loot
         public override string ToString()
         {
             return $"Name: {Name}, Weight: {Weight}, Modifier Count: {Modifiers.Count}";
-        }
-
-        public override string[] GetMetaData()
-        {
-            return new[]
-            {
-                ""
-            };
         }
     }
 }

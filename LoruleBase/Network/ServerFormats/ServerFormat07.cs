@@ -1,7 +1,7 @@
 ﻿#region
 
-using Darkages.Types;
 using System.Collections.Generic;
+using Darkages.Types;
 
 #endregion
 

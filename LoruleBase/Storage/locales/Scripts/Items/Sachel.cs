@@ -1,8 +1,8 @@
 ﻿#region
 
+using System;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
 
 #endregion
 
@@ -28,7 +28,7 @@ namespace Darkages.Storage.locales.Scripts.Items
 
                 if (name == string.Empty)
                 {
-                    client.SendMessage(0x02, ServerContextBase.Config.CantUseThat);
+                    client.SendMessage(0x02, ServerContext.Config.CantUseThat);
                     return;
                 }
 

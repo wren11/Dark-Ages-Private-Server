@@ -1,12 +1,12 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 #endregion
 

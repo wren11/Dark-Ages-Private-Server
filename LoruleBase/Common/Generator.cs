@@ -80,7 +80,7 @@ namespace Darkages.Common
             lock (Random)
             {
                 var v = Enum.GetValues(typeof(T));
-                return (T)v.GetValue(Random.Next(1, v.Length));
+                return (T) v.GetValue(Random.Next(1, v.Length));
             }
         }
     }

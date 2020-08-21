@@ -1,7 +1,11 @@
-﻿using Darkages.Network.Game;
+﻿#region
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
-
 ///************************************************************************
 //Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd
@@ -20,19 +24,16 @@ using Darkages.Types;
 //along with this program.If not, see<http://www.gnu.org/licenses/>.
 //*************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+#endregion
 
 namespace Darkages.Storage.locales.Scripts.Monsters
 {
     [Script("Common Monster", "Dean")]
     public class CommonMonster : MonsterScript
     {
+        private readonly Random _random = new Random();
         public List<SkillScript> SkillScripts = new List<SkillScript>();
         public List<SpellScript> SpellScripts = new List<SpellScript>();
-        private readonly Random _random = new Random();
 
         public CommonMonster(Monster monster, Area map)
             : base(monster, map)
@@ -147,7 +148,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (Monster.Target != null)
                 if (!Monster.Facing(Target.XPos, Target.YPos, out var direction))
                 {
-                    Monster.Direction = (byte)direction;
+                    Monster.Direction = (byte) direction;
                     Monster.Turn();
                     return;
                 }
@@ -161,7 +162,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             if (Monster.Target != null)
                 if (!Monster.Facing(Target.XPos, Target.YPos, out var direction))
                 {
-                    Monster.Direction = (byte)direction;
+                    Monster.Direction = (byte) direction;
                     Monster.Turn();
                     return;
                 }
@@ -204,7 +205,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 return;
 
             if (Monster != null && Monster.Target != null && SpellScripts.Count > 0)
-                if (_random.Next(1, 101) < ServerContextBase.Config.MonsterSpellSuccessRate)
+                if (_random.Next(1, 101) < ServerContext.Config.MonsterSpellSuccessRate)
                 {
                     var spellidx = _random.Next(SpellScripts.Count);
 
@@ -243,24 +244,19 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             var c = Monster.WalkTimer.Update(elapsedTime);
 
 
-
             try
             {
                 if (a)
-                {
                     if (Monster.BashEnabled)
                         Bash();
-                }
 
                 if (b)
-                {
-                    if (Monster.CastEnabled) CastSpell();
-                }
+                    if (Monster.CastEnabled)
+                        CastSpell();
 
                 if (c)
-                {
-                    if (Monster.WalkEnabled) Walk();
-                }
+                    if (Monster.WalkEnabled)
+                        Walk();
             }
             catch (Exception)
             {
@@ -272,10 +268,10 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         {
             try
             {
-                if (ServerContextBase.GlobalSkillTemplateCache.ContainsKey(skillscriptstr))
+                if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skillscriptstr))
                 {
                     var scripts = ScriptManager.Load<SkillScript>(skillscriptstr,
-                        Skill.Create(1, ServerContextBase.GlobalSkillTemplateCache[skillscriptstr]));
+                        Skill.Create(1, ServerContext.GlobalSkillTemplateCache[skillscriptstr]));
 
                     foreach (var script in scripts.Values)
                         if (script != null)
@@ -296,10 +292,10 @@ namespace Darkages.Storage.locales.Scripts.Monsters
         {
             try
             {
-                if (ServerContextBase.GlobalSpellTemplateCache.ContainsKey(spellscriptstr))
+                if (ServerContext.GlobalSpellTemplateCache.ContainsKey(spellscriptstr))
                 {
                     var scripts = ScriptManager.Load<SpellScript>(spellscriptstr,
-                        Spell.Create(1, ServerContextBase.GlobalSpellTemplateCache[spellscriptstr]));
+                        Spell.Create(1, ServerContext.GlobalSpellTemplateCache[spellscriptstr]));
 
                     foreach (var script in scripts.Values)
                         if (script != null)
@@ -386,7 +382,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     {
                         Monster.BashEnabled = false;
                         Monster.CastEnabled = true;
-                        Monster.Direction = (byte)direction;
+                        Monster.Direction = (byte) direction;
                         Monster.Turn();
                     }
                 }
@@ -395,10 +391,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                     Monster.BashEnabled = false;
                     Monster.CastEnabled = true;
 
-                    if (!Monster.WalkTo(Target.XPos, Target.YPos))
-                    {
-                        Monster.Wander();
-                    }
+                    if (!Monster.WalkTo(Target.XPos, Target.YPos)) Monster.Wander();
                 }
             }
             else

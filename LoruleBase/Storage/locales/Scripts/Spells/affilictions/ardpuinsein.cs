@@ -1,13 +1,13 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -93,7 +93,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 else
                 {
                     if (sprite is Aisling)
-                        (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.Config.NoManaMessage);
+                        (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
                     return;
                 }
 
@@ -151,7 +151,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             var action = new ServerFormat1A
             {
                 Serial = sprite.Serial,
-                Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 :
+                Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
                     client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                 Speed = 30
             };

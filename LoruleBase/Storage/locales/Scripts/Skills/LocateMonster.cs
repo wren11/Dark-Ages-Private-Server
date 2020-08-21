@@ -1,9 +1,9 @@
 ﻿#region
 
-using Darkages.Scripting;
-using Darkages.Types;
 using System.IO;
 using System.Text;
+using Darkages.Scripting;
+using Darkages.Types;
 
 #endregion
 

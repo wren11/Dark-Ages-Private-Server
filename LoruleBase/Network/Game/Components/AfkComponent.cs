@@ -1,7 +1,11 @@
-﻿using Darkages.Network.ServerFormats;
-using Darkages.Types;
+﻿#region
+
 using System;
 using System.Linq;
+using Darkages.Network.ServerFormats;
+using Darkages.Types;
+
+#endregion
 
 namespace Darkages.Network.Game.Components
 {
@@ -23,14 +27,14 @@ namespace Darkages.Network.Game.Components
         public override void Update(TimeSpan elapsedTime)
         {
             if (_timer.Update(elapsedTime))
-                if (ServerContextBase.Game != null)
-                    if (ServerContextBase.Game.Clients != null)
-                        foreach (var client in from client in ServerContextBase.Game.Clients
-                            where client != null
-                            let afk = (DateTime.UtcNow - client.LastMovement).TotalMinutes > 3
-                                      && (DateTime.UtcNow - client.LastClientRefresh).TotalMinutes > 3
-                            where afk
-                            select client)
+                if (ServerContext.Game != null)
+                    if (ServerContext.Game.Clients != null)
+                        foreach (var client in from client in ServerContext.Game.Clients
+                                               where client != null
+                                               let afk = (DateTime.UtcNow - client.LastMovement).TotalMinutes > 3
+                                                         && (DateTime.UtcNow - client.LastClientRefresh).TotalMinutes > 3
+                                               where afk
+                                               select client)
                             Pulse(client);
         }
     }

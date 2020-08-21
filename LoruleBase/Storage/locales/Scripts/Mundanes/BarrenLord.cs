@@ -1,10 +1,10 @@
 ﻿#region
 
+using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System.Collections.Generic;
 
 #endregion
 
@@ -41,10 +41,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             if (responseID == 0x0005)
             {
-                client.Aisling._MaximumHp -= ServerContextBase.Config.DeathHPPenalty;
+                client.Aisling._MaximumHp -= ServerContext.Config.DeathHPPenalty;
 
                 if (client.Aisling.MaximumHp <= 0)
-                    client.Aisling._MaximumHp = ServerContextBase.Config.MinimumHp;
+                    client.Aisling._MaximumHp = ServerContext.Config.MinimumHp;
 
                 client.Revive();
                 client.SendMessage(0x02, "You have lost some health.");

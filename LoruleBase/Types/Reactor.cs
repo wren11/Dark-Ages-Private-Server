@@ -1,12 +1,12 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 
 #endregion
 
@@ -40,14 +40,20 @@ namespace Darkages.Types
 
         [ObsoleteAttribute("This property is obsolete. and should not be used.", false)]
         public GameServerTimer WhenCanActAgain { get; set; }
+
         [ObsoleteAttribute("This property is obsolete. and should not be used.", false)]
         public int MapId { get; set; }
+
         [ObsoleteAttribute("This property is obsolete. and should not be used.", false)]
-        [JsonIgnore] public ReactorScript PostScript { get; set; }
+        [JsonIgnore]
+        public ReactorScript PostScript { get; set; }
+
         [ObsoleteAttribute("This property is obsolete. and should not be used.", false)]
         public string DecoratorScript { get; set; }
+
         [ObsoleteAttribute("This property is obsolete. and should not be used.", false)]
         public bool Completed { get; set; }
+
         [ObsoleteAttribute("This property is obsolete. and should not be used.", false)]
         public string CallingNpc { get; set; }
 

@@ -1,12 +1,11 @@
 ﻿#region
 
+using System.Collections.Generic;
+using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -34,7 +33,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
         {
-            var spells = ServerContextBase.GlobalSpellTemplateCache.Select(i => i.Value)
+            var spells = ServerContext.GlobalSpellTemplateCache.Select(i => i.Value)
                 .Where(i => i.NpcKey != null && i.NpcKey.Equals(Mundane.Template.Name)).ToArray();
 
             var availableSpellTemplates = new List<SpellTemplate>();
@@ -42,24 +41,19 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             foreach (var skill in spells)
             {
                 if (skill.Prerequisites != null)
-                {
                     if (skill.Prerequisites.Class_Required == client.Aisling.Path)
-                    {
                         availableSpellTemplates.Add(skill);
-                    }
-                }
 
                 if (skill.LearningRequirements != null &&
                     skill.LearningRequirements.TrueForAll(i => i.Class_Required == client.Aisling.Path))
-                {
                     availableSpellTemplates.Add(skill);
-                }
             }
 
             switch (responseID)
             {
                 case 0x0001:
-                    var learnedSpells = client.Aisling.SpellBook.Spells.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
+                    var learnedSpells = client.Aisling.SpellBook.Spells.Where(i => i.Value != null)
+                        .Select(i => i.Value.Template).ToList();
                     var newSpells = availableSpellTemplates.Except(learnedSpells).ToList();
 
                     if (newSpells.Count > 0)
@@ -114,14 +108,14 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 case 0x0004:
                     {
-                        var subject = ServerContextBase.GlobalSpellTemplateCache[args];
+                        var subject = ServerContext.GlobalSpellTemplateCache[args];
                         if (subject == null)
                             return;
 
                         if (subject.Prerequisites == null)
                         {
                             client.CloseDialog();
-                            client.SendMessage(0x02, ServerContextBase.Config.CantDoThat);
+                            client.SendMessage(0x02, ServerContext.Config.CantDoThat);
                         }
                         else
                         {
@@ -142,7 +136,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 case 0x0006:
                     {
-                        var subject = ServerContextBase.GlobalSpellTemplateCache[args];
+                        var subject = ServerContext.GlobalSpellTemplateCache[args];
                         if (subject == null)
                             return;
 
@@ -158,7 +152,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 case 0x0005:
                     {
-                        var subject = ServerContextBase.GlobalSpellTemplateCache[args];
+                        var subject = ServerContext.GlobalSpellTemplateCache[args];
                         if (subject == null)
                             return;
 

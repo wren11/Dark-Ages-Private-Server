@@ -1,10 +1,10 @@
 ﻿#region
 
+using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System.Collections.Generic;
 
 #endregion
 
@@ -74,14 +74,14 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                 {
                                     Type = QuestType.ItemHandIn,
                                     Amount = 2,
-                                    TemplateContext = ServerContextBase.GlobalItemTemplateCache["Wolf's Teeth"],
+                                    TemplateContext = ServerContext.GlobalItemTemplateCache["Wolf's Teeth"],
                                     Value = "Wolf's Teeth"
                                 },
                                 new QuestRequirement
                                 {
                                     Type = QuestType.ItemHandIn,
                                     Amount = 1,
-                                    TemplateContext = ServerContextBase.GlobalItemTemplateCache["Silver Earrings"],
+                                    TemplateContext = ServerContext.GlobalItemTemplateCache["Silver Earrings"],
                                     Value = "Silver Earrings"
                                 }
                             }
@@ -167,34 +167,34 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             switch (responseID)
             {
                 case 0x002A:
-                    {
-                        if (!client.Aisling.AcceptQuest(Actor.Quest)) return;
+                {
+                    if (!client.Aisling.AcceptQuest(Actor.Quest)) return;
 
-                        client.SendOptionsDialog(Mundane,
-                            "Alright now we're talking. I am going to need some materials. Bring me 2 pieces of Wolf's Teeth, 1 Silver Earrings, and 2 Pieces of Spider's Silk. I will do the rest.",
-                            new OptionsDataItem(0x006A, "Continue"));
-                    }
+                    client.SendOptionsDialog(Mundane,
+                        "Alright now we're talking. I am going to need some materials. Bring me 2 pieces of Wolf's Teeth, 1 Silver Earrings, and 2 Pieces of Spider's Silk. I will do the rest.",
+                        new OptionsDataItem(0x006A, "Continue"));
+                }
                     break;
 
                 case 0x006A:
-                    {
-                        client.SendOptionsDialog(Mundane,
-                            "You can find Wolf's Teeth from the Wolves in the Woodlands,\nsome Spider's Silk from the Spiders here in Mileth Crypt,\nand the Silver Earrings from the Armory in Mileth. Come back when you have the items.");
-                    }
+                {
+                    client.SendOptionsDialog(Mundane,
+                        "You can find Wolf's Teeth from the Wolves in the Woodlands,\nsome Spider's Silk from the Spiders here in Mileth Crypt,\nand the Silver Earrings from the Armory in Mileth. Come back when you have the items.");
+                }
                     break;
 
                 case 0x001B:
-                    {
-                        client.Aisling.DestroyReactor(Actor);
-                        client.SendOptionsDialog(Mundane, "So be it. Goodluck Aisling.");
-                    }
+                {
+                    client.Aisling.DestroyReactor(Actor);
+                    client.SendOptionsDialog(Mundane, "So be it. Goodluck Aisling.");
+                }
                     break;
 
                 case 0x004A:
-                    {
-                        foreach (var script in Actor.Decorators.Values)
-                            script.OnTriggered(client.Aisling);
-                    }
+                {
+                    foreach (var script in Actor.Decorators.Values)
+                        script.OnTriggered(client.Aisling);
+                }
                     break;
             }
         }

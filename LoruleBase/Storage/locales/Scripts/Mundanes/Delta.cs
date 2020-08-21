@@ -1,12 +1,12 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -21,7 +21,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             Mundane.Template.QuestKey = "delta_quest";
 
-            SequenceMenu.DisplayImage = (ushort)Mundane.Template.Image;
+            SequenceMenu.DisplayImage = (ushort) Mundane.Template.Image;
             SequenceMenu.Sequences.Add(new DialogSequence
             {
                 Title = Mundane.Template.Name,
@@ -145,7 +145,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     case ushort.MaxValue:
                         if (SequenceMenu.CanMoveBack)
                         {
-                            var idx = (ushort)(SequenceMenu.SequenceIndex - 1);
+                            var idx = (ushort) (SequenceMenu.SequenceIndex - 1);
 
                             SequenceMenu.SequenceIndex = idx;
                             client.DlgSession.Sequence = idx;
@@ -183,12 +183,12 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             if (quest == null)
             {
-                quest = new Quest { Name = Mundane.Template.QuestKey };
+                quest = new Quest {Name = Mundane.Template.QuestKey};
                 quest.LegendRewards.Add(new Legend.LegendItem
                 {
                     Category = "Quest",
-                    Color = (byte)LegendColor.Blue,
-                    Icon = (byte)LegendIcon.Victory,
+                    Color = (byte) LegendColor.Blue,
+                    Icon = (byte) LegendIcon.Victory,
                     Value = "Scratched Delta's Back."
                 });
                 quest.ExpRewards.Add(1000);
@@ -208,8 +208,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
             quest.QuestStages = new List<QuestStep<Template>>();
 
-            var q1 = new QuestStep<Template> { Type = QuestType.Accept };
-            var q2 = new QuestStep<Template> { Type = QuestType.HasItem };
+            var q1 = new QuestStep<Template> {Type = QuestType.Accept};
+            var q2 = new QuestStep<Template> {Type = QuestType.HasItem};
 
             q2.Prerequisites.Add(new QuestRequirement
             {

@@ -25,8 +25,8 @@ namespace Darkages.Storage.locales.Scripts.Items
 
                 Item.ApplyModifers(client);
 
-                client.Aisling.Boots = (byte)Item.Image;
-                client.Aisling.BootColor = (byte)Item.Template.Color;
+                client.Aisling.Boots = (byte) Item.Image;
+                client.Aisling.BootColor = (byte) Item.Template.Color;
             }
         }
 

@@ -1,10 +1,10 @@
 ﻿#region
 
-using Darkages.Network.Game;
-using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Network.Game;
+using Darkages.Types;
 
 #endregion
 
@@ -12,6 +12,10 @@ namespace MenuInterpreter
 {
     public class Interpreter
     {
+        public delegate void CheckpointHandler(GameClient client, CheckpointHandlerArgs args);
+
+        public delegate void MovedToNextStepHandler(GameClient client, MenuItem previous, MenuItem current);
+
         private readonly IDictionary<string, CheckpointHandler> _checkpointHandlers =
             new Dictionary<string, CheckpointHandler>();
 
@@ -45,16 +49,12 @@ namespace MenuInterpreter
             Start();
         }
 
-        public delegate void CheckpointHandler(GameClient client, CheckpointHandlerArgs args);
-
-        public delegate void MovedToNextStepHandler(GameClient client, MenuItem previous, MenuItem current);
-
-        public event MovedToNextStepHandler OnMovedToNextStep;
-
         public Sprite Actor { get; internal set; }
         public GameClient Client { get; set; }
 
         public bool IsFinished { get; private set; }
+
+        public event MovedToNextStepHandler OnMovedToNextStep;
 
         public MenuItem GetCurrentStep()
         {

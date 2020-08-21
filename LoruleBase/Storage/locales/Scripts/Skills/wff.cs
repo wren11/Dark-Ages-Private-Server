@@ -1,11 +1,11 @@
 ﻿#region
 
+using System;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
-using System;
 
 #endregion
 
@@ -14,8 +14,8 @@ namespace Darkages.Storage.locales.Scripts.Skills
     [Script("Wolf Fang Fist", "Dean")]
     public class Wff : SkillScript
     {
-        public Skill _skill;
         private readonly Random rand = new Random();
+        public Skill _skill;
 
         public Wff(Skill skill) : base(skill)
         {

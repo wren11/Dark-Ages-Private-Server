@@ -1,16 +1,16 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Systems.Loot;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using static Darkages.Common.Generator;
 using static Darkages.Types.Item;
 
@@ -148,8 +148,8 @@ namespace Darkages.Types
 
             obj.BonusMr = (byte)(10 * (template.Level / 20));
 
-            if (obj.BonusMr > ServerContextBase.Config.BaseMR)
-                obj.BonusMr = ServerContextBase.Config.BaseMR;
+            if (obj.BonusMr > ServerContext.Config.BaseMR)
+                obj.BonusMr = ServerContext.Config.BaseMR;
 
             if ((template.PathQualifer & PathQualifer.Wander) == PathQualifer.Wander)
                 obj.WalkEnabled = true;
@@ -218,15 +218,15 @@ namespace Darkages.Types
                     {
                         lock (Generator.Random)
                         {
-                            var available = ServerContextBase.GlobalItemTemplateCache.Select(i => i.Value)
+                            var available = ServerContext.GlobalItemTemplateCache.Select(i => i.Value)
                                 .Where(i => Math.Abs(i.LevelRequired - obj.Template.Level) <= 10).ToList();
                             if (available.Count > 0) obj.LootTable.Add(available[GenerateNumber() % available.Count]);
                         }
                     }
                     else
                     {
-                        if (ServerContextBase.GlobalItemTemplateCache.ContainsKey(drop))
-                            obj.LootTable.Add(ServerContextBase.GlobalItemTemplateCache[drop]);
+                        if (ServerContext.GlobalItemTemplateCache.ContainsKey(drop))
+                            obj.LootTable.Add(ServerContext.GlobalItemTemplateCache[drop]);
                     }
 
                 obj.UpgradeTable.Add(new Common());
@@ -323,7 +323,8 @@ namespace Darkages.Types
 
             if (player.GroupParty != null)
             {
-                var bonus = exp * (1 + player.GroupParty.PartyMembers.Count - 1) * ServerContextBase.Config.GroupExpBonus /
+                var bonus = exp * (1 + player.GroupParty.PartyMembers.Count - 1) *
+                            ServerContext.Config.GroupExpBonus /
                             100;
 
                 if (bonus > 0)
@@ -337,7 +338,7 @@ namespace Darkages.Types
 
             var seed = player.ExpLevel * 0.1 + 0.5;
             {
-                if (player.ExpLevel >= ServerContextBase.Config.PlayerLevelCap)
+                if (player.ExpLevel >= ServerContext.Config.PlayerLevelCap)
                     return;
             }
 
@@ -366,15 +367,15 @@ namespace Darkages.Types
 
         private static void Levelup(Aisling player)
         {
-            if (player.ExpLevel < ServerContextBase.Config.PlayerLevelCap)
+            if (player.ExpLevel < ServerContext.Config.PlayerLevelCap)
             {
-                player._MaximumHp += (int)(ServerContextBase.Config.HpGainFactor * player.Con * 0.65);
-                player._MaximumMp += (int)(ServerContextBase.Config.MpGainFactor * player.Wis * 0.45);
-                player.StatPoints += ServerContextBase.Config.StatsPerLevel;
+                player._MaximumHp += (int)(ServerContext.Config.HpGainFactor * player.Con * 0.65);
+                player._MaximumMp += (int)(ServerContext.Config.MpGainFactor * player.Wis * 0.45);
+                player.StatPoints += ServerContext.Config.StatsPerLevel;
                 player.ExpLevel++;
 
                 player.Client.SendMessage(0x02,
-                    string.Format(ServerContextBase.Config.LevelUpMessage, player.ExpLevel));
+                    string.Format(ServerContext.Config.LevelUpMessage, player.ExpLevel));
                 player.Show(Scope.NearbyAislings,
                     new ServerFormat29((uint)player.Serial, (uint)player.Serial, 0x004F, 0x004F, 64));
             }
@@ -382,7 +383,7 @@ namespace Darkages.Types
 
         private List<string> DetermineDrop()
         {
-            return LootManager.Drop(LootTable, Generator.Random.Next(ServerContextBase.Config.LootTableStackSize))
+            return LootManager.Drop(LootTable, Generator.Random.Next(ServerContext.Config.LootTableStackSize))
                 .Select(i => i?.Name).ToList();
         }
 
@@ -398,9 +399,9 @@ namespace Darkages.Types
                 idx = Generator.Random.Next(Template.Drops.Count);
 
             var rndSelector = Template.Drops[idx];
-            if (ServerContextBase.GlobalItemTemplateCache.ContainsKey(rndSelector))
+            if (ServerContext.GlobalItemTemplateCache.ContainsKey(rndSelector))
             {
-                var item = Item.Create(this, ServerContextBase.GlobalItemTemplateCache[rndSelector], true);
+                var item = Item.Create(this, ServerContext.GlobalItemTemplateCache[rndSelector], true);
                 var chance = 0.00;
 
                 chance = Math.Round(Generator.Random.NextDouble(), 2);
@@ -425,9 +426,9 @@ namespace Darkages.Types
                 DetermineDrop().ForEach(i =>
                 {
                     if (i != null)
-                        if (ServerContextBase.GlobalItemTemplateCache.ContainsKey(i))
+                        if (ServerContext.GlobalItemTemplateCache.ContainsKey(i))
                         {
-                            var rolled_item = Item.Create(this, ServerContextBase.GlobalItemTemplateCache[i]);
+                            var rolled_item = Item.Create(this, ServerContext.GlobalItemTemplateCache[i]);
                             if (rolled_item != GlobalLastItemRoll)
                             {
                                 GlobalLastItemRoll = rolled_item;
@@ -438,7 +439,7 @@ namespace Darkages.Types
                                 {
                                     var variance = DetermineVariance();
 
-                                    if (!ServerContextBase.Config.UseLoruleVariants)
+                                    if (!ServerContext.Config.UseLoruleVariants)
                                         variance = Variance.None;
 
                                     if (variance != Variance.None)
@@ -451,7 +452,7 @@ namespace Darkages.Types
                                 if (rolled_item.Template.Flags.HasFlag(ItemFlags.QuestRelated))
                                     upgrade = null;
 
-                                if (!ServerContextBase.Config.UseLoruleItemRarity)
+                                if (!ServerContext.Config.UseLoruleItemRarity)
                                     upgrade = null;
 
                                 rolled_item.Upgrades = upgrade?.Upgrade ?? 0;

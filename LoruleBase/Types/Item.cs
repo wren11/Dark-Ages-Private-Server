@@ -1,14 +1,14 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -36,7 +36,7 @@ namespace Darkages.Types
         public byte Color { get; set; }
         public bool Cursed { get; set; }
         public ushort DisplayImage { get; set; }
-        [JsonIgnore] public string DisplayName => getDisplayName();
+        [JsonIgnore] public string DisplayName => GetDisplayName();
         public uint Durability { get; set; }
         [JsonIgnore] public bool Equipped { get; set; }
         [JsonProperty] public bool Identifed { get; set; }
@@ -167,10 +167,10 @@ namespace Darkages.Types
 
         public static Item Create(Sprite owner, string item, bool curse = false)
         {
-            if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(item))
+            if (!ServerContext.GlobalItemTemplateCache.ContainsKey(item))
                 return null;
 
-            var template = ServerContextBase.GlobalItemTemplateCache[item];
+            var template = ServerContext.GlobalItemTemplateCache[item];
             return Create(owner, template, curse);
         }
 
@@ -209,24 +209,20 @@ namespace Darkages.Types
             obj.AuthenticatedAislings = null;
 
             if (obj.Color != 0)
-            {
                 obj.Color = (byte)template.Color;
-            }
             else
-            {
-                obj.Color = (byte)ServerContextBase.Config.DefaultItemColor;
-            }
+                obj.Color = (byte)ServerContext.Config.DefaultItemColor;
 
             if (obj.Template.Flags.HasFlag(ItemFlags.Repairable))
             {
                 if (obj.Template.MaxDurability == uint.MinValue)
                 {
-                    obj.Template.MaxDurability = ServerContextBase.Config.DefaultItemDurability;
-                    obj.Durability = ServerContextBase.Config.DefaultItemDurability;
+                    obj.Template.MaxDurability = ServerContext.Config.DefaultItemDurability;
+                    obj.Durability = ServerContext.Config.DefaultItemDurability;
                 }
 
                 if (obj.Template.Value == uint.MinValue)
-                    obj.Template.Value = ServerContextBase.Config.DefaultItemValue;
+                    obj.Template.Value = ServerContext.Config.DefaultItemValue;
             }
 
             if (obj.Template.Flags.HasFlag(ItemFlags.QuestRelated))
@@ -262,7 +258,7 @@ namespace Darkages.Types
                     client.Aisling.BonusAc -= Template.AcModifer.Value;
 
                 client.SendMessage(0x03, $"E: {Template.Name}, AC: {client.Aisling.Ac}");
-                client.SendStats(flags: StatusFlags.StructD);
+                client.SendStats(StatusFlags.StructD);
             }
 
             #endregion
@@ -356,7 +352,7 @@ namespace Darkages.Types
                     client.Aisling.BonusHp -= Template.HealthModifer.Value;
 
                 if (client.Aisling.BonusHp < 0)
-                    client.Aisling.BonusHp = ServerContextBase.Config.MinimumHp;
+                    client.Aisling.BonusHp = ServerContext.Config.MinimumHp;
             }
 
             #endregion
@@ -474,7 +470,7 @@ namespace Darkages.Types
         {
             if (((Aisling)sprite).CurrentWeight + Template.CarryWeight > (sprite as Aisling).MaximumWeight)
             {
-                ((Aisling)sprite)?.Client.SendMessage(Scope.Self, 0x02, ServerContextBase.Config.ToWeakToLift);
+                ((Aisling)sprite)?.Client.SendMessage(Scope.Self, 0x02, ServerContext.Config.ToWeakToLift);
                 return false;
             }
 
@@ -530,7 +526,7 @@ namespace Darkages.Types
                     if (Slot == byte.MaxValue)
                     {
                         ((Aisling)sprite).Client.SendMessage(Scope.Self, 0x02,
-                            ServerContextBase.Config.CantCarryMoreMsg);
+                            ServerContext.Config.CantCarryMoreMsg);
                         return false;
                     }
 
@@ -559,7 +555,7 @@ namespace Darkages.Types
                     if (Slot == byte.MaxValue)
                     {
                         ((Aisling)sprite).Client.SendMessage(Scope.Self, 0x02,
-                            ServerContextBase.Config.CantCarryMoreMsg);
+                            ServerContext.Config.CantCarryMoreMsg);
                         return false;
                     }
 
@@ -686,7 +682,7 @@ namespace Darkages.Types
                     client.Aisling.BonusHp += Template.HealthModifer.Value;
 
                 if (client.Aisling.BonusHp < 0)
-                    client.Aisling.BonusHp = ServerContextBase.Config.MinimumHp;
+                    client.Aisling.BonusHp = ServerContext.Config.MinimumHp;
             }
 
             #endregion
@@ -761,7 +757,7 @@ namespace Darkages.Types
                     client.Aisling.BonusCon += (byte)Template.ConModifer.Value;
 
                 if (client.Aisling.BonusCon < 0)
-                    client.Aisling.BonusCon = ServerContextBase.Config.BaseStatAttribute;
+                    client.Aisling.BonusCon = ServerContext.Config.BaseStatAttribute;
                 if (client.Aisling.BonusCon > 255)
                     client.Aisling.BonusCon = 255;
             }
@@ -818,7 +814,7 @@ namespace Darkages.Types
             }
         }
 
-        private string getDisplayName()
+        private string GetDisplayName()
         {
             var upgradeName = "";
 

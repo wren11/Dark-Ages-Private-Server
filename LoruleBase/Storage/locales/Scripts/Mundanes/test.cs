@@ -1,30 +1,13 @@
-///************************************************************************
-///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+#region
+
+using System.Collections.Generic;
+using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
 
+#endregion
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
@@ -46,12 +29,12 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnClick(GameServer server, GameClient client)
         {
-            var gms = ServerContextBase.Config.GameMasters;
-            bool displayed = false;
+            var gms = ServerContext.Config.GameMasters;
+            var displayed = false;
 
             foreach (var gm in gms)
             {
-                if (displayed == true)
+                if (displayed)
                     return;
 
                 if (client.Aisling.Username.ToLower() == gm.ToLower())
@@ -75,7 +58,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         {
             switch (responseID)
             {
-
                 case 0x0111:
 
                     Skill.GiveTo(client.Aisling, "Throw");
@@ -91,10 +73,18 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                 case 0x0001:
 
-                    var list = ServerContext.GlobalSkillTemplateCache.Where(i => i.Value.Prerequisites != null && i.Value.Prerequisites.Class_Required == Class.Warrior).Select(i => i.Value.Name).ToList();
-                    var slist = ServerContext.GlobalSpellTemplateCache.Where(i => i.Value.Prerequisites != null && i.Value.Prerequisites.Class_Required == Class.Warrior).Select(i => i.Value.Name).ToList();
-                    var book = client.Aisling.SkillBook.Skills.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
-                    var sbook = client.Aisling.SpellBook.Spells.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
+                    var list = ServerContext.GlobalSkillTemplateCache
+                        .Where(i => i.Value.Prerequisites != null &&
+                                    i.Value.Prerequisites.Class_Required == Class.Warrior).Select(i => i.Value.Name)
+                        .ToList();
+                    var slist = ServerContext.GlobalSpellTemplateCache
+                        .Where(i => i.Value.Prerequisites != null &&
+                                    i.Value.Prerequisites.Class_Required == Class.Warrior).Select(i => i.Value.Name)
+                        .ToList();
+                    var book = client.Aisling.SkillBook.Skills.Where(i => i.Value != null).Select(i => i.Value.Template)
+                        .ToList();
+                    var sbook = client.Aisling.SpellBook.Spells.Where(i => i.Value != null)
+                        .Select(i => i.Value.Template).ToList();
 
                     if (book is null)
                         return;
@@ -105,16 +95,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     {
                         if (i == null)
                             continue;
-                        if(i != null)
+                        if (i != null)
                         {
-                            client.ForgetSkill(i.Name.ToString());
+                            client.ForgetSkill(i.Name);
                             client.Refresh(true);
                         }
-                        else
-                        {
-                            continue;
-                        }
-
                     }
 
                     foreach (var i in sbook)
@@ -124,12 +109,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                         if (i != null)
                         {
-                            client.ForgetSpell(i.Name.ToString());
-                        client.Refresh(true);
-                        }
-                        else
-                        {
-                            continue;
+                            client.ForgetSpell(i.Name);
+                            client.Refresh(true);
                         }
                     }
 
@@ -141,14 +122,16 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         Skill.GiveTo(client.Aisling, i);
                         client.Refresh(true);
                     }
+
                     foreach (var i in slist)
                     {
-                        if (i.ToString() is null)
+                        if (i is null)
                             continue;
 
                         Spell.GiveTo(client.Aisling, i);
                         client.Refresh(true);
                     }
+
                     Skill.GiveTo(client.Aisling, "Throw");
                     Skill.GiveTo(client.Aisling, "Assail");
                     Skill.GiveTo(client.Aisling, "Look");
@@ -162,10 +145,18 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     break;
 
                 case 0x0002:
-                    var list2 = ServerContext.GlobalSkillTemplateCache.Where(i => i.Value.Prerequisites != null && i.Value.Prerequisites.Class_Required == Class.Rogue).Select(i => i.Value.Name).ToList();
-                    var slist2 = ServerContext.GlobalSpellTemplateCache.Where(i => i.Value.Prerequisites != null && i.Value.Prerequisites.Class_Required == Class.Rogue).Select(i => i.Value.Name).ToList();
-                    var book2 = client.Aisling.SkillBook.Skills.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
-                    var sbook2 = client.Aisling.SpellBook.Spells.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
+                    var list2 = ServerContext.GlobalSkillTemplateCache
+                        .Where(i => i.Value.Prerequisites != null &&
+                                    i.Value.Prerequisites.Class_Required == Class.Rogue).Select(i => i.Value.Name)
+                        .ToList();
+                    var slist2 = ServerContext.GlobalSpellTemplateCache
+                        .Where(i => i.Value.Prerequisites != null &&
+                                    i.Value.Prerequisites.Class_Required == Class.Rogue).Select(i => i.Value.Name)
+                        .ToList();
+                    var book2 = client.Aisling.SkillBook.Skills.Where(i => i.Value != null)
+                        .Select(i => i.Value.Template).ToList();
+                    var sbook2 = client.Aisling.SpellBook.Spells.Where(i => i.Value != null)
+                        .Select(i => i.Value.Template).ToList();
 
                     if (book2 is null)
                         return;
@@ -177,7 +168,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         if (i == null)
                             continue;
 
-                        client.ForgetSkill(i.Name.ToString());
+                        client.ForgetSkill(i.Name);
                     }
 
                     foreach (var i in sbook2)
@@ -185,7 +176,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         if (i == null)
                             continue;
 
-                        client.ForgetSpell(i.Name.ToString());
+                        client.ForgetSpell(i.Name);
                     }
 
                     foreach (var i in list2)
@@ -195,9 +186,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                         Skill.GiveTo(client.Aisling, i);
                     }
+
                     foreach (var i in slist2)
                     {
-                        if (i.ToString() is null)
+                        if (i is null)
                             continue;
 
                         Spell.GiveTo(client.Aisling, i);
@@ -217,10 +209,18 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     break;
 
                 case 0x0003:
-                    var list3 = ServerContext.GlobalSkillTemplateCache.Where(i => i.Value.Prerequisites != null && i.Value.Prerequisites.Class_Required == Class.Wizard).Select(i => i.Value.Name).ToList();
-                    var slist3 = ServerContext.GlobalSpellTemplateCache.Where(i => i.Value.Prerequisites != null && i.Value.Prerequisites.Class_Required == Class.Wizard).Select(i => i.Value.Name).ToList();
-                    var book3 = client.Aisling.SkillBook.Skills.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
-                    var sbook3 = client.Aisling.SpellBook.Spells.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
+                    var list3 = ServerContext.GlobalSkillTemplateCache
+                        .Where(i => i.Value.Prerequisites != null &&
+                                    i.Value.Prerequisites.Class_Required == Class.Wizard).Select(i => i.Value.Name)
+                        .ToList();
+                    var slist3 = ServerContext.GlobalSpellTemplateCache
+                        .Where(i => i.Value.Prerequisites != null &&
+                                    i.Value.Prerequisites.Class_Required == Class.Wizard).Select(i => i.Value.Name)
+                        .ToList();
+                    var book3 = client.Aisling.SkillBook.Skills.Where(i => i.Value != null)
+                        .Select(i => i.Value.Template).ToList();
+                    var sbook3 = client.Aisling.SpellBook.Spells.Where(i => i.Value != null)
+                        .Select(i => i.Value.Template).ToList();
 
                     if (book3 is null)
                         return;
@@ -232,7 +232,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         if (i == null)
                             continue;
 
-                        client.ForgetSkill(i.Name.ToString());
+                        client.ForgetSkill(i.Name);
                     }
 
                     foreach (var i in sbook3)
@@ -240,7 +240,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         if (i == null)
                             continue;
 
-                        client.ForgetSpell(i.Name.ToString());
+                        client.ForgetSpell(i.Name);
                     }
 
                     foreach (var i in list3)
@@ -250,13 +250,15 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                         Skill.GiveTo(client.Aisling, i);
                     }
+
                     foreach (var i in slist3)
                     {
-                        if (i.ToString() is null)
+                        if (i is null)
                             continue;
 
                         Spell.GiveTo(client.Aisling, i);
                     }
+
                     Skill.GiveTo(client.Aisling, "Throw");
                     Skill.GiveTo(client.Aisling, "Assail");
                     Skill.GiveTo(client.Aisling, "Look");
@@ -272,10 +274,18 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     break;
 
                 case 0x0004:
-                    var list4 = ServerContext.GlobalSkillTemplateCache.Where(i => i.Value.Prerequisites != null && i.Value.Prerequisites.Class_Required == Class.Priest).Select(i => i.Value.Name).ToList();
-                    var slist4 = ServerContext.GlobalSpellTemplateCache.Where(i => i.Value.Prerequisites != null && i.Value.Prerequisites.Class_Required == Class.Priest).Select(i => i.Value.Name).ToList();
-                    var book4 = client.Aisling.SkillBook.Skills.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
-                    var sbook4 = client.Aisling.SpellBook.Spells.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
+                    var list4 = ServerContext.GlobalSkillTemplateCache
+                        .Where(i => i.Value.Prerequisites != null &&
+                                    i.Value.Prerequisites.Class_Required == Class.Priest).Select(i => i.Value.Name)
+                        .ToList();
+                    var slist4 = ServerContext.GlobalSpellTemplateCache
+                        .Where(i => i.Value.Prerequisites != null &&
+                                    i.Value.Prerequisites.Class_Required == Class.Priest).Select(i => i.Value.Name)
+                        .ToList();
+                    var book4 = client.Aisling.SkillBook.Skills.Where(i => i.Value != null)
+                        .Select(i => i.Value.Template).ToList();
+                    var sbook4 = client.Aisling.SpellBook.Spells.Where(i => i.Value != null)
+                        .Select(i => i.Value.Template).ToList();
 
                     if (book4 is null)
                         return;
@@ -287,7 +297,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         if (i == null)
                             continue;
 
-                        client.ForgetSkill(i.Name.ToString());
+                        client.ForgetSkill(i.Name);
                     }
 
                     foreach (var i in sbook4)
@@ -295,7 +305,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         if (i == null)
                             continue;
 
-                        client.ForgetSpell(i.Name.ToString());
+                        client.ForgetSpell(i.Name);
                     }
 
                     foreach (var i in list4)
@@ -305,13 +315,15 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                         Skill.GiveTo(client.Aisling, i);
                     }
+
                     foreach (var i in slist4)
                     {
-                        if (i.ToString() is null)
+                        if (i is null)
                             continue;
 
                         Spell.GiveTo(client.Aisling, i);
                     }
+
                     Skill.GiveTo(client.Aisling, "Throw");
                     Skill.GiveTo(client.Aisling, "Assail");
                     Skill.GiveTo(client.Aisling, "Look");
@@ -326,10 +338,16 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     break;
 
                 case 0x0005:
-                    var list5 = ServerContext.GlobalSkillTemplateCache.Where(i => i.Value.Prerequisites != null && i.Value.Prerequisites.Class_Required == Class.Monk).Select(i => i.Value.Name).ToList();
-                    var slist5 = ServerContext.GlobalSpellTemplateCache.Where(i => i.Value.Prerequisites != null && i.Value.Prerequisites.Class_Required == Class.Monk).Select(i => i.Value.Name).ToList();
-                    var book5 = client.Aisling.SkillBook.Skills.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
-                    var sbook5 = client.Aisling.SpellBook.Spells.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
+                    var list5 = ServerContext.GlobalSkillTemplateCache
+                        .Where(i => i.Value.Prerequisites != null && i.Value.Prerequisites.Class_Required == Class.Monk)
+                        .Select(i => i.Value.Name).ToList();
+                    var slist5 = ServerContext.GlobalSpellTemplateCache
+                        .Where(i => i.Value.Prerequisites != null && i.Value.Prerequisites.Class_Required == Class.Monk)
+                        .Select(i => i.Value.Name).ToList();
+                    var book5 = client.Aisling.SkillBook.Skills.Where(i => i.Value != null)
+                        .Select(i => i.Value.Template).ToList();
+                    var sbook5 = client.Aisling.SpellBook.Spells.Where(i => i.Value != null)
+                        .Select(i => i.Value.Template).ToList();
 
                     if (book5 is null)
                         return;
@@ -341,7 +359,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         if (i == null)
                             continue;
 
-                        client.ForgetSkill(i.Name.ToString());
+                        client.ForgetSkill(i.Name);
                     }
 
                     foreach (var i in sbook5)
@@ -349,7 +367,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         if (i == null)
                             continue;
 
-                        client.ForgetSpell(i.Name.ToString());
+                        client.ForgetSpell(i.Name);
                     }
 
                     foreach (var i in list5)
@@ -359,13 +377,15 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                         Skill.GiveTo(client.Aisling, i);
                     }
+
                     foreach (var i in slist5)
                     {
-                        if (i.ToString() is null)
+                        if (i is null)
                             continue;
 
                         Spell.GiveTo(client.Aisling, i);
                     }
+
                     Skill.GiveTo(client.Aisling, "Throw");
                     Skill.GiveTo(client.Aisling, "Assail");
                     Skill.GiveTo(client.Aisling, "Look");
@@ -380,10 +400,12 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     break;
 
                 case 0x0006:
-                    var book6 = client.Aisling.SkillBook.Skills.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
-                    var sbook6 = client.Aisling.SpellBook.Spells.Where(i => i.Value != null).Select(i => i.Value.Template).ToList();
-                    string booked6 = book6.ToString();
-                    string sbooked6 = sbook6.ToString();
+                    var book6 = client.Aisling.SkillBook.Skills.Where(i => i.Value != null)
+                        .Select(i => i.Value.Template).ToList();
+                    var sbook6 = client.Aisling.SpellBook.Spells.Where(i => i.Value != null)
+                        .Select(i => i.Value.Template).ToList();
+                    var booked6 = book6.ToString();
+                    var sbooked6 = sbook6.ToString();
 
                     if (book6 is null)
                         return;
@@ -395,7 +417,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         if (i == null)
                             continue;
 
-                        client.ForgetSkill(i.Name.ToString());
+                        client.ForgetSkill(i.Name);
                     }
 
                     foreach (var i in sbook6)
@@ -403,8 +425,9 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         if (i == null)
                             continue;
 
-                        client.ForgetSpell(i.Name.ToString());
+                        client.ForgetSpell(i.Name);
                     }
+
                     Skill.GiveTo(client.Aisling, "Assail");
                     Skill.GiveTo(client.Aisling, "Throw");
                     Skill.GiveTo(client.Aisling, "Look");
@@ -420,4 +443,3 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         }
     }
 }
-

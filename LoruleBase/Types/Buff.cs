@@ -1,10 +1,10 @@
 ﻿#region
 
+using System;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Newtonsoft.Json;
-using System;
 
 #endregion
 

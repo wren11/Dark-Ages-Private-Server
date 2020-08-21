@@ -1,9 +1,9 @@
 ﻿#region
 
-using Darkages.Common;
-using Darkages.Network;
 using System;
 using System.Text;
+using Darkages.Common;
+using Darkages.Network;
 using IFormattable = Darkages.Network.IFormattable;
 
 #endregion

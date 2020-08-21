@@ -46,12 +46,12 @@
 
             for (var i = 0; i < buffer.Length / 6; i++)
             {
-                num0 = (ushort)(MakeWord(num0) ^ ((num0 & 0x00FF) << 08) ^ buffer[tile + 0]);
-                num0 = (ushort)(MakeWord(num0) ^ ((num0 & 0x00FF) << 08) ^ buffer[tile + 1]);
-                num0 = (ushort)(MakeWord(num0) ^ ((num0 & 0x00FF) << 08) ^ buffer[tile + 2]);
-                num1 = (ushort)(MakeWord(num0) ^ ((num0 & 0x00FF) << 08) ^ buffer[tile + 3]);
-                num0 = (ushort)(MakeWord(num1) ^ ((salt[(num0 >> 8) * 2] ^ buffer[tile + 3]) << 8) ^ buffer[tile + 4]);
-                num0 = (ushort)(MakeWord(num0) ^ ((salt[(num1 >> 8) * 2] ^ buffer[tile + 4]) << 8) ^ buffer[tile + 5]);
+                num0 = (ushort) (MakeWord(num0) ^ ((num0 & 0x00FF) << 08) ^ buffer[tile + 0]);
+                num0 = (ushort) (MakeWord(num0) ^ ((num0 & 0x00FF) << 08) ^ buffer[tile + 1]);
+                num0 = (ushort) (MakeWord(num0) ^ ((num0 & 0x00FF) << 08) ^ buffer[tile + 2]);
+                num1 = (ushort) (MakeWord(num0) ^ ((num0 & 0x00FF) << 08) ^ buffer[tile + 3]);
+                num0 = (ushort) (MakeWord(num1) ^ ((salt[(num0 >> 8) * 2] ^ buffer[tile + 3]) << 8) ^ buffer[tile + 4]);
+                num0 = (ushort) (MakeWord(num0) ^ ((salt[(num1 >> 8) * 2] ^ buffer[tile + 4]) << 8) ^ buffer[tile + 5]);
 
                 tile += 6;
             }
@@ -63,7 +63,7 @@
         {
             index = (index >> 8) << 1;
 
-            return (ushort)(salt[index + 0] | (salt[index + 1] << 8));
+            return (ushort) (salt[index + 0] | (salt[index + 1] << 8));
         }
     }
 }

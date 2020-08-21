@@ -40,7 +40,9 @@ namespace Darkages.Scripting.Scripts.Skills
                 var action = new ServerFormat1A
                 {
                     Serial = client.Aisling.Serial,
-                    Number = (byte)(client.Aisling.Path == Class.Warrior ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01 : 0x01),
+                    Number = (byte)(client.Aisling.Path == Class.Warrior
+                        ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01
+                        : 0x01),
                     Speed = 20
                 };
 
@@ -58,7 +60,12 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (((Aisling)sprite).Weapon == 0)
                             dmg *= 3;
 
-                    foreach (var i in from i in enemy where i != null where client.Aisling.Serial != i.Serial where !(i is Money) where i.Attackable select i)
+                    foreach (var i in from i in enemy
+                                      where i != null
+                                      where client.Aisling.Serial != i.Serial
+                                      where !(i is Money)
+                                      where i.Attackable
+                                      select i)
                     {
                         Target = i;
 
@@ -117,8 +124,12 @@ namespace Darkages.Scripting.Scripts.Skills
                 };
 
                 if (enemy != null)
-                {
-                    foreach (var i in from i in enemy where i != null where sprite.Serial != i.Serial where !(i is Money) where i.Attackable select i)
+                    foreach (var i in from i in enemy
+                                      where i != null
+                                      where sprite.Serial != i.Serial
+                                      where !(i is Money)
+                                      where i.Attackable
+                                      select i)
                     {
                         Target = i;
 
@@ -135,7 +146,6 @@ namespace Darkages.Scripting.Scripts.Skills
 
                         sprite.Show(Scope.NearbyAislings, action);
                     }
-                }
             }
         }
     }

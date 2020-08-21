@@ -13,82 +13,79 @@ namespace Darkages.Storage.locales.debuffs
         public override int Length => 5;
         public override string Name => "beag suain";
 
-        public override void OnApplied(Sprite Affected, Debuff debuff)
+        public override void OnApplied(Sprite affected, Debuff debuff)
         {
-            base.OnApplied(Affected, debuff);
+            base.OnApplied(affected, debuff);
 
-            if (Affected is Aisling)
+            if (affected is Aisling)
             {
-                (Affected as Aisling)
+                (affected as Aisling)
                     .Client
                     .SendAnimation(41,
-                        (Affected as Aisling).Client.Aisling,
-                        (Affected as Aisling).Client.Aisling.Target ??
-                        (Affected as Aisling).Client.Aisling);
+                        (affected as Aisling).Client.Aisling,
+                        (affected as Aisling).Client.Aisling.Target ??
+                        (affected as Aisling).Client.Aisling);
 
                 var hpbar = new ServerFormat13
                 {
-                    Serial = Affected.Serial,
+                    Serial = affected.Serial,
                     Health = 255,
                     Sound = 64
                 };
 
-                (Affected as Aisling).Show(Scope.Self, hpbar);
+                (affected as Aisling).Show(Scope.Self, hpbar);
             }
             else
             {
-                var nearby = Affected.GetObjects<Aisling>(Affected.Map, i => i.WithinRangeOf(Affected));
+                var nearby = affected.GetObjects<Aisling>(affected.Map, i => i.WithinRangeOf(affected));
 
                 foreach (var near in nearby)
-                    near.Client.SendAnimation(41, Affected, Affected);
+                    near.Client.SendAnimation(41, affected, affected);
             }
         }
 
-        public override void OnDurationUpdate(Sprite Affected, Debuff debuff)
+        public override void OnDurationUpdate(Sprite affected, Debuff debuff)
         {
-            if (Affected is Aisling)
+            if (affected is Aisling)
             {
-                (Affected as Aisling)
+                (affected as Aisling)
                     .Client.SendLocation();
 
-                (Affected as Aisling)
+                (affected as Aisling)
                     .Client.SendAnimation(41,
-                        (Affected as Aisling).Client.Aisling,
-                        (Affected as Aisling).Client.Aisling.Target ??
-                        (Affected as Aisling).Client.Aisling);
+                        (affected as Aisling).Client.Aisling,
+                        (affected as Aisling).Client.Aisling.Target ??
+                        (affected as Aisling).Client.Aisling);
 
-                (Affected as Aisling)
+                (affected as Aisling)
                     .Client
                     .SendMessage(0x02, "You've been incapacitated.");
             }
             else
             {
-                var nearby = Affected.GetObjects<Aisling>(Affected.Map, i => Affected.WithinRangeOf(i));
+                var nearby = affected.GetObjects<Aisling>(affected.Map, i => affected.WithinRangeOf(i));
 
                 foreach (var near in nearby)
                 {
-                    if (near == null || near.Client == null)
-                        continue;
-
-                    if (Affected == null)
+                    if (near?.Client == null)
                         continue;
 
                     var client = near.Client;
-                    client.SendAnimation(41, Affected, client.Aisling);
+                    client.SendAnimation(41, affected, client.Aisling);
                 }
             }
 
-            base.OnDurationUpdate(Affected, debuff);
+            base.OnDurationUpdate(affected, debuff);
         }
 
-        public override void OnEnded(Sprite Affected, Debuff debuff)
+        public override void OnEnded(Sprite affected, Debuff debuff)
         {
-            if (Affected is Aisling)
-                (Affected as Aisling)
+            if (affected is Aisling)
+                (affected as Aisling)
                     .Client
                     .SendMessage(0x02, "Your are free again.");
 
-            base.OnEnded(Affected, debuff);
+            base.OnEnded(affected, debuff);
         }
     }
 }

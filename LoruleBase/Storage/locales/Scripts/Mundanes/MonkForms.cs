@@ -1,12 +1,12 @@
 ﻿#region
 
+using System.Collections.Generic;
+using System.IO;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
 using MenuInterpreter;
 using MenuInterpreter.Parser;
-using System.Collections.Generic;
-using System.IO;
 
 #endregion
 
@@ -36,7 +36,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
         public void LoadScriptInterpreter(GameClient client)
         {
             var parser = new YamlMenuParser();
-            var yamlPath = ServerContextBase.StoragePath + $@"\Scripts\Menus\{Mundane.Template.Name}.yaml";
+            var yamlPath = ServerContext.StoragePath + $@"\Scripts\Menus\{Mundane.Template.Name}.yaml";
 
             if (File.Exists(yamlPath))
                 if (client.MenuInterpter == null)

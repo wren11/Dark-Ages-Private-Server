@@ -26,25 +26,25 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)0x04);
-            writer.Write((byte)0x01);
-            writer.Write((uint)_mundane.Serial);
-            writer.Write((byte)0x00);
+            writer.Write((byte) 0x04);
+            writer.Write((byte) 0x01);
+            writer.Write((uint) _mundane.Serial);
+            writer.Write((byte) 0x00);
             writer.Write(_mundane.Template.Image);
-            writer.Write((byte)0x05);
-            writer.Write((byte)0x05);
+            writer.Write((byte) 0x05);
+            writer.Write((byte) 0x05);
             writer.Write(ushort.MinValue);
-            writer.Write((byte)0x00);
+            writer.Write((byte) 0x00);
             writer.Write(ushort.MinValue);
-            writer.Write((byte)0);
-            writer.Write((byte)0);
-            writer.Write((byte)0);
-            writer.Write((byte)0);
-            writer.Write((byte)0);
+            writer.Write((byte) 0);
+            writer.Write((byte) 0);
+            writer.Write((byte) 0);
+            writer.Write((byte) 0);
+            writer.Write((byte) 0);
             writer.WriteStringA("test");
             writer.WriteStringB("test");
             writer.WriteStringA(_captionA);
-            writer.Write((byte)_inputLength);
+            writer.Write((byte) _inputLength);
         }
     }
 
@@ -69,21 +69,21 @@ namespace Darkages.Network.ServerFormats
             if (!client.Aisling.LoggedIn)
                 return;
 
-            writer.Write((byte)0x00);
-            writer.Write((byte)0x01);
-            writer.Write((uint)sequence.Id);
-            writer.Write((byte)0x00);
+            writer.Write((byte) 0x00);
+            writer.Write((byte) 0x01);
+            writer.Write((uint) sequence.Id);
+            writer.Write((byte) 0x00);
             writer.Write(sequence.DisplayImage);
-            writer.Write((byte)0x00);
-            writer.Write((byte)0x01);
+            writer.Write((byte) 0x00);
+            writer.Write((byte) 0x01);
             writer.Write(ushort.MinValue);
-            writer.Write((byte)0x00);
+            writer.Write((byte) 0x00);
             writer.Write(ushort.MaxValue);
-            writer.Write((byte)0);
-            writer.Write((byte)0);
+            writer.Write((byte) 0);
+            writer.Write((byte) 0);
             writer.Write(sequence.CanMoveBack);
             writer.Write(sequence.CanMoveNext);
-            writer.Write((byte)0);
+            writer.Write((byte) 0);
             writer.WriteStringA(sequence.Title);
             writer.WriteStringB(sequence.DisplayText);
         }
@@ -118,21 +118,21 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)0x00);
-            writer.Write((byte)0x01);
-            writer.Write((uint)_client.DlgSession.Serial);
-            writer.Write((byte)0x00);
+            writer.Write((byte) 0x00);
+            writer.Write((byte) 0x01);
+            writer.Write((uint) _client.DlgSession.Serial);
+            writer.Write((byte) 0x00);
             writer.Write(Sequence.DisplayImage);
-            writer.Write((byte)0x00);
-            writer.Write((byte)0x01);
+            writer.Write((byte) 0x00);
+            writer.Write((byte) 0x01);
             writer.Write(ushort.MinValue);
-            writer.Write((byte)0x00);
+            writer.Write((byte) 0x00);
             writer.Write(ushort.MinValue);
-            writer.Write((byte)0);
-            writer.Write((byte)0);
+            writer.Write((byte) 0);
+            writer.Write((byte) 0);
             writer.Write(Sequence.CanMoveBack);
             writer.Write(Sequence.CanMoveNext);
-            writer.Write((byte)0);
+            writer.Write((byte) 0);
             writer.WriteStringA(Sequence.Current.Title);
             writer.WriteStringB(Sequence.Current.DisplayText);
         }

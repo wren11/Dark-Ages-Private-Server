@@ -1,9 +1,8 @@
 ﻿#region
 
-using Darkages.Network.ServerFormats;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
+using Darkages.Network.ServerFormats;
 
 #endregion
 
@@ -15,7 +14,7 @@ namespace Darkages.Network.Game.Components
             : base(server)
         {
             Timer = new GameServerTimer(
-                TimeSpan.FromSeconds(ServerContextBase.Config.PingInterval));
+                TimeSpan.FromSeconds(ServerContext.Config.PingInterval));
         }
 
         public GameServerTimer Timer { get; set; }

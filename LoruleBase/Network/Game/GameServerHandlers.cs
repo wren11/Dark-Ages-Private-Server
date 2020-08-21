@@ -1,5 +1,13 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading;
 using Darkages.Common;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.Login;
@@ -13,14 +21,6 @@ using MenuInterpreter.Parser;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
 
 #endregion
 
@@ -69,7 +69,7 @@ namespace Darkages.Network.Game
 
             lpClient.MenuInterpter = null;
 
-            if (ServerContextBase.Config.AssailsCancelSpells)
+            if (ServerContext.Config.AssailsCancelSpells)
                 CancelIfCasting(lpClient);
 
             var ready = DateTime.UtcNow > lpClient.LastScriptExecuted;
@@ -83,12 +83,12 @@ namespace Darkages.Network.Game
                             targets =>
                             {
                                 lpClient.LastScriptExecuted =
-                                    DateTime.UtcNow.AddMilliseconds(ServerContextBase.Config
+                                    DateTime.UtcNow.AddMilliseconds(ServerContext.Config
                                         .GlobalBaseSkillDelay);
                             });
 
             if ((lpClient.LastAssail - DateTime.UtcNow).TotalMilliseconds >
-                ServerContextBase.Config.GlobalBaseSkillDelay) return;
+                ServerContext.Config.GlobalBaseSkillDelay) return;
 
             var lastTemplate = string.Empty;
             foreach (var skill in lpClient.Aisling.GetAssails())
@@ -120,10 +120,7 @@ namespace Darkages.Network.Game
 
         public static void CancelIfCasting(GameClient client)
         {
-            if (!client.Aisling.LoggedIn)
-            {
-                return;
-            }
+            if (!client.Aisling.LoggedIn) return;
 
             client.Aisling.ActiveSpellInfo = null;
             client.Aisling.IsCastingSpell = false;
@@ -141,7 +138,7 @@ namespace Darkages.Network.Game
             lpSkill.NextAvailableUse =
                 lpSkill.Template.Cooldown > 0
                     ? DateTime.UtcNow.AddSeconds(lpSkill.Template.Cooldown)
-                    : DateTime.UtcNow.AddMilliseconds(ServerContextBase.Config.GlobalBaseSkillDelay);
+                    : DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
 
             lpSkill.InUse = false;
         }
@@ -149,7 +146,7 @@ namespace Darkages.Network.Game
         public void CreateInterpreterFromMenuFile(GameClient lpClient, string lpName, Sprite obj = null)
         {
             var parser = new YamlMenuParser();
-            var yamlPath = ServerContextBase.StoragePath +
+            var yamlPath = ServerContext.StoragePath +
                            string.Format(CultureInfo.CurrentCulture, @"\interactive\Menus\{0}.yaml", lpName);
 
             if (File.Exists(yamlPath))
@@ -229,8 +226,8 @@ namespace Darkages.Network.Game
             if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
                 client.Save();
 
-            if (ServerContextBase.Redirects.Contains(client.Aisling.Username.ToLower()))
-                ServerContextBase.Redirects.Remove(client.Aisling.Username.ToLower());
+            if (ServerContext.Redirects.Contains(client.Aisling.Username.ToLower()))
+                ServerContext.Redirects.Remove(client.Aisling.Username.ToLower());
 
             client.FlushAndSend(new ServerFormat03
             {
@@ -262,7 +259,7 @@ namespace Darkages.Network.Game
             if (client?.Aisling?.Map == null)
                 return;
 
-            if (client.MapUpdating || client.Aisling.CurrentMapId == ServerContextBase.Config.TransitionZone)
+            if (client.MapUpdating || client.Aisling.CurrentMapId == ServerContext.Config.TransitionZone)
             {
                 SendMapData(client);
                 client.MapUpdating = false;
@@ -285,7 +282,7 @@ namespace Darkages.Network.Game
             if (!client.Aisling.Map.Ready)
                 return;
 
-            if (ServerContextBase.Config.CancelCastingWhenWalking && client.Aisling.IsCastingSpell ||
+            if (ServerContext.Config.CancelCastingWhenWalking && client.Aisling.IsCastingSpell ||
                 client.Aisling.ActiveSpellInfo != null)
                 CancelIfCasting(client);
 
@@ -302,14 +299,14 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                if (!ServerContextBase.Config.CanMoveDuringReap)
+                if (!ServerContext.Config.CanMoveDuringReap)
                     client.SendLocation();
 
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
-            if (client.IsRefreshing && ServerContextBase.Config.CancelWalkingIfRefreshing)
+            if (client.IsRefreshing && ServerContext.Config.CancelWalkingIfRefreshing)
                 return;
 
             client.Aisling.Direction = format.Direction;
@@ -320,7 +317,7 @@ namespace Darkages.Network.Game
             {
                 client.LastMovement = DateTime.UtcNow;
 
-                if (client.Aisling.AreaId == ServerContextBase.Config.TransitionZone)
+                if (client.Aisling.AreaId == ServerContext.Config.TransitionZone)
                 {
                     client.Aisling.PortalSession = new PortalSession { IsMapOpen = false };
                     client.Aisling.PortalSession.TransitionToMap(client);
@@ -359,7 +356,7 @@ namespace Darkages.Network.Game
                     continue;
 
                 if (!(client.Aisling.Position.DistanceFrom(obj.Position) <=
-                      ServerContextBase.Config.ClickLootDistance))
+                      ServerContext.Config.ClickLootDistance))
                     continue;
 
                 if (obj is Money money)
@@ -387,7 +384,7 @@ namespace Darkages.Network.Game
 
                             if (item.AuthenticatedAislings != null && first == null)
                             {
-                                client.SendMessage(0x02, ServerContextBase.Config.CursedItemMessage);
+                                client.SendMessage(0x02, ServerContext.Config.CursedItemMessage);
                                 break;
                             }
                         }
@@ -408,7 +405,7 @@ namespace Darkages.Network.Game
                     {
                         item.Remove();
 
-                        var popupTemplate = ServerContextBase.GlobalPopupCache
+                        var popupTemplate = ServerContext.GlobalPopupCache
                             .OfType<ItemPickupPopup>().FirstOrDefault(i => i.ItemName == (obj as Item)?.Template.Name);
 
                         if (popupTemplate != null && client.Aisling.ActiveReactors.ContainsKey(popupTemplate.YamlKey))
@@ -470,11 +467,11 @@ namespace Darkages.Network.Game
 
             if (!item.Template.Flags.HasFlag(ItemFlags.Dropable))
             {
-                client.SendMessage(Scope.Self, 0x02, ServerContextBase.Config.CantDropItemMsg);
+                client.SendMessage(Scope.Self, 0x02, ServerContext.Config.CantDropItemMsg);
                 return;
             }
 
-            var popupTemplate = ServerContextBase.GlobalPopupCache
+            var popupTemplate = ServerContext.GlobalPopupCache
                 .OfType<ItemDropPopup>().FirstOrDefault(i => i.ItemName == item.Template.Name);
 
             if (popupTemplate != null && client.Aisling.ActiveReactors.ContainsKey(popupTemplate.YamlKey))
@@ -501,14 +498,14 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Position.DistanceFrom(itemPosition.X, itemPosition.Y) > 2)
             {
-                client.SendMessage(Scope.Self, 0x02, ServerContextBase.Config.CantDoThat);
+                client.SendMessage(Scope.Self, 0x02, ServerContext.Config.CantDoThat);
                 return;
             }
 
             if (client.Aisling.Map.IsWall(format.X, format.Y))
                 if (client.Aisling.XPos != format.X || client.Aisling.YPos != format.Y)
                 {
-                    client.SendMessage(Scope.Self, 0x02, ServerContextBase.Config.CantDoThat);
+                    client.SendMessage(Scope.Self, 0x02, ServerContext.Config.CantDoThat);
                     return;
                 }
 
@@ -632,7 +629,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -645,13 +642,11 @@ namespace Darkages.Network.Game
 
                 //abort cast?
                 if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
-                {
                     if (spellReq.Template.Name != "ao suain" && spellReq.Template.Name != "ao pramh")
                     {
                         CancelIfCasting(client);
                         return;
                     }
-                }
 
                 if (client.Aisling.ActiveSpellInfo != null)
                 {
@@ -714,7 +709,7 @@ namespace Darkages.Network.Game
         {
             client.Aisling.Direction = format.Direction;
 
-            if (client.Aisling.Skulled) client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+            if (client.Aisling.Skulled) client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
 
             client.Aisling.Show(Scope.NearbyAislings, new ServerFormat11
             {
@@ -740,7 +735,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -852,7 +847,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -878,7 +873,7 @@ namespace Darkages.Network.Game
 
                 if (item.Scripts == null)
                 {
-                    client.SendMessage(0x02, ServerContextBase.Config.CantUseThat);
+                    client.SendMessage(0x02, ServerContext.Config.CantUseThat);
                 }
                 else
                 {
@@ -934,7 +929,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -957,7 +952,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -967,15 +962,16 @@ namespace Darkages.Network.Game
                 if (client.Aisling.GoldPoints <= 0)
                     client.Aisling.GoldPoints = 0;
 
-                client.SendMessage(Scope.Self, 0x02, ServerContextBase.Config.YouDroppedGoldMsg);
-                client.SendMessage(Scope.NearbyAislingsExludingSelf, 0x02, ServerContextBase.Config.UserDroppedGoldMsg.Replace("noname", client.Aisling.Username));
+                client.SendMessage(Scope.Self, 0x02, ServerContext.Config.YouDroppedGoldMsg);
+                client.SendMessage(Scope.NearbyAislingsExludingSelf, 0x02,
+                    ServerContext.Config.UserDroppedGoldMsg.Replace("noname", client.Aisling.Username));
 
                 Money.Create(client.Aisling, format.GoldAmount, new Position(format.X, format.Y));
                 client.SendStats(StatusFlags.StructC);
             }
             else
             {
-                client.SendMessage(0x02, ServerContextBase.Config.NotEnoughGoldToDropMsg);
+                client.SendMessage(0x02, ServerContext.Config.NotEnoughGoldToDropMsg);
             }
         }
 
@@ -1003,7 +999,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -1040,14 +1036,14 @@ namespace Darkages.Network.Game
 
             if (player == null)
             {
-                client.SendMessage(0x02, ServerContextBase.Config.BadRequestMessage);
+                client.SendMessage(0x02, ServerContext.Config.BadRequestMessage);
                 return;
             }
 
             if (player.PartyStatus != GroupStatus.AcceptingRequests)
             {
                 client.SendMessage(0x02,
-                    ServerContextBase.Config.GroupRequestDeclinedMsg.Replace("noname", player.Username));
+                    ServerContext.Config.GroupRequestDeclinedMsg.Replace("noname", player.Username));
                 return;
             }
 
@@ -1070,10 +1066,10 @@ namespace Darkages.Network.Game
             {
                 if (client.Aisling.LeaderPrivileges)
                 {
-                    if (!ServerContextBase.GlobalGroupCache.ContainsKey(client.Aisling.GroupId))
+                    if (!ServerContext.GlobalGroupCache.ContainsKey(client.Aisling.GroupId))
                         return;
 
-                    var group = ServerContextBase.GlobalGroupCache[client.Aisling.GroupId];
+                    var group = ServerContext.GlobalGroupCache[client.Aisling.GroupId];
                     if (group != null)
                         Party.DisbandParty(group);
                 }
@@ -1110,7 +1106,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -1291,7 +1287,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -1338,7 +1334,7 @@ namespace Darkages.Network.Game
                 }
             }
 
-            if (format.Serial != ServerContextBase.Config.HelperMenuId)
+            if (format.Serial != ServerContext.Config.HelperMenuId)
             {
                 var mundane = GetObject<Mundane>(client.Aisling.Map, i => i.Serial == format.Serial);
 
@@ -1348,8 +1344,8 @@ namespace Darkages.Network.Game
             }
             else
             {
-                if (format.Serial == ServerContextBase.Config.HelperMenuId &&
-                    ServerContextBase.GlobalMundaneTemplateCache.ContainsKey(ServerContextBase.Config
+                if (format.Serial == ServerContext.Config.HelperMenuId &&
+                    ServerContext.GlobalMundaneTemplateCache.ContainsKey(ServerContext.Config
                         .HelperMenuTemplateKey))
                 {
                     if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
@@ -1357,9 +1353,9 @@ namespace Darkages.Network.Game
 
                     var helper = new UserHelper(this, new Mundane
                     {
-                        Serial = ServerContextBase.Config.HelperMenuId,
-                        Template = ServerContextBase.GlobalMundaneTemplateCache[
-                            ServerContextBase.Config.HelperMenuTemplateKey]
+                        Serial = ServerContext.Config.HelperMenuId,
+                        Template = ServerContext.GlobalMundaneTemplateCache[
+                            ServerContext.Config.HelperMenuTemplateKey]
                     });
 
                     helper.OnResponse(this, client, format.Step, format.Args);
@@ -1380,7 +1376,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -1558,7 +1554,7 @@ namespace Darkages.Network.Game
         {
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -1566,7 +1562,7 @@ namespace Darkages.Network.Game
             {
                 if (format.Type == 0x01)
                 {
-                    client.FlushAndSend(new BoardList(ServerContextBase.Community));
+                    client.FlushAndSend(new BoardList(ServerContext.Community));
                     return;
                 }
 
@@ -1574,7 +1570,7 @@ namespace Darkages.Network.Game
                 {
                     if (format.BoardIndex == 0)
                     {
-                        var clone = Clone<Board>(ServerContextBase.Community[format.BoardIndex]);
+                        var clone = Clone<Board>(ServerContext.Community[format.BoardIndex]);
                         {
                             clone.Client = client;
                             client.FlushAndSend(clone);
@@ -1582,7 +1578,7 @@ namespace Darkages.Network.Game
                         return;
                     }
 
-                    var boards = ServerContextBase.GlobalBoardCache.Select(i => i.Value)
+                    var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
                         .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
                         .FirstOrDefault();
 
@@ -1596,7 +1592,7 @@ namespace Darkages.Network.Game
                 {
                     var index = format.TopicIndex - 1;
 
-                    var boards = ServerContextBase.GlobalBoardCache.Select(i => i.Value)
+                    var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
                         .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
                         .FirstOrDefault();
 
@@ -1614,7 +1610,7 @@ namespace Darkages.Network.Game
 
                 if (format.Type == 0x06)
                 {
-                    var boards = ServerContextBase.GlobalBoardCache.Select(i => i.Value)
+                    var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
                         .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
                         .FirstOrDefault();
 
@@ -1633,7 +1629,7 @@ namespace Darkages.Network.Game
 
                         np.Associate(client.Aisling.Username);
                         boards.Posts.Add(np);
-                        ServerContextBase.SaveCommunityAssets();
+                        ServerContext.SaveCommunityAssets();
                         client.FlushAndSend(new ForumCallback("Message Delivered.", 0x06, true));
                     }
 
@@ -1642,7 +1638,7 @@ namespace Darkages.Network.Game
 
                 if (format.Type == 0x04)
                 {
-                    var boards = ServerContextBase.GlobalBoardCache.Select(i => i.Value)
+                    var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
                         .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
                         .FirstOrDefault();
 
@@ -1661,7 +1657,7 @@ namespace Darkages.Network.Game
                         np.Associate(client.Aisling.Username);
 
                         boards.Posts.Add(np);
-                        ServerContextBase.SaveCommunityAssets();
+                        ServerContext.SaveCommunityAssets();
                         client.FlushAndSend(new ForumCallback("Post Added.", 0x06, true));
                     }
 
@@ -1670,7 +1666,7 @@ namespace Darkages.Network.Game
 
                 if (format.Type == 0x05)
                 {
-                    var community = ServerContextBase.GlobalBoardCache.Select(i => i.Value)
+                    var community = ServerContext.GlobalBoardCache.Select(i => i.Value)
                         .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
                         .FirstOrDefault();
 
@@ -1683,24 +1679,24 @@ namespace Darkages.Network.Game
                                 ).Equals(client.Aisling.Username, StringComparison.OrdinalIgnoreCase))
                             {
                                 client.FlushAndSend(new ForumCallback("\0", 0x07, true));
-                                client.FlushAndSend(new BoardList(ServerContextBase.Community));
+                                client.FlushAndSend(new BoardList(ServerContext.Community));
                                 client.FlushAndSend(new ForumCallback("Post Deleted.", 0x07, true));
 
                                 community.Posts.RemoveAt(format.TopicIndex - 1);
-                                ServerContextBase.SaveCommunityAssets();
+                                ServerContext.SaveCommunityAssets();
 
                                 client.FlushAndSend(new ForumCallback("Post Deleted.", 0x07, true));
                             }
                             else
                             {
                                 client.FlushAndSend(
-                                    new ForumCallback(ServerContextBase.Config.CantDoThat, 0x07, true));
+                                    new ForumCallback(ServerContext.Config.CantDoThat, 0x07, true));
                             }
                         }
                         catch
                         {
                             client.FlushAndSend(
-                                new ForumCallback(ServerContextBase.Config.CantDoThat, 0x07, true));
+                                new ForumCallback(ServerContext.Config.CantDoThat, 0x07, true));
                         }
                 }
             }
@@ -1723,7 +1719,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -1758,7 +1754,7 @@ namespace Darkages.Network.Game
                 skill.NextAvailableUse = DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
             else
                 skill.NextAvailableUse =
-                    DateTime.UtcNow.AddMilliseconds(ServerContextBase.Config.GlobalBaseSkillDelay);
+                    DateTime.UtcNow.AddMilliseconds(ServerContext.Config.GlobalBaseSkillDelay);
 
             skill.InUse = false;
         }
@@ -1770,10 +1766,10 @@ namespace Darkages.Network.Game
 
             lock (ServerContext.SyncLock)
             {
-                if (!ServerContextBase.GlobalWorldMapTemplateCache.ContainsKey(client.Aisling.World))
+                if (!ServerContext.GlobalWorldMapTemplateCache.ContainsKey(client.Aisling.World))
                     return;
 
-                var worldMap = ServerContextBase.GlobalWorldMapTemplateCache[client.Aisling.World];
+                var worldMap = ServerContext.GlobalWorldMapTemplateCache[client.Aisling.World];
 
                 var selectedPortalNode = worldMap?.Portals.Find(i => i.Destination.AreaID == format.Index);
                 if (selectedPortalNode == null)
@@ -1811,13 +1807,13 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
             if (format.Type == 3)
             {
-                var popTemplate = ServerContextBase.GlobalPopupCache
+                var popTemplate = ServerContext.GlobalPopupCache
                     .OfType<UserClickPopup>().FirstOrDefault(i =>
                         i.X == format.X && i.Y == format.Y && i.MapId == client.Aisling.CurrentMapId);
 
@@ -1852,8 +1848,8 @@ namespace Darkages.Network.Game
                 }
             }
 
-            if (format.Serial == ServerContextBase.Config.HelperMenuId &&
-                ServerContextBase.GlobalMundaneTemplateCache.ContainsKey(ServerContextBase.Config
+            if (format.Serial == ServerContext.Config.HelperMenuId &&
+                ServerContext.GlobalMundaneTemplateCache.ContainsKey(ServerContext.Config
                     .HelperMenuTemplateKey))
             {
                 if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
@@ -1864,9 +1860,9 @@ namespace Darkages.Network.Game
 
                 var helper = new UserHelper(this, new Mundane
                 {
-                    Serial = ServerContextBase.Config.HelperMenuId,
-                    Template = ServerContextBase.GlobalMundaneTemplateCache[
-                        ServerContextBase.Config.HelperMenuTemplateKey]
+                    Serial = ServerContext.Config.HelperMenuId,
+                    Template = ServerContext.GlobalMundaneTemplateCache[
+                        ServerContext.Config.HelperMenuTemplateKey]
                 });
 
                 helper.OnClick(this, client);
@@ -1948,7 +1944,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -1987,7 +1983,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -1995,61 +1991,61 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.StatPoints == 0)
             {
-                client.SendMessage(0x02, ServerContextBase.Config.CantDoThat);
+                client.SendMessage(0x02, ServerContext.Config.CantDoThat);
                 return;
             }
 
             if ((attribute & Stat.Str) == Stat.Str)
             {
                 client.Aisling._Str++;
-                client.SendMessage(0x02, ServerContextBase.Config.StrAddedMessage);
+                client.SendMessage(0x02, ServerContext.Config.StrAddedMessage);
             }
 
             if ((attribute & Stat.Int) == Stat.Int)
             {
                 client.Aisling._Int++;
-                client.SendMessage(0x02, ServerContextBase.Config.IntAddedMessage);
+                client.SendMessage(0x02, ServerContext.Config.IntAddedMessage);
             }
 
             if ((attribute & Stat.Wis) == Stat.Wis)
             {
                 client.Aisling._Wis++;
-                client.SendMessage(0x02, ServerContextBase.Config.WisAddedMessage);
+                client.SendMessage(0x02, ServerContext.Config.WisAddedMessage);
             }
 
             if ((attribute & Stat.Con) == Stat.Con)
             {
                 client.Aisling._Con++;
-                client.SendMessage(0x02, ServerContextBase.Config.ConAddedMessage);
+                client.SendMessage(0x02, ServerContext.Config.ConAddedMessage);
             }
 
             if ((attribute & Stat.Dex) == Stat.Dex)
             {
                 client.Aisling._Dex++;
-                client.SendMessage(0x02, ServerContextBase.Config.DexAddedMessage);
+                client.SendMessage(0x02, ServerContext.Config.DexAddedMessage);
             }
 
-            if (client.Aisling._Wis > ServerContextBase.Config.StatCap)
-                client.Aisling._Wis = ServerContextBase.Config.StatCap;
-            if (client.Aisling._Str > ServerContextBase.Config.StatCap)
-                client.Aisling._Str = ServerContextBase.Config.StatCap;
-            if (client.Aisling._Int > ServerContextBase.Config.StatCap)
-                client.Aisling._Int = ServerContextBase.Config.StatCap;
-            if (client.Aisling._Con > ServerContextBase.Config.StatCap)
-                client.Aisling._Con = ServerContextBase.Config.StatCap;
-            if (client.Aisling._Dex > ServerContextBase.Config.StatCap)
-                client.Aisling._Dex = ServerContextBase.Config.StatCap;
+            if (client.Aisling._Wis > ServerContext.Config.StatCap)
+                client.Aisling._Wis = ServerContext.Config.StatCap;
+            if (client.Aisling._Str > ServerContext.Config.StatCap)
+                client.Aisling._Str = ServerContext.Config.StatCap;
+            if (client.Aisling._Int > ServerContext.Config.StatCap)
+                client.Aisling._Int = ServerContext.Config.StatCap;
+            if (client.Aisling._Con > ServerContext.Config.StatCap)
+                client.Aisling._Con = ServerContext.Config.StatCap;
+            if (client.Aisling._Dex > ServerContext.Config.StatCap)
+                client.Aisling._Dex = ServerContext.Config.StatCap;
 
             if (client.Aisling._Wis <= 0)
-                client.Aisling._Wis = ServerContextBase.Config.StatCap;
+                client.Aisling._Wis = ServerContext.Config.StatCap;
             if (client.Aisling._Str <= 0)
-                client.Aisling._Str = ServerContextBase.Config.StatCap;
+                client.Aisling._Str = ServerContext.Config.StatCap;
             if (client.Aisling._Int <= 0)
-                client.Aisling._Int = ServerContextBase.Config.StatCap;
+                client.Aisling._Int = ServerContext.Config.StatCap;
             if (client.Aisling._Con <= 0)
-                client.Aisling._Con = ServerContextBase.Config.StatCap;
+                client.Aisling._Con = ServerContext.Config.StatCap;
             if (client.Aisling._Dex <= 0)
-                client.Aisling._Dex = ServerContextBase.Config.StatCap;
+                client.Aisling._Dex = ServerContext.Config.StatCap;
 
             client.Aisling.StatPoints--;
 
@@ -2069,7 +2065,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Skulled)
             {
-                client.SystemMessage(ServerContextBase.Config.ReapMessageDuringAction);
+                client.SystemMessage(ServerContext.Config.ReapMessageDuringAction);
                 return;
             }
 
@@ -2330,10 +2326,14 @@ namespace Darkages.Network.Game
 
             if (subject > 0)
             {
-                var message = chant.Substring(subject, chant.Length - subject);
-                client.Say(
-                    ServerContextBase.Config.ChantPrefix + chant.Replace(message, string.Empty).Trim() +
-                    ServerContextBase.Config.ChantSuffix, 0x02);
+                if (subject >= 0 && chant.Length > subject)
+                {
+                    var message = chant[subject..];
+                    client.Say(
+                        ServerContext.Config.ChantPrefix + chant.Replace(message, string.Empty).Trim() +
+                        ServerContext.Config.ChantSuffix, 0x02);
+                }
+
                 return;
             }
 
@@ -2362,13 +2362,11 @@ namespace Darkages.Network.Game
         protected override void Format7BHandler(GameClient client, ClientFormat7B format)
         {
             if (format.Type == 0x00)
-            {
                 client.Send(new ServerFormat6F
                 {
                     Type = 0x00,
                     Name = format.Name
                 });
-            }
 
             if (format.Type == 0x01)
                 client.Send(new ServerFormat6F
@@ -2379,9 +2377,10 @@ namespace Darkages.Network.Game
 
         private static void CheckWarpTransitions(GameClient client)
         {
-            foreach (var warps in ServerContextBase.GlobalWarpTemplateCache.Where(warps => warps.ActivationMapId == client.Aisling.CurrentMapId))
-            {
-                foreach (var o in warps.Activations.Where(o => o.Location.DistanceFrom(client.Aisling.Position) <= warps.WarpRadius))
+            foreach (var warps in ServerContext.GlobalWarpTemplateCache.Where(warps =>
+                warps.ActivationMapId == client.Aisling.CurrentMapId))
+                foreach (var o in warps.Activations.Where(o =>
+                    o.Location.DistanceFrom(client.Aisling.Position) <= warps.WarpRadius))
                 {
                     if (warps.WarpType == WarpType.Map)
                     {
@@ -2392,7 +2391,7 @@ namespace Darkages.Network.Game
                     if (warps.WarpType != WarpType.World)
                         continue;
 
-                    if (!ServerContextBase.GlobalWorldMapTemplateCache.ContainsKey(warps.To.PortalKey))
+                    if (!ServerContext.GlobalWorldMapTemplateCache.ContainsKey(warps.To.PortalKey))
                         return;
 
                     client.Aisling.PortalSession = new PortalSession
@@ -2405,7 +2404,6 @@ namespace Darkages.Network.Game
                     client.Aisling.PortalSession.TransitionToMap(client);
                     break;
                 }
-            }
         }
 
         private static void SendMapData(GameClient client)
@@ -2428,16 +2426,14 @@ namespace Darkages.Network.Game
         {
             #region
 
-            if (redirect.developer.Value == redirect.player.Value)
-            {
-                client.Aisling.GameMaster = true;
-            }
+            if (redirect.developer.Value == redirect.player.Value) client.Aisling.GameMaster = true;
+
             #endregion
         }
 
         private void CheckWalkOverPopups(GameClient client)
         {
-            var popupTemplates = ServerContextBase.GlobalPopupCache
+            var popupTemplates = ServerContext.GlobalPopupCache
                 .OfType<UserWalkPopup>().Where(i => i.MapId == client.Aisling.CurrentMapId);
 
             foreach (var popupTemplate in popupTemplates)
@@ -2531,7 +2527,8 @@ namespace Darkages.Network.Game
         {
             var aisling = StorageManager.AislingBucket.Load(player);
 
-            if (aisling != null && ServerContextBase.Config.GameMasters.Any() && ServerContextBase.Config.GameMasters.Exists(i => i.ToLower() == player.ToLower()))
+            if (aisling != null && ServerContext.Config.GameMasters.Any() &&
+                ServerContext.Config.GameMasters.Exists(i => i.ToLower() == player.ToLower()))
                 aisling.GameMaster = true;
 
             client.Aisling = aisling;
@@ -2550,12 +2547,12 @@ namespace Darkages.Network.Game
                 return null;
             }
 
-            if (!ServerContextBase.Redirects.Contains(aisling.Username.ToLower()))
+            if (!ServerContext.Redirects.Contains(aisling.Username.ToLower()))
             {
             }
 
-            if (ServerContextBase.Redirects.Contains(aisling.Username.ToLower()))
-                ServerContextBase.Redirects.Remove(aisling.Username.ToLower());
+            if (ServerContext.Redirects.Contains(aisling.Username.ToLower()))
+                ServerContext.Redirects.Remove(aisling.Username.ToLower());
 
             lock (Generator.Random)
             {
@@ -2572,23 +2569,17 @@ namespace Darkages.Network.Game
             client.Aisling.CurrentWeight = 0;
             client.Aisling.ActiveStatus = ActivityStatus.Awake;
 
-            ServerContext.Logger(client.Aisling.Username + " : " + ServerContextBase.Config.ServerWelcomeMessage);
+            ServerContext.Logger(client.Aisling.Username + " : " + ServerContext.Config.ServerWelcomeMessage);
 
-            if (client.Aisling.Dead || client.Aisling.CurrentHp <= 0)
-            {
-                client.Aisling.WarpToHell();
-            }
+            if (client.Aisling.Dead || client.Aisling.CurrentHp <= 0) client.Aisling.WarpToHell();
 
             var playerObjAisling = client.Load()
                 .SendStats(StatusFlags.All)
-                .SendMessage(0x02, ServerContextBase.Config.ServerWelcomeMessage)
+                .SendMessage(0x02, ServerContext.Config.ServerWelcomeMessage)
                 .LoggedIn(true).Aisling;
 
             //send player to death map if they are dead.
-            if (playerObjAisling.Dead || playerObjAisling.CurrentHp <= 0)
-            {
-                playerObjAisling.WarpToHell();
-            }
+            if (playerObjAisling.Dead || playerObjAisling.CurrentHp <= 0) playerObjAisling.WarpToHell();
 
             //send player to nation if they have been offline awhile.
             if (playerObjAisling.PlayerNation.PastCurfew(playerObjAisling))

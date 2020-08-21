@@ -1,10 +1,10 @@
 ﻿#region
 
+using System;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
 using Newtonsoft.Json;
-using System;
 
 #endregion
 
@@ -23,7 +23,7 @@ namespace Darkages
 
         [JsonIgnore]
         public WorldMapTemplate Template
-            => ServerContextBase.GlobalWorldMapTemplateCache[FieldNumber];
+            => ServerContext.GlobalWorldMapTemplateCache[FieldNumber];
 
         public void ShowFieldMap(GameClient client)
         {
@@ -50,10 +50,10 @@ namespace Darkages
             {
                 client.LeaveArea(true, true);
 
-                destinationMap = ServerContextBase.Config.TransitionZone;
+                destinationMap = ServerContext.Config.TransitionZone;
 
-                client.Aisling.XPos = x >= 0 ? x : ServerContextBase.Config.TransitionPointX;
-                client.Aisling.YPos = y >= 0 ? y : ServerContextBase.Config.TransitionPointY;
+                client.Aisling.XPos = x >= 0 ? x : ServerContext.Config.TransitionPointX;
+                client.Aisling.YPos = y >= 0 ? y : ServerContext.Config.TransitionPointY;
 
                 client.Aisling.CurrentMapId = destinationMap;
                 client.LeaveArea(true, true);
@@ -63,11 +63,11 @@ namespace Darkages
             }
             else
             {
-                if (!ServerContextBase.GlobalMapCache.ContainsKey(destinationMap))
+                if (!ServerContext.GlobalMapCache.ContainsKey(destinationMap))
                     return;
 
-                client.Aisling.XPos = x >= 0 ? x : ServerContextBase.Config.TransitionPointX;
-                client.Aisling.YPos = y >= 0 ? y : ServerContextBase.Config.TransitionPointY;
+                client.Aisling.XPos = x >= 0 ? x : ServerContext.Config.TransitionPointX;
+                client.Aisling.YPos = y >= 0 ? y : ServerContext.Config.TransitionPointY;
 
                 client.Aisling.CurrentMapId = destinationMap;
                 client.LeaveArea(true, true);

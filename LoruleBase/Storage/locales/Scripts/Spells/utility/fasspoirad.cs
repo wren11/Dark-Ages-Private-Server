@@ -1,10 +1,10 @@
 ﻿#region
 
+using System;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
-using System;
 
 #endregion
 
@@ -24,7 +24,7 @@ namespace Darkages.Assets.locales.Scripts.Spells.utility
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                client.SendMessage(0x02, ServerContextBase.Config.SomethingWentWrong);
+                client.SendMessage(0x02, ServerContext.Config.SomethingWentWrong);
             }
         }
 

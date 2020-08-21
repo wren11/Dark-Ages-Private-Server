@@ -1,8 +1,8 @@
 ﻿#region
 
+using System.Linq;
 using Darkages.Scripting;
 using Darkages.Types;
-using System.Linq;
 
 #endregion
 

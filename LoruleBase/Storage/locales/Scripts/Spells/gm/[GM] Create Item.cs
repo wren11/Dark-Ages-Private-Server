@@ -1,7 +1,6 @@
 ﻿#region
 
 using System;
-using System.Linq;
 using Darkages.Scripting;
 using Darkages.Types;
 
@@ -33,12 +32,11 @@ namespace Darkages.Storage.locales.Scripts.Spells.gm
 
             if (!string.IsNullOrEmpty(spellArgs))
             {
-                var exists = ServerContextBase.GlobalItemTemplateCache.ContainsKey(spellArgs);
+                var exists = ServerContext.GlobalItemTemplateCache.ContainsKey(spellArgs);
 
                 if (exists)
                 {
-                    var template = ServerContextBase.GlobalItemTemplateCache[spellArgs];
-                    var offset = template.DisplayImage - 0x8000;
+                    var template = ServerContext.GlobalItemTemplateCache[spellArgs];
                     var item = Item.Create(sprite, template);
 
                     item.Template = template;
@@ -48,7 +46,8 @@ namespace Darkages.Storage.locales.Scripts.Spells.gm
                     }
                 }
 
-                ServerContext.Logger($"[GM Create] Used by {(sprite as Aisling).Username} to create {spellArgs}, Success: {success}");
+                ServerContext.Logger(
+                    $"[GM Create] Used by {(sprite as Aisling).Username} to create {spellArgs}, Success: {success}");
             }
         }
     }

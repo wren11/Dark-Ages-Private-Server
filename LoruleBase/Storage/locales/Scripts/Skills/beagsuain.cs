@@ -1,11 +1,11 @@
 ﻿#region
 
+using System;
+using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
-using System;
-using System.Linq;
 
 #endregion
 

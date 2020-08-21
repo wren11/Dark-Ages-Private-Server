@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using Darkages.Types;
 
 #endregion
@@ -26,6 +27,9 @@ namespace Darkages.Network.ServerFormats
 
         public ServerFormat42(Aisling user, byte type = 0x00, byte method = 0x00, string lpMsg = "", Item lpItem = null)
         {
+            if (method <= 0)
+                throw new ArgumentOutOfRangeException(nameof(method));
+
             Stage = type;
             Player = user;
             ExchangedItem = lpItem;

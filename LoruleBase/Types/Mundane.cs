@@ -1,14 +1,14 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 
 #endregion
 
@@ -31,7 +31,7 @@ namespace Darkages.Types
             if (template == null)
                 return;
 
-            var map = ServerContextBase.GlobalMapCache[template.AreaID];
+            var map = ServerContext.GlobalMapCache[template.AreaID];
             var existing = template.GetObject<Mundane>(map,
                 p => p != null && p.Template != null && p.Template.Name == template.Name);
 
@@ -77,20 +77,14 @@ namespace Darkages.Types
 
             if (npc.BonusAc < -70) npc.BonusAc = -70;
 
-            if (npc.Template.ChatRate == 0)
-            {
-                npc.Template.ChatRate = 10;
-            }
+            if (npc.Template.ChatRate == 0) npc.Template.ChatRate = 10;
 
-            if (npc.Template.TurnRate == 0)
-            {
-                npc.Template.TurnRate = 8;
-            }
+            if (npc.Template.TurnRate == 0) npc.Template.TurnRate = 8;
 
             npc.DefenseElement = Generator.RandomEnumValue<ElementManager.Element>();
             npc.OffenseElement = Generator.RandomEnumValue<ElementManager.Element>();
 
-            npc.Scripts = ScriptManager.Load<MundaneScript>(template.ScriptKey, ServerContextBase.Game, npc);
+            npc.Scripts = ScriptManager.Load<MundaneScript>(template.ScriptKey, ServerContext.Game, npc);
 
             npc.Template.AttackTimer = new GameServerTimer(TimeSpan.FromMilliseconds(450));
             npc.Template.EnableTurning = false;
@@ -120,7 +114,7 @@ namespace Darkages.Types
         {
             Skill obj;
             var scripts = ScriptManager.Load<SkillScript>(skillscriptstr,
-                obj = Skill.Create(1, ServerContextBase.GlobalSkillTemplateCache[skillscriptstr]));
+                obj = Skill.Create(1, ServerContext.GlobalSkillTemplateCache[skillscriptstr]));
 
             foreach (var script in scripts.Values)
             {
@@ -305,7 +299,7 @@ namespace Darkages.Types
                                                     DateTime.UtcNow.AddSeconds(skill.Template.Cooldown);
                                             else
                                                 skill.NextAvailableUse =
-                                                    DateTime.UtcNow.AddMilliseconds(ServerContextBase.Config
+                                                    DateTime.UtcNow.AddMilliseconds(ServerContext.Config
                                                         .GlobalBaseSkillDelay);
                                         }
 
@@ -345,7 +339,7 @@ namespace Darkages.Types
         private void LoadSpellScript(string spellscriptstr, bool primary = false)
         {
             var scripts = ScriptManager.Load<SpellScript>(spellscriptstr,
-                Spell.Create(1, ServerContextBase.GlobalSpellTemplateCache[spellscriptstr]));
+                Spell.Create(1, ServerContext.GlobalSpellTemplateCache[spellscriptstr]));
 
             foreach (var script in scripts.Values)
                 if (script != null)

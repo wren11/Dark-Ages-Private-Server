@@ -30,7 +30,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                var buff = new buff_aite();
+                var buff = new BuffAite();
 
                 client.TrainSpell(Spell);
 
@@ -74,7 +74,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 else
                 {
                     if (sprite is Aisling)
-                        (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.Config.NoManaMessage);
+                        (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
                     return;
                 }
 
@@ -82,7 +82,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             }
             else
             {
-                var buff = new buff_aite();
+                var buff = new BuffAite();
 
                 if (!target.HasBuff(buff.Name))
                 {

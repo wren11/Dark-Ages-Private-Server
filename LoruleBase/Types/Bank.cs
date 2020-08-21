@@ -1,7 +1,7 @@
 ﻿#region
 
-using Darkages.Network.Game;
 using System.Collections.Generic;
+using Darkages.Network.Game;
 
 #endregion
 
@@ -25,9 +25,9 @@ namespace Darkages.Types
 
         public bool Withdraw(GameClient client, string itemName)
         {
-            if (ServerContextBase.GlobalItemTemplateCache.ContainsKey(itemName))
+            if (ServerContext.GlobalItemTemplateCache.ContainsKey(itemName))
             {
-                var template = ServerContextBase.GlobalItemTemplateCache[itemName];
+                var template = ServerContext.GlobalItemTemplateCache[itemName];
                 var item = Item.Create(client.Aisling, template);
 
                 if (item.GiveTo(client.Aisling))

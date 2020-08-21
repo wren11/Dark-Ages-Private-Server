@@ -1,8 +1,8 @@
 ﻿#region
 
+using System;
 using Darkages.Common;
 using Darkages.Network.ServerFormats;
-using System;
 
 #endregion
 
@@ -33,20 +33,20 @@ namespace Darkages.Types
             money.XPos = location.X;
             money.YPos = location.Y;
 
-            var mt = (int)money.Type;
+            var mt = (int) money.Type;
 
-            if (mt > 0) money.Image = (ushort)(mt + 0x8000);
+            if (mt > 0) money.Image = (ushort) (mt + 0x8000);
 
             parent.AddObject(money);
         }
 
         public void GiveTo(int amount, Aisling aisling)
         {
-            if (aisling.GoldPoints + amount < ServerContextBase.Config.MaxCarryGold)
+            if (aisling.GoldPoints + amount < ServerContext.Config.MaxCarryGold)
             {
                 aisling.GoldPoints += amount;
 
-                if (aisling.GoldPoints > ServerContextBase.Config.MaxCarryGold)
+                if (aisling.GoldPoints > ServerContext.Config.MaxCarryGold)
                     aisling.GoldPoints = int.MaxValue;
 
                 aisling.Client.SendMessage(0x03, $"You've Received {amount} coins.");

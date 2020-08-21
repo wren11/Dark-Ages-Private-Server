@@ -1,8 +1,8 @@
 ﻿#region
 
-using Newtonsoft.Json;
 using System;
 using System.IO;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -10,7 +10,7 @@ namespace Darkages.Storage
 {
     public class AislingStorage : IStorage<Aisling>
     {
-        public static string StoragePath = $@"{ServerContextBase.StoragePath}\aislings";
+        public static string StoragePath = $@"{ServerContext.StoragePath}\aislings";
 
         static AislingStorage()
         {
@@ -39,13 +39,11 @@ namespace Darkages.Storage
 
         public void Save(Aisling obj)
         {
-            if (ServerContextBase.Paused)
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
+            if (ServerContext.Paused)
                 return;
 
-            if (ServerContextBase.Config.DontSavePlayers)
-            {
-                return;
-            }
+            if (ServerContext.Config.DontSavePlayers) return;
 
             try
             {

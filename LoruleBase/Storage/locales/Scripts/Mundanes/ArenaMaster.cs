@@ -1,10 +1,10 @@
 ﻿#region
 
+using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System.Collections.Generic;
 
 #endregion
 
@@ -47,7 +47,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 client.SendStats(StatusFlags.All);
                 client.Refresh();
 
-                client.Aisling.PortalSession = new PortalSession { IsMapOpen = false };
+                client.Aisling.PortalSession = new PortalSession {IsMapOpen = false};
                 client.Aisling.PortalSession.TransitionToMap(client);
                 client.CloseDialog();
             }

@@ -1,17 +1,11 @@
 ﻿#region
 
 using System;
-using System.Collections.Concurrent;
-using System.IO;
-using System.Linq;
+using System.Net.Sockets;
+using Darkages.Network.ClientFormats;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using Darkages.Network.ClientFormats;
-using Darkages.Network.Login;
 
 #endregion
 
@@ -38,10 +32,7 @@ namespace Darkages.Network
         public NetworkPacketWriter Writer { get; set; }
         public Socket Socket => State.Socket;
 
-        internal NetworkSocket State
-        {
-            get; set;
-        }
+        internal NetworkSocket State { get; set; }
 
         public void FlushAndSend(NetworkFormat format)
         {
@@ -67,10 +58,7 @@ namespace Darkages.Network
 
                 var buffer = packet.ToArray();
 
-                if (buffer.Length <= 0)
-                {
-                    return;
-                }
+                if (buffer.Length <= 0) return;
 
                 if (_sending)
                     return;
@@ -100,10 +88,7 @@ namespace Darkages.Network
             if (packet == null)
                 return;
 
-            if (InMapTransition && !(format is ClientFormat3F))
-            {
-                return;
-            }
+            if (InMapTransition && !(format is ClientFormat3F)) return;
 
             if (format is ClientFormat3F && InMapTransition)
                 InMapTransition = false;
@@ -135,17 +120,17 @@ namespace Darkages.Network
             Reader.Position = -1;
         }
 
-        public void Send(NetworkFormat format) => FlushAndSend(format);
+        public void Send(NetworkFormat format)
+        {
+            FlushAndSend(format);
+        }
 
         public void Send(NetworkPacketWriter lpData)
         {
             if (!Socket.Connected)
                 return;
 
-            if (InMapTransition)
-            {
-                return;
-            }
+            if (InMapTransition) return;
 
             lock (ServerContext.SyncLock)
             {

@@ -1,9 +1,8 @@
 ﻿#region
 
+using System.Collections.Generic;
 using Darkages.Types;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using ServiceStack.Text.Pools;
 
 #endregion
 

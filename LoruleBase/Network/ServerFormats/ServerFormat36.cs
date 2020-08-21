@@ -1,8 +1,8 @@
 ﻿#region
 
-using Darkages.Network.Game;
 using System;
 using System.Linq;
+using Darkages.Network.Game;
 
 #endregion
 

@@ -1,7 +1,7 @@
 ﻿#region
 
-using Darkages.Types;
 using System.Text;
+using Darkages.Types;
 
 #endregion
 
@@ -63,7 +63,7 @@ namespace Darkages.Network
         }
 
         public T ReadObject<T>()
-                                                    where T : IFormattable, new()
+            where T : IFormattable, new()
         {
             var result = new T();
 

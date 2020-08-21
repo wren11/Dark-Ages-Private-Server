@@ -1,11 +1,11 @@
 ﻿#region
 
-using Darkages.Network.Object;
-using Darkages.Storage;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Network.Object;
+using Darkages.Storage;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -95,7 +95,7 @@ namespace Darkages.Types
                 ReepGold();
                 GenerateReeper();
 
-                Owner.Client.SendMessage(0x02, ServerContextBase.Config.DeathReepingMessage);
+                Owner.Client.SendMessage(0x02, ServerContext.Config.DeathReepingMessage);
                 Owner.Client.SendStats(StatusFlags.All);
             }
         }

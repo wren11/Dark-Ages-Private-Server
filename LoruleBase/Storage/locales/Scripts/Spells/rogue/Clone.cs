@@ -1,10 +1,10 @@
 ﻿#region
 
+using System;
+using System.Threading.Tasks;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -24,7 +24,7 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
             if (sprite is Aisling)
             {
                 var client = (sprite as Aisling).Client;
-                client.SendMessage(0x02, ServerContextBase.Config.SomethingWentWrong);
+                client.SendMessage(0x02, ServerContext.Config.SomethingWentWrong);
             }
         }
 
@@ -112,7 +112,7 @@ namespace Darkages.Assets.locales.Scripts.Spells.rogue
                 else
                 {
                     if (sprite is Aisling)
-                        (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.Config.NoManaMessage);
+                        (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
                 }
             }
         }

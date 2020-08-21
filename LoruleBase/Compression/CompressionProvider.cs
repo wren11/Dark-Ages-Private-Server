@@ -1,8 +1,7 @@
 ﻿#region
 
-using Ionic.Zlib;
-using System;
 using System.IO;
+using ComponentAce.Compression.Libs.zlib;
 
 #endregion
 
@@ -12,35 +11,51 @@ namespace Darkages.Compression
     {
         public static byte[] Deflate(byte[] buffer)
         {
-            using (var iStream = new MemoryStream(buffer))
+            var iStream = new MemoryStream(buffer);
+            var oStream = new MemoryStream();
+            var zStream = new ZOutputStream(oStream, -1);
+
+            try
             {
-                using (var oStream = new MemoryStream())
-                {
-                    using (var zStream = new ZlibStream(oStream, CompressionMode.Compress, CompressionLevel.BestSpeed))
-                    {
-                        CopyStream(iStream, zStream);
-                        return oStream.ToArray();
-                    }
-                }
+                CopyStream(iStream, zStream);
+                zStream.finish();
+
+                return oStream.ToArray();
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                zStream.Close();
+                oStream.Close();
+                iStream.Close();
             }
         }
 
         public static byte[] Inflate(byte[] buffer)
         {
-            using (var iStream = new MemoryStream(buffer))
-            using (var oStream = new MemoryStream())
-            using (var zStream = new ZlibStream(oStream, CompressionMode.Decompress, CompressionLevel.BestSpeed))
+            var iStream = new MemoryStream(buffer);
+            var oStream = new MemoryStream();
+            var zStream = new ZOutputStream(oStream);
+
+            try
             {
-                try
-                {
-                    CopyStream(iStream, zStream);
-                    return oStream.ToArray();
-                }
-                catch (Exception e)
-                {
-                    ServerContext.Error(e);
-                    return null;
-                }
+                CopyStream(iStream, zStream);
+                zStream.finish();
+
+                return oStream.ToArray();
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                zStream.Close();
+                oStream.Close();
+                iStream.Close();
             }
         }
 
@@ -49,8 +64,7 @@ namespace Darkages.Compression
             var buffer = new byte[4096];
             int length;
 
-            while ((length = src.Read(buffer, 0, buffer.Length)) > 0)
-                dst.Write(buffer, 0, length);
+            while ((length = src.Read(buffer, 0, buffer.Length)) > 0) dst.Write(buffer, 0, length);
 
             dst.Flush();
         }

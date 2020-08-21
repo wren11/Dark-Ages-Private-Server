@@ -16,6 +16,7 @@ public class Cache<K, T> : IDisposable
     private readonly Dictionary<K, T> cache = new Dictionary<K, T>();
     private readonly ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
     private readonly Dictionary<K, Timer> timers = new Dictionary<K, Timer>();
+
     #endregion
 
     #region IDisposable implementation & Clear
@@ -119,8 +120,8 @@ public class Cache<K, T> : IDisposable
         try
         {
             var removers = (from k in cache.Keys
-                            where keyPattern(k)
-                            select k).ToList();
+                where keyPattern(k)
+                select k).ToList();
 
             foreach (var workKey in removers)
             {
@@ -229,12 +230,13 @@ public class Cache<K, T> : IDisposable
 
     private void RemoveByTimer(object state)
     {
-        Remove((K)state);
+        Remove((K) state);
     }
 
     #endregion
 
     #region AddOrUpdate, Get, Remove, Exists, Clear
+
     #endregion
 }
 

@@ -1,7 +1,7 @@
 ﻿#region
 
-using Darkages.Network;
 using System.Threading.Tasks;
+using Darkages.Network;
 
 #endregion
 
@@ -232,17 +232,6 @@ namespace Darkages.Security
 
                 if (packet.Ordinal == mod) packet.Data[i] ^= tree[Parameters.Seed][packet.Ordinal];
             });
-        }
-
-        private void Xor(NetworkPacket packet, int i)
-        {
-            var mod = (i / Parameters.Salt.Length) & 0xFF;
-
-            packet.Data[i] ^= (byte)(Parameters.Salt[i % Parameters.Salt.Length]
-                                      ^ tree[Parameters.Seed][packet.Ordinal]
-                                      ^ tree[Parameters.Seed][mod]);
-
-            if (packet.Ordinal == mod) packet.Data[i] ^= tree[Parameters.Seed][packet.Ordinal];
         }
     }
 }

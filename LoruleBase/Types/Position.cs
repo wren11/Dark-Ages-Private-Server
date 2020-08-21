@@ -16,7 +16,7 @@ namespace Darkages.Types
             Y = y;
         }
 
-        public Position(int x, int y) : this((ushort)x, (ushort)y)
+        public Position(int x, int y) : this((ushort) x, (ushort) y)
         {
         }
 
@@ -71,7 +71,7 @@ namespace Darkages.Types
             double XDiff = Math.Abs(X - this.X);
             double YDiff = Math.Abs(Y - this.Y);
 
-            return (int)(XDiff > YDiff ? XDiff : YDiff);
+            return (int) (XDiff > YDiff ? XDiff : YDiff);
         }
 
         public int DistanceFrom(Position pos)
@@ -81,7 +81,7 @@ namespace Darkages.Types
 
         public bool IsNearby(Position pos)
         {
-            return pos.DistanceFrom(X, Y) <= ServerContextBase.Config.VeryNearByProximity;
+            return pos.DistanceFrom(X, Y) <= ServerContext.Config.VeryNearByProximity;
         }
 
         public bool IsNextTo(Position pos, int distance = 1)

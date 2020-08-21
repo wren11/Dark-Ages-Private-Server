@@ -19,12 +19,12 @@ namespace Darkages.IO
 
         public override short ReadInt16()
         {
-            return (short)ReadUInt16();
+            return (short) ReadUInt16();
         }
 
         public override int ReadInt32()
         {
-            return (int)ReadUInt32();
+            return (int) ReadUInt32();
         }
 
         public IPAddress ReadIPAddress()
@@ -66,14 +66,14 @@ namespace Darkages.IO
 
         public override ushort ReadUInt16()
         {
-            return (ushort)((
+            return (ushort) ((
                                  ReadByte() << 8) |
                              ReadByte());
         }
 
         public override uint ReadUInt32()
         {
-            return (uint)((
+            return (uint) ((
                                ReadUInt16() << 16) |
                            ReadUInt16());
         }

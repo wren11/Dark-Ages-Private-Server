@@ -1,9 +1,9 @@
 ﻿#region
 
-using Darkages.Common;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
+using Darkages.Common;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -13,11 +13,11 @@ namespace Darkages.Types
     {
         public static ConcurrentDictionary<int, Trap> Traps = new ConcurrentDictionary<int, Trap>();
 
-        private int _Ticks;
+        private int _ticks;
 
         public Trap()
         {
-            _Ticks = 0;
+            _ticks = 0;
         }
 
         public int CurrentMapId { get; set; }
@@ -42,8 +42,6 @@ namespace Darkages.Types
                 if (Traps.TryRemove(traptoRemove.Serial, out var trap))
                 {
                     trap.TrapItem?.Remove();
-                    traptoRemove = null;
-
                     return true;
                 }
             }
@@ -84,13 +82,13 @@ namespace Darkages.Types
 
         public void Update(TimeSpan elapsedTime)
         {
-            if (_Ticks > Duration)
+            if (_ticks > Duration)
             {
                 RemoveTrap(this);
-                _Ticks = 0;
+                _ticks = 0;
             }
 
-            _Ticks++;
+            _ticks++;
         }
     }
 }

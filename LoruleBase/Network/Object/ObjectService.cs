@@ -1,10 +1,10 @@
 ﻿#region
 
-using Darkages.Types;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Types;
 
 #endregion
 
@@ -17,7 +17,7 @@ namespace Darkages.Network.Object
 
         public ObjectService()
         {
-            foreach (var map in ServerContextBase.GlobalMapCache.Values)
+            foreach (var map in ServerContext.GlobalMapCache.Values)
                 _spriteCollections.Add(map.ID, new Dictionary<Type, object>
                 {
                     {typeof(Monster), new SpriteCollection<Monster>(Enumerable.Empty<Monster>())},
@@ -80,8 +80,7 @@ namespace Darkages.Network.Object
             }
 
             {
-
-                var obj = (SpriteCollection<T>) _spriteCollections[map.ID][typeof(T)];
+                var obj = (SpriteCollection<T>)_spriteCollections[map.ID][typeof(T)];
                 var queryResult = obj.QueryAll(predicate);
                 {
                     return queryResult;
@@ -109,7 +108,7 @@ namespace Darkages.Network.Object
     }
 
     public class SpriteCollection<T> : IEnumerable<T>
-            where T : Sprite
+        where T : Sprite
     {
         public readonly List<T> Values;
 

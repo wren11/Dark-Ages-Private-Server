@@ -16,9 +16,5 @@
 
         public Operator Option { get; set; }
         public int Value { get; set; }
-
-        public void Apply(object item)
-        {
-        }
     }
 }

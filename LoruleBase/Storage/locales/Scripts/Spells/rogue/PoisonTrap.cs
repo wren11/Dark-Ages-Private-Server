@@ -42,7 +42,7 @@ namespace Darkages.Assets.locales.Scripts.Traps
                 {
                     if (target is Monster || target is Mundane || target is Aisling)
                         target.Show(Scope.NearbyAislings,
-                            new ServerFormat29((uint)target.Serial, (uint)target.Serial,
+                            new ServerFormat29((uint) target.Serial, (uint) target.Serial,
                                 Spell.Template.TargetAnimation, 0, 100));
                 }
                 ;

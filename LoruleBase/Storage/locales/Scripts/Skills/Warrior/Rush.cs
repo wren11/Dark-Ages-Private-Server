@@ -1,10 +1,10 @@
 ﻿#region
 
+using System;
+using System.Threading.Tasks;
 using Darkages.Network.ServerFormats;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
-using System;
-using System.Threading.Tasks;
 
 #endregion
 

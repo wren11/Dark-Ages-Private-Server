@@ -1,7 +1,7 @@
 ﻿#region
 
-using Darkages.Network.Game;
 using System;
+using Darkages.Network.Game;
 
 #endregion
 

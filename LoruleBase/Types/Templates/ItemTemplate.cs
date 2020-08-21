@@ -1,13 +1,10 @@
 ﻿#region
 
 using System;
+using System.ComponentModel;
 using Darkages.Systems.Loot.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.ComponentModel;
-using EnumsNET;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using ServiceStack;
 using static Darkages.Types.ElementManager;
 
 #endregion
@@ -45,7 +42,10 @@ namespace Darkages.Types
     public class ItemTemplate : Template, ILootDefinition
     {
         [Category("Mods")] public StatusOperator AcModifer { get; set; }
-        [Category("Script")] public ActivationTrigger activationTrigger { get; set; } = ActivationTrigger.OnUse;
+
+        /*
+                [Category("Script")] public ActivationTrigger ActivationTrigger { get; set; } = ActivationTrigger.OnUse;
+        */
         public bool CanStack { get; set; }
         [Category("Item Properties")] public byte CarryWeight { get; set; }
 
@@ -125,18 +125,14 @@ namespace Darkages.Types
 
         public override string[] GetMetaData()
         {
-            var categoryResolved = Enums.GetAttributes(typeof(EquipSlot), EquipmentSlot).ToArray();
-            var category = "Misc";
+            var category = string.IsNullOrEmpty(Group) ? string.Empty : Group;
 
-            if (categoryResolved.Length > 0)
-            {
-                category = ((DescriptionAttribute) categoryResolved[0]).Description;
-            }
+            if (string.IsNullOrEmpty(category)) category = Class == Class.Peasant ? "All" : Class.ToString();
 
             return new[]
             {
                 LevelRequired.ToString(),
-                ((int)Class).ToString(),
+                ((int) Class).ToString(),
                 CarryWeight.ToString(),
                 Gender switch
                 {

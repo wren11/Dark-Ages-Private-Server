@@ -57,7 +57,7 @@ namespace Darkages.IO
 
             for (var i = 0; i < filedata.Length; ++i)
             {
-                data = (byte)(filedata[i] ^ (hash & 0xFF));
+                data = (byte) (filedata[i] ^ (hash & 0xFF));
                 hash = table[data] ^ (hash >> 0x8);
             }
 

@@ -1,10 +1,10 @@
 ﻿#region
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -98,6 +98,14 @@ namespace Darkages.Types
         public double UpdateRate { get; set; } = 1000;
         [JsonProperty] public List<Position> Waypoints { get; set; }
 
+        public override string[] GetMetaData()
+        {
+            return new[]
+            {
+                ""
+            };
+        }
+
         public bool ReadyToSpawn()
         {
             if (Ready)
@@ -107,14 +115,6 @@ namespace Darkages.Types
             }
 
             return false;
-        }
-
-        public override string[] GetMetaData()
-        {
-            return new[]
-            {
-                ""
-            };
         }
     }
 }

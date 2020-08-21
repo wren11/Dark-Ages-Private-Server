@@ -1,10 +1,6 @@
 ﻿#region
 
-using Darkages.Network.ServerFormats;
-using Darkages.Types;
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -23,11 +19,11 @@ namespace Darkages.Network.Game.Components
         {
             if (_timer.Update(elapsedTime))
             {
-                ServerContextBase.SaveCommunityAssets();
+                ServerContext.SaveCommunityAssets();
 
-                if (ServerContextBase.Game != null)
-                    if (ServerContextBase.Game.Clients != null)
-                        foreach (var client in ServerContextBase.Game.Clients)
+                if (ServerContext.Game != null)
+                    if (ServerContext.Game.Clients != null)
+                        foreach (var client in ServerContext.Game.Clients)
                             client?.Save();
             }
         }

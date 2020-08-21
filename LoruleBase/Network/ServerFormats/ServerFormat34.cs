@@ -36,7 +36,7 @@ namespace Darkages.Network.ServerFormats
 
             writer.Write((byte)Aisling.ActiveStatus);
             writer.WriteStringA(Aisling.Username);
-            writer.Write((byte)Aisling.PlayerNation.NationId);
+            writer.Write(Aisling.PlayerNation.NationId);
             writer.WriteStringA($"Lev {Aisling.ExpLevel}");
             writer.Write((byte)Aisling.PartyStatus);
 

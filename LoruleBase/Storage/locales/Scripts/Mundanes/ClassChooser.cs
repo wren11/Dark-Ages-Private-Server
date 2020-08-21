@@ -1,12 +1,12 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -171,7 +171,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     Spell.GiveTo(client.Aisling, "Needle Trap", 1);
                     Spell.GiveTo(client.Aisling, "Stiletto Trap", 1);
 
-                    var item = Item.Create(client.Aisling, ServerContextBase.GlobalItemTemplateCache["Snow Secret"]);
+                    var item = Item.Create(client.Aisling, ServerContext.GlobalItemTemplateCache["Snow Secret"]);
                     {
                         item.GiveTo(client.Aisling);
                     }

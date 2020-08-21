@@ -1,14 +1,14 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage.locales.debuffs;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 
 #endregion
 
@@ -31,9 +31,11 @@ namespace Darkages.Types
 
         public static Skill Create(int slot, SkillTemplate skillTemplate)
         {
-            var obj = new Skill();
-            obj.Template = skillTemplate;
-            obj.Level = 0;
+            var obj = new Skill
+            {
+                Template = skillTemplate,
+                Level = 0
+            };
             lock (Generator.Random)
             {
                 obj.ID = Generator.GenerateNumber();
@@ -49,7 +51,7 @@ namespace Darkages.Types
 
         public static bool GiveTo(GameClient client, string args)
         {
-            var skillTemplate = ServerContextBase.GlobalSkillTemplateCache[args];
+            var skillTemplate = ServerContext.GlobalSkillTemplateCache[args];
             var slot = client.Aisling.SkillBook.FindEmpty();
 
             if (slot <= 0)
@@ -74,7 +76,7 @@ namespace Darkages.Types
 
         public static bool GiveTo(Aisling aisling, string args, byte slot, int level = 1)
         {
-            var skillTemplate = ServerContextBase.GlobalSkillTemplateCache[args];
+            var skillTemplate = ServerContext.GlobalSkillTemplateCache[args];
             var skill = Create(slot, skillTemplate);
             {
                 skill.Level = level;
@@ -86,10 +88,10 @@ namespace Darkages.Types
 
         public static bool GiveTo(Aisling aisling, string args, int level = 100)
         {
-            if (!ServerContextBase.GlobalSkillTemplateCache.ContainsKey(args))
+            if (!ServerContext.GlobalSkillTemplateCache.ContainsKey(args))
                 return false;
 
-            var skillTemplate = ServerContextBase.GlobalSkillTemplateCache[args];
+            var skillTemplate = ServerContext.GlobalSkillTemplateCache[args];
             var slot = aisling.SkillBook.FindEmpty();
 
             if (slot <= 0)

@@ -1,9 +1,9 @@
 ﻿#region
 
-using Darkages.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Network;
 
 #endregion
 
@@ -34,8 +34,8 @@ namespace Darkages.Types
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)0x01);
-            writer.Write((ushort)CommunityBoards.Count);
+            writer.Write((byte) 0x01);
+            writer.Write((ushort) CommunityBoards.Count);
 
             foreach (var topic in CommunityBoards)
             {
@@ -65,7 +65,7 @@ namespace Darkages.Types
         public override void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(ActionType);
-            writer.Write((byte)(Close ? 1 : 0));
+            writer.Write((byte) (Close ? 1 : 0));
             writer.WriteStringA(Message);
         }
     }
@@ -102,20 +102,20 @@ namespace Darkages.Types
         {
             if (BoardId == 0)
             {
-                writer.Write((byte)0x03);
-                writer.Write((byte)0x00);
+                writer.Write((byte) 0x03);
+                writer.Write((byte) 0x00);
             }
             else
             {
-                writer.Write((byte)0x05);
-                writer.Write((byte)0x03);
+                writer.Write((byte) 0x05);
+                writer.Write((byte) 0x03);
             }
 
-            writer.Write((byte)0x00);
+            writer.Write((byte) 0x00);
             writer.Write(PostId);
             writer.WriteStringA(Sender);
-            writer.Write((byte)DatePosted.Month);
-            writer.Write((byte)DatePosted.Day);
+            writer.Write((byte) DatePosted.Month);
+            writer.Write((byte) DatePosted.Day);
             writer.WriteStringA(Subject);
             writer.WriteStringB(Message);
         }

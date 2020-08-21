@@ -32,19 +32,6 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
         public override void OnSuccess(Sprite sprite)
         {
-            if (sprite is Aisling)
-            {
-                var client = (sprite as Aisling).Client;
-
-                var action = new ServerFormat1A
-                {
-                    Serial = client.Aisling.Serial,
-                    Number = 0x85,
-                    Speed = 25
-                };
-
-                var enemy = sprite.GetInfront(1, true);
-            }
         }
 
         public override void OnUse(Sprite sprite)

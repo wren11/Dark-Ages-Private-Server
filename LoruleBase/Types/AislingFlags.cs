@@ -1,7 +1,5 @@
 ﻿#region
 
-using System;
-
 #endregion
 
 namespace Darkages.Types
@@ -9,6 +7,6 @@ namespace Darkages.Types
     public enum AislingFlags
     {
         Normal = 0,
-        Ghost = 1,
+        Ghost = 1
     }
 }

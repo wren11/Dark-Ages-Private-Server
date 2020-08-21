@@ -1,8 +1,8 @@
 ﻿#region
 
-using Darkages.Types;
 using System;
 using System.Linq;
+using Darkages.Types;
 
 #endregion
 
@@ -29,7 +29,7 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter packet)
         {
-            packet.Write((byte)Aisling.PlayerNation.NationId);
+            packet.Write(Aisling.PlayerNation.NationId);
             packet.WriteStringA(Aisling.ClanRank);
 
             packet.Write((byte)0x07);
@@ -64,7 +64,7 @@ namespace Darkages.Network.ServerFormats
             packet.Write((byte)Aisling.PartyStatus);
             packet.Write((byte)0x00);
             packet.Write((byte)Aisling.Path);
-            packet.Write((byte)Aisling.PlayerNation.NationId);
+            packet.Write(Aisling.PlayerNation.NationId);
             packet.Write((byte)0x01);
             packet.WriteStringA(Convert.ToString(Aisling.Stage
                                                  != ClassStage.Class

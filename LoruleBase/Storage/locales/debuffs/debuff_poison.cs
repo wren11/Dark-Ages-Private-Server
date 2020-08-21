@@ -1,7 +1,7 @@
 ﻿#region
 
-using Darkages.Types;
 using System.Linq;
+using Darkages.Types;
 
 #endregion
 

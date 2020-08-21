@@ -28,11 +28,11 @@ namespace Darkages.Network.ServerFormats
 
             if (Type == 0x00)
                 writer.Write(
-                    MetafileManager.GetMetafile(Name));
+                    MetafileManager.GetMetaFile(Name));
 
             if (Type == 0x01)
                 writer.Write(
-                    MetafileManager.GetMetafiles());
+                    MetafileManager.GetMetaFiles());
         }
     }
 }

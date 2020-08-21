@@ -1,10 +1,11 @@
 ﻿#region
 
+using System.Collections.ObjectModel;
+using System.IO;
 using Darkages.Compression;
 using Darkages.IO;
 using Darkages.Network;
-using System.Collections.ObjectModel;
-using System.IO;
+using ServiceStack;
 
 #endregion
 
@@ -60,12 +61,11 @@ namespace Darkages.Types
                     writer.WriteStringB(atom);
             }
 
-            return writer.BaseStream;
+            return new MemoryStream(writer.BaseStream.ToBytes());
         }
 
         public void Serialize(NetworkPacketReader reader)
         {
-
         }
 
         public void Serialize(NetworkPacketWriter writer)

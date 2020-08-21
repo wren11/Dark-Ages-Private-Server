@@ -1,11 +1,11 @@
 ﻿#region
 
-using Darkages.Network.Game;
-using Darkages.Network.ServerFormats;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Network.Game;
+using Darkages.Network.ServerFormats;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -80,7 +80,8 @@ namespace Darkages.Types
         {
             var broken = new List<Item>();
 
-            foreach (var item in Equipment.Select(equipment => equipment.Value?.Item).Where(item => item?.Template != null))
+            foreach (var item in Equipment.Select(equipment => equipment.Value?.Item)
+                .Where(item => item?.Template != null))
             {
                 if (item.Template.Flags.HasFlag(ItemFlags.Repairable))
                 {
@@ -97,11 +98,10 @@ namespace Darkages.Types
                     broken.Add(item);
             }
 
-            foreach (var item in broken.Where(item => item?.Template != null).Where(item => RemoveFromExisting(item.Template.EquipmentSlot)))
-            {
+            foreach (var item in broken.Where(item => item?.Template != null)
+                .Where(item => RemoveFromExisting(item.Template.EquipmentSlot)))
                 Client.SendMessage(0x02,
                     $"{item.Template.Name} has broken.");
-            }
         }
 
         public void DisplayToEquipment(byte displayslot, Item item)

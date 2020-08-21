@@ -1,9 +1,9 @@
 ﻿#region
 
-using Darkages.Types;
 using System;
 using System.Net;
 using System.Text;
+using Darkages.Types;
 
 #endregion
 
@@ -20,7 +20,7 @@ namespace Darkages.Network.ServerFormats
         public IPEndPoint EndPoint { get; set; }
 
         public Redirect Redirect { get; set; }
-        public byte Remaining => (byte)(Redirect.Salt.Length + Redirect.Name.Length + 7);
+        public byte Remaining => (byte) (Redirect.Salt.Length + Redirect.Name.Length + 7);
 
         public override void Serialize(NetworkPacketReader reader)
         {
@@ -32,7 +32,7 @@ namespace Darkages.Network.ServerFormats
             writer.Write(Remaining);
             writer.Write(Convert.ToByte(Redirect.Seed));
             writer.Write(
-                (byte)Redirect.Salt.Length);
+                (byte) Redirect.Salt.Length);
             writer.Write(Encoding.UTF8.GetBytes(Redirect.Salt));
             writer.WriteStringA(Redirect.Name);
             writer.Write(Convert.ToInt32(Redirect.Serial));

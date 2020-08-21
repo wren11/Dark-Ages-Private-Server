@@ -1,9 +1,9 @@
 ﻿#region
 
+using System.IO;
 using Darkages.Common;
 using Darkages.Compression;
 using Darkages.IO;
-using System.IO;
 
 #endregion
 
@@ -25,7 +25,7 @@ namespace Darkages.Types
             result.Hash = Crc32Provider.ComputeChecksum(result.InflatedData);
             result.Compress();
 
-            ServerContextBase.GlobalMessage = message;
+            ServerContext.GlobalMessage = message;
 
             return result;
         }

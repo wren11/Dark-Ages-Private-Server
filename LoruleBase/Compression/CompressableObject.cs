@@ -3,7 +3,6 @@
 using System;
 using System.IO;
 using System.Xml.Serialization;
-using Darkages.Types;
 
 #endregion
 

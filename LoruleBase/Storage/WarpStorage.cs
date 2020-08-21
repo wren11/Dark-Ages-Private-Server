@@ -1,8 +1,8 @@
 ﻿#region
 
+using System.IO;
 using Darkages.Types;
 using Newtonsoft.Json;
-using System.IO;
 
 #endregion
 
@@ -14,7 +14,7 @@ namespace Darkages.Storage
 
         static WarpStorage()
         {
-            StoragePath = $@"{ServerContextBase.StoragePath}\templates\warps";
+            StoragePath = $@"{ServerContext.StoragePath}\templates\warps";
 
             if (!Directory.Exists(StoragePath))
                 Directory.CreateDirectory(StoragePath);
@@ -30,7 +30,7 @@ namespace Darkages.Storage
             foreach (var area in area_names)
             {
                 var obj = StorageManager.WarpBucket.Load(Path.GetFileNameWithoutExtension(area));
-                ServerContextBase.GlobalWarpTemplateCache.Add(obj);
+                ServerContext.GlobalWarpTemplateCache.Add(obj);
             }
         }
 
@@ -50,7 +50,7 @@ namespace Darkages.Storage
 
         public void Save(WarpTemplate obj)
         {
-            if (ServerContextBase.Paused)
+            if (ServerContext.Paused)
                 return;
 
             var path = Path.Combine(StoragePath, $"{obj.Name.ToLower()}.json");

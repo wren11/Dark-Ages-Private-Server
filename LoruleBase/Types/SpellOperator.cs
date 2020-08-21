@@ -2,15 +2,6 @@
 {
     public class SpellOperator
     {
-        public SpellOperator(SpellOperatorPolicy option, SpellOperatorScope scope, int value, int min, int max = 9)
-        {
-            Option = option;
-            Scope = scope;
-            Value = value;
-            MinValue = min;
-            MaxValue = max;
-        }
-
         public enum SpellOperatorPolicy
         {
             Set = 0,
@@ -24,6 +15,15 @@
             cradh = 1,
             nadur = 2,
             all = 3
+        }
+
+        public SpellOperator(SpellOperatorPolicy option, SpellOperatorScope scope, int value, int min, int max = 9)
+        {
+            Option = option;
+            Scope = scope;
+            Value = value;
+            MinValue = min;
+            MaxValue = max;
         }
 
         public int MaxValue { get; set; }

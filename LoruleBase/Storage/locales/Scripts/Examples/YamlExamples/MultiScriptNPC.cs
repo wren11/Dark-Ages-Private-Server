@@ -1,13 +1,16 @@
-﻿using Darkages.Network.Game;
+﻿#region
+
+using System;
+using System.IO;
+using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
 using MenuInterpreter;
 using MenuInterpreter.Parser;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
-using System;
-using System.IO;
+
+#endregion
 
 namespace Darkages.Storage.locales.Scripts.Examples.YamlExamples
 {
@@ -23,7 +26,7 @@ namespace Darkages.Storage.locales.Scripts.Examples.YamlExamples
         };
 
         //Setup some items available to buy.
-        private string[] BuyableItems =
+        private string[] _buyableItems =
         {
             "Dark Belt",
             "Light Belt",
@@ -31,7 +34,7 @@ namespace Darkages.Storage.locales.Scripts.Examples.YamlExamples
             "Magus Diana"
         };
 
-        private bool reset = false;
+        private bool reset;
 
         public MultiScriptNpc(GameServer server, Mundane mundane) : base(server, mundane)
         {
@@ -40,7 +43,7 @@ namespace Darkages.Storage.locales.Scripts.Examples.YamlExamples
         public Interpreter LoadScriptInterpreter(GameClient client, OptionsDataItem item)
         {
             var parser = new YamlMenuParser();
-            var yamlPath = ServerContextBase.StoragePath + $@"\Interactive\Menus\{GetType().Name}\{item.Text}.yaml";
+            var yamlPath = ServerContext.StoragePath + $@"\Interactive\Menus\{GetType().Name}\{item.Text}.yaml";
 
             var globals = new ScriptGlobals
             {
@@ -58,9 +61,7 @@ namespace Darkages.Storage.locales.Scripts.Examples.YamlExamples
 
                     client.MenuInterpter.OnMovedToNextStep += MenuInterpreter_OnMovedToNextStep;
 
-                    client.MenuInterpter.RegisterCheckpointHandler($"On{item.Text}", (c, res) =>
-                    {
-                    });
+                    client.MenuInterpter.RegisterCheckpointHandler($"On{item.Text}", (c, res) => { });
 
                     client.MenuInterpter.RegisterCheckpointHandler("Call", async (c, res) =>
                     {
@@ -96,17 +97,12 @@ namespace Darkages.Storage.locales.Scripts.Examples.YamlExamples
         //This is called when something from the main menu was clicked.
         public override void OnResponse(GameServer server, GameClient client, ushort responseId, string args)
         {
-            if (reset)
-            {
-                return;
-            }
+            if (reset) return;
 
             if (_mainMenu.Length > responseId)
             {
                 if (client.MenuInterpter == null)
-                {
                     client.MenuInterpter = LoadScriptInterpreter(client, _mainMenu[responseId - 1]);
-                }
 
                 client.MenuInterpter.Start();
             }
@@ -116,10 +112,7 @@ namespace Darkages.Storage.locales.Scripts.Examples.YamlExamples
                 client.SendOptionsDialog(Mundane, "What you looking for?", _mainMenu);
             }
 
-            if (Mundane != null)
-            {
-                client.ShowCurrentMenu(Mundane, null, client.MenuInterpter.GetCurrentStep());
-            }
+            if (Mundane != null) client.ShowCurrentMenu(Mundane, null, client.MenuInterpter.GetCurrentStep());
         }
 
         public override void TargetAcquired(Sprite target)

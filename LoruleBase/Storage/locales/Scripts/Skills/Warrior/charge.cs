@@ -1,9 +1,9 @@
 ﻿#region
 
-using Darkages.Network.ServerFormats;
-using Darkages.Types;
 using System;
 using System.Threading.Tasks;
+using Darkages.Network.ServerFormats;
+using Darkages.Types;
 
 #endregion
 

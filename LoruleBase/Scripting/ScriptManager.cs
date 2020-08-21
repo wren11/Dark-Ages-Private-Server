@@ -50,9 +50,7 @@ namespace Darkages.Scripting
                 if (string.IsNullOrEmpty(name))
                     continue;
 
-                Type script;
-
-                if (scripts.TryGetValue(name, out script))
+                if (scripts.TryGetValue(name, out var script))
                 {
                     var instance = Activator.CreateInstance(script, args);
                     data[name] = instance as TScript;
@@ -67,14 +65,12 @@ namespace Darkages.Scripting
         }
 
         public static TScript LoadEach<TScript>(string name, params object[] args)
-                    where TScript : class
+            where TScript : class
         {
             if (string.IsNullOrEmpty(name))
                 return null;
 
-            Type script;
-
-            if (scripts.TryGetValue(name, out script))
+            if (scripts.TryGetValue(name, out var script))
             {
                 var instance = Activator.CreateInstance(script, args);
                 return instance as TScript;
@@ -89,11 +85,13 @@ namespace Darkages.Scripting
     {
         public ScriptAttribute(string name, string author = "", string description = "")
         {
+            Description = description;
             Name = name;
             Author = author;
         }
 
         public string Author { get; }
+        public string Description { get; }
         public string Name { get; }
     }
 }

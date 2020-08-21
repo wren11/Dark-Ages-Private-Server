@@ -1,13 +1,13 @@
 ﻿#region
 
-using Darkages.Network;
-using Darkages.Network.Game;
-using Darkages.Storage;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Darkages.Network;
+using Darkages.Network.Game;
+using Darkages.Storage;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -15,7 +15,7 @@ namespace Darkages.Types
 {
     public class Board : NetworkFormat
     {
-        public static string StoragePath = $@"{ServerContextBase.StoragePath}\Community\Boards";
+        public static string StoragePath = $@"{ServerContext.StoragePath}\Community\Boards";
 
         public List<PostFormat> Posts = new List<PostFormat>();
 
@@ -90,7 +90,7 @@ namespace Darkages.Types
 
         public void Save(string key)
         {
-            if (ServerContextBase.Paused)
+            if (ServerContext.Paused)
                 return;
 
             var path = Path.Combine(StoragePath, $"{key}\\{Subject}.json");
@@ -104,9 +104,9 @@ namespace Darkages.Types
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)(IsMail ? 0x04 : 0x02));
-            writer.Write((byte)0x01);
-            writer.Write((ushort)(IsMail ? 0x00 : LetterId));
+            writer.Write((byte) (IsMail ? 0x04 : 0x02));
+            writer.Write((byte) 0x01);
+            writer.Write((ushort) (IsMail ? 0x00 : LetterId));
             writer.WriteStringA(IsMail ? "Mail" : Subject);
 
             if (IsMail && Client != null)
@@ -114,14 +114,14 @@ namespace Darkages.Types
                                          i.Recipient.Equals(Client.Aisling.Username,
                                              StringComparison.OrdinalIgnoreCase)).ToList();
 
-            writer.Write((byte)Posts.Count);
+            writer.Write((byte) Posts.Count);
             foreach (var post in Posts)
             {
-                writer.Write((byte)(!post.Read ? 0 : 1));
+                writer.Write((byte) (!post.Read ? 0 : 1));
                 writer.Write(post.PostId);
                 writer.WriteStringA(post.Sender);
-                writer.Write((byte)post.DatePosted.Month);
-                writer.Write((byte)post.DatePosted.Day);
+                writer.Write((byte) post.DatePosted.Month);
+                writer.Write((byte) post.DatePosted.Day);
                 writer.WriteStringA(post.Subject);
             }
         }

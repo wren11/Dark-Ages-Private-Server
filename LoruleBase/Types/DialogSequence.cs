@@ -1,9 +1,9 @@
 ﻿#region
 
-using Darkages.Network.ServerFormats;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using Darkages.Network.ServerFormats;
+using Newtonsoft.Json;
 
 #endregion
 

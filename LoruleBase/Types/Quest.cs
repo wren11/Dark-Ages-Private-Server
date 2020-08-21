@@ -1,12 +1,12 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -222,8 +222,8 @@ namespace Darkages.Types
             }
 
             foreach (var obj in from items in ItemRewards
-                                where ServerContextBase.GlobalItemTemplateCache.ContainsKey(items)
-                                select ServerContextBase.GlobalItemTemplateCache[items]
+                                where ServerContext.GlobalItemTemplateCache.ContainsKey(items)
+                                select ServerContext.GlobalItemTemplateCache[items]
                 into template
                                 select Item.Create(user, template)
                 into obj

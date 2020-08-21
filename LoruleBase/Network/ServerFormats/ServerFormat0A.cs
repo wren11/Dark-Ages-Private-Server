@@ -2,18 +2,6 @@
 {
     public class ServerFormat0A : NetworkFormat
     {
-        public ServerFormat0A(byte type, string text) : this()
-        {
-            Type = type;
-            Text = text;
-        }
-
-        public ServerFormat0A()
-        {
-            Secured = true;
-            Command = 0x0A;
-        }
-
         public enum MsgType
         {
             Action = 2,
@@ -25,6 +13,18 @@
             Party = 11,
             Whisper = 0,
             Test = 8
+        }
+
+        public ServerFormat0A(byte type, string text) : this()
+        {
+            Type = type;
+            Text = text;
+        }
+
+        public ServerFormat0A()
+        {
+            Secured = true;
+            Command = 0x0A;
         }
 
         public string Text { get; set; }

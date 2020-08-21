@@ -1,12 +1,12 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -55,9 +55,9 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                     #region deposit item
 
                     case 0x01:
-                        {
-                            DepositMenu(client);
-                        }
+                    {
+                        DepositMenu(client);
+                    }
                         break;
 
                     #endregion
@@ -65,62 +65,51 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                     #region deposit item response
 
                     case 0x51:
+                    {
+                        var slot = -1;
+                        int.TryParse(args, out slot);
+
+                        if (slot < 0)
                         {
-                            var slot = -1;
-                            int.TryParse(args, out slot);
+                            client.SendMessage(0x02,
+                                $"{Mundane.Template.Name} is finished with you.");
 
-                            if (slot < 0)
+                            client.CloseDialog();
+                            return;
+                        }
+
+                        var item = client.Aisling.Inventory.Get(i => i != null
+                                                                     && i.Slot == Convert.ToInt32(args))
+                            .FirstOrDefault();
+
+                        if (item != null)
+                        {
+                            var cost = (int) (item.Template.Value > 1000 ? item.Template.Value / 30 : 500);
+
+                            if (client.Aisling.GoldPoints >= cost)
                             {
-                                client.SendMessage(0x02,
-                                    $"{Mundane.Template.Name} is finished with you.");
-
-                                client.CloseDialog();
-                                return;
-                            }
-
-                            var item = client.Aisling.Inventory.Get(i => i != null
-                                                                         && i.Slot == Convert.ToInt32(args))
-                                .FirstOrDefault();
-
-                            if (item != null)
-                            {
-                                var cost = (int)(item.Template.Value > 1000 ? item.Template.Value / 30 : 500);
-
-                                if (client.Aisling.GoldPoints >= cost)
+                                Mundane.Show(Scope.NearbyAislings, new ServerFormat0D
                                 {
-                                    Mundane.Show(Scope.NearbyAislings, new ServerFormat0D
-                                    {
-                                        Serial = Mundane.Serial,
-                                        Text = $"Great, That will be {cost} coins.",
-                                        Type = 0x00
-                                    });
+                                    Serial = Mundane.Serial,
+                                    Text = $"Great, That will be {cost} coins.",
+                                    Type = 0x00
+                                });
 
-                                    client.Aisling.BankManager.Deposit(item);
+                                client.Aisling.BankManager.Deposit(item);
 
-                                    if (item.Template.Flags.HasFlag(ItemFlags.Stackable) && item.Stacks > 0)
-                                    {
-                                        client.Aisling.Inventory.RemoveRange(client, item, 1);
-                                        CompleteTrade(client, cost);
-                                    }
-                                    else if (client.Aisling.EquipmentManager.RemoveFromInventory(item, true))
-                                    {
-                                        CompleteTrade(client, cost);
-                                    }
-                                    else
-                                    {
-                                        client.CloseDialog();
-                                        client.SendMessage(0x02, "You could not deposit that.");
-                                    }
+                                if (item.Template.Flags.HasFlag(ItemFlags.Stackable) && item.Stacks > 0)
+                                {
+                                    client.Aisling.Inventory.RemoveRange(client, item, 1);
+                                    CompleteTrade(client, cost);
+                                }
+                                else if (client.Aisling.EquipmentManager.RemoveFromInventory(item, true))
+                                {
+                                    CompleteTrade(client, cost);
                                 }
                                 else
                                 {
-                                    Mundane.Show(Scope.NearbyAislings, new ServerFormat0D
-                                    {
-                                        Serial = Mundane.Serial,
-                                        Text = $"Help!, {client.Aisling.Username} is trying to rip me off!",
-                                        Type = 0x02
-                                    });
                                     client.CloseDialog();
+                                    client.SendMessage(0x02, "You could not deposit that.");
                                 }
                             }
                             else
@@ -128,12 +117,23 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                                 Mundane.Show(Scope.NearbyAislings, new ServerFormat0D
                                 {
                                     Serial = Mundane.Serial,
-                                    Text = $"Help!, {client.Aisling.Username} is trying to scam me!",
+                                    Text = $"Help!, {client.Aisling.Username} is trying to rip me off!",
                                     Type = 0x02
                                 });
                                 client.CloseDialog();
                             }
                         }
+                        else
+                        {
+                            Mundane.Show(Scope.NearbyAislings, new ServerFormat0D
+                            {
+                                Serial = Mundane.Serial,
+                                Text = $"Help!, {client.Aisling.Username} is trying to scam me!",
+                                Type = 0x02
+                            });
+                            client.CloseDialog();
+                        }
+                    }
                         break;
 
                     #endregion
@@ -141,26 +141,26 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                     #region deposit item confirm
 
                     case 0x0800:
+                    {
+                        var item = client.Aisling.Inventory.Get(i => i != null
+                                                                     && i.Slot == Convert.ToInt32(args))
+                            .FirstOrDefault();
+
+                        if (item != null)
                         {
-                            var item = client.Aisling.Inventory.Get(i => i != null
-                                                                         && i.Slot == Convert.ToInt32(args))
-                                .FirstOrDefault();
+                            var cost = Convert.ToString((int) (item.Template.Value > 1000
+                                ? item.Template.Value / 30
+                                : 500));
 
-                            if (item != null)
-                            {
-                                var cost = Convert.ToString((int)(item.Template.Value > 1000
-                                    ? item.Template.Value / 30
-                                    : 500));
+                            var options = new List<OptionsDataItem>();
+                            options.Add(new OptionsDataItem(0x0051, "Confirm"));
+                            options.Add(new OptionsDataItem(0x0052, "Cancel"));
 
-                                var options = new List<OptionsDataItem>();
-                                options.Add(new OptionsDataItem(0x0051, "Confirm"));
-                                options.Add(new OptionsDataItem(0x0052, "Cancel"));
-
-                                client.SendOptionsDialog(Mundane,
-                                    $"I can hold that ({item.DisplayName}) But it will cost {cost} gold.", args,
-                                    options.ToArray());
-                            }
+                            client.SendOptionsDialog(Mundane,
+                                $"I can hold that ({item.DisplayName}) But it will cost {cost} gold.", args,
+                                options.ToArray());
                         }
+                    }
                         break;
 
                     #endregion
@@ -168,9 +168,9 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                     #region Withdraw Item
 
                     case 0x02:
-                        {
-                            WithDrawMenu(client);
-                        }
+                    {
+                        WithDrawMenu(client);
+                    }
                         break;
 
                     #endregion
@@ -178,41 +178,41 @@ namespace Darkages.Storage.locales.Scripts.Mundanes.LORULE_CITY.Bankers
                     #region Withdraw Item Response
 
                     case 0x000A:
-                        {
-                            var itemName = args;
+                    {
+                        var itemName = args;
 
-                            if (client.Aisling.BankManager.Withdraw(client, itemName))
+                        if (client.Aisling.BankManager.Withdraw(client, itemName))
+                        {
+                            Mundane.Show(Scope.NearbyAislings, new ServerFormat0D
                             {
-                                Mundane.Show(Scope.NearbyAislings, new ServerFormat0D
-                                {
-                                    Serial = Mundane.Serial,
-                                    Text = $"{client.Aisling.Username}, Here is your {itemName} back.",
-                                    Type = 0x00
-                                });
-                                WithDrawMenu(client);
-                            }
-                            else
-                            {
-                                client.CloseDialog();
-                            }
+                                Serial = Mundane.Serial,
+                                Text = $"{client.Aisling.Username}, Here is your {itemName} back.",
+                                Type = 0x00
+                            });
+                            WithDrawMenu(client);
                         }
+                        else
+                        {
+                            client.CloseDialog();
+                        }
+                    }
                         break;
 
                     #endregion
 
                     case 0x52:
-                        {
-                            DepositMenu(client);
-                        }
+                    {
+                        DepositMenu(client);
+                    }
                         break;
 
                     default:
-                        {
-                            client.SendMessage(0x02,
-                                $"{Mundane.Template.Name} is finished with you.");
+                    {
+                        client.SendMessage(0x02,
+                            $"{Mundane.Template.Name} is finished with you.");
 
-                            client.CloseDialog();
-                        }
+                        client.CloseDialog();
+                    }
                         break;
                 }
             }

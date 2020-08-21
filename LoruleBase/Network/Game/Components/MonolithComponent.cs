@@ -1,9 +1,8 @@
 ﻿#region
 
-using Darkages.Types;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
+using Darkages.Types;
 
 #endregion
 
@@ -16,7 +15,7 @@ namespace Darkages.Network.Game.Components
         public MonolithComponent(GameServer server)
             : base(server)
         {
-            _timer = new GameServerTimer(TimeSpan.FromMilliseconds(ServerContextBase.Config.GlobalSpawnTimer));
+            _timer = new GameServerTimer(TimeSpan.FromMilliseconds(ServerContext.Config.GlobalSpawnTimer));
         }
 
         public void CreateFromTemplate(MonsterTemplate template, Area map)
@@ -35,11 +34,11 @@ namespace Darkages.Network.Game.Components
 
         private void ManageSpawns()
         {
-            var templates = ServerContextBase.GlobalMonsterTemplateCache;
+            var templates = ServerContext.GlobalMonsterTemplateCache;
             if (templates.Count == 0)
                 return;
 
-            foreach (var map in ServerContextBase.GlobalMapCache.Values)
+            foreach (var map in ServerContext.GlobalMapCache.Values)
             {
                 if (map == null || map.Rows == 0 || map.Cols == 0)
                     return;

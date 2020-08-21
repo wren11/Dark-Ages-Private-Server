@@ -1,9 +1,9 @@
 ﻿#region
 
+using System;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
 
 #endregion
 
@@ -107,7 +107,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                 if (sprite.CurrentMp < 0)
                     sprite.CurrentMp = 0;
 
-                (sprite as Aisling).Client.SendMessage(0x02, ServerContextBase.Config.NoManaMessage);
+                (sprite as Aisling).Client.SendMessage(0x02, ServerContext.Config.NoManaMessage);
             }
 
             var success = Spell.RollDice(rand);

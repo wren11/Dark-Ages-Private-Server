@@ -1,11 +1,10 @@
 ﻿#region
 
-using Darkages.Network.ServerFormats;
-using Darkages.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using Darkages.Network.ServerFormats;
+using Darkages.Types;
 
 #endregion
 
@@ -14,13 +13,10 @@ namespace Darkages.Network.Game.Components
     public class ObjectComponent : GameServerComponent
     {
         private readonly GameServerTimer _timer = new GameServerTimer(TimeSpan.FromMilliseconds(100));
-        private static DateTime _lastFrameUpdate = DateTime.UtcNow;
 
         public ObjectComponent(GameServer server) : base(server)
         {
         }
-
-        #region Underlying Object Managers
 
         public static void AddObjects(List<Sprite> payload, Aisling player, Sprite[] objectsToAdd)
         {
@@ -79,19 +75,19 @@ namespace Darkages.Network.Game.Components
                     switch (obj)
                     {
                         case Money money:
-                        {
-                            var goldSetting = player.GameSettings.Find(i =>
-                                i.EnabledSettingStr.Contains("AUTO LOOT GOLD"));
+                            {
+                                var goldSetting = player.GameSettings.Find(i =>
+                                    i.EnabledSettingStr.Contains("AUTO LOOT GOLD"));
 
-                            if (goldSetting != null)
-                                if (goldSetting.Enabled)
-                                {
-                                    money.GiveTo(money.Amount, player);
-                                    skip = true;
-                                }
+                                if (goldSetting != null)
+                                    if (goldSetting.Enabled)
+                                    {
+                                        money.GiveTo(money.Amount, player);
+                                        skip = true;
+                                    }
 
-                            break;
-                        }
+                                break;
+                            }
                     }
 
                     if (!skip)
@@ -128,8 +124,6 @@ namespace Darkages.Network.Game.Components
                 obj.HideFrom(client);
             }
         }
-
-        #endregion
 
         public static void UpdateClientObjects(Aisling user)
         {
@@ -172,5 +166,8 @@ namespace Darkages.Network.Game.Components
 
             foreach (var user in connectedUsers) UpdateClientObjects(user);
         }
+
+        #region Underlying Object Managers
+        #endregion
     }
 }

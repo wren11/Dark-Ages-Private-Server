@@ -1,10 +1,10 @@
 ﻿#region
 
-using Darkages.Network.Game;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Darkages.Network.Game;
 
 #endregion
 
@@ -69,17 +69,17 @@ namespace Darkages.Types
             => new[]
             {
                 $"{(ExpLevel_Required > 0 ? ExpLevel_Required : 0)}/0/0",
-                $"{(_template is SkillTemplate ? (_template as SkillTemplate).Icon : (_template as SpellTemplate).Icon)}/0/0",
+                $"{(_template is SkillTemplate template ? template.Icon : ((SpellTemplate) _template).Icon)}/0/0",
                 $"{(Str_Required == 0 ? 3 : Str_Required)}/{(Int_Required == 0 ? 3 : Int_Required)}/{(Wis_Required == 0 ? 3 : Wis_Required)}/{(Con_Required == 0 ? 3 : Con_Required)}/{(Dex_Required == 0 ? 3 : Dex_Required)}",
                 $"{(!string.IsNullOrEmpty(Skill_Required) ? Skill_Required : "0")}/{(Skill_Level_Required > 0 ? Skill_Level_Required : 0)}",
                 $"{(!string.IsNullOrEmpty(Spell_Required) ? Spell_Required : "0")}/{(Spell_Level_Required > 0 ? Spell_Level_Required : 0)}",
-                $"{(_template.Description != "" ? _template.Description : _template.Name)} \n\n$Items Required: {(Items_Required.Count > 0 ? string.Join(",", Items_Required.Select(i => i.AmountRequired + " " + i.Item)) : "None")} $gold: {(Gold_Required > 0 ? Gold_Required : 0)}\n\n{Script ?? "unknown."}"
+                $"{(_template.Description != "" ? _template.Description : _template.Name)} \n\n$Items Required: {(Items_Required.Count > 0 ? string.Join(",", Items_Required.Select(i => i.AmountRequired + " " + i.Item)) : "None")} $gold: {(Gold_Required > 0 ? Gold_Required : 0)}\n{Script}\n\n"
             };
 
         private string Script =>
-                    _template is SkillTemplate
-                ? AreaAndPosition((_template as SkillTemplate).NpcKey)
-                : AreaAndPosition((_template as SpellTemplate).NpcKey);
+            _template is SkillTemplate
+                ? AreaAndPosition((_template as SkillTemplate)?.NpcKey) ?? "Unknown.."
+                : AreaAndPosition((_template as SpellTemplate)?.NpcKey) ?? "Unknown..";
 
         public void AssociatedWith<T>(T template) where T : Template
         {
@@ -88,7 +88,8 @@ namespace Darkages.Types
 
         public bool IsMet(Aisling player, Action<string, bool> callbackMsg = null)
         {
-            if (ServerContextBase.Config.DevModeExemptions != null && player.GameMaster && ServerContextBase.Config.DevModeExemptions.Contains("learning_predicates"))
+            if (ServerContext.Config.DevModeExemptions != null && player.GameMaster &&
+                ServerContext.Config.DevModeExemptions.Contains("learning_predicates"))
                 return true;
 
             var result = new Dictionary<int, Tuple<bool, object>>();
@@ -159,14 +160,17 @@ namespace Darkages.Types
 
         private string AreaAndPosition(string npcKey)
         {
-            if (!ServerContextBase.GlobalMundaneTemplateCache.ContainsKey(npcKey)) return "Secret!";
+            if (string.IsNullOrEmpty(npcKey))
+                npcKey = "none";
 
-            var npc = ServerContextBase.GlobalMundaneTemplateCache[npcKey];
+            if (!ServerContext.GlobalMundaneTemplateCache.ContainsKey(npcKey)) return "Secret!";
 
-            if (!ServerContextBase.GlobalMapCache.ContainsKey(npc.AreaID))
+            var npc = ServerContext.GlobalMundaneTemplateCache[npcKey];
+
+            if (!ServerContext.GlobalMapCache.ContainsKey(npc.AreaID))
                 return "Secret!";
 
-            var map = ServerContextBase.GlobalMapCache[npc.AreaID];
+            var map = ServerContext.GlobalMapCache[npc.AreaID];
             {
                 return $"From Who: {npc.Name}\nFrom Where:{map.Name} - (Coordinates: {npc.X},{npc.Y})";
             }
@@ -199,7 +203,7 @@ namespace Darkages.Types
         {
             if (Items_Required != null && Items_Required.Count > 0)
             {
-                var msg = new StringBuilder(ServerContextBase.Config.ItemNotRequiredMsg);
+                var msg = new StringBuilder(ServerContext.Config.ItemNotRequiredMsg);
 
                 var items = Items_Required.Select(i => $"{i.Item} ({i.AmountRequired}) ");
 
@@ -211,14 +215,14 @@ namespace Darkages.Types
 
                 foreach (var ir in Items_Required)
                 {
-                    if (!ServerContextBase.GlobalItemTemplateCache.ContainsKey(ir.Item))
+                    if (!ServerContext.GlobalItemTemplateCache.ContainsKey(ir.Item))
                     {
                         result[n] = new Tuple<bool, object>(false, formatted);
 
                         break;
                     }
 
-                    var item = ServerContextBase.GlobalItemTemplateCache[ir.Item];
+                    var item = ServerContext.GlobalItemTemplateCache[ir.Item];
 
                     if (item == null)
                     {
@@ -273,7 +277,7 @@ namespace Darkages.Types
         {
             if (Skill_Required != null)
             {
-                var skill = ServerContextBase.GlobalSkillTemplateCache[Skill_Required];
+                var skill = ServerContext.GlobalSkillTemplateCache[Skill_Required];
                 var skill_retainer = player.SkillBook.Get(i => i.Template?.Name.Equals(skill.Name) ?? false)
                     .FirstOrDefault();
 
@@ -295,7 +299,7 @@ namespace Darkages.Types
 
             if (Spell_Required != null)
             {
-                var spell = ServerContextBase.GlobalSpellTemplateCache[Spell_Required];
+                var spell = ServerContext.GlobalSpellTemplateCache[Spell_Required];
                 var spell_retainer = player.SpellBook.Get(i => i
                                                                != null && i.Template != null &&
                                                                i.Template.Name.Equals(spell.Name)).FirstOrDefault();

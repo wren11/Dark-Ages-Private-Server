@@ -1,15 +1,15 @@
 ﻿#region
 
-using Darkages.Common;
-using Darkages.Network.ClientFormats;
-using Darkages.Network.Object;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using Darkages.Common;
+using Darkages.Network.ClientFormats;
 using Darkages.Network.Login;
+using Darkages.Network.Object;
 
 #endregion
 
@@ -27,7 +27,7 @@ namespace Darkages.Network
         {
             var type = typeof(NetworkServer<TClient>);
 
-            Address = ServerContextBase.IpAddress;
+            Address = ServerContext.IpAddress;
             ConnectedClients = new Dictionary<int, TClient>(capacity);
 
             _handlers = new MethodInfo[256];
@@ -68,7 +68,7 @@ namespace Darkages.Network
 
         public virtual void ClientConnected(TClient client)
         {
-            if (ServerContextBase.Game == null)
+            if (ServerContext.Game == null)
                 return;
 
             ServerContext.Logger($"Connection From {0} Established. {client.Socket.RemoteEndPoint}");
@@ -124,7 +124,7 @@ namespace Darkages.Network
             _listening = true;
             _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             _listener.Bind(new IPEndPoint(IPAddress.Any, port));
-            _listener.Listen(ServerContextBase.Config?.ConnectionCapacity ?? 1000);
+            _listener.Listen(ServerContext.Config?.ConnectionCapacity ?? 1000);
             _listener.BeginAccept(EndConnectClient, _listener);
         }
 
@@ -1236,7 +1236,6 @@ namespace Darkages.Network
 
                     if (client.State.PacketComplete)
                     {
-
                         ClientDataReceived(client, client.State.ToPacket());
                         client.State.BeginReceiveHeader(EndReceiveHeader, out error, client);
                     }
@@ -1253,6 +1252,7 @@ namespace Darkages.Network
         }
 
         #region Format Handlers
+
         #endregion
     }
 }

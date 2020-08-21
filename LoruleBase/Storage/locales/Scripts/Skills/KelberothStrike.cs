@@ -1,9 +1,9 @@
 ﻿#region
 
+using System;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
-using System;
 
 #endregion
 

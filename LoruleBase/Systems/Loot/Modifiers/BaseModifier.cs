@@ -1,8 +1,8 @@
 ﻿#region
 
-using Darkages.Systems.Loot.Interfaces;
 using System;
 using System.Reflection;
+using Darkages.Systems.Loot.Interfaces;
 
 #endregion
 
