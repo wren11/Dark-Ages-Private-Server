@@ -1,0 +1,29 @@
+{
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 24,
+        "Y": 48,
+        "AreaID": 0
+      },
+      "AreaID": 5053,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": {
+      "X": 2,
+      "Y": 15,
+      "AreaID": 0
+    },
+    "AreaID": 5052,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 5053,
+  "Name": "Map Warp from 5053 to 5052",
+  "Description": null,
+  "Group": null
+}

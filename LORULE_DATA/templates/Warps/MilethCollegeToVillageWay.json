@@ -1,0 +1,38 @@
+{
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 0,
+        "Y": 12,
+        "AreaID": 0
+      },
+      "AreaID": 3043,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 0,
+        "Y": 11,
+        "AreaID": 0
+      },
+      "AreaID": 3043,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": {
+      "X": 14,
+      "Y": 14,
+      "AreaID": 0
+    },
+    "AreaID": 3006,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 3043,
+  "Name": "Map Warp from 3043 to 3006",
+  "Description": null,
+  "Group": null
+}

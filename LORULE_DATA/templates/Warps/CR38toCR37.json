@@ -1,0 +1,47 @@
+{
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 13,
+        "Y": 29,
+        "AreaID": 0
+      },
+      "AreaID": 5038,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 14,
+        "Y": 29,
+        "AreaID": 0
+      },
+      "AreaID": 5038,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 15,
+        "Y": 29,
+        "AreaID": 0
+      },
+      "AreaID": 5038,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": {
+      "X": 44,
+      "Y": 2,
+      "AreaID": 0
+    },
+    "AreaID": 5037,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 5038,
+  "Name": "Map Warp from 5038 to 5037",
+  "Description": null,
+  "Group": null
+}

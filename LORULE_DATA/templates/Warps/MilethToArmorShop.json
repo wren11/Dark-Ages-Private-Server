@@ -1,0 +1,38 @@
+{
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 18,
+        "Y": 62,
+        "AreaID": 0
+      },
+      "AreaID": 500,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 18,
+        "Y": 61,
+        "AreaID": 0
+      },
+      "AreaID": 500,
+      "PortalKey": 1
+    }
+  ],
+  "To": {
+    "Location": {
+      "X": 10,
+      "Y": 9,
+      "AreaID": 0
+    },
+    "AreaID": 133,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 500,
+  "Name": "Map Warp from 500 to 133",
+  "Description": null,
+  "Group": null
+}
