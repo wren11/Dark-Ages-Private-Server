@@ -2426,8 +2426,10 @@ namespace Darkages.Network.Game
         {
             #region
 
-            if (redirect.developer.Value == redirect.player.Value) client.Aisling.GameMaster = true;
-
+            if (redirect.developer.Value == redirect.player.Value)
+            {
+                client.Aisling.GameMaster = true;
+            }
             #endregion
         }
 

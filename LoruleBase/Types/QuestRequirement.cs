@@ -16,8 +16,7 @@ namespace Darkages.Types
 
         public bool IsMet(Aisling user, Func<Predicate<Template>, bool> predicate)
         {
-            if (ServerContext.Config.DevModeExemptions != null && user.GameMaster &&
-                ServerContext.Config.DevModeExemptions.Contains("quests"))
+            if (user.GameMaster)
                 return true;
 
             return Type switch

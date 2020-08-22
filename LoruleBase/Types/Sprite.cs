@@ -389,6 +389,9 @@ namespace Darkages.Types
             if (!DamageTarget(damageDealingSprite, ref dmg, penetrating, sound, dmgcb, forceTarget))
                 return;
 
+            if (damageDealingSprite is Aisling aisling && aisling.GameMaster)
+                dmg *= 20;
+
             OnDamaged(damageDealingSprite, dmg);
         }
 
@@ -912,13 +915,20 @@ namespace Darkages.Types
         public bool IsColliding()
         {
             var objs = AislingsNearby();
+            var any = false;
 
-            if (!objs.Where(obj => obj.Serial != Serial)
-                .Any(obj => obj.PendingX == PendingX && obj.PendingY == PendingY))
-                return false;
+            foreach (var obj in objs)
+            {
+                if (obj.Serial != Serial && obj.PendingX == PendingX && obj.PendingY == PendingY)
+                {
+                    obj.Client.Refresh();
+                    Client.Refresh();
+                    any = true;
+                    break;
+                }
+            }
 
-            Client.Refresh();
-            return true;
+            return any;
         }
 
         public void Kill()

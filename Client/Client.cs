@@ -13,31 +13,23 @@ namespace DAClient
     {
         public static int Connections = 0;
 
-        public enum ServerState
-        {
-            Lobby,
-            Login,
-            World
-        }
-
-        NetworkPacketReader _reader = new NetworkPacketReader();
-
-        NetworkPacketWriter _writer = new NetworkPacketWriter();
-
-        SecurityProvider _encryption = new SecurityProvider();
+        public bool RequiresVersion = true;
 
         public ServerState State = ServerState.Lobby;
 
-        public byte Ordinal { get; set; } = 0;
-
-        private Socket _socket;
-
-        private byte[] _recvBuffer = new byte[0x10000];
+        private readonly string Pass;
 
         private readonly string User;
 
-        private readonly string Pass;
+        private SecurityProvider _encryption = new SecurityProvider();
 
+        private NetworkPacketReader _reader = new NetworkPacketReader();
+
+        private byte[] _recvBuffer = new byte[0x10000];
+
+        private Socket _socket;
+
+        private NetworkPacketWriter _writer = new NetworkPacketWriter();
 
         public Client(string lpUser, string lpPassword)
         {
@@ -45,6 +37,14 @@ namespace DAClient
             Pass = lpPassword;
         }
 
+        public enum ServerState
+        {
+            Lobby,
+            Login,
+            World
+        }
+
+        public byte Ordinal { get; set; } = 0;
 
         public bool Connect(byte[] lpAddress, int port)
         {
@@ -52,7 +52,6 @@ namespace DAClient
 
             return Connect(ip.ToString(), port);
         }
-
 
         public bool Connect(string lpAddress, int port)
         {
@@ -75,6 +74,28 @@ namespace DAClient
             }
 
             return false;
+        }
+
+        public void Send(NetworkFormat format)
+        {
+            _writer.Position = 0;
+            _writer.Write(format.Command);
+
+            if (format.Secured)
+            {
+                _writer.Write(Ordinal++);
+            }
+
+            format.Serialize(_writer);
+
+            var packet = _writer.ToPacket();
+            {
+                if (format.Secured)
+                    _encryption.Transform(packet);
+
+                var buffer = packet.ToArray();
+                _socket.Send(buffer, 0, buffer.Length, SocketFlags.None);
+            }
         }
 
         private void EndReceive(IAsyncResult ar)
@@ -114,36 +135,12 @@ namespace DAClient
                 SocketFlags.None, EndReceive, socket);
         }
 
-        private void Send(NetworkFormat format)
-        {
-            _writer.Position = 0;
-            _writer.Write(format.Command);  
-
-            if (format.Secured)
-            {
-                _writer.Write(Ordinal++);
-            }
-
-            format.Serialize(_writer);
-
-            var packet = _writer.ToPacket();
-            {
-
-                if (format.Secured)
-                    _encryption.Transform(packet);
-
-                var buffer = packet.ToArray();
-                _socket.Send(buffer, 0, buffer.Length, SocketFlags.None);
-            }
-        }
-
-        public bool RequiresVersion = true;
-
         private void ReceivePacketData(NetworkPacket packet)
         {
             switch (packet.Command)
             {
                 #region Connected, Send Client Version.
+
                 case 0x7E:
                     {
                         if (RequiresVersion)
@@ -155,8 +152,11 @@ namespace DAClient
                         }
                     }
                     break;
-                #endregion
+
+                #endregion Connected, Send Client Version.
+
                 #region Receive Encryption Information.
+
                 case 0x00:
                     {
                         _reader = new NetworkPacketReader();
@@ -177,12 +177,14 @@ namespace DAClient
                                 new SecurityParameters(seed, salt));
 
                             Send(new EncryptionReceived(0));
-
                         }
+                    }
+                    break;
 
-                    } break;
-                #endregion
+                #endregion Receive Encryption Information.
+
                 #region Received Server Table Data.
+
                 case 0x56:
                     {
                         _encryption.Transform(packet);
@@ -190,8 +192,11 @@ namespace DAClient
                         _reader.Packet = packet;
                     }
                     break;
-                #endregion
+
+                #endregion Received Server Table Data.
+
                 #region Received Redirect Information.
+
                 case 0x03:
                     {
                         _reader = new NetworkPacketReader();
@@ -222,9 +227,13 @@ namespace DAClient
                         State = ServerState.Login;
 
                         Send(new RedirectRequest(seed, key, name, socketid));
-                    } break;
-                #endregion
+                    }
+                    break;
+
+                #endregion Received Redirect Information.
+
                 #region Request Login
+
                 case 0x60:
                     {
                         if (State == ServerState.Login)
@@ -232,25 +241,28 @@ namespace DAClient
                             Send(new Login(User, Pass));
                             State = ServerState.World;
                         }
-                    } break;
-                #endregion
+                    }
+                    break;
+
+                #endregion Request Login
+
                 #region Login Response
+
                 case 0x02:
                     {
                         _encryption.Transform(packet);
                         _reader = new NetworkPacketReader();
                         _reader.Packet = packet;
-
-                    } break;
-                #endregion
-                case 0x38:
-                    Send(new Assail());
+                    }
                     break;
+
+                #endregion Login Response
+
                 case 0x05:
                     Connections++;
                     break;
+
                 default:
-                    Send(new Assail());
                     break;
             }
         }

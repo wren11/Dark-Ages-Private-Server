@@ -104,11 +104,13 @@ namespace Darkages.Network.Game
             var message = string.Empty;
 
             if (client.Aisling.GameMaster)
-                if (item.Durability > 0)
-                {
-                    client.Aisling.EquipmentManager.Add(item.Template.EquipmentSlot, item);
-                    return true;
-                }
+                return true;
+
+            if (item.Durability > 0)
+            {
+                client.Aisling.EquipmentManager.Add(item.Template.EquipmentSlot, item);
+                return true;
+            }
 
             if (client.Aisling.ExpLevel < item.Template.LevelRequired)
             {
@@ -439,6 +441,11 @@ namespace Darkages.Network.Game
                             item.Template = template;
                         }
 
+                        if (Aisling.GameMaster)
+                        {
+                            item.Upgrades = 10;
+                        }
+
                         if (item.Upgrades > 0)
                             Item.ApplyQuality(item);
                     }
@@ -473,6 +480,14 @@ namespace Darkages.Network.Game
 
         public GameClient LoadSkillBook()
         {
+            if (Aisling.GameMaster)
+            {
+                foreach (var temp in ServerContext.GlobalSkillTemplateCache)
+                    Skill.GiveTo(Aisling, temp.Value.Name);
+
+                return this;
+            }
+
             lock (_syncObj)
             {
                 var skillsAvailable = Aisling.SkillBook.Skills.Values
@@ -508,17 +523,6 @@ namespace Darkages.Network.Game
 
         public GameClient LoadSpellBook()
         {
-            if (Aisling.GameMaster)
-                foreach (var spell in ServerContext.GlobalSpellTemplateCache.Select(i => i.Value))
-                {
-                    if (!spell.Name.ToLower().StartsWith("[gm]"))
-                        continue;
-
-                    if (Spell.GiveTo(Aisling, spell.Name, 1))
-                        ServerContext.Logger(
-                            $"[GM] -> Spell {spell.Name} Given to GameMaster {Aisling.Username}.");
-                }
-
             lock (_syncObj)
             {
                 Lorule.Update(() =>
