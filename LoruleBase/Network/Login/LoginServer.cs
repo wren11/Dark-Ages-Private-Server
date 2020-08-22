@@ -85,13 +85,57 @@ namespace Darkages.Network.Login
 
             var aisling = StorageManager.AislingBucket.Load(format.AislingUsername);
 
+            Boolean allLetters = false;
+            Boolean notVulgar = false;
+            string[] prohibitedNames = { "fuck", "shit", "bitch", "dick", "piss", "ass", "nigger", "nigga", "niglet", "kike", "wetback", "porchmonkey",
+                                         "nazi", "jew", "pussy", "vagina", "douche", "cracker", "gay", "homo", "sex", "spic", "gamemaster", "admin",
+                                         "whore", "smegma", "balls", "wtf", "queer", "dyke", "faggot", "blowjob", "rimjob", "cum", "tit", "slut" };
+            string aislingUserNameToLower = format.AislingUsername.ToLower();
+
             if (aisling == null)
             {
-                client.SendMessageBox(0x00, "\0");
+                foreach (char c in format.AislingUsername)
+                {
+                    if (!Char.IsLetter(c))
+                    {
+                        client.SendMessageBox(0x03, "Name must contain letters only.\0");
+                        client.CreateInfo = null;
+                        allLetters = false;
+                        break;
+                    }
+                    allLetters = true;
+                }
+
+                foreach (string x in prohibitedNames)
+                {
+                    if (aislingUserNameToLower.Contains(x))
+                    {
+                        client.SendMessageBox(0x03, "That name is too vulgar.\0");
+                        client.CreateInfo = null;
+                        notVulgar = false;
+                        break;
+                    }
+                    notVulgar = true;
+                }
+
+                if (allLetters && notVulgar)
+                {
+
+                    if (format.AislingUsername.Length < 3 || format.AislingUsername.Length > 12)
+                    {
+                        client.SendMessageBox(0x03, "Name must be between 3 and 10 characters long.\0");
+                        client.CreateInfo = null;
+                    }
+                    else
+                    {
+                        client.SendMessageBox(0x00, "\0");
+                    }
+
+                }
             }
             else
             {
-                client.SendMessageBox(0x03, "Character Already Exists.\0");
+                client.SendMessageBox(0x03, "Name already exists.\0");
                 client.CreateInfo = null;
             }
         }

@@ -784,23 +784,30 @@ namespace Darkages.Network.Game
 
             client.LastWhisperMessageSent = DateTime.UtcNow;
 
-            var user = Clients.FirstOrDefault(i =>
-                i != null && i.Aisling != null && i.Aisling.LoggedIn && i.Aisling.Username.ToLower() ==
-                format.Name.ToLower(CultureInfo.CurrentCulture));
+            var user = Clients.FirstOrDefault(i => i != null && i.Aisling != null && i.Aisling.LoggedIn && i.Aisling.Username.ToLower() == format.Name.ToLower(CultureInfo.CurrentCulture));
 
-            if (user == null)
-                client.SendMessage
-                    (0x02, string.Format(CultureInfo.CurrentCulture, "{0} is nowhere to be found.", format.Name));
+            if (format.Name != "!" && format.Name != "!!")
+                if (user == null)
+                {
+                    client.SendMessage
+                        (0x02, string.Format(CultureInfo.CurrentCulture, "{0} is nowhere to be found.", format.Name));
+                }
+
 
             if (user != null)
             {
-                user.SendMessage
-                (0x00,
-                    string.Format(CultureInfo.CurrentCulture, "{0}\" {1}", client.Aisling.Username, format.Message));
-                client.SendMessage
-                (0x00,
-                    string.Format(CultureInfo.CurrentCulture, "{0}> {1}", user.Aisling.Username, format.Message));
+                user.SendMessage(0x00, string.Format(CultureInfo.CurrentCulture, "{0}\" {1}", client.Aisling.Username, format.Message));
+                client.SendMessage(0x00, string.Format(CultureInfo.CurrentCulture, "{0}> {1}", user.Aisling.Username, format.Message));
             }
+            if (format.Name == "!")
+            {
+                client.GuildMessage(client, string.Format(CultureInfo.CurrentCulture, "{0}: {1}", client.Aisling.Username, format.Message));
+            }
+            if (format.Name == "!!")
+            {
+                client.PartyMessage(client, string.Format(CultureInfo.CurrentCulture, "{0}: {1}", client.Aisling.Username, format.Message));
+            }
+
         }
 
         protected override void Format1BHandler(GameClient client, ClientFormat1B format)
