@@ -1,6 +1,6 @@
 {
 	"Content": {
-		"Location": "..\\..\\..\\..\\LORULE_DATA"
+		"Location": "F:\\DarkAges-Lorule-Server\\LORULE_DATA"
 	},
 	"ServerConfig": {
 		"LogClientPackets": true,
