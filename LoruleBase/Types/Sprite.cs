@@ -912,25 +912,6 @@ namespace Darkages.Types
             nearbyAisling.Show(Scope.Self, new ServerFormat0E(Serial));
         }
 
-        public bool IsColliding()
-        {
-            var objs = AislingsNearby();
-            var any = false;
-
-            foreach (var obj in objs)
-            {
-                if (obj.Serial != Serial && obj.PendingX == PendingX && obj.PendingY == PendingY)
-                {
-                    obj.Client.Refresh();
-                    Client.Refresh();
-                    any = true;
-                    break;
-                }
-            }
-
-            return any;
-        }
-
         public void Kill()
         {
             CurrentHp = 0;
@@ -1251,17 +1232,44 @@ namespace Darkages.Types
 
         public virtual bool Walk()
         {
+            void Step(int i, int savedY1)
+            {
+                var response = new ServerFormat0C
+                {
+                    Direction = Direction,
+                    Serial = Serial,
+                    X = (short)i,
+                    Y = (short)savedY1
+                };
+
+                X = PendingX;
+                Y = PendingY;
+
+                Show(Scope.NearbyAislingsExludingSelf, response);
+                {
+                    LastMovementChanged = DateTime.UtcNow;
+                    LastPosition = new Position(i, savedY1);
+                }
+            }
+
+            //update all objects nearby before we take a step.
+            foreach (var obj in AislingsNearby())
+                ObjectComponent.UpdateClientObjects(obj);
+
             var savedX = X;
             var savedY = Y;
+
             PendingX = X;
             PendingY = Y;
 
             var allowGhostWalk = false;
 
+            //only gms can ghost walk, and only aislings can be gms.
             if (this is Aisling aisling)
                 if (aisling.GameMaster)
                     allowGhostWalk = true;
 
+            //check position before we take a step.
             if (!allowGhostWalk && this is Aisling)
             {
                 if (Map?.IsWall(savedX, savedY, this is Aisling) ?? false)
@@ -1280,7 +1288,8 @@ namespace Darkages.Types
             else if (Direction == 3)
                 PendingX--;
 
-            if (!allowGhostWalk)
+            //check position after we take a step.
+            if (!allowGhostWalk && this is Aisling)
             {
                 if (Map != null && Map.IsWall(PendingX, PendingY, this is Aisling))
                     return false;
@@ -1289,34 +1298,14 @@ namespace Darkages.Types
                     return false;
             }
 
-            var response = new ServerFormat0C
-            {
-                Direction = Direction,
-                Serial = Serial,
-                X = (short)savedX,
-                Y = (short)savedY
-            };
+            //commit.
+            Step(savedX, savedY);
 
-            if (this is Aisling)
-                if (IsColliding())
-                {
-                    X = savedX;
-                    Y = savedY;
-                    return false;
-                }
+            //reset our PendingX, PendingY back to our previous step.
+            PendingX = savedX;
+            PendingY = savedY;
 
-            X = PendingX;
-            Y = PendingY;
-
-            Show(Scope.NearbyAislingsExludingSelf, response);
-            {
-                LastMovementChanged = DateTime.UtcNow;
-                LastPosition = new Position(savedX, savedY);
-            }
-
-            if (!(this is Aisling))
-                return true;
-
+            //update all objects nearby after we take a step.
             foreach (var obj in AislingsNearby())
                 ObjectComponent.UpdateClientObjects(obj);
 

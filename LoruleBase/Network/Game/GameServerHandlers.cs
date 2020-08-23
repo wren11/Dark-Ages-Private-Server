@@ -327,6 +327,10 @@ namespace Darkages.Network.Game
                 CheckWalkOverPopups(client);
                 CheckWarpTransitions(client);
             }
+            else
+            {
+                client.SendLocation();
+            }
         }
 
         protected override void Format07Handler(GameClient client, ClientFormat07 format)
