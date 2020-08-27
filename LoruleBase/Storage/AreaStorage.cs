@@ -40,8 +40,8 @@ namespace Darkages.Storage
             var area_dir = StoragePath;
             if (!Directory.Exists(area_dir))
                 return;
-            var area_names = Directory.GetFiles(area_dir, "*.json", SearchOption.TopDirectoryOnly);
 
+            var area_names = Directory.GetFiles(area_dir, "*.json", SearchOption.TopDirectoryOnly);
             foreach (var area in area_names)
             {
                 var mapObj = StorageManager.AreaBucket.Load(Path.GetFileNameWithoutExtension(area));
@@ -60,31 +60,29 @@ namespace Darkages.Storage
             }
         }
 
-        public Area Load(string Name)
+        public Area Load(string name)
         {
-            var path = Path.Combine(StoragePath, $"{Name.ToLower()}.json");
+            var path = Path.Combine(StoragePath, $"{name.ToLower()}.json");
 
             if (!File.Exists(path))
                 return null;
 
-            using (var s = File.OpenRead(path))
-            using (var f = new StreamReader(s))
+            using var s = File.OpenRead(path);
+            using var f = new StreamReader(s);
+            var content = f.ReadToEnd();
+            var settings = StorageManager.Settings;
+            settings.TypeNameHandling = TypeNameHandling.None;
+
+            try
             {
-                var content = f.ReadToEnd();
-                var settings = StorageManager.Settings;
-                settings.TypeNameHandling = TypeNameHandling.None;
+                var obj = JsonConvert.DeserializeObject<Area>(content, settings);
 
-                try
-                {
-                    var obj = JsonConvert.DeserializeObject<Area>(content, settings);
-
-                    return obj;
-                }
-                catch (Exception e)
-                {
-                    ServerContext.Error(e);
-                    return null;
-                }
+                return obj;
+            }
+            catch (Exception e)
+            {
+                ServerContext.Error(e);
+                return null;
             }
         }
 

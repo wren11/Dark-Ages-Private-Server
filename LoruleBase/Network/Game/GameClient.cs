@@ -1225,13 +1225,9 @@ namespace Darkages.Network.Game
                         stack.Target = (uint) Aisling.Serial;
                     }
 
-                    var target = GetObject(Aisling.Map, i => i.Serial == stack.Target, Get.All);
 
-                    if (target != null)
-                    {
-                        Aisling.CastSpell(spell);
-                        CastStack.Pop();
-                    }
+                    Aisling.CastSpell(spell);
+                    CastStack.Pop();
                 }
             }
         }

@@ -433,6 +433,11 @@ namespace Darkages
                                     script.OnUse(this, obj);
                         }
                     }
+                    else
+                    {
+                        foreach (var script in spell.Scripts.Values)
+                            script.OnUse(this, this);
+                    }
                 }
             }
 

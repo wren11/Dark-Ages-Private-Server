@@ -2516,7 +2516,7 @@ namespace Darkages.Network.Game
 
 
             var dupedClients = Clients.Where(i =>
-                    aisling != null && i.Aisling.Username == aisling.Username && i.Aisling.Serial != aisling.Serial)
+                    i.Aisling != null && (aisling != null && i.Aisling.Username == aisling.Username && i.Aisling.Serial != aisling.Serial))
                 .ToArray();
 
             if (dupedClients.Any())

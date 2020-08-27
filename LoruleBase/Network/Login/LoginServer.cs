@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.ServerFormats;
 using Darkages.Storage;
@@ -127,6 +128,8 @@ namespace Darkages.Network.Login
 
                 return;
             }
+
+            Thread.Sleep(1000);
 
             if (!ServerContext.Config.MultiUserLogin)
             {

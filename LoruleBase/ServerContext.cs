@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -32,7 +33,7 @@ namespace Darkages
         public static List<Metafile> GlobalMetaCache = new List<Metafile>();
 
         public static Dictionary<int, Area> GlobalMapCache =
-            new Dictionary<int, Area>();
+            new Dictionary<int, Area>(new Dictionary<int, Area>());
 
         public static List<MonsterTemplate> GlobalMonsterTemplateCache =
             new List<MonsterTemplate>();
@@ -44,7 +45,7 @@ namespace Darkages
             new Dictionary<string, SpellTemplate>();
 
         public static Dictionary<string, ItemTemplate> GlobalItemTemplateCache =
-            new Dictionary<string, ItemTemplate>();
+            new Dictionary<string, ItemTemplate>(new Dictionary<string, ItemTemplate>());
 
         public static Dictionary<string, NationTemplate> GlobalNationTemplateCache =
             new Dictionary<string, NationTemplate>();
@@ -203,8 +204,6 @@ namespace Darkages
 
         private static void EmptyCacheCollectors()
         {
-            GlobalItemTemplateCache = new Dictionary<string, ItemTemplate>();
-            GlobalMapCache = new Dictionary<int, Area>();
             GlobalMetaCache = new List<Metafile>();
             GlobalMonsterTemplateCache = new List<MonsterTemplate>();
             GlobalMundaneTemplateCache = new Dictionary<string, MundaneTemplate>();
