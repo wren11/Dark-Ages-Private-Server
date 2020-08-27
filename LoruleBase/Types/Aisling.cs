@@ -33,7 +33,6 @@ namespace Darkages
             LegendBook = new Legend();
             ClanTitle = string.Empty;
             ClanRank = string.Empty;
-            ActiveSpellInfo = null;
             LoggedIn = false;
             ActiveStatus = ActivityStatus.Awake;
             PortalSession = new PortalSession();
@@ -51,7 +50,6 @@ namespace Darkages
         public int AbpTotal { get; set; }
         [JsonIgnore] public Reactor ActiveReactor { get; set; }
         [JsonIgnore] public DialogSequence ActiveSequence { get; set; }
-        [JsonIgnore] public CastInfo ActiveSpellInfo { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public ActivityStatus ActiveStatus { get; set; }
@@ -390,6 +388,9 @@ namespace Darkages
 
         public void CastSpell(Spell spell)
         {
+            if (Client.CastStack.Count == 0)
+                return;
+
             if (!spell.CanUse())
             {
                 spell.InUse = false;
@@ -399,7 +400,7 @@ namespace Darkages
             if (spell.InUse)
                 return;
 
-            var info = Client.Aisling.ActiveSpellInfo;
+            var info = Client.CastStack.Peek();
 
             if (info != null)
             {
@@ -417,30 +418,33 @@ namespace Darkages
                         {
                             if (target is Aisling obj && obj.Serial == info.Target)
                                 foreach (var script in spell.Scripts.Values)
-                                    script.OnUse(this, target as Aisling);
+                                    script.OnUse(this, obj);
                         }
 
                         {
                             if (target is Monster obj && obj.Serial == info.Target)
                                 foreach (var script in spell.Scripts.Values)
-                                    script.OnUse(this, target as Monster);
+                                    script.OnUse(this, obj);
                         }
 
                         {
                             if (target is Mundane obj && obj.Serial == info.Target)
                                 foreach (var script in spell.Scripts.Values)
-                                    script.OnUse(this, target as Mundane);
+                                    script.OnUse(this, obj);
                         }
-                    }
-                    else
-                    {
-                        foreach (var script in spell.Scripts.Values)
-                            script.OnUse(this, this);
                     }
                 }
             }
 
-            spell.NextAvailableUse = DateTime.UtcNow.AddSeconds(info.SpellLines > 0 ? 1 : 0.2);
+            if (spell.Template.Cooldown > 0)
+            {
+                spell.NextAvailableUse = DateTime.UtcNow.AddSeconds(spell.Template.Cooldown);
+            }
+            else
+            {
+                spell.NextAvailableUse = DateTime.UtcNow;
+            }
+
             spell.InUse = false;
 
             if (spell.Template.Cooldown > 0)

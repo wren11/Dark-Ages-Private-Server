@@ -77,7 +77,7 @@ namespace Darkages.Types
         {
             Rewarded = true;
             Completed = true;
-            TimeCompleted = DateTime.Now;
+            TimeCompleted = DateTime.UtcNow;
 
             user.SendAnimation(22, user, user);
 

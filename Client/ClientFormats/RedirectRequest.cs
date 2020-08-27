@@ -1,13 +1,17 @@
-﻿using Darkages.Network;
+﻿#region
+
+using Darkages.Network;
+
+#endregion
 
 namespace DAClient.ClientFormats
 {
     public class RedirectRequest : NetworkFormat
     {
-        private byte seed;
-        private string key;
-        private string name;
-        private uint socketid;
+        private readonly string key;
+        private readonly string name;
+        private readonly byte seed;
+        private readonly uint socketid;
 
         public RedirectRequest(byte seed, string key, string name, uint socketid)
         {
@@ -26,15 +30,14 @@ namespace DAClient.ClientFormats
 
         public override void Serialize(NetworkPacketReader reader)
         {
-
         }
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)seed);
+            writer.Write(seed);
             writer.WriteStringA(key);
             writer.WriteStringA(name);
-            writer.Write((uint)socketid);
+            writer.Write(socketid);
             writer.Write(0x00);
         }
     }

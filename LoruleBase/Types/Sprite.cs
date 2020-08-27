@@ -14,6 +14,7 @@ using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Newtonsoft.Json;
+using ServiceStack.Logging;
 using static Darkages.Types.ElementManager;
 
 #endregion
@@ -1072,9 +1073,11 @@ namespace Darkages.Types
                 }
                 else if (op == Scope.NearbyAislingsExludingSelf)
                 {
-                    foreach (var gc in GetObjects<Aisling>(Map, that => WithinRangeOf(that)))
+                    foreach (var gc in GetObjects<Aisling>(Map, that => that != null && WithinRangeOf(that)))
                         if (gc.Serial != Serial)
-                            gc.Client.Send(format);
+                            if (gc.Client != null)
+                                if (format != null)
+                                    gc.Client.Send(format);
                 }
                 else if (op == Scope.NearbyAislings)
                 {

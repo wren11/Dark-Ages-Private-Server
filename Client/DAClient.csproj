@@ -89,6 +89,8 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="ClientFormats\Assail.cs" />
+    <Compile Include="ClientFormats\CreateAccount.cs" />
+    <Compile Include="ClientFormats\CreateCharacter.cs" />
     <Compile Include="ClientFormats\EncryptionReceived.cs" />
     <Compile Include="ClientFormats\ClientVersion.cs" />
     <Compile Include="ClientFormats\Login.cs" />
@@ -117,7 +119,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\SecurityParameters.cs" />
     <Compile Include="Security\SecurityProvider.cs" />
-    <Compile Include="Redirect.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region
+
 using Darkages.Network;
+
+#endregion
 
 namespace DAClient.ClientFormats
 {
-    class Login : NetworkFormat
+    internal class Login : NetworkFormat
     {
-        public override bool Secured => true;
-
-        public override byte Command => 0x03;
-
         protected string _username, _password;
 
         public Login(string username, string password)
@@ -21,9 +16,12 @@ namespace DAClient.ClientFormats
             _password = password;
         }
 
+        public override bool Secured => true;
+
+        public override byte Command => 0x03;
+
         public override void Serialize(NetworkPacketReader reader)
         {
-
         }
 
         public override void Serialize(NetworkPacketWriter writer)

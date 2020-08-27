@@ -33,6 +33,7 @@ namespace Darkages.Network
         public Socket Socket => State.Socket;
 
         internal NetworkSocket State { get; set; }
+        public DateTime LastMessageFromClient { get; set; }
 
         public void FlushAndSend(NetworkFormat format)
         {

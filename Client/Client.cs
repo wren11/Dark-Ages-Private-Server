@@ -1,21 +1,30 @@
-﻿using DAClient.ClientFormats;
-using Darkages.Network;
-using Darkages.Security;
+﻿#region
+
 using System;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using DAClient.ClientFormats;
+using Darkages.Network;
+using Darkages.Security;
+
+#endregion
 
 namespace DAClient
 {
     public class Client
     {
-        public static int Connections = 0;
+        public enum ServerState
+        {
+            Lobby,
+            Login,
+            World,
+            Creating,
+            Created
+        }
 
-        public bool RequiresVersion = true;
-
-        public ServerState State = ServerState.Lobby;
+        public static int Connections;
 
         private readonly string Pass;
 
@@ -25,11 +34,15 @@ namespace DAClient
 
         private NetworkPacketReader _reader = new NetworkPacketReader();
 
-        private byte[] _recvBuffer = new byte[0x10000];
+        private readonly byte[] _recvBuffer = new byte[0x10000];
 
         private Socket _socket;
 
-        private NetworkPacketWriter _writer = new NetworkPacketWriter();
+        private readonly NetworkPacketWriter _writer = new NetworkPacketWriter();
+
+        public bool RequiresVersion = true;
+
+        public ServerState State = ServerState.Lobby;
 
         public Client(string lpUser, string lpPassword)
         {
@@ -37,14 +50,7 @@ namespace DAClient
             Pass = lpPassword;
         }
 
-        public enum ServerState
-        {
-            Lobby,
-            Login,
-            World
-        }
-
-        public byte Ordinal { get; set; } = 0;
+        public byte Ordinal { get; set; }
 
         public bool Connect(byte[] lpAddress, int port)
         {
@@ -78,13 +84,13 @@ namespace DAClient
 
         public void Send(NetworkFormat format)
         {
+            if (!_socket.Connected)
+                return;
+
             _writer.Position = 0;
             _writer.Write(format.Command);
 
-            if (format.Secured)
-            {
-                _writer.Write(Ordinal++);
-            }
+            if (format.Secured) _writer.Write(Ordinal++);
 
             format.Serialize(_writer);
 
@@ -100,7 +106,7 @@ namespace DAClient
 
         private void EndReceive(IAsyncResult ar)
         {
-            var socket = (Socket)ar.AsyncState;
+            var socket = (Socket) ar.AsyncState;
 
             if (!socket.Connected)
                 return;
@@ -113,7 +119,7 @@ namespace DAClient
                 return;
             }
 
-            if ((bytes - 3) <= 0)
+            if (bytes - 3 <= 0)
             {
                 socket.Close();
                 return;
@@ -137,133 +143,94 @@ namespace DAClient
 
         private void ReceivePacketData(NetworkPacket packet)
         {
-            switch (packet.Command)
+            if (packet.Command == 0x7E)
             {
-                #region Connected, Send Client Version.
+                if (RequiresVersion)
+                {
+                    var format = new ClientVersion();
+                    Send(format);
 
-                case 0x7E:
-                    {
-                        if (RequiresVersion)
-                        {
-                            var format = new ClientVersion();
-                            Send(format);
+                    RequiresVersion = false;
+                }
 
-                            RequiresVersion = false;
-                        }
-                    }
-                    break;
+                Send(new CreateAccount(User, Pass));
+                State = ServerState.Creating;
 
-                #endregion Connected, Send Client Version.
+                Thread.Sleep(5000);
+            }
+            else if (packet.Command == 0x02)
+            {
+                if (State == ServerState.Created)
+                {
+                    State = ServerState.World;
+                    Thread.Sleep(5000);
+                    Send(new Login(User, Pass));
+                    return;
+                }
 
-                #region Receive Encryption Information.
+                if (State == ServerState.Creating)
+                {
+                    Send(new CreateAisling());
+                    State = ServerState.Created;
+                }
+            }
+            else if (packet.Command == 0x00)
+            {
+                _reader = new NetworkPacketReader();
+                _reader.Packet = packet;
+                {
+                    _reader.Position--;
+                }
 
-                case 0x00:
-                    {
-                        _reader = new NetworkPacketReader();
-                        _reader.Packet = packet;
-                        {
-                            _reader.Position--;
-                        }
+                var type = _reader.ReadByte();
 
-                        byte type = _reader.ReadByte();
+                if (type == 0)
+                {
+                    var serverTableCrc = _reader.ReadUInt32();
+                    var seed = _reader.ReadByte();
+                    var salt = _reader.ReadBytes(_reader.ReadByte());
 
-                        if (type == 0)
-                        {
-                            var serverTableCrc = _reader.ReadUInt32();
-                            var seed = _reader.ReadByte();
-                            var salt = _reader.ReadBytes(_reader.ReadByte());
+                    _encryption = new SecurityProvider(
+                        new SecurityParameters(seed, salt));
 
-                            _encryption = new SecurityProvider(
-                                new SecurityParameters(seed, salt));
+                    Send(new EncryptionReceived(0));
+                }
+            }
+            else if (packet.Command == 0x03)
+            {
+                _reader = new NetworkPacketReader();
+                _reader.Packet = packet;
+                {
+                    _reader.Position--;
+                }
 
-                            Send(new EncryptionReceived(0));
-                        }
-                    }
-                    break;
+                var address = _reader.ReadBytes(4);
+                var port = _reader.ReadUInt16();
 
-                #endregion Receive Encryption Information.
+                _reader.Position++;
 
-                #region Received Server Table Data.
+                var seed = _reader.ReadByte();
+                var key = _reader.ReadStringA();
 
-                case 0x56:
-                    {
-                        _encryption.Transform(packet);
-                        _reader = new NetworkPacketReader();
-                        _reader.Packet = packet;
-                    }
-                    break;
+                var name = _reader.ReadStringA();
+                var socketid = _reader.ReadUInt32();
 
-                #endregion Received Server Table Data.
+                _encryption = new SecurityProvider(new SecurityParameters(seed, Encoding.ASCII.GetBytes(key)));
+                {
+                    Array.Reverse(address);
+                }
 
-                #region Received Redirect Information.
+                _socket.Close();
+                Connect(address, port);
 
-                case 0x03:
-                    {
-                        _reader = new NetworkPacketReader();
-                        _reader.Packet = packet;
-                        {
-                            _reader.Position--;
-                        }
+                State = ServerState.Login;
 
-                        var address = _reader.ReadBytes(4);
-                        var port = _reader.ReadUInt16();
-
-                        _reader.Position++;
-
-                        var seed = _reader.ReadByte();
-                        var key = _reader.ReadStringA();
-
-                        var name = _reader.ReadStringA();
-                        var socketid = _reader.ReadUInt32();
-
-                        _encryption = new SecurityProvider(new SecurityParameters(seed, Encoding.ASCII.GetBytes(key)));
-                        {
-                            Array.Reverse(address);
-                        }
-
-                        _socket.Close();
-                        Connect(address, port);
-
-                        State = ServerState.Login;
-
-                        Send(new RedirectRequest(seed, key, name, socketid));
-                    }
-                    break;
-
-                #endregion Received Redirect Information.
-
-                #region Request Login
-
-                case 0x60:
-                    {
-                        if (State == ServerState.Login)
-                        {
-                            Send(new Login(User, Pass));
-                            State = ServerState.World;
-                        }
-                    }
-                    break;
-
-                #endregion Request Login
-
-                #region Login Response
-
-                case 0x02:
-                    {
-                        _encryption.Transform(packet);
-                        _reader = new NetworkPacketReader();
-                        _reader.Packet = packet;
-                    }
-                    break;
-
-                #endregion Login Response
-
-                case 0x05:
-                    Connections++;
-                    break;
-
-                default:
-                    break;
+                Send(new RedirectRequest(seed, key, name, socketid));
+            }
+            else if (packet.Command == 0x05)
+            {
+                State = ServerState.World;
+                Connections++;
             }
         }
     }

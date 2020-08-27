@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region
+
 using Darkages.Network;
+
+#endregion
 
 namespace DAClient.ClientFormats
 {
@@ -15,12 +14,11 @@ namespace DAClient.ClientFormats
 
         public override void Serialize(NetworkPacketReader reader)
         {
-
         }
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((ushort)718);
+            writer.Write((ushort) 718);
             writer.Write(0x4C);
             writer.Write(0x4B);
             writer.Write(0x00);

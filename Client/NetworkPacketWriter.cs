@@ -1,23 +1,10 @@
-﻿///************************************************************************
-//Project Lorule: A Dark Ages Server (http://darkages.creatorlink.net/index/)
-//Copyright(C) 2018 TrippyInc Pty Ltd
-//
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program.If not, see<http://www.gnu.org/licenses/>.
-//*************************************************************************/
+﻿#region
+
 using System;
 using System.Net;
 using System.Text;
+
+#endregion
 
 namespace Darkages.Network
 {
@@ -32,7 +19,7 @@ namespace Darkages.Network
         public void Write(bool value)
         {
             Write(
-                (byte)(value ? 1 : 0));
+                (byte) (value ? 1 : 0));
         }
 
         public void Write(byte value)
@@ -48,35 +35,35 @@ namespace Darkages.Network
 
         public void Write(sbyte value)
         {
-            buffer[Position++] = (byte)value;
+            buffer[Position++] = (byte) value;
         }
 
         public void Write(short value)
         {
             Write(
-                (ushort)value);
+                (ushort) value);
         }
 
         public void Write(ushort value)
         {
             Write(
-                (byte)(value >> 8));
+                (byte) (value >> 8));
             Write(
-                (byte)value);
+                (byte) value);
         }
 
         public void Write(int value)
         {
             Write(
-                (uint)value);
+                (uint) value);
         }
 
         public void Write(uint value)
         {
             Write(
-                (ushort)(value >> 16));
+                (ushort) (value >> 16));
             Write(
-                (ushort)value);
+                (ushort) value);
         }
 
         public void Write<T>(T value)
@@ -96,7 +83,7 @@ namespace Darkages.Network
             var count = encoding.GetByteCount(value);
 
             Write(
-                (byte)count);
+                (byte) count);
 
             encoding.GetBytes(value, 0, value.Length, buffer, Position);
             Position += count;
@@ -107,7 +94,7 @@ namespace Darkages.Network
             var count = encoding.GetByteCount(value);
 
             Write(
-                (ushort)count);
+                (ushort) count);
 
             encoding.GetBytes(value, 0, value.Length, buffer, Position);
             Position += count;
@@ -122,7 +109,7 @@ namespace Darkages.Network
             Write(ipBytes[1]);
             Write(ipBytes[0]);
             Write(
-                (ushort)endPoint.Port);
+                (ushort) endPoint.Port);
         }
 
         public NetworkPacket ToPacket()

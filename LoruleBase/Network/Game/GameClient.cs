@@ -47,6 +47,8 @@ namespace Darkages.Network.Game
         public bool IsWarping =>
             DateTime.UtcNow - LastWarp < new TimeSpan(0, 0, 0, 0, ServerContext.Config.WarpCheckRate);
 
+        public Stack<CastInfo> CastStack = new Stack<CastInfo>();
+
         public byte LastActivatedLost { get; set; }
         public DateTime LastAssail { get; set; }
         public ushort LastBoardActivated { get; set; }
@@ -193,6 +195,9 @@ namespace Darkages.Network.Game
 
                 return this;
             }
+
+
+            DispatchCasts();
 
             return HandleTimeOuts()
                 .StatusCheck()
@@ -1194,7 +1199,41 @@ namespace Darkages.Network.Game
                 if (nextTrap != null) Trap.Activate(nextTrap, Aisling);
             }
 
+
+
+            if ((DateTime.UtcNow - LastMessageFromClient).TotalSeconds > 120)
+            {
+                Server.ClientDisconnected(this);
+            }
+
             DoUpdate(elapsedTime);
+        }
+
+        private void DispatchCasts()
+        {
+            if (CastStack.Any())
+            {
+                while (CastStack.Any())
+                {
+                    var stack = CastStack.Peek();
+                    var spell = Aisling.SpellBook.Get(i => i.Slot == stack.Slot).FirstOrDefault();
+
+                    if (spell == null) continue;
+
+                    if (stack.Target == 0)
+                    {
+                        stack.Target = (uint) Aisling.Serial;
+                    }
+
+                    var target = GetObject(Aisling.Map, i => i.Serial == stack.Target, Get.All);
+
+                    if (target != null)
+                    {
+                        Aisling.CastSpell(spell);
+                        CastStack.Pop();
+                    }
+                }
+            }
         }
 
         public GameClient UpdateDisplay()

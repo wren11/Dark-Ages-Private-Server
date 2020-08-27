@@ -1,46 +1,55 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
+#endregion
+
 public class ConcurrentList<T> : IList<T>, IDisposable
 {
     #region Fields
+
     private readonly List<T> _list;
     private readonly ReaderWriterLockSlim _lock;
+
     #endregion
 
     #region Constructors
+
     public ConcurrentList()
     {
-        this._lock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
-        this._list = new List<T>();
+        _lock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+        _list = new List<T>();
     }
 
     public ConcurrentList(int capacity)
     {
-        this._lock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
-        this._list = new List<T>(capacity);
+        _lock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+        _list = new List<T>(capacity);
     }
 
     public ConcurrentList(IEnumerable<T> items)
     {
-        this._lock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
-        this._list = new List<T>(items);
+        _lock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+        _list = new List<T>(items);
     }
+
     #endregion
 
     #region Methods
+
     public void Add(T item)
     {
         try
         {
-            this._lock.EnterWriteLock();
-            this._list.Add(item);
+            _lock.EnterWriteLock();
+            _list.Add(item);
         }
         finally
         {
-            this._lock.ExitWriteLock();
+            _lock.ExitWriteLock();
         }
     }
 
@@ -48,12 +57,12 @@ public class ConcurrentList<T> : IList<T>, IDisposable
     {
         try
         {
-            this._lock.EnterWriteLock();
-            this._list.Insert(index, item);
+            _lock.EnterWriteLock();
+            _list.Insert(index, item);
         }
         finally
         {
-            this._lock.ExitWriteLock();
+            _lock.ExitWriteLock();
         }
     }
 
@@ -61,12 +70,12 @@ public class ConcurrentList<T> : IList<T>, IDisposable
     {
         try
         {
-            this._lock.EnterWriteLock();
-            return this._list.Remove(item);
+            _lock.EnterWriteLock();
+            return _list.Remove(item);
         }
         finally
         {
-            this._lock.ExitWriteLock();
+            _lock.ExitWriteLock();
         }
     }
 
@@ -74,12 +83,12 @@ public class ConcurrentList<T> : IList<T>, IDisposable
     {
         try
         {
-            this._lock.EnterWriteLock();
-            this._list.RemoveAt(index);
+            _lock.EnterWriteLock();
+            _list.RemoveAt(index);
         }
         finally
         {
-            this._lock.ExitWriteLock();
+            _lock.ExitWriteLock();
         }
     }
 
@@ -87,12 +96,12 @@ public class ConcurrentList<T> : IList<T>, IDisposable
     {
         try
         {
-            this._lock.EnterReadLock();
-            return this._list.IndexOf(item);
+            _lock.EnterReadLock();
+            return _list.IndexOf(item);
         }
         finally
         {
-            this._lock.ExitReadLock();
+            _lock.ExitReadLock();
         }
     }
 
@@ -100,12 +109,12 @@ public class ConcurrentList<T> : IList<T>, IDisposable
     {
         try
         {
-            this._lock.EnterWriteLock();
-            this._list.Clear();
+            _lock.EnterWriteLock();
+            _list.Clear();
         }
         finally
         {
-            this._lock.ExitWriteLock();
+            _lock.ExitWriteLock();
         }
     }
 
@@ -113,12 +122,12 @@ public class ConcurrentList<T> : IList<T>, IDisposable
     {
         try
         {
-            this._lock.EnterReadLock();
-            return this._list.Contains(item);
+            _lock.EnterReadLock();
+            return _list.Contains(item);
         }
         finally
         {
-            this._lock.ExitReadLock();
+            _lock.ExitReadLock();
         }
     }
 
@@ -126,33 +135,33 @@ public class ConcurrentList<T> : IList<T>, IDisposable
     {
         try
         {
-            this._lock.EnterReadLock();
-            this._list.CopyTo(array, arrayIndex);
+            _lock.EnterReadLock();
+            _list.CopyTo(array, arrayIndex);
         }
         finally
         {
-            this._lock.ExitReadLock();
+            _lock.ExitReadLock();
         }
     }
 
     public IEnumerator<T> GetEnumerator()
     {
-        return new ConcurrentEnumerator<T>(this._list, this._lock);
+        return new ConcurrentEnumerator<T>(_list, _lock);
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return new ConcurrentEnumerator<T>(this._list, this._lock);
+        return new ConcurrentEnumerator<T>(_list, _lock);
     }
 
     ~ConcurrentList()
     {
-        this.Dispose(false);
+        Dispose(false);
     }
 
     public void Dispose()
     {
-        this.Dispose(true);
+        Dispose(true);
     }
 
     private void Dispose(bool disposing)
@@ -160,36 +169,37 @@ public class ConcurrentList<T> : IList<T>, IDisposable
         if (disposing)
             GC.SuppressFinalize(this);
 
-        this._lock.Dispose();
+        _lock.Dispose();
     }
 
     #endregion
 
     #region Properties
+
     public T this[int index]
     {
         get
         {
             try
             {
-                this._lock.EnterReadLock();
-                return this._list[index];
+                _lock.EnterReadLock();
+                return _list[index];
             }
             finally
             {
-                this._lock.ExitReadLock();
+                _lock.ExitReadLock();
             }
         }
         set
         {
             try
             {
-                this._lock.EnterWriteLock();
-                this._list[index] = value;
+                _lock.EnterWriteLock();
+                _list[index] = value;
             }
             finally
             {
-                this._lock.ExitWriteLock();
+                _lock.ExitWriteLock();
             }
         }
     }
@@ -200,40 +210,43 @@ public class ConcurrentList<T> : IList<T>, IDisposable
         {
             try
             {
-                this._lock.EnterReadLock();
-                return this._list.Count;
+                _lock.EnterReadLock();
+                return _list.Count;
             }
             finally
             {
-                this._lock.ExitReadLock();
+                _lock.ExitReadLock();
             }
         }
     }
 
-    public bool IsReadOnly
-    {
-        get { return false; }
-    }
+    public bool IsReadOnly => false;
+
     #endregion
 }
 
 public class ConcurrentEnumerator<T> : IEnumerator<T>
 {
-    #region Fields
-    private readonly IEnumerator<T> _inner;
-    private readonly ReaderWriterLockSlim _lock;
-    #endregion
-
     #region Constructor
+
     public ConcurrentEnumerator(IEnumerable<T> inner, ReaderWriterLockSlim @lock)
     {
-        this._lock = @lock;
-        this._lock.EnterReadLock();
-        this._inner = inner.GetEnumerator();
+        _lock = @lock;
+        _lock.EnterReadLock();
+        _inner = inner.GetEnumerator();
     }
+
+    #endregion
+
+    #region Fields
+
+    private readonly IEnumerator<T> _inner;
+    private readonly ReaderWriterLockSlim _lock;
+
     #endregion
 
     #region Methods
+
     public bool MoveNext()
     {
         return _inner.MoveNext();
@@ -246,19 +259,16 @@ public class ConcurrentEnumerator<T> : IEnumerator<T>
 
     public void Dispose()
     {
-        this._lock.ExitReadLock();
+        _lock.ExitReadLock();
     }
+
     #endregion
 
     #region Properties
-    public T Current
-    {
-        get { return _inner.Current; }
-    }
 
-    object IEnumerator.Current
-    {
-        get { return _inner.Current; }
-    }
+    public T Current => _inner.Current;
+
+    object IEnumerator.Current => _inner.Current;
+
     #endregion
 }

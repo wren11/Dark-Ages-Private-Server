@@ -84,6 +84,7 @@ namespace Darkages.Network
             try
             {
                 client.Read(packet, format);
+                client.LastMessageFromClient = DateTime.UtcNow;
 
                 if (_handlers[format.Command] != null)
                     _handlers[format.Command].Invoke(this,

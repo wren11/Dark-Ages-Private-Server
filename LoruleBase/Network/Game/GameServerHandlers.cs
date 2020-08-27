@@ -122,7 +122,7 @@ namespace Darkages.Network.Game
         {
             if (!client.Aisling.LoggedIn) return;
 
-            client.Aisling.ActiveSpellInfo = null;
+            client.CastStack.Clear();
             client.Aisling.IsCastingSpell = false;
             client.Send(new ServerFormat48());
         }
@@ -281,11 +281,6 @@ namespace Darkages.Network.Game
 
             if (!client.Aisling.Map.Ready)
                 return;
-
-            if (ServerContext.Config.CancelCastingWhenWalking && client.Aisling.IsCastingSpell ||
-                client.Aisling.ActiveSpellInfo != null)
-                CancelIfCasting(client);
-
             #endregion
 
             if (client.Aisling.IsSleeping || client.Aisling.IsFrozen || client.Aisling.IsParalyzed)
@@ -652,48 +647,20 @@ namespace Darkages.Network.Game
                         return;
                     }
 
-                if (client.Aisling.ActiveSpellInfo != null)
+
+                var info = new CastInfo
                 {
-                    client.Aisling.ActiveSpellInfo.Slot = format.Index;
-                    client.Aisling.ActiveSpellInfo.Target = format.Serial;
-                    client.Aisling.ActiveSpellInfo.Position = format.Point;
-                    client.Aisling.ActiveSpellInfo.Data = format.Data;
+                    Slot = format.Index,
+                    Target = format.Serial, 
+                    Position = format.Point, 
+                    Data = format.Data
+                };
 
-                    var spell = client.Aisling.SpellBook
-                        .Get(i => i != null && i.Slot == client.Aisling.ActiveSpellInfo.Slot)
-                        .FirstOrDefault();
-
-                    client.Aisling.IsCastingSpell = true;
-                    client.Aisling.CastSpell(spell);
-                }
-                else
-                {
-                    client.Aisling.ActiveSpellInfo = new CastInfo
-                    {
-                        Position = format.Point,
-                        Slot = format.Index,
-                        SpellLines = 0,
-                        Started = DateTime.UtcNow,
-                        Target = format.Serial,
-                        Data = format.Data
-                    };
-
-                    var spell = client.Aisling.SpellBook.Get(i =>
-                        i != null
-                        && i.Slot == format.Index).FirstOrDefault();
-
-                    if (spell?.Scripts == null)
-                        return;
-                    if (spell.Template == null)
-                        return;
-
-                    client.Aisling.IsCastingSpell = true;
-                    client.Aisling.CastSpell(spell);
-                }
+                client.CastStack.Push(info);
             }
             finally
             {
-                CancelIfCasting(client);
+
             }
         }
 
@@ -764,8 +731,6 @@ namespace Darkages.Network.Game
 
             if (client.IsRefreshing)
                 return;
-
-            CancelIfCasting(client);
 
             #endregion
 
@@ -924,8 +889,6 @@ namespace Darkages.Network.Game
             if (client.IsRefreshing)
                 return;
 
-            CancelIfCasting(client);
-
             if (client.Aisling.IsDead())
                 return;
 
@@ -1023,8 +986,6 @@ namespace Darkages.Network.Game
 
             if (client.IsRefreshing)
                 return;
-
-            CancelIfCasting(client);
 
             if (client.Aisling.IsDead())
                 return;
@@ -1805,8 +1766,6 @@ namespace Darkages.Network.Game
             if (client?.Aisling == null)
                 return;
 
-            CancelIfCasting(client);
-
             #endregion
 
             if (client.Aisling.Skulled)
@@ -1933,13 +1892,11 @@ namespace Darkages.Network.Game
         {
             #region Sanity Checks
 
-            if (client == null || client.Aisling == null)
+            if (client?.Aisling == null)
                 return;
 
             if (!client.Aisling.LoggedIn)
                 return;
-
-            CancelIfCasting(client);
 
             if (client.Aisling.Dead)
                 return;
@@ -2051,7 +2008,8 @@ namespace Darkages.Network.Game
             if (client.Aisling._Dex <= 0)
                 client.Aisling._Dex = ServerContext.Config.StatCap;
 
-            client.Aisling.StatPoints--;
+            if (!client.Aisling.GameMaster) 
+                client.Aisling.StatPoints--;
 
             if (client.Aisling.StatPoints < 0)
                 client.Aisling.StatPoints = 0;
@@ -2299,15 +2257,18 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            if (client.Aisling.ActiveSpellInfo != null)
-                client.Aisling.ActiveSpellInfo = null;
-
-            client.Aisling.ActiveSpellInfo = new CastInfo
+            if (client.CastStack.Any())
             {
-                SpellLines = format.Lines,
-                Started = DateTime.UtcNow
-            };
-            client.Aisling.IsCastingSpell = true;
+                var info = client.CastStack.Peek();
+
+                if (info != null)
+                {
+                    info.SpellLines = lines;
+                    info.Started = DateTime.UtcNow;
+                }
+
+                client.Aisling.IsCastingSpell = true;
+            }
         }
 
         protected override void Format4EHandler(GameClient client, ClientFormat4E format)
@@ -2552,6 +2513,20 @@ namespace Darkages.Network.Game
                 base.ClientDisconnected(client);
                 return null;
             }
+
+
+            var dupedClients = Clients.Where(i =>
+                    aisling != null && i.Aisling.Username == aisling.Username && i.Aisling.Serial != aisling.Serial)
+                .ToArray();
+
+            if (dupedClients.Any())
+            {
+                foreach (var dupedClient in dupedClients)
+                {
+                    base.ClientDisconnected(dupedClient);
+                }
+            }
+
 
             if (!ServerContext.Redirects.Contains(aisling.Username.ToLower()))
             {
