@@ -1,10 +1,16 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
+using System.Linq;
 using Darkages.Compression;
 using Darkages.IO;
+using Darkages.Storage;
+using Newtonsoft.Json;
 using ServiceStack;
 using ServiceStack.Text;
 
@@ -12,9 +18,16 @@ using ServiceStack.Text;
 
 namespace Darkages.Types
 {
+
+    public class Node
+    {
+        public List<string> Atoms { get; set; }
+        public string Name { get; set; }
+    }
+
     public class MetafileManager
     {
-        private static readonly MetafileCollection Metafiles = new MetafileCollection(4096);
+        private static readonly MetafileCollection Metafiles;
 
         static MetafileManager()
         {
@@ -24,6 +37,11 @@ namespace Darkages.Types
             foreach (var file in files)
             {
                 var metaFile = CompressableObject.Load<Metafile>(file);
+
+                if (metaFile.Name.StartsWith("SEvent"))
+                {
+                    continue;
+                }
 
                 if (metaFile.Name.StartsWith("SClass"))
                 {
@@ -39,6 +57,51 @@ namespace Darkages.Types
             }
 
             CreateFromTemplates();
+            LoadQuestDescriptions();
+        }
+
+        private static void LoadQuestDescriptions()
+        {
+            var dir = ServerContext.StoragePath + "\\Static\\Meta\\Quests";
+
+            if (!Directory.Exists(dir))
+            {
+                return;
+            }
+
+            var loadedNodes = new List<Node>();
+
+            foreach (var file in Directory.GetFiles(dir, "*.txt"))
+            {
+                var contents = File.ReadAllText(file);
+
+                if (string.IsNullOrEmpty(contents))
+                    continue;
+
+                var nodes = JsonConvert.DeserializeObject<List<Node>>(contents);
+                
+                if (nodes.Count > 0)
+                {
+                    loadedNodes.AddRange(nodes);
+                }
+            }
+
+            var i = 1;
+            foreach (var batch in loadedNodes.BatchesOf(712))
+            {
+                var metaFile = new Metafile { Name = $"SEvent{i}", Nodes = new Collection<MetafileNode>() };
+                metaFile.Nodes.Add(new MetafileNode("", ""));
+                foreach (var node in batch)
+                {
+                    var metafileNode = new MetafileNode(node.Name, node.Atoms.ToArray());
+                    metaFile.Nodes.Add(metafileNode);
+                }
+
+                CompileTemplate(metaFile);
+                Metafiles.Add(metaFile);
+                i++;
+            }
+
         }
 
         public static Metafile GetMetaFile(string name)
