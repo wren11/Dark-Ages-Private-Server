@@ -304,6 +304,11 @@ namespace Darkages.Network.Game
             if (client.IsRefreshing && ServerContext.Config.CancelWalkingIfRefreshing)
                 return;
 
+            if (client.Aisling.IsCastingSpell && ServerContext.Config.CancelCastingWhenWalking)
+            {
+                CancelIfCasting(client);
+            }
+
             client.Aisling.Direction = format.Direction;
 
             var success = client.Aisling.Walk();
@@ -653,8 +658,13 @@ namespace Darkages.Network.Game
                     Slot = format.Index,
                     Target = format.Serial, 
                     Position = format.Point, 
-                    Data = format.Data
+                    Data = format.Data,
                 };
+
+                if (info.Position == null)
+                {
+                    info.Position = new Position(client.Aisling.X, client.Aisling.Y);
+                }
 
                 client.CastStack.Push(info);
             }

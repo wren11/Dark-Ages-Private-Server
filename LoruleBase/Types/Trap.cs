@@ -59,8 +59,22 @@ namespace Darkages.Types
                 Flags = ItemFlags.Trap
             };
 
+            var pos = obj.Position;
+
+            if (obj is Aisling aisling)
+            {
+                if (!aisling.Client.IsMoving)
+                {
+                    pos = aisling.LastPosition;
+                }
+                else
+                {
+                    pos = aisling.Position;
+                }
+            }
+
             var ts = Item.Create(obj, itemTemplate, true);
-            ts.Release(obj, obj.Position);
+            ts.Release(obj, pos);
 
             lock (Generator.Random)
             {
@@ -71,7 +85,7 @@ namespace Darkages.Types
                     Radius = radius,
                     Duration = duration,
                     CurrentMapId = obj.CurrentMapId,
-                    Location = new Position(obj.X, obj.Y),
+                    Location = pos,
                     Owner = obj,
                     Tripped = cb,
                     Serial = id,
@@ -80,7 +94,7 @@ namespace Darkages.Types
             }
         }
 
-        public void Update(TimeSpan elapsedTime)
+        public void Update()
         {
             if (_ticks > Duration)
             {

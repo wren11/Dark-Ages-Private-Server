@@ -44,6 +44,9 @@ namespace Darkages.Network.Game
         public bool IsRefreshing =>
             DateTime.UtcNow - LastClientRefresh < new TimeSpan(0, 0, 0, 0, ServerContext.Config.RefreshRate);
 
+        public bool IsMoving =>
+            DateTime.UtcNow - LastMovement > new TimeSpan(0, 0, 0, 0, 850);
+
         public bool IsWarping =>
             DateTime.UtcNow - LastWarp < new TimeSpan(0, 0, 0, 0, ServerContext.Config.WarpCheckRate);
 
@@ -1189,16 +1192,22 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            if (Aisling.TrapsAreNearby())
+            lock (Trap.Traps)
             {
-                var nextTrap = Trap.Traps.Select(i => i.Value)
-                    .FirstOrDefault(i => i.Owner.Serial != Aisling.Serial &&
-                                         Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill)
-                                         && i.Location.X == Aisling.X && i.Location.Y == Aisling.Y);
+                foreach (var (_, trap) in Trap.Traps)
+                {
+                    if (trap == null) continue;
+                    trap.Update();
 
-                if (nextTrap != null) Trap.Activate(nextTrap, Aisling);
+                    if (trap.Owner != null &&
+                        trap.Owner.Serial != Aisling.Serial &&
+                        Aisling.X == trap.Location.X &&
+                        Aisling.Y == trap.Location.Y && Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill))
+                    {
+                        Trap.Activate(trap, Aisling);
+                    }
+                }
             }
-
 
 
             if ((DateTime.UtcNow - LastMessageFromClient).TotalSeconds > 120)
@@ -1228,6 +1237,7 @@ namespace Darkages.Network.Game
 
                     Aisling.CastSpell(spell);
                     CastStack.Pop();
+                    Aisling.IsCastingSpell = false;
                 }
             }
         }
