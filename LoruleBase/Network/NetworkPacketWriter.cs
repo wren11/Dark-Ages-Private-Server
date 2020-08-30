@@ -2,8 +2,11 @@
 
 using System;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 using Darkages.IO;
+using ServiceStack;
 
 #endregion
 
@@ -13,19 +16,21 @@ namespace Darkages.Network
     {
         internal int Position;
         private readonly Encoding _encoding = Encoding.GetEncoding(949);
-        private readonly byte[] Buffer;
+        private readonly byte[] _buffer;
 
-        public NetworkPacketWriter(NetworkClient client)
+        public NetworkPacketWriter()
         {
-            Client = client;
-            Buffer = BufferPool.Take(0xFFFF);
+            _buffer = BufferPool.Take(0xFFFF);
         }
-
-        public NetworkClient Client { get; }
 
         public NetworkPacket ToPacket()
         {
-            return Position > 0 ? new NetworkPacket(Buffer, Position) : null;
+            return Position > 0 ? new NetworkPacket(_buffer, Position) : null;
+        }
+
+        public NetworkPacket ToRawPacket()
+        {
+            return Position > 0 ? new NetworkPacket(_buffer, Position, true) : null;
         }
 
         public void Write(bool value)
@@ -36,18 +41,18 @@ namespace Darkages.Network
 
         public void Write(byte value)
         {
-            Buffer[Position++] = value;
+            _buffer[Position++] = value;
         }
 
         public void Write(byte[] value)
         {
-            Array.Copy(value, 0, Buffer, Position, value.Length);
+            Array.Copy(value, 0, _buffer, Position, value.Length);
             Position += value.Length;
         }
 
         public void Write(sbyte value)
         {
-            Buffer[Position++] = (byte)value;
+            _buffer[Position++] = (byte)value;
         }
 
         public void Write(short value)
@@ -91,7 +96,7 @@ namespace Darkages.Network
 
         public void WriteString(string value)
         {
-            _encoding.GetBytes(value, 0, value.Length, Buffer, Position);
+            _encoding.GetBytes(value, 0, value.Length, _buffer, Position);
             Position += _encoding.GetByteCount(value);
         }
 
@@ -101,7 +106,7 @@ namespace Darkages.Network
 
             Write((byte)count);
 
-            _encoding.GetBytes(value, 0, value.Length, Buffer, Position);
+            _encoding.GetBytes(value, 0, value.Length, _buffer, Position);
 
             Position += count;
         }
@@ -112,7 +117,7 @@ namespace Darkages.Network
 
             Write((ushort)count);
 
-            _encoding.GetBytes(value, 0, value.Length, Buffer, Position);
+            _encoding.GetBytes(value, 0, value.Length, _buffer, Position);
             Position += count;
         }
     }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using Darkages.Common;
 using Darkages.Network.ServerFormats;
@@ -33,6 +34,7 @@ namespace Darkages.Network.Game
         }
 
         public Aisling Aisling { get; set; }
+
         public DateTime BoardOpened { get; set; }
 
         public bool CanSendLocation =>
@@ -76,6 +78,8 @@ namespace Darkages.Network.Game
 
         public bool WasUpdatingMapRecently =>
             DateTime.UtcNow - LastMapUpdated < new TimeSpan(0, 0, 0, 0, 100);
+
+        public Position LastKnownPosition { get; set; }
 
         public GameClient AislingToGhostForm()
         {
@@ -340,6 +344,8 @@ namespace Darkages.Network.Game
             {
                 try
                 {
+                    Thread.Sleep(1000);
+
                     return InitSpellBar()
                         .LoadInventory()
                         .LoadSkillBook()
@@ -488,42 +494,40 @@ namespace Darkages.Network.Game
 
         public GameClient LoadSkillBook()
         {
-            if (Aisling.GameMaster)
+            if (!Aisling.Developer)
+            {
+                lock (_syncObj)
+                {
+                    var skillsAvailable = Aisling.SkillBook.Skills.Values
+                        .Where(i => i != null && i.Template != null).ToArray();
+
+                    foreach (var skill in skillsAvailable)
+                    {
+                        if (skill.Template != null)
+                            if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skill.Template.Name))
+                            {
+                                var template = ServerContext.GlobalSkillTemplateCache[skill.Template.Name];
+                                {
+                                    skill.Template = template;
+                                }
+                            }
+
+                        skill.InUse = false;
+                        skill.NextAvailableUse = DateTime.UtcNow;
+
+                        Send(new ServerFormat2C(skill.Slot,
+                            skill.Icon,
+                            skill.Name));
+
+                        skill.Scripts = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
+                        Aisling.SkillBook.Set(skill, false);
+                    }
+                }
+            }
+            else
             {
                 foreach (var temp in ServerContext.GlobalSkillTemplateCache)
                     Skill.GiveTo(Aisling, temp.Value.Name);
-
-                return this;
-            }
-
-            lock (_syncObj)
-            {
-                var skillsAvailable = Aisling.SkillBook.Skills.Values
-                    .Where(i => i != null && i.Template != null).ToArray();
-
-                var formats = new List<NetworkFormat>();
-
-                foreach (var skill in skillsAvailable)
-                {
-                    if (skill.Template != null)
-                        if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skill.Template.Name))
-                        {
-                            var template = ServerContext.GlobalSkillTemplateCache[skill.Template.Name];
-                            {
-                                skill.Template = template;
-                            }
-                        }
-
-                    skill.InUse = false;
-                    skill.NextAvailableUse = DateTime.UtcNow;
-
-                    Send(new ServerFormat2C(skill.Slot,
-                        skill.Icon,
-                        skill.Name));
-
-                    skill.Scripts = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
-                    Aisling.SkillBook.Set(skill, false);
-                }
             }
 
             return this;
@@ -778,7 +782,7 @@ namespace Darkages.Network.Game
         {
             Send(new ServerFormat04(Aisling));
             LastLocationSent = DateTime.UtcNow;
-            return CloseDialog();
+            return this;
         }
 
         public GameClient SendMessage(byte type, string text)
@@ -1209,6 +1213,22 @@ namespace Darkages.Network.Game
                 }
             }
 
+            if (!Aisling.GameMaster)
+            {
+                if (Aisling.Map.Tile[Aisling.X, Aisling.Y] == TileContent.Wall)
+                {
+
+                    Aisling.X = LastKnownPosition.X;
+                    Aisling.Y = LastKnownPosition.Y;
+
+                    SendLocation();
+
+                }
+                else
+                {
+                    LastKnownPosition = new Position(Aisling.X, Aisling.Y);
+                }
+            }
 
             if ((DateTime.UtcNow - LastMessageFromClient).TotalSeconds > 120)
             {

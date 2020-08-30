@@ -372,9 +372,12 @@ namespace Darkages.Types
             if (Map.Flags.HasFlag(MapFlags.PlayerKill))
                 dmg = (int)(dmg * 0.75);
 
-            if (damageDealingSprite is Aisling _aisling)
-                if (_aisling.Client.IsBehind(this))
-                    dmg += (int)((dmg + ServerContext.Config.BehindDamageMod) / 1.99);
+
+            {
+                if (damageDealingSprite is Aisling aisling)
+                    if (aisling.Client.IsBehind(this))
+                        dmg += (int) ((dmg + ServerContext.Config.BehindDamageMod) / 1.99);
+            }
 
             if (dmg == -1)
             {
@@ -390,8 +393,13 @@ namespace Darkages.Types
             if (!DamageTarget(damageDealingSprite, ref dmg, penetrating, sound, dmgcb, forceTarget))
                 return;
 
-            if (damageDealingSprite is Aisling aisling && aisling.GameMaster)
-                dmg *= 20;
+            {
+                if (damageDealingSprite is Aisling aisling)
+                {
+                    if (aisling.GameMaster)
+                        dmg *= 200;
+                }
+            }
 
             OnDamaged(damageDealingSprite, dmg);
         }

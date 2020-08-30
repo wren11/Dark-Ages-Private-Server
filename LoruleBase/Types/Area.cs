@@ -99,7 +99,10 @@ namespace Darkages
             if (rWall == 0)
                 return Sotp[lWall - 1] == 0x0F;
 
-            return Sotp[lWall - 1] == 0x0F && Sotp[rWall - 1] == 0x0F;
+            var left = Sotp[lWall - 1];
+            var right = Sotp[rWall - 1];
+
+            return left == 0x0F || right == 0x0F;
         }
 
         public void Update(in TimeSpan elapsedTime)

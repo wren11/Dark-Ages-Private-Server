@@ -84,17 +84,19 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnClick(GameServer server, GameClient client)
         {
-            if (client.MenuInterpter == null)
+            if (client != null && client.MenuInterpter == null)
             {
                 LoadScriptInterpreter(client);
-                client.MenuInterpter.Start();
+                client.MenuInterpter?.Start();
             }
 
             if (client.Aisling.AcceptQuest(quest))
             {
             }
 
-            client.ShowCurrentMenu(Mundane, null, client.MenuInterpter.GetCurrentStep());
+            if (client.MenuInterpter != null)
+                if (Mundane != null)
+                    client.ShowCurrentMenu(Mundane, null, client.MenuInterpter.GetCurrentStep());
         }
 
         public override void OnGossip(GameServer server, GameClient client, string message)

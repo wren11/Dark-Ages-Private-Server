@@ -87,6 +87,7 @@ namespace Darkages
         public int FaceStyle { get; set; }
         public AislingFlags Flags { get; internal set; }
         public bool GameMaster { get; set; }
+        public bool Developer { get; set; }
         public int GamePoints { get; set; }
 
         public List<ClientGameSettings> GameSettings { get; set; }
@@ -308,7 +309,7 @@ namespace Darkages
             trader.Client.SendStats(StatusFlags.StructC);
             Client.SendStats(StatusFlags.StructC);
 
-            var packet = new NetworkPacketWriter(Client);
+            var packet = new NetworkPacketWriter();
             packet.Write((byte)0x42);
             packet.Write((byte)0x00);
 
@@ -317,7 +318,7 @@ namespace Darkages
             packet.WriteStringA("Trade was aborted.");
             Client.Send(packet);
 
-            packet = new NetworkPacketWriter(Client);
+            packet = new NetworkPacketWriter();
             packet.Write((byte)0x42);
             packet.Write((byte)0x00);
 

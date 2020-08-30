@@ -18,7 +18,8 @@ namespace Darkages.Types
 
         public static bool AddPartyMember(Aisling partyLeader, Aisling playerToAdd)
         {
-            if (playerToAdd == null) throw new ArgumentNullException(nameof(playerToAdd));
+            if (playerToAdd == null)
+                return false;
 
             if (partyLeader.GroupId != 0)
             {
@@ -77,16 +78,19 @@ namespace Darkages.Types
                 return null;
 
             var party = new Party {LeaderName = partyLeader.Username};
-            var pendingId = Generator.GenerateNumber();
 
-            while (ServerContext.GlobalGroupCache.ContainsKey(pendingId))
-                pendingId = Generator.GenerateNumber();
+            lock (Generator.Random)
+            {
+                var pendingId = Generator.GenerateNumber();
 
-            party.Id = pendingId;
-            party.LeaderName = partyLeader.Username;
-            partyLeader.GroupId = party.Id;
+                party.Id = pendingId;
+                party.LeaderName = partyLeader.Username;
+                partyLeader.GroupId = party.Id;
 
-            ServerContext.GlobalGroupCache.Add(party.Id, party);
+                if (!ServerContext.GlobalGroupCache.ContainsKey(party.Id))
+                    ServerContext.GlobalGroupCache.Add(party.Id, party);
+            }
+
             return party;
         }
 

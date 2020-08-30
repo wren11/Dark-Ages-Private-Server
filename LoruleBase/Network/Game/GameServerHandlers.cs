@@ -1386,8 +1386,8 @@ namespace Darkages.Network.Game
 
                         if (back != null)
                             client.ShowCurrentMenu(obj, interpreter.GetCurrentStep(), interpreter.Move(back.Id));
-                        else
-                            client.CloseDialog();
+//                        else
+//                            client.CloseDialog();
                     }
 
                     if (format.Step == 1)
@@ -1423,7 +1423,8 @@ namespace Darkages.Network.Game
 
                         var close = step.Answers.FirstOrDefault(i => i.Text == "close");
 
-                        if (close != null) client.CloseDialog();
+                        if (close != null)
+                            client.CloseDialog();
                     }
 
                     return;
@@ -1444,8 +1445,8 @@ namespace Darkages.Network.Game
 
                         if (back != null)
                             client.ShowCurrentMenu(popup, interpreter.GetCurrentStep(), interpreter.Move(back.Id));
-                        else
-                            client.CloseDialog();
+                        //else
+                        //    client.CloseDialog();
                     }
 
                     if (format.Step == 1)
@@ -1868,22 +1869,8 @@ namespace Darkages.Network.Game
                                     foreach (var script in (obj as Mundane)?.Scripts?.Values)
                                         script.OnClick(this, client);
 
-                                if (client.MenuInterpter != null)
-                                {
-                                    client.MenuInterpter = null;
-                                    client.CloseDialog();
-                                }
-
-                                if (client.MenuInterpter == null)
-                                {
-                                    CreateInterpreterFromMenuFile(client, (obj as Mundane).Template.Name, obj);
-
-                                    if (client.MenuInterpter != null) client.MenuInterpter.Start();
-                                }
-                                else
-                                {
-                                    return;
-                                }
+                                CreateInterpreterFromMenuFile(client, (obj as Mundane).Template.Name, obj);
+                                client.MenuInterpter?.Start();
 
                                 if (client.MenuInterpter != null)
                                     client.ShowCurrentMenu(obj as Mundane, null, client.MenuInterpter.GetCurrentStep());
@@ -2057,7 +2044,7 @@ namespace Darkages.Network.Game
                         player.Exchange = new ExchangeSession(trader);
                         trader.Exchange = new ExchangeSession(player);
 
-                        var packet = new NetworkPacketWriter(client);
+                        var packet = new NetworkPacketWriter();
                         packet.Write((byte)0x42);
                         packet.Write((byte)0x00);
                         packet.Write((byte)0x00);
@@ -2065,7 +2052,7 @@ namespace Darkages.Network.Game
                         packet.WriteStringA(trader.Username);
                         client.Send(packet);
 
-                        packet = new NetworkPacketWriter(client);
+                        packet = new NetworkPacketWriter();
                         packet.Write((byte)0x42);
                         packet.Write((byte)0x00);
                         packet.Write((byte)0x00);
@@ -2104,7 +2091,7 @@ namespace Darkages.Network.Game
                                 player.Exchange.Items.Add(item);
                                 player.Exchange.Weight += item.Template.CarryWeight;
 
-                                var packet = new NetworkPacketWriter(client);
+                                var packet = new NetworkPacketWriter();
                                 packet.Write((byte)0x42);
                                 packet.Write((byte)0x00);
 
@@ -2116,7 +2103,7 @@ namespace Darkages.Network.Game
                                 packet.WriteStringA(item.DisplayName);
                                 client.Send(packet);
 
-                                packet = new NetworkPacketWriter(client);
+                                packet = new NetworkPacketWriter();
                                 packet.Write((byte)0x42);
                                 packet.Write((byte)0x00);
 
@@ -2164,7 +2151,7 @@ namespace Darkages.Network.Game
                         player.Exchange.Gold = gold;
                         player.Client.SendStats(StatusFlags.StructC);
 
-                        var packet = new NetworkPacketWriter(client);
+                        var packet = new NetworkPacketWriter();
                         packet.Write((byte)0x42);
                         packet.Write((byte)0x00);
 
@@ -2173,7 +2160,7 @@ namespace Darkages.Network.Game
                         packet.Write((uint)gold);
                         client.Send(packet);
 
-                        packet = new NetworkPacketWriter(client);
+                        packet = new NetworkPacketWriter();
                         packet.Write((byte)0x42);
                         packet.Write((byte)0x00);
 
@@ -2222,7 +2209,7 @@ namespace Darkages.Network.Game
                         if (trader.Exchange.Confirmed)
                             player.FinishExchange();
 
-                        var packet = new NetworkPacketWriter(client);
+                        var packet = new NetworkPacketWriter();
                         packet.Write((byte)0x42);
                         packet.Write((byte)0x00);
 
@@ -2231,7 +2218,7 @@ namespace Darkages.Network.Game
                         packet.WriteStringA("Trade was completed.");
                         client.Send(packet);
 
-                        packet = new NetworkPacketWriter(client);
+                        packet = new NetworkPacketWriter();
                         packet.Write((byte)0x42);
                         packet.Write((byte)0x00);
 
@@ -2403,6 +2390,7 @@ namespace Darkages.Network.Game
 
             if (redirect.developer.Value == redirect.player.Value)
             {
+                client.Aisling.Developer  = true;
                 client.Aisling.GameMaster = true;
             }
             #endregion
@@ -2526,7 +2514,8 @@ namespace Darkages.Network.Game
 
 
             var dupedClients = Clients.Where(i =>
-                    i.Aisling != null && (aisling != null && i.Aisling.Username == aisling.Username && i.Aisling.Serial != aisling.Serial))
+                    i.Aisling != null && (aisling != null && i.Aisling.Username == aisling.Username &&
+                                          i.Aisling.Serial != aisling.Serial))
                 .ToArray();
 
             if (dupedClients.Any())
@@ -2536,14 +2525,6 @@ namespace Darkages.Network.Game
                     base.ClientDisconnected(dupedClient);
                 }
             }
-
-
-            if (!ServerContext.Redirects.Contains(aisling.Username.ToLower()))
-            {
-            }
-
-            if (ServerContext.Redirects.Contains(aisling.Username.ToLower()))
-                ServerContext.Redirects.Remove(aisling.Username.ToLower());
 
             lock (Generator.Random)
             {

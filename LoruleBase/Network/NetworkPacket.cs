@@ -9,17 +9,27 @@ namespace Darkages.Network
 {
     public class NetworkPacket
     {
-        public NetworkPacket(byte[] array, long count)
+        public NetworkPacket(byte[] array, long count, bool raw = false)
         {
-            Command = array[0];
+            if (!raw)
+            {
+                Command = array[0];
 
-            if (Command == byte.MaxValue)
-                return;
+                if (Command == byte.MaxValue)
+                    return;
 
-            Ordinal = array[1];
-            Data = count - 2 > 0 ? new byte[count - 0x2] : new byte[count];
+                Ordinal = array[1];
+                Data = count - 2 > 0 ? new byte[count - 0x2] : new byte[count];
 
-            if (Data.Length > 0) Buffer.BlockCopy(array, 2, Data, 0, Data.Length);
+                if (Data.Length > 0)
+                    Buffer.BlockCopy(array, 2, Data, 0, Data.Length);
+            }
+            else
+            {
+                Data = new byte[count];
+                if (Data.Length > 0) 
+                    Buffer.BlockCopy(array, 0, Data, 0, Data.Length);
+            }
         }
 
         public byte Command { get; }
