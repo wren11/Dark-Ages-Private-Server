@@ -1,17 +1,11 @@
 ﻿#region
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
-using System.Threading.Tasks;
-using Darkages.IO;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
-using Darkages.Types;
-using ServiceStack;
 
 #endregion
 
@@ -27,8 +21,6 @@ namespace Darkages.Network
         {
             Reader = new NetworkPacketReader();
             Writer = new NetworkPacketWriter();
-
-            SocketWriterBuffer = new NetworkPacketWriter();
             Encryption = new SecurityProvider();
         }
 
@@ -43,86 +35,53 @@ namespace Darkages.Network
         internal NetworkSocket State { get; set; }
         public DateTime LastMessageFromClient { get; set; }
 
-        public NetworkPacketWriter SocketWriterBuffer { get; set; }
-
         public void FlushAndSend(NetworkFormat format)
         {
             if (!Socket.Connected)
                 return;
 
-
             lock (_sendLock)
             {
+                Writer.Position = 0;
+                Writer.Write(format.Command);
 
-                lock (Writer)
+                if (format.Secured)
+                    Writer.Write(Ordinal++);
+
+                format.Serialize(Writer);
+
+                var packet = Writer.ToPacket();
+                if (packet == null)
+                    return;
+
+                if (format.Secured)
+                    Encryption.Transform(packet);
+
+                var buffer = packet.ToArray();
+
+                if (buffer.Length <= 0) return;
+
+                if (_sending)
+                    return;
+
+                _sending = true;
+
+                try
                 {
-                    Writer.Position = 0;
-                    Writer.Write(format.Command);
-
-                    if (format.Secured)
-                        Writer.Write(Ordinal++);
-
-                    format.Serialize(Writer);
-
-                    var packet = Writer.ToPacket();
-                    if (packet == null)
-                        return;
-
-                    if (format.Secured)
-                        Encryption.Transform(packet);
-
-                    var buffer = packet.ToArray();
-
-                    if (buffer.Length <= 0)
-                        return;
-
-                    _sending = true;
-
-                    try
-                    {
-                        ProcessSocketWriter(buffer);
-                        Task.Run(Flush);
-                    }
-                    catch (SocketException)
-                    {
-                        //ignore
-                    }
-                }
-            }
-        }
-
-        public void ProcessSocketWriter(byte[] packet)
-        {
-            if (!Socket.Connected)
-                return;
-
-            lock (SocketWriterBuffer)
-            {
-                SocketWriterBuffer.Write(packet);
-            }
-        }
-
-        public void Flush()
-        {
-            if (!Socket.Connected)
-                return;
-
-            lock (_sendLock)
-            {
-                var payload = SocketWriterBuffer.ToRawPacket();
-
-                if (payload?.Data != null)
-                    Socket?.BeginSend(
-                        payload.Data,
+                    Socket.BeginSend(
+                        buffer,
                         0,
-                        payload.Data.Length,
+                        buffer.Length,
                         SocketFlags.None,
                         SendCompleted,
                         Socket
                     );
+                }
+                catch (SocketException)
+                {
+                    //ignore
+                }
             }
-
-            SocketWriterBuffer = new NetworkPacketWriter();
         }
 
         public void Read(NetworkPacket packet, NetworkFormat format)
