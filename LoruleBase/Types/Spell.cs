@@ -62,59 +62,74 @@ namespace Darkages.Types
 
             var spellTemplate = ServerContext.GlobalSpellTemplateCache[args];
 
-            var slot = index == 0 ? client.Aisling.SpellBook.FindEmpty() : index;
-
-            if (slot <= 0)
-                return false;
-
-            if (client.Aisling.SpellBook.Has(spellTemplate))
-                return false;
-
-            var spell = Create(slot, spellTemplate);
-            spell.Template = spellTemplate;
-
-            AttachScript(spell);
+            if (spellTemplate != null)
             {
-                spell.Level = client.Aisling.GameMaster ? spellTemplate.MaxLevel : level;
-                client.Aisling.SpellBook.Assign(spell);
-                client.Aisling.SpellBook.Set(spell, false);
-                client.Send(new ServerFormat17(spell));
-                client.Aisling.SendAnimation(22, client.Aisling, client.Aisling);
+                var slot = client.Aisling.SkillBook.FindEmpty(spellTemplate.Pane == Pane.Spells ? 0 : 72);
+
+                if (slot <= 0)
+                    return false;
+
+                if (slot <= 0)
+                    return false;
+
+                if (client.Aisling.SpellBook.Has(spellTemplate))
+                    return false;
+
+                var spell = Create(slot, spellTemplate);
+                spell.Template = spellTemplate;
+
+                AttachScript(spell);
+                {
+                    spell.Level = client.Aisling.GameMaster ? spellTemplate.MaxLevel : level;
+                    client.Aisling.SpellBook.Assign(spell);
+                    client.Aisling.SpellBook.Set(spell, false);
+                    client.Send(new ServerFormat17(spell));
+                    client.Aisling.SendAnimation(22, client.Aisling, client.Aisling);
+                }
+
+                return true;
             }
-            return true;
+
+            return false;
         }
 
-        public static bool GiveTo(Aisling Aisling, string spellname, int level = 100, byte index = 0)
+        public static bool GiveTo(Aisling aisling, string spellname, int level = 100, byte index = 0)
         {
             if (!ServerContext.GlobalSpellTemplateCache.ContainsKey(spellname))
                 return false;
 
             var spellTemplate = ServerContext.GlobalSpellTemplateCache[spellname];
 
-            if (Aisling.SpellBook.Has(spellTemplate))
-                return false;
-
-            var slot = index == 0 ? Aisling.SpellBook.FindEmpty() : index;
-
-            if (slot <= 0)
-                return false;
-
-            var spell = Create(slot, spellTemplate);
+            if (spellTemplate != null)
             {
-                spell.Level = (byte)level;
-                AttachScript(spell);
-                {
-                    Aisling.SpellBook.Assign(spell);
-                    Aisling.SpellBook.Set(spell, false);
+                if (aisling.SpellBook.Has(spellTemplate)) 
+                    return false;
 
-                    if (Aisling.LoggedIn)
+                var slot = aisling.SkillBook.FindEmpty(spellTemplate.Pane == Pane.Spells ? 0 : 72);
+
+                if (slot <= 0)
+                    return false;
+
+                var spell = Create(slot, spellTemplate);
+                {
+                    spell.Level = (byte) level;
+                    AttachScript(spell);
                     {
-                        Aisling.Show(Scope.Self, new ServerFormat17(spell));
-                        Aisling.SendAnimation(22, Aisling, Aisling);
+                        aisling.SpellBook.Assign(spell);
+                        aisling.SpellBook.Set(spell, false);
+
+                        if (aisling.LoggedIn)
+                        {
+                            aisling.Show(Scope.Self, new ServerFormat17(spell));
+                            aisling.SendAnimation(22, aisling, aisling);
+                        }
                     }
                 }
+
+                return true;
             }
-            return true;
+
+            return false;
         }
 
         public bool CanUse()

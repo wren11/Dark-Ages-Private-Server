@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Text;
 using Darkages.Types;
 
 #endregion
@@ -47,18 +48,17 @@ namespace Darkages.Network.ServerFormats
 
             if (!isGrouped)
             {
-                packet.WriteStringA("no group");
+                packet.WriteStringA("Adventuring Alone");
             }
             else
             {
-                var partyMessage = Aisling.GroupParty.PartyMembers.Aggregate(
-                    "Group members\n",
-                    (current, member) =>
-                        current +
-                        $"{(Aisling.Username.Equals(member.GroupParty.LeaderName, StringComparison.OrdinalIgnoreCase) ? " * " : " ")}{member.Username}\n");
-
-                partyMessage += $"{Aisling.GroupParty.PartyMembers.Count} total";
-                packet.WriteStringA(partyMessage);
+                var sb = new StringBuilder("그룹구성원\n");
+                foreach (var player in Aisling.GroupParty.PartyMembers)
+                {
+                    sb.AppendFormat("{0} {1}\n", (player.Username.ToLower() == Aisling.GroupParty.LeaderName.ToLower()) ? "*" : " ", player.Username);
+                }
+                sb.AppendFormat("총 {0}명", Aisling.GroupParty.PartyMembers.Count);
+                packet.WriteStringA(sb.ToString());
             }
 
             packet.Write((byte)Aisling.PartyStatus);

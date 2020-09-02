@@ -30,22 +30,13 @@ namespace Darkages.Types
             Set(skill);
         }
 
-        public void Clear(Skill s)
+        public int FindEmpty(int start = 0)
         {
-            Skills[s.Slot] = null;
-        }
-
-        public int FindEmpty()
-        {
-            for (var i = 0; i < Length; i++)
+            for (var i = start; i < Length; i++)
                 if (Skills[i + 1] == null)
                     return i + 1;
-            return -1;
-        }
 
-        public Skill FindInSlot(int Slot)
-        {
-            return Skills[Slot];
+            return -1;
         }
 
         public new Skill[] Get(Predicate<Skill> prediate)
@@ -82,9 +73,5 @@ namespace Darkages.Types
             Skills[s.Slot] = clone ? Clone<Skill>(s) : s;
         }
 
-        public void Swap(Skill A, Skill B)
-        {
-            A = Interlocked.Exchange(ref B, A);
-        }
     }
 }

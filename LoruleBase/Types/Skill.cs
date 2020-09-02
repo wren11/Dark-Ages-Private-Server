@@ -52,38 +52,33 @@ namespace Darkages.Types
         public static bool GiveTo(GameClient client, string args)
         {
             var skillTemplate = ServerContext.GlobalSkillTemplateCache[args];
-            var slot = client.Aisling.SkillBook.FindEmpty();
 
-            if (slot <= 0)
-                return false;
-
-            if (client.Aisling.SkillBook.Has(skillTemplate))
-                return false;
-
-            var skill = Create(slot, skillTemplate);
-            skill.Template = skillTemplate;
-
-            skill.Scripts = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
+            if (skillTemplate != null)
             {
-                skill.Level = 1;
-                client.Aisling.SkillBook.Assign(skill);
-                client.Aisling.SkillBook.Set(skill, false);
-                client.Send(new ServerFormat2C(skill.Slot, skill.Icon, skill.Name));
-                client.Aisling.SendAnimation(22, client.Aisling, client.Aisling);
-            }
-            return true;
-        }
+                var slot = client.Aisling.SkillBook.FindEmpty(skillTemplate.Pane == Pane.Skills ? 0 : 72);
 
-        public static bool GiveTo(Aisling aisling, string args, byte slot, int level = 1)
-        {
-            var skillTemplate = ServerContext.GlobalSkillTemplateCache[args];
-            var skill = Create(slot, skillTemplate);
-            {
-                skill.Level = level;
+                if (slot <= 0)
+                    return false;
+
+                if (client.Aisling.SkillBook.Has(skillTemplate))
+                    return false;
+
+                var skill = Create(slot, skillTemplate);
+                skill.Template = skillTemplate;
+
                 skill.Scripts = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
-                aisling.SkillBook.Assign(skill);
+                {
+                    skill.Level = 1;
+                    client.Aisling.SkillBook.Assign(skill);
+                    client.Aisling.SkillBook.Set(skill, false);
+                    client.Send(new ServerFormat2C(skill.Slot, skill.Icon, skill.Name));
+                    client.Aisling.SendAnimation(22, client.Aisling, client.Aisling);
+                }
+
+                return true;
             }
-            return true;
+
+            return false;
         }
 
         public static bool GiveTo(Aisling aisling, string args, int level = 100)
@@ -92,24 +87,30 @@ namespace Darkages.Types
                 return false;
 
             var skillTemplate = ServerContext.GlobalSkillTemplateCache[args];
-            var slot = aisling.SkillBook.FindEmpty();
 
-            if (slot <= 0)
-                return false;
-
-            var skill = Create(slot, skillTemplate);
-            skill.Level = level;
-            skill.Scripts = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
-            aisling.SkillBook.Assign(skill);
-            aisling.SkillBook.Set(skill, false);
-
-            if (aisling.LoggedIn)
+            if (skillTemplate != null)
             {
-                aisling.Show(Scope.Self, new ServerFormat2C(skill.Slot, skill.Icon, skill.Name));
-                aisling.SendAnimation(22, aisling, aisling);
+                var slot = aisling.SkillBook.FindEmpty(skillTemplate.Pane == Pane.Skills ? 0 : 72);
+
+                if (slot <= 0)
+                    return false;
+
+                var skill = Create(slot, skillTemplate);
+                skill.Level = level;
+                skill.Scripts = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
+                aisling.SkillBook.Assign(skill);
+                aisling.SkillBook.Set(skill, false);
+
+                if (aisling.LoggedIn)
+                {
+                    aisling.Show(Scope.Self, new ServerFormat2C(skill.Slot, skill.Icon, skill.Name));
+                    aisling.SendAnimation(22, aisling, aisling);
+                }
+
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         public bool CanUse()
