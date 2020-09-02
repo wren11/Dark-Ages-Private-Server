@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
+using ServiceStack.Metadata;
 
 #endregion
 
@@ -138,12 +139,35 @@ namespace Darkages.Network.Game.Components
                     Get.All).ToArray();
                 var objectsInView = objects.Where(s => s.WithinRangeOf(user)).ToArray();
                 var objectsNotInView = objects.Where(s => !s.WithinRangeOf(user)).ToArray();
-                var objectsToRemove = objectsNotInView.Except(objectsInView).ToArray();
+                var objectsToRemove = objectsNotInView.Except(objectsInView).ToList();
                 var objectsToAdd = objectsInView.Except(objectsNotInView).ToArray();
+
+                foreach (var obj in objects)
+                {
+                    if (obj is Aisling aisling)
+                    {
+                        lock (ServerContext.SyncLock)
+                        {
+                            if (ServerContext.Game != null && ServerContext.Game.Clients != null)
+                            {
+                                var clients = ServerContext.Game.Clients.FindAll(i =>
+                                    i?.Aisling != null && string.Equals(i.Aisling.Username, aisling.Username,
+                                        StringComparison.CurrentCultureIgnoreCase));
+
+                                if (clients.Count == 0)
+                                {
+                                    user.HideFrom(aisling);
+                                    aisling.HideFrom(user);
+                                    user.DelObject(aisling);
+                                }
+                            }
+                        }
+                    }
+                }
 
                 RemoveObjects(
                     user,
-                    objectsToRemove);
+                    objectsToRemove.ToArray());
 
                 AddObjects(payload,
                     user,

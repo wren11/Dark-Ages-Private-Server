@@ -146,7 +146,11 @@ namespace Darkages.Types
             sclass4.Nodes.Add(new MetafileNode("Skill", ""));
             sclass5.Nodes.Add(new MetafileNode("Skill", ""));
 
-            foreach (var (k, template) in ServerContext.GlobalSkillTemplateCache)
+            foreach (var (k, template) in from v in ServerContext.GlobalSkillTemplateCache
+                let prerequisites = v.Value.Prerequisites
+                where prerequisites != null
+                orderby prerequisites.ExpLevel_Required
+                select v)
             {
                 if (template.Prerequisites != null && template.Prerequisites.Class_Required == Class.Warrior)
                     sclass1.Nodes.Add(new MetafileNode(k, template.GetMetaData()));
@@ -184,8 +188,12 @@ namespace Darkages.Types
             sclass5.Nodes.Add(new MetafileNode("", ""));
             sclass5.Nodes.Add(new MetafileNode("Spell", ""));
 
-            foreach (var (k, template) in ServerContext.GlobalSpellTemplateCache)
-            {
+            foreach (var (k, template) in from v in ServerContext.GlobalSpellTemplateCache
+                let prerequisites = v.Value.Prerequisites
+                where prerequisites != null
+                orderby prerequisites.ExpLevel_Required
+                select v)
+            { 
                 if (template.Prerequisites != null && template.Prerequisites.Class_Required == Class.Warrior)
                     sclass1.Nodes.Add(new MetafileNode(k, template.GetMetaData()));
 
@@ -224,7 +232,7 @@ namespace Darkages.Types
         private static void GenerateItemInfoMeta()
         {
             var i = 0;
-            foreach (var batch in ServerContext.GlobalItemTemplateCache.BatchesOf(712))
+            foreach (var batch in ServerContext.GlobalItemTemplateCache.OrderBy(v => v.Value.LevelRequired).BatchesOf(712))
             {
                 var metaFile = new Metafile { Name = $"ItemInfo{i}", Nodes = new Collection<MetafileNode>() };
 

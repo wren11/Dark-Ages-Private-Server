@@ -195,14 +195,7 @@ namespace Darkages.Network.Game
 
         public GameClient DoUpdate(TimeSpan elapsedTime)
         {
-            if (!Socket.Connected)
-            {
-                Aisling.Remove(true);
-                Server.ClientDisconnected(this);
-
-                return this;
-            }
-
+            ObjectCheckPoint();
 
             DispatchCasts();
 
@@ -211,6 +204,27 @@ namespace Darkages.Network.Game
                 .Regen(elapsedTime)
                 .UpdateStatusBar(elapsedTime)
                 .UpdateReactors(elapsedTime);
+        }
+
+        private void ObjectCheckPoint()
+        {
+            var clones = GetObjects<Aisling>(null,
+                p => string.Equals(p.Username, Aisling.Username, StringComparison.CurrentCultureIgnoreCase) && p.Serial != Aisling.Serial).ToArray();
+
+            if (clones.Length <= 0) return;
+            foreach (var aisling in clones)
+            {
+                if (Aisling != null && aisling != null)
+                {
+                    aisling.HideFrom(Aisling);
+                    Aisling.HideFrom(aisling);
+                }
+
+                if (aisling?.Client != null)
+                    Server.ClientDisconnected(aisling.Client);
+            }
+
+            DelObjects(clones);
         }
 
         public GameClient EnterArea()
@@ -344,7 +358,6 @@ namespace Darkages.Network.Game
             {
                 try
                 {
-                    Thread.Sleep(1000);
 
                     return InitSpellBar()
                         .LoadInventory()
@@ -880,7 +893,7 @@ namespace Darkages.Network.Game
 
         public GameClient SendProfileUpdate()
         {
-            Send(new byte[] { 73, 0 });
+            Send(new byte[] { 0b1001001, 0b0 });
 
             return this;
         }

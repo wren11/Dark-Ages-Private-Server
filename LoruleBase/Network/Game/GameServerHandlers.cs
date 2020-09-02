@@ -2522,6 +2522,11 @@ namespace Darkages.Network.Game
             {
                 foreach (var dupedClient in dupedClients)
                 {
+                    if (dupedClient.Aisling != null)
+                    {
+                        DelObject(dupedClient.Aisling);
+                    }
+
                     base.ClientDisconnected(dupedClient);
                 }
             }
