@@ -5,6 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Darkages.Types;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Darkages.Common;
 
 #endregion
 
@@ -161,9 +163,11 @@ namespace Darkages.Network.Object
         {
             for (var i = Values.Count - 1; i >= 0; i--)
             {
-                var subject = predicate(Values[i]);
-
-                if (subject) return Values[i];
+                if (i >= 0 && Values.Count > i)
+                {
+                    var subject = predicate(Values[i]);
+                    if (subject) return Values[i];
+                }
             }
 
             return default;
@@ -174,9 +178,11 @@ namespace Darkages.Network.Object
             for (var i = Values.Count - 1; i >= 0; i--)
                 if (i < Values.Count)
                 {
-                    var subject = predicate(Values[i % Math.Max(i, Values.Count)]);
-
-                    if (subject) yield return Values[i];
+                    if (i >= 0 && Values.Count > i)
+                    {
+                        var subject = predicate(Values[i]);
+                        if (subject) yield return Values[i];
+                    }
                 }
         }
 

@@ -142,28 +142,7 @@ namespace Darkages.Network.Game.Components
                 var objectsToRemove = objectsNotInView.Except(objectsInView).ToList();
                 var objectsToAdd = objectsInView.Except(objectsNotInView).ToArray();
 
-                foreach (var obj in objects)
-                {
-                    if (obj is Aisling aisling)
-                    {
-                        lock (ServerContext.SyncLock)
-                        {
-                            if (ServerContext.Game != null && ServerContext.Game.Clients != null)
-                            {
-                                var clients = ServerContext.Game.Clients.FindAll(i =>
-                                    i?.Aisling != null && string.Equals(i.Aisling.Username, aisling.Username,
-                                        StringComparison.CurrentCultureIgnoreCase));
-
-                                if (clients.Count == 0)
-                                {
-                                    user.HideFrom(aisling);
-                                    aisling.HideFrom(user);
-                                    user.DelObject(aisling);
-                                }
-                            }
-                        }
-                    }
-                }
+                CheckObjectClients(user, objects);
 
                 RemoveObjects(
                     user,
@@ -178,6 +157,32 @@ namespace Darkages.Network.Game.Components
             });
         }
 
+        private static void CheckObjectClients(Aisling user, Sprite[] objects)
+        {
+            foreach (var obj in objects)
+            {
+                if (obj is Aisling aisling)
+                {
+                    lock (ServerContext.SyncLock)
+                    {
+                        if (ServerContext.Game != null && ServerContext.Game.Clients != null)
+                        {
+                            var clients = ServerContext.Game.Clients.FindAll(i =>
+                                i?.Aisling != null && string.Equals(i.Aisling.Username, aisling.Username,
+                                    StringComparison.CurrentCultureIgnoreCase));
+
+                            if (clients.Count == 0)
+                            {
+                                user.HideFrom(aisling);
+                                aisling.HideFrom(user);
+                                user.DelObject(aisling);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public override void Update(TimeSpan elapsedTime)
         {
             if (_timer.Update(elapsedTime)) UpdateObjects();
@@ -188,7 +193,8 @@ namespace Darkages.Network.Game.Components
             var connectedUsers = Server.Clients.Where(i =>
                 i?.Aisling?.Map != null && i.Aisling.Map.Ready).Select(i => i.Aisling).ToArray();
 
-            foreach (var user in connectedUsers) UpdateClientObjects(user);
+            foreach (var user in connectedUsers)
+                UpdateClientObjects(user);
         }
 
         #region Underlying Object Managers

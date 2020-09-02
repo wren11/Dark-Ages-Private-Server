@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Remoting;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -279,7 +280,17 @@ namespace Darkages.Network.Game
 
         public GameClient Insert()
         {
-            AddObject(Aisling);
+            //Sanity check added here. this check will ensure we cannot insert the same person twice.
+            //Both cannot exist.
+            var obj = GetObject<Aisling>(null, aisling => aisling.Serial == Aisling.Serial || aisling.Username.ToLower() == Aisling.Username.ToLower());
+            if (obj == null)
+                AddObject(Aisling);
+            else
+            {
+                obj.Remove(false, true);
+                AddObject(Aisling);
+            }
+
             return this;
         }
 

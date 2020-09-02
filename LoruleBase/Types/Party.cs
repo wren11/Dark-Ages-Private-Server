@@ -10,11 +10,14 @@ using Darkages.Network.Object;
 
 namespace Darkages.Types
 {
+
     public class Party : ObjectManager
     {
         public int Id { get; set; }
         public string LeaderName { get; set; }
-        public List<Aisling> PartyMembers => GetObjects<Aisling>(null, sprite => sprite.GroupId == Id).ToList();
+
+        public List<Aisling> PartyMembers => GetObjects<Aisling>(null, sprite => sprite.GroupId == Id)
+            .DistinctBy(i => i.Username.ToLower()).ToList();
 
         public static bool AddPartyMember(Aisling partyLeader, Aisling playerToAdd)
         {
