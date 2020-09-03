@@ -151,8 +151,6 @@ namespace Darkages.Network.Game
 
             if (File.Exists(yamlPath))
             {
-                if (lpClient.MenuInterpter != null)
-                    return;
 
                 var globals = new ScriptGlobals
                 {
@@ -204,7 +202,6 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            lpClient.MenuInterpter = null;
         }
 
         public void ExitGame(GameClient client)
@@ -329,7 +326,7 @@ namespace Darkages.Network.Game
             }
             else
             {
-                client.SendLocation();
+                client.Refresh();
             }
         }
 

@@ -150,7 +150,7 @@ namespace Darkages.Network.Game
 
                 _previousGameTime += gameTime;
 
-                await Task.Delay(8);
+                await Task.Delay(500);
             }
         }
 
