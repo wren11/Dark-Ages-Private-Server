@@ -1126,7 +1126,7 @@ namespace Darkages.Network.Game
                 }
             }
 
-            Send(new ServerFormat3F((byte)skill.Template.Pane,
+            Send(new ServerFormat3F(1,
                 skill.Slot,
                 skill.Template.Cooldown));
         }

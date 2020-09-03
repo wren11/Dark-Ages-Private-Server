@@ -64,7 +64,7 @@ namespace Darkages.Types
 
             if (spellTemplate != null)
             {
-                var slot = client.Aisling.SkillBook.FindEmpty(spellTemplate.Pane == Pane.Spells ? 0 : 72);
+                var slot = client.Aisling.SpellBook.FindEmpty(spellTemplate.Pane == Pane.Spells ? 0 : 72);
 
                 if (slot <= 0)
                     return false;
@@ -105,7 +105,7 @@ namespace Darkages.Types
                 if (aisling.SpellBook.Has(spellTemplate)) 
                     return false;
 
-                var slot = aisling.SkillBook.FindEmpty(spellTemplate.Pane == Pane.Spells ? 0 : 72);
+                var slot = aisling.SpellBook.FindEmpty(spellTemplate.Pane == Pane.Spells ? 0 : 72);
 
                 if (slot <= 0)
                     return false;
