@@ -10,7 +10,7 @@
   "TargetAnimation": 0,
   "FailMessage": "you missed the mark.",
   "Type": 1,
-  "Pane": 1,
+  "Pane": 2,
   "PostQualifers": 0,
   "Sound": 48,
   "Debuff": null,
