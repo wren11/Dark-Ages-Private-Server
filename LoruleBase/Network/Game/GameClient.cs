@@ -518,8 +518,7 @@ namespace Darkages.Network.Game
 
         public GameClient LoadSkillBook()
         {
-            if (!Aisling.Developer)
-            {
+
                 lock (_syncObj)
                 {
                     var skillsAvailable = Aisling.SkillBook.Skills.Values
@@ -547,12 +546,6 @@ namespace Darkages.Network.Game
                         Aisling.SkillBook.Set(skill, false);
                     }
                 }
-            }
-            else
-            {
-                foreach (var temp in ServerContext.GlobalSkillTemplateCache)
-                    Skill.GiveTo(Aisling, temp.Value.Name);
-            }
 
             return this;
         }
