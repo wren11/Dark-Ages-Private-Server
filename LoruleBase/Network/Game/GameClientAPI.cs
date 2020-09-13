@@ -13,6 +13,63 @@ namespace Darkages.Network.Game
 {
     public partial class GameClient : IGameClient
     {
+        public GameClient GhostFormToAisling()
+        {
+            Aisling.Flags = AislingFlags.Normal;
+            HpRegenTimer.Disabled = false;
+            MpRegenTimer.Disabled = false;
+
+            Refresh(true);
+            return this;
+        }
+
+        public GameClient LearnSkill(Mundane source, SkillTemplate subject, string message)
+        {
+            var canLearn = false;
+
+            if (subject.Prerequisites != null)
+                canLearn = PayPrerequisites(subject.Prerequisites);
+
+            if (subject.LearningRequirements != null && subject.LearningRequirements.Any())
+                canLearn = subject.LearningRequirements.TrueForAll(PayPrerequisites);
+
+            if (!canLearn)
+                return this;
+
+            Skill.GiveTo(this, subject.Name);
+            SendOptionsDialog(source, message);
+
+            Aisling.Show(Scope.NearbyAislings,
+                new ServerFormat29((uint)Aisling.Serial, (uint)source.Serial,
+                    subject.TargetAnimation,
+                    subject.TargetAnimation, 100));
+
+            return this;
+        }
+
+        public GameClient LearnSpell(Mundane source, SpellTemplate subject, string message)
+        {
+            var canLearn = false;
+
+            if (subject.Prerequisites != null) canLearn = PayPrerequisites(subject.Prerequisites);
+
+            if (subject.LearningRequirements != null && subject.LearningRequirements.Any())
+                canLearn = subject.LearningRequirements.TrueForAll(PayPrerequisites);
+
+            if (!canLearn)
+                return this;
+
+            Spell.GiveTo(this, subject.Name);
+            SendOptionsDialog(source, message);
+
+            Aisling.Show(Scope.NearbyAislings,
+                new ServerFormat29((uint)Aisling.Serial, (uint)source.Serial,
+                    subject.TargetAnimation,
+                    subject.TargetAnimation, 100));
+
+            return this;
+        }
+
         public bool CastSpell(string spellName, Sprite caster, Sprite target)
         {
             if (ServerContext.GlobalSpellTemplateCache.ContainsKey(spellName))
@@ -46,10 +103,7 @@ namespace Darkages.Network.Game
         public void ForgetSkill(string s)
         {
             var subject = Aisling.SkillBook.Skills.Values
-                .FirstOrDefault(i => i != null
-                                     && i.Template != null
-                                     && !string.IsNullOrEmpty(i.Template.Name) &&
-                                     i.Template.Name.ToLower() == s.ToLower());
+                .FirstOrDefault(i => i?.Template != null && !string.IsNullOrEmpty(i.Template.Name) && i.Template.Name.ToLower() == s.ToLower());
 
             if (subject != null)
             {
@@ -65,10 +119,7 @@ namespace Darkages.Network.Game
         public void ForgetSpell(string s)
         {
             var subject = Aisling.SpellBook.Spells.Values
-                .FirstOrDefault(i => i != null
-                                     && i.Template != null
-                                     && !string.IsNullOrEmpty(i.Template.Name)
-                                     && i.Template.Name.ToLower() == s.ToLower());
+                .FirstOrDefault(i => i?.Template != null && !string.IsNullOrEmpty(i.Template.Name) && i.Template.Name.ToLower() == s.ToLower());
 
             if (subject != null)
             {
@@ -199,10 +250,33 @@ namespace Darkages.Network.Game
         public void LearnEverything()
         {
             foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values)
-                Skill.GiveTo(Aisling, skill.Name);
+            {
+                if (skill != null)
+                {
+                    ForgetSkill(skill.Name);
+                    Skill.GiveTo(Aisling, skill.Name);
+                }
+            }
 
             foreach (var spell in ServerContext.GlobalSpellTemplateCache.Values)
-                Spell.GiveTo(Aisling, spell.Name);
+            {
+                if (spell != null)
+                {
+                    ForgetSpell(spell.Name);
+                    Spell.GiveTo(Aisling, spell.Name);
+                }
+            }
+
+            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values)
+            {
+                if (skill != null) Skill.GiveTo(Aisling, skill.Name);
+            }
+
+            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Values)
+            {
+                if (spell != null) Spell.GiveTo(Aisling, spell.Name);
+            }
+
 
             LoadSkillBook();
             LoadSpellBook();
@@ -234,8 +308,9 @@ namespace Darkages.Network.Game
 
             if (skill != null)
             {
-                foreach (var script in skill.Scripts?.Values)
-                    script.OnUse(Aisling);
+                if (skill.Scripts?.Values != null)
+                    foreach (var script in skill.Scripts?.Values)
+                        script.OnUse(Aisling);
                 return true;
             }
 

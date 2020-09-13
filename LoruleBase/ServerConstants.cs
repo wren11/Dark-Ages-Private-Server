@@ -12,7 +12,6 @@ namespace Darkages
     {
         bool AssailsCancelSpells { get; set; }
         string BadRequestMessage { get; set; }
-        byte BaseAC { get; set; }
         byte BaseMR { get; set; }
         byte BaseStatAttribute { get; set; }
         double BehindDamageMod { get; set; }
@@ -33,7 +32,6 @@ namespace Darkages
         string ConAddedMessage { get; set; }
         int ConnectionCapacity { get; set; }
         string CursedItemMessage { get; set; }
-        double DayTimeInterval { get; set; }
         int DeathHPPenalty { get; set; }
         int DeathMap { get; set; }
         int DeathMapX { get; set; }
@@ -48,7 +46,6 @@ namespace Darkages
         string DexAddedMessage { get; set; }
         string DoesNotFitMessage { get; set; }
         bool DontSavePlayers { get; set; }
-        int ERRORCAP { get; set; }
         double FasNadurStrength { get; set; }
         List<string> GameMasters { get; set; }
         bool GiveAssailOnCreate { get; }
@@ -63,7 +60,6 @@ namespace Darkages
         string IntAddedMessage { get; set; }
         string ItemNotRequiredMsg { get; set; }
         string LevelUpMessage { get; set; }
-        double LingerState { get; set; }
         bool LogClientPackets { get; set; }
         int LOGIN_PORT { get; set; }
         bool LogServerPackets { get; set; }
@@ -138,94 +134,175 @@ namespace Darkages
     public class ServerConstants : IServerConstants
     {
         public bool AssailsCancelSpells { get; set; }
+
         public string BadRequestMessage { get; set; }
-        public byte BaseAC { get; set; } = 170;
+
         public byte BaseMR { get; set; } = 70;
+
         public byte BaseStatAttribute { get; set; }
+
         public double BehindDamageMod { get; set; }
+
         public bool CancelCastingWhenWalking { get; set; }
+
         public bool CancelWalkingIfRefreshing { get; set; }
+
         public bool CanMoveDuringReap { get; set; }
+
         public string CantAttack { get; set; }
+
         public string CantCarryMoreMsg { get; set; }
+
         public string CantDoThat { get; set; }
+
         public string CantDropItemMsg { get; set; }
+
         public string CantEquipThatMessage { get; set; }
+
         public string CantUseThat { get; set; }
+
         public string CantWearYetMessage { get; set; }
+
         public string ChantPrefix { get; set; }
+
         public string ChantSuffix { get; set; }
+
         public int ClickLootDistance { get; set; }
+
         public int ClientVersion { get; set; }
+
         public string ConAddedMessage { get; set; }
+
         public int ConnectionCapacity { get; set; }
+
         public string CursedItemMessage { get; set; }
-        public double DayTimeInterval { get; set; }
+
         public int DeathHPPenalty { get; set; }
+
         public int DeathMap { get; set; }
+
         public int DeathMapX { get; set; }
+
         public int DeathMapY { get; set; }
+
         public string DeathReepingMessage { get; set; }
+
         public bool DebugMode { get; set; }
+
         [JsonProperty] public ItemColor DefaultItemColor { get; set; }
+
         public uint DefaultItemDurability { get; set; }
+
         public uint DefaultItemValue { get; set; }
+
         public bool DevMode { get; set; }
+
         public string[] DevModeExemptions { get; set; }
+
         public string DexAddedMessage { get; set; }
+
         public string DoesNotFitMessage { get; set; }
+
         public bool DontSavePlayers { get; set; }
-        public int ERRORCAP { get; set; }
+
         public double FasNadurStrength { get; set; }
+
         public List<string> GameMasters { get; set; }
+
         public bool GiveAssailOnCreate { get; set; }
+
         public double GlobalBaseSkillDelay { get; set; }
+
         public double GlobalSpawnTimer { get; set; }
+
         public double GroupExpBonus { get; set; }
+
         public string GroupRequestDeclinedMsg { get; set; }
+
         public string HandShakeMessage { get; set; }
+
         public int HelperMenuId { get; set; }
+
         public string HelperMenuTemplateKey { get; set; }
+
         public int HpGainFactor { get; set; }
+
         public string IntAddedMessage { get; set; }
+
         public string ItemNotRequiredMsg { get; set; }
+
         public string LevelUpMessage { get; set; }
-        public double LingerState { get; set; }
+
         public bool LogClientPackets { get; set; }
+
         public int LOGIN_PORT { get; set; }
+
         public bool LogServerPackets { get; set; }
+
         public int LootTableStackSize { get; set; }
+
         public int MaxCarryGold { get; set; }
+
         public int MaxHP { get; set; }
+
         public string MerchantBuy { get; set; }
+
         public string MerchantBuyMessage { get; set; }
+
         public string MerchantCancelMessage { get; set; }
+
         public string MerchantConfirmMessage { get; set; }
+
         public string MerchantRefuseTradeMessage { get; set; }
+
         public string MerchantSell { get; set; }
+
         public string MerchantStackErrorMessage { get; set; }
+
         public string MerchantTradeCompletedMessage { get; set; }
+
         public string MerchantTradeErrorMessage { get; set; }
+
         public string MerchantWarningMessage { get; set; }
+
         public double MessageClearInterval { get; set; }
+
         public int MinimumHp { get; set; }
+
         public int MonsterSpellSuccessRate { get; set; }
+
         public double MorFasNadurStrength { get; set; }
+
         public int MpGainFactor { get; set; }
+
         public bool MultiUserLogin { get; set; }
+
         public double MundaneRespawnInterval { get; set; }
+
         public double NationReturnHours { get; set; }
+
         public string NoManaMessage { get; set; }
+
         public string NotEnoughGoldToDropMsg { get; set; }
+
         public double PingInterval { get; set; }
+
         public int PlayerLevelCap { get; set; }
+
         public int PVPMap { get; set; }
+
         public string ReapMessage { get; set; }
+
         public string ReapMessageDuringAction { get; set; }
+
         public int RefreshRate { get; set; }
+
         public int RegenRate { get; set; }
+
         public string RepairItemMessage { get; set; }
+
         public double SaveRate { get; set; }
+
         public int SERVER_PORT { get; set; }
 
         public string SERVER_TITLE { get; set; }
@@ -259,8 +336,11 @@ namespace Darkages
         public int TransitionZone { get; set; }
 
         public bool UseLobby { get; set; }
+
         public bool UseLoruleItemRarity { get; set; }
+
         public bool UseLoruleVariants { get; set; }
+
         public string UserDroppedGoldMsg { get; set; }
 
         public int VeryNearByProximity { get; set; }

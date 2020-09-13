@@ -53,7 +53,7 @@ namespace Darkages.Network.Game
 
             #region Sanity Checks
 
-            if (lpClient?.Aisling == null)
+            if (lpClient.Aisling == null)
                 return;
 
             if (lpClient.Aisling.IsDead())
@@ -77,15 +77,16 @@ namespace Darkages.Network.Game
             var itemScripts = lpClient.Aisling.EquipmentManager.Weapon?.Item?.WeaponScripts;
 
             if (itemScripts != null)
-                foreach (var itemScript in itemScripts?.Values)
-                    if (itemScript != null && ready)
-                        itemScript.OnUse(lpClient.Aisling,
-                            targets =>
-                            {
-                                lpClient.LastScriptExecuted =
-                                    DateTime.UtcNow.AddMilliseconds(ServerContext.Config
-                                        .GlobalBaseSkillDelay);
-                            });
+                foreach (var itemScript in itemScripts.Values.Where(itemScript => itemScript != null && ready))
+                {
+                    itemScript.OnUse(lpClient.Aisling,
+                        targets =>
+                        {
+                            lpClient.LastScriptExecuted =
+                                DateTime.UtcNow.AddMilliseconds(ServerContext.Config
+                                    .GlobalBaseSkillDelay);
+                        });
+                }
 
             if ((lpClient.LastAssail - DateTime.UtcNow).TotalMilliseconds >
                 ServerContext.Config.GlobalBaseSkillDelay) return;
@@ -149,58 +150,55 @@ namespace Darkages.Network.Game
             var yamlPath = ServerContext.StoragePath +
                            string.Format(CultureInfo.CurrentCulture, @"\interactive\Menus\{0}.yaml", lpName);
 
-            if (File.Exists(yamlPath))
-            {
-
-                var globals = new ScriptGlobals
-                {
-                    actor = obj,
-                    client = lpClient,
-                    user = lpClient.Aisling
-                };
-
-                lpClient.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
-                lpClient.MenuInterpter.Actor = obj;
-                lpClient.MenuInterpter.Client = lpClient;
-                lpClient.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
-
-                lpClient.MenuInterpter.RegisterCheckpointHandler("Call", async (client, res) =>
-                {
-                    try
-                    {
-                        await CSharpScript.EvaluateAsync<bool>(res.Value, ScriptOptions, globals);
-                        res.Result = globals.result;
-                    }
-                    catch (Exception e)
-                    {
-                        ServerContext.Logger($"Script Error: {res.Value}.");
-                        ServerContext.Error(e);
-
-                        res.Result = false;
-                    }
-                });
-
-                lpClient.MenuInterpter.RegisterCheckpointHandler("QuestCompleted", (client, res) =>
-                {
-                    if (client.Aisling.HasQuest(res.Value))
-                        res.Result = client.Aisling.HasCompletedQuest(res.Value);
-                });
-
-                lpClient.MenuInterpter.RegisterCheckpointHandler("CompleteQuest", (client, res) =>
-                {
-                    if (!client.Aisling.HasQuest(res.Value))
-                        return;
-
-                    var q = client.Aisling.GetQuest(res.Value);
-
-                    if (q != null)
-                        if (!q.Completed)
-                            q.HandleQuest(client, null,
-                                completed => { res.Result = completed; });
-                });
-
+            if (!File.Exists(yamlPath))
                 return;
-            }
+
+            var globals = new ScriptGlobals
+            {
+                actor = obj,
+                client = lpClient,
+                user = lpClient.Aisling
+            };
+
+            lpClient.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
+            lpClient.MenuInterpter.Actor = obj;
+            lpClient.MenuInterpter.Client = lpClient;
+            lpClient.MenuInterpter.OnMovedToNextStep += MenuInterpter_OnMovedToNextStep;
+
+            lpClient.MenuInterpter.RegisterCheckpointHandler("Call", async (client, res) =>
+            {
+                try
+                {
+                    await CSharpScript.EvaluateAsync<bool>(res.Value, ScriptOptions, globals);
+                    res.Result = globals.result;
+                }
+                catch (Exception e)
+                {
+                    ServerContext.Logger($"Script Error: {res.Value}.");
+                    ServerContext.Error(e);
+
+                    res.Result = false;
+                }
+            });
+
+            lpClient.MenuInterpter.RegisterCheckpointHandler("QuestCompleted", (client, res) =>
+            {
+                if (client.Aisling.HasQuest(res.Value))
+                    res.Result = client.Aisling.HasCompletedQuest(res.Value);
+            });
+
+            lpClient.MenuInterpter.RegisterCheckpointHandler("CompleteQuest", (client, res) =>
+            {
+                if (!client.Aisling.HasQuest(res.Value))
+                    return;
+
+                var q = client.Aisling.GetQuest(res.Value);
+
+                if (q != null)
+                    if (!q.Completed)
+                        q.HandleQuest(client, null,
+                            completed => { res.Result = completed; });
+            });
 
         }
 
@@ -495,7 +493,7 @@ namespace Darkages.Network.Game
             }
 
             var itemPosition = new Position(format.X, format.Y);
-            Item copy = null;
+            Item copy;
 
             if (client.Aisling.Position.DistanceFrom(itemPosition.X, itemPosition.Y) > 2)
             {
@@ -607,7 +605,7 @@ namespace Darkages.Network.Game
 
             foreach (var npc in nearbyMundanes)
                 if (npc?.Scripts != null)
-                    foreach (var script in npc?.Scripts?.Values)
+                    foreach (var script in npc.Scripts?.Values)
                         script.OnGossip(this, client, format.Text);
 
             client.Aisling.Show(Scope.DefinedAislings, response, audience.ToArray());
@@ -634,41 +632,35 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            try
-            {
-                var spellReq = client.Aisling.SpellBook.Get(i => i != null && i.Slot == format.Index).FirstOrDefault();
 
-                if (spellReq == null)
+            var spellReq = client.Aisling.SpellBook.Get(i => i != null && i.Slot == format.Index).FirstOrDefault();
+
+            if (spellReq == null)
+                return;
+
+            //abort cast?
+            if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
+                if (spellReq.Template.Name != "ao suain" && spellReq.Template.Name != "ao pramh")
+                {
+                    CancelIfCasting(client);
                     return;
-
-                //abort cast?
-                if (client.Aisling.IsSleeping || client.Aisling.IsFrozen)
-                    if (spellReq.Template.Name != "ao suain" && spellReq.Template.Name != "ao pramh")
-                    {
-                        CancelIfCasting(client);
-                        return;
-                    }
-
-
-                var info = new CastInfo
-                {
-                    Slot = format.Index,
-                    Target = format.Serial, 
-                    Position = format.Point, 
-                    Data = format.Data,
-                };
-
-                if (info.Position == null)
-                {
-                    info.Position = new Position(client.Aisling.X, client.Aisling.Y);
                 }
 
-                client.CastStack.Push(info);
-            }
-            finally
-            {
 
+            var info = new CastInfo
+            {
+                Slot = format.Index,
+                Target = format.Serial,
+                Position = format.Point,
+                Data = format.Data,
+            };
+
+            if (info.Position == null)
+            {
+                info.Position = new Position(client.Aisling.X, client.Aisling.Y);
             }
+
+            client.CastStack.Push(info);
         }
 
         protected override void Format10Handler(GameClient client, ClientFormat10 format)
@@ -1311,7 +1303,7 @@ namespace Darkages.Network.Game
                 var mundane = GetObject<Mundane>(client.Aisling.Map, i => i.Serial == format.Serial);
 
                 if (mundane.Scripts != null)
-                    foreach (var script in mundane?.Scripts?.Values)
+                    foreach (var script in mundane.Scripts?.Values)
                         script.OnResponse(this, client, format.Step, format.Args);
             }
             else
@@ -1531,150 +1523,145 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            try
+
+            if (format.Type == 0x01)
             {
-                if (format.Type == 0x01)
+                client.FlushAndSend(new BoardList(ServerContext.Community));
+                return;
+            }
+
+            if (format.Type == 0x02)
+            {
+                if (format.BoardIndex == 0)
                 {
-                    client.FlushAndSend(new BoardList(ServerContext.Community));
+                    var clone = Clone<Board>(ServerContext.Community[format.BoardIndex]);
+                    {
+                        clone.Client = client;
+                        client.FlushAndSend(clone);
+                    }
                     return;
                 }
 
-                if (format.Type == 0x02)
+                var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
+                    .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
+                    .FirstOrDefault();
+
+                if (boards != null)
+                    client.FlushAndSend(boards);
+
+                return;
+            }
+
+            if (format.Type == 0x03)
+            {
+                var index = format.TopicIndex - 1;
+
+                var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
+                    .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
+                    .FirstOrDefault();
+
+                if (boards != null &&
+                    boards.Posts.Count > index)
                 {
-                    if (format.BoardIndex == 0)
+                    var post = boards.Posts[index];
+                    client.FlushAndSend(post);
+                    return;
+                }
+
+                client.FlushAndSend(new ForumCallback("Unable to retrieve more.", 0x06, true));
+                return;
+            }
+
+            if (format.Type == 0x06)
+            {
+                var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
+                    .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
+                    .FirstOrDefault();
+
+                if (boards != null)
+                {
+                    var np = new PostFormat(format.BoardIndex, format.TopicIndex)
                     {
-                        var clone = Clone<Board>(ServerContext.Community[format.BoardIndex]);
+                        DatePosted = DateTime.UtcNow,
+                        Message = format.Message,
+                        Subject = format.Title,
+                        Read = false,
+                        Sender = client.Aisling.Username,
+                        Recipient = format.To,
+                        PostId = (ushort) (boards.Posts.Count + 1)
+                    };
+
+                    np.Associate(client.Aisling.Username);
+                    boards.Posts.Add(np);
+                    ServerContext.SaveCommunityAssets();
+                    client.FlushAndSend(new ForumCallback("Message Delivered.", 0x06, true));
+                }
+
+                return;
+            }
+
+            if (format.Type == 0x04)
+            {
+                var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
+                    .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
+                    .FirstOrDefault();
+
+                if (boards != null)
+                {
+                    var np = new PostFormat(format.BoardIndex, format.TopicIndex)
+                    {
+                        DatePosted = DateTime.UtcNow,
+                        Message = format.Message,
+                        Subject = format.Title,
+                        Read = false,
+                        Sender = client.Aisling.Username,
+                        PostId = (ushort) (boards.Posts.Count + 1)
+                    };
+
+                    np.Associate(client.Aisling.Username);
+
+                    boards.Posts.Add(np);
+                    ServerContext.SaveCommunityAssets();
+                    client.FlushAndSend(new ForumCallback("Post Added.", 0x06, true));
+                }
+
+                return;
+            }
+
+            if (format.Type == 0x05)
+            {
+                var community = ServerContext.GlobalBoardCache.Select(i => i.Value)
+                    .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
+                    .FirstOrDefault();
+
+                if (community != null && community.Posts.Count > 0)
+                    try
+                    {
+                        if ((format.BoardIndex == 0
+                                ? community.Posts[format.TopicIndex - 1].Recipient
+                                : community.Posts[format.TopicIndex - 1].Sender
+                            ).Equals(client.Aisling.Username, StringComparison.OrdinalIgnoreCase))
                         {
-                            clone.Client = client;
-                            client.FlushAndSend(clone);
+                            client.FlushAndSend(new ForumCallback("\0", 0x07, true));
+                            client.FlushAndSend(new BoardList(ServerContext.Community));
+                            client.FlushAndSend(new ForumCallback("Post Deleted.", 0x07, true));
+
+                            community.Posts.RemoveAt(format.TopicIndex - 1);
+                            ServerContext.SaveCommunityAssets();
+
+                            client.FlushAndSend(new ForumCallback("Post Deleted.", 0x07, true));
                         }
-                        return;
-                    }
-
-                    var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
-                        .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
-                        .FirstOrDefault();
-
-                    if (boards != null)
-                        client.FlushAndSend(boards);
-
-                    return;
-                }
-
-                if (format.Type == 0x03)
-                {
-                    var index = format.TopicIndex - 1;
-
-                    var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
-                        .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
-                        .FirstOrDefault();
-
-                    if (boards != null &&
-                        boards.Posts.Count > index)
-                    {
-                        var post = boards.Posts[index];
-                        client.FlushAndSend(post);
-                        return;
-                    }
-
-                    client.FlushAndSend(new ForumCallback("Unable to retrieve more.", 0x06, true));
-                    return;
-                }
-
-                if (format.Type == 0x06)
-                {
-                    var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
-                        .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
-                        .FirstOrDefault();
-
-                    if (boards != null)
-                    {
-                        var np = new PostFormat(format.BoardIndex, format.TopicIndex)
-                        {
-                            DatePosted = DateTime.UtcNow,
-                            Message = format.Message,
-                            Subject = format.Title,
-                            Read = false,
-                            Sender = client.Aisling.Username,
-                            Recipient = format.To,
-                            PostId = (ushort)(boards.Posts.Count + 1)
-                        };
-
-                        np.Associate(client.Aisling.Username);
-                        boards.Posts.Add(np);
-                        ServerContext.SaveCommunityAssets();
-                        client.FlushAndSend(new ForumCallback("Message Delivered.", 0x06, true));
-                    }
-
-                    return;
-                }
-
-                if (format.Type == 0x04)
-                {
-                    var boards = ServerContext.GlobalBoardCache.Select(i => i.Value)
-                        .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
-                        .FirstOrDefault();
-
-                    if (boards != null)
-                    {
-                        var np = new PostFormat(format.BoardIndex, format.TopicIndex)
-                        {
-                            DatePosted = DateTime.UtcNow,
-                            Message = format.Message,
-                            Subject = format.Title,
-                            Read = false,
-                            Sender = client.Aisling.Username,
-                            PostId = (ushort)(boards.Posts.Count + 1)
-                        };
-
-                        np.Associate(client.Aisling.Username);
-
-                        boards.Posts.Add(np);
-                        ServerContext.SaveCommunityAssets();
-                        client.FlushAndSend(new ForumCallback("Post Added.", 0x06, true));
-                    }
-
-                    return;
-                }
-
-                if (format.Type == 0x05)
-                {
-                    var community = ServerContext.GlobalBoardCache.Select(i => i.Value)
-                        .SelectMany(i => i.Where(n => n.Index == format.BoardIndex))
-                        .FirstOrDefault();
-
-                    if (community != null && community.Posts.Count > 0)
-                        try
-                        {
-                            if ((format.BoardIndex == 0
-                                    ? community.Posts[format.TopicIndex - 1].Recipient
-                                    : community.Posts[format.TopicIndex - 1].Sender
-                                ).Equals(client.Aisling.Username, StringComparison.OrdinalIgnoreCase))
-                            {
-                                client.FlushAndSend(new ForumCallback("\0", 0x07, true));
-                                client.FlushAndSend(new BoardList(ServerContext.Community));
-                                client.FlushAndSend(new ForumCallback("Post Deleted.", 0x07, true));
-
-                                community.Posts.RemoveAt(format.TopicIndex - 1);
-                                ServerContext.SaveCommunityAssets();
-
-                                client.FlushAndSend(new ForumCallback("Post Deleted.", 0x07, true));
-                            }
-                            else
-                            {
-                                client.FlushAndSend(
-                                    new ForumCallback(ServerContext.Config.CantDoThat, 0x07, true));
-                            }
-                        }
-                        catch
+                        else
                         {
                             client.FlushAndSend(
                                 new ForumCallback(ServerContext.Config.CantDoThat, 0x07, true));
                         }
-                }
-            }
-            catch (Exception)
-            {
+                    }
+                    catch
+                    {
+                        client.FlushAndSend(
+                            new ForumCallback(ServerContext.Config.CantDoThat, 0x07, true));
+                    }
             }
         }
 
@@ -1849,28 +1836,30 @@ namespace Darkages.Network.Game
                     case null:
                         return;
 
-                    case Aisling _:
-                        client.Aisling.Show(Scope.Self, new ServerFormat34(obj as Aisling));
+                    case Aisling aisling:
+                        client.Aisling.Show(Scope.Self, new ServerFormat34(aisling));
                         break;
 
-                    case Monster _:
-                        foreach (var script in (obj as Monster)?.Scripts?.Values)
-                            script.OnClick(client);
+                    case Monster monster:
+                        var scripts = monster.Scripts?.Values;
+                        if (scripts != null)
+                            foreach (var script in scripts)
+                                script.OnClick(client);
                         break;
 
-                    case Mundane _:
+                    case Mundane mundane:
                         {
                             try
                             {
-                                if ((obj as Mundane).Scripts != null)
-                                    foreach (var script in (obj as Mundane)?.Scripts?.Values)
+                                if (mundane.Scripts != null)
+                                    foreach (var script in mundane.Scripts?.Values)
                                         script.OnClick(this, client);
 
-                                CreateInterpreterFromMenuFile(client, (obj as Mundane).Template.Name, obj);
+                                CreateInterpreterFromMenuFile(client, mundane.Template.Name, mundane);
                                 client.MenuInterpter?.Start();
 
                                 if (client.MenuInterpter != null)
-                                    client.ShowCurrentMenu(obj as Mundane, null, client.MenuInterpter.GetCurrentStep());
+                                    client.ShowCurrentMenu(mundane, null, client.MenuInterpter.GetCurrentStep());
                             }
                             catch
                             {
@@ -2081,7 +2070,7 @@ namespace Darkages.Network.Game
                     if (item == null || item.Template == null)
                         return;
 
-                    if (item != null && trader.Exchange != null)
+                    if (trader.Exchange != null)
                         if (player.EquipmentManager.RemoveFromInventory(item, true))
                             if (trader.CurrentWeight + item.Template.CarryWeight < trader.MaximumWeight)
                             {
@@ -2338,7 +2327,7 @@ namespace Darkages.Network.Game
         {
             foreach (var warps in ServerContext.GlobalWarpTemplateCache.Where(warps =>
                 warps.ActivationMapId == client.Aisling.CurrentMapId))
-                foreach (var o in warps.Activations.Where(o =>
+                foreach (var _ in warps.Activations.Where(o =>
                     o.Location.DistanceFrom(client.Aisling.Position) <= warps.WarpRadius))
                 {
                     if (warps.WarpType == WarpType.Map)
@@ -2385,10 +2374,13 @@ namespace Darkages.Network.Game
         {
             #region
 
-            if (redirect.developer.Value == redirect.player.Value)
+            if (redirect.developer.Value != redirect.player.Value) return;
+            client.Aisling.Developer  = true;
+            client.Aisling.GameMaster = true;
+
+            if (client.Aisling.Developer)
             {
-                client.Aisling.Developer  = true;
-                client.Aisling.GameMaster = true;
+                client.LearnEverything();
             }
             #endregion
         }
@@ -2437,19 +2429,6 @@ namespace Darkages.Network.Game
             {
                 LoadPlayer(client, format.Name);
             }
-        }
-
-        private uint GetSpellTarget(GameClient client, ClientFormat0F format)
-        {
-            var obj = GetObject(client.Aisling.Map, i => i.Serial == format.Serial, Get.Monsters | Get.Aislings);
-
-            if (obj != null && obj.SpellReflect)
-            {
-                var n = Generator.Random.Next(100) > 30;
-                if (n) return (uint)obj.Serial;
-            }
-
-            return format.Serial;
         }
 
         private void LeaveGame(GameClient client, ClientFormat0B format)

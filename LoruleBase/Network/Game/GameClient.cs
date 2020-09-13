@@ -1,13 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.Remoting;
-using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
 using Darkages.Common;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
@@ -15,6 +7,12 @@ using Darkages.Storage;
 using Darkages.Storage.locales.debuffs;
 using Darkages.Types;
 using MenuInterpreter;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -113,7 +111,7 @@ namespace Darkages.Network.Game
         {
             var message = string.Empty;
 
-            if (client.Aisling.GameMaster)
+            if (client.Aisling.GameMaster || client.Aisling.Developer)
                 return true;
 
             if (item.Durability > 0)
@@ -233,23 +231,14 @@ namespace Darkages.Network.Game
             return Enter();
         }
 
-        public GameClient GhostFormToAisling()
-        {
-            Aisling.Flags = AislingFlags.Normal;
-            HpRegenTimer.Disabled = false;
-            MpRegenTimer.Disabled = false;
-
-            Refresh(true);
-            return this;
-        }
-
         public GameClient HandleTimeOuts()
         {
-            if (Aisling.Exchange != null)
-                if (Aisling.Exchange.Trader != null)
-                    if (!Aisling.Exchange.Trader.LoggedIn
-                        || !Aisling.WithinRangeOf(Aisling.Exchange.Trader))
-                        Aisling.CancelExchange();
+            if (Aisling.Exchange?.Trader == null)
+                return this;
+
+            if (!Aisling.Exchange.Trader.LoggedIn
+                || !Aisling.WithinRangeOf(Aisling.Exchange.Trader))
+                Aisling.CancelExchange();
 
             return this;
         }
@@ -280,14 +269,13 @@ namespace Darkages.Network.Game
 
         public GameClient Insert()
         {
-            //Sanity check added here. this check will ensure we cannot insert the same person twice.
-            //Both cannot exist.
             var obj = GetObject<Aisling>(null, aisling => aisling.Serial == Aisling.Serial || aisling.Username.ToLower() == Aisling.Username.ToLower());
+            
             if (obj == null)
                 AddObject(Aisling);
             else
             {
-                obj.Remove(false, true);
+                obj.Remove();
                 AddObject(Aisling);
             }
 
@@ -300,51 +288,6 @@ namespace Darkages.Network.Game
             SendLocation();
         }
 
-        public GameClient LearnSkill(Mundane source, SkillTemplate subject, string message)
-        {
-            var canLearn = false;
-
-            if (subject.Prerequisites != null) canLearn = PayPrerequisites(subject.Prerequisites);
-
-            if (subject.LearningRequirements != null && subject.LearningRequirements.Any())
-                canLearn = subject.LearningRequirements.TrueForAll(PayPrerequisites);
-
-            if (!canLearn)
-                return this;
-
-            Skill.GiveTo(this, subject.Name);
-            SendOptionsDialog(source, message);
-
-            Aisling.Show(Scope.NearbyAislings,
-                new ServerFormat29((uint)Aisling.Serial, (uint)source.Serial,
-                    subject?.TargetAnimation ?? 124,
-                    subject?.TargetAnimation ?? 124, 100));
-
-            return this;
-        }
-
-        public GameClient LearnSpell(Mundane source, SpellTemplate subject, string message)
-        {
-            var canLearn = false;
-
-            if (subject.Prerequisites != null) canLearn = PayPrerequisites(subject.Prerequisites);
-
-            if (subject.LearningRequirements != null && subject.LearningRequirements.Any())
-                canLearn = subject.LearningRequirements.TrueForAll(PayPrerequisites);
-
-            if (!canLearn)
-                return this;
-
-            Spell.GiveTo(this, subject.Name);
-            SendOptionsDialog(source, message);
-
-            Aisling.Show(Scope.NearbyAislings,
-                new ServerFormat29((uint)Aisling.Serial, (uint)source.Serial,
-                    subject?.TargetAnimation ?? 124,
-                    subject?.TargetAnimation ?? 124, 100));
-
-            return this;
-        }
 
         public GameClient LeaveArea(bool update = false, bool delete = false)
         {
@@ -418,8 +361,9 @@ namespace Darkages.Network.Game
                         equipment.Item.WeaponScripts =
                             ScriptManager.Load<WeaponScript>(equipment.Item.Template.WeaponScript, equipment.Item);
 
-                    foreach (var script in equipment.Item.Scripts?.Values)
-                        script.Equipped(Aisling, (byte)equipment.Slot);
+                    if (equipment.Item.Scripts?.Values != null)
+                        foreach (var script in equipment.Item.Scripts?.Values)
+                            script.Equipped(Aisling, (byte) equipment.Slot);
 
                     if (equipment.Item.CanCarry(Aisling))
                     {
@@ -518,34 +462,35 @@ namespace Darkages.Network.Game
 
         public GameClient LoadSkillBook()
         {
+            lock (_syncObj)
+            {
+                var skillsAvailable = Aisling.SkillBook.Skills.Values
+                    .Where(i => i?.Template != null).ToArray();
 
-                lock (_syncObj)
+                foreach (var skill in skillsAvailable)
                 {
-                    var skillsAvailable = Aisling.SkillBook.Skills.Values
-                        .Where(i => i != null && i.Template != null).ToArray();
-
-                    foreach (var skill in skillsAvailable)
-                    {
-                        if (skill.Template != null)
-                            if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skill.Template.Name))
+                    if (skill.Template != null)
+                        if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skill.Template.Name))
+                        {
+                            var template = ServerContext.GlobalSkillTemplateCache[skill.Template.Name];
                             {
-                                var template = ServerContext.GlobalSkillTemplateCache[skill.Template.Name];
-                                {
-                                    skill.Template = template;
-                                }
+                                skill.Template = template;
                             }
+                        }
 
-                        skill.InUse = false;
-                        skill.NextAvailableUse = DateTime.UtcNow;
+                    skill.InUse = false;
+                    skill.NextAvailableUse = DateTime.UtcNow;
 
-                        Send(new ServerFormat2C(skill.Slot,
-                            skill.Icon,
-                            skill.Name));
+                    Send(new ServerFormat2C(skill.Slot,
+                        skill.Icon,
+                        skill.Name));
 
+                    if (skill.Template != null)
                         skill.Scripts = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, skill);
-                        Aisling.SkillBook.Set(skill, false);
-                    }
+
+                    Aisling.SkillBook.Set(skill, false);
                 }
+            }
 
             return this;
         }
@@ -589,7 +534,6 @@ namespace Darkages.Network.Game
                                 {
                                     var delta = (int)Math.Abs((DateTime.UtcNow - spell1.NextAvailableUse)
                                         .TotalSeconds);
-                                    var offset = Math.Abs(spell1.Template.Cooldown - delta);
 
                                     if (delta <= spell1.Template.Cooldown)
                                         Send(new ServerFormat3F(0,
@@ -982,33 +926,32 @@ namespace Darkages.Network.Game
 
             nextitem.Text = nextitem.Text.Replace("%aisling%", Aisling.Username);
 
-            if (nextitem == null) return;
-            if (nextitem.Type == MenuItemType.Step)
+            switch (nextitem.Type)
             {
-                Send(new ReactorSequence(this, new DialogSequence
+                case MenuItemType.Step:
                 {
-                    DisplayText = nextitem.Text,
-                    HasOptions = false,
-                    DisplayImage = (ushort)(obj as Mundane).Template.Image,
-                    Title = (obj as Mundane).Template.Name,
-                    CanMoveNext = nextitem.Answers.Length > 0,
-                    CanMoveBack = nextitem.Answers.Any(i => i.Text == "back"),
-                    Id = obj.Serial
-                }));
-            }
-            else if (nextitem.Type == MenuItemType.Menu)
-            {
-                var options = new List<OptionsDataItem>();
-
-                foreach (var ans in nextitem.Answers)
-                {
-                    if (ans.Text == "close")
-                        continue;
-
-                    options.Add(new OptionsDataItem((short)ans.Id, ans.Text));
+                    if (obj != null)
+                        Send(new ReactorSequence(this, new DialogSequence
+                        {
+                            DisplayText = nextitem.Text,
+                            HasOptions = false,
+                            DisplayImage = (ushort) ((Mundane) obj).Template.Image,
+                            Title = ((Mundane) obj).Template.Name,
+                            CanMoveNext = nextitem.Answers.Length > 0,
+                            CanMoveBack = nextitem.Answers.Any(i => i.Text == "back"),
+                            Id = obj.Serial
+                        }));
+                    break;
                 }
-
-                SendOptionsDialog(obj as Mundane, nextitem.Text, options.ToArray());
+                case MenuItemType.Menu:
+                {
+                    if (obj != null)
+                        SendOptionsDialog(obj as Mundane, nextitem.Text,
+                            (from ans in nextitem.Answers
+                                where ans.Text != "close"
+                                select new OptionsDataItem((short) ans.Id, ans.Text)).ToArray());
+                    break;
+                }
             }
         }
 
@@ -1019,33 +962,29 @@ namespace Darkages.Network.Game
 
             nextitem.Text = nextitem.Text.Replace("%aisling%", Aisling.Username);
 
-            if (nextitem == null) return;
-            if (nextitem.Type == MenuItemType.Step)
+            switch (nextitem.Type)
             {
-                Send(new ReactorSequence(this, new DialogSequence
+                case MenuItemType.Step:
+                    Send(new ReactorSequence(this, new DialogSequence
+                    {
+                        DisplayText = nextitem.Text,
+                        HasOptions = false,
+                        DisplayImage = popup.Template.SpriteId,
+                        Title = popup.Template.Name,
+                        CanMoveNext = nextitem.Answers.Length > 0,
+                        CanMoveBack = nextitem.Answers.Any(i => i.Text == "back"),
+                        Id = popup.Id
+                    }));
+                    break;
+                case MenuItemType.Menu:
                 {
-                    DisplayText = nextitem.Text,
-                    HasOptions = false,
-                    DisplayImage = popup.Template.SpriteId,
-                    Title = popup.Template.Name,
-                    CanMoveNext = nextitem.Answers.Length > 0,
-                    CanMoveBack = nextitem.Answers.Any(i => i.Text == "back"),
-                    Id = popup.Id
-                }));
-            }
-            else if (nextitem.Type == MenuItemType.Menu)
-            {
-                var options = new List<OptionsDataItem>();
-
-                foreach (var ans in nextitem.Answers)
-                {
-                    if (ans.Text == "close")
-                        continue;
-
-                    options.Add(new OptionsDataItem((short)ans.Id, ans.Text));
+                    if (popup != null)
+                        SendPopupDialog(popup, nextitem.Text,
+                            (from ans in nextitem.Answers
+                                where ans.Text != "close"
+                                select new OptionsDataItem((short) ans.Id, ans.Text)).ToArray());
+                    break;
                 }
-
-                SendPopupDialog(popup, nextitem.Text, options.ToArray());
             }
         }
 
