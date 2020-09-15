@@ -52,9 +52,8 @@ namespace Darkages.Network
 
             lock (Clients)
             {
-                foreach (var client in Clients)
-                    if (client != null)
-                        ClientDisconnected(client);
+                foreach (var client in Clients.Where(client => client != null))
+                    ClientDisconnected(client);
             }
         }
 
@@ -83,6 +82,9 @@ namespace Darkages.Network
 
             try
             {
+                if (!Clients.Exists(i => i.Serial == client.Serial))
+                    return;
+
                 client.Read(packet, format);
                 client.LastMessageFromClient = DateTime.UtcNow;
 
@@ -1175,7 +1177,8 @@ namespace Darkages.Network
 
                         client.State.BeginReceiveHeader(EndReceiveHeader, out var error, client);
 
-                        if (error != SocketError.IOPending && error != SocketError.Success) ClientDisconnected(client);
+                        if (error != SocketError.IOPending && error != SocketError.Success)
+                            ClientDisconnected(client);
                     }
                     else
                     {

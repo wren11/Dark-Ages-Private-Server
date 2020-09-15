@@ -19,7 +19,7 @@ namespace Darkages.Network.Game.Components
 
         public GameServerTimer Timer { get; set; }
 
-        public override void Update(TimeSpan elapsedTime)
+        protected internal override void Update(TimeSpan elapsedTime)
         {
             if (Timer.Update(elapsedTime))
                 foreach (var client in Server.Clients.Where(client => client != null && client.Aisling != null))

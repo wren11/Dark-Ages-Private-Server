@@ -26,7 +26,7 @@ namespace Darkages.Network.Game.Components
                 AddObject(newObj);
         }
 
-        public override void Update(TimeSpan elapsedTime)
+        protected internal override void Update(TimeSpan elapsedTime)
         {
             if (_timer.Update(elapsedTime))
                 Lorule.Update(ManageSpawns);

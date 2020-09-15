@@ -122,6 +122,8 @@ namespace Darkages
         int WithinRangeProximity { get; set; }
         string WrongClassMessage { get; set; }
         string YouDroppedGoldMsg { get; set; }
+        bool F5ReloadsMonsters { get; set; }
+        bool F5ReloadsPlayers { get; set; }
     }
 
     public class GameSetting
@@ -356,5 +358,15 @@ namespace Darkages
         public string WrongClassMessage { get; set; }
 
         public string YouDroppedGoldMsg { get; set; }
+
+        /// <summary>
+        /// Enable to refresh Monsters when player F5s
+        /// </summary>
+        public bool F5ReloadsMonsters { get; set; }
+
+        /// <summary>
+        /// Enable to refresh Players when player F5s
+        /// </summary>
+        public bool F5ReloadsPlayers { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace Darkages.Network.Game.Components
 
         public GameServerTimer Timer { get; set; }
 
-        public override void Update(TimeSpan elapsedTime)
+        protected internal override void Update(TimeSpan elapsedTime)
         {
             if (Timer.Update(elapsedTime))
                 lock (ServerContext.SyncLock)

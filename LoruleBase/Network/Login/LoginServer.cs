@@ -129,8 +129,6 @@ namespace Darkages.Network.Login
                 return;
             }
 
-            Thread.Sleep(1000);
-
             if (!ServerContext.Config.MultiUserLogin)
             {
                 var aislings = ServerContext.Game.Clients.Where(i =>
@@ -138,7 +136,10 @@ namespace Darkages.Network.Login
                     i.Aisling.Username.ToLower() == format.Username.ToLower());
 
                 foreach (var obj in aislings)
+                {
+                    obj.Aisling?.Remove(true);
                     obj.Server.ClientDisconnected(obj);
+                }
             }
 
             LoginAsAisling(client, aisling);

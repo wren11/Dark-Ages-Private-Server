@@ -150,11 +150,11 @@ namespace Darkages.Network.Game
 
                 _previousGameTime += gameTime;
 
-                await Task.Delay(500);
+                await Task.Delay(8);
             }
         }
 
-        private void UpdateComponents(TimeSpan elapsedTime)
+        protected void UpdateComponents(TimeSpan elapsedTime)
         {
             try
             {

@@ -56,6 +56,7 @@ namespace Darkages.Common
                 {
                     id = Random.Next();
                 }
+
             } while (GeneratedNumbers.Contains(id));
 
             return id;

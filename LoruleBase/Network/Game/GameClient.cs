@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -220,7 +221,10 @@ namespace Darkages.Network.Game
                 }
 
                 if (aisling?.Client != null)
+                {
+                    aisling.Remove(true);
                     Server.ClientDisconnected(aisling.Client);
+                }
             }
 
             DelObjects(clones);
@@ -295,6 +299,30 @@ namespace Darkages.Network.Game
 
             Aisling.Remove(update, delete);
 
+            if (ServerContext.Config.F5ReloadsPlayers)
+            {
+                foreach (var obj in Aisling.AislingsNearby())
+                {
+                    if (obj.Serial == Aisling.Serial)
+                        continue;
+
+                    obj.HideFrom(Aisling);
+                    obj.ShowTo(Aisling);
+                }
+            }
+
+            if (ServerContext.Config.F5ReloadsMonsters)
+            {
+                foreach (var obj in Aisling.MonstersNearby())
+                {
+                    if (obj.Serial == Aisling.Serial)
+                        continue;
+
+                    obj.HideFrom(Aisling);
+                    obj.ShowTo(Aisling);
+                }
+            }
+
             return this;
         }
 
@@ -340,7 +368,7 @@ namespace Darkages.Network.Game
                 {
                     var equipment = item.Value;
 
-                    if (equipment == null || equipment.Item == null || equipment.Item.Template == null)
+                    if (equipment?.Item == null || equipment.Item.Template == null)
                         continue;
 
                     if (equipment.Item.Template != null)
@@ -602,8 +630,9 @@ namespace Darkages.Network.Game
             return this;
         }
 
-        public GameClient RefreshMap()
+        public GameClient RefreshMap(bool updateView = false)
         {
+            Aisling.View.Clear();
             ShouldUpdateMap = false;
 
             if (Aisling.CurrentMapId != Aisling.LastMapId)
@@ -617,20 +646,21 @@ namespace Darkages.Network.Game
                 SendMusic();
             }
 
-            if (ShouldUpdateMap)
-            {
-                MapUpdating = true;
-                Aisling.Client.LastMapUpdated = DateTime.UtcNow;
-                Aisling.View.Clear();
+            if (!ShouldUpdateMap)
+                return this;
 
-                if (Aisling.Blind == 1) Aisling.Map.Flags |= MapFlags.Darkness;
+            MapUpdating = true;
+            Aisling.Client.LastMapUpdated = DateTime.UtcNow;
 
-                Send(new ServerFormat15(Aisling.Map));
-            }
-            else
+            if (Aisling.Blind == 1)
             {
-                Aisling.View.Clear();
+                if (!Aisling.Map.Flags.HasFlag(MapFlags.Darkness))
+                {
+                    Aisling.Map.Flags |= MapFlags.Darkness;
+                }
             }
+
+            Send(new ServerFormat15(Aisling.Map));
 
             return this;
         }
@@ -1188,6 +1218,8 @@ namespace Darkages.Network.Game
 
             if ((DateTime.UtcNow - LastMessageFromClient).TotalSeconds > 120)
             {
+                Aisling?.Remove(true);
+
                 Server.ClientDisconnected(this);
             }
 
@@ -1196,25 +1228,25 @@ namespace Darkages.Network.Game
 
         private void DispatchCasts()
         {
-            if (CastStack.Any())
+            if (!CastStack.Any())
+                return;
+
+            while (CastStack.Any())
             {
-                while (CastStack.Any())
+                var stack = CastStack.Peek();
+                var spell = Aisling.SpellBook.Get(i => i.Slot == stack.Slot).FirstOrDefault();
+
+                if (spell == null) continue;
+
+                if (stack.Target == 0)
                 {
-                    var stack = CastStack.Peek();
-                    var spell = Aisling.SpellBook.Get(i => i.Slot == stack.Slot).FirstOrDefault();
-
-                    if (spell == null) continue;
-
-                    if (stack.Target == 0)
-                    {
-                        stack.Target = (uint) Aisling.Serial;
-                    }
-
-
-                    Aisling.CastSpell(spell);
-                    CastStack.Pop();
-                    Aisling.IsCastingSpell = false;
+                    stack.Target = (uint) Aisling.Serial;
                 }
+
+
+                Aisling.CastSpell(spell);
+                CastStack.Pop();
+                Aisling.IsCastingSpell = false;
             }
         }
 
@@ -1226,36 +1258,36 @@ namespace Darkages.Network.Game
 
             var nearbyAislings = Aisling.AislingsNearby();
 
-            if (nearbyAislings.Any())
+            if (!nearbyAislings.Any())
+                return this;
+
+            var myplayer = Aisling;
+            foreach (var otherplayer in nearbyAislings)
             {
-                var myplayer = Aisling;
-                foreach (var otherplayer in nearbyAislings)
+                if (myplayer.Serial == otherplayer.Serial)
+                    continue;
+
+                if (!myplayer.Dead && !otherplayer.Dead)
                 {
-                    if (myplayer.Serial == otherplayer.Serial)
-                        continue;
-
-                    if (!myplayer.Dead && !otherplayer.Dead)
-                    {
-                        if (myplayer.Invisible)
-                            otherplayer.ShowTo(myplayer);
-                        else
-                            myplayer.ShowTo(otherplayer);
-
-                        if (otherplayer.Invisible)
-                            myplayer.ShowTo(otherplayer);
-                        else
-                            otherplayer.ShowTo(myplayer);
-                    }
+                    if (myplayer.Invisible)
+                        otherplayer.ShowTo(myplayer);
                     else
-                    {
-                        if (myplayer.Dead)
-                            if (otherplayer.CanSeeGhosts())
-                                myplayer.ShowTo(otherplayer);
+                        myplayer.ShowTo(otherplayer);
 
-                        if (otherplayer.Dead)
-                            if (myplayer.CanSeeGhosts())
-                                otherplayer.ShowTo(myplayer);
-                    }
+                    if (otherplayer.Invisible)
+                        myplayer.ShowTo(otherplayer);
+                    else
+                        otherplayer.ShowTo(myplayer);
+                }
+                else
+                {
+                    if (myplayer.Dead)
+                        if (otherplayer.CanSeeGhosts())
+                            myplayer.ShowTo(otherplayer);
+
+                    if (otherplayer.Dead)
+                        if (myplayer.CanSeeGhosts())
+                            otherplayer.ShowTo(myplayer);
                 }
             }
 

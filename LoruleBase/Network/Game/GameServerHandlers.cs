@@ -2067,7 +2067,7 @@ namespace Darkages.Network.Game
                     if (player.Exchange.Confirmed)
                         return;
 
-                    if (item == null || item.Template == null)
+                    if (item?.Template == null)
                         return;
 
                     if (trader.Exchange != null)
@@ -2274,13 +2274,13 @@ namespace Darkages.Network.Game
 
             if (subject > 0)
             {
-                if (subject >= 0 && chant.Length > subject)
-                {
-                    var message = chant[subject..];
-                    client.Say(
-                        ServerContext.Config.ChantPrefix + chant.Replace(message, string.Empty).Trim() +
-                        ServerContext.Config.ChantSuffix, 0x02);
-                }
+                if (subject < 0 || chant.Length <= subject)
+                    return;
+
+                var message = chant[subject..];
+                client.Say(
+                    ServerContext.Config.ChantPrefix + chant.Replace(message, string.Empty).Trim() +
+                    ServerContext.Config.ChantSuffix, 0x02);
 
                 return;
             }
@@ -2397,20 +2397,20 @@ namespace Darkages.Network.Game
 
                     var popup = Popup.Create(client, popupTemplate);
 
-                    if (popup != null)
+                    if (popup == null) continue;
+                    if (client.MenuInterpter == null)
+                    {
+                        CreateInterpreterFromMenuFile(client, popup.Template.YamlKey);
+
                         if (client.MenuInterpter == null)
-                        {
-                            CreateInterpreterFromMenuFile(client, popup.Template.YamlKey);
+                            continue;
 
-                            if (client.MenuInterpter == null)
-                                continue;
+                        client.MenuInterpter.Start();
+                        var next = client.MenuInterpter?.GetCurrentStep();
 
-                            client.MenuInterpter.Start();
-                            var next = client.MenuInterpter?.GetCurrentStep();
-
-                            if (next != null)
-                                client.ShowCurrentMenu(popup, null, next);
-                        }
+                        if (next != null)
+                            client.ShowCurrentMenu(popup, null, next);
+                    }
                 }
         }
 
@@ -2498,11 +2498,7 @@ namespace Darkages.Network.Game
             {
                 foreach (var dupedClient in dupedClients)
                 {
-                    if (dupedClient.Aisling != null)
-                    {
-                        DelObject(dupedClient.Aisling);
-                    }
-
+                    dupedClient.Aisling?.Remove(true);
                     base.ClientDisconnected(dupedClient);
                 }
             }

@@ -183,7 +183,7 @@ namespace Darkages.Network.Game.Components
             }
         }
 
-        public override void Update(TimeSpan elapsedTime)
+        protected internal override void Update(TimeSpan elapsedTime)
         {
             if (_timer.Update(elapsedTime)) UpdateObjects();
         }

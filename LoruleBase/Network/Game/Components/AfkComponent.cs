@@ -24,7 +24,7 @@ namespace Darkages.Network.Game.Components
                 new ServerFormat1A(client.Aisling.Serial, 16, 20));
         }
 
-        public override void Update(TimeSpan elapsedTime)
+        protected internal override void Update(TimeSpan elapsedTime)
         {
             if (_timer.Update(elapsedTime))
                 if (ServerContext.Game != null)

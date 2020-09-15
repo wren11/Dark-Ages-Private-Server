@@ -133,7 +133,7 @@ namespace Darkages.Network.Game
 
         GameClient Refresh(bool delete = false);
 
-        GameClient RefreshMap();
+        GameClient RefreshMap(bool updateView = false);
 
         GameClient Regen(TimeSpan elapsedTime);
 

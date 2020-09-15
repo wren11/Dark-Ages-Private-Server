@@ -251,30 +251,26 @@ namespace Darkages.Network.Game
         {
             foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values)
             {
-                if (skill != null)
-                {
-                    ForgetSkill(skill.Name);
-                    Skill.GiveTo(Aisling, skill.Name);
-                }
+                if (skill == null) continue;
+                ForgetSkill(skill.Name);
+                Skill.GiveTo(Aisling, skill.Name);
             }
 
             foreach (var spell in ServerContext.GlobalSpellTemplateCache.Values)
             {
-                if (spell != null)
-                {
-                    ForgetSpell(spell.Name);
-                    Spell.GiveTo(Aisling, spell.Name);
-                }
+                if (spell == null) continue;
+                ForgetSpell(spell.Name);
+                Spell.GiveTo(Aisling, spell.Name);
             }
 
-            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values)
+            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values.Where(skill => skill != null))
             {
-                if (skill != null) Skill.GiveTo(Aisling, skill.Name);
+                Skill.GiveTo(Aisling, skill.Name);
             }
 
-            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Values)
+            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Values.Where(spell => spell != null))
             {
-                if (spell != null) Spell.GiveTo(Aisling, spell.Name);
+                Spell.GiveTo(Aisling, spell.Name);
             }
 
 

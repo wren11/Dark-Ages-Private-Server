@@ -10,13 +10,13 @@ namespace Darkages.Network.Game
 {
     public abstract class GameServerComponent : ObjectManager
     {
-        public GameServerComponent(GameServer server)
+        protected GameServerComponent(GameServer server)
         {
             Server = server;
         }
 
         [JsonIgnore] public GameServer Server { get; }
 
-        public abstract void Update(TimeSpan elapsedTime);
+        protected internal abstract void Update(TimeSpan elapsedTime);
     }
 }

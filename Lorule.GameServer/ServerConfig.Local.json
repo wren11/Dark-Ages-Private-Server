@@ -3,6 +3,8 @@
 		"Location": "..\\..\\..\\..\\LORULE_DATA"
 	},
 	"ServerConfig": {
+		"F5ReloadsPlayers": false,
+		"F5ReloadsMonsters": false,
 		"LogClientPackets": true,
 		"LogServerPackets": true,
 		"MultiUserLogin": false,
