@@ -78,7 +78,7 @@ namespace Darkages.Network.ServerFormats
                 writer.Write((byte)(
                     user.Serial == Client.Aisling.Serial
                         ? ListColor.Tan
-                        : Math.Abs(Client.Aisling.ExpLevel - user.ExpLevel) < 10
+                        : Math.Abs(Client.Aisling.ExpLevel - user.ExpLevel) < 8
                             ? ListColor.Orange
                             : ListColor.White));
                 writer.Write((byte)user.ActiveStatus);

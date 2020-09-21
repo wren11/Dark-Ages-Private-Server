@@ -974,12 +974,12 @@ namespace Darkages.Types
 
         public void Remove()
         {
-            var nearby = GetObjects<Aisling>(Map, i => i.CurrentMapId == CurrentMapId);
+            var nearby = GetObjects<Aisling>(null, i => i != null && i.LoggedIn);
             var response = new ServerFormat0E(Serial);
 
             foreach (var o in nearby)
-                for (var i = 0; i < 3; i++)
-                    o?.Client?.FlushAndSend(response);
+                for (var i = 0; i < 2; i++)
+                    o?.Client?.Send(response);
 
             DeleteObject();
         }

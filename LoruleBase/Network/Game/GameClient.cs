@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -76,10 +75,18 @@ namespace Darkages.Network.Game
         public GameServer Server { get; set; }
         public bool ShouldUpdateMap { get; set; }
 
+        [JsonIgnore]
+        public DateTime LastNodeClicked { get; set; }
+        [JsonIgnore]
+        public WorldPortal PendingNode { get; set; }
+
         public bool WasUpdatingMapRecently =>
             DateTime.UtcNow - LastMapUpdated < new TimeSpan(0, 0, 0, 0, 100);
 
         public Position LastKnownPosition { get; set; }
+
+        [JsonIgnore]
+        public Aisling LastState { get; set; }
 
         public GameClient AislingToGhostForm()
         {
@@ -143,10 +150,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Path != item.Template.Class && item.Template.Class != Class.Peasant)
             {
-                if (client.Aisling.ExpLevel >= item.Template.LevelRequired)
-                    message = ServerContext.Config.WrongClassMessage;
-                else
-                    message = ServerContext.Config.CantWearYetMessage;
+                message = client.Aisling.ExpLevel >= item.Template.LevelRequired ? ServerContext.Config.WrongClassMessage : ServerContext.Config.CantWearYetMessage;
             }
 
             if (!item.Template.Class.HasFlag(client.Aisling.Path) && item.Template.Class != Class.Peasant)
@@ -368,7 +372,7 @@ namespace Darkages.Network.Game
                 {
                     var equipment = item.Value;
 
-                    if (equipment?.Item == null || equipment.Item.Template == null)
+                    if (equipment?.Item?.Template == null)
                         continue;
 
                     if (equipment.Item.Template != null)
@@ -415,7 +419,7 @@ namespace Darkages.Network.Game
                         for (var i = 0; i < Aisling.SpellBook.Spells.Count; i++)
                         {
                             var spell = Aisling.SpellBook.FindInSlot(i);
-                            if (spell != null && spell.Template != null)
+                            if (spell?.Template != null)
                                 equipment.Item.UpdateSpellSlot(this, spell.Slot);
                         }
                 }
@@ -432,7 +436,7 @@ namespace Darkages.Network.Game
             lock (_syncObj)
             {
                 var itemsAvailable = Aisling.Inventory.Items.Values
-                    .Where(i => i != null && i.Template != null).ToArray();
+                    .Where(i => i?.Template != null).ToArray();
 
                 foreach (var item in itemsAvailable)
                 {
@@ -530,7 +534,7 @@ namespace Darkages.Network.Game
                 Lorule.Update(() =>
                 {
                     var spellsAvailable = Aisling.SpellBook.Spells.Values
-                        .Where(i => i != null && i.Template != null).ToArray();
+                        .Where(i => i?.Template != null).ToArray();
 
                     foreach (var spell in spellsAvailable)
                     {
@@ -923,10 +927,6 @@ namespace Darkages.Network.Game
             return this;
         }
 
-        public void SendThenUnclock(NetworkFormat format)
-        {
-            if (InMapTransition) FlushAndSend(format);
-        }
 
         public GameClient SetAislingStartupVariables()
         {

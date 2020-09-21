@@ -2,7 +2,10 @@
 
 using System;
 using System.Net.Sockets;
+using System.Threading;
+using Darkages.IO;
 using Darkages.Network.ClientFormats;
+using Darkages.Network.Game;
 using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Security;
@@ -42,7 +45,7 @@ namespace Darkages.Network
 
             lock (_sendLock)
             {
-                Writer.Position = 0;
+                Writer.Position = 0b0;
                 Writer.Write(format.Command);
 
                 if (format.Secured)
@@ -59,7 +62,7 @@ namespace Darkages.Network
 
                 var buffer = packet.ToArray();
 
-                if (buffer.Length <= 0) return;
+                if (buffer.Length <= 0b0) return;
 
                 if (_sending)
                     return;
@@ -70,7 +73,7 @@ namespace Darkages.Network
                 {
                     Socket.BeginSend(
                         buffer,
-                        0,
+                        0b0,
                         buffer.Length,
                         SocketFlags.None,
                         SendCompleted,
@@ -89,44 +92,61 @@ namespace Darkages.Network
             if (packet == null)
                 return;
 
-            if (InMapTransition && !(format is ClientFormat3F)) return;
+            if (InMapTransition && !(format is ClientFormat3F))
+                return;
 
-            if (format is ClientFormat3F && InMapTransition)
-                InMapTransition = false;
+            if (format is ClientFormat3F clientFormat3F && InMapTransition)
+            {
+                if (this is GameClient client)
+                {
+                    client.LastState = null;
+                    client.LastNodeClicked = DateTime.UtcNow;
+
+                    InMapTransition = false;
+
+                    Thread.Sleep(0b11001000);
+                    GameServer.TraverseWorldMap(client, clientFormat3F);
+                }
+            }
 
             if (format.Secured)
             {
                 Encryption.Transform(packet);
 
-                switch (format.Command)
+                if (format.Command == 0b111001 || format.Command == 0b111010)
                 {
-                    case 0x39:
-                    case 0x3A:
-                        TransFormDialog(packet);
-                        Reader.Position = 6;
-                        break;
-
-                    default:
-                        Reader.Position = 0;
-                        break;
+                    TransFormDialog(packet);
+                    Reader.Position = 0b110;
+                }
+                else
+                {
+                    Reader.Position = 0b0;
                 }
             }
             else
             {
-                Reader.Position = -1;
+                Reader.Position = -0b1;
             }
 
             Reader.Packet = packet;
             format.Serialize(Reader);
-            Reader.Position = -1;
+            Reader.Position = -0b1;
         }
 
         public void Send(NetworkFormat format)
         {
+            if (format is ServerFormat2E)
+            {
+                if (this is GameClient gameClient)
+                {
+                    gameClient.LastState = ((Aisling)(object)(gameClient.Aisling));
+                }
+            }
+
             FlushAndSend(format);
         }
 
-        public void Send(NetworkPacketWriter lpData)
+        public void Send(NetworkPacketWriter data)
         {
             if (!Socket.Connected)
                 return;
@@ -135,7 +155,7 @@ namespace Darkages.Network
 
             lock (ServerContext.SyncLock)
             {
-                var packet = lpData.ToPacket();
+                var packet = data.ToPacket();
                 Encryption.Transform(packet);
 
                 var array = packet.ToArray();
@@ -152,7 +172,7 @@ namespace Darkages.Network
 
             lock (ServerContext.SyncLock)
             {
-                Writer.Position = 0;
+                Writer.Position = 0b0;
                 Writer.Write(data);
 
                 var packet = Writer.ToPacket();
@@ -175,18 +195,23 @@ namespace Darkages.Network
 
         private static byte P(NetworkPacket value)
         {
-            return (byte)(value.Data[1] ^ (byte)(value.Data[0] - 0x2D));
+            return (byte)(value.Data[0b1] ^ (byte)(value.Data[0b0] - 0b101101));
         }
 
         private static void TransFormDialog(NetworkPacket value)
         {
-            value.Data[2] ^= (byte)(P(value) + 0x73);
-            value.Data[3] ^= (byte)(P(value) + 0x73);
-            value.Data[4] ^= (byte)(P(value) + 0x28);
-            value.Data[5] ^= (byte)(P(value) + 0x29);
+            if (value.Data.Length > 0b10) value.Data[0b10] ^= (byte)(P(value) + 0b1110011);
+            if (value.Data.Length > 0b11) value.Data[0b11] ^= (byte)(P(value) + 0b1110011);
+            if (value.Data.Length > 0b100) value.Data[0b100] ^= (byte)(P(value) + 0b101000);
+            if (value.Data.Length > 0b101) value.Data[0b101] ^= (byte)(P(value) + 0b101001);
 
-            for (var i = 0; i < value.Data.Length - 6; i++)
-                value.Data[6 + i] ^= (byte)(((byte)(P(value) + 0x28) + i + 2) % 256);
+            for (var i = value.Data.Length - 0b110 - 0b1; i >= 0b0; i--)
+            {
+                var index = i + 0b110;
+
+                if (index >= 0b0 && value.Data.Length > index)
+                    value.Data[index] ^= (byte)(((byte)(P(value) + 0b101000) + i + 0b10) % 0b100000000);
+            }
         }
 
         private void SendCompleted(IAsyncResult ar)
@@ -194,6 +219,9 @@ namespace Darkages.Network
             lock (_sendLock)
             {
                 _sending = false;
+
+                if (Writer.Memory != null)
+                    BufferPool.Return(Writer.Memory);
             }
         }
     }

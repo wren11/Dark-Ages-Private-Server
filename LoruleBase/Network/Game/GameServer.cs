@@ -17,15 +17,11 @@ namespace Darkages.Network.Game
     {
         public ObjectService ObjectFactory = new ObjectService();
         public Dictionary<Type, GameServerComponent> ServerComponents;
-        private readonly TimeSpan _frameRate;
 
-        // Set previous game time
         private DateTime _previousGameTime;
 
         public GameServer(int capacity) : base(capacity)
         {
-            _frameRate = TimeSpan.FromSeconds(1.0 / 30);
-
             InitializeGameServer();
         }
 
@@ -33,7 +29,7 @@ namespace Darkages.Network.Game
         {
             if (client == null) throw new ArgumentNullException(nameof(client));
 
-            if (client?.Aisling == null)
+            if (client.Aisling == null)
                 return;
 
             try
@@ -64,7 +60,7 @@ namespace Darkages.Network.Game
 
         public void InitializeGameServer()
         {
-            InitComponentCache();
+            RegisterServerComponents();
         }
 
         public override void Start(int port)
@@ -74,7 +70,7 @@ namespace Darkages.Network.Game
             try
             {
                 ServerContext.Running = true;
-                Update();
+                UpdateServer();
             }
             catch (ThreadAbortException)
             {
@@ -85,46 +81,53 @@ namespace Darkages.Network.Game
         public void UpdateClients(TimeSpan elapsedTime)
         {
             foreach (var client in Clients.Where(client => client?.Aisling != null))
+            {
                 try
                 {
                     if (!client.Aisling.LoggedIn)
                         continue;
 
                     if (!client.IsWarping)
+                    {
                         Pulse(elapsedTime, client);
-                    else if (client.IsWarping && !client.InMapTransition)
-                        if (client.CanSendLocation && !client.IsRefreshing &&
-                            client.Aisling.CurrentMapId == ServerContext.Config.PVPMap)
-                            client.SendLocation();
+                    }
+                    else if (client.IsWarping &&
+                             !client.InMapTransition &&
+                             client.CanSendLocation &&
+                             !client.IsRefreshing &&
+                             client.Aisling.CurrentMapId == ServerContext.Config.PVPMap)
+                    {
+                        client.SendLocation();
+                    }
                 }
                 catch
                 {
                     // ignored
                 }
+            }
         }
 
         private static void Pulse(TimeSpan elapsedTime, IGameClient client)
         {
-            ObjectComponent.UpdateClientObjects(client.Aisling);
-            client.Update(elapsedTime);
+            if (client?.Aisling != null) ObjectComponent.UpdateClientObjects(client.Aisling);
+            client?.Update(elapsedTime);
         }
 
-        private void AutoSave(GameClient client)
+        private void AutoSave(IGameClient client)
         {
             if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContext.Config.SaveRate) client.Save();
         }
 
-        private void InitComponentCache()
+        private void RegisterServerComponents()
         {
             lock (ServerContext.SyncLock)
             {
                 ServerComponents = new Dictionary<Type, GameServerComponent>
                 {
-                    //[typeof(AfkComponent)] = new AfkComponent(this),
+                    [typeof(AfkComponent)] = new AfkComponent(this),
                     [typeof(SaveComponent)] = new SaveComponent(this),
                     [typeof(ObjectComponent)] = new ObjectComponent(this),
                     [typeof(MonolithComponent)] = new MonolithComponent(this),
-                    //[typeof(DaytimeComponent)] = new DaytimeComponent(this),
                     [typeof(MundaneComponent)] = new MundaneComponent(this),
                     [typeof(MessageComponent)] = new MessageComponent(this),
                     [typeof(PingComponent)] = new PingComponent(this)
@@ -132,7 +135,7 @@ namespace Darkages.Network.Game
             }
         }
 
-        private async void Update()
+        private async void UpdateServer()
         {
             _previousGameTime = DateTime.UtcNow;
 
@@ -161,14 +164,16 @@ namespace Darkages.Network.Game
                 var components = ServerComponents.Select(i => i.Value);
 
                 foreach (var component in components)
+                {
                     try
                     {
-                        component.Update(elapsedTime);
+                        component?.Update(elapsedTime);
                     }
                     catch
                     {
                         // ignored
                     }
+                }
             }
             catch (Exception e)
             {

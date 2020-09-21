@@ -1724,33 +1724,44 @@ namespace Darkages.Network.Game
             if (client.Aisling == null || !client.Aisling.LoggedIn)
                 return;
 
-            lock (ServerContext.SyncLock)
+            var worldMap = ServerContext.GlobalWorldMapTemplateCache[client.Aisling.World];
+
+            if (client.PendingNode == null)
             {
-                if (!ServerContext.GlobalWorldMapTemplateCache.ContainsKey(client.Aisling.World))
-                    return;
+                client.PendingNode = worldMap?.Portals.Find(i => i.Destination.AreaID == format.Index);
+                TraverseWorldMap(client, format);
+            }
+            else
+            {
+                client.PendingNode = worldMap?.Portals.Find(i => i.Destination.AreaID == format.Index);
+            }
+        }
 
-                var worldMap = ServerContext.GlobalWorldMapTemplateCache[client.Aisling.World];
+        public static void TraverseWorldMap(GameClient client, ClientFormat3F format)
+        {
+            if (client.PendingNode != null)
+            {
+                var selectedPortalNode = client.PendingNode;
 
-                var selectedPortalNode = worldMap?.Portals.Find(i => i.Destination.AreaID == format.Index);
                 if (selectedPortalNode == null)
                     return;
 
                 client.LeaveArea(true, true);
 
-                Thread.Sleep(100);
                 client.Send(new ServerFormat67());
                 client.Send(new ServerFormat15(client.Aisling.Map));
+                client.Send(new ServerFormat15(client.Aisling.Map));
+                client.Send(new ServerFormat04(client.Aisling));
                 client.Send(new ServerFormat04(client.Aisling));
                 client.Send(new ServerFormat33(client, client.Aisling));
-                client.Send(new byte[] { 0x1F, 0x00, 0x00 });
-                client.Send(new byte[] { 0x58, 0x00, 0x00 });
+                client.Send(new byte[] {0x1F, 0x00, 0x00});
+                client.Send(new byte[] {0x58, 0x00, 0x00});
 
                 client.Aisling.CurrentMapId = selectedPortalNode.Destination.AreaID;
                 client.Aisling.X = selectedPortalNode.Destination.Location.X;
                 client.Aisling.Y = selectedPortalNode.Destination.Location.Y;
-                client.Refresh();
 
-                client.InMapTransition = false;
+                client.EnterArea();
             }
         }
 

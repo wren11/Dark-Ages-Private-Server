@@ -678,8 +678,9 @@ namespace Darkages
                 if (delete)
                 {
                     var objs = GetObjects(Map,
-                        i => i.WithinRangeOf(this) && i.Target != null && i.Target.Serial == Serial,
+                        i => i.WithinRangeOf(this, false) && i.Target != null && i.Target.Serial == Serial,
                         Get.Monsters | Get.Mundanes);
+
                     if (objs != null)
                         foreach (var obj in objs)
                             obj.Target = null;

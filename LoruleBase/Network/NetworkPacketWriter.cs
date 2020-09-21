@@ -1,12 +1,9 @@
 ﻿#region
 
+using Darkages.IO;
 using System;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
-using Darkages.IO;
-using ServiceStack;
 
 #endregion
 
@@ -18,9 +15,12 @@ namespace Darkages.Network
         private readonly Encoding _encoding = Encoding.GetEncoding(949);
         private readonly byte[] _buffer;
 
+        public byte[] Memory => _buffer;
+
         public NetworkPacketWriter()
         {
-            _buffer = BufferPool.Take(0xFFFF);
+            //map payload limit = 768kb
+            _buffer = BufferPool.Take(768000);
         }
 
         public NetworkPacket ToPacket()
