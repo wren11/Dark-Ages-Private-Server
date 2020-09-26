@@ -1734,6 +1734,7 @@ namespace Darkages.Network.Game
             else
             {
                 client.PendingNode = worldMap?.Portals.Find(i => i.Destination.AreaID == format.Index);
+                TraverseWorldMap(client, format);
             }
         }
 
