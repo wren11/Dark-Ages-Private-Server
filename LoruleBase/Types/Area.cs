@@ -131,7 +131,9 @@ namespace Darkages
                             }
 
                             foreach (var script in monster.Scripts.Values)
+                            {
                                 script?.Update(elapsedTime);
+                            }
 
                             if (obj.TrapsAreNearby())
                             {

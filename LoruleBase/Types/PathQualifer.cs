@@ -1,5 +1,8 @@
-﻿namespace Darkages.Types
+﻿using System;
+
+namespace Darkages.Types
 {
+    [Flags]
     public enum PathQualifer
     {
         Wander = 1,

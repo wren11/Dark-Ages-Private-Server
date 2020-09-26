@@ -457,6 +457,10 @@ namespace Darkages
                 Client.Send(new ServerFormat3F(0,
                     spell.Slot,
                     spell.Template.Cooldown));
+
+
+
+            Client.Aisling.IsCastingSpell = false;
         }
 
         public void CompleteQuest(string lpName)

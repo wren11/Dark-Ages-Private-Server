@@ -58,8 +58,8 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
         public override void OnApproach(GameClient client)
         {
+            if (Monster.Template == null || Monster.Map == null) return;
             RefreshTarget(client);
-
             UpdateTarget();
         }
 

@@ -66,6 +66,7 @@ namespace Darkages.Network.Login
                         Parameters = client.Encryption.Parameters
                     });
 
+
             if (ServerContext.Config.DevMode)
                 if (ServerContext.Config.GameMasters != null)
                     foreach (var unused in ServerContext.Config.GameMasters)

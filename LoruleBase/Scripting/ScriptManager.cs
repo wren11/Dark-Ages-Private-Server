@@ -16,8 +16,6 @@ namespace Darkages.Scripting
         {
             var assembly = Assembly.GetExecutingAssembly();
 
-            if (assembly == null)
-                return;
             foreach (var type in assembly.GetTypes())
             {
                 ScriptAttribute attribute = null;

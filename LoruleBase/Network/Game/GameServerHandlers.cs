@@ -2243,6 +2243,8 @@ namespace Darkages.Network.Game
 
             #endregion
 
+            client.Aisling.IsCastingSpell = true;
+
             var lines = format.Lines;
 
             if (lines <= 0)
@@ -2261,8 +2263,9 @@ namespace Darkages.Network.Game
                     info.Started = DateTime.UtcNow;
                 }
 
-                client.Aisling.IsCastingSpell = true;
             }
+
+
         }
 
         protected override void Format4EHandler(GameClient client, ClientFormat4E format)

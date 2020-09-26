@@ -1246,7 +1246,6 @@ namespace Darkages.Network.Game
 
                 Aisling.CastSpell(spell);
                 CastStack.Pop();
-                Aisling.IsCastingSpell = false;
             }
         }
 

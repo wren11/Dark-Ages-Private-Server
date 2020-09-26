@@ -142,51 +142,56 @@ namespace Darkages.Network.Object
 
         private static void CloneItem<T>(object source, T obj)
         {
-            if (source is Item)
+            switch (source)
             {
-                (obj as Item).Template = (source as Item).Template;
-                (obj as Item).Scripts =
-                    ScriptManager.Load<ItemScript>((source as Item).Template.ScriptName, obj as Item);
+                case Item item:
+                    item.Template = item.Template;
+                    item.Scripts = ScriptManager.Load<ItemScript>(item.Template.ScriptName, obj as Item);
+                    break;
             }
         }
 
         private static void CloneMonster<T>(object source, T obj)
         {
-            if (source is Monster)
+            switch (source)
             {
-                (obj as Monster).Template = (source as Monster).Template;
-                (obj as Monster).Scripts =
-                    ScriptManager.Load<MonsterScript>((source as Monster).Template.ScriptName, obj as Monster);
+                case Monster monster:
+                    monster.Template = monster.Template;
+                    monster.Scripts  = ScriptManager.Load<MonsterScript>(monster.Template.ScriptName, obj as Monster);
+                    break;
             }
         }
 
         private static void CloneMundane<T>(object source, T obj)
         {
-            if (source is Mundane)
+            switch (source)
             {
-                (obj as Mundane).Template = (source as Mundane).Template;
-                (obj as Mundane).Scripts =
-                    ScriptManager.Load<MundaneScript>((source as Mundane).Template.ScriptKey, obj as Mundane);
+                case Mundane mundane:
+                    mundane.Template = mundane.Template;
+                    mundane.Scripts  = ScriptManager.Load<MundaneScript>(mundane.Template.ScriptKey, obj as Mundane);
+                    break;
             }
         }
 
         private static void CloneSkill<T>(object source, T obj)
         {
-            if (source is Skill)
+            switch (source)
             {
-                (obj as Skill).Template = (source as Skill).Template;
-                (obj as Skill).Scripts =
-                    ScriptManager.Load<SkillScript>((source as Skill).Template.ScriptName, obj as Skill);
+                case Skill skill:
+                    skill.Template = skill.Template;
+                    skill.Scripts  = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, obj as Skill);
+                    break;
             }
         }
 
         private static void CloseSpell<T>(object source, T obj)
         {
-            if (source is Spell)
+            switch (source)
             {
-                (obj as Spell).Template = (source as Spell).Template;
-                (obj as Spell).Scripts =
-                    ScriptManager.Load<SpellScript>((source as Spell).Template.ScriptKey, obj as Spell);
+                case Spell spell:
+                    spell.Template = spell.Template;
+                    spell.Scripts  = ScriptManager.Load<SpellScript>(spell.Template.ScriptKey, obj as Spell);
+                    break;
             }
         }
     }

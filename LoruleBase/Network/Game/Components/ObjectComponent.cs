@@ -39,9 +39,16 @@ namespace Darkages.Network.Game.Components
                 {
                     var valueCollection = monster.Scripts?.Values;
 
-                    if (valueCollection != null)
+                    if (monster.Template != null && monster.Map != null) 
+                        Monster.InitScripting(monster.Template, monster.Map, monster);
+
+                    if (valueCollection != null && valueCollection.Any())
+                    {
                         foreach (var script in valueCollection)
+                        {
                             script.OnApproach(player.Client);
+                        }
+                    }
                 }
 
                 if (obj is Aisling otherplayer)
