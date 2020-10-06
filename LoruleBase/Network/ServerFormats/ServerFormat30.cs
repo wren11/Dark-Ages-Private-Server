@@ -41,8 +41,8 @@ namespace Darkages.Network.ServerFormats
             writer.Write((byte) 0);
             writer.Write((byte) 0);
             writer.Write((byte) 0);
-            writer.WriteStringA("test");
-            writer.WriteStringB("test");
+            writer.WriteStringA(_mundane.Template.Name);
+            writer.WriteStringB(_captionA);
             writer.WriteStringA(_captionA);
             writer.Write((byte) _inputLength);
         }

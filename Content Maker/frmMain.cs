@@ -33,19 +33,16 @@ namespace Content_Maker
 
         private static void InitDataContext()
         {
-            ServerContext.LoadConstants();
-            {
-                ServerContext.StoragePath = @"..\..\..\LORULE_DATA";
+            ServerContext.StoragePath = @"..\..\..\LORULE_DATA";
 
-                if (!Directory.Exists(ServerContext.StoragePath))
-                {
-                    MessageBox.Show("Error, LORULE_DATA directory could not be found.");
-                    Application.Exit();
-                }
-                else
-                {
-                    ServerContext.LoadAndCacheStorage();
-                }
+            if (!Directory.Exists(ServerContext.StoragePath))
+            {
+                MessageBox.Show("Error, LORULE_DATA directory could not be found.");
+                Application.Exit();
+            }
+            else
+            {
+                ServerContext.LoadAndCacheStorage();
             }
         }
 

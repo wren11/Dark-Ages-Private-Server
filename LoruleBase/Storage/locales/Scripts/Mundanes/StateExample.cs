@@ -1,62 +1,76 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Types;
+using System.Collections.Generic;
 
 #endregion
 
 namespace Darkages.Storage.locales.Scripts.Mundanes
 {
     [Script("some example")]
-    public class StateExample : MundaneScript
+    public class SomeExample : MundaneScript
     {
-        private readonly Quest quest;
+        private readonly Dictionary<string, string> _dialogResponseMap = new Dictionary<string, string>();
 
-        public StateExample(GameServer server, Mundane mundane)
+        public SomeExample(GameServer server, Mundane mundane)
             : base(server, mundane)
         {
-            quest = new Quest();
-            quest.Name = "some unique name";
-            quest.LegendRewards = new List<Legend.LegendItem>
-            {
-                new Legend.LegendItem
-                {
-                    Category = "Class",
-                    Color = (byte) LegendColor.Blue,
-                    Icon = (byte) LegendIcon.Priest,
-                    Value = "some legend mark"
-                }
-            };
+            _dialogResponseMap["user"] = "Victorious";
         }
 
         public override void OnClick(GameServer server, GameClient client)
         {
-            client.SendOptionsDialog(Mundane, "some options",
-                new OptionsDataItem(0x0003, "option 3"));
-        }
-
-        public override void OnGossip(GameServer server, GameClient client, string message)
-        {
-        }
-
-        public override void OnResponse(GameServer server, GameClient client, ushort responseID, string args)
-        {
-            switch (responseID)
+            var options = new List<OptionsDataItem>
             {
-                case 0x0003:
+                new OptionsDataItem(0x03, "Grant reward"),
+            };
+            client.SendOptionsDialog(Mundane, $"State ya business?", options.ToArray());
+
+        }
+
+        public override void OnResponse(GameServer server, GameClient client, ushort responseId, string args)
+        {
+            if (!string.IsNullOrEmpty(args) && responseId > 0)
+            {
+                _dialogResponseMap["user"] = args;
+
+                var options = new List<OptionsDataItem>
                 {
-                    if (client.Aisling.AcceptQuest(quest))
-                        quest.OnCompleted(client.Aisling);
+                    new OptionsDataItem(0x04, "Yes, Give reward."),
+                    new OptionsDataItem(0x05, "Na, fuck him.")
+                };
+                client.SendOptionsDialog(Mundane, $"Are you sure [{_dialogResponseMap["user"]}] deserves such a reward?", options.ToArray());
+
+            }
+
+            if (responseId == 0x03)
+            {
+                client.Send(new ReactorInputSequence(Mundane, "Hello, Who deserves a reward?", 40));
+            }
+            else if (responseId == 0x04)
+            {
+                var userObj = GetObject<Aisling>(null, aisling => _dialogResponseMap.ContainsKey("user") && aisling.Username.Equals(_dialogResponseMap["user"]));
+                if (userObj != null)
+                {
+                    userObj._MaximumHp += 5000;
+                    userObj.Client.SendStats(StatusFlags.All);
                 }
-                    break;
+                else
+                {
+                    client.SendOptionsDialog(Mundane, "that player is not around.");
+                }
+            }
+            else if (responseId == 0x05)
+            {
+                client.SendOptionsDialog(Mundane, "ok then.");
             }
         }
 
-        public override void TargetAcquired(Sprite Target)
-        {
-        }
+        public override void OnGossip(GameServer server, GameClient client, string message) { }
+
+        public override void TargetAcquired(Sprite target) { }
     }
 }

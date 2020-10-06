@@ -34,7 +34,7 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write((ushort)Aisling.XPos);
             writer.Write((ushort)Aisling.YPos);
-            writer.Write(Aisling.Direction);
+            writer.Write((byte)Aisling.Direction);
             writer.Write((uint)Aisling.Serial);
 
             var displayFlag = Aisling.Gender == Gender.Male ? 0x10 : 0x20;
@@ -46,54 +46,76 @@ namespace Darkages.Network.ServerFormats
             else
                 displayFlag = Aisling.Gender == Gender.Male ? 0x10 : 0x20;
 
-            if (displayFlag == 0x10)
-                if (Aisling.Helmet > 100)
-                    writer.Write((ushort)Aisling.Helmet);
-                else
-                    writer.Write((ushort)Aisling.HairStyle);
-            else if (displayFlag == 0x20)
-                if (Aisling.Helmet > 100)
-                    writer.Write((ushort)Aisling.Helmet);
-                else
-                    writer.Write((ushort)Aisling.HairStyle);
-            else
-                writer.Write((ushort)0x00);
 
-            writer.Write((byte)(Aisling.Dead || Aisling.Invisible
-                ? displayFlag
-                : (byte)(Aisling.Display + Aisling.Pants)));
 
-            if (!Aisling.Dead && !Aisling.Invisible)
+
+            if (Aisling.MonsterForm == 0)
             {
-                writer.Write(Aisling.Armor);
-                writer.Write(Aisling.Boots);
-                writer.Write(Aisling.Armor);
-                writer.Write(Aisling.Shield);
-                writer.Write((byte)Aisling.Weapon);
-                writer.Write(Aisling.HairColor);
-                writer.Write(Aisling.BootColor);
-                writer.Write((ushort)Aisling.HeadAccessory1);
+                writer.Write((ushort)0);
+                writer.Write((byte)1);
+
+
+                writer.Write((ushort)0x22);
                 writer.Write((byte)0);
-                writer.Write((ushort)Aisling.HeadAccessory2);
                 writer.Write((byte)0);
-                writer.Write(Aisling.Resting);
-                writer.Write((ushort)Aisling.OverCoat);
+                writer.Write((uint)0);
+                writer.Write((byte)0);
+                writer.Write((byte)0);
             }
             else
             {
-                writer.Write((ushort)0);
-                writer.Write((byte)0);
-                writer.Write((ushort)0);
-                writer.Write((byte)0);
-                writer.Write((byte)0);
-                writer.Write(Aisling.HairColor);
-                writer.Write((byte)0);
-                writer.Write((ushort)0);
-                writer.Write((byte)0);
-                writer.Write((ushort)0);
-                writer.Write((byte)0);
-                writer.Write((byte)0);
-                writer.Write((ushort)0);
+
+                //Hair Style
+                if (displayFlag == 0x10)
+                    if (Aisling.Helmet > 100 && !Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill))
+                        writer.Write((ushort)Aisling.Helmet);
+                    else
+                        writer.Write((ushort)Aisling.HairStyle);
+                else if (displayFlag == 0x20)
+                    if (Aisling.Helmet > 100 && !Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill))
+                        writer.Write((ushort)Aisling.Helmet);
+                    else
+                        writer.Write((ushort)Aisling.HairStyle);
+                else
+                    writer.Write((ushort)0x00);
+
+                //Body Style
+                writer.Write((byte)(Aisling.Dead || Aisling.Invisible
+                    ? displayFlag
+                    : (byte)(Aisling.Display + Aisling.Pants)));
+
+                if (!Aisling.Dead && !Aisling.Invisible)
+                {
+                    writer.Write(Aisling.Armor);
+                    writer.Write(Aisling.Boots);
+                    writer.Write(Aisling.Armor);
+                    writer.Write(Aisling.Shield);
+                    writer.Write((byte) Aisling.Weapon);
+                    writer.Write(Aisling.HairColor);
+                    writer.Write(Aisling.BootColor);
+                    writer.Write((ushort) Aisling.HeadAccessory1);
+                    writer.Write((byte) 0);
+                    writer.Write((ushort) Aisling.HeadAccessory2);
+                    writer.Write((byte) 0);
+                    writer.Write(Aisling.Resting);
+                    writer.Write((ushort) Aisling.OverCoat);
+                }
+                else
+                {
+                    writer.Write((ushort) 0);
+                    writer.Write((byte) 0);
+                    writer.Write((ushort) 0);
+                    writer.Write((byte) 0);
+                    writer.Write((byte) 0);
+                    writer.Write((byte) Aisling.HairColor);
+                    writer.Write((byte) 0);
+                    writer.Write((ushort) 0);
+                    writer.Write((byte) 0);
+                    writer.Write((ushort) 0);
+                    writer.Write((byte) 0);
+                    writer.Write((byte) 0);
+                    writer.Write((ushort) 0);
+                }
             }
 
             if (Aisling.Map != null && Aisling.Map.Ready && Aisling.LoggedIn)

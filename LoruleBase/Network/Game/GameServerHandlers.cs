@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -26,6 +27,7 @@ using Newtonsoft.Json;
 
 namespace Darkages.Network.Game
 {
+    [SuppressMessage("ReSharper", "StringLiteralTypo")]
     public partial class GameServer : NetworkServer<GameClient>
     {
         public static ScriptOptions ScriptOptions;
@@ -47,7 +49,7 @@ namespace Darkages.Network.Game
                 .AddImports("Darkages.Types.Quest");
         }
 
-        public static void ActivateAssails(GameClient lpClient)
+        public static void Assail(GameClient lpClient)
         {
             if (lpClient == null) throw new ArgumentNullException(nameof(lpClient));
 
@@ -134,7 +136,9 @@ namespace Darkages.Network.Game
 
             if (optExecuteScript)
                 foreach (var script in lpSkill.Scripts.Values)
-                    script.OnUse(lpClient.Aisling);
+                {
+                    script?.OnUse(lpClient.Aisling);
+                }
 
             lpSkill.NextAvailableUse =
                 lpSkill.Template.Cooldown > 0
@@ -193,11 +197,11 @@ namespace Darkages.Network.Game
                     return;
 
                 var q = client.Aisling.GetQuest(res.Value);
+                if (q == null) return;
 
-                if (q != null)
-                    if (!q.Completed)
-                        q.HandleQuest(client, null,
-                            completed => { res.Result = completed; });
+                if (!q.Completed)
+                    q.HandleQuest(client, null,
+                        completed => { res.Result = completed; });
             });
 
         }
@@ -236,7 +240,8 @@ namespace Darkages.Network.Game
         public void UpdateSettings(GameClient client)
         {
             var msg = "\t";
-            foreach (var setting in client.Aisling.GameSettings)
+
+            foreach (var setting in client.Aisling.GameSettings.Where(setting => setting != null))
             {
                 msg += setting.Enabled ? setting.EnabledSettingStr : setting.DisabledSettingStr;
                 msg += "\t";
@@ -247,6 +252,7 @@ namespace Darkages.Network.Game
 
         protected override void Format00Handler(LoginClient client, ClientFormat00 format)
         {
+
         }
 
         protected override void Format05Handler(GameClient client, ClientFormat05 format)
@@ -254,11 +260,11 @@ namespace Darkages.Network.Game
             if (client?.Aisling?.Map == null)
                 return;
 
-            if (client.MapUpdating || client.Aisling.CurrentMapId == ServerContext.Config.TransitionZone)
-            {
-                SendMapData(client);
-                client.MapUpdating = false;
-            }
+            if (!client.MapUpdating && client.Aisling.CurrentMapId != ServerContext.Config.TransitionZone)
+                return;
+
+            SendMapData(client);
+            client.MapUpdating = false;
         }
 
         protected override void Format06Handler(GameClient client, ClientFormat06 format)
@@ -343,7 +349,8 @@ namespace Darkages.Network.Game
 
             #endregion
 
-            var objs = GetObjects(client.Aisling.Map, i => i.XPos == format.Position.X && i.YPos == format.Position.Y,
+            var objs = GetObjects(client.Aisling.Map,
+                i => i.XPos == format.Position.X && i.YPos == format.Position.Y,
                 Get.Items | Get.Money);
 
             if (objs == null)
@@ -545,9 +552,9 @@ namespace Darkages.Network.Game
 
             copy = Clone<Item>(item);
 
-            if (copy?.Scripts != null)
-                foreach (var itemScript in copy.Scripts?.Values)
-                    itemScript?.OnDropped(client.Aisling, new Position(format.X, format.Y), client.Aisling.Map);
+            if (copy?.Scripts == null) return;
+            foreach (var itemScript in (copy.Scripts?.Values).Where(itemScript => client.Aisling?.Map != null))
+                itemScript?.OnDropped(client.Aisling, new Position(format.X, format.Y), client.Aisling.Map);
         }
 
         protected override void Format0BHandler(GameClient client, ClientFormat0B format)
@@ -604,9 +611,13 @@ namespace Darkages.Network.Game
             var nearbyMundanes = client.Aisling.MundanesNearby();
 
             foreach (var npc in nearbyMundanes)
-                if (npc?.Scripts != null)
-                    foreach (var script in npc.Scripts?.Values)
-                        script.OnGossip(this, client, format.Text);
+            {
+                if (npc?.Scripts == null)
+                    continue;
+
+                foreach (var script in npc.Scripts?.Values)
+                    script?.OnGossip(this, client, format.Text);
+            }
 
             client.Aisling.Show(Scope.DefinedAislings, response, audience.ToArray());
         }
@@ -660,7 +671,10 @@ namespace Darkages.Network.Game
                 info.Position = new Position(client.Aisling.X, client.Aisling.Y);
             }
 
-            client.CastStack.Push(info);
+            lock (client.CastStack)
+            {
+                client.CastStack?.Push(info);
+            }
         }
 
         protected override void Format10Handler(GameClient client, ClientFormat10 format)
@@ -715,7 +729,7 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            ActivateAssails(client);
+            Assail(client);
         }
 
         protected override void Format18Handler(GameClient client, ClientFormat18 format)
@@ -753,26 +767,29 @@ namespace Darkages.Network.Game
             client.LastWhisperMessageSent = DateTime.UtcNow;
 
             var user = Clients.FirstOrDefault(i =>
-                i != null && i.Aisling != null && i.Aisling.LoggedIn && i.Aisling.Username.ToLower() ==
+                i?.Aisling != null && i.Aisling.LoggedIn && i.Aisling.Username.ToLower() ==
                 format.Name.ToLower(CultureInfo.CurrentCulture));
 
             if (user == null)
                 client.SendMessage
                     (0x02, string.Format(CultureInfo.CurrentCulture, "{0} is nowhere to be found.", format.Name));
 
-            if (user != null)
-            {
-                user.SendMessage
-                (0x00,
-                    string.Format(CultureInfo.CurrentCulture, "{0}\" {1}", client.Aisling.Username, format.Message));
-                client.SendMessage
-                (0x00,
-                    string.Format(CultureInfo.CurrentCulture, "{0}> {1}", user.Aisling.Username, format.Message));
-            }
+            if (user == null)
+                return;
+
+            user.SendMessage
+            (0x00,
+                string.Format(CultureInfo.CurrentCulture, "{0}\" {1}", client.Aisling.Username, format.Message));
+            client.SendMessage
+            (0x00,
+                string.Format(CultureInfo.CurrentCulture, "{0}> {1}", user.Aisling.Username, format.Message));
         }
 
         protected override void Format1BHandler(GameClient client, ClientFormat1B format)
         {
+            if (client.Aisling.GameSettings == null)
+                return;
+
             var settingKeys = client.Aisling.GameSettings.ToArray();
 
             if (settingKeys.Length == 0)
@@ -825,53 +842,59 @@ namespace Darkages.Network.Game
             if (item == null)
                 return;
 
-            client.LastActivatedLost = slot;
-
             var activated = false;
 
-            if (item.Template != null)
-            {
-                if (!string.IsNullOrEmpty(item.Template.ScriptName))
-                    if (item.Scripts == null)
-                        item.Scripts = ScriptManager.Load<ItemScript>(item.Template.ScriptName, item);
+            if (item.Template == null)
+                return;
 
-                if (!string.IsNullOrEmpty(item.Template.WeaponScript))
-                    if (item.WeaponScripts == null)
-                        item.WeaponScripts = ScriptManager.Load<WeaponScript>(item.Template.WeaponScript, item);
+            client.LastActivatedSlot = slot;
 
+            if (!string.IsNullOrEmpty(item.Template.ScriptName))
                 if (item.Scripts == null)
+                    item.Scripts = ScriptManager.Load<ItemScript>(item.Template.ScriptName, item);
+
+            if (!string.IsNullOrEmpty(item.Template.WeaponScript))
+                if (item.WeaponScripts == null)
+                    item.WeaponScripts = ScriptManager.Load<WeaponScript>(item.Template.WeaponScript, item);
+
+            if (item.Scripts == null)
+            {
+                client.SendMessage(0x02, ServerContext.Config.CantUseThat);
+            }
+            else
+            {
+                foreach (var script in item.Scripts.Values)
                 {
-                    client.SendMessage(0x02, ServerContext.Config.CantUseThat);
-                }
-                else
-                {
-                    foreach (var script in item.Scripts.Values)
-                        script.OnUse(client.Aisling, slot);
-
-                    activated = true;
+                    script?.OnUse(client.Aisling, slot);
                 }
 
-                if (activated)
-                    if (item.Template.Flags.HasFlag(ItemFlags.Stackable))
-                        if (item.Template.Flags.HasFlag(ItemFlags.Consumable))
-                        {
-                            var stack = item.Stacks - 1;
+                activated = true;
+            }
 
-                            if (stack > 0)
-                            {
-                                item.Stacks -= 1;
-                                client.Aisling.Inventory.Set(item, false);
+            if (!activated)
+                return;
 
-                                client.Send(new ServerFormat10(item.Slot));
+            if (!item.Template.Flags.HasFlag(ItemFlags.Stackable))
+                return;
 
-                                client.Send(new ServerFormat0F(item));
-                            }
-                            else
-                            {
-                                client.Aisling.Inventory.Remove(item.Slot);
-                                client.Send(new ServerFormat10(item.Slot));
-                            }
-                        }
+            if (!item.Template.Flags.HasFlag(ItemFlags.Consumable))
+                return;
+
+            var stack = item.Stacks - 1;
+
+            if (stack > 0)
+            {
+                item.Stacks -= 1;
+
+                client.Aisling.Inventory.Set(item, false);
+
+                client.Send(new ServerFormat10(item.Slot));
+                client.Send(new ServerFormat0F(item));
+            }
+            else
+            {
+                client.Aisling.Inventory.Remove(item.Slot);
+                client.Send(new ServerFormat10(item.Slot));
             }
         }
 
@@ -1364,6 +1387,11 @@ namespace Darkages.Network.Game
 
                 if (obj != null)
                 {
+                    var mundane = obj;
+                    if (mundane.Scripts != null)
+                        foreach (var script in mundane.Scripts?.Values)
+                            script.OnResponse(this, client, format.Step, format.Input);
+
                     if (client.MenuInterpter == null)
                         return;
 
@@ -1415,6 +1443,8 @@ namespace Darkages.Network.Game
                         if (close != null)
                             client.CloseDialog();
                     }
+
+
 
                     return;
                 }
@@ -1736,6 +1766,24 @@ namespace Darkages.Network.Game
                 client.PendingNode = worldMap?.Portals.Find(i => i.Destination.AreaID == format.Index);
                 TraverseWorldMap(client, format);
             }
+        }
+
+        public string ApplyFilter(string message)
+        {
+            var filters = new Dictionary<string, string>
+            {
+                ["lol"] = "Amusing"
+            };
+
+            foreach (var word in message.Split(' '))
+            {
+                if (filters.ContainsKey(word))
+                {
+                    message = message.Replace(word, filters[word]);
+                }
+            }
+
+            return message;
         }
 
         public static void TraverseWorldMap(GameClient client, ClientFormat3F format)
@@ -2528,7 +2576,7 @@ namespace Darkages.Network.Game
 
             client.LastScriptExecuted = DateTime.UtcNow;
 
-            client.Aisling.CurrentMapId = client.Aisling.Map.ID;
+            if (client.Aisling.Map != null) client.Aisling.CurrentMapId = client.Aisling.Map.ID;
             client.Aisling.EquipmentManager.Client = client;
             client.Aisling.CurrentWeight = 0;
             client.Aisling.ActiveStatus = ActivityStatus.Awake;

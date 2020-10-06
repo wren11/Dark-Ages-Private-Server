@@ -45,7 +45,7 @@ namespace Darkages.Network
 
             lock (_sendLock)
             {
-                Writer.Position = 0b0;
+                Writer.Position = 0x0;
                 Writer.Write(format.Command);
 
                 if (format.Secured)
@@ -62,7 +62,7 @@ namespace Darkages.Network
 
                 var buffer = packet.ToArray();
 
-                if (buffer.Length <= 0b0) return;
+                if (buffer.Length <= 0x0) return;
 
                 if (_sending)
                     return;
@@ -73,7 +73,7 @@ namespace Darkages.Network
                 {
                     Socket.BeginSend(
                         buffer,
-                        0b0,
+                        0x0,
                         buffer.Length,
                         SocketFlags.None,
                         SendCompleted,
@@ -104,7 +104,7 @@ namespace Darkages.Network
 
                     InMapTransition = false;
 
-                    Thread.Sleep(0b11001000);
+                    Thread.Sleep(0xC8);
                     GameServer.TraverseWorldMap(client, clientFormat3F);
                 }
             }
@@ -113,24 +113,24 @@ namespace Darkages.Network
             {
                 Encryption.Transform(packet);
 
-                if (format.Command == 0b111001 || format.Command == 0b111010)
+                if (format.Command == 0x39 || format.Command == 0x3A)
                 {
                     TransFormDialog(packet);
-                    Reader.Position = 0b110;
+                    Reader.Position = 0x6;
                 }
                 else
                 {
-                    Reader.Position = 0b0;
+                    Reader.Position = 0x0;
                 }
             }
             else
             {
-                Reader.Position = -0b1;
+                Reader.Position = -0x1;
             }
 
             Reader.Packet = packet;
             format.Serialize(Reader);
-            Reader.Position = -0b1;
+            Reader.Position = -0x1;
         }
 
         public void Send(NetworkFormat format)
@@ -172,7 +172,7 @@ namespace Darkages.Network
 
             lock (ServerContext.SyncLock)
             {
-                Writer.Position = 0b0;
+                Writer.Position = 0x0;
                 Writer.Write(data);
 
                 var packet = Writer.ToPacket();
@@ -195,22 +195,22 @@ namespace Darkages.Network
 
         private static byte P(NetworkPacket value)
         {
-            return (byte)(value.Data[0b1] ^ (byte)(value.Data[0b0] - 0b101101));
+            return (byte)(value.Data[0x1] ^ (byte)(value.Data[0x0] - 0x2D));
         }
 
         private static void TransFormDialog(NetworkPacket value)
         {
-            if (value.Data.Length > 0b10) value.Data[0b10] ^= (byte)(P(value) + 0b1110011);
-            if (value.Data.Length > 0b11) value.Data[0b11] ^= (byte)(P(value) + 0b1110011);
-            if (value.Data.Length > 0b100) value.Data[0b100] ^= (byte)(P(value) + 0b101000);
-            if (value.Data.Length > 0b101) value.Data[0b101] ^= (byte)(P(value) + 0b101001);
+            if (value.Data.Length > 0x2) value.Data[0x2] ^= (byte)(P(value) + 0x73);
+            if (value.Data.Length > 0x3) value.Data[0x3] ^= (byte)(P(value) + 0x73);
+            if (value.Data.Length > 0x4) value.Data[0x4] ^= (byte)(P(value) + 0x28);
+            if (value.Data.Length > 0x5) value.Data[0x5] ^= (byte)(P(value) + 0x29);
 
-            for (var i = value.Data.Length - 0b110 - 0b1; i >= 0b0; i--)
+            for (var i = value.Data.Length - 0x6 - 0x1; i >= 0x0; i--)
             {
-                var index = i + 0b110;
+                var index = i + 0x6;
 
-                if (index >= 0b0 && value.Data.Length > index)
-                    value.Data[index] ^= (byte)(((byte)(P(value) + 0b101000) + i + 0b10) % 0b100000000);
+                if (index >= 0x0 && value.Data.Length > index)
+                    value.Data[index] ^= (byte)(((byte)(P(value) + 0x28) + i + 0x2) % 0x100);
             }
         }
 

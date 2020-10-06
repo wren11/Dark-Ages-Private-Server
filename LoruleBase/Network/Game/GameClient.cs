@@ -53,7 +53,7 @@ namespace Darkages.Network.Game
 
         public Stack<CastInfo> CastStack = new Stack<CastInfo>();
 
-        public byte LastActivatedLost { get; set; }
+        public byte LastActivatedSlot { get; set; }
         public DateTime LastAssail { get; set; }
         public ushort LastBoardActivated { get; set; }
         public DateTime LastClientRefresh { get; set; }

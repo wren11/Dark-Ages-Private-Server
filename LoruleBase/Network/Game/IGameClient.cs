@@ -20,7 +20,7 @@ namespace Darkages.Network.Game
         GameServerTimer HpRegenTimer { get; set; }
         bool IsRefreshing { get; }
         bool IsWarping { get; }
-        byte LastActivatedLost { get; set; }
+        byte LastActivatedSlot { get; set; }
         DateTime LastAssail { get; set; }
         ushort LastBoardActivated { get; set; }
         DateTime LastClientRefresh { get; set; }

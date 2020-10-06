@@ -8,7 +8,7 @@
   "Skills": null,
   "Image": 17131,
   "Level": 5000,
-  "ScriptKey": "shop2",
+  "ScriptKey": "some example",
   "EnableWalking": false,
   "EnableTurning": false,
   "EnableAttacking": false,
@@ -28,7 +28,7 @@
   "Waypoints": null,
   "PathQualifer": 0,
   "ViewingQualifer": 0,
-  "Name": "Arms Dealer",
+  "Name": "some example",
   "Description": null,
   "Group": null
 }

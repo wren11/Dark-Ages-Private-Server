@@ -132,7 +132,7 @@ namespace Darkages
         [JsonIgnore]
         public int MaximumWeight => (int)(ExpLevel / 4 + _Str + ServerContext.Config.WeightIncreaseModifer);
 
-        public ushort MonsterForm { get; set; } = 0;
+        public ushort MonsterForm { get; set; } = 0x4021;
         public byte NameColor { get; set; }
         public string Nation { get; set; } = "Mileth"; // default nation.
         public byte OverCoat { get; set; }
@@ -266,7 +266,7 @@ namespace Darkages
 
         public void Assail()
         {
-            if (Client != null) GameServer.ActivateAssails(Client);
+            if (Client != null) GameServer.Assail(Client);
         }
 
         public void CancelExchange()
