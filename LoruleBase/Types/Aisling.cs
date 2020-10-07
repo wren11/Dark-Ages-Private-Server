@@ -132,7 +132,7 @@ namespace Darkages
         [JsonIgnore]
         public int MaximumWeight => (int) (ExpLevel / 4 + _Str + ServerContext.Config.WeightIncreaseModifer);
 
-        public ushort MonsterForm { get; set; } = 0x4021;
+        public ushort MonsterForm { get; set; } 
         public byte NameColor { get; set; }
         public string Nation { get; set; } = "Mileth"; // default nation.
         public byte OverCoat { get; set; }

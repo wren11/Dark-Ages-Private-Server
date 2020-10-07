@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using Darkages.Network.Game;
 using Darkages.Types;
 
@@ -49,14 +50,13 @@ namespace Darkages.Network.ServerFormats
 
             if (Aisling.MonsterForm > 0)
             {
-                writer.Write((ushort) 0);
-                writer.Write((byte) 1);
-                writer.Write((ushort) 0x22);
-                writer.Write((byte) 0);
-                writer.Write((byte) 1);
-                writer.Write((uint) 1);
-                writer.Write((byte) 0);
-                writer.Write((byte) 12);
+                writer.Write((byte) 0xFF);
+                writer.Write((byte) 0xFF);
+                writer.Write(Aisling.MonsterForm);
+                writer.Write((byte) 0x01);
+                writer.Write((byte) 0x3A);
+                writer.Write(new byte[]{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
+                writer.WriteStringA(Aisling.Username);
             }
             else
             {
