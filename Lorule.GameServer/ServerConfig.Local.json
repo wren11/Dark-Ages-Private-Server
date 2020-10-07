@@ -81,7 +81,8 @@
 		"NotEnoughGoldToDropMsg": "You wish you had that much.",
 		"PingInterval": 10.0,
 		"PlayerLevelCap": 99,
-		"ReapMessage": "You are dying|You better find some help|You are about to die!|You are skulled, Barron has taken your soul.",
+		"ReapMessage":
+			"You are dying|You better find some help|You are about to die!|You are skulled, Barron has taken your soul.",
 		"ReapMessageDuringAction": "You can't do that, you are about to die!",
 		"RefreshOnWalkCollision": true,
 		"RefreshRate": 300,

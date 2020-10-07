@@ -90,46 +90,46 @@ namespace Darkages.Types
                     if (attrs.Attribute == PlayerAttr.STR)
                     {
                         if (attrs.Operator.Option == Operator.Add)
-                            user._Str += (byte)attrs.Operator.Value;
+                            user._Str += (byte) attrs.Operator.Value;
 
                         if (attrs.Operator.Option == Operator.Remove)
-                            user._Str -= (byte)attrs.Operator.Value;
+                            user._Str -= (byte) attrs.Operator.Value;
                     }
 
                     if (attrs.Attribute == PlayerAttr.INT)
                     {
                         if (attrs.Operator.Option == Operator.Add)
-                            user._Int += (byte)attrs.Operator.Value;
+                            user._Int += (byte) attrs.Operator.Value;
 
                         if (attrs.Operator.Option == Operator.Remove)
-                            user._Int -= (byte)attrs.Operator.Value;
+                            user._Int -= (byte) attrs.Operator.Value;
                     }
 
                     if (attrs.Attribute == PlayerAttr.WIS)
                     {
                         if (attrs.Operator.Option == Operator.Add)
-                            user._Wis += (byte)attrs.Operator.Value;
+                            user._Wis += (byte) attrs.Operator.Value;
 
                         if (attrs.Operator.Option == Operator.Remove)
-                            user._Wis -= (byte)attrs.Operator.Value;
+                            user._Wis -= (byte) attrs.Operator.Value;
                     }
 
                     if (attrs.Attribute == PlayerAttr.CON)
                     {
                         if (attrs.Operator.Option == Operator.Add)
-                            user._Con += (byte)attrs.Operator.Value;
+                            user._Con += (byte) attrs.Operator.Value;
 
                         if (attrs.Operator.Option == Operator.Remove)
-                            user._Con -= (byte)attrs.Operator.Value;
+                            user._Con -= (byte) attrs.Operator.Value;
                     }
 
                     if (attrs.Attribute == PlayerAttr.DEX)
                     {
                         if (attrs.Operator.Option == Operator.Add)
-                            user._Dex += (byte)attrs.Operator.Value;
+                            user._Dex += (byte) attrs.Operator.Value;
 
                         if (attrs.Operator.Option == Operator.Remove)
-                            user._Dex -= (byte)attrs.Operator.Value;
+                            user._Dex -= (byte) attrs.Operator.Value;
                     }
                 }
 
@@ -222,13 +222,13 @@ namespace Darkages.Types
             }
 
             foreach (var obj in from items in ItemRewards
-                                where ServerContext.GlobalItemTemplateCache.ContainsKey(items)
-                                select ServerContext.GlobalItemTemplateCache[items]
+                where ServerContext.GlobalItemTemplateCache.ContainsKey(items)
+                select ServerContext.GlobalItemTemplateCache[items]
                 into template
-                                select Item.Create(user, template)
+                select Item.Create(user, template)
                 into obj
-                                where !obj.GiveTo(user)
-                                select obj) obj.Release(user, user.Position);
+                where !obj.GiveTo(user)
+                select obj) obj.Release(user, user.Position);
 
             foreach (var legends in LegendRewards)
                 user.LegendBook.AddLegend(new Legend.LegendItem
@@ -244,7 +244,7 @@ namespace Darkages.Types
 
             if (GoldReward > 0)
             {
-                user.GoldPoints += (int)GoldReward;
+                user.GoldPoints += (int) GoldReward;
                 user.Client.SendMessage(0x02, $"You are awarded {GoldReward} gold.");
             }
 
@@ -295,7 +295,7 @@ namespace Darkages.Types
                 if (obj.Scripts?.Values == null)
                     continue;
 
-                foreach (var script in obj.Scripts?.Values) script.Equipped(user, (byte)obj.Template.EquipmentSlot);
+                foreach (var script in obj.Scripts?.Values) script.Equipped(user, (byte) obj.Template.EquipmentSlot);
             }
         }
     }

@@ -41,7 +41,7 @@ namespace Darkages.Network.Login
                     Serial = Convert.ToString(client.Serial),
                     Salt = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
                     Seed = Convert.ToString(client.Encryption.Parameters.Seed),
-                    Name = JsonConvert.SerializeObject(new { player = aisling.Username, developer = "wren" })
+                    Name = JsonConvert.SerializeObject(new {player = aisling.Username, developer = "wren"})
                 };
 
                 ServerContext.Redirects.Add(aisling.Username.ToLower());
@@ -155,10 +155,10 @@ namespace Darkages.Network.Login
             }
 
             var template = Aisling.Create();
-            template.Display = (BodySprite)(format.Gender * 16);
+            template.Display = (BodySprite) (format.Gender * 16);
             template.Username = client.CreateInfo.AislingUsername;
             template.Password = client.CreateInfo.AislingPassword;
-            template.Gender = (Gender)format.Gender;
+            template.Gender = (Gender) format.Gender;
             template.HairColor = format.HairColor;
             template.HairStyle = format.HairStyle;
 

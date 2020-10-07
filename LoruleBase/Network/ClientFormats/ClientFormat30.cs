@@ -20,7 +20,7 @@ namespace Darkages.Network.ClientFormats
 
         public override void Serialize(NetworkPacketReader reader)
         {
-            PaneType = (Pane)reader.ReadByte();
+            PaneType = (Pane) reader.ReadByte();
             MovingFrom = reader.ReadByte();
             MovingTo = reader.ReadByte();
         }

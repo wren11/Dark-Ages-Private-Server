@@ -32,7 +32,7 @@ namespace Darkages.Systems.Loot
             if (string.IsNullOrEmpty(name))
                 return this;
 
-            var names = name.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var names = name.Split(new[] {'/'}, StringSplitOptions.RemoveEmptyEntries);
 
             return Find(names);
         }

@@ -63,8 +63,8 @@ namespace Darkages.Types
 
             npc.XPos = template.X;
             npc.YPos = template.Y;
-            npc._MaximumHp = (int)(template.Level / 0.1 * 15);
-            npc._MaximumMp = (int)(template.Level / 0.1 * 5);
+            npc._MaximumHp = (int) (template.Level / 0.1 * 15);
+            npc._MaximumMp = (int) (template.Level / 0.1 * 5);
             npc.Template.MaximumHp = npc.MaximumHp;
             npc.Template.MaximumMp = npc.MaximumMp;
 
@@ -73,7 +73,7 @@ namespace Darkages.Types
             npc.Direction = npc.Template.Direction;
             npc.CurrentMapId = npc.Template.AreaID;
 
-            npc.BonusAc = (int)(70 - npc.Template.Level * 0.5 / 1.0);
+            npc.BonusAc = (int) (70 - npc.Template.Level * 0.5 / 1.0);
 
             if (npc.BonusAc < -70) npc.BonusAc = -70;
 
@@ -197,7 +197,7 @@ namespace Darkages.Types
                     {
                         lock (Generator.Random)
                         {
-                            Direction = (byte)Generator.Random.Next(0, 4);
+                            Direction = (byte) Generator.Random.Next(0, 4);
                         }
 
                         Turn();
@@ -274,7 +274,7 @@ namespace Darkages.Types
                         {
                             if (!Facing(target, out var direction))
                             {
-                                Direction = (byte)direction;
+                                Direction = (byte) direction;
                                 Turn();
                             }
                             else

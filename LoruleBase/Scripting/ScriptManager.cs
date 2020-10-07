@@ -39,7 +39,7 @@ namespace Darkages.Scripting
             if (values == null)
                 return null;
 
-            var names = values.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            var names = values.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
 
             var data = new Dictionary<string, TScript>();
 

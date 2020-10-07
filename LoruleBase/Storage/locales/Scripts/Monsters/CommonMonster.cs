@@ -6,6 +6,7 @@ using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
+
 ///************************************************************************
 //Project Lorule: A Dark Ages Client (http://darkages.creatorlink.net/index/)
 //Copyright(C) 2018 TrippyInc Pty Ltd

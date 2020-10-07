@@ -10,19 +10,15 @@ namespace Darkages.Common
 {
     public static class Extensions
     {
-        private static readonly Encoding encoding = Encoding.GetEncoding(949);
+        private static readonly Encoding Encoding = Encoding.GetEncoding(949);
 
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>
             (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
-            HashSet<TKey> seenKeys = new HashSet<TKey>();
-            foreach (TSource element in source)
-            {
+            var seenKeys = new HashSet<TKey>();
+            foreach (var element in source)
                 if (seenKeys.Add(keySelector(element)))
-                {
                     yield return element;
-                }
-            }
         }
 
         public static int Clamp(this int value, int min, int max)
@@ -42,7 +38,7 @@ namespace Darkages.Common
 
         public static byte[] ToByteArray(this string str)
         {
-            return encoding.GetBytes(str);
+            return Encoding.GetBytes(str);
         }
     }
 }

@@ -44,7 +44,7 @@ namespace Darkages.Assets.locales.Scripts.Spells.utility
                     var action = new ServerFormat1A
                     {
                         Serial = sprite.Serial,
-                        Number = (byte)(client.Aisling.Path == Class.Priest ? 0x80 :
+                        Number = (byte) (client.Aisling.Path == Class.Priest ? 0x80 :
                             client.Aisling.Path == Class.Wizard ? 0x88 : 0x06),
                         Speed = 30
                     };

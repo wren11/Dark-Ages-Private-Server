@@ -26,7 +26,7 @@ namespace Darkages.Network.ServerFormats
         {
             if (Sprites.Count > 0)
             {
-                writer.Write((ushort)Sprites.Count);
+                writer.Write((ushort) Sprites.Count);
 
                 foreach (var sprite in Sprites)
                 {
@@ -34,9 +34,9 @@ namespace Darkages.Network.ServerFormats
                     {
                         if (sprite is Money)
                         {
-                            writer.Write((ushort)sprite.XPos);
-                            writer.Write((ushort)sprite.YPos);
-                            writer.Write((uint)sprite.Serial);
+                            writer.Write((ushort) sprite.XPos);
+                            writer.Write((ushort) sprite.YPos);
+                            writer.Write((uint) sprite.Serial);
                             writer.Write((sprite as Money).Image);
                             writer.Write(byte.MinValue);
                             writer.Write(byte.MinValue);
@@ -45,9 +45,9 @@ namespace Darkages.Network.ServerFormats
 
                         if (sprite is Item)
                         {
-                            writer.Write((ushort)sprite.XPos);
-                            writer.Write((ushort)sprite.YPos);
-                            writer.Write((uint)sprite.Serial);
+                            writer.Write((ushort) sprite.XPos);
+                            writer.Write((ushort) sprite.YPos);
+                            writer.Write((uint) sprite.Serial);
                             writer.Write((sprite as Item).DisplayImage);
                             writer.Write((sprite as Item).Color);
                             writer.Write(byte.MinValue);
@@ -57,11 +57,11 @@ namespace Darkages.Network.ServerFormats
 
                     if (sprite is Monster)
                     {
-                        writer.Write((ushort)sprite.XPos);
-                        writer.Write((ushort)sprite.YPos);
-                        writer.Write((uint)sprite.Serial);
+                        writer.Write((ushort) sprite.XPos);
+                        writer.Write((ushort) sprite.YPos);
+                        writer.Write((uint) sprite.Serial);
                         writer.Write((sprite as Monster).Image);
-                        writer.Write((uint)0x0);
+                        writer.Write((uint) 0x0);
                         writer.Write(sprite.Direction);
                         writer.Write(byte.MinValue);
                         writer.Write(byte.MinValue);
@@ -69,14 +69,14 @@ namespace Darkages.Network.ServerFormats
 
                     if (sprite is Mundane)
                     {
-                        writer.Write((ushort)sprite.XPos);
-                        writer.Write((ushort)sprite.YPos);
-                        writer.Write((uint)sprite.Serial);
-                        writer.Write((ushort)(sprite as Mundane).Template.Image);
+                        writer.Write((ushort) sprite.XPos);
+                        writer.Write((ushort) sprite.YPos);
+                        writer.Write((uint) sprite.Serial);
+                        writer.Write((ushort) (sprite as Mundane).Template.Image);
                         writer.Write(uint.MinValue);
                         writer.Write(sprite.Direction);
                         writer.Write(byte.MinValue);
-                        writer.Write((byte)0x02);
+                        writer.Write((byte) 0x02);
                         writer.WriteStringA((sprite as Mundane).Template.Name);
                     }
                 }

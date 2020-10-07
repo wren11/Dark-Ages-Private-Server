@@ -26,27 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="MServerTable.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Notification.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="server.tbl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="sotp.dat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="zlib.net.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Compression\ZLib\Adler32.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -89,6 +68,12 @@
     <Compile Update="Compression\ZLib\ZStreamException.cs">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

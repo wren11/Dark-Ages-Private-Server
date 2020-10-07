@@ -59,7 +59,7 @@ namespace Darkages.Types
                 if (obj.Template == null)
                     return;
 
-                var template = (ItemTemplate)StorageManager.ItemBucket.LoadFromStorage(obj.Template);
+                var template = (ItemTemplate) StorageManager.ItemBucket.LoadFromStorage(obj.Template);
                 if (template == null)
                     return;
 
@@ -149,9 +149,9 @@ namespace Darkages.Types
                         if (obj.Template.HitModifer.Option == Operator.Add)
                             obj.Template.HitModifer.Value += obj.Upgrades;
 
-                    obj.Template.LevelRequired -= (byte)obj.Upgrades;
-                    obj.Template.Value *= (byte)obj.Upgrades;
-                    obj.Template.MaxDurability += (byte)(1500 * obj.Upgrades);
+                    obj.Template.LevelRequired -= (byte) obj.Upgrades;
+                    obj.Template.Value *= (byte) obj.Upgrades;
+                    obj.Template.MaxDurability += (byte) (1500 * obj.Upgrades);
                     obj.Template.DmgMax += 100 * obj.Upgrades;
                     obj.Template.DmgMin += 20 * obj.Upgrades;
 
@@ -180,7 +180,7 @@ namespace Darkages.Types
                 return null;
 
             var template =
-                (ItemTemplate)StorageManager.ItemBucket.LoadFromStorage(itemtemplate);
+                (ItemTemplate) StorageManager.ItemBucket.LoadFromStorage(itemtemplate);
 
             if (itemtemplate != null && template == null)
                 template = itemtemplate;
@@ -195,7 +195,7 @@ namespace Darkages.Types
                 DisplayImage = template.DisplayImage,
                 CurrentMapId = Owner.CurrentMapId,
                 Cursed = curse,
-                Owner = (uint)Owner.Serial,
+                Owner = (uint) Owner.Serial,
                 Durability = template.MaxDurability,
                 OffenseElement = template.OffenseElement,
                 DefenseElement = template.DefenseElement
@@ -204,14 +204,14 @@ namespace Darkages.Types
             if (obj.Template == null)
                 obj.Template = template;
 
-            obj.Warnings = new[] { false, false, false };
+            obj.Warnings = new[] {false, false, false};
 
             obj.AuthenticatedAislings = null;
 
             if (obj.Color != 0)
-                obj.Color = (byte)template.Color;
+                obj.Color = (byte) template.Color;
             else
-                obj.Color = (byte)ServerContext.Config.DefaultItemColor;
+                obj.Color = (byte) ServerContext.Config.DefaultItemColor;
 
             if (obj.Template.Flags.HasFlag(ItemFlags.Repairable))
             {
@@ -330,9 +330,9 @@ namespace Darkages.Types
             if (Template.MrModifer != null)
             {
                 if (Template.MrModifer.Option == Operator.Add)
-                    client.Aisling.BonusMr += (byte)Template.MrModifer.Value;
+                    client.Aisling.BonusMr += (byte) Template.MrModifer.Value;
                 if (Template.MrModifer.Option == Operator.Remove)
-                    client.Aisling.BonusMr -= (byte)Template.MrModifer.Value;
+                    client.Aisling.BonusMr -= (byte) Template.MrModifer.Value;
 
                 if (client.Aisling.BonusMr < 0)
                     client.Aisling.BonusMr = 0;
@@ -386,9 +386,9 @@ namespace Darkages.Types
             if (Template.StrModifer != null)
             {
                 if (Template.StrModifer.Option == Operator.Add)
-                    client.Aisling.BonusStr += (byte)Template.StrModifer.Value;
+                    client.Aisling.BonusStr += (byte) Template.StrModifer.Value;
                 if (Template.StrModifer.Option == Operator.Remove)
-                    client.Aisling.BonusStr -= (byte)Template.StrModifer.Value;
+                    client.Aisling.BonusStr -= (byte) Template.StrModifer.Value;
             }
 
             #endregion
@@ -398,9 +398,9 @@ namespace Darkages.Types
             if (Template.IntModifer != null)
             {
                 if (Template.IntModifer.Option == Operator.Add)
-                    client.Aisling.BonusInt += (byte)Template.IntModifer.Value;
+                    client.Aisling.BonusInt += (byte) Template.IntModifer.Value;
                 if (Template.IntModifer.Option == Operator.Remove)
-                    client.Aisling.BonusInt -= (byte)Template.IntModifer.Value;
+                    client.Aisling.BonusInt -= (byte) Template.IntModifer.Value;
             }
 
             #endregion
@@ -410,9 +410,9 @@ namespace Darkages.Types
             if (Template.WisModifer != null)
             {
                 if (Template.WisModifer.Option == Operator.Add)
-                    client.Aisling.BonusWis += (byte)Template.WisModifer.Value;
+                    client.Aisling.BonusWis += (byte) Template.WisModifer.Value;
                 if (Template.WisModifer.Option == Operator.Remove)
-                    client.Aisling.BonusWis -= (byte)Template.WisModifer.Value;
+                    client.Aisling.BonusWis -= (byte) Template.WisModifer.Value;
             }
 
             #endregion
@@ -422,9 +422,9 @@ namespace Darkages.Types
             if (Template.ConModifer != null)
             {
                 if (Template.ConModifer.Option == Operator.Add)
-                    client.Aisling.BonusCon += (byte)Template.ConModifer.Value;
+                    client.Aisling.BonusCon += (byte) Template.ConModifer.Value;
                 if (Template.ConModifer.Option == Operator.Remove)
-                    client.Aisling.BonusCon -= (byte)Template.ConModifer.Value;
+                    client.Aisling.BonusCon -= (byte) Template.ConModifer.Value;
             }
 
             #endregion
@@ -434,9 +434,9 @@ namespace Darkages.Types
             if (Template.DexModifer != null)
             {
                 if (Template.DexModifer.Option == Operator.Add)
-                    client.Aisling.BonusDex += (byte)Template.DexModifer.Value;
+                    client.Aisling.BonusDex += (byte) Template.DexModifer.Value;
                 if (Template.DexModifer.Option == Operator.Remove)
-                    client.Aisling.BonusDex -= (byte)Template.DexModifer.Value;
+                    client.Aisling.BonusDex -= (byte) Template.DexModifer.Value;
             }
 
             #endregion
@@ -446,9 +446,9 @@ namespace Darkages.Types
             if (Template.HitModifer != null)
             {
                 if (Template.HitModifer.Option == Operator.Add)
-                    client.Aisling.BonusHit += (byte)Template.HitModifer.Value;
+                    client.Aisling.BonusHit += (byte) Template.HitModifer.Value;
                 if (Template.HitModifer.Option == Operator.Remove)
-                    client.Aisling.BonusHit -= (byte)Template.HitModifer.Value;
+                    client.Aisling.BonusHit -= (byte) Template.HitModifer.Value;
             }
 
             #endregion
@@ -458,9 +458,9 @@ namespace Darkages.Types
             if (Template.DmgModifer != null)
             {
                 if (Template.DmgModifer.Option == Operator.Add)
-                    client.Aisling.BonusDmg += (byte)Template.DmgModifer.Value;
+                    client.Aisling.BonusDmg += (byte) Template.DmgModifer.Value;
                 if (Template.DmgModifer.Option == Operator.Remove)
-                    client.Aisling.BonusDmg -= (byte)Template.DmgModifer.Value;
+                    client.Aisling.BonusDmg -= (byte) Template.DmgModifer.Value;
             }
 
             #endregion
@@ -468,9 +468,9 @@ namespace Darkages.Types
 
         public bool CanCarry(Sprite sprite)
         {
-            if (((Aisling)sprite).CurrentWeight + Template.CarryWeight > (sprite as Aisling).MaximumWeight)
+            if (((Aisling) sprite).CurrentWeight + Template.CarryWeight > (sprite as Aisling).MaximumWeight)
             {
-                ((Aisling)sprite)?.Client.SendMessage(Scope.Self, 0x02, ServerContext.Config.ToWeakToLift);
+                ((Aisling) sprite)?.Client.SendMessage(Scope.Self, 0x02, ServerContext.Config.ToWeakToLift);
                 return false;
             }
 
@@ -481,20 +481,20 @@ namespace Darkages.Types
         {
             if (sprite is Aisling)
             {
-                Owner = (uint)sprite.Serial;
+                Owner = (uint) sprite.Serial;
 
                 #region stackable items
 
                 if (Template.Flags.HasFlag(ItemFlags.Stackable))
                 {
-                    var numStacks = (byte)Stacks;
+                    var numStacks = (byte) Stacks;
 
                     if (numStacks <= 0)
                         numStacks = 1;
 
-                    var item = ((Aisling)sprite).Inventory.Get(i => i != null && i.Template.Name == Template.Name
-                                                                              && i.Stacks + numStacks <
-                                                                              i.Template.MaxStack).FirstOrDefault();
+                    var item = ((Aisling) sprite).Inventory.Get(i => i != null && i.Template.Name == Template.Name
+                                                                               && i.Stacks + numStacks <
+                                                                               i.Template.MaxStack).FirstOrDefault();
 
                     if (item != null)
                     {
@@ -502,13 +502,13 @@ namespace Darkages.Types
 
                         item.Stacks += numStacks;
 
-                        ((Aisling)sprite).Client.Aisling.Inventory.Set(item, false);
+                        ((Aisling) sprite).Client.Aisling.Inventory.Set(item, false);
 
-                        ((Aisling)sprite).Client.Send(new ServerFormat10(item.Slot));
+                        ((Aisling) sprite).Client.Send(new ServerFormat10(item.Slot));
 
-                        ((Aisling)sprite).Client.Send(new ServerFormat0F(item));
+                        ((Aisling) sprite).Client.Send(new ServerFormat0F(item));
 
-                        ((Aisling)sprite).Client.SendMessage(Scope.Self, 0x02,
+                        ((Aisling) sprite).Client.SendMessage(Scope.Self, 0x02,
                             $"Received {DisplayName}, You now have ({(item.Stacks == 0 ? item.Stacks + 1 : item.Stacks)})");
 
                         return true;
@@ -521,25 +521,25 @@ namespace Darkages.Types
                         if (!CanCarry(sprite))
                             return false;
 
-                    Slot = ((Aisling)sprite).Inventory.FindEmpty();
+                    Slot = ((Aisling) sprite).Inventory.FindEmpty();
 
                     if (Slot == byte.MaxValue)
                     {
-                        ((Aisling)sprite).Client.SendMessage(Scope.Self, 0x02,
+                        ((Aisling) sprite).Client.SendMessage(Scope.Self, 0x02,
                             ServerContext.Config.CantCarryMoreMsg);
                         return false;
                     }
 
-                    ((Aisling)sprite).Inventory.Set(this, false);
+                    ((Aisling) sprite).Inventory.Set(this, false);
                     var format = new ServerFormat0F(this);
-                    ((Aisling)sprite).Show(Scope.Self, format);
-                    ((Aisling)sprite).Client.SendMessage(Scope.Self, 0x02,
+                    ((Aisling) sprite).Show(Scope.Self, format);
+                    ((Aisling) sprite).Client.SendMessage(Scope.Self, 0x02,
                         $"{DisplayName} Received.");
 
                     if (checkWeight)
                     {
-                        ((Aisling)sprite).CurrentWeight += Template.CarryWeight;
-                        ((Aisling)sprite).Client.SendStats(StatusFlags.StructA);
+                        ((Aisling) sprite).CurrentWeight += Template.CarryWeight;
+                        ((Aisling) sprite).Client.SendStats(StatusFlags.StructA);
                     }
 
                     return true;
@@ -550,11 +550,11 @@ namespace Darkages.Types
                 #region not stackable items
 
                 {
-                    Slot = ((Aisling)sprite).Inventory.FindEmpty();
+                    Slot = ((Aisling) sprite).Inventory.FindEmpty();
 
                     if (Slot == byte.MaxValue)
                     {
-                        ((Aisling)sprite).Client.SendMessage(Scope.Self, 0x02,
+                        ((Aisling) sprite).Client.SendMessage(Scope.Self, 0x02,
                             ServerContext.Config.CantCarryMoreMsg);
                         return false;
                     }
@@ -563,14 +563,14 @@ namespace Darkages.Types
                         if (!CanCarry(sprite))
                             return false;
 
-                    ((Aisling)sprite).Inventory.Assign(this);
+                    ((Aisling) sprite).Inventory.Assign(this);
                     var format = new ServerFormat0F(this);
-                    ((Aisling)sprite).Show(Scope.Self, format);
+                    ((Aisling) sprite).Show(Scope.Self, format);
 
                     if (checkWeight)
                     {
-                        ((Aisling)sprite).CurrentWeight += Template.CarryWeight;
-                        ((Aisling)sprite).Client?.SendStats(StatusFlags.StructA);
+                        ((Aisling) sprite).CurrentWeight += Template.CarryWeight;
+                        ((Aisling) sprite).Client?.SendStats(StatusFlags.StructA);
                     }
 
                     return true;
@@ -662,9 +662,9 @@ namespace Darkages.Types
             if (Template.MrModifer != null)
             {
                 if (Template.MrModifer.Option == Operator.Add)
-                    client.Aisling.BonusMr -= (byte)Template.MrModifer.Value;
+                    client.Aisling.BonusMr -= (byte) Template.MrModifer.Value;
                 if (Template.MrModifer.Option == Operator.Remove)
-                    client.Aisling.BonusMr += (byte)Template.MrModifer.Value;
+                    client.Aisling.BonusMr += (byte) Template.MrModifer.Value;
 
                 if (client.Aisling.BonusMr < 0)
                     client.Aisling.BonusMr = 0;
@@ -716,9 +716,9 @@ namespace Darkages.Types
             if (Template.StrModifer != null)
             {
                 if (Template.StrModifer.Option == Operator.Add)
-                    client.Aisling.BonusStr -= (byte)Template.StrModifer.Value;
+                    client.Aisling.BonusStr -= (byte) Template.StrModifer.Value;
                 if (Template.StrModifer.Option == Operator.Remove)
-                    client.Aisling.BonusStr += (byte)Template.StrModifer.Value;
+                    client.Aisling.BonusStr += (byte) Template.StrModifer.Value;
             }
 
             #endregion
@@ -728,9 +728,9 @@ namespace Darkages.Types
             if (Template.IntModifer != null)
             {
                 if (Template.IntModifer.Option == Operator.Add)
-                    client.Aisling.BonusInt -= (byte)Template.IntModifer.Value;
+                    client.Aisling.BonusInt -= (byte) Template.IntModifer.Value;
                 if (Template.IntModifer.Option == Operator.Remove)
-                    client.Aisling.BonusInt += (byte)Template.IntModifer.Value;
+                    client.Aisling.BonusInt += (byte) Template.IntModifer.Value;
             }
 
             #endregion
@@ -740,9 +740,9 @@ namespace Darkages.Types
             if (Template.WisModifer != null)
             {
                 if (Template.WisModifer.Option == Operator.Add)
-                    client.Aisling.BonusWis -= (byte)Template.WisModifer.Value;
+                    client.Aisling.BonusWis -= (byte) Template.WisModifer.Value;
                 if (Template.WisModifer.Option == Operator.Remove)
-                    client.Aisling.BonusWis += (byte)Template.WisModifer.Value;
+                    client.Aisling.BonusWis += (byte) Template.WisModifer.Value;
             }
 
             #endregion
@@ -752,9 +752,9 @@ namespace Darkages.Types
             if (Template.ConModifer != null)
             {
                 if (Template.ConModifer.Option == Operator.Add)
-                    client.Aisling.BonusCon -= (byte)Template.ConModifer.Value;
+                    client.Aisling.BonusCon -= (byte) Template.ConModifer.Value;
                 if (Template.ConModifer.Option == Operator.Remove)
-                    client.Aisling.BonusCon += (byte)Template.ConModifer.Value;
+                    client.Aisling.BonusCon += (byte) Template.ConModifer.Value;
 
                 if (client.Aisling.BonusCon < 0)
                     client.Aisling.BonusCon = ServerContext.Config.BaseStatAttribute;
@@ -769,9 +769,9 @@ namespace Darkages.Types
             if (Template.DexModifer != null)
             {
                 if (Template.DexModifer.Option == Operator.Add)
-                    client.Aisling.BonusDex -= (byte)Template.DexModifer.Value;
+                    client.Aisling.BonusDex -= (byte) Template.DexModifer.Value;
                 if (Template.DexModifer.Option == Operator.Remove)
-                    client.Aisling.BonusDex += (byte)Template.DexModifer.Value;
+                    client.Aisling.BonusDex += (byte) Template.DexModifer.Value;
             }
 
             #endregion
@@ -781,9 +781,9 @@ namespace Darkages.Types
             if (Template.HitModifer != null)
             {
                 if (Template.HitModifer.Option == Operator.Add)
-                    client.Aisling.BonusHit -= (byte)Template.HitModifer.Value;
+                    client.Aisling.BonusHit -= (byte) Template.HitModifer.Value;
                 if (Template.HitModifer.Option == Operator.Remove)
-                    client.Aisling.BonusHit += (byte)Template.HitModifer.Value;
+                    client.Aisling.BonusHit += (byte) Template.HitModifer.Value;
             }
 
             #endregion
@@ -793,9 +793,9 @@ namespace Darkages.Types
             if (Template.DmgModifer != null)
             {
                 if (Template.DmgModifer.Option == Operator.Add)
-                    client.Aisling.BonusDmg -= (byte)Template.DmgModifer.Value;
+                    client.Aisling.BonusDmg -= (byte) Template.DmgModifer.Value;
                 if (Template.DmgModifer.Option == Operator.Remove)
-                    client.Aisling.BonusDmg += (byte)Template.DmgModifer.Value;
+                    client.Aisling.BonusDmg += (byte) Template.DmgModifer.Value;
             }
 
             #endregion

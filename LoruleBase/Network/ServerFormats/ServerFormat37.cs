@@ -31,7 +31,7 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write(EquipmentSlot);
             writer.Write(Item.DisplayImage);
-            writer.Write((byte)0x03);
+            writer.Write((byte) 0x03);
             writer.WriteStringA(Item.Template.Name);
             writer.WriteStringA(Item.DisplayName);
             writer.Write(Item.Durability);

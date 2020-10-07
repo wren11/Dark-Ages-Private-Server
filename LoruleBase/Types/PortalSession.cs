@@ -48,6 +48,8 @@ namespace Darkages
 
             if (destinationMap == 0)
             {
+                client.Refresh(true);
+                client.RefreshMap(true);
                 client.LeaveArea(true, true);
 
                 destinationMap = ServerContext.Config.TransitionZone;

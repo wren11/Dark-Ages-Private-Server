@@ -81,30 +81,24 @@ namespace Darkages.Network.Game
         public void UpdateClients(TimeSpan elapsedTime)
         {
             foreach (var client in Clients.Where(client => client?.Aisling != null))
-            {
                 try
                 {
                     if (!client.Aisling.LoggedIn)
                         continue;
 
                     if (!client.IsWarping)
-                    {
                         Pulse(elapsedTime, client);
-                    }
                     else if (client.IsWarping &&
                              !client.InMapTransition &&
                              client.CanSendLocation &&
                              !client.IsRefreshing &&
                              client.Aisling.CurrentMapId == ServerContext.Config.PVPMap)
-                    {
                         client.SendLocation();
-                    }
                 }
                 catch
                 {
                     // ignored
                 }
-            }
         }
 
         private static void Pulse(TimeSpan elapsedTime, IGameClient client)
@@ -164,7 +158,6 @@ namespace Darkages.Network.Game
                 var components = ServerComponents.Select(i => i.Value);
 
                 foreach (var component in components)
-                {
                     try
                     {
                         component?.Update(elapsedTime);
@@ -173,7 +166,6 @@ namespace Darkages.Network.Game
                     {
                         // ignored
                     }
-                }
             }
             catch (Exception e)
             {

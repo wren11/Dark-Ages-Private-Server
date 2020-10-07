@@ -130,7 +130,7 @@ namespace Darkages
         public bool LoggedIn { get; set; }
 
         [JsonIgnore]
-        public int MaximumWeight => (int)(ExpLevel / 4 + _Str + ServerContext.Config.WeightIncreaseModifer);
+        public int MaximumWeight => (int) (ExpLevel / 4 + _Str + ServerContext.Config.WeightIncreaseModifer);
 
         public ushort MonsterForm { get; set; } = 0x4021;
         public byte NameColor { get; set; }
@@ -310,20 +310,20 @@ namespace Darkages
             Client.SendStats(StatusFlags.StructC);
 
             var packet = new NetworkPacketWriter();
-            packet.Write((byte)0x42);
-            packet.Write((byte)0x00);
+            packet.Write((byte) 0x42);
+            packet.Write((byte) 0x00);
 
-            packet.Write((byte)0x04);
-            packet.Write((byte)0x00);
+            packet.Write((byte) 0x04);
+            packet.Write((byte) 0x00);
             packet.WriteStringA("Trade was aborted.");
             Client.Send(packet);
 
             packet = new NetworkPacketWriter();
-            packet.Write((byte)0x42);
-            packet.Write((byte)0x00);
+            packet.Write((byte) 0x42);
+            packet.Write((byte) 0x00);
 
-            packet.Write((byte)0x04);
-            packet.Write((byte)0x01);
+            packet.Write((byte) 0x04);
+            packet.Write((byte) 0x01);
             packet.WriteStringA("Trade was aborted.");
             trader.Client.Send(packet);
         }
@@ -338,7 +338,7 @@ namespace Darkages
             var action = new ServerFormat1A
             {
                 Serial = Serial,
-                Number = (byte)(Path == Class.Priest ? 0x80 : Path == Class.Wizard ? 0x88 : 0x06),
+                Number = (byte) (Path == Class.Priest ? 0x80 : Path == Class.Wizard ? 0x88 : 0x06),
                 Speed = actionSpeed
             };
 
@@ -352,7 +352,7 @@ namespace Darkages
                     var hpbar = new ServerFormat13
                     {
                         Serial = target.Serial,
-                        Health = (ushort)(100 * target.CurrentHp / target.MaximumHp),
+                        Health = (ushort) (100 * target.CurrentHp / target.MaximumHp),
                         Sound = spell.Template.Sound
                     };
 
@@ -443,13 +443,9 @@ namespace Darkages
             }
 
             if (spell.Template.Cooldown > 0)
-            {
                 spell.NextAvailableUse = DateTime.UtcNow.AddSeconds(spell.Template.Cooldown);
-            }
             else
-            {
                 spell.NextAvailableUse = DateTime.UtcNow;
-            }
 
             spell.InUse = false;
 
@@ -457,7 +453,6 @@ namespace Darkages
                 Client.Send(new ServerFormat3F(0,
                     spell.Slot,
                     spell.Template.Cooldown));
-
 
 
             Client.Aisling.IsCastingSpell = false;

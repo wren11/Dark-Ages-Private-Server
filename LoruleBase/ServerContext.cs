@@ -313,25 +313,25 @@ namespace Darkages
         private static void CacheDebuffs()
         {
             var listOfDebuffs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
-                                 from assemblyType in domainAssembly.GetTypes()
-                                 where typeof(Debuff).IsAssignableFrom(assemblyType)
-                                 select assemblyType).ToArray();
+                from assemblyType in domainAssembly.GetTypes()
+                where typeof(Debuff).IsAssignableFrom(assemblyType)
+                select assemblyType).ToArray();
 
             foreach (var debuff in listOfDebuffs)
                 if (GlobalDeBuffCache != null)
-                    GlobalDeBuffCache[debuff.Name] = (Debuff)Activator.CreateInstance(debuff);
+                    GlobalDeBuffCache[debuff.Name] = (Debuff) Activator.CreateInstance(debuff);
         }
 
         private static void CacheBuffs()
         {
             var listOfBuffs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
-                               from assemblyType in domainAssembly.GetTypes()
-                               where typeof(Buff).IsAssignableFrom(assemblyType)
-                               select assemblyType).ToArray();
+                from assemblyType in domainAssembly.GetTypes()
+                where typeof(Buff).IsAssignableFrom(assemblyType)
+                select assemblyType).ToArray();
 
             foreach (var buff in listOfBuffs)
                 if (GlobalBuffCache != null)
-                    GlobalBuffCache[buff.Name] = (Buff)Activator.CreateInstance(buff);
+                    GlobalBuffCache[buff.Name] = (Buff) Activator.CreateInstance(buff);
         }
 
         private static void BindTemplates()

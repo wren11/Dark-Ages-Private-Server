@@ -31,11 +31,11 @@ namespace Darkages.Network.ServerFormats
             writer.Write(Item.DisplayImage);
             writer.Write(Item.Color);
             writer.WriteStringA(Item.DisplayName);
-            writer.Write((uint)Item.Stacks);
-            writer.Write((byte)Item.Stacks > 1);
+            writer.Write((uint) Item.Stacks);
+            writer.Write((byte) Item.Stacks > 1);
             writer.Write(Item.Template.MaxDurability);
             writer.Write(Item.Durability);
-            writer.Write((uint)0x00);
+            writer.Write((uint) 0x00);
         }
     }
 }

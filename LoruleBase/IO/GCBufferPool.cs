@@ -6,7 +6,7 @@ using System;
 
 namespace Darkages.IO
 {
-    public class GCBufferPool : IBufferPool
+    public class GcBufferPool : IBufferPool
     {
         public void Dispose()
         {

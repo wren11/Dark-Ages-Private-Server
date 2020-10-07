@@ -54,7 +54,7 @@ namespace Darkages.Storage.locales.debuffs
             if (Affected is Aisling)
             {
                 (Affected as Aisling)
-                    .Client.SendAnimation((ushort)(Animation == 0 ? 25 : Animation), Affected, Affected);
+                    .Client.SendAnimation((ushort) (Animation == 0 ? 25 : Animation), Affected, Affected);
 
                 ApplyPoison(Affected);
 
@@ -101,9 +101,9 @@ namespace Darkages.Storage.locales.debuffs
             if (IsSpreading)
             {
                 var nearby = (from v in Affected.MonstersNearby()
-                              where v.Serial != Affected.Serial &&
-                                    !v.HasDebuff(Name)
-                              select v).ToList();
+                    where v.Serial != Affected.Serial &&
+                          !v.HasDebuff(Name)
+                    select v).ToList();
 
                 if (nearby.Count > 0)
                     foreach (var near in nearby)
@@ -119,7 +119,7 @@ namespace Darkages.Storage.locales.debuffs
 
             if (Affected.CurrentHp > 0)
             {
-                var cap = (int)(Affected.CurrentHp - Affected.CurrentHp * Modifier);
+                var cap = (int) (Affected.CurrentHp - Affected.CurrentHp * Modifier);
                 if (cap > 0) Affected.CurrentHp = cap;
             }
         }

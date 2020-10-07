@@ -24,6 +24,7 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0-dev-00880" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Lorule.Static\Lorule.Static.csproj" />
     <ProjectReference Include="..\LoruleBase\LoruleBase.csproj" />
   </ItemGroup>
   <ItemGroup>

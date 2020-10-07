@@ -157,7 +157,7 @@ namespace Darkages.Network.Object
             {
                 case Monster monster:
                     monster.Template = monster.Template;
-                    monster.Scripts  = ScriptManager.Load<MonsterScript>(monster.Template.ScriptName, obj as Monster);
+                    monster.Scripts = ScriptManager.Load<MonsterScript>(monster.Template.ScriptName, obj as Monster);
                     break;
             }
         }
@@ -168,7 +168,7 @@ namespace Darkages.Network.Object
             {
                 case Mundane mundane:
                     mundane.Template = mundane.Template;
-                    mundane.Scripts  = ScriptManager.Load<MundaneScript>(mundane.Template.ScriptKey, obj as Mundane);
+                    mundane.Scripts = ScriptManager.Load<MundaneScript>(mundane.Template.ScriptKey, obj as Mundane);
                     break;
             }
         }
@@ -179,7 +179,7 @@ namespace Darkages.Network.Object
             {
                 case Skill skill:
                     skill.Template = skill.Template;
-                    skill.Scripts  = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, obj as Skill);
+                    skill.Scripts = ScriptManager.Load<SkillScript>(skill.Template.ScriptName, obj as Skill);
                     break;
             }
         }
@@ -190,7 +190,7 @@ namespace Darkages.Network.Object
             {
                 case Spell spell:
                     spell.Template = spell.Template;
-                    spell.Scripts  = ScriptManager.Load<SpellScript>(spell.Template.ScriptKey, obj as Spell);
+                    spell.Scripts = ScriptManager.Load<SpellScript>(spell.Template.ScriptKey, obj as Spell);
                     break;
             }
         }

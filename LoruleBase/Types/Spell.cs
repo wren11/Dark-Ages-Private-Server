@@ -46,7 +46,7 @@ namespace Darkages.Types
 
             obj.Template = spellTemplate;
             obj.Level = 0;
-            obj.Slot = (byte)slot;
+            obj.Slot = (byte) slot;
             obj.Lines = obj.Template.BaseLines;
 
             if (obj.Template.Buff == null || obj.Template.Debuff == null)
@@ -102,7 +102,7 @@ namespace Darkages.Types
 
             if (spellTemplate != null)
             {
-                if (aisling.SpellBook.Has(spellTemplate)) 
+                if (aisling.SpellBook.Has(spellTemplate))
                     return false;
 
                 var slot = aisling.SpellBook.FindEmpty(spellTemplate.Pane == Pane.Spells ? 0 : 72);

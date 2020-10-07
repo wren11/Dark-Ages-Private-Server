@@ -68,7 +68,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             }
             else
             {
-                client.Aisling.Path = (Class)responseID;
+                client.Aisling.Path = (Class) responseID;
 
                 client.SendOptionsDialog(Mundane, $"You are now a {Convert.ToString(client.Aisling.Path)}");
 
@@ -182,8 +182,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 client.Aisling.LegendBook.AddLegend(new Legend.LegendItem
                 {
                     Category = "Class",
-                    Color = (byte)LegendColor.Blue,
-                    Icon = (byte)LegendIcon.Victory,
+                    Color = (byte) LegendColor.Blue,
+                    Icon = (byte) LegendIcon.Victory,
                     Value = $"Devoted to the path of {Convert.ToString(client.Aisling.Path)} "
                 });
 

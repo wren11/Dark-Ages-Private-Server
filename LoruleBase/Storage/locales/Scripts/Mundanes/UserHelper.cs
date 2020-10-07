@@ -55,68 +55,68 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 switch (responseID)
                 {
                     case 0x0001:
-                        {
-                            if (client.Aisling.TutorialCompleted)
-                                client.Aisling.GoHome();
-                            else
-                                client.TransitionToMap(
-                                    ServerContext.GlobalMapCache[ServerContext.Config.StartingMap],
-                                    ServerContext.Config.StartingPosition);
-                        }
+                    {
+                        if (client.Aisling.TutorialCompleted)
+                            client.Aisling.GoHome();
+                        else
+                            client.TransitionToMap(
+                                ServerContext.GlobalMapCache[ServerContext.Config.StartingMap],
+                                ServerContext.Config.StartingPosition);
+                    }
                         break;
 
                     case 0x0002:
+                    {
+                        if (client.Aisling.Stage == ClassStage.Master)
                         {
-                            if (client.Aisling.Stage == ClassStage.Master)
-                            {
-                                client.SendOptionsDialog(Mundane, "You are a master already.");
-                                return;
-                            }
-
-                            client.Aisling.Path = Class.Warrior;
-                            client.Aisling.Stage = ClassStage.Master;
-                            client.Aisling.ExpLevel = 99;
-                            client.Aisling._Str = 215;
-                            client.Aisling._Wis = 100;
-                            client.Aisling._Int = 100;
-                            client.Aisling._Con = 180;
-                            client.Aisling._Dex = 150;
-                            client.Aisling._MaximumHp = 20000;
-                            client.Aisling._MaximumMp = 10000;
-
-                            Item.Create(client.Aisling, "War Mantle").GiveTo(client.Aisling);
-                            Item.Create(client.Aisling, "War Helmet").GiveTo(client.Aisling);
-
-                            client.SendStats(StatusFlags.All);
-                            client.CloseDialog();
+                            client.SendOptionsDialog(Mundane, "You are a master already.");
+                            return;
                         }
+
+                        client.Aisling.Path = Class.Warrior;
+                        client.Aisling.Stage = ClassStage.Master;
+                        client.Aisling.ExpLevel = 99;
+                        client.Aisling._Str = 215;
+                        client.Aisling._Wis = 100;
+                        client.Aisling._Int = 100;
+                        client.Aisling._Con = 180;
+                        client.Aisling._Dex = 150;
+                        client.Aisling._MaximumHp = 20000;
+                        client.Aisling._MaximumMp = 10000;
+
+                        Item.Create(client.Aisling, "War Mantle").GiveTo(client.Aisling);
+                        Item.Create(client.Aisling, "War Helmet").GiveTo(client.Aisling);
+
+                        client.SendStats(StatusFlags.All);
+                        client.CloseDialog();
+                    }
                         break;
 
                     case 0x0003:
-                        {
-                            client.Aisling.TutorialCompleted = true;
-                            client.Aisling.ExpLevel = 11;
-                            client.Aisling._Str = ServerContext.Config.BaseStatAttribute;
-                            client.Aisling._Int = ServerContext.Config.BaseStatAttribute;
-                            client.Aisling._Wis = ServerContext.Config.BaseStatAttribute;
-                            client.Aisling._Con = ServerContext.Config.BaseStatAttribute;
-                            client.Aisling._Dex = ServerContext.Config.BaseStatAttribute;
-                            client.Aisling._MaximumHp = (ServerContext.Config.MinimumHp + 33) * 11;
-                            client.Aisling._MaximumMp = (ServerContext.Config.MinimumHp + 21) * 11;
+                    {
+                        client.Aisling.TutorialCompleted = true;
+                        client.Aisling.ExpLevel = 11;
+                        client.Aisling._Str = ServerContext.Config.BaseStatAttribute;
+                        client.Aisling._Int = ServerContext.Config.BaseStatAttribute;
+                        client.Aisling._Wis = ServerContext.Config.BaseStatAttribute;
+                        client.Aisling._Con = ServerContext.Config.BaseStatAttribute;
+                        client.Aisling._Dex = ServerContext.Config.BaseStatAttribute;
+                        client.Aisling._MaximumHp = (ServerContext.Config.MinimumHp + 33) * 11;
+                        client.Aisling._MaximumMp = (ServerContext.Config.MinimumHp + 21) * 11;
 
-                            client.Aisling.StatPoints = 11 * ServerContext.Config.StatsPerLevel;
-                            client.SendStats(StatusFlags.All);
+                        client.Aisling.StatPoints = 11 * ServerContext.Config.StatsPerLevel;
+                        client.SendStats(StatusFlags.All);
 
-                            client.SendMessage(0x02, "You have lost all memory...");
-                            client.TransitionToMap(1006, new Position(2, 4));
-                            client.Aisling.TutorialCompleted = true;
-                        }
+                        client.SendMessage(0x02, "You have lost all memory...");
+                        client.TransitionToMap(1006, new Position(2, 4));
+                        client.Aisling.TutorialCompleted = true;
+                    }
                         break;
 
                     case 0x0005:
-                        {
-                            client.Send(new ReactorInputSequence(Mundane, "What do you want to shout?", 40));
-                        }
+                    {
+                        client.Send(new ReactorInputSequence(Mundane, "What do you want to shout?", 40));
+                    }
                         break;
                 }
             }

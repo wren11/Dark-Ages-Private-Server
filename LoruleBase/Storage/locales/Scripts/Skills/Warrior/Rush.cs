@@ -103,7 +103,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 {
                     if (Target is Monster || Target is Mundane || Target is Aisling)
                         Target.Show(Scope.NearbyAislings,
-                            new ServerFormat29((uint)sprite.Serial, (uint)Target.Serial,
+                            new ServerFormat29((uint) sprite.Serial, (uint) Target.Serial,
                                 Skill.Template.TargetAnimation, 0, 100));
 
                     sprite.Show(Scope.NearbyAislings, action);

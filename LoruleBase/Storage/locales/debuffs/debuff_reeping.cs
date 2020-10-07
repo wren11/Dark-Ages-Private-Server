@@ -16,7 +16,7 @@ namespace Darkages.Storage.locales.debuffs
         public override int Length => ServerContext.Config.SkullLength;
 
         public string[] Messages =>
-            ServerContext.Config.ReapMessage.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            ServerContext.Config.ReapMessage.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 
         public override string Name => "skulled";
 

@@ -43,7 +43,7 @@ namespace Darkages.Types
                 colorInt = 6;
 
             (affected as Aisling)?.Client
-                .Send(new ServerFormat3A(Icon, (byte)colorInt));
+                .Send(new ServerFormat3A(Icon, (byte) colorInt));
         }
 
         public bool Has(string name)

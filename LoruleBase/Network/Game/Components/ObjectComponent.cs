@@ -39,16 +39,12 @@ namespace Darkages.Network.Game.Components
                 {
                     var valueCollection = monster.Scripts?.Values;
 
-                    if (monster.Template != null && monster.Map != null) 
+                    if (monster.Template != null && monster.Map != null)
                         Monster.InitScripting(monster.Template, monster.Map, monster);
 
                     if (valueCollection != null && valueCollection.Any())
-                    {
                         foreach (var script in valueCollection)
-                        {
                             script.OnApproach(player.Client);
-                        }
-                    }
                 }
 
                 if (obj is Aisling otherplayer)
@@ -83,19 +79,19 @@ namespace Darkages.Network.Game.Components
                     switch (obj)
                     {
                         case Money money:
-                            {
-                                var goldSetting = player.GameSettings.Find(i =>
-                                    i.EnabledSettingStr.Contains("AUTO LOOT GOLD"));
+                        {
+                            var goldSetting = player.GameSettings.Find(i =>
+                                i.EnabledSettingStr.Contains("AUTO LOOT GOLD"));
 
-                                if (goldSetting != null)
-                                    if (goldSetting.Enabled)
-                                    {
-                                        money.GiveTo(money.Amount, player);
-                                        skip = true;
-                                    }
+                            if (goldSetting != null)
+                                if (goldSetting.Enabled)
+                                {
+                                    money.GiveTo(money.Amount, player);
+                                    skip = true;
+                                }
 
-                                break;
-                            }
+                            break;
+                        }
                     }
 
                     if (!skip)
@@ -167,9 +163,7 @@ namespace Darkages.Network.Game.Components
         private static void CheckObjectClients(Aisling user, Sprite[] objects)
         {
             foreach (var obj in objects)
-            {
                 if (obj is Aisling aisling)
-                {
                     lock (ServerContext.SyncLock)
                     {
                         if (ServerContext.Game != null && ServerContext.Game.Clients != null)
@@ -186,8 +180,6 @@ namespace Darkages.Network.Game.Components
                             }
                         }
                     }
-                }
-            }
         }
 
         protected internal override void Update(TimeSpan elapsedTime)
@@ -205,6 +197,7 @@ namespace Darkages.Network.Game.Components
         }
 
         #region Underlying Object Managers
+
         #endregion
     }
 }

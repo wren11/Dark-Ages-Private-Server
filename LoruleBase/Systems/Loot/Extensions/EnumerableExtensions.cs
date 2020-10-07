@@ -24,7 +24,7 @@ namespace Darkages.Systems.Loot.Extensions
                 foreach (var item in items)
                     lock (Generator.Random)
                     {
-                        var luck = (short)Math.Abs(NextFloat(Generator.Random));
+                        var luck = (short) Math.Abs(NextFloat(Generator.Random));
 
                         if (luck < 0 || luck > 0) return objs[randomNumber];
                     }
@@ -37,7 +37,7 @@ namespace Darkages.Systems.Loot.Extensions
         {
             var mantissa = random.NextDouble() * 2.0 - 1.0;
             var exponent = Math.Pow(2.0, random.Next(-126, 128));
-            return (float)(mantissa * exponent);
+            return (float) (mantissa * exponent);
         }
     }
 }

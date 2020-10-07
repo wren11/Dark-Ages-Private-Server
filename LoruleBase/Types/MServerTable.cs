@@ -59,7 +59,7 @@ namespace Darkages.Types
                     var server = new MServer
                     {
                         Guid = reader.ReadByte(),
-                        Address = reader.ReadIPAddress(),
+                        Address = reader.ReadIpAddress(),
                         Port = reader.ReadUInt16()
                     };
 

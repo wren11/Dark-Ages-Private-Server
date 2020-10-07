@@ -151,7 +151,7 @@ namespace Darkages.Types
                 sb += "{=sYou are not worthy., \n{=u";
                 foreach (var predicate in errorCaps)
                     if (predicate != null && !predicate.Item1)
-                        sb += (string)predicate.Item2 + "\n";
+                        sb += (string) predicate.Item2 + "\n";
             }
 
             callbackMsg?.Invoke(sb, false);

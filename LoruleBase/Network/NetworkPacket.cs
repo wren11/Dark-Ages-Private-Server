@@ -27,7 +27,7 @@ namespace Darkages.Network
             else
             {
                 Data = new byte[count];
-                if (Data.Length > 0) 
+                if (Data.Length > 0)
                     Buffer.BlockCopy(array, 0, Data, 0, Data.Length);
             }
         }
@@ -41,8 +41,8 @@ namespace Darkages.Network
             var buffer = new byte[Data.Length + 5];
 
             buffer[0] = 0xAA;
-            buffer[1] = (byte)((Data.Length + 2) >> 8);
-            buffer[2] = (byte)(Data.Length + 2);
+            buffer[1] = (byte) ((Data.Length + 2) >> 8);
+            buffer[2] = (byte) (Data.Length + 2);
             buffer[3] = Command;
             buffer[4] = Ordinal;
 

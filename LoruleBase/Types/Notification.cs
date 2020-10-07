@@ -14,7 +14,7 @@ namespace Darkages.Types
         public byte[] Data => DeflatedData;
 
         public uint Hash { get; private set; }
-        public ushort Size => (ushort)DeflatedData.Length;
+        public ushort Size => (ushort) DeflatedData.Length;
 
         public static Notification FromFile(string filename)
         {

@@ -80,7 +80,6 @@ namespace Darkages.Network.Game
 
             if (itemScripts != null)
                 foreach (var itemScript in itemScripts.Values.Where(itemScript => itemScript != null && ready))
-                {
                     itemScript.OnUse(lpClient.Aisling,
                         targets =>
                         {
@@ -88,7 +87,6 @@ namespace Darkages.Network.Game
                                 DateTime.UtcNow.AddMilliseconds(ServerContext.Config
                                     .GlobalBaseSkillDelay);
                         });
-                }
 
             if ((lpClient.LastAssail - DateTime.UtcNow).TotalMilliseconds >
                 ServerContext.Config.GlobalBaseSkillDelay) return;
@@ -136,9 +134,7 @@ namespace Darkages.Network.Game
 
             if (optExecuteScript)
                 foreach (var script in lpSkill.Scripts.Values)
-                {
                     script?.OnUse(lpClient.Aisling);
-                }
 
             lpSkill.NextAvailableUse =
                 lpSkill.Template.Cooldown > 0
@@ -203,7 +199,6 @@ namespace Darkages.Network.Game
                     q.HandleQuest(client, null,
                         completed => { res.Result = completed; });
             });
-
         }
 
         public void ExitGame(GameClient client)
@@ -252,7 +247,6 @@ namespace Darkages.Network.Game
 
         protected override void Format00Handler(LoginClient client, ClientFormat00 format)
         {
-
         }
 
         protected override void Format05Handler(GameClient client, ClientFormat05 format)
@@ -282,6 +276,7 @@ namespace Darkages.Network.Game
 
             if (!client.Aisling.Map.Ready)
                 return;
+
             #endregion
 
             if (client.Aisling.IsSleeping || client.Aisling.IsFrozen || client.Aisling.IsParalyzed)
@@ -305,10 +300,7 @@ namespace Darkages.Network.Game
             if (client.IsRefreshing && ServerContext.Config.CancelWalkingIfRefreshing)
                 return;
 
-            if (client.Aisling.IsCastingSpell && ServerContext.Config.CancelCastingWhenWalking)
-            {
-                CancelIfCasting(client);
-            }
+            if (client.Aisling.IsCastingSpell && ServerContext.Config.CancelCastingWhenWalking) CancelIfCasting(client);
 
             client.Aisling.Direction = format.Direction;
 
@@ -320,7 +312,7 @@ namespace Darkages.Network.Game
 
                 if (client.Aisling.AreaId == ServerContext.Config.TransitionZone)
                 {
-                    client.Aisling.PortalSession = new PortalSession { IsMapOpen = false };
+                    client.Aisling.PortalSession = new PortalSession {IsMapOpen = false};
                     client.Aisling.PortalSession.TransitionToMap(client);
                     return;
                 }
@@ -403,7 +395,7 @@ namespace Darkages.Network.Game
 
                         item.XPos = client.Aisling.XPos;
                         item.YPos = client.Aisling.YPos;
-                        item.Show(Scope.NearbyAislings, new ServerFormat07(new[] { obj }));
+                        item.Show(Scope.NearbyAislings, new ServerFormat07(new[] {obj}));
                         break;
                     }
 
@@ -444,7 +436,7 @@ namespace Darkages.Network.Game
 
                     item.XPos = client.Aisling.XPos;
                     item.YPos = client.Aisling.YPos;
-                    item.Show(Scope.NearbyAislings, new ServerFormat07(new[] { obj }));
+                    item.Show(Scope.NearbyAislings, new ServerFormat07(new[] {obj}));
 
                     break;
                 }
@@ -532,10 +524,10 @@ namespace Darkages.Network.Game
                 else
                 {
                     var nitem = Clone<Item>(item);
-                    nitem.Stacks = (byte)format.ItemAmount;
+                    nitem.Stacks = (byte) format.ItemAmount;
                     nitem.Release(client.Aisling, new Position(format.X, format.Y));
 
-                    item.Stacks = (byte)remaining;
+                    item.Stacks = (byte) remaining;
                     client.Aisling.Inventory.Set(item, false);
 
                     client.Send(new ServerFormat10(item.Slot));
@@ -666,10 +658,7 @@ namespace Darkages.Network.Game
                 Data = format.Data,
             };
 
-            if (info.Position == null)
-            {
-                info.Position = new Position(client.Aisling.X, client.Aisling.Y);
-            }
+            if (info.Position == null) info.Position = new Position(client.Aisling.X, client.Aisling.Y);
 
             lock (client.CastStack)
             {
@@ -863,10 +852,7 @@ namespace Darkages.Network.Game
             }
             else
             {
-                foreach (var script in item.Scripts.Values)
-                {
-                    script?.OnUse(client.Aisling, slot);
-                }
+                foreach (var script in item.Scripts.Values) script?.OnUse(client.Aisling, slot);
 
                 activated = true;
             }
@@ -928,7 +914,7 @@ namespace Darkages.Network.Game
                 return;
 
             client.Aisling.Show(Scope.NearbyAislings,
-                new ServerFormat1A(client.Aisling.Serial, (byte)(id + 9), 64));
+                new ServerFormat1A(client.Aisling.Serial, (byte) (id + 9), 64));
         }
 
         protected override void Format24Handler(GameClient client, ClientFormat24 format)
@@ -1100,135 +1086,135 @@ namespace Darkages.Network.Game
             switch (format.PaneType)
             {
                 case Pane.Inventory:
+                {
+                    if (format.MovingTo - 1 > client.Aisling.Inventory.Length)
+                        return;
+                    if (format.MovingFrom - 1 > client.Aisling.Inventory.Length)
+                        return;
+                    if (format.MovingTo - 1 < 0)
+                        return;
+                    if (format.MovingFrom - 1 < 0)
+                        return;
+
+                    client.Send(new ServerFormat10(format.MovingFrom));
+                    client.Send(new ServerFormat10(format.MovingTo));
+
+                    var a = client.Aisling.Inventory.Remove(format.MovingFrom);
+                    var b = client.Aisling.Inventory.Remove(format.MovingTo);
+
+                    if (a != null)
                     {
-                        if (format.MovingTo - 1 > client.Aisling.Inventory.Length)
-                            return;
-                        if (format.MovingFrom - 1 > client.Aisling.Inventory.Length)
-                            return;
-                        if (format.MovingTo - 1 < 0)
-                            return;
-                        if (format.MovingFrom - 1 < 0)
-                            return;
-
-                        client.Send(new ServerFormat10(format.MovingFrom));
-                        client.Send(new ServerFormat10(format.MovingTo));
-
-                        var a = client.Aisling.Inventory.Remove(format.MovingFrom);
-                        var b = client.Aisling.Inventory.Remove(format.MovingTo);
-
-                        if (a != null)
-                        {
-                            a.Slot = format.MovingTo;
-                            client.Send(new ServerFormat0F(a));
-                            client.Aisling.Inventory.Set(a, false);
-                        }
-
-                        if (b != null)
-                        {
-                            b.Slot = format.MovingFrom;
-                            client.Send(new ServerFormat0F(b));
-                            client.Aisling.Inventory.Set(b, false);
-                        }
+                        a.Slot = format.MovingTo;
+                        client.Send(new ServerFormat0F(a));
+                        client.Aisling.Inventory.Set(a, false);
                     }
+
+                    if (b != null)
+                    {
+                        b.Slot = format.MovingFrom;
+                        client.Send(new ServerFormat0F(b));
+                        client.Aisling.Inventory.Set(b, false);
+                    }
+                }
                     break;
 
                 case Pane.Skills:
+                {
+                    if (format.MovingTo - 1 > client.Aisling.SkillBook.Length)
+                        return;
+                    if (format.MovingFrom - 1 > client.Aisling.SkillBook.Length)
+                        return;
+                    if (format.MovingTo - 1 < 0)
+                        return;
+                    if (format.MovingFrom - 1 < 0)
+                        return;
+
+                    client.Send(new ServerFormat2D(format.MovingFrom));
+                    client.Send(new ServerFormat2D(format.MovingTo));
+
+                    var a = client.Aisling.SkillBook.Remove(format.MovingFrom);
+                    var b = client.Aisling.SkillBook.Remove(format.MovingTo);
+
+                    if (a != null)
                     {
-                        if (format.MovingTo - 1 > client.Aisling.SkillBook.Length)
-                            return;
-                        if (format.MovingFrom - 1 > client.Aisling.SkillBook.Length)
-                            return;
-                        if (format.MovingTo - 1 < 0)
-                            return;
-                        if (format.MovingFrom - 1 < 0)
-                            return;
-
-                        client.Send(new ServerFormat2D(format.MovingFrom));
-                        client.Send(new ServerFormat2D(format.MovingTo));
-
-                        var a = client.Aisling.SkillBook.Remove(format.MovingFrom);
-                        var b = client.Aisling.SkillBook.Remove(format.MovingTo);
-
-                        if (a != null)
-                        {
-                            a.Slot = format.MovingTo;
-                            client.Send(new ServerFormat2C(a.Slot, a.Icon, a.Name));
-                            client.Aisling.SkillBook.Set(a, false);
-                        }
-
-                        if (b != null)
-                        {
-                            b.Slot = format.MovingFrom;
-                            client.Send(new ServerFormat2C(b.Slot, b.Icon, b.Name));
-                            client.Aisling.SkillBook.Set(b, false);
-                        }
+                        a.Slot = format.MovingTo;
+                        client.Send(new ServerFormat2C(a.Slot, a.Icon, a.Name));
+                        client.Aisling.SkillBook.Set(a, false);
                     }
+
+                    if (b != null)
+                    {
+                        b.Slot = format.MovingFrom;
+                        client.Send(new ServerFormat2C(b.Slot, b.Icon, b.Name));
+                        client.Aisling.SkillBook.Set(b, false);
+                    }
+                }
                     break;
 
                 case Pane.Spells:
+                {
+                    if (format.MovingTo - 1 > client.Aisling.SpellBook.Length)
+                        return;
+                    if (format.MovingFrom - 1 > client.Aisling.SpellBook.Length)
+                        return;
+                    if (format.MovingTo - 1 < 0)
+                        return;
+                    if (format.MovingFrom - 1 < 0)
+                        return;
+
+                    client.Send(new ServerFormat18(format.MovingFrom));
+                    client.Send(new ServerFormat18(format.MovingTo));
+
+                    var a = client.Aisling.SpellBook.Remove(format.MovingFrom);
+                    var b = client.Aisling.SpellBook.Remove(format.MovingTo);
+
+                    if (a != null)
                     {
-                        if (format.MovingTo - 1 > client.Aisling.SpellBook.Length)
-                            return;
-                        if (format.MovingFrom - 1 > client.Aisling.SpellBook.Length)
-                            return;
-                        if (format.MovingTo - 1 < 0)
-                            return;
-                        if (format.MovingFrom - 1 < 0)
-                            return;
-
-                        client.Send(new ServerFormat18(format.MovingFrom));
-                        client.Send(new ServerFormat18(format.MovingTo));
-
-                        var a = client.Aisling.SpellBook.Remove(format.MovingFrom);
-                        var b = client.Aisling.SpellBook.Remove(format.MovingTo);
-
-                        if (a != null)
-                        {
-                            a.Slot = format.MovingTo;
-                            client.Send(new ServerFormat17(a));
-                            client.Aisling.SpellBook.Set(a, false);
-                        }
-
-                        if (b != null)
-                        {
-                            b.Slot = format.MovingFrom;
-                            client.Send(new ServerFormat17(b));
-                            client.Aisling.SpellBook.Set(b, false);
-                        }
+                        a.Slot = format.MovingTo;
+                        client.Send(new ServerFormat17(a));
+                        client.Aisling.SpellBook.Set(a, false);
                     }
+
+                    if (b != null)
+                    {
+                        b.Slot = format.MovingFrom;
+                        client.Send(new ServerFormat17(b));
+                        client.Aisling.SpellBook.Set(b, false);
+                    }
+                }
                     break;
 
                 case Pane.Tools:
+                {
+                    if (format.MovingTo - 1 > client.Aisling.SpellBook.Length)
+                        return;
+                    if (format.MovingFrom - 1 > client.Aisling.SpellBook.Length)
+                        return;
+                    if (format.MovingTo - 1 < 0)
+                        return;
+                    if (format.MovingFrom - 1 < 0)
+                        return;
+
+                    client.Send(new ServerFormat18(format.MovingFrom));
+                    client.Send(new ServerFormat18(format.MovingTo));
+
+                    var a = client.Aisling.SpellBook.Remove(format.MovingFrom);
+                    var b = client.Aisling.SpellBook.Remove(format.MovingTo);
+
+                    if (a != null)
                     {
-                        if (format.MovingTo - 1 > client.Aisling.SpellBook.Length)
-                            return;
-                        if (format.MovingFrom - 1 > client.Aisling.SpellBook.Length)
-                            return;
-                        if (format.MovingTo - 1 < 0)
-                            return;
-                        if (format.MovingFrom - 1 < 0)
-                            return;
-
-                        client.Send(new ServerFormat18(format.MovingFrom));
-                        client.Send(new ServerFormat18(format.MovingTo));
-
-                        var a = client.Aisling.SpellBook.Remove(format.MovingFrom);
-                        var b = client.Aisling.SpellBook.Remove(format.MovingTo);
-
-                        if (a != null)
-                        {
-                            a.Slot = format.MovingTo;
-                            client.Send(new ServerFormat17(a));
-                            client.Aisling.SpellBook.Set(a, false);
-                        }
-
-                        if (b != null)
-                        {
-                            b.Slot = format.MovingFrom;
-                            client.Send(new ServerFormat17(b));
-                            client.Aisling.SpellBook.Set(b, false);
-                        }
+                        a.Slot = format.MovingTo;
+                        client.Send(new ServerFormat17(a));
+                        client.Aisling.SpellBook.Set(a, false);
                     }
+
+                    if (b != null)
+                    {
+                        b.Slot = format.MovingFrom;
+                        client.Send(new ServerFormat17(b));
+                        client.Aisling.SpellBook.Set(b, false);
+                    }
+                }
                     break;
 
                 default:
@@ -1284,7 +1270,7 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            var objId = (uint)format.Serial;
+            var objId = (uint) format.Serial;
 
             if (objId > 0 && objId < int.MaxValue)
             {
@@ -1443,7 +1429,6 @@ namespace Darkages.Network.Game
                         if (close != null)
                             client.CloseDialog();
                     }
-
 
 
                     return;
@@ -1776,12 +1761,8 @@ namespace Darkages.Network.Game
             };
 
             foreach (var word in message.Split(' '))
-            {
                 if (filters.ContainsKey(word))
-                {
                     message = message.Replace(word, filters[word]);
-                }
-            }
 
             return message;
         }
@@ -1908,24 +1889,24 @@ namespace Darkages.Network.Game
                         break;
 
                     case Mundane mundane:
+                    {
+                        try
                         {
-                            try
-                            {
-                                if (mundane.Scripts != null)
-                                    foreach (var script in mundane.Scripts?.Values)
-                                        script.OnClick(this, client);
+                            if (mundane.Scripts != null)
+                                foreach (var script in mundane.Scripts?.Values)
+                                    script.OnClick(this, client);
 
-                                CreateInterpreterFromMenuFile(client, mundane.Template.Name, mundane);
-                                client.MenuInterpter?.Start();
+                            CreateInterpreterFromMenuFile(client, mundane.Template.Name, mundane);
+                            client.MenuInterpter?.Start();
 
-                                if (client.MenuInterpter != null)
-                                    client.ShowCurrentMenu(mundane, null, client.MenuInterpter.GetCurrentStep());
-                            }
-                            catch
-                            {
-                                //ignore
-                            }
+                            if (client.MenuInterpter != null)
+                                client.ShowCurrentMenu(mundane, null, client.MenuInterpter.GetCurrentStep());
                         }
+                        catch
+                        {
+                            //ignore
+                        }
+                    }
                         break;
                 }
             }
@@ -1991,7 +1972,7 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            var attribute = (Stat)format.Stat;
+            var attribute = (Stat) format.Stat;
 
             if (client.Aisling.StatPoints == 0)
             {
@@ -2051,7 +2032,7 @@ namespace Darkages.Network.Game
             if (client.Aisling._Dex <= 0)
                 client.Aisling._Dex = ServerContext.Config.StatCap;
 
-            if (!client.Aisling.GameMaster) 
+            if (!client.Aisling.GameMaster)
                 client.Aisling.StatPoints--;
 
             if (client.Aisling.StatPoints < 0)
@@ -2086,26 +2067,26 @@ namespace Darkages.Network.Game
             switch (format.Type)
             {
                 case 0x00:
-                    {
-                        player.Exchange = new ExchangeSession(trader);
-                        trader.Exchange = new ExchangeSession(player);
+                {
+                    player.Exchange = new ExchangeSession(trader);
+                    trader.Exchange = new ExchangeSession(player);
 
-                        var packet = new NetworkPacketWriter();
-                        packet.Write((byte)0x42);
-                        packet.Write((byte)0x00);
-                        packet.Write((byte)0x00);
-                        packet.Write((uint)trader.Serial);
-                        packet.WriteStringA(trader.Username);
-                        client.Send(packet);
+                    var packet = new NetworkPacketWriter();
+                    packet.Write((byte) 0x42);
+                    packet.Write((byte) 0x00);
+                    packet.Write((byte) 0x00);
+                    packet.Write((uint) trader.Serial);
+                    packet.WriteStringA(trader.Username);
+                    client.Send(packet);
 
-                        packet = new NetworkPacketWriter();
-                        packet.Write((byte)0x42);
-                        packet.Write((byte)0x00);
-                        packet.Write((byte)0x00);
-                        packet.Write((uint)player.Serial);
-                        packet.WriteStringA(player.Username);
-                        trader.Client.Send(packet);
-                    }
+                    packet = new NetworkPacketWriter();
+                    packet.Write((byte) 0x42);
+                    packet.Write((byte) 0x00);
+                    packet.Write((byte) 0x00);
+                    packet.Write((uint) player.Serial);
+                    packet.WriteStringA(player.Username);
+                    trader.Client.Send(packet);
+                }
                     break;
 
                 case 0x01:
@@ -2138,24 +2119,24 @@ namespace Darkages.Network.Game
                                 player.Exchange.Weight += item.Template.CarryWeight;
 
                                 var packet = new NetworkPacketWriter();
-                                packet.Write((byte)0x42);
-                                packet.Write((byte)0x00);
+                                packet.Write((byte) 0x42);
+                                packet.Write((byte) 0x00);
 
-                                packet.Write((byte)0x02);
-                                packet.Write((byte)0x00);
-                                packet.Write((byte)player.Exchange.Items.Count);
+                                packet.Write((byte) 0x02);
+                                packet.Write((byte) 0x00);
+                                packet.Write((byte) player.Exchange.Items.Count);
                                 packet.Write(item.DisplayImage);
                                 packet.Write(item.Color);
                                 packet.WriteStringA(item.DisplayName);
                                 client.Send(packet);
 
                                 packet = new NetworkPacketWriter();
-                                packet.Write((byte)0x42);
-                                packet.Write((byte)0x00);
+                                packet.Write((byte) 0x42);
+                                packet.Write((byte) 0x00);
 
-                                packet.Write((byte)0x02);
-                                packet.Write((byte)0x01);
-                                packet.Write((byte)player.Exchange.Items.Count);
+                                packet.Write((byte) 0x02);
+                                packet.Write((byte) 0x01);
+                                packet.Write((byte) player.Exchange.Items.Count);
                                 packet.Write(item.DisplayImage);
                                 packet.Write(item.Color);
                                 packet.WriteStringA(item.DisplayName);
@@ -2170,51 +2151,51 @@ namespace Darkages.Network.Game
                     break;
 
                 case 0x03:
-                    {
-                        if (player.Exchange == null)
-                            return;
+                {
+                    if (player.Exchange == null)
+                        return;
 
-                        if (trader.Exchange == null)
-                            return;
+                    if (trader.Exchange == null)
+                        return;
 
-                        if (player.Exchange.Trader != trader)
-                            return;
+                    if (player.Exchange.Trader != trader)
+                        return;
 
-                        if (trader.Exchange.Trader != player)
-                            return;
+                    if (trader.Exchange.Trader != player)
+                        return;
 
-                        if (player.Exchange.Confirmed)
-                            return;
+                    if (player.Exchange.Confirmed)
+                        return;
 
-                        var gold = format.Gold;
+                    var gold = format.Gold;
 
-                        if (gold > player.GoldPoints)
-                            return;
-                        if (player.Exchange.Gold != 0)
-                            return;
+                    if (gold > player.GoldPoints)
+                        return;
+                    if (player.Exchange.Gold != 0)
+                        return;
 
-                        player.GoldPoints -= gold;
-                        player.Exchange.Gold = gold;
-                        player.Client.SendStats(StatusFlags.StructC);
+                    player.GoldPoints -= gold;
+                    player.Exchange.Gold = gold;
+                    player.Client.SendStats(StatusFlags.StructC);
 
-                        var packet = new NetworkPacketWriter();
-                        packet.Write((byte)0x42);
-                        packet.Write((byte)0x00);
+                    var packet = new NetworkPacketWriter();
+                    packet.Write((byte) 0x42);
+                    packet.Write((byte) 0x00);
 
-                        packet.Write((byte)0x03);
-                        packet.Write((byte)0x00);
-                        packet.Write((uint)gold);
-                        client.Send(packet);
+                    packet.Write((byte) 0x03);
+                    packet.Write((byte) 0x00);
+                    packet.Write((uint) gold);
+                    client.Send(packet);
 
-                        packet = new NetworkPacketWriter();
-                        packet.Write((byte)0x42);
-                        packet.Write((byte)0x00);
+                    packet = new NetworkPacketWriter();
+                    packet.Write((byte) 0x42);
+                    packet.Write((byte) 0x00);
 
-                        packet.Write((byte)0x03);
-                        packet.Write((byte)0x01);
-                        packet.Write(gold);
-                        trader.Client.Send(packet);
-                    }
+                    packet.Write((byte) 0x03);
+                    packet.Write((byte) 0x01);
+                    packet.Write(gold);
+                    trader.Client.Send(packet);
+                }
                     break;
 
                 case 0x04:
@@ -2234,45 +2215,45 @@ namespace Darkages.Network.Game
                     break;
 
                 case 0x05:
-                    {
-                        if (player.Exchange == null)
-                            return;
+                {
+                    if (player.Exchange == null)
+                        return;
 
-                        if (trader.Exchange == null)
-                            return;
+                    if (trader.Exchange == null)
+                        return;
 
-                        if (player.Exchange.Trader != trader)
-                            return;
+                    if (player.Exchange.Trader != trader)
+                        return;
 
-                        if (trader.Exchange.Trader != player)
-                            return;
+                    if (trader.Exchange.Trader != player)
+                        return;
 
-                        if (player.Exchange.Confirmed)
-                            return;
+                    if (player.Exchange.Confirmed)
+                        return;
 
-                        player.Exchange.Confirmed = true;
+                    player.Exchange.Confirmed = true;
 
-                        if (trader.Exchange.Confirmed)
-                            player.FinishExchange();
+                    if (trader.Exchange.Confirmed)
+                        player.FinishExchange();
 
-                        var packet = new NetworkPacketWriter();
-                        packet.Write((byte)0x42);
-                        packet.Write((byte)0x00);
+                    var packet = new NetworkPacketWriter();
+                    packet.Write((byte) 0x42);
+                    packet.Write((byte) 0x00);
 
-                        packet.Write((byte)0x05);
-                        packet.Write((byte)0x00);
-                        packet.WriteStringA("Trade was completed.");
-                        client.Send(packet);
+                    packet.Write((byte) 0x05);
+                    packet.Write((byte) 0x00);
+                    packet.WriteStringA("Trade was completed.");
+                    client.Send(packet);
 
-                        packet = new NetworkPacketWriter();
-                        packet.Write((byte)0x42);
-                        packet.Write((byte)0x00);
+                    packet = new NetworkPacketWriter();
+                    packet.Write((byte) 0x42);
+                    packet.Write((byte) 0x00);
 
-                        packet.Write((byte)0x05);
-                        packet.Write((byte)0x01);
-                        packet.WriteStringA("Trade was completed.");
-                        trader.Client.Send(packet);
-                    }
+                    packet.Write((byte) 0x05);
+                    packet.Write((byte) 0x01);
+                    packet.WriteStringA("Trade was completed.");
+                    trader.Client.Send(packet);
+                }
                     break;
             }
         }
@@ -2311,10 +2292,7 @@ namespace Darkages.Network.Game
                     info.SpellLines = lines;
                     info.Started = DateTime.UtcNow;
                 }
-
             }
-
-
         }
 
         protected override void Format4EHandler(GameClient client, ClientFormat4E format)
@@ -2390,30 +2368,33 @@ namespace Darkages.Network.Game
         {
             foreach (var warps in ServerContext.GlobalWarpTemplateCache.Where(warps =>
                 warps.ActivationMapId == client.Aisling.CurrentMapId))
-                foreach (var _ in warps.Activations.Where(o =>
-                    o.Location.DistanceFrom(client.Aisling.Position) <= warps.WarpRadius))
+                lock (ServerContext.SyncLock)
                 {
-                    if (warps.WarpType == WarpType.Map)
+                    foreach (var _ in warps.Activations.Where(o =>
+                        o.Location.DistanceFrom(client.Aisling.Position) <= warps.WarpRadius))
                     {
-                        client.WarpTo(warps);
+                        if (warps.WarpType == WarpType.Map)
+                        {
+                            client.WarpTo(warps);
+                            break;
+                        }
+
+                        if (warps.WarpType != WarpType.World)
+                            continue;
+
+                        if (!ServerContext.GlobalWorldMapTemplateCache.ContainsKey(warps.To.PortalKey))
+                            return;
+
+                        client.Aisling.PortalSession = new PortalSession
+                        {
+                            FieldNumber = warps.To.PortalKey
+                        };
+
+                        if (client.Aisling.World != warps.To.PortalKey) client.Aisling.World = warps.To.PortalKey;
+
+                        client.Aisling.PortalSession.TransitionToMap(client);
                         break;
                     }
-
-                    if (warps.WarpType != WarpType.World)
-                        continue;
-
-                    if (!ServerContext.GlobalWorldMapTemplateCache.ContainsKey(warps.To.PortalKey))
-                        return;
-
-                    client.Aisling.PortalSession = new PortalSession
-                    {
-                        FieldNumber = warps.To.PortalKey
-                    };
-
-                    if (client.Aisling.World != warps.To.PortalKey) client.Aisling.World = warps.To.PortalKey;
-
-                    client.Aisling.PortalSession.TransitionToMap(client);
-                    break;
                 }
         }
 
@@ -2423,7 +2404,7 @@ namespace Darkages.Network.Game
             {
                 var response = new ServerFormat3C
                 {
-                    Line = (ushort)i,
+                    Line = (ushort) i,
                     Data = client.Aisling.Map.GetRowData(i)
                 };
                 client.Send(response);
@@ -2438,13 +2419,11 @@ namespace Darkages.Network.Game
             #region
 
             if (redirect.developer.Value != redirect.player.Value) return;
-            client.Aisling.Developer  = true;
+            client.Aisling.Developer = true;
             client.Aisling.GameMaster = true;
 
-            if (client.Aisling.Developer)
-            {
-                client.LearnEverything();
-            }
+            if (client.Aisling.Developer) client.LearnEverything();
+
             #endregion
         }
 
@@ -2553,18 +2532,16 @@ namespace Darkages.Network.Game
 
 
             var dupedClients = Clients.Where(i =>
-                    i.Aisling != null && (aisling != null && i.Aisling.Username == aisling.Username &&
-                                          i.Aisling.Serial != aisling.Serial))
+                    i.Aisling != null && aisling != null && i.Aisling.Username == aisling.Username &&
+                    i.Aisling.Serial != aisling.Serial)
                 .ToArray();
 
             if (dupedClients.Any())
-            {
                 foreach (var dupedClient in dupedClients)
                 {
                     dupedClient.Aisling?.Remove(true);
                     base.ClientDisconnected(dupedClient);
                 }
-            }
 
             lock (Generator.Random)
             {

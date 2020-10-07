@@ -12,8 +12,7 @@ namespace Darkages.Types
 {
     public class MonsterTemplate : Template
     {
-        [JsonProperty]
-        [Description("What Drops?")]
+        [JsonProperty] [Description("What Drops?")]
         public Collection<string> Drops = new Collection<string>();
 
         public int AreaID { get; set; }

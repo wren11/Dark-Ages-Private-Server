@@ -31,8 +31,6 @@ namespace Darkages.Scripting
 
         public virtual void OnDamaged(GameClient client, int dmg, Sprite source)
         {
-
         }
-
     }
 }

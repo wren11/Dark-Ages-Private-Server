@@ -26,8 +26,8 @@ namespace Darkages.Storage.locales.Buffs
         public override void OnDurationUpdate(Sprite affected, Buff buff)
         {
             affected.Show(Scope.NearbyAislings,
-                new ServerFormat29((uint)affected.Serial,
-                    (uint)affected.Serial, 168, 168, 100));
+                new ServerFormat29((uint) affected.Serial,
+                    (uint) affected.Serial, 168, 168, 100));
 
             base.OnDurationUpdate(affected, buff);
         }

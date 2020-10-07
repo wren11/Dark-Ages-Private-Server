@@ -30,11 +30,11 @@ namespace Darkages.Network.Game.Components
                 if (ServerContext.Game != null)
                     if (ServerContext.Game.Clients != null)
                         foreach (var client in from client in ServerContext.Game.Clients
-                                               where client != null
-                                               let afk = (DateTime.UtcNow - client.LastMovement).TotalMinutes > 3
-                                                         && (DateTime.UtcNow - client.LastClientRefresh).TotalMinutes > 3
-                                               where afk
-                                               select client)
+                            where client != null
+                            let afk = (DateTime.UtcNow - client.LastMovement).TotalMinutes > 3
+                                      && (DateTime.UtcNow - client.LastClientRefresh).TotalMinutes > 3
+                            where afk
+                            select client)
                             Pulse(client);
         }
     }

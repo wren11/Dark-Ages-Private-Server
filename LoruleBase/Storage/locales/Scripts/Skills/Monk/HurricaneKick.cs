@@ -29,22 +29,22 @@ namespace Darkages.Storage.locales.Scripts.Skills
             foreach (var obj in objects)
                 if (sprite.Position.DistanceFrom(obj.Position) <= distance)
                 {
-                    if ((Direction)sprite.Direction == Direction.North)
+                    if ((Direction) sprite.Direction == Direction.North)
                     {
                         if (obj.YPos <= sprite.YPos)
                             result.Add(obj);
                     }
-                    else if ((Direction)sprite.Direction == Direction.South)
+                    else if ((Direction) sprite.Direction == Direction.South)
                     {
                         if (obj.YPos >= sprite.YPos)
                             result.Add(obj);
                     }
-                    else if ((Direction)sprite.Direction == Direction.East)
+                    else if ((Direction) sprite.Direction == Direction.East)
                     {
                         if (obj.XPos >= sprite.XPos)
                             result.Add(obj);
                     }
-                    else if ((Direction)sprite.Direction == Direction.West)
+                    else if ((Direction) sprite.Direction == Direction.West)
                     {
                         if (obj.XPos <= sprite.XPos)
                             result.Add(obj);
@@ -96,7 +96,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         var debuff = new debuff_hurricane();
                         if (!i.HasDebuff(debuff.Name)) debuff.OnApplied(i, debuff);
 
-                        var dmg = (int)(client.Aisling.Invisible
+                        var dmg = (int) (client.Aisling.Invisible
                             ? 2
                             : 1 * (client.Aisling.Str + client.Aisling.Con) * 0.05 * Skill.Level);
                         i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
@@ -107,7 +107,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         if (i is Aisling)
                         {
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial, byte.MinValue,
+                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial, byte.MinValue,
                                     Skill.Template.TargetAnimation, 100));
 
                             (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
@@ -115,7 +115,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                         if (i is Monster || i is Mundane)
                             client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
+                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial,
                                     Skill.Template.TargetAnimation, 0, 100));
                     }
 
@@ -158,7 +158,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                     return;
 
                 target.Show(Scope.NearbyAislings,
-                    new ServerFormat29((uint)target.Serial, (uint)target.Serial,
+                    new ServerFormat29((uint) target.Serial, (uint) target.Serial,
                         Skill.Template.TargetAnimation, 0, 100));
 
                 var dmg = 50 * sprite.Str / 100;

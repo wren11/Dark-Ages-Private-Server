@@ -10,7 +10,7 @@ namespace Darkages.IO
 {
     public class BufferReader : BinaryReader
     {
-        private readonly Encoding encoding = Encoding.GetEncoding(949);
+        private readonly Encoding _encoding = Encoding.GetEncoding(949);
 
         public BufferReader(Stream stream)
             : base(stream, Encoding.GetEncoding(949))
@@ -27,7 +27,7 @@ namespace Darkages.IO
             return (int) ReadUInt32();
         }
 
-        public IPAddress ReadIPAddress()
+        public IPAddress ReadIpAddress()
         {
             var ipBuffer = new byte[4];
 
@@ -41,7 +41,7 @@ namespace Darkages.IO
 
         public override string ReadString()
         {
-            var data = ' ';
+            char data;
             var text = string.Empty;
 
             do
@@ -54,13 +54,13 @@ namespace Darkages.IO
 
         public string ReadStringA()
         {
-            return encoding.GetString(
+            return _encoding.GetString(
                 ReadBytes(ReadByte()));
         }
 
         public string ReadStringB()
         {
-            return encoding.GetString(
+            return _encoding.GetString(
                 ReadBytes(ReadUInt16()));
         }
 

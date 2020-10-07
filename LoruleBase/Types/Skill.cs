@@ -41,7 +41,7 @@ namespace Darkages.Types
                 obj.ID = Generator.GenerateNumber();
             }
 
-            obj.Slot = (byte)slot;
+            obj.Slot = (byte) slot;
             obj.Icon = skillTemplate.Icon;
 
             if (obj.Template.Debuff == null || obj.Template.Buff == null) AssignDebuffs(obj);

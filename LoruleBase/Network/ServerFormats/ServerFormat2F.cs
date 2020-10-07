@@ -32,9 +32,9 @@ namespace Darkages.Network.ServerFormats
 
         public void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)Step);
+            writer.Write((byte) Step);
             writer.Write(
-                (short)Items.Count());
+                (short) Items.Count());
 
             foreach (var item in Items)
                 writer.Write(item);
@@ -62,7 +62,7 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write(Type);
             writer.Write(
-                (short)Items.Count());
+                (short) Items.Count());
 
             foreach (var item in Items)
                 writer.Write(item);
@@ -89,12 +89,12 @@ namespace Darkages.Network.ServerFormats
         public void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(Step);
-            writer.Write((ushort)Items.Count());
+            writer.Write((ushort) Items.Count());
 
             foreach (var item in Items)
             {
                 writer.Write(item.DisplayImage);
-                writer.Write((byte)item.Color);
+                writer.Write((byte) item.Color);
                 writer.Write(item.Value);
                 writer.WriteStringA(item.Name);
                 writer.WriteStringA(item.Class.ToString());
@@ -118,7 +118,7 @@ namespace Darkages.Network.ServerFormats
         public void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(
-                (byte)Count);
+                (byte) Count);
 
             foreach (var option in this)
                 if (option.Text != null)
@@ -161,7 +161,7 @@ namespace Darkages.Network.ServerFormats
         {
             writer.WriteStringA(Args);
             writer.Write(
-                (byte)Count);
+                (byte) Count);
 
             foreach (var option in this)
             {
@@ -195,16 +195,16 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((byte)0x00);
-            writer.Write((byte)0x01);
-            writer.Write((uint)Popup.Id);
-            writer.Write((byte)0x02);
+            writer.Write((byte) 0x00);
+            writer.Write((byte) 0x01);
+            writer.Write((uint) Popup.Id);
+            writer.Write((byte) 0x02);
             writer.Write(Popup.Template.SpriteId);
-            writer.Write((byte)0x00);
-            writer.Write((byte)0x01);
-            writer.Write((byte)0x02);
-            writer.Write((byte)0x01);
-            writer.Write((byte)0x00);
+            writer.Write((byte) 0x00);
+            writer.Write((byte) 0x01);
+            writer.Write((byte) 0x02);
+            writer.Write((byte) 0x01);
+            writer.Write((byte) 0x00);
             writer.WriteStringB(Popup.Template.Name);
             writer.WriteStringB(Text);
             writer.Write(Data);
@@ -239,16 +239,16 @@ namespace Darkages.Network.ServerFormats
         public override void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(Data.Type);
-            writer.Write((byte)0x01);
-            writer.Write((uint)Mundane.Serial);
-            writer.Write((byte)0x02);
+            writer.Write((byte) 0x01);
+            writer.Write((uint) Mundane.Serial);
+            writer.Write((byte) 0x02);
 
-            writer.Write((ushort)Mundane.Template.Image);
-            writer.Write((byte)0x00);
+            writer.Write((ushort) Mundane.Template.Image);
+            writer.Write((byte) 0x00);
 
-            writer.Write((byte)0x01);
-            writer.Write((byte)0x02);
-            writer.Write((byte)0x01);
+            writer.Write((byte) 0x01);
+            writer.Write((byte) 0x02);
+            writer.Write((byte) 0x01);
 
             writer.Write(byte.MinValue);
 
@@ -279,13 +279,13 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write(Step);
             writer.Write(
-                (ushort)Skills.Count());
+                (ushort) Skills.Count());
 
             foreach (var skill in Skills)
             {
-                writer.Write((byte)0x03);
-                writer.Write((ushort)skill.Icon);
-                writer.Write((byte)0x00);
+                writer.Write((byte) 0x03);
+                writer.Write((ushort) skill.Icon);
+                writer.Write((byte) 0x00);
                 writer.WriteStringA(skill.Name);
             }
         }
@@ -333,13 +333,13 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write(Step);
             writer.Write(
-                (ushort)Spells.Count());
+                (ushort) Spells.Count());
 
             foreach (var spell in Spells)
             {
-                writer.Write((byte)0x02);
-                writer.Write((ushort)spell.Icon);
-                writer.Write((byte)0x00);
+                writer.Write((byte) 0x02);
+                writer.Write((ushort) spell.Icon);
+                writer.Write((byte) 0x00);
                 writer.WriteStringA(spell.Name);
             }
         }
@@ -402,7 +402,7 @@ namespace Darkages.Network.ServerFormats
         public void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(Step);
-            writer.Write((ushort)Data.Items.Count);
+            writer.Write((ushort) Data.Items.Count);
 
             foreach (var str in Data.Items.Keys)
             {
@@ -415,8 +415,8 @@ namespace Darkages.Network.ServerFormats
                     continue;
 
                 writer.Write(item.DisplayImage);
-                writer.Write((byte)item.Color);
-                writer.Write((uint)Data.Items[str]);
+                writer.Write((byte) item.Color);
+                writer.Write((uint) Data.Items[str]);
                 writer.WriteStringA(item.Name);
                 writer.WriteStringA(item.Class.ToString());
             }

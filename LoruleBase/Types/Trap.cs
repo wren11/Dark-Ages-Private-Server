@@ -64,13 +64,9 @@ namespace Darkages.Types
             if (obj is Aisling aisling)
             {
                 if (!aisling.Client.IsMoving)
-                {
                     pos = aisling.LastPosition;
-                }
                 else
-                {
                     pos = aisling.Position;
-                }
             }
 
             var ts = Item.Create(obj, itemTemplate, true);

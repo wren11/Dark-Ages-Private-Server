@@ -49,13 +49,13 @@ namespace Darkages.Types
         {
             using var writer = new BufferWriter(stream);
             writer.Write(
-                (ushort)Nodes.Count);
+                (ushort) Nodes.Count);
 
             foreach (var node in Nodes)
             {
                 writer.WriteStringA(node.Name);
                 writer.Write(
-                    (ushort)node.Atoms.Count);
+                    (ushort) node.Atoms.Count);
 
                 foreach (var atom in node.Atoms)
                     writer.WriteStringB(atom);
@@ -72,7 +72,7 @@ namespace Darkages.Types
         {
             writer.WriteStringA(Name);
             writer.Write(Hash);
-            writer.Write((ushort)DeflatedData.Length);
+            writer.Write((ushort) DeflatedData.Length);
             writer.Write(DeflatedData);
         }
     }

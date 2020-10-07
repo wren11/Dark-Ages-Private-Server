@@ -36,7 +36,7 @@ namespace Darkages.Network
         public void Write(bool value)
         {
             Write(
-                (byte)(value ? 1 : 0));
+                (byte) (value ? 1 : 0));
         }
 
         public void Write(byte value)
@@ -52,29 +52,29 @@ namespace Darkages.Network
 
         public void Write(sbyte value)
         {
-            _buffer[Position++] = (byte)value;
+            _buffer[Position++] = (byte) value;
         }
 
         public void Write(short value)
         {
-            Write((ushort)value);
+            Write((ushort) value);
         }
 
         public void Write(ushort value)
         {
-            Write((byte)(value >> 8));
-            Write((byte)value);
+            Write((byte) (value >> 8));
+            Write((byte) value);
         }
 
         public void Write(int value)
         {
-            Write((uint)value);
+            Write((uint) value);
         }
 
         public void Write(uint value)
         {
-            Write((ushort)(value >> 16));
-            Write((ushort)value);
+            Write((ushort) (value >> 16));
+            Write((ushort) value);
         }
 
         public void Write<T>(T value)
@@ -91,7 +91,7 @@ namespace Darkages.Network
             Write(ipBytes[2]);
             Write(ipBytes[1]);
             Write(ipBytes[0]);
-            Write((ushort)endPoint.Port);
+            Write((ushort) endPoint.Port);
         }
 
         public void WriteString(string value)
@@ -104,7 +104,7 @@ namespace Darkages.Network
         {
             var count = _encoding.GetByteCount(value);
 
-            Write((byte)count);
+            Write((byte) count);
 
             _encoding.GetBytes(value, 0, value.Length, _buffer, Position);
 
@@ -115,7 +115,7 @@ namespace Darkages.Network
         {
             var count = _encoding.GetByteCount(value);
 
-            Write((ushort)count);
+            Write((ushort) count);
 
             _encoding.GetBytes(value, 0, value.Length, _buffer, Position);
             Position += count;

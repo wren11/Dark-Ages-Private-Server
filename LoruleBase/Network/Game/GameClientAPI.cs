@@ -40,7 +40,7 @@ namespace Darkages.Network.Game
             SendOptionsDialog(source, message);
 
             Aisling.Show(Scope.NearbyAislings,
-                new ServerFormat29((uint)Aisling.Serial, (uint)source.Serial,
+                new ServerFormat29((uint) Aisling.Serial, (uint) source.Serial,
                     subject.TargetAnimation,
                     subject.TargetAnimation, 100));
 
@@ -63,7 +63,7 @@ namespace Darkages.Network.Game
             SendOptionsDialog(source, message);
 
             Aisling.Show(Scope.NearbyAislings,
-                new ServerFormat29((uint)Aisling.Serial, (uint)source.Serial,
+                new ServerFormat29((uint) Aisling.Serial, (uint) source.Serial,
                     subject.TargetAnimation,
                     subject.TargetAnimation, 100));
 
@@ -103,7 +103,9 @@ namespace Darkages.Network.Game
         public void ForgetSkill(string s)
         {
             var subject = Aisling.SkillBook.Skills.Values
-                .FirstOrDefault(i => i?.Template != null && !string.IsNullOrEmpty(i.Template.Name) && i.Template.Name.ToLower() == s.ToLower());
+                .FirstOrDefault(i =>
+                    i?.Template != null && !string.IsNullOrEmpty(i.Template.Name) &&
+                    i.Template.Name.ToLower() == s.ToLower());
 
             if (subject != null)
             {
@@ -119,7 +121,9 @@ namespace Darkages.Network.Game
         public void ForgetSpell(string s)
         {
             var subject = Aisling.SpellBook.Spells.Values
-                .FirstOrDefault(i => i?.Template != null && !string.IsNullOrEmpty(i.Template.Name) && i.Template.Name.ToLower() == s.ToLower());
+                .FirstOrDefault(i =>
+                    i?.Template != null && !string.IsNullOrEmpty(i.Template.Name) &&
+                    i.Template.Name.ToLower() == s.ToLower());
 
             if (subject != null)
             {
@@ -201,8 +205,8 @@ namespace Darkages.Network.Game
             Aisling.LegendBook.AddLegend(new Legend.LegendItem
             {
                 Category = "Event",
-                Color = (byte)LegendColor.LightOrange,
-                Icon = (byte)LegendIcon.Rogue,
+                Color = (byte) LegendColor.LightOrange,
+                Icon = (byte) LegendIcon.Rogue,
                 Value = "Scar of Sgrios"
             });
         }
@@ -264,14 +268,10 @@ namespace Darkages.Network.Game
             }
 
             foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values.Where(skill => skill != null))
-            {
                 Skill.GiveTo(Aisling, skill.Name);
-            }
 
             foreach (var spell in ServerContext.GlobalSpellTemplateCache.Values.Where(spell => spell != null))
-            {
                 Spell.GiveTo(Aisling, spell.Name);
-            }
 
 
             LoadSkillBook();
@@ -394,8 +394,8 @@ namespace Darkages.Network.Game
             Task.Run(async () =>
             {
                 for (var n = 0; n < 5000; n++)
-                    for (byte i = 0; i < 100; i++)
-                        await Effect(i, 500);
+                for (byte i = 0; i < 100; i++)
+                    await Effect(i, 500);
             });
         }
 
@@ -422,6 +422,5 @@ namespace Darkages.Network.Game
 
             return false;
         }
-
     }
 }

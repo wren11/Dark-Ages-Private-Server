@@ -67,7 +67,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                 if (target is Aisling)
                 {
                     (target as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29((uint)target.Serial, (uint)target.Serial,
+                        new ServerFormat29((uint) target.Serial, (uint) target.Serial,
                             Skill.Template.TargetAnimation, 0, 100));
 
                     var dmg = 1 * sprite.Str * 200;

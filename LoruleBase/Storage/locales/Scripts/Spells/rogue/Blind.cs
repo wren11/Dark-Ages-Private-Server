@@ -42,7 +42,7 @@ namespace Darkages.Storage.locales.Scripts.Spells.rogue
                 var action = new ServerFormat1A
                 {
                     Serial = sprite.Serial,
-                    Number = (byte)(aisling.Path
+                    Number = (byte) (aisling.Path
                                      == Class.Priest ? 0x80 :
                         aisling.Path
                         == Class.Wizard ? 0x88 : 0x06),

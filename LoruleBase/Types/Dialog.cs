@@ -43,7 +43,7 @@ namespace Darkages.Types
             if (CanMoveNext)
                 SequenceIndex++;
 
-            client.DlgSession.Sequence = (ushort)SequenceIndex;
+            client.DlgSession.Sequence = (ushort) SequenceIndex;
         }
     }
 }

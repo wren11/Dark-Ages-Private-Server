@@ -31,14 +31,14 @@ namespace Darkages.Types
             EntityType = TileContent.Monster;
         }
 
-        public bool Aggressive { get; set; } 
+        public bool Aggressive { get; set; }
         public bool BashEnabled { get; set; }
         public bool CastEnabled { get; set; }
         public ushort Image { get; set; }
         public bool WalkEnabled { get; set; }
-        public GameServerTimer BashTimer { get; set; } 
+        public GameServerTimer BashTimer { get; set; }
         public GameServerTimer CastTimer { get; set; }
-        public MonsterTemplate Template { get; set; } 
+        public MonsterTemplate Template { get; set; }
         public GameServerTimer WalkTimer { get; set; }
         [JsonIgnore] public LootTable UpgradeTable { get; set; }
         [JsonIgnore] public bool IsAlive => CurrentHp > 0;
@@ -96,11 +96,11 @@ namespace Darkages.Types
                 obj.Template.Level++;
 
             var mod = (obj.Template.Level + 1) * 0.01;
-            var hp  = mod + 50 + obj.Template.Level * (obj.Template.Level + 40);
-            var mp  = hp / 3;
+            var hp = mod + 50 + obj.Template.Level * (obj.Template.Level + 40);
+            var mp = hp / 3;
 
-            obj.Template.MaximumHP = (int)hp;
-            obj.Template.MaximumMP = (int)mp;
+            obj.Template.MaximumHP = (int) hp;
+            obj.Template.MaximumMP = (int) mp;
 
             var stat = RandomEnumValue<PrimaryStat>();
 
@@ -113,29 +113,29 @@ namespace Darkages.Types
             switch (stat)
             {
                 case PrimaryStat.STR:
-                    obj._Str += (byte)(obj.Template.Level * 0.5 * 2);
+                    obj._Str += (byte) (obj.Template.Level * 0.5 * 2);
                     break;
 
                 case PrimaryStat.INT:
-                    obj._Int += (byte)(obj.Template.Level * 0.5 * 2);
+                    obj._Int += (byte) (obj.Template.Level * 0.5 * 2);
                     break;
 
                 case PrimaryStat.WIS:
-                    obj._Wis += (byte)(obj.Template.Level * 0.5 * 2);
+                    obj._Wis += (byte) (obj.Template.Level * 0.5 * 2);
                     break;
 
                 case PrimaryStat.CON:
-                    obj._Con += (byte)(obj.Template.Level * 0.5 * 2);
+                    obj._Con += (byte) (obj.Template.Level * 0.5 * 2);
                     break;
 
                 case PrimaryStat.DEX:
-                    obj._Dex += (byte)(obj.Template.Level * 0.5 * 2);
+                    obj._Dex += (byte) (obj.Template.Level * 0.5 * 2);
                     break;
             }
 
             obj.MajorAttribute = stat;
 
-            obj.BonusAc = (int)(70 - obj.Template.Level * 0.5 / 1.0);
+            obj.BonusAc = (int) (70 - obj.Template.Level * 0.5 / 1.0);
 
             if (obj.BonusAc < -70) obj.BonusAc = -70;
 
@@ -157,7 +157,7 @@ namespace Darkages.Types
                     : template.OffenseElement;
             }
 
-            obj.BonusMr = (byte)(10 * (template.Level / 20));
+            obj.BonusMr = (byte) (10 * (template.Level / 20));
 
             if (obj.BonusMr > ServerContext.Config.BaseMR)
                 obj.BonusMr = ServerContext.Config.BaseMR;
@@ -172,12 +172,10 @@ namespace Darkages.Types
             if (template.MoodType.HasFlag(MoodQualifer.Aggressive))
                 obj.Aggressive = true;
             else if (template.MoodType.HasFlag(MoodQualifer.Unpredicable))
-            {
                 lock (Generator.Random)
                 {
                     obj.Aggressive = Generator.Random.Next(1, 101) > 50;
                 }
-            }
             else
                 obj.Aggressive = false;
 
@@ -201,7 +199,7 @@ namespace Darkages.Types
             {
                 obj.Image = template.ImageVarience
                             > 0
-                    ? (ushort)Generator.Random.Next(template.Image, template.Image + template.ImageVarience)
+                    ? (ushort) Generator.Random.Next(template.Image, template.Image + template.ImageVarience)
                     : template.Image;
             }
 
@@ -259,9 +257,7 @@ namespace Darkages.Types
         public static void InitScripting(MonsterTemplate template, Area map, Monster obj)
         {
             if (obj.Scripts == null || !obj.Scripts.Any())
-            {
                 obj.Scripts = ScriptManager.Load<MonsterScript>(template.ScriptName, obj, map);
-            }
         }
 
         public static void DistributeExperience(Aisling player, double exp)
@@ -353,8 +349,8 @@ namespace Darkages.Types
                     exp += bonus;
             }
 
-            player.ExpTotal += (uint)exp;
-            player.ExpNext -= (uint)exp;
+            player.ExpTotal += (uint) exp;
+            player.ExpNext -= (uint) exp;
 
             if (player.ExpNext >= int.MaxValue) player.ExpNext = 0;
 
@@ -366,7 +362,7 @@ namespace Darkages.Types
 
             while (player.ExpNext <= 0 && player.ExpLevel < 99)
             {
-                player.ExpNext = (uint)(player.ExpLevel * seed * 5000);
+                player.ExpNext = (uint) (player.ExpLevel * seed * 5000);
 
                 if (player.ExpLevel == 99)
                     break;
@@ -392,8 +388,8 @@ namespace Darkages.Types
             if (player.ExpLevel >= ServerContext.Config.PlayerLevelCap)
                 return;
 
-            player._MaximumHp += (int)(ServerContext.Config.HpGainFactor * player.Con * 0.65);
-            player._MaximumMp += (int)(ServerContext.Config.MpGainFactor * player.Wis * 0.45);
+            player._MaximumHp += (int) (ServerContext.Config.HpGainFactor * player.Con * 0.65);
+            player._MaximumMp += (int) (ServerContext.Config.MpGainFactor * player.Wis * 0.45);
             player.StatPoints += ServerContext.Config.StatsPerLevel;
 
             player.ExpLevel++;
@@ -401,7 +397,7 @@ namespace Darkages.Types
             player.Client.SendMessage(0x02,
                 string.Format(ServerContext.Config.LevelUpMessage, player.ExpLevel));
             player.Show(Scope.NearbyAislings,
-                new ServerFormat29((uint)player.Serial, (uint)player.Serial, 0x004F, 0x004F, 64));
+                new ServerFormat29((uint) player.Serial, (uint) player.Serial, 0x004F, 0x004F, 64));
         }
 
         private List<string> DetermineDrop()
@@ -412,7 +408,7 @@ namespace Darkages.Types
 
         private ItemUpgrade DetermineQuality()
         {
-            return (ItemUpgrade)LootManager.Drop(UpgradeTable, 1).FirstOrDefault();
+            return (ItemUpgrade) LootManager.Drop(UpgradeTable, 1).FirstOrDefault();
         }
 
         private void DetermineRandomDrop()
@@ -481,7 +477,6 @@ namespace Darkages.Types
                         ApplyQuality(rolledItem);
 
                         if (rolledItem.Upgrades > 2)
-                        {
                             if (Target != null)
                             {
                                 var user = Target;
@@ -497,7 +492,6 @@ namespace Darkages.Types
                                     Task.Delay(1000).ContinueWith(ct => { rolledItem.Animate(160, 200); });
                                 }
                             }
-                        }
                     }
 
                     rolledItem.Cursed = true;
@@ -517,7 +511,7 @@ namespace Darkages.Types
 
             var seed = Template.Level * 0.1 + 1.5;
             {
-                exp = (int)(Template.Level * seed * 300);
+                exp = (int) (Template.Level * seed * 300);
             }
 
             if (canCrit)

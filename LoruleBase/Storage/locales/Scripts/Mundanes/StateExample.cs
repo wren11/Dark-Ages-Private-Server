@@ -28,7 +28,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                 new OptionsDataItem(0x03, "Grant reward"),
             };
             client.SendOptionsDialog(Mundane, $"State ya business?", options.ToArray());
-
         }
 
         public override void OnResponse(GameServer server, GameClient client, ushort responseId, string args)
@@ -42,8 +41,8 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     new OptionsDataItem(0x04, "Yes, Give reward."),
                     new OptionsDataItem(0x05, "Na, fuck him.")
                 };
-                client.SendOptionsDialog(Mundane, $"Are you sure [{_dialogResponseMap["user"]}] deserves such a reward?", options.ToArray());
-
+                client.SendOptionsDialog(Mundane,
+                    $"Are you sure [{_dialogResponseMap["user"]}] deserves such a reward?", options.ToArray());
             }
 
             if (responseId == 0x03)
@@ -52,7 +51,9 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             }
             else if (responseId == 0x04)
             {
-                var userObj = GetObject<Aisling>(null, aisling => _dialogResponseMap.ContainsKey("user") && aisling.Username.Equals(_dialogResponseMap["user"]));
+                var userObj = GetObject<Aisling>(null,
+                    aisling => _dialogResponseMap.ContainsKey("user") &&
+                               aisling.Username.Equals(_dialogResponseMap["user"]));
                 if (userObj != null)
                 {
                     userObj._MaximumHp += 5000;
@@ -69,8 +70,12 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             }
         }
 
-        public override void OnGossip(GameServer server, GameClient client, string message) { }
+        public override void OnGossip(GameServer server, GameClient client, string message)
+        {
+        }
 
-        public override void TargetAcquired(Sprite target) { }
+        public override void TargetAcquired(Sprite target)
+        {
+        }
     }
 }

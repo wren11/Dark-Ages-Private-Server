@@ -73,10 +73,7 @@ namespace Darkages.Types
             //    }
             //}
 
-            if (RemoveFromExisting(displayslot))
-            {
-                AddEquipment(displayslot, item);
-            }
+            if (RemoveFromExisting(displayslot)) AddEquipment(displayslot, item);
         }
 
         public void SwapActiveItemWithEquippedItem(Item activatedItem)
@@ -85,7 +82,8 @@ namespace Darkages.Types
             {
                 var itemEquipped = Equipment[activatedItem.Template.EquipmentSlot];
 
-                if (itemEquipped != null && itemEquipped.Item.Template.EquipmentSlot == activatedItem.Template.EquipmentSlot)
+                if (itemEquipped != null &&
+                    itemEquipped.Item.Template.EquipmentSlot == activatedItem.Template.EquipmentSlot)
                 {
                     Client.Aisling.Inventory.Items[activatedItem.Slot] = itemEquipped.Item;
                     Client.Aisling.Inventory.Set(itemEquipped.Item);
@@ -97,8 +95,6 @@ namespace Darkages.Types
                     AddEquipment(activatedItem.Template.EquipmentSlot, activatedItem);
                 }
             }
-
-           
         }
 
         public void AddEquipment(int displayslot, Item item, bool remove = true)
@@ -108,9 +104,9 @@ namespace Darkages.Types
             if (remove)
                 RemoveFromInventory(item);
 
-            DisplayToEquipment((byte)displayslot, item);
+            DisplayToEquipment((byte) displayslot, item);
 
-            OnEquipmentAdded((byte)displayslot);
+            OnEquipmentAdded((byte) displayslot);
         }
 
         public void DecreaseDurability()
@@ -126,15 +122,11 @@ namespace Darkages.Types
 
                     if (item.Durability <= 0)
                         item.Durability = 0;
-
                 }
 
                 ManageDurabilitySignals(item);
 
-                if (item.Durability == 0 || item.Durability >= item.Template.MaxDurability)
-                {
-                    broken.Add(item);
-                }
+                if (item.Durability == 0 || item.Durability >= item.Template.MaxDurability) broken.Add(item);
             }
 
             foreach (var item in broken.Where(item => item?.Template != null)
@@ -281,9 +273,9 @@ namespace Darkages.Types
 
         private void RemoveFromSlot(int displayslot)
         {
-            Client.Aisling.Show(Scope.Self, new ServerFormat38((byte)displayslot));
+            Client.Aisling.Show(Scope.Self, new ServerFormat38((byte) displayslot));
 
-            OnEquipmentRemoved((byte)displayslot);
+            OnEquipmentRemoved((byte) displayslot);
 
             Equipment[displayslot] = null;
         }

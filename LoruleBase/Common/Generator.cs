@@ -14,7 +14,7 @@ namespace Darkages.Common
         public static Collection<string> GeneratedStrings;
         public static Random Random;
 
-        public static volatile int SERIAL;
+        public static volatile int Serial;
 
         static Generator()
         {
@@ -25,30 +25,34 @@ namespace Darkages.Common
 
         public static string CreateString(int size)
         {
-            var value = new StringBuilder();
-
-            for (var i = 0; i < size; i++)
+            lock (Random)
             {
-                var binary = Random.Next(0, 2);
+                var value = new StringBuilder();
 
-                switch (binary)
-                {
-                    case 0:
-                        value.Append(Convert.ToChar(Random.Next(65, 91)));
-                        break;
+                for (var i = 0; i < size; i++)
+                    if (Random != null)
+                    {
+                        var binary = Random.Next(0, 2);
 
-                    case 1:
-                        value.Append(Random.Next(1, 10));
-                        break;
-                }
+                        switch (binary)
+                        {
+                            case 0:
+                                value.Append(Convert.ToChar(Random.Next(65, 91)));
+                                break;
+
+                            case 1:
+                                value.Append(Random.Next(1, 10));
+                                break;
+                        }
+                    }
+
+                return value.ToString();
             }
-
-            return value.ToString();
         }
 
         public static int GenerateNumber()
         {
-            var id = 0;
+            int id;
 
             do
             {
@@ -56,7 +60,6 @@ namespace Darkages.Common
                 {
                     id = Random.Next();
                 }
-
             } while (GeneratedNumbers.Contains(id));
 
             return id;

@@ -10,7 +10,6 @@ using Darkages.Network.Object;
 
 namespace Darkages.Types
 {
-
     public class Party : ObjectManager
     {
         public int Id { get; set; }

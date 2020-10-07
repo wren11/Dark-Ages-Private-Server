@@ -46,8 +46,8 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                         client.Aisling.Show(Scope.NearbyAislings,
                             new ServerFormat29(Skill.Template.TargetAnimation,
-                                (ushort)client.Aisling.XPos,
-                                (ushort)client.Aisling.YPos
+                                (ushort) client.Aisling.XPos,
+                                (ushort) client.Aisling.YPos
                             ));
                     }
 

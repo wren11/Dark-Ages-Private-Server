@@ -25,7 +25,7 @@ namespace Darkages.Storage.locales.Scripts.Items
 
                 Item.ApplyModifers(client);
 
-                client.Aisling.Pants = (byte)(Item.Template.HasPants ? 1 : 0);
+                client.Aisling.Pants = (byte) (Item.Template.HasPants ? 1 : 0);
                 client.Aisling.Armor = Item.Image;
             }
         }

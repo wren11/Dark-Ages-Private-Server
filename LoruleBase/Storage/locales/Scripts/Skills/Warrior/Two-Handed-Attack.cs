@@ -25,7 +25,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 {
                     var client = (sprite as Aisling).Client;
                     client.Aisling.Show(Scope.NearbyAislings,
-                        new ServerFormat29(Skill.Template.MissAnimation, (ushort)Target.XPos, (ushort)Target.YPos));
+                        new ServerFormat29(Skill.Template.MissAnimation, (ushort) Target.XPos, (ushort) Target.YPos));
                 }
         }
 
@@ -38,7 +38,7 @@ namespace Darkages.Scripting.Scripts.Skills
                 var action = new ServerFormat1A
                 {
                     Serial = client.Aisling.Serial,
-                    Number = (byte)(client.Aisling.Path == Class.Warrior
+                    Number = (byte) (client.Aisling.Path == Class.Warrior
                         ? client.Aisling.UsingTwoHanded ? 0x81 : 0x01
                         : 0x01),
                     Speed = 20
@@ -80,14 +80,14 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (i is Aisling)
                         {
                             (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial, byte.MinValue,
+                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial, byte.MinValue,
                                     Skill.Template.TargetAnimation, 100));
                             (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
                         }
 
                         if (i is Monster || i is Mundane || i is Aisling)
                             client.Aisling.Show(Scope.NearbyAislings,
-                                new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
+                                new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial,
                                     Skill.Template.TargetAnimation, 0, 100));
                     }
 

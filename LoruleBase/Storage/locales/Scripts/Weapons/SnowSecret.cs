@@ -34,8 +34,8 @@ namespace Darkages.Storage.locales.Scripts.Weapons
 
                     var animation = new ServerFormat29
                     {
-                        CasterSerial = (uint)sprite.Serial,
-                        TargetSerial = (uint)i.Serial,
+                        CasterSerial = (uint) sprite.Serial,
+                        TargetSerial = (uint) i.Serial,
                         CasterEffect = 10011,
                         TargetEffect = 10011,
                         Speed = 100

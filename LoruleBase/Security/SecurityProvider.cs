@@ -221,11 +221,11 @@ namespace Darkages.Security
 
         public void Transform(NetworkPacket packet)
         {
-            Parallel.For(0, packet.Data.Length, delegate (int i)
+            Parallel.For(0, packet.Data.Length, delegate(int i)
             {
                 var mod = (i / Parameters.Salt.Length) & 0xFF;
 
-                packet.Data[i] ^= (byte)(
+                packet.Data[i] ^= (byte) (
                     Parameters.Salt[i % Parameters.Salt.Length] ^
                     tree[Parameters.Seed][packet.Ordinal] ^
                     tree[Parameters.Seed][mod]);

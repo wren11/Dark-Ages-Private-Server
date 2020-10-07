@@ -11,7 +11,6 @@ namespace Darkages.Compression
     public class CompressableObject
     {
         [XmlIgnore] public byte[] DeflatedData { get; set; }
-
         [XmlIgnore] public string Filename { get; set; }
         [XmlIgnore] public byte[] InflatedData { get; set; }
 

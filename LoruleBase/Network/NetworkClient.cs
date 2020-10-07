@@ -96,7 +96,6 @@ namespace Darkages.Network
                 return;
 
             if (format is ClientFormat3F clientFormat3F && InMapTransition)
-            {
                 if (this is GameClient client)
                 {
                     client.LastState = null;
@@ -107,7 +106,6 @@ namespace Darkages.Network
                     Thread.Sleep(0xC8);
                     GameServer.TraverseWorldMap(client, clientFormat3F);
                 }
-            }
 
             if (format.Secured)
             {
@@ -136,12 +134,8 @@ namespace Darkages.Network
         public void Send(NetworkFormat format)
         {
             if (format is ServerFormat2E)
-            {
                 if (this is GameClient gameClient)
-                {
-                    gameClient.LastState = ((Aisling)(object)(gameClient.Aisling));
-                }
-            }
+                    gameClient.LastState = (Aisling) (object) gameClient.Aisling;
 
             FlushAndSend(format);
         }
@@ -195,22 +189,22 @@ namespace Darkages.Network
 
         private static byte P(NetworkPacket value)
         {
-            return (byte)(value.Data[0x1] ^ (byte)(value.Data[0x0] - 0x2D));
+            return (byte) (value.Data[0x1] ^ (byte) (value.Data[0x0] - 0x2D));
         }
 
         private static void TransFormDialog(NetworkPacket value)
         {
-            if (value.Data.Length > 0x2) value.Data[0x2] ^= (byte)(P(value) + 0x73);
-            if (value.Data.Length > 0x3) value.Data[0x3] ^= (byte)(P(value) + 0x73);
-            if (value.Data.Length > 0x4) value.Data[0x4] ^= (byte)(P(value) + 0x28);
-            if (value.Data.Length > 0x5) value.Data[0x5] ^= (byte)(P(value) + 0x29);
+            if (value.Data.Length > 0x2) value.Data[0x2] ^= (byte) (P(value) + 0x73);
+            if (value.Data.Length > 0x3) value.Data[0x3] ^= (byte) (P(value) + 0x73);
+            if (value.Data.Length > 0x4) value.Data[0x4] ^= (byte) (P(value) + 0x28);
+            if (value.Data.Length > 0x5) value.Data[0x5] ^= (byte) (P(value) + 0x29);
 
             for (var i = value.Data.Length - 0x6 - 0x1; i >= 0x0; i--)
             {
                 var index = i + 0x6;
 
                 if (index >= 0x0 && value.Data.Length > index)
-                    value.Data[index] ^= (byte)(((byte)(P(value) + 0x28) + i + 0x2) % 0x100);
+                    value.Data[index] ^= (byte) (((byte) (P(value) + 0x28) + i + 0x2) % 0x100);
             }
         }
 

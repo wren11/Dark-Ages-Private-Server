@@ -19,7 +19,7 @@ namespace Darkages.Security
 
         public SecurityParameters()
         {
-            Seed = (byte)Generator.Random.Next(0, 9);
+            Seed = (byte) Generator.Random.Next(0, 9);
             Salt = Generator.GenerateString(9).ToByteArray();
         }
 
@@ -42,7 +42,7 @@ namespace Darkages.Security
         {
             writer.Write(Seed);
             writer.Write(
-                (byte)Salt.Length);
+                (byte) Salt.Length);
             writer.Write(Salt);
         }
     }

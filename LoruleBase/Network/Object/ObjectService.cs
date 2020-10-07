@@ -41,7 +41,7 @@ namespace Darkages.Network.Object
             if (!_spriteCollections.ContainsKey(obj.CurrentMapId))
                 return;
 
-            var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
+            var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
             objCollection.Add(obj);
         }
 
@@ -49,7 +49,7 @@ namespace Darkages.Network.Object
         {
             if (map == null)
             {
-                var values = _spriteCollections.Select(i => (SpriteCollection<T>)i.Value[typeof(T)]);
+                var values = _spriteCollections.Select(i => (SpriteCollection<T>) i.Value[typeof(T)]);
 
                 foreach (var obj in values)
                     if (obj.Any())
@@ -57,7 +57,7 @@ namespace Darkages.Network.Object
             }
             else
             {
-                var obj = (SpriteCollection<T>)_spriteCollections[map.ID][typeof(T)];
+                var obj = (SpriteCollection<T>) _spriteCollections[map.ID][typeof(T)];
                 var queryResult = obj.Query(predicate);
                 {
                     return queryResult;
@@ -71,7 +71,7 @@ namespace Darkages.Network.Object
         {
             if (map == null)
             {
-                var values = _spriteCollections.Select(i => (SpriteCollection<T>)i.Value[typeof(T)]);
+                var values = _spriteCollections.Select(i => (SpriteCollection<T>) i.Value[typeof(T)]);
                 var stack = new List<T>();
 
                 foreach (var obj in values)
@@ -82,7 +82,7 @@ namespace Darkages.Network.Object
             }
 
             {
-                var obj = (SpriteCollection<T>)_spriteCollections[map.ID][typeof(T)];
+                var obj = (SpriteCollection<T>) _spriteCollections[map.ID][typeof(T)];
                 var queryResult = obj.QueryAll(predicate);
                 {
                     return queryResult;
@@ -104,7 +104,7 @@ namespace Darkages.Network.Object
             if (!_spriteCollections.ContainsKey(obj.CurrentMapId))
                 return;
 
-            var objCollection = (SpriteCollection<T>)_spriteCollections[obj.CurrentMapId][typeof(T)];
+            var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
             objCollection.Delete(obj);
         }
     }
@@ -162,13 +162,11 @@ namespace Darkages.Network.Object
         public T Query(Predicate<T> predicate)
         {
             for (var i = Values.Count - 1; i >= 0; i--)
-            {
                 if (i >= 0 && Values.Count > i)
                 {
                     var subject = predicate(Values[i]);
                     if (subject) return Values[i];
                 }
-            }
 
             return default;
         }
@@ -177,13 +175,11 @@ namespace Darkages.Network.Object
         {
             for (var i = Values.Count - 1; i >= 0; i--)
                 if (i < Values.Count)
-                {
                     if (i >= 0 && Values.Count > i)
                     {
                         var subject = predicate(Values[i]);
                         if (subject) yield return Values[i];
                     }
-                }
         }
 
         IEnumerator IEnumerable.GetEnumerator()

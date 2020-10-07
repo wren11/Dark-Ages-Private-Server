@@ -10,7 +10,7 @@ namespace Darkages.IO
 {
     public class BufferWriter : BinaryWriter
     {
-        private static readonly Encoding encoding = Encoding.GetEncoding(949);
+        private static readonly Encoding Encoding = Encoding.GetEncoding(949);
 
         public BufferWriter(Stream stream)
             : base(stream, Encoding.GetEncoding(949))
@@ -29,7 +29,7 @@ namespace Darkages.IO
 
         public override void Write(string value)
         {
-            base.Write(encoding.GetBytes(value + '\0'));
+            base.Write(Encoding.GetBytes(value + '\0'));
         }
 
         public override void Write(short value)
@@ -74,18 +74,18 @@ namespace Darkages.IO
 
         public void WriteStringA(string value)
         {
-            var length = (byte) encoding.GetByteCount(value);
+            var length = (byte) Encoding.GetByteCount(value);
 
             base.Write(length);
-            base.Write(encoding.GetBytes(value));
+            base.Write(Encoding.GetBytes(value));
         }
 
         public void WriteStringB(string value)
         {
-            var length = (ushort) encoding.GetByteCount(value);
+            var length = (ushort) Encoding.GetByteCount(value);
 
             Write(length);
-            base.Write(encoding.GetBytes(value));
+            base.Write(Encoding.GetBytes(value));
         }
     }
 }

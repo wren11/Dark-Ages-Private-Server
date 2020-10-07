@@ -72,6 +72,5 @@ namespace Darkages.Types
         {
             Skills[s.Slot] = clone ? Clone<Skill>(s) : s;
         }
-
     }
 }

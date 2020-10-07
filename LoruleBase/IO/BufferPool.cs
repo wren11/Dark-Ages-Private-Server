@@ -17,11 +17,11 @@ namespace Darkages.IO
 
     public static class BufferPool
     {
-        private static IBufferPool s_bufferPool = new GCBufferPool();
+        private static IBufferPool _sBufferPool = new GcBufferPool();
 
         public static void Return(byte[] buffer)
         {
-            s_bufferPool.Return(buffer);
+            _sBufferPool.Return(buffer);
         }
 
         public static void SetBufferManagerBufferPool(long maxBufferPoolSize, int maxBufferSize)
@@ -31,29 +31,24 @@ namespace Darkages.IO
 
         public static void SetCustomBufferPool(IBufferPool bufferPool)
         {
-            var prior = Interlocked.Exchange(ref s_bufferPool, bufferPool);
+            var prior = Interlocked.Exchange(ref _sBufferPool, bufferPool);
 
             prior?.Dispose();
         }
 
-        public static void SetGCBufferPool()
-        {
-            SetCustomBufferPool(new GCBufferPool());
-        }
-
         public static byte[] Take(int size)
         {
-            return s_bufferPool.Take(size);
+            return _sBufferPool.Take(size);
         }
     }
 
     public class BufferManagerBufferPool : IBufferPool
     {
-        private readonly BufferManager m_bufferManager;
+        private readonly BufferManager _mBufferManager;
 
         public BufferManagerBufferPool(long maxBufferPoolSize, int maxBufferSize)
         {
-            m_bufferManager = BufferManager.CreateBufferManager(maxBufferPoolSize, maxBufferSize);
+            _mBufferManager = BufferManager.CreateBufferManager(maxBufferPoolSize, maxBufferSize);
         }
 
         public void Dispose()
@@ -64,12 +59,12 @@ namespace Darkages.IO
 
         public void Return(byte[] buffer)
         {
-            m_bufferManager.ReturnBuffer(buffer);
+            _mBufferManager.ReturnBuffer(buffer);
         }
 
         public byte[] Take(int size)
         {
-            return m_bufferManager.TakeBuffer(size);
+            return _mBufferManager.TakeBuffer(size);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -77,7 +72,7 @@ namespace Darkages.IO
             if (!disposing)
                 return;
 
-            m_bufferManager.Clear();
+            _mBufferManager.Clear();
         }
     }
 }

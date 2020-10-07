@@ -28,7 +28,6 @@ namespace Darkages.Network.Game.Components
                     if (ServerContext.Game.Clients != null)
                         foreach (var client in ServerContext.Game.Clients)
                             client?.Save();
-
             }
         }
     }

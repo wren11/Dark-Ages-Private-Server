@@ -96,28 +96,6 @@ namespace Darkages.Network
             tcpSocket.NoDelay = true;
             tcpSocket.ReceiveBufferSize = 0xFFFF;
             tcpSocket.SendBufferSize = 0xFFFF;
-
-            Console.WriteLine("Tcp Socket configured:");
-
-            Console.WriteLine($"  ExclusiveAddressUse {tcpSocket.ExclusiveAddressUse}");
-
-            Console.WriteLine($"  LingerState {tcpSocket.LingerState.Enabled}, {tcpSocket.LingerState.LingerTime}");
-
-            Console.WriteLine($"  NoDelay {tcpSocket.NoDelay}");
-
-            Console.WriteLine($"  ReceiveBufferSize {tcpSocket.ReceiveBufferSize}");
-
-            Console.WriteLine($"  ReceiveTimeout {tcpSocket.ReceiveTimeout}");
-
-            Console.WriteLine($"  SendBufferSize {tcpSocket.SendBufferSize}");
-
-            Console.WriteLine($"  SendTimeout {tcpSocket.SendTimeout}");
-
-            Console.WriteLine($"  Ttl {tcpSocket.Ttl}");
-
-            Console.WriteLine($"  IsBound {tcpSocket.IsBound}");
-
-            Console.WriteLine("");
         }
     }
 }

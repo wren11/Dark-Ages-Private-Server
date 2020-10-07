@@ -32,7 +32,7 @@ namespace Darkages.Types
         public int Y;
 
         private static readonly int[][] directions =
-                                        {
+        {
             new[] {+0, -1},
             new[] {+1, +0},
             new[] {+0, +1},
@@ -138,8 +138,8 @@ namespace Darkages.Types
         {
             get
             {
-                var tmp = (byte)(_Con + BonusCon).Clamp(1, byte.MaxValue);
-                return tmp > 255 ? (byte)255 : tmp;
+                var tmp = (byte) (_Con + BonusCon).Clamp(1, byte.MaxValue);
+                return tmp > 255 ? (byte) 255 : tmp;
             }
         }
 
@@ -154,7 +154,7 @@ namespace Darkages.Types
         {
             get
             {
-                var tmp = (byte)(_Dex + BonusDex).Clamp(1, byte.MaxValue);
+                var tmp = (byte) (_Dex + BonusDex).Clamp(1, byte.MaxValue);
                 if (tmp > 255)
                     return 255;
 
@@ -163,11 +163,11 @@ namespace Darkages.Types
         }
 
         public byte Direction { get; set; }
-        [JsonIgnore] public byte Dmg => (byte)(_Dmg + BonusDmg).Clamp(0, byte.MaxValue);
+        [JsonIgnore] public byte Dmg => (byte) (_Dmg + BonusDmg).Clamp(0, byte.MaxValue);
         [JsonIgnore] public bool EmpoweredAssail { get; set; }
         [JsonIgnore] public TileContent EntityType { get; set; }
         [JsonIgnore] public int GroupId { get; set; }
-        [JsonIgnore] public byte Hit => (byte)(_Hit + BonusHit).Clamp(0, byte.MaxValue);
+        [JsonIgnore] public byte Hit => (byte) (_Hit + BonusHit).Clamp(0, byte.MaxValue);
 
         public bool Immunity { get; set; }
 
@@ -176,8 +176,8 @@ namespace Darkages.Types
         {
             get
             {
-                var tmp = (byte)(_Int + BonusInt).Clamp(1, byte.MaxValue);
-                return tmp > 255 ? (byte)255 : tmp;
+                var tmp = (byte) (_Int + BonusInt).Clamp(1, byte.MaxValue);
+                return tmp > 255 ? (byte) 255 : tmp;
             }
         }
 
@@ -219,7 +219,7 @@ namespace Darkages.Types
 
         [JsonIgnore] public int MaximumHp => _MaximumHp + BonusHp;
         [JsonIgnore] public int MaximumMp => _MaximumMp + BonusMp;
-        [JsonIgnore] public byte Mr => (byte)(_Mr + BonusMr).Clamp(0, 70);
+        [JsonIgnore] public byte Mr => (byte) (_Mr + BonusMr).Clamp(0, 70);
         public Element OffenseElement { get; set; }
         [JsonIgnore] public int PendingX { get; set; }
         [JsonIgnore] public int PendingY { get; set; }
@@ -233,8 +233,8 @@ namespace Darkages.Types
         {
             get
             {
-                var tmp = (byte)(_Str + BonusStr).Clamp(1, byte.MaxValue);
-                return tmp > 255 ? (byte)255 : tmp;
+                var tmp = (byte) (_Str + BonusStr).Clamp(1, byte.MaxValue);
+                return tmp > 255 ? (byte) 255 : tmp;
             }
         }
 
@@ -245,8 +245,8 @@ namespace Darkages.Types
         {
             get
             {
-                var tmp = (byte)(_Wis + BonusWis).Clamp(1, byte.MaxValue);
-                return tmp > 255 ? (byte)255 : tmp;
+                var tmp = (byte) (_Wis + BonusWis).Clamp(1, byte.MaxValue);
+                return tmp > 255 ? (byte) 255 : tmp;
             }
         }
 
@@ -280,10 +280,10 @@ namespace Darkages.Types
         }
 
         [JsonIgnore]
-        public int Level => EntityType == TileContent.Aisling ? ((Aisling)this).ExpLevel
-            : EntityType == TileContent.Monster ? ((Monster)this).Template.Level
-            : EntityType == TileContent.Mundane ? ((Mundane)this).Template.Level
-            : EntityType == TileContent.Item ? ((Item)this).Template.LevelRequired : 0;
+        public int Level => EntityType == TileContent.Aisling ? ((Aisling) this).ExpLevel
+            : EntityType == TileContent.Monster ? ((Monster) this).Template.Level
+            : EntityType == TileContent.Mundane ? ((Mundane) this).Template.Level
+            : EntityType == TileContent.Item ? ((Item) this).Template.LevelRequired : 0;
 
         public static Element CheckRandomElement(Element element)
         {
@@ -301,9 +301,9 @@ namespace Darkages.Types
 
             unsafe
             {
-                i = *(ulong*)&y;
+                i = *(ulong*) &y;
                 i = 0x5F3759DF - (i >> 1);
-                y = *(float*)&i;
+                y = *(float*) &i;
                 y *= 1.5f - x * y * y;
                 y *= 1.5f - x * y * y;
             }
@@ -326,7 +326,7 @@ namespace Darkages.Types
 
         public void Animate(ushort animation, byte speed = 100)
         {
-            Show(Scope.NearbyAislings, new ServerFormat29((uint)Serial, (uint)Serial, animation, animation, speed));
+            Show(Scope.NearbyAislings, new ServerFormat29((uint) Serial, (uint) Serial, animation, animation, speed));
         }
 
         public Sprite ApplyBuff(string buff)
@@ -370,7 +370,7 @@ namespace Darkages.Types
                 return;
 
             if (Map.Flags.HasFlag(MapFlags.PlayerKill))
-                dmg = (int)(dmg * 0.75);
+                dmg = (int) (dmg * 0.75);
 
 
             {
@@ -395,10 +395,8 @@ namespace Darkages.Types
 
             {
                 if (damageDealingSprite is Aisling aisling)
-                {
                     if (aisling.GameMaster)
                         dmg *= 200;
-                }
             }
 
             OnDamaged(damageDealingSprite, dmg);
@@ -682,7 +680,7 @@ namespace Darkages.Types
             if (CurrentHp > MaximumHp)
                 CurrentHp = MaximumHp;
 
-            var dmgApplied = (int)Math.Abs(dmg * amplifier);
+            var dmgApplied = (int) Math.Abs(dmg * amplifier);
 
             CurrentHp -= dmgApplied;
 
@@ -692,7 +690,7 @@ namespace Darkages.Types
             var hpbar = new ServerFormat13
             {
                 Serial = Serial,
-                Health = (ushort)((double)100 * CurrentHp / MaximumHp),
+                Health = (ushort) ((double) 100 * CurrentHp / MaximumHp),
                 Sound = sound
             };
 
@@ -806,7 +804,7 @@ namespace Darkages.Types
                 else
                     mod = Level * (type == MonsterDamageType.Physical ? 0.1 : 2) * (60 * diff);
 
-                var dmg = Math.Abs((int)(mod + 1));
+                var dmg = Math.Abs((int) (mod + 1));
 
                 if (dmg <= 0)
                     dmg = 1;
@@ -1043,7 +1041,7 @@ namespace Darkages.Types
 
         public Aisling SendAnimation(ushort animation, Sprite to, Sprite from, byte speed = 100)
         {
-            var format = new ServerFormat29((uint)from.Serial, (uint)to.Serial, animation, 0, speed);
+            var format = new ServerFormat29((uint) from.Serial, (uint) to.Serial, animation, 0, speed);
             {
                 Show(Scope.NearbyAislings, format);
             }
@@ -1107,7 +1105,7 @@ namespace Darkages.Types
                     if (!(this is Aisling))
                         return;
 
-                    foreach (var gc in GetObjects<Aisling>(Map, that => ((Aisling)this).GroupParty.Has(that)))
+                    foreach (var gc in GetObjects<Aisling>(Map, that => ((Aisling) this).GroupParty.Has(that)))
                         gc.Client.Send(format);
                 }
                 else if (op == Scope.NearbyGroupMembersExcludingSelf)
@@ -1116,7 +1114,7 @@ namespace Darkages.Types
                         return;
 
                     foreach (var gc in GetObjects<Aisling>(Map,
-                        that => that.WithinRangeOf(this) && ((Aisling)this).GroupParty.Has(that)))
+                        that => that.WithinRangeOf(this) && ((Aisling) this).GroupParty.Has(that)))
                         gc.Client.Send(format);
                 }
                 else if (op == Scope.NearbyGroupMembers)
@@ -1125,7 +1123,7 @@ namespace Darkages.Types
                         return;
 
                     foreach (var gc in GetObjects<Aisling>(Map,
-                        that => that.WithinRangeOf(this) && ((Aisling)this).GroupParty.Has(that)))
+                        that => that.WithinRangeOf(this) && ((Aisling) this).GroupParty.Has(that)))
                         gc.Client.Send(format);
                 }
                 else if (op == Scope.DefinedAislings)
@@ -1155,7 +1153,7 @@ namespace Darkages.Types
                 if (this is Aisling)
                     nearbyAisling.Show(Scope.Self, new ServerFormat33(Client, this as Aisling));
                 else
-                    nearbyAisling.Show(Scope.Self, new ServerFormat07(new[] { this }));
+                    nearbyAisling.Show(Scope.Self, new ServerFormat07(new[] {this}));
             }
         }
 
@@ -1182,7 +1180,7 @@ namespace Darkages.Types
         public void Update()
         {
             Show(Scope.NearbyAislings, new ServerFormat0E(Serial));
-            Show(Scope.NearbyAislings, new ServerFormat07(new[] { this }));
+            Show(Scope.NearbyAislings, new ServerFormat07(new[] {this}));
         }
 
         public void UpdateBuffs(TimeSpan elapsedTime)
@@ -1249,8 +1247,8 @@ namespace Darkages.Types
                 {
                     Direction = Direction,
                     Serial = Serial,
-                    X = (short)i,
-                    Y = (short)savedY1
+                    X = (short) i,
+                    Y = (short) savedY1
                 };
 
                 X = PendingX;
@@ -1283,7 +1281,7 @@ namespace Darkages.Types
             //check position before we take a step.
             if (!allowGhostWalk && this is Aisling)
             {
-                if (Map?.IsWall(savedX, savedY, this is Aisling) ?? false)
+                if (Map?.IsWall(savedX, savedY) ?? false)
                     return false;
 
                 if (!Map?.ObjectGrid[savedX, savedY].IsPassable(this, this is Aisling) ?? false)
@@ -1302,7 +1300,7 @@ namespace Darkages.Types
             //check position after we take a step.
             if (!allowGhostWalk && this is Aisling)
             {
-                if (Map != null && Map.IsWall(PendingX, PendingY, this is Aisling))
+                if (Map != null && Map.IsWall(PendingX, PendingY))
                     return false;
 
                 if (Map != null && !Map.ObjectGrid[PendingX, PendingY].IsPassable(this, this is Aisling))
@@ -1391,7 +1389,7 @@ namespace Darkages.Types
 
             lock (_rnd)
             {
-                Direction = (byte)_rnd.Next(0, 4);
+                Direction = (byte) _rnd.Next(0, 4);
 
                 if (Direction != savedDirection) update = true;
             }

@@ -18,7 +18,6 @@ using ServiceStack.Text;
 
 namespace Darkages.Types
 {
-
     public class Node
     {
         public List<string> Atoms { get; set; }
@@ -38,20 +37,11 @@ namespace Darkages.Types
             {
                 var metaFile = CompressableObject.Load<Metafile>(file);
 
-                if (metaFile.Name.StartsWith("SEvent"))
-                {
-                    continue;
-                }
+                if (metaFile.Name.StartsWith("SEvent")) continue;
 
-                if (metaFile.Name.StartsWith("SClass"))
-                {
-                    continue;
-                }
+                if (metaFile.Name.StartsWith("SClass")) continue;
 
-                if (metaFile.Name.StartsWith("ItemInfo"))
-                {
-                    continue;
-                }
+                if (metaFile.Name.StartsWith("ItemInfo")) continue;
 
                 Metafiles.Add(metaFile);
             }
@@ -64,10 +54,7 @@ namespace Darkages.Types
         {
             var dir = ServerContext.StoragePath + "\\Static\\Meta\\Quests";
 
-            if (!Directory.Exists(dir))
-            {
-                return;
-            }
+            if (!Directory.Exists(dir)) return;
 
             var loadedNodes = new List<Node>();
 
@@ -79,17 +66,14 @@ namespace Darkages.Types
                     continue;
 
                 var nodes = JsonConvert.DeserializeObject<List<Node>>(contents);
-                
-                if (nodes.Count > 0)
-                {
-                    loadedNodes.AddRange(nodes);
-                }
+
+                if (nodes.Count > 0) loadedNodes.AddRange(nodes);
             }
 
             var i = 1;
             foreach (var batch in loadedNodes.BatchesOf(712))
             {
-                var metaFile = new Metafile { Name = $"SEvent{i}", Nodes = new Collection<MetafileNode>() };
+                var metaFile = new Metafile {Name = $"SEvent{i}", Nodes = new Collection<MetafileNode>()};
                 metaFile.Nodes.Add(new MetafileNode("", ""));
                 foreach (var node in batch)
                 {
@@ -101,7 +85,6 @@ namespace Darkages.Types
                 Metafiles.Add(metaFile);
                 i++;
             }
-
         }
 
         public static Metafile GetMetaFile(string name)
@@ -134,11 +117,11 @@ namespace Darkages.Types
 
         private static void GenerateClassMeta()
         {
-            var sclass1 = new Metafile { Name = "SClass1", Nodes = new Collection<MetafileNode>() };
-            var sclass2 = new Metafile { Name = "SClass2", Nodes = new Collection<MetafileNode>() };
-            var sclass3 = new Metafile { Name = "SClass3", Nodes = new Collection<MetafileNode>() };
-            var sclass4 = new Metafile { Name = "SClass4", Nodes = new Collection<MetafileNode>() };
-            var sclass5 = new Metafile { Name = "SClass5", Nodes = new Collection<MetafileNode>() };
+            var sclass1 = new Metafile {Name = "SClass1", Nodes = new Collection<MetafileNode>()};
+            var sclass2 = new Metafile {Name = "SClass2", Nodes = new Collection<MetafileNode>()};
+            var sclass3 = new Metafile {Name = "SClass3", Nodes = new Collection<MetafileNode>()};
+            var sclass4 = new Metafile {Name = "SClass4", Nodes = new Collection<MetafileNode>()};
+            var sclass5 = new Metafile {Name = "SClass5", Nodes = new Collection<MetafileNode>()};
 
             sclass1.Nodes.Add(new MetafileNode("Skill", ""));
             sclass2.Nodes.Add(new MetafileNode("Skill", ""));
@@ -193,7 +176,7 @@ namespace Darkages.Types
                 where prerequisites != null
                 orderby prerequisites.ExpLevel_Required
                 select v)
-            { 
+            {
                 if (template.Prerequisites != null && template.Prerequisites.Class_Required == Class.Warrior)
                     sclass1.Nodes.Add(new MetafileNode(k, template.GetMetaData()));
 
@@ -232,9 +215,10 @@ namespace Darkages.Types
         private static void GenerateItemInfoMeta()
         {
             var i = 0;
-            foreach (var batch in ServerContext.GlobalItemTemplateCache.OrderBy(v => v.Value.LevelRequired).BatchesOf(712))
+            foreach (var batch in ServerContext.GlobalItemTemplateCache.OrderBy(v => v.Value.LevelRequired)
+                .BatchesOf(712))
             {
-                var metaFile = new Metafile { Name = $"ItemInfo{i}", Nodes = new Collection<MetafileNode>() };
+                var metaFile = new Metafile {Name = $"ItemInfo{i}", Nodes = new Collection<MetafileNode>()};
 
                 foreach (var (k, template) in batch)
                 {

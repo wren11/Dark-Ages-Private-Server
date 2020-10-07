@@ -2,7 +2,7 @@
 {
     public class Crc16Provider
     {
-        private static readonly byte[] salt =
+        private static readonly byte[] Salt =
         {
             0x00, 0x00, 0x21, 0x10, 0x42, 0x20, 0x63, 0x30, 0x84, 0x40, 0xA5, 0x50, 0xC6, 0x60, 0xE7, 0x70,
             0x08, 0x81, 0x29, 0x91, 0x4A, 0xA1, 0x6B, 0xB1, 0x8C, 0xC1, 0xAD, 0xD1, 0xCE, 0xE1, 0xEF, 0xF1,
@@ -50,8 +50,8 @@
                 num0 = (ushort) (MakeWord(num0) ^ ((num0 & 0x00FF) << 08) ^ buffer[tile + 1]);
                 num0 = (ushort) (MakeWord(num0) ^ ((num0 & 0x00FF) << 08) ^ buffer[tile + 2]);
                 num1 = (ushort) (MakeWord(num0) ^ ((num0 & 0x00FF) << 08) ^ buffer[tile + 3]);
-                num0 = (ushort) (MakeWord(num1) ^ ((salt[(num0 >> 8) * 2] ^ buffer[tile + 3]) << 8) ^ buffer[tile + 4]);
-                num0 = (ushort) (MakeWord(num0) ^ ((salt[(num1 >> 8) * 2] ^ buffer[tile + 4]) << 8) ^ buffer[tile + 5]);
+                num0 = (ushort) (MakeWord(num1) ^ ((Salt[(num0 >> 8) * 2] ^ buffer[tile + 3]) << 8) ^ buffer[tile + 4]);
+                num0 = (ushort) (MakeWord(num0) ^ ((Salt[(num1 >> 8) * 2] ^ buffer[tile + 4]) << 8) ^ buffer[tile + 5]);
 
                 tile += 6;
             }
@@ -63,7 +63,7 @@
         {
             index = (index >> 8) << 1;
 
-            return (ushort) (salt[index + 0] | (salt[index + 1] << 8));
+            return (ushort) (Salt[index + 0] | (Salt[index + 1] << 8));
         }
     }
 }

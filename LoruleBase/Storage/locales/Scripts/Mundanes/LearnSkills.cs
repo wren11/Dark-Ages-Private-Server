@@ -77,29 +77,29 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     break;
 
                 case 0x0002:
-                    {
-                        client.SendSkillForgetDialog(Mundane,
-                            "What must you vanish from your mind?\nMake sure you understand, It will be gone.", 0x9000);
-                    }
+                {
+                    client.SendSkillForgetDialog(Mundane,
+                        "What must you vanish from your mind?\nMake sure you understand, It will be gone.", 0x9000);
+                }
                     break;
 
                 case 0x9000:
+                {
+                    var idx = -1;
+                    int.TryParse(args, out idx);
+
+                    if (idx < 0 || idx > byte.MaxValue)
                     {
-                        var idx = -1;
-                        int.TryParse(args, out idx);
-
-                        if (idx < 0 || idx > byte.MaxValue)
-                        {
-                            client.SendMessage(0x02, "Go away.");
-                            client.CloseDialog();
-                        }
-
-                        client.Aisling.SkillBook.Remove((byte)idx);
-                        client.Send(new ServerFormat2D((byte)idx));
-
-                        client.SendSkillForgetDialog(Mundane,
-                            "It is gone, Shall we cleanse more?\nRemember, This cannot be undone.", 0x9000);
+                        client.SendMessage(0x02, "Go away.");
+                        client.CloseDialog();
                     }
+
+                    client.Aisling.SkillBook.Remove((byte) idx);
+                    client.Send(new ServerFormat2D((byte) idx));
+
+                    client.SendSkillForgetDialog(Mundane,
+                        "It is gone, Shall we cleanse more?\nRemember, This cannot be undone.", 0x9000);
+                }
                     break;
 
                 case 0x0003:
@@ -113,58 +113,58 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     break;
 
                 case 0x0004:
-                    {
-                        var subject = ServerContext.GlobalSkillTemplateCache[args];
-                        if (subject == null)
-                            return;
+                {
+                    var subject = ServerContext.GlobalSkillTemplateCache[args];
+                    if (subject == null)
+                        return;
 
-                        if (subject.Prerequisites == null)
-                        {
-                            client.CloseDialog();
-                            client.SendMessage(0x02, ServerContext.Config.CantDoThat);
-                        }
-                        else
-                        {
-                            var conditions = subject.Prerequisites.IsMet(client.Aisling, (msg, result) =>
-                            {
-                                if (!result)
-                                    client.SendOptionsDialog(Mundane, msg, subject.Name);
-                                else
-                                    client.SendOptionsDialog(Mundane,
-                                        "You have satisfied my requirements, Do you wish to proceed?",
-                                        subject.Name,
-                                        new OptionsDataItem(0x0005, "Yes, I'm Ready."),
-                                        new OptionsDataItem(0x0001, "No, I'm not ready."));
-                            });
-                        }
+                    if (subject.Prerequisites == null)
+                    {
+                        client.CloseDialog();
+                        client.SendMessage(0x02, ServerContext.Config.CantDoThat);
                     }
+                    else
+                    {
+                        var conditions = subject.Prerequisites.IsMet(client.Aisling, (msg, result) =>
+                        {
+                            if (!result)
+                                client.SendOptionsDialog(Mundane, msg, subject.Name);
+                            else
+                                client.SendOptionsDialog(Mundane,
+                                    "You have satisfied my requirements, Do you wish to proceed?",
+                                    subject.Name,
+                                    new OptionsDataItem(0x0005, "Yes, I'm Ready."),
+                                    new OptionsDataItem(0x0001, "No, I'm not ready."));
+                        });
+                    }
+                }
                     break;
 
                 case 0x0006:
-                    {
-                        var subject = ServerContext.GlobalSkillTemplateCache[args];
-                        if (subject == null)
-                            return;
+                {
+                    var subject = ServerContext.GlobalSkillTemplateCache[args];
+                    if (subject == null)
+                        return;
 
-                        client.SendOptionsDialog(Mundane,
-                            $"{args} - {(string.IsNullOrEmpty(subject.Description) ? "No more information is available." : subject.Description)}" +
-                            "\n" + subject.Prerequisites,
-                            subject.Name,
-                            new OptionsDataItem(0x0006, $"What does {subject.Name} do?"),
-                            new OptionsDataItem(0x0004, "Yes"),
-                            new OptionsDataItem(0x0001, "No"));
-                    }
+                    client.SendOptionsDialog(Mundane,
+                        $"{args} - {(string.IsNullOrEmpty(subject.Description) ? "No more information is available." : subject.Description)}" +
+                        "\n" + subject.Prerequisites,
+                        subject.Name,
+                        new OptionsDataItem(0x0006, $"What does {subject.Name} do?"),
+                        new OptionsDataItem(0x0004, "Yes"),
+                        new OptionsDataItem(0x0001, "No"));
+                }
                     break;
 
                 case 0x0005:
-                    {
-                        var subject = ServerContext.GlobalSkillTemplateCache[args];
-                        if (subject == null)
-                            return;
+                {
+                    var subject = ServerContext.GlobalSkillTemplateCache[args];
+                    if (subject == null)
+                        return;
 
-                        client.SendAnimation(109, client.Aisling, Mundane);
-                        client.LearnSkill(Mundane, subject, "So be it; Use it wisely, chosen one.");
-                    }
+                    client.SendAnimation(109, client.Aisling, Mundane);
+                    client.LearnSkill(Mundane, subject, "So be it; Use it wisely, chosen one.");
+                }
                     break;
             }
         }

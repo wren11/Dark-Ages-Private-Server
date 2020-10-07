@@ -26,7 +26,7 @@ namespace Darkages.Types
         public void Serialize(NetworkPacketWriter writer)
         {
             writer.Write(
-                (ushort)Count);
+                (ushort) Count);
 
             foreach (var metafile in this)
             {

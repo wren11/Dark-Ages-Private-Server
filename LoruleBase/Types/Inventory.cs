@@ -140,7 +140,7 @@ namespace Darkages.Types
             }
             else
             {
-                item.Stacks = (byte)remaining;
+                item.Stacks = (byte) remaining;
                 client.Aisling.Inventory.Set(item, false);
 
                 client.Send(new ServerFormat0F(item));

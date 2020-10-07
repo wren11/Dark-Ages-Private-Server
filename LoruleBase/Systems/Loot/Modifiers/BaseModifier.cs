@@ -35,11 +35,11 @@ namespace Darkages.Systems.Loot.Modifiers
                 var value = property.GetValue(objectInstance);
                 try
                 {
-                    return (T)value;
+                    return (T) value;
                 }
                 catch
                 {
-                    return (T)Convert.ChangeType(value, typeof(T));
+                    return (T) Convert.ChangeType(value, typeof(T));
                 }
             }
 
@@ -50,11 +50,11 @@ namespace Darkages.Systems.Loot.Modifiers
                 var value = field.GetValue(objectInstance);
                 try
                 {
-                    return (T)value;
+                    return (T) value;
                 }
                 catch
                 {
-                    return (T)Convert.ChangeType(value, typeof(T));
+                    return (T) Convert.ChangeType(value, typeof(T));
                 }
             }
 

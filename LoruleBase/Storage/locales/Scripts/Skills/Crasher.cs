@@ -64,14 +64,14 @@ namespace Darkages.Scripting.Scripts.Skills
                     if (i is Aisling)
                     {
                         (i as Aisling).Client.Aisling.Show(Scope.NearbyAislings,
-                            new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial, byte.MinValue,
+                            new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial, byte.MinValue,
                                 Skill.Template.TargetAnimation, 100));
                         (i as Aisling).Client.Send(new ServerFormat08(i as Aisling, StatusFlags.All));
                     }
 
                     if (i is Monster || i is Mundane || i is Aisling)
                         client.Aisling.Show(Scope.NearbyAislings,
-                            new ServerFormat29((uint)client.Aisling.Serial, (uint)i.Serial,
+                            new ServerFormat29((uint) client.Aisling.Serial, (uint) i.Serial,
                                 Skill.Template.TargetAnimation, 0, 100));
                 }
 
@@ -113,7 +113,7 @@ namespace Darkages.Scripting.Scripts.Skills
                     return;
 
                 sprite.Show(Scope.NearbyAislings,
-                    new ServerFormat29((uint)target.Serial, (uint)sprite.Serial,
+                    new ServerFormat29((uint) target.Serial, (uint) sprite.Serial,
                         Skill.Template.TargetAnimation, 0, 100));
 
                 var dmg = sprite.MaximumHp * 300 / 100;
