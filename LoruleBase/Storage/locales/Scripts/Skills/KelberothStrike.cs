@@ -61,7 +61,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                             continue;
 
                         var dmg = Convert.ToInt32(client.Aisling.CurrentHp / 3);
-                        i.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
+                        i.ApplyDamage(sprite, dmg, Skill.Template.Sound);
 
                         sprite.CurrentHp -= dmg * 2;
                         ((Aisling) sprite).Client.SendStats(StatusFlags.StructB);
@@ -121,7 +121,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                         Skill.Template.TargetAnimation, 0, 100));
 
                 var dmg = Convert.ToInt32(target.CurrentHp / 3);
-                target.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
+                target.ApplyDamage(sprite, dmg, Skill.Template.Sound);
 
                 sprite.CurrentHp -= dmg * 2;
 

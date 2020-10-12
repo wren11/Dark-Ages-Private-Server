@@ -44,7 +44,7 @@ namespace Darkages.Storage.locales.Scripts.Weapons
                     var dmg = sprite.Dex * 3 * sprite.Position.DistanceFrom(i.Position);
 
                     dmg *= count;
-                    i.ApplyDamage(sprite, dmg, false, 28);
+                    i.ApplyDamage(sprite, dmg, 28);
 
                     sprite.Show(Scope.NearbyAislings, animation);
                     cb?.Invoke(count++);

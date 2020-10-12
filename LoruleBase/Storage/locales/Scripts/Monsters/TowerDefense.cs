@@ -103,7 +103,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                 Monster.CurrentHp = 0;
 
                 if (Monster.Target != null)
-                    Monster.Target.ApplyDamage(Monster, Monster.Target.MaximumHp / 10, true, 88);
+                    Monster.Target.ApplyDamage(Monster, Monster.Target.MaximumHp / 10, 88);
             }
         }
     }

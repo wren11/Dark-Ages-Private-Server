@@ -1,0 +1,38 @@
+{
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 11,
+        "Y": 8,
+        "AreaID": 0
+      },
+      "AreaID": 182,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 11,
+        "Y": 9,
+        "AreaID": 0
+      },
+      "AreaID": 182,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": {
+      "X": 61,
+      "Y": 12,
+      "AreaID": 0
+    },
+    "AreaID": 502,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 182,
+  "Name": "Map Warp from 182 to 502",
+  "Description": null,
+  "Group": null
+}

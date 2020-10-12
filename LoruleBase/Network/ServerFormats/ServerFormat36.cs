@@ -1,8 +1,8 @@
 ﻿#region
 
+using Darkages.Network.Game;
 using System;
 using System.Linq;
-using Darkages.Network.Game;
 
 #endregion
 
@@ -10,13 +10,13 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat36 : NetworkFormat
     {
-        private readonly GameClient Client;
+        private readonly GameClient _client;
 
         public ServerFormat36(GameClient client)
         {
             Secured = true;
             Command = 0x36;
-            Client = client;
+            _client = client;
         }
 
         public enum ClassType : byte
@@ -41,7 +41,8 @@ namespace Darkages.Network.ServerFormats
             Red = 0x04,
             Tan = 0x30,
             Teal = 0x01,
-            White = 0x90
+            White = 0x90,
+            Clan = 0x54
         }
 
         public enum StatusIcon : byte
@@ -62,8 +63,21 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            var users = Client.Server.Clients.Where(i => i != null && i.Aisling != null && i.Aisling.LoggedIn)
+            ListColor GetUserColor(Aisling user)
+            {
+                var color = ListColor.White;
+                
+                if (Math.Abs(_client.Aisling.ExpLevel - user.ExpLevel) < 8)
+                    color = ListColor.Orange;
+                if (!string.IsNullOrEmpty(user.Clan) && user.Clan == _client.Aisling.Clan)
+                    color = ListColor.Clan;
+
+                return color;
+            }
+
+            var users = _client.Server.Clients.Where(i => i?.Aisling != null && i.Aisling.LoggedIn)
                 .Select(i => i.Aisling).ToArray();
+
             users = users.OrderByDescending(i => i.MaximumHp + i.MaximumMp * 2).ToArray();
 
             var count = (ushort) users.Length;
@@ -75,16 +89,38 @@ namespace Darkages.Network.ServerFormats
             foreach (var user in users)
             {
                 writer.Write((byte) user.Path);
+
+                var color = GetUserColor(user);
+
                 writer.Write((byte) (
-                    user.Serial == Client.Aisling.Serial
-                        ? ListColor.Tan
-                        : Math.Abs(Client.Aisling.ExpLevel - user.ExpLevel) < 8
-                            ? ListColor.Orange
-                            : ListColor.White));
+                    user.Serial == _client.Aisling.Serial
+                        ? ListColor.Green
+                        : color));
+
+
                 writer.Write((byte) user.ActiveStatus);
                 writer.Write((byte) user.Title > 0);
                 writer.Write((byte) user.Stage > 0);
                 writer.WriteStringA(user.Username);
+
+                /*
+                            var p = new ServerPacket(0x36);
+            p.WriteUInt16((ushort)userlist.Count());
+            p.WriteUInt16((ushort)userlist.Count());
+            foreach (Player player in userlist)
+            {
+                p.WriteByte((byte)player.Class);
+                p.WriteByte(255);
+                p.WriteByte((byte)player.Status);
+                p.WriteByte((byte)player.Title); // title
+                p.WriteByte(0x00); // master check
+                p.WriteByte(0x01); // emblem icon
+                p.WriteUInt16(0x00); // icon 1
+                p.WriteUInt16(0x00); // icon 2
+                p.WriteString8(player.Name);
+            }
+            client.Enqueue(p);
+                 */
             }
         }
     }

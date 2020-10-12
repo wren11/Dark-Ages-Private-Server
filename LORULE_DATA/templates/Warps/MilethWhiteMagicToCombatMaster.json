@@ -1,0 +1,38 @@
+{
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 7,
+        "Y": 14,
+        "AreaID": 0
+      },
+      "AreaID": 302,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 8,
+        "Y": 14,
+        "AreaID": 0
+      },
+      "AreaID": 302,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": {
+      "X": 12,
+      "Y": 1,
+      "AreaID": 0
+    },
+    "AreaID": 301,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 302,
+  "Name": "Map Warp from 302 to 301",
+  "Description": null,
+  "Group": null
+}

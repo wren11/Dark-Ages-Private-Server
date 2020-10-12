@@ -124,6 +124,11 @@ namespace Darkages
         string YouDroppedGoldMsg { get; set; }
         bool F5ReloadsMonsters { get; set; }
         bool F5ReloadsPlayers { get; set; }
+        bool SleepProcsDoubleDmg { get; set; }
+        int AiteDamageReductionMod { get; set; }
+        int BaseDamageMod { get; set; }
+        string ACFormulaScript { get; set; }
+        string ElementTableScript { get; set; }
     }
 
     public class GameSetting
@@ -368,5 +373,20 @@ namespace Darkages
         /// Enable to refresh Players when player F5s
         /// </summary>
         public bool F5ReloadsPlayers { get; set; }
+
+        //Set to true/false if you want sleep debuff to cause double damage.
+        public bool SleepProcsDoubleDmg { get; set; }
+
+        //How much damage does aite reduce? default is 3. (-30%)
+        public int AiteDamageReductionMod { get; set; }
+
+        //Base Monster Damage Mod, For Base Attacks, Assail ect. Default is 60.
+        public int BaseDamageMod { get; set; }
+
+        //Script to use for AC Formula, default is "AC Formula"
+        public string ACFormulaScript { get; set; }
+
+        //Script to use for Elemental Table, default is "Elements 1.0"
+        public string ElementTableScript { get; set; }
     }
 }

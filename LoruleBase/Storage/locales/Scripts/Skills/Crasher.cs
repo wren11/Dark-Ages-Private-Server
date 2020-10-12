@@ -59,7 +59,7 @@ namespace Darkages.Scripting.Scripts.Skills
                     Target = i;
 
                     var dmg = sprite.MaximumHp * 300 / 100;
-                    i.ApplyDamage(sprite, dmg, false, 44);
+                    i.ApplyDamage(sprite, dmg, 44);
 
                     if (i is Aisling)
                     {
@@ -117,7 +117,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         Skill.Template.TargetAnimation, 0, 100));
 
                 var dmg = sprite.MaximumHp * 300 / 100;
-                target.ApplyDamage(sprite, dmg, false, 44);
+                target.ApplyDamage(sprite, dmg, 44);
 
                 var action = new ServerFormat1A
                 {

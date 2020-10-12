@@ -69,7 +69,7 @@ namespace Darkages.Scripting.Scripts.Skills
                     {
                         Target = i;
 
-                        i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
+                        i.ApplyDamage(sprite, dmg, Skill.Template.Sound);
                         success = true;
 
                         if (i is Aisling)

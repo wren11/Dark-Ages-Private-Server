@@ -1,18 +1,14 @@
 ﻿#region
 
+using Darkages.Compression;
+using Darkages.IO;
+using Newtonsoft.Json;
+using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Linq;
-using Darkages.Compression;
-using Darkages.IO;
-using Darkages.Storage;
-using Newtonsoft.Json;
-using ServiceStack;
-using ServiceStack.Text;
 
 #endregion
 
@@ -52,7 +48,7 @@ namespace Darkages.Types
 
         private static void LoadQuestDescriptions()
         {
-            var dir = ServerContext.StoragePath + "\\Static\\Meta\\Quests";
+            var dir = ServerContext.StoragePath + "\\static\\meta\\quests";
 
             if (!Directory.Exists(dir)) return;
 

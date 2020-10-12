@@ -1,11 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using Darkages.Common;
 using Darkages.Network;
 using Darkages.Network.Game;
@@ -14,7 +8,12 @@ using Darkages.Network.Object;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Newtonsoft.Json;
-using ServiceStack.Logging;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using static Darkages.Types.ElementManager;
 
 #endregion
@@ -31,7 +30,7 @@ namespace Darkages.Types
 
         public int Y;
 
-        private static readonly int[][] directions =
+        private static readonly int[][] Directions =
         {
             new[] {+0, -1},
             new[] {+1, +0},
@@ -72,15 +71,6 @@ namespace Darkages.Types
         public event PropertyChangedEventHandler PropertyChanged;
 
         [JsonIgnore]
-        public static int[][] Directions { get; } =
-        {
-            new[] {+0, -1},
-            new[] {+1, +0},
-            new[] {+0, +1},
-            new[] {-1, +0}
-        };
-
-        [JsonIgnore]
         public static int[][] DirectionTable { get; } =
         {
             new[] {-1, +3, -1},
@@ -99,6 +89,9 @@ namespace Darkages.Types
         public int _Regen { get; set; }
         public byte _Str { get; set; }
         public byte _Wis { get; set; }
+
+        public int Amplified { get; set; }
+
         [JsonIgnore] public DateTime AbandonedDate { get; set; }
 
         [JsonIgnore]
@@ -114,7 +107,6 @@ namespace Darkages.Types
         }
 
         [JsonIgnore] public bool Alive => CurrentHp > 0;
-        public int Amplified { get; set; }
         [JsonIgnore] public bool Attackable => this is Monster || this is Aisling || this is Mundane;
         [JsonIgnore] public int BonusAc { get; set; }
         [JsonIgnore] public int BonusCon { get; set; }
@@ -128,7 +120,6 @@ namespace Darkages.Types
         [JsonIgnore] public int BonusRegen { get; set; }
         [JsonIgnore] public int BonusStr { get; set; }
         [JsonIgnore] public int BonusWis { get; set; }
-        public ConcurrentDictionary<string, Buff> Buffs { get; set; }
         [JsonIgnore] public bool CanCast => !(IsFrozen || IsSleeping);
         [JsonIgnore] public bool CanMove => !(IsFrozen || IsSleeping || IsParalyzed);
         [JsonIgnore] public GameClient Client { get; set; }
@@ -143,24 +134,57 @@ namespace Darkages.Types
             }
         }
 
-        public int CurrentHp { get; set; }
-        public int CurrentMapId { get; set; }
-        public int CurrentMp { get; set; }
-        public ConcurrentDictionary<string, Debuff> Debuffs { get; set; }
-        public Element DefenseElement { get; set; }
-
         [JsonIgnore]
         public byte Dex
         {
             get
             {
-                var tmp = (byte) (_Dex + BonusDex).Clamp(1, byte.MaxValue);
-                if (tmp > 255)
-                    return 255;
-
-                return tmp;
+                var tmp = (byte)(_Dex + BonusDex).Clamp(1, byte.MaxValue);
+                return tmp > 255 ? (byte)255 : tmp;
             }
         }
+
+
+        [JsonIgnore]
+        public byte Int
+        {
+            get
+            {
+                var tmp = (byte)(_Int + BonusInt).Clamp(1, byte.MaxValue);
+                return tmp > 255 ? (byte)255 : tmp;
+            }
+        }
+
+        [JsonIgnore]
+        public byte Str
+        {
+            get
+            {
+                var tmp = (byte)(_Str + BonusStr).Clamp(1, byte.MaxValue);
+                return tmp > 255 ? (byte)255 : tmp;
+            }
+        }
+
+
+        [JsonIgnore]
+        public byte Wis
+        {
+            get
+            {
+                var tmp = (byte)(_Wis + BonusWis).Clamp(1, byte.MaxValue);
+                return tmp > 255 ? (byte)255 : tmp;
+            }
+        }
+
+        public int CurrentHp { get; set; }
+        public int CurrentMapId { get; set; }
+        public int CurrentMp { get; set; }
+
+        public ConcurrentDictionary<string, Buff> Buffs { get; set; }
+        public ConcurrentDictionary<string, Debuff> Debuffs { get; set; }
+
+        public Element DefenseElement { get; set; }
+
 
         public byte Direction { get; set; }
         [JsonIgnore] public byte Dmg => (byte) (_Dmg + BonusDmg).Clamp(0, byte.MaxValue);
@@ -170,16 +194,6 @@ namespace Darkages.Types
         [JsonIgnore] public byte Hit => (byte) (_Hit + BonusHit).Clamp(0, byte.MaxValue);
 
         public bool Immunity { get; set; }
-
-        [JsonIgnore]
-        public byte Int
-        {
-            get
-            {
-                var tmp = (byte) (_Int + BonusInt).Clamp(1, byte.MaxValue);
-                return tmp > 255 ? (byte) 255 : tmp;
-            }
-        }
 
         [JsonIgnore] public bool IsAited => HasBuff("aite");
 
@@ -228,27 +242,7 @@ namespace Darkages.Types
         public int Serial { get; set; }
         public bool SpellReflect { get; set; }
 
-        [JsonIgnore]
-        public byte Str
-        {
-            get
-            {
-                var tmp = (byte) (_Str + BonusStr).Clamp(1, byte.MaxValue);
-                return tmp > 255 ? (byte) 255 : tmp;
-            }
-        }
-
         [JsonIgnore] public Sprite Target { get; set; }
-
-        [JsonIgnore]
-        public byte Wis
-        {
-            get
-            {
-                var tmp = (byte) (_Wis + BonusWis).Clamp(1, byte.MaxValue);
-                return tmp > 255 ? (byte) 255 : tmp;
-            }
-        }
 
         [JsonIgnore]
         public int XPos
@@ -329,17 +323,17 @@ namespace Darkages.Types
             Show(Scope.NearbyAislings, new ServerFormat29((uint) Serial, (uint) Serial, animation, animation, speed));
         }
 
-        public Sprite ApplyBuff(string buff)
+        public Sprite ApplyBuff(string buffName)
         {
-            if (ServerContext.GlobalBuffCache.ContainsKey(buff))
+            if (ServerContext.GlobalBuffCache.ContainsKey(buffName))
             {
-                var Buff = Clone<Buff>(ServerContext.GlobalBuffCache[buff]);
+                var buff = Clone<Buff>(ServerContext.GlobalBuffCache[buffName]);
 
-                if (Buff == null || string.IsNullOrEmpty(Buff.Name))
+                if (buff == null || string.IsNullOrEmpty(buff.Name))
                     return null;
 
-                if (!HasBuff(Buff.Name))
-                    Buff.OnApplied(this, Buff);
+                if (!HasBuff(buff.Name))
+                    buff.OnApplied(this, buff);
             }
 
             return this;
@@ -352,14 +346,31 @@ namespace Darkages.Types
             var saved = source.OffenseElement;
             {
                 source.OffenseElement = element;
-                ApplyDamage(source, dmg, false, sound);
+                ApplyDamage(source, dmg, sound);
                 source.OffenseElement = saved;
             }
         }
 
-        public void ApplyDamage(Sprite damageDealingSprite, int dmg, bool penetrating = false, byte sound = 1,
+        public void ApplyDamage(Sprite damageDealingSprite, int dmg, byte sound = 1,
             Action<int> dmgcb = null, bool forceTarget = false)
         {
+
+            int ApplyPVPMod()
+            {
+                if (Map.Flags.HasFlag(MapFlags.PlayerKill))
+                    return dmg = (int) (dmg * 0.75);
+
+                return dmg;
+            }
+
+            int ApplyBehindTargetMod()
+            {
+                if (damageDealingSprite is Aisling aisling)
+                    if (aisling.Client.IsBehind(this))
+                        dmg += (int) ((dmg + ServerContext.Config.BehindDamageMod) / 1.99);
+                return dmg;
+            }
+
             if (!WithinRangeOf(damageDealingSprite))
                 return;
 
@@ -369,28 +380,14 @@ namespace Darkages.Types
             if (!CanBeAttackedHere(damageDealingSprite))
                 return;
 
-            if (Map.Flags.HasFlag(MapFlags.PlayerKill))
-                dmg = (int) (dmg * 0.75);
-
-
-            {
-                if (damageDealingSprite is Aisling aisling)
-                    if (aisling.Client.IsBehind(this))
-                        dmg += (int) ((dmg + ServerContext.Config.BehindDamageMod) / 1.99);
-            }
-
-            if (dmg == -1)
-            {
-                dmg = CurrentHp;
-                penetrating = true;
-            }
-
+            dmg = ApplyPVPMod(); 
+            dmg = ApplyBehindTargetMod();
             dmg = ApplyWeaponBonuses(damageDealingSprite, dmg);
 
             if (dmg > 0)
                 ApplyEquipmentDurability(dmg);
 
-            if (!DamageTarget(damageDealingSprite, ref dmg, penetrating, sound, dmgcb, forceTarget))
+            if (!DamageTarget(damageDealingSprite, ref dmg, sound, dmgcb, forceTarget))
                 return;
 
             {
@@ -402,13 +399,13 @@ namespace Darkages.Types
             OnDamaged(damageDealingSprite, dmg);
         }
 
-        public Sprite ApplyDebuff(string debuff)
+        public Sprite ApplyDebuff(string debuffName)
         {
-            if (ServerContext.GlobalDeBuffCache.ContainsKey(debuff))
+            if (ServerContext.GlobalDeBuffCache.ContainsKey(debuffName))
             {
-                var Debuff = Clone<Debuff>(ServerContext.GlobalDeBuffCache[debuff]);
-                if (!HasDebuff(Debuff.Name))
-                    Debuff.OnApplied(this, Debuff);
+                var debuff = Clone<Debuff>(ServerContext.GlobalDeBuffCache[debuffName]);
+                if (!HasDebuff(debuff.Name))
+                    debuff.OnApplied(this, debuff);
             }
 
             return this;
@@ -425,161 +422,29 @@ namespace Darkages.Types
             if (!(source is Aisling aisling))
                 return dmg;
 
-            if (aisling.EquipmentManager.Weapon?.Item == null || aisling.Weapon <= 0)
+            if (aisling.EquipmentManager != null && (aisling.EquipmentManager.Weapon?.Item == null || aisling.Weapon <= 0))
                 return dmg;
 
-            var weapon = aisling.EquipmentManager.Weapon.Item;
-
-            lock (Generator.Random)
+            if (aisling.EquipmentManager != null)
             {
-                dmg += Generator.Random.Next(
-                    weapon.Template.DmgMin + aisling.BonusDmg * 1,
-                    weapon.Template.DmgMax + aisling.BonusDmg * 5);
+                var weapon = aisling.EquipmentManager.Weapon.Item;
+
+                lock (Generator.Random)
+                {
+                    dmg += Generator.Random.Next(
+                        weapon.Template.DmgMin + aisling.BonusDmg * 1,
+                        weapon.Template.DmgMax + aisling.BonusDmg * 5);
+                }
             }
 
             return dmg;
         }
 
-        public void BarMsg(string message, byte type = 0x02)
-        {
-            var response = new ServerFormat0D
-            {
-                Serial = Serial,
-                Type = type,
-                Text = message
-            };
-
-            Show(Scope.NearbyAislings, response);
-        }
-
         public double CalculateElementalDamageMod(Element element)
         {
-            while (DefenseElement == Element.Random) DefenseElement = CheckRandomElement(DefenseElement);
+            var script = ScriptManager.Load<ElementFormulaScript>(ServerContext.Config.ElementTableScript, this);
 
-            if (DefenseElement == Element.None && element != Element.None)
-                return 1.00;
-
-            if (DefenseElement == Element.None && element == Element.None) return 0.50;
-
-            if (DefenseElement == Element.Fire)
-                switch (element)
-                {
-                    case Element.Fire:
-                        return 0.05;
-
-                    case Element.Water:
-                        return 0.85;
-
-                    case Element.Wind:
-                        return 0.55;
-
-                    case Element.Earth:
-                        return 0.65;
-
-                    case Element.Dark:
-                        return 0.75;
-
-                    case Element.Light:
-                        return 0.55;
-
-                    case Element.None:
-                        return 0.01;
-                }
-
-            if (DefenseElement == Element.Wind)
-                switch (element)
-                {
-                    case Element.Wind:
-                        return 0.05;
-
-                    case Element.Fire:
-                        return 0.85;
-
-                    case Element.Water:
-                        return 0.65;
-
-                    case Element.Earth:
-                        return 0.55;
-
-                    case Element.Dark:
-                        return 0.75;
-
-                    case Element.Light:
-                        return 0.55;
-
-                    case Element.None:
-                        return 0.01;
-                }
-
-            if (DefenseElement == Element.Earth)
-                switch (element)
-                {
-                    case Element.Wind:
-                        return 0.85;
-
-                    case Element.Fire:
-                        return 0.65;
-
-                    case Element.Water:
-                        return 0.55;
-
-                    case Element.Earth:
-                        return 0.05;
-
-                    case Element.Dark:
-                        return 0.75;
-
-                    case Element.Light:
-                        return 0.55;
-
-                    case Element.None:
-                        return 0.01;
-                }
-
-            if (DefenseElement == Element.Water)
-                switch (element)
-                {
-                    case Element.Wind:
-                        return 0.65;
-
-                    case Element.Fire:
-                        return 0.55;
-
-                    case Element.Water:
-                        return 0.05;
-
-                    case Element.Earth:
-                        return 0.85;
-
-                    case Element.Dark:
-                        return 0.75;
-
-                    case Element.Light:
-                        return 0.55;
-
-                    case Element.None:
-                        return 0.01;
-                }
-
-            if (DefenseElement == Element.Dark)
-                return element switch
-                {
-                    Element.Dark => 0.10,
-                    Element.Light => 0.80,
-                    Element.None => 0.01,
-                    _ => 0.60
-                };
-
-            if (DefenseElement == Element.Light)
-                return element switch
-                {
-                    Element.Dark => 0.80,
-                    Element.Light => 0.10,
-                    Element.None => 0.01,
-                    _ => 0.65
-                };
-
-            return 0.00;
+            return script?.Values.Sum(s => s.Calculate(this, element)) ?? 0.0;
         }
 
         public bool CanBeAttackedHere(Sprite source)
@@ -703,39 +568,18 @@ namespace Darkages.Types
         }
 
         public bool DamageTarget(Sprite damageDealingSprite,
-            ref int dmg, bool penetrating, byte sound,
+            ref int dmg, byte sound,
             Action<int> dmgcb, bool forced)
         {
-            #region Direct Damage
-
-            if (penetrating)
-            {
-                var empty = new ServerFormat13
-                {
-                    Serial = Serial,
-                    Health = byte.MaxValue,
-                    Sound = sound
-                };
-
-                Show(Scope.VeryNearbyAislings, empty);
-
-                CurrentHp -= dmg;
-
-                if (CurrentHp < 0)
-                    CurrentHp = 0;
-
-                return true;
-            }
-
-            #endregion
-
             if (this is Monster)
+            {
                 if (damageDealingSprite is Aisling aisling)
                     if (!CanTag(aisling, forced))
                     {
                         aisling.Client.SendMessage(0x02, ServerContext.Config.CantAttack);
                         return false;
                     }
+            }
 
             if (Immunity)
             {
@@ -751,12 +595,17 @@ namespace Darkages.Types
             }
 
             if (HasDebuff("sleep"))
-                dmg <<= 1;
+            {
+                if (ServerContext.Config.SleepProcsDoubleDmg)
+                {
+                    dmg <<= 1;
+                }
 
-            RemoveDebuff("sleep");
+                RemoveDebuff("sleep");
+            }
 
             if (IsAited && dmg > 5)
-                dmg /= 3;
+                dmg /= ServerContext.Config.AiteDamageReductionMod;
 
             var amplifier = GetElementalModifier(damageDealingSprite);
             {
@@ -800,9 +649,9 @@ namespace Darkages.Types
                     diff = Level + 1 - tmon.Template.Level;
 
                 if (diff <= 0)
-                    mod = Level * (type == MonsterDamageType.Physical ? 0.1 : 2) * 60;
+                    mod = Level * (type == MonsterDamageType.Physical ? 0.1 : 2) * ServerContext.Config.BaseDamageMod;
                 else
-                    mod = Level * (type == MonsterDamageType.Physical ? 0.1 : 2) * (60 * diff);
+                    mod = Level * (type == MonsterDamageType.Physical ? 0.1 : 2) * (ServerContext.Config.BaseDamageMod * diff);
 
                 var dmg = Math.Abs((int) (mod + 1));
 
@@ -1185,36 +1034,12 @@ namespace Darkages.Types
 
         public void UpdateBuffs(TimeSpan elapsedTime)
         {
-            //var buff_Copy = new List<Buff>(Buffs.Values).ToArray();
-
-            //if (buff_Copy.Length == 0)
-            //    return;
-
-            //for (var i = 0; i < buff_Copy.Length; i++)
-            //    if (buff_Copy[i] != null)
-            //        buff_Copy[i].Update(this, elapsedTime);
-
-            foreach (var (keyValuePair, buff) in Buffs) buff.Update(this, elapsedTime);
+            foreach (var (_, buff) in Buffs) buff.Update(this, elapsedTime);
         }
 
         public void UpdateDebuffs(TimeSpan elapsedTime)
         {
-            foreach (var (keyValuePair, debuff) in Debuffs) debuff.Update(this, elapsedTime);
-
-            //if (Debuffs == null)
-            //    return;
-
-            //if (Debuffs.Count == 0)
-            //    return;
-
-            //var debuff_Copy = new List<Debuff>(Debuffs.Values).ToArray();
-
-            //if (debuff_Copy.Length == 0)
-            //    return;
-
-            //for (var i = 0; i < debuff_Copy.Length; i++)
-            //    if (debuff_Copy[i] != null)
-            //        debuff_Copy[i].Update(this, elapsedTime);
+            foreach (var (_, debuff) in Debuffs) debuff.Update(this, elapsedTime);
         }
 
         public void UseSkillScript(string skillName)
@@ -1334,8 +1159,8 @@ namespace Darkages.Types
 
             for (byte i = 0; i < 4; i++)
             {
-                var newX = X + directions[i][0];
-                var newY = Y + directions[i][1];
+                var newX = X + Directions[i][0];
+                var newY = Y + Directions[i][1];
 
                 if (newX == x &&
                     newY == y)
@@ -1425,15 +1250,12 @@ namespace Darkages.Types
 
         private int ComputeDmgFromAc(int dmg)
         {
-            var armor = Ac;
-            var calculated_dmg = dmg * Math.Abs(armor + 101) / 99;
+            var script = ScriptManager.Load<FormulaScript>(ServerContext.Config.ACFormulaScript, this);
 
-            if (calculated_dmg < 0)
-                calculated_dmg = 1;
+            if (script == null)
+                return dmg;
 
-            var diff = Math.Abs(dmg - calculated_dmg);
-
-            return calculated_dmg + diff;
+            return script.Aggregate(dmg, (current, s) => s.Value.Calculate(this, current));
         }
 
         private void DeleteObject()

@@ -68,7 +68,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
 
                         client.Aisling.Show(Scope.NearbyAislings, action);
                         {
-                            target.ApplyDamage(client.Aisling, 0, false, Skill.Template.Sound);
+                            target.ApplyDamage(client.Aisling, 0, Skill.Template.Sound);
                             debuff.OnApplied(target, debuff);
                         }
                     }

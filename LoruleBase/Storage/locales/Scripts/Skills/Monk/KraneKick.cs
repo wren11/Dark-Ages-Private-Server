@@ -71,7 +71,7 @@ namespace Darkages.Storage.locales.Scripts.Skills
                             Skill.Template.TargetAnimation, 0, 100));
 
                     var dmg = 1 * sprite.Str * 200;
-                    target.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
+                    target.ApplyDamage(sprite, dmg, Skill.Template.Sound);
 
                     var action = new ServerFormat1A
                     {

@@ -72,7 +72,7 @@ namespace Darkages.Scripting.Scripts.Skills
                                 if ((sprite as Aisling).Weapon == 0)
                                     dmg *= 3;
 
-                        i.ApplyDamage(sprite, 0, false, Skill.Template.Sound);
+                        i.ApplyDamage(sprite, 0, Skill.Template.Sound);
                         {
                             success = true;
                         }

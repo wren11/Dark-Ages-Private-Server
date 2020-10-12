@@ -41,7 +41,7 @@ namespace Darkages.Scripting.Scripts.Skills
                     (obj as Monster).GenerateRewards(client.Aisling);
 
                     client.SendAnimation(301, obj, client.Aisling);
-                    obj.ApplyDamage(client.Aisling, -1, false, 40);
+                    obj.ApplyDamage(client.Aisling, -1, 40);
                 }
             });
         }

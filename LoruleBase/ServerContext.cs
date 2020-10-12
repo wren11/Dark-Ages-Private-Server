@@ -241,7 +241,7 @@ namespace Darkages
         {
             if (Community != null)
             {
-                var dirs = Directory.GetDirectories(Path.Combine(StoragePath, "Community\\Boards"));
+                var dirs = Directory.GetDirectories(Path.Combine(StoragePath, "community\\boards"));
                 var tmplBoards = new Dictionary<string, List<Board>>();
 
                 foreach (var dir in dirs.Select(i => new DirectoryInfo(i)))

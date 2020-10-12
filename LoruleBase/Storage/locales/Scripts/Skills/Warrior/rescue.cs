@@ -70,7 +70,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         }
 
                         Target = i;
-                        i.ApplyDamage(aisling, 0, true, Skill.Template.Sound, null, true);
+                        i.ApplyDamage(aisling, 0, Skill.Template.Sound);
 
                         if (i is Aisling)
                         {

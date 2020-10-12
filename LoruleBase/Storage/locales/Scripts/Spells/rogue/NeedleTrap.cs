@@ -33,7 +33,7 @@ namespace Darkages.Assets.locales.Scripts.Traps
 
         public override void OnTriggeredBy(Sprite sprite, Sprite target)
         {
-            target.ApplyDamage(sprite, 1000, true, Spell.Template.Sound);
+            target.ApplyDamage(sprite, 1000, Spell.Template.Sound);
 
             if (target is Monster || target is Mundane || target is Aisling)
                 target.Show(Scope.NearbyAislings,

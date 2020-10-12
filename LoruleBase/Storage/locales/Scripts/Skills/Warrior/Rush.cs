@@ -87,7 +87,7 @@ namespace Darkages.Scripting.Scripts.Skills
                         if (!t.HasDebuff(debuff.Name))
                         {
                             sprite.Show(Scope.NearbyAislings, action);
-                            t.ApplyDamage(sprite, 0, false, Skill.Template.Sound);
+                            t.ApplyDamage(sprite, 0, Skill.Template.Sound);
                             debuff.OnApplied(t, debuff);
                         }
                     }

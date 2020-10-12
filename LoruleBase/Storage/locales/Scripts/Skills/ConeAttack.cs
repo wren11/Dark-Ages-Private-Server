@@ -67,7 +67,7 @@ namespace Darkages.Scripting.Scripts.Skills
                                 if ((sprite as Aisling).Weapon == 0)
                                     dmg *= 3;
 
-                        i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
+                        i.ApplyDamage(sprite, dmg, Skill.Template.Sound);
                         i.Target = client.Aisling;
 
                         client.Aisling.Show(Scope.NearbyAislings,
@@ -125,7 +125,7 @@ namespace Darkages.Scripting.Scripts.Skills
                                 new ServerFormat29(Skill.Template.TargetAnimation, (ushort) i.XPos, (ushort) i.YPos));
 
                             var dmg = 50 * (sprite.Str + Skill.Level) / 100;
-                            i.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
+                            i.ApplyDamage(sprite, dmg, Skill.Template.Sound);
                         }
                     }
             }

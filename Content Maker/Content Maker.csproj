@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Content_Maker</RootNamespace>
     <AssemblyName>Content Maker</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -33,9 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Darkages.Server">
-      <HintPath>..\Lorule.GameServer\bin\Debug\netcoreapp3.1\Darkages.Server.dll</HintPath>
-    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.9.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.9.0\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
@@ -158,6 +155,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\top_F1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LoruleBase\Lorule.Base.csproj">
+      <Project>{4e75bafe-787c-413e-b434-394f63a7d65b}</Project>
+      <Name>Lorule.Base</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

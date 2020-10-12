@@ -64,7 +64,7 @@ namespace Darkages.Scripting.Scripts.Skills
 
                         dmg += dmg * imp / 100;
 
-                        i.ApplyDamage(sprite, dmg, false, Skill.Template.Sound);
+                        i.ApplyDamage(sprite, dmg, Skill.Template.Sound);
 
                         if (i is Monster) (i as Monster).Target = client.Aisling;
                         if (i is Aisling)
@@ -123,7 +123,7 @@ namespace Darkages.Scripting.Scripts.Skills
                             Skill.Template.TargetAnimation, 0, 100));
 
                     var dmg = 1 * sprite.Str * 20 * Skill.Level;
-                    target.ApplyDamage(sprite, dmg, true, Skill.Template.Sound);
+                    target.ApplyDamage(sprite, dmg, Skill.Template.Sound);
 
                     var action = new ServerFormat1A
                     {

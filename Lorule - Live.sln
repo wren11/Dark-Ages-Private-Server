@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoruleBase", "LoruleBase\LoruleBase.csproj", "{4E75BAFE-787C-413E-B434-394F63A7D65B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lorule.Base", "LoruleBase\Lorule.Base.csproj", "{4E75BAFE-787C-413E-B434-394F63A7D65B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lorule.GameServer", "Lorule.GameServer\Lorule.GameServer.csproj", "{AA838309-4AE1-409A-95B6-13D90DAE1131}"
 EndProject

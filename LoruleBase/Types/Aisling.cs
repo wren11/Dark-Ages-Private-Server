@@ -29,7 +29,7 @@ namespace Darkages
         {
             OffenseElement = ElementManager.Element.None;
             DefenseElement = ElementManager.Element.None;
-            Clan = string.Empty;
+            Clan = "St";
             LegendBook = new Legend();
             ClanTitle = string.Empty;
             ClanRank = string.Empty;
@@ -716,7 +716,7 @@ namespace Darkages
                 obj.Animate(5);
             }
 
-            ApplyDamage(this, 0, true, 8);
+            ApplyDamage(this, 0, 8);
             Show(Scope.NearbyAislings, action);
         }
 

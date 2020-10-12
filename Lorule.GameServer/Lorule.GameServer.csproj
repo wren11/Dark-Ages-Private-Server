@@ -25,7 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Lorule.Static\Lorule.Static.csproj" />
-    <ProjectReference Include="..\LoruleBase\LoruleBase.csproj" />
+    <ProjectReference Include="..\LoruleBase\Lorule.Base.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="ServerConfig.Local.json">

@@ -10,7 +10,7 @@ namespace Darkages.Types
     {
         void ApplyDamage(Sprite source, int dmg, ElementManager.Element element, byte sound = 1);
 
-        void ApplyDamage(Sprite damageDealingSprite, int dmg, bool penetrating = false, byte sound = 1,
+        void ApplyDamage(Sprite damageDealingSprite, int dmg, byte sound = 1,
             Action<int> dmgcb = null, bool forceTarget = false);
 
         void ApplyEquipmentDurability(int dmg);
@@ -21,7 +21,7 @@ namespace Darkages.Types
 
         int CompleteDamageApplication(int dmg, byte sound, Action<int> dmgcb, double amplifier);
 
-        bool DamageTarget(Sprite damageDealingSprite, ref int dmg, bool penetrating, byte sound, Action<int> dmgcb,
+        bool DamageTarget(Sprite damageDealingSprite, ref int dmg, byte sound, Action<int> dmgcb,
             bool forced);
 
         double GetElementalModifier(Sprite damageDealingSprite);
