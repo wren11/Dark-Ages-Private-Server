@@ -1,17 +1,12 @@
 ﻿#region
 
-using Darkages.Common;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Systems.Loot;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using static Darkages.Common.Generator;
-using static Darkages.Types.Item;
 
 #endregion
 
@@ -203,165 +198,6 @@ namespace Darkages.Types
                 string.Format(ServerContext.Config.LevelUpMessage, player.ExpLevel));
             player.Show(Scope.NearbyAislings,
                 new ServerFormat29((uint) player.Serial, (uint) player.Serial, 0x004F, 0x004F, 64));
-        }
-
-        private List<string> DetermineDrop()
-        {
-            return LootManager.Drop(LootTable, Generator.Random.Next(ServerContext.Config.LootTableStackSize))
-                .Select(i => i?.Name).ToList();
-        }
-
-        private ItemUpgrade DetermineQuality()
-        {
-            return (ItemUpgrade) LootManager.Drop(UpgradeTable, 1).FirstOrDefault();
-        }
-
-        private void DetermineRandomDrop()
-        {
-            var idx = 0;
-            if (Template.Drops.Count > 0)
-                idx = Generator.Random.Next(Template.Drops.Count);
-
-            var rndSelector = Template.Drops[idx];
-            if (!ServerContext.GlobalItemTemplateCache.ContainsKey(rndSelector))
-                return;
-
-            var item = Item.Create(this, ServerContext.GlobalItemTemplateCache[rndSelector], true);
-            var chance = Math.Round(Generator.Random.NextDouble(), 2);
-
-            if (chance <= item.Template.DropRate)
-                item.Release(this, Position);
-        }
-
-        private Variance DetermineVariance()
-        {
-            return RandomEnumValue<Variance>();
-        }
-
-        private void GenerateDrops()
-        {
-            if (Template.LootType.HasFlag(LootQualifer.Table))
-            {
-                if (LootTable == null || LootManager == null)
-                    return;
-
-                DetermineDrop().ForEach(i =>
-                {
-                    if (i == null) return;
-                    if (!ServerContext.GlobalItemTemplateCache.ContainsKey(i)) return;
-
-                    var rolledItem = Item.Create(this, ServerContext.GlobalItemTemplateCache[i]);
-                    if (rolledItem == GlobalLastItemRoll)
-                        return;
-
-                    GlobalLastItemRoll = rolledItem;
-
-                    var upgrade = DetermineQuality();
-
-                    if (rolledItem.Template.Enchantable)
-                    {
-                        var variance = DetermineVariance();
-
-                        if (!ServerContext.Config.UseLoruleVariants)
-                            variance = Variance.None;
-
-                        if (variance != Variance.None)
-                            rolledItem.ItemVariance = variance;
-                    }
-
-                    if (rolledItem.Template.Flags.HasFlag(ItemFlags.QuestRelated))
-                        upgrade = null;
-
-                    if (!ServerContext.Config.UseLoruleItemRarity)
-                        upgrade = null;
-
-                    rolledItem.Upgrades = upgrade?.Upgrade ?? 0;
-
-                    if (rolledItem.Upgrades > 0)
-                    {
-                        ApplyQuality(rolledItem);
-
-                        if (rolledItem.Upgrades > 2)
-                            if (Target != null)
-                            {
-                                var user = Target;
-
-                                if (user is Aisling aisling)
-                                {
-                                    var party = aisling.GroupParty.PartyMembers;
-
-                                    foreach (var player in party)
-                                        player.Client.SendMessage(0x03,
-                                            $"Special Drop: {rolledItem.DisplayName}");
-
-                                    Task.Delay(1000).ContinueWith(ct => { rolledItem.Animate(160, 200); });
-                                }
-                            }
-                    }
-
-                    rolledItem.Cursed = true;
-                    rolledItem.AuthenticatedAislings = GetTaggedAislings().Cast<Sprite>().ToArray();
-                    rolledItem.Release(this, Position);
-                });
-            }
-            else if (Template.LootType.HasFlag(LootQualifer.Random))
-            {
-                DetermineRandomDrop();
-            }
-        }
-
-        private void GenerateExperience(Aisling player, bool canCrit = false)
-        {
-            int exp;
-
-            var seed = Template.Level * 0.1 + 1.5;
-            {
-                exp = (int) (Template.Level * seed * 300);
-            }
-
-            if (canCrit)
-                lock (Generator.Random)
-                {
-                    var critical = Math.Abs(GenerateNumber() % 100);
-                    if (critical >= 85) exp *= 2;
-                }
-
-            DistributeExperience(player, exp);
-
-            if (player.PartyMembers != null)
-                foreach (var party in player.PartyMembers
-                    .Where(party => party.Serial != player.Serial)
-                    .Where(party => party.WithinRangeOf(player)))
-                {
-                    DistributeExperience(party, exp);
-
-                    party.Client.SendStats(StatusFlags.StructC);
-                    party.Client.SendMessage(0x02, $"You received {exp} Experience!.");
-                }
-
-            player.Client.SendStats(StatusFlags.StructC);
-            player.Client.SendMessage(0x02, $"You received {exp} Experience!.");
-        }
-
-        private void GenerateGold()
-        {
-            if (!Template.LootType.HasFlag(LootQualifer.Gold))
-                return;
-
-            var sum = Generator.Random.Next(
-                Template.Level * 500,
-                Template.Level * 1000);
-
-            if (sum > 0)
-                Money.Create(this, sum, new Position(XPos, YPos));
-        }
-
-        private void UpdateCounters(Aisling player)
-        {
-            if (!player.MonsterKillCounters.ContainsKey(Template.Name))
-                player.MonsterKillCounters[Template.Name] = 1;
-            else
-                player.MonsterKillCounters[Template.Name]++;
         }
     }
 }
