@@ -638,7 +638,7 @@ namespace Darkages.Types
         public int GetBaseDamage(Sprite target, MonsterDamageType type)
         {
             var script = ScriptManager.Load<DamageFormulaScript>("Base Damage", this);
-            return script?.Values.Sum(s => s.Calculate(this, target, type)) ?? 0;
+            return script?.Values.Sum(s => s.Calculate(this, target, type)) ?? 1;
         }
 
         public string GetDebuffName(Func<Debuff, bool> p)
