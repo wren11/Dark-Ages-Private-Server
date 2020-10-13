@@ -637,31 +637,8 @@ namespace Darkages.Types
 
         public int GetBaseDamage(Sprite target, MonsterDamageType type)
         {
-            if (this is Monster || this is Mundane)
-            {
-                var mod = 0.0;
-                var diff = 0;
-
-                if (target is Aisling obj)
-                    diff = Level + 1 - obj.ExpLevel;
-
-                if (target is Monster tmon)
-                    diff = Level + 1 - tmon.Template.Level;
-
-                if (diff <= 0)
-                    mod = Level * (type == MonsterDamageType.Physical ? 0.1 : 2) * ServerContext.Config.BaseDamageMod;
-                else
-                    mod = Level * (type == MonsterDamageType.Physical ? 0.1 : 2) * (ServerContext.Config.BaseDamageMod * diff);
-
-                var dmg = Math.Abs((int) (mod + 1));
-
-                if (dmg <= 0)
-                    dmg = 1;
-
-                return dmg;
-            }
-
-            return 1;
+            var script = ScriptManager.Load<DamageFormulaScript>("Base Damage", this);
+            return script?.Values.Sum(s => s.Calculate(this, target, type)) ?? 0;
         }
 
         public string GetDebuffName(Func<Debuff, bool> p)
