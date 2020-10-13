@@ -1,6 +1,8 @@
 ﻿#region
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
 using Darkages.Types;
@@ -48,19 +50,7 @@ namespace Darkages
 
             if (destinationMap == 0)
             {
-                client.Refresh(true);
-                client.RefreshMap(true);
-                client.LeaveArea(true, true);
-
-                destinationMap = ServerContext.Config.TransitionZone;
-
-                client.Aisling.XPos = x >= 0 ? x : ServerContext.Config.TransitionPointX;
-                client.Aisling.YPos = y >= 0 ? y : ServerContext.Config.TransitionPointY;
-
-                client.Aisling.CurrentMapId = destinationMap;
-                client.LeaveArea(true, true);
-                client.EnterArea();
-
+                client.Aisling.EnterAbyss();
                 ShowFieldMap(client);
             }
             else

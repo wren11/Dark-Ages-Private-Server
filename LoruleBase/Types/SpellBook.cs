@@ -3,7 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Darkages.Network.Game;
 using Darkages.Network.Object;
+using Darkages.Network.ServerFormats;
 
 #endregion
 
@@ -17,9 +19,21 @@ namespace Darkages.Types
 
         public SpellBook()
         {
-            for (var i = 0; i < SPELLLENGTH; i++) Spells[i + 1] = null;
+            for (var i = 0; i < SPELLLENGTH; i++)
+            {
+                Spells[i + 1] = null;
+            }
 
             Spells[36] = new Spell();
+        }
+
+        public void Clear(GameClient client)
+        {
+            Spells = new Dictionary<int, Spell>();
+            for (byte i = 0; i < SPELLLENGTH; i++)
+            {
+                client.Send(new ServerFormat18((byte)(i + 1)));
+            }
         }
 
         public int Length => Spells.Count;

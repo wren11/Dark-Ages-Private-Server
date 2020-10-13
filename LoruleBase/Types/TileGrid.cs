@@ -34,20 +34,23 @@ namespace Darkages
             {
                 foreach (var obj in Sprites)
                 {
-                    if (obj.Serial == sprite.Serial)
+                    if (obj != null)
                     {
-                        if (!isAisling)
+                        if (obj != null && obj.Serial == sprite.Serial)
+                        {
+                            if (!isAisling)
+                                continue;
+
+                            return true;
+                        }
+
+                        if (obj != null && (obj.X == sprite.X && obj.Y == sprite.Y)) continue;
+
+                        if (!(obj is Monster) && !(obj is Aisling) && !(obj is Mundane))
                             continue;
 
-                        return true;
+                        length++;
                     }
-
-                    if (obj.X == sprite.X && obj.Y == sprite.Y) continue;
-
-                    if (!(obj is Monster) && !(obj is Aisling) && !(obj is Mundane))
-                        continue;
-
-                    length++;
                 }
 
                 if (!isAisling)
@@ -57,11 +60,14 @@ namespace Darkages
 
                 foreach (var s in Sprites)
                 {
-                    if (s is Aisling)
-                        continue;
+                    if (s != null)
+                    {
+                        if (s is Aisling)
+                            continue;
 
-                    s.Update();
-                    updates++;
+                        s.Update();
+                        updates++;
+                    }
                 }
 
                 if (updates > 0) (sprite as Aisling)?.Client.Refresh();

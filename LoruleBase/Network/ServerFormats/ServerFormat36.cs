@@ -3,6 +3,8 @@
 using Darkages.Network.Game;
 using System;
 using System.Linq;
+using Darkages.Types;
+using ServiceStack;
 
 #endregion
 
@@ -19,15 +21,16 @@ namespace Darkages.Network.ServerFormats
             _client = client;
         }
 
+        [Flags]
         public enum ClassType : byte
         {
-            Guild = 7,
-            Monk = 5,
-            Peasant = 0,
-            Priest = 4,
-            Rogue = 2,
-            Warrior = 1,
-            Wizard = 3
+            Peasant = 0x00,
+            Warrior = 0x01,
+            Rogue   = 0x02,
+            Wizard  = 0x03,
+            Priest  = 0x04,
+            Monk    = 0x05,
+            Guild   = 0x80
         }
 
         public enum ListColor : byte
@@ -42,7 +45,8 @@ namespace Darkages.Network.ServerFormats
             Tan = 0x30,
             Teal = 0x01,
             White = 0x90,
-            Clan = 0x54
+            Clan = 0x54,
+            Me = 0x70
         }
 
         public enum StatusIcon : byte
@@ -59,7 +63,10 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketReader reader)
         {
+
         }
+
+        public static int n = 0x00;
 
         public override void Serialize(NetworkPacketWriter writer)
         {
@@ -71,6 +78,7 @@ namespace Darkages.Network.ServerFormats
                     color = ListColor.Orange;
                 if (!string.IsNullOrEmpty(user.Clan) && user.Clan == _client.Aisling.Clan)
                     color = ListColor.Clan;
+
 
                 return color;
             }
@@ -88,40 +96,22 @@ namespace Darkages.Network.ServerFormats
 
             foreach (var user in users)
             {
-                writer.Write((byte) user.Path);
-
                 var color = GetUserColor(user);
 
-                writer.Write((byte) (
-                    user.Serial == _client.Aisling.Serial
-                        ? ListColor.Green
-                        : color));
+                var path = ((byte)ClassType.Guild | n);
 
-
+                writer.Write((byte) path);
+                writer.Write((byte) color);
                 writer.Write((byte) user.ActiveStatus);
                 writer.Write((byte) user.Title > 0);
                 writer.Write((byte) user.Stage > 0);
                 writer.WriteStringA(user.Username);
 
-                /*
-                            var p = new ServerPacket(0x36);
-            p.WriteUInt16((ushort)userlist.Count());
-            p.WriteUInt16((ushort)userlist.Count());
-            foreach (Player player in userlist)
-            {
-                p.WriteByte((byte)player.Class);
-                p.WriteByte(255);
-                p.WriteByte((byte)player.Status);
-                p.WriteByte((byte)player.Title); // title
-                p.WriteByte(0x00); // master check
-                p.WriteByte(0x01); // emblem icon
-                p.WriteUInt16(0x00); // icon 1
-                p.WriteUInt16(0x00); // icon 2
-                p.WriteString8(player.Name);
+
+                Console.WriteLine(string.Format("0x{0:X2} = {1},", n, path));
             }
-            client.Enqueue(p);
-                 */
-            }
+
+            n++;
         }
     }
 }

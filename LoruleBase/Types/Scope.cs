@@ -11,6 +11,7 @@
         DefinedAislings = 6,
         VeryNearbyAislings = 7,
         NearbyGroupMembersExcludingSelf = 8,
-        NearbyGroupMembers = 9
+        NearbyGroupMembers = 9,
+        Clan = 10
     }
 }

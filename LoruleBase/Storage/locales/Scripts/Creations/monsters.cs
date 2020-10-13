@@ -14,10 +14,12 @@ namespace Darkages.Storage.locales.Scripts.Creations
     public class Monsters : MonsterCreateScript
     {
         private readonly MonsterTemplate _template;
+        private readonly Area _map;
 
-        public Monsters(MonsterTemplate template)
+        public Monsters(MonsterTemplate template, Area map)
         {
             _template = template;
+            _map = map;
         }
 
         public override Monster Create(MonsterTemplate template, Area map)

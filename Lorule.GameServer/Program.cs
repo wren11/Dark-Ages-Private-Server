@@ -24,6 +24,7 @@ namespace Lorule.GameServer
         void Log(string logMessage);
     }
 
+
     public static class Program
     {
         private static void Main()
@@ -76,6 +77,8 @@ namespace Lorule.GameServer
         public Server(ILogger<Server> logger, IServerContext context, IServerConstants configConstants,
             IOptions<LoruleOptions> loruleOptions)
         {
+
+
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             if (loruleOptions.Value.Location == null)

@@ -135,28 +135,33 @@ namespace Darkages.Network.Game.Components
             {
                 var payload = new List<Sprite>();
 
-                if (!user.LoggedIn || !user.Map.Ready)
+                if (user != null && (!user.LoggedIn || !user.Map.Ready))
                     return;
 
-                var objects = user.GetObjects(user.Map, selector => selector != null && selector.Serial != user.Serial,
-                    Get.All).ToArray();
-                var objectsInView = objects.Where(s => s.WithinRangeOf(user)).ToArray();
-                var objectsNotInView = objects.Where(s => !s.WithinRangeOf(user)).ToArray();
-                var objectsToRemove = objectsNotInView.Except(objectsInView).ToList();
-                var objectsToAdd = objectsInView.Except(objectsNotInView).ToArray();
+                if (user != null)
+                {
+                    var objects = user.GetObjects(user.Map,
+                        selector => selector != null && selector.Serial != user.Serial,
+                        Get.All).ToArray();
+                    var objectsInView = objects.Where(s => s != null && s.WithinRangeOf(user)).ToArray();
+                    var objectsNotInView = objects.Where(s => s != null && !s.WithinRangeOf(user)).ToArray();
+                    var objectsToRemove = objectsNotInView.Except(objectsInView).ToList();
+                    var objectsToAdd = objectsInView.Except(objectsNotInView).ToArray();
 
-                CheckObjectClients(user, objects);
+                    CheckObjectClients(user, objects);
 
-                RemoveObjects(
-                    user,
-                    objectsToRemove.ToArray());
+                    RemoveObjects(
+                        user,
+                        objectsToRemove.ToArray());
 
-                AddObjects(payload,
-                    user,
-                    objectsToAdd);
+                    AddObjects(payload,
+                        user,
+                        objectsToAdd);
 
-                if (payload.Count > 0)
-                    user.Show(Scope.Self, new ServerFormat07(payload.ToArray()));
+
+                    if (payload.Count > 0)
+                        user.Show(Scope.Self, new ServerFormat07(payload.ToArray()));
+                }
             });
         }
 

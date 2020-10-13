@@ -182,6 +182,8 @@ namespace Darkages
         public int World { get; set; } = 2;
         [JsonIgnore] public List<Aisling> PartyMembers => GroupParty?.PartyMembers;
 
+        public byte Lantern { get; set; }
+
         public static Aisling Create()
         {
             var result = new Aisling
@@ -785,5 +787,24 @@ namespace Darkages
         #region Reactor Stuff
 
         #endregion
+
+        public void EnterAbyss()
+        {
+            Abyss = true;
+            foreach (var obj in AislingsNearby())
+            {
+                HideFrom(obj);
+            }
+        }
+
+        public void LeaveAbyss()
+        {
+            Abyss = false;
+
+            foreach (var obj in AislingsNearby())
+            { 
+                ShowTo(obj);
+            }
+        }
     }
 }

@@ -32,6 +32,9 @@ namespace Darkages.Network.Object
 
         public void AddGameObject<T>(T obj) where T : Sprite
         {
+            if (obj.Abyss)
+                return;
+
             if (obj.XPos >= byte.MaxValue)
                 return;
 
@@ -121,6 +124,9 @@ namespace Darkages.Network.Object
 
         public bool Add(T obj)
         {
+            if (obj.Abyss)
+                return false;
+
             lock (Values)
             {
                 if (Values.Any(i => i.Serial == obj.Serial))
@@ -165,7 +171,9 @@ namespace Darkages.Network.Object
                 if (i >= 0 && Values.Count > i)
                 {
                     var subject = predicate(Values[i]);
-                    if (subject) return Values[i];
+
+                    if (subject)
+                        return Values[i].Abyss ? default : Values[i];
                 }
 
             return default;
@@ -178,7 +186,7 @@ namespace Darkages.Network.Object
                     if (i >= 0 && Values.Count > i)
                     {
                         var subject = predicate(Values[i]);
-                        if (subject) yield return Values[i];
+                        if (subject) yield return Values[i].Abyss ? default : Values[i];
                     }
         }
 

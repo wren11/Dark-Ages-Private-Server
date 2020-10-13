@@ -1,6 +1,5 @@
 ﻿#region
 
-using System;
 using Darkages.Network.Game;
 using Darkages.Types;
 
@@ -10,8 +9,6 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat33 : NetworkFormat
     {
-        public static int x = 0;
-
         public ServerFormat33()
         {
             Secured = true;
@@ -35,7 +32,7 @@ namespace Darkages.Network.ServerFormats
         {
             writer.Write((ushort) Aisling.XPos);
             writer.Write((ushort) Aisling.YPos);
-            writer.Write((byte) Aisling.Direction);
+            writer.Write(Aisling.Direction);
             writer.Write((uint) Aisling.Serial);
 
             var displayFlag = Aisling.Gender == Gender.Male ? 0x10 : 0x20;
@@ -89,7 +86,7 @@ namespace Darkages.Network.ServerFormats
                     writer.Write(Aisling.HairColor);
                     writer.Write(Aisling.BootColor);
                     writer.Write((ushort) Aisling.HeadAccessory1);
-                    writer.Write((byte) 0);
+                    writer.Write((byte) Aisling.Lantern);
                     writer.Write((ushort) Aisling.HeadAccessory2);
                     writer.Write((byte) 0);
                     writer.Write(Aisling.Resting);
@@ -119,6 +116,7 @@ namespace Darkages.Network.ServerFormats
                 writer.Write((byte) 0);
 
             writer.WriteStringA(Aisling.Username ?? string.Empty);
+
         }
     }
 }

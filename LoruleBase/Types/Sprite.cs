@@ -22,6 +22,8 @@ namespace Darkages.Types
 {
     public abstract class Sprite : ObjectManager, INotifyPropertyChanged, ISprite
     {
+        [JsonIgnore] public bool Abyss;
+
         [JsonIgnore] public byte LastDirection;
 
         [JsonIgnore] public Position LastPosition;
@@ -742,7 +744,8 @@ namespace Darkages.Types
 
         public void HideFrom(Aisling nearbyAisling)
         {
-            nearbyAisling.Show(Scope.Self, new ServerFormat0E(Serial));
+            if (nearbyAisling != null)
+                nearbyAisling.Show(Scope.Self, new ServerFormat0E(Serial));
         }
 
         public void Kill()
@@ -906,15 +909,30 @@ namespace Darkages.Types
                 else if (op == Scope.NearbyAislingsExludingSelf)
                 {
                     foreach (var gc in GetObjects<Aisling>(Map, that => that != null && WithinRangeOf(that)))
-                        if (gc.Serial != Serial)
+                        if (gc != null && gc.Serial != Serial)
                             if (gc.Client != null)
                                 if (format != null)
                                     gc.Client.Send(format);
                 }
                 else if (op == Scope.NearbyAislings)
                 {
-                    foreach (var gc in GetObjects<Aisling>(Map, that => WithinRangeOf(that))) gc.Client.Send(format);
+                    foreach (var gc in GetObjects<Aisling>(Map, that => WithinRangeOf(that)))
+                    {
+                        gc?.Client.Send(format);
+                    }
                 }
+                else if (op == Scope.Clan)
+                {
+                    foreach (var gc in GetObjects<Aisling>(null,
+                        that => that != null &&
+                                !that.Abyss &&
+                                !string.IsNullOrEmpty(that.Clan) &&
+                                string.Equals(that.Clan, Aisling(this).Clan, StringComparison.CurrentCultureIgnoreCase)))
+                    {
+                        gc?.Client.Send(format);
+                    }
+                }
+
                 else if (op == Scope.VeryNearbyAislings)
                 {
                     foreach (var gc in GetObjects<Aisling>(Map, that =>
@@ -924,7 +942,8 @@ namespace Darkages.Types
                 else if (op == Scope.AislingsOnSameMap)
                 {
                     foreach (var gc in GetObjects<Aisling>(Map, that => CurrentMapId == that.CurrentMapId))
-                        gc.Client.Send(format);
+                        if (gc != null)
+                            gc.Client.Send(format);
                 }
                 else if (op == Scope.GroupMembers)
                 {
@@ -932,7 +951,8 @@ namespace Darkages.Types
                         return;
 
                     foreach (var gc in GetObjects<Aisling>(Map, that => ((Aisling) this).GroupParty.Has(that)))
-                        gc.Client.Send(format);
+                        if (gc != null)
+                            gc.Client.Send(format);
                 }
                 else if (op == Scope.NearbyGroupMembersExcludingSelf)
                 {
@@ -941,7 +961,8 @@ namespace Darkages.Types
 
                     foreach (var gc in GetObjects<Aisling>(Map,
                         that => that.WithinRangeOf(this) && ((Aisling) this).GroupParty.Has(that)))
-                        gc.Client.Send(format);
+                        if (gc != null)
+                            gc.Client.Send(format);
                 }
                 else if (op == Scope.NearbyGroupMembers)
                 {
@@ -950,14 +971,17 @@ namespace Darkages.Types
 
                     foreach (var gc in GetObjects<Aisling>(Map,
                         that => that.WithinRangeOf(this) && ((Aisling) this).GroupParty.Has(that)))
-                        gc.Client.Send(format);
+                        if (gc != null)
+                            gc.Client.Send(format);
                 }
                 else if (op == Scope.DefinedAislings)
                 {
                     if (definer == null)
                         return;
 
-                    foreach (var gc in definer) (gc as Aisling)?.Client.Send(format);
+                    foreach (var gc in definer)
+                        if (gc != null)
+                            (gc as Aisling)?.Client.Send(format);
                 }
                 else if (op == Scope.All)
                 {

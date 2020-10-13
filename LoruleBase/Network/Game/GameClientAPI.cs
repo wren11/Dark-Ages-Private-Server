@@ -252,20 +252,9 @@ namespace Darkages.Network.Game
         }
 
         public void LearnEverything()
-        {
-            foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values)
-            {
-                if (skill == null) continue;
-                ForgetSkill(skill.Name);
-                Skill.GiveTo(Aisling, skill.Name);
-            }
-
-            foreach (var spell in ServerContext.GlobalSpellTemplateCache.Values)
-            {
-                if (spell == null) continue;
-                ForgetSpell(spell.Name);
-                Spell.GiveTo(Aisling, spell.Name);
-            }
+        { 
+            Aisling.SkillBook = new SkillBook();
+            Aisling.SpellBook = new SpellBook();
 
             foreach (var skill in ServerContext.GlobalSkillTemplateCache.Values.Where(skill => skill != null))
                 Skill.GiveTo(Aisling, skill.Name);

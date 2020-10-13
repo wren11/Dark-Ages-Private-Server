@@ -27,8 +27,9 @@ namespace Darkages.Network.ServerFormats
             writer.Write(Type);
 
             if (Type == 0x00)
-                writer.Write(
-                    MetafileManager.GetMetaFile(Name));
+                if (Name != null)
+                    writer.Write(
+                        MetafileManager.GetMetaFile(Name));
 
             if (Type == 0x01)
                 writer.Write(

@@ -1246,30 +1246,33 @@ namespace Darkages.Network.Game
             var myplayer = Aisling;
             foreach (var otherplayer in nearbyAislings)
             {
-                if (myplayer.Serial == otherplayer.Serial)
-                    continue;
-
-                if (!myplayer.Dead && !otherplayer.Dead)
+                if (otherplayer != null)
                 {
-                    if (myplayer.Invisible)
-                        otherplayer.ShowTo(myplayer);
-                    else
-                        myplayer.ShowTo(otherplayer);
+                    if (myplayer.Serial == otherplayer.Serial)
+                        continue;
 
-                    if (otherplayer.Invisible)
-                        myplayer.ShowTo(otherplayer);
-                    else
-                        otherplayer.ShowTo(myplayer);
-                }
-                else
-                {
-                    if (myplayer.Dead)
-                        if (otherplayer.CanSeeGhosts())
+                    if (!myplayer.Dead && !otherplayer.Dead)
+                    {
+                        if (myplayer.Invisible)
+                            otherplayer.ShowTo(myplayer);
+                        else
                             myplayer.ShowTo(otherplayer);
 
-                    if (otherplayer.Dead)
-                        if (myplayer.CanSeeGhosts())
+                        if (otherplayer.Invisible)
+                            myplayer.ShowTo(otherplayer);
+                        else
                             otherplayer.ShowTo(myplayer);
+                    }
+                    else
+                    {
+                        if (myplayer.Dead)
+                            if (otherplayer.CanSeeGhosts())
+                                myplayer.ShowTo(otherplayer);
+
+                        if (otherplayer.Dead)
+                            if (myplayer.CanSeeGhosts())
+                                otherplayer.ShowTo(myplayer);
+                    }
                 }
             }
 

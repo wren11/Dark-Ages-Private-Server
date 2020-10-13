@@ -31,7 +31,7 @@ namespace Darkages.Network.ServerFormats
         public override void Serialize(NetworkPacketWriter packet)
         {
             packet.Write(Aisling.PlayerNation.NationId);
-            packet.WriteStringA(Aisling.ClanRank);
+            packet.WriteStringA(Aisling.Clan);
 
             packet.Write((byte) 0x07);
             packet.Write((byte) 0x0);

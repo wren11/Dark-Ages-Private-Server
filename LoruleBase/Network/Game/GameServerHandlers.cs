@@ -312,7 +312,7 @@ namespace Darkages.Network.Game
 
                 if (client.Aisling.AreaId == ServerContext.Config.TransitionZone)
                 {
-                    client.Aisling.PortalSession = new PortalSession {IsMapOpen = false};
+                    client.Aisling.PortalSession = new PortalSession { IsMapOpen = false };
                     client.Aisling.PortalSession.TransitionToMap(client);
                     return;
                 }
@@ -755,23 +755,27 @@ namespace Darkages.Network.Game
 
             client.LastWhisperMessageSent = DateTime.UtcNow;
 
-            var user = Clients.FirstOrDefault(i =>
-                i?.Aisling != null && i.Aisling.LoggedIn && i.Aisling.Username.ToLower() ==
-                format.Name.ToLower(CultureInfo.CurrentCulture));
+            if (format.Name == "!!" && !string.IsNullOrEmpty(client.Aisling.Clan))
+            {
+                client.Aisling.Show(Scope.Clan, new ServerFormat0A(0x02, "{=o" + $"{client.Aisling.Username}> " + "{=a" + format.Message));
+            }
+            else
+            {
+                client.SystemMessage("You are not in a guild.");
+                return;
+            }
+
+            var user = Clients.FirstOrDefault(i => i?.Aisling != null && i.Aisling.LoggedIn && i.Aisling.Username.ToLower() ==
+                                                   format.Name.ToLower(CultureInfo.CurrentCulture));
 
             if (user == null)
-                client.SendMessage
-                    (0x02, string.Format(CultureInfo.CurrentCulture, "{0} is nowhere to be found.", format.Name));
+                client.SendMessage(0x02, string.Format(CultureInfo.CurrentCulture, "{0} is nowhere to be found.", format.Name));
 
             if (user == null)
                 return;
 
-            user.SendMessage
-            (0x00,
-                string.Format(CultureInfo.CurrentCulture, "{0}\" {1}", client.Aisling.Username, format.Message));
-            client.SendMessage
-            (0x00,
-                string.Format(CultureInfo.CurrentCulture, "{0}> {1}", user.Aisling.Username, format.Message));
+            user.SendMessage(0x00, string.Format(CultureInfo.CurrentCulture, "{0}\" {1}", client.Aisling.Username, format.Message));
+            client.SendMessage(0x00, string.Format(CultureInfo.CurrentCulture, "{0}> {1}", user.Aisling.Username, format.Message));
         }
 
         protected override void Format1BHandler(GameClient client, ClientFormat1B format)
@@ -1739,18 +1743,12 @@ namespace Darkages.Network.Game
             if (client.Aisling == null || !client.Aisling.LoggedIn)
                 return;
 
-            var worldMap = ServerContext.GlobalWorldMapTemplateCache[client.Aisling.World];
+            var worldMap = ServerContext.GlobalWorldMapTemplateCache[client.Aisling.World]; 
+            
+            client.PendingNode = worldMap?.Portals.Find(i => i.Destination.AreaID == format.Index);
+            client.Aisling.LeaveAbyss();
 
-            if (client.PendingNode == null)
-            {
-                client.PendingNode = worldMap?.Portals.Find(i => i.Destination.AreaID == format.Index);
-                TraverseWorldMap(client, format);
-            }
-            else
-            {
-                client.PendingNode = worldMap?.Portals.Find(i => i.Destination.AreaID == format.Index);
-                TraverseWorldMap(client, format);
-            }
+            TraverseWorldMap(client, format);
         }
 
         public string ApplyFilter(string message)
@@ -1776,12 +1774,16 @@ namespace Darkages.Network.Game
                 if (selectedPortalNode == null)
                     return;
 
-                client.LeaveArea(true, true);
+                client.Aisling.LeaveAbyss();
+                
+                client.Refresh(true);
+
+                client.Aisling.CurrentMapId = selectedPortalNode.Destination.AreaID;
+                client.Aisling.X = selectedPortalNode.Destination.Location.X;
+                client.Aisling.Y = selectedPortalNode.Destination.Location.Y;
 
                 client.Send(new ServerFormat67());
                 client.Send(new ServerFormat15(client.Aisling.Map));
-                client.Send(new ServerFormat15(client.Aisling.Map));
-                client.Send(new ServerFormat04(client.Aisling));
                 client.Send(new ServerFormat04(client.Aisling));
                 client.Send(new ServerFormat33(client, client.Aisling));
                 client.Send(new byte[] {0x1F, 0x00, 0x00});
@@ -1791,7 +1793,8 @@ namespace Darkages.Network.Game
                 client.Aisling.X = selectedPortalNode.Destination.Location.X;
                 client.Aisling.Y = selectedPortalNode.Destination.Location.Y;
 
-                client.EnterArea();
+
+                client.PendingNode = null;
             }
         }
 
@@ -2371,8 +2374,9 @@ namespace Darkages.Network.Game
                 lock (ServerContext.SyncLock)
                 {
                     foreach (var _ in warps.Activations.Where(o =>
-                        o.Location.DistanceFrom(client.Aisling.Position) <= warps.WarpRadius))
+                        o.Location.X == client.Aisling.XPos && o.Location.Y == client.Aisling.YPos))
                     {
+
                         if (warps.WarpType == WarpType.Map)
                         {
                             client.WarpTo(warps);
@@ -2390,10 +2394,11 @@ namespace Darkages.Network.Game
                             FieldNumber = warps.To.PortalKey
                         };
 
-                        if (client.Aisling.World != warps.To.PortalKey) client.Aisling.World = warps.To.PortalKey;
+                        if (client.Aisling.World != warps.To.PortalKey)
+                            client.Aisling.World = warps.To.PortalKey;
 
                         client.Aisling.PortalSession.TransitionToMap(client);
-                        break;
+                        //break;
                     }
                 }
         }
@@ -2422,7 +2427,8 @@ namespace Darkages.Network.Game
             client.Aisling.Developer = true;
             client.Aisling.GameMaster = true;
 
-            if (client.Aisling.Developer) client.LearnEverything();
+            if (client.Aisling.Developer)
+                client.LearnEverything();
 
             #endregion
         }
