@@ -3,6 +3,9 @@
 		"Location": "..\\..\\..\\..\\LORULE_DATA"
 	},
 	"ServerConfig": {
+		"MonsterCreationScript": "Create Monster",
+		"BaseDamageScript": "Base Damage",
+		"MonsterRewardScript": "Monster Exp 1x",
 		"ElementTableScript": "Elements 1.0",
 		"ACFormulaScript": "AC Formula",
 		"BaseDamageMod": 60,

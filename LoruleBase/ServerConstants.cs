@@ -129,6 +129,9 @@ namespace Darkages
         int BaseDamageMod { get; set; }
         string ACFormulaScript { get; set; }
         string ElementTableScript { get; set; }
+        string MonsterRewardScript { get; set; }
+        string BaseDamageScript { get; set; }
+        string MonsterCreationScript { get; set; }
     }
 
     public class GameSetting
@@ -388,5 +391,14 @@ namespace Darkages
 
         //Script to use for Elemental Table, default is "Elements 1.0"
         public string ElementTableScript { get; set; }
+
+        //Script to use for all Monster Exp Rewards, Experience ect. default is "Monster Exp 1x"
+        public string MonsterRewardScript { get; set; }
+
+        //Script to use for all Base damage monster calculations. Default is "Base Damage"
+        public string BaseDamageScript { get; set; }
+
+        //Script to use for all Monster Creations. Default is "Create Monster"
+        public string MonsterCreationScript { get; set; }
     }
 }

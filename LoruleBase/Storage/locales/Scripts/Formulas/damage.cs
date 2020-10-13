@@ -2,7 +2,7 @@
 using Darkages.Scripting;
 using Darkages.Types;
 
-namespace Darkages.Storage.locales.formulas
+namespace Darkages.Storage.locales.Scripts.formulas
 {
     [Script("Base Damage", "Wren", "Formula used to calculate monsters Base Damage.")]
     public class Damage : DamageFormulaScript

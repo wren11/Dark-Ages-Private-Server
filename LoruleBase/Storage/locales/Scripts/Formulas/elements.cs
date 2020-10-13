@@ -1,7 +1,7 @@
 ﻿using Darkages.Scripting;
 using Darkages.Types;
 
-namespace Darkages.Storage.locales.formulas
+namespace Darkages.Storage.locales.Scripts.formulas
 {
     [Script("Elements 1.0", "wren", "Default Elemental Table Script used to manage damage mods.")]
     public class Elements : ElementFormulaScript

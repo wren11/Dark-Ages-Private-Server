@@ -2,7 +2,7 @@
 using Darkages.Scripting;
 using Darkages.Types;
 
-namespace Darkages.Storage.locales.formulas
+namespace Darkages.Storage.locales.Scripts.formulas
 {
     [Script("AC Formula", "Wren", "Base Formula for all AC damage calculations.")]
     public class Ac : FormulaScript
