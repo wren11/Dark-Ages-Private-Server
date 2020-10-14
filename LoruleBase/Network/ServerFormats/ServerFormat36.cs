@@ -24,13 +24,13 @@ namespace Darkages.Network.ServerFormats
         [Flags]
         public enum ClassType : byte
         {
-            Peasant = 0x00,
-            Warrior = 0x01,
-            Rogue   = 0x02,
-            Wizard  = 0x03,
-            Priest  = 0x04,
-            Monk    = 0x05,
-            Guild   = 0x80
+            Peasant = 0,
+            Warrior = 1,
+            Rogue   = 2,
+            Wizard  = 3,
+            Priest  = 4,
+            Monk    = 5,
+            Guild   = 0x88
         }
 
         public enum ListColor : byte
@@ -73,13 +73,10 @@ namespace Darkages.Network.ServerFormats
             ListColor GetUserColor(Aisling user)
             {
                 var color = ListColor.White;
-                
                 if (Math.Abs(_client.Aisling.ExpLevel - user.ExpLevel) < 8)
                     color = ListColor.Orange;
                 if (!string.IsNullOrEmpty(user.Clan) && user.Clan == _client.Aisling.Clan)
                     color = ListColor.Clan;
-
-
                 return color;
             }
 
@@ -97,8 +94,7 @@ namespace Darkages.Network.ServerFormats
             foreach (var user in users)
             {
                 var color = GetUserColor(user);
-
-                var path = ((byte)ClassType.Guild | n);
+                var path  = ((byte)ClassType.Guild | (byte)user.Path);
 
                 writer.Write((byte) path);
                 writer.Write((byte) color);
@@ -106,12 +102,7 @@ namespace Darkages.Network.ServerFormats
                 writer.Write((byte) user.Title > 0);
                 writer.Write((byte) user.Stage > 0);
                 writer.WriteStringA(user.Username);
-
-
-                Console.WriteLine(string.Format("0x{0:X2} = {1},", n, path));
             }
-
-            n++;
         }
     }
 }

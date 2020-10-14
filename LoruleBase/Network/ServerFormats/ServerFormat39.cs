@@ -63,7 +63,7 @@ namespace Darkages.Network.ServerFormats
 
             packet.Write((byte) Aisling.PartyStatus);
             packet.Write((byte) 0x00);
-            packet.Write((byte) Aisling.Path);
+            packet.Write((byte) (0x88 | (byte)Aisling.Path));
             packet.Write(Aisling.PlayerNation.NationId);
             packet.Write((byte) 0x01);
             packet.WriteStringA(Convert.ToString(Aisling.Stage

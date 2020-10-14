@@ -18,7 +18,7 @@ namespace Darkages.Systems.CLI
         public static void CompileCommands()
         {
             Parser.AddCommand(Command
-                .Create("Create Item")
+                .Create("Create Item") 
                 .AddAlias("give")
                 .SetAction(OnItemCreate)
                 .AddArgument(Argument.Create("item"))

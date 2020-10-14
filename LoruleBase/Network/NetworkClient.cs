@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Globalization;
 using System.Net.Sockets;
 using System.Threading;
 using Darkages.IO;
@@ -56,6 +57,11 @@ namespace Darkages.Network
                 var packet = Writer.ToPacket();
                 if (packet == null)
                     return;
+
+                if (format is ServerFormat36)
+                {
+
+                }
 
                 if (format.Secured)
                     Encryption.Transform(packet);
@@ -157,6 +163,28 @@ namespace Darkages.Network
                 if (Socket.Connected)
                     Socket.Send(array, SocketFlags.None);
             }
+        }
+
+        public static byte[] ConvertHexStringToByteArray(string hexString)
+        {
+            if (hexString.Length % 2 != 0)
+            {
+                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "The binary key cannot have an odd number of digits: {0}", hexString));
+            }
+
+            byte[] data = new byte[hexString.Length / 2];
+            for (int index = 0; index < data.Length; index++)
+            {
+                string byteValue = hexString.Substring(index * 2, 2);
+                data[index] = byte.Parse(byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            }
+
+            return data;
+        }
+
+        public void Send(string rawData)
+        {
+            Send(ConvertHexStringToByteArray(rawData));
         }
 
         public void Send(byte[] data)
