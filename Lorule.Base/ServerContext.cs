@@ -189,26 +189,6 @@ namespace Darkages
             Running = false;
         }
 
-        public class GMSummon
-        {
-            public enum SummonType
-            {
-                Player,
-                Monster,
-                Mundane
-            }
-
-            public SummonType Summon { get; set; }
-
-            public string Name { get; set; }
-
-            public ushort X { get; set; }
-
-            public ushort Y { get; set; }
-
-            public string Map { get; set; }
-        }
-
         public static void Startup()
         {
             Logger(string.Format($"{Config.SERVER_TITLE} Loading..."));
