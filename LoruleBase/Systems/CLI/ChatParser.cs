@@ -81,8 +81,8 @@ namespace Darkages.Systems.CLI
                             for (var i = 0; i < stacks; i++)
                             {
                                 {
-                                    var item = Item.Create(client.Aisling, template, false);
-                                    item.Stacks = (ushort) template.MaxStack;
+                                    var item = Item.Create(client.Aisling, template);
+                                    item.Stacks = template.MaxStack;
                                     item.GiveTo(client.Aisling, false);
                                 }
                             }
@@ -90,7 +90,7 @@ namespace Darkages.Systems.CLI
                             if (remaining > 0)
                             {
                                 {
-                                    var item = Item.Create(client.Aisling, template, false);
+                                    var item = Item.Create(client.Aisling, template);
                                     item.Stacks = (ushort) remaining;
                                     item.GiveTo(client.Aisling, false);
                                 }
