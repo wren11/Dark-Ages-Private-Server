@@ -32,9 +32,6 @@ namespace Darkages.Network.Object
 
         public void AddGameObject<T>(T obj) where T : Sprite
         {
-            if (obj.Abyss)
-                return;
-
             if (obj.XPos >= byte.MaxValue)
                 return;
 
@@ -124,9 +121,6 @@ namespace Darkages.Network.Object
 
         public bool Add(T obj)
         {
-            if (obj.Abyss)
-                return false;
-
             lock (Values)
             {
                 if (Values.Any(i => i.Serial == obj.Serial))

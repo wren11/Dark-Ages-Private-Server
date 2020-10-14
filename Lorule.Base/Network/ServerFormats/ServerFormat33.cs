@@ -30,6 +30,9 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
+            if (Aisling.Abyss)
+                return;
+
             writer.Write((ushort) Aisling.XPos);
             writer.Write((ushort) Aisling.YPos);
             writer.Write(Aisling.Direction);

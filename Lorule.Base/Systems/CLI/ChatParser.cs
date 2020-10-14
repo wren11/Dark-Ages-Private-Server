@@ -31,6 +31,63 @@ namespace Darkages.Systems.CLI
                 .AddArgument(Argument.Create("map"))
                 .AddArgument(Argument.Create("x"))
                 .AddArgument(Argument.Create("y")));
+
+            Parser.AddCommand(Command
+                .Create("Summon Player")
+                .AddAlias("sp")
+                .SetAction(OnSummonPlayer)
+                .AddArgument(Argument.Create("who")));
+
+            Parser.AddCommand(Command
+                .Create("Port to Player")
+                .AddAlias("pt")
+                .SetAction(OnPortToPlayer)
+                .AddArgument(Argument.Create("who")));
+        }
+
+        /// <summary>
+        /// InGame Usage : /sp "Wren"
+        /// </summary>
+        private static void OnSummonPlayer(Argument[] args, object arg)
+        {
+            var client = (GameClient) arg;
+
+            if (client != null)
+            {
+                var who = args.FromName("who").Replace("\"", "");
+
+                if (string.IsNullOrEmpty(who)) 
+                    return;
+
+                var player = client.Server.Clients.FirstOrDefault(i =>
+                    i?.Aisling != null && i.Aisling.Username.ToLower() == who.ToLower());
+
+                //summon player to my map and position.
+                player?.TransitionToMap(client.Aisling.Map, client.Aisling.Position);
+            }
+        }
+
+        /// <summary>
+        /// InGame Usage : /pt "Wren"
+        /// </summary>
+        private static void OnPortToPlayer(Argument[] args, object arg)
+        {
+            var client = (GameClient)arg;
+
+            if (client != null)
+            {
+                var who = args.FromName("who").Replace("\"", "");
+
+                if (string.IsNullOrEmpty(who)) 
+                    return;
+
+                var player = client.Server.Clients.FirstOrDefault(i =>
+                    i?.Aisling != null && i.Aisling.Username.ToLower() == who.ToLower());
+
+                //summon myself to players area and position.
+                if (player != null)
+                    client.TransitionToMap(player.Aisling.Map, player.Aisling.Position);
+            }
         }
 
         /// <summary>
