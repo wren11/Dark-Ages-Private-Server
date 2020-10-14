@@ -16,6 +16,7 @@ using Darkages.Network.ServerFormats;
 using Darkages.Scripting;
 using Darkages.Storage;
 using Darkages.Storage.locales.Scripts.Mundanes;
+using Darkages.Systems.CLI;
 using Darkages.Types;
 using MenuInterpreter;
 using MenuInterpreter.Parser;
@@ -556,6 +557,22 @@ namespace Darkages.Network.Game
 
         protected override void Format0EHandler(GameClient client, ClientFormat0E format)
         {
+            bool ParseCommand()
+            {
+                if (client.Aisling.GameMaster || client.Aisling.Developer)
+                {
+                    if (format.Text.StartsWith("/"))
+                    {
+                        ChatParser.ParseChatMessage(client, format.Text);
+                        return true;
+                    }
+
+                    client.SystemMessage("Invalid command.");
+                }
+
+                return false;
+            }
+
             #region Sanity Checks
 
             if (client?.Aisling == null)
@@ -574,6 +591,9 @@ namespace Darkages.Network.Game
             };
 
             IEnumerable<Aisling> audience;
+
+            if (ParseCommand())
+                return;
 
             switch (format.Type)
             {

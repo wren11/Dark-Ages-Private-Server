@@ -19,6 +19,8 @@ namespace Darkages
         [JsonIgnore] public TileGrid[,] ObjectGrid { get; set; }
         [JsonIgnore] public TileContent[,] Tile { get; set; }
 
+        public string FilePath { get; set; }
+
         public byte[] GetRowData(int row)
         {
             var buffer = new byte[Cols * 6];
@@ -56,8 +58,24 @@ namespace Darkages
             return isWall;
         }
 
-        public void OnLoaded()
+        public bool OnLoaded()
         {
+            void DeleteInvalidMaps()
+            {
+                Console.WriteLine("Unable to load Map : {0}. Deleting...", FilePath);
+
+                if (File.Exists(FilePath))
+                {
+                    File.Delete(FilePath);
+                    Console.WriteLine("Unable to load Map : {0}. Deleted!.", FilePath);
+                }
+                else
+                {
+                    Console.WriteLine("Unable to load Map : {0}. File not found.", FilePath);
+                }
+            }
+
+            var delete = false;
             lock (ServerContext.SyncLock)
             {
                 Tile = new TileContent[Cols, Rows];
@@ -82,10 +100,13 @@ namespace Darkages
                                 Tile[x, y] = TileContent.None;
                         }
                     }
+
+                    Ready = true;
                 }
                 catch
                 {
                     //Ignore
+                    delete = true;
                 }
                 finally
                 {
@@ -93,8 +114,13 @@ namespace Darkages
                     stream.Close();
                 }
 
-                Ready = true;
+                if (!delete)
+                    return true;
+
+                DeleteInvalidMaps();
             }
+
+            return Ready;
         }
 
         public bool ParseMapWalls(short lWall, short rWall)

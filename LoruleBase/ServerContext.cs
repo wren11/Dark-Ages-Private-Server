@@ -1,17 +1,18 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using Darkages.Network.Game;
 using Darkages.Network.Login;
 using Darkages.Storage;
 using Darkages.Types;
 using Darkages.Types.Templates;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using Pyratron.Frameworks.Commands.Parser;
 
 #endregion
 
@@ -19,6 +20,8 @@ namespace Darkages
 {
     public class ServerContext : IServerContext
     {
+        public static CommandParser Parser { get; set; }
+
         public static bool Running;
 
         public static bool Paused;
@@ -184,6 +187,26 @@ namespace Darkages
             Game = null;
             Lobby = null;
             Running = false;
+        }
+
+        public class GMSummon
+        {
+            public enum SummonType
+            {
+                Player,
+                Monster,
+                Mundane
+            }
+
+            public SummonType Summon { get; set; }
+
+            public string Name { get; set; }
+
+            public ushort X { get; set; }
+
+            public ushort Y { get; set; }
+
+            public string Map { get; set; }
         }
 
         public static void Startup()

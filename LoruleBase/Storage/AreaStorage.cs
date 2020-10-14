@@ -24,15 +24,16 @@ namespace Darkages.Storage
 
         public int Count => Directory.GetFiles(StoragePath, "*.json", SearchOption.TopDirectoryOnly).Length;
 
-        public static void LoadMap(Area mapObj, string mapFile, bool save = false)
+        public static bool LoadMap(Area mapObj, string mapFile, bool save = false)
         {
+            mapObj.FilePath = mapFile;
             mapObj.Data = File.ReadAllBytes(mapFile);
             mapObj.Hash = Crc16Provider.ComputeChecksum(mapObj.Data);
             {
                 if (save) StorageManager.AreaBucket.Save(mapObj);
             }
 
-            mapObj.OnLoaded();
+            return mapObj.OnLoaded();
         }
 
         public void CacheFromStorage()
@@ -42,6 +43,7 @@ namespace Darkages.Storage
                 return;
 
             var area_names = Directory.GetFiles(area_dir, "*.json", SearchOption.TopDirectoryOnly);
+
             foreach (var area in area_names)
             {
                 var mapObj = StorageManager.AreaBucket.Load(Path.GetFileNameWithoutExtension(area));
@@ -54,7 +56,11 @@ namespace Darkages.Storage
 
                 if (mapFile != null && File.Exists(mapFile))
                 {
-                    LoadMap(mapObj, mapFile, true);
+                    if (!LoadMap(mapObj, mapFile, true))
+                    {
+                        if (File.Exists(area))
+                            File.Delete(area);
+                    }
                     ServerContext.GlobalMapCache[mapObj.ID] = mapObj;
                 }
             }
