@@ -24,8 +24,8 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0-dev-00880" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Lorule.Base\Lorule.Base.csproj" />
     <ProjectReference Include="..\Lorule.Static\Lorule.Static.csproj" />
-    <ProjectReference Include="..\LoruleBase\Lorule.Base.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="ServerConfig.Local.json">
