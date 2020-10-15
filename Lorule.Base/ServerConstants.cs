@@ -132,6 +132,8 @@ namespace Darkages
         string MonsterRewardScript { get; set; }
         string BaseDamageScript { get; set; }
         string MonsterCreationScript { get; set; }
+        bool LimitWalkingSpeed { get; set; }
+        double WalkingSpeedLimitFactor { get; set; }
     }
 
     public class GameSetting
@@ -400,5 +402,11 @@ namespace Darkages
 
         //Script to use for all Monster Creations. Default is "Create Monster"
         public string MonsterCreationScript { get; set; }
+
+        //Used to limit walking speed limits. enabling this will use the next property WalkingSpeedLimitFactor.
+        public bool LimitWalkingSpeed { get; set; }
+
+        //Used to limit walking speed limits. default is 275;
+        public double WalkingSpeedLimitFactor { get; set; }
     }
 }

@@ -67,6 +67,11 @@ namespace Darkages.Storage.locales.Scripts.Creations
             //validate values in template.
             TemplateCreationSanityChecks();
 
+            if (template.Name == "test")
+            {
+
+            }
+
             var obj = new Monster
             {
                 Template = template,

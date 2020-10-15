@@ -8,10 +8,14 @@ using Darkages.Types.Templates;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
+using Darkages.Systems.CLI;
 using Pyratron.Frameworks.Commands.Parser;
 
 #endregion
@@ -95,67 +99,67 @@ namespace Darkages
         public static void LoadNationsTemplates()
         {
             StorageManager.NationBucket.CacheFromStorage();
-            Logger($"Nation Templates Loaded: {GlobalNationTemplateCache.Count}");
+            Console.WriteLine($"Nation Templates Loaded: {GlobalNationTemplateCache.Count}");
         }
 
         public static void LoadSkillTemplates()
         {
             StorageManager.SkillBucket.CacheFromStorage();
-            Logger($"Skill Templates Loaded: {GlobalSkillTemplateCache.Count}");
+            Console.WriteLine($"Skill Templates Loaded: {GlobalSkillTemplateCache.Count}");
         }
 
         public static void LoadSpellTemplates()
         {
             StorageManager.SpellBucket.CacheFromStorage();
-            Logger($"Spell Templates Loaded: {GlobalSpellTemplateCache.Count}");
+            Console.WriteLine($"Spell Templates Loaded: {GlobalSpellTemplateCache.Count}");
         }
 
         public static void LoadItemTemplates()
         {
             StorageManager.ItemBucket.CacheFromStorage();
-            Logger($"Item Templates Loaded: {GlobalItemTemplateCache.Count}");
+            Console.WriteLine($"Item Templates Loaded: {GlobalItemTemplateCache.Count}");
         }
 
         public static void LoadMonsterTemplates()
         {
             StorageManager.MonsterBucket.CacheFromStorage();
-            Logger($"Monster Templates Loaded: {GlobalMonsterTemplateCache.Count}");
+            Console.WriteLine($"Monster Templates Loaded: {GlobalMonsterTemplateCache.Count}");
         }
 
         public static void LoadMundaneTemplates()
         {
             StorageManager.MundaneBucket.CacheFromStorage();
-            Logger($"Mundane Templates Loaded: {GlobalMundaneTemplateCache.Count}");
+            Console.WriteLine($"Mundane Templates Loaded: {GlobalMundaneTemplateCache.Count}");
         }
 
         public static void LoadWarpTemplates()
         {
             StorageManager.WarpBucket.CacheFromStorage();
-            Logger($"Warp Templates Loaded: {GlobalWarpTemplateCache.Count}");
+            Console.WriteLine($"Warp Templates Loaded: {GlobalWarpTemplateCache.Count}");
         }
 
         public static void LoadServerTemplates()
         {
             StorageManager.ServerArgBucket.CacheFromStorage();
-            Logger($"Server Templates Loaded: {GlobalServerVarCache.Count}");
+            Console.WriteLine($"Server Templates Loaded: {GlobalServerVarCache.Count}");
         }
 
         public static void LoadWorldMapTemplates()
         {
             StorageManager.WorldMapBucket.CacheFromStorage();
-            Logger($"World Map Templates Loaded: {GlobalWorldMapTemplateCache.Count}");
+            Console.WriteLine($"World Map Templates Loaded: {GlobalWorldMapTemplateCache.Count}");
         }
 
         public static void LoadPopupTemplates()
         {
             StorageManager.PopupBucket.CacheFromStorage();
-            Logger($"Popup Templates Loaded: {GlobalPopupCache.Count}");
+            Console.WriteLine($"Popup Templates Loaded: {GlobalPopupCache.Count}");
         }
 
         public static void LoadMaps()
         {
             StorageManager.AreaBucket.CacheFromStorage();
-            Logger($"Map Templates Loaded: {GlobalMapCache.Count}");
+            Console.WriteLine($"Map Templates Loaded: {GlobalMapCache.Count}");
         }
 
         private static void StartServers()
@@ -167,11 +171,12 @@ namespace Darkages
             {
                 Game = new GameServer(Config.ConnectionCapacity);
                 Game.Start(Config.SERVER_PORT);
-                Logger("Login server is online.");
-
                 Lobby = new LoginServer(Config.ConnectionCapacity);
                 Lobby.Start(Config.LOGIN_PORT);
-                Logger("Game server is online.");
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Login server is online.");
+                Console.WriteLine("Game server is online.");
             }
             catch (SocketException e)
             {
@@ -191,8 +196,11 @@ namespace Darkages
 
         public static void Startup()
         {
-            Logger(string.Format($"{Config.SERVER_TITLE} Loading..."));
-
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine($"{Config.SERVER_TITLE} - Powered By Lorule. https://github.com/wren11/DarkAges-Lorule-Server");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("");
+            
             try
             {
                 LoadAndCacheStorage();
@@ -200,7 +208,7 @@ namespace Darkages
             }
             catch (Exception)
             {
-                Logger("Startup Error.");
+                Console.WriteLine("Startup Error.");
             }
         }
 
@@ -302,15 +310,15 @@ namespace Darkages
 
         private static void LoadExtensions()
         {
-            Logger("Loading Extensions...");
+            Console.WriteLine("Loading Extensions...");
 
             CacheBuffs();
-            Logger($"Building Buff Cache: {GlobalBuffCache.Count} Loaded.");
+            Console.WriteLine($"Building Buff Cache: {GlobalBuffCache.Count} Loaded.");
 
             CacheDebuffs();
-            Logger($"Building Debuff Cache: {GlobalDeBuffCache.Count} Loaded.");
+            Console.WriteLine($"Building Debuff Cache: {GlobalDeBuffCache.Count} Loaded.");
 
-            Logger("Loading Extensions... Completed.");
+            Console.WriteLine("Loading Extensions... Completed.");
         }
 
         private static void CacheDebuffs()
@@ -382,7 +390,31 @@ namespace Darkages
             Logger = log ?? throw new ArgumentNullException(nameof(log));
             Config = config ?? throw new ArgumentNullException(nameof(config));
 
+            Commander.CompileCommands();
+
+
+
             Startup();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+
+            Console.WriteLine(Environment.NewLine);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("GM Commands");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("-------------------------------------------------------------------");
+
+            Console.ForegroundColor = ConsoleColor.Gray;
+            foreach (var command in Parser.Commands)
+            {
+                Console.WriteLine(command.ShowHelp());
+            }
+
+            CommandHandler();
+        }
+
+        private static void CommandHandler()
+        {
+            //TODO.
         }
     }
 }

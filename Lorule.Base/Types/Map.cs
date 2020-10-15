@@ -1,4 +1,5 @@
-﻿using Darkages.Network.Object;
+﻿using System.Collections.Generic;
+using Darkages.Network.Object;
 using Darkages.Types;
 
 namespace Darkages
@@ -12,5 +13,11 @@ namespace Darkages
         public int Music { get; set; }
         public string Name { get; set; }
         public ushort Rows { get; set; }
+        public List<Position> Blocks { get; set; }
+
+        public Map()
+        {
+            Blocks = new List<Position>();
+        }
     }
 }

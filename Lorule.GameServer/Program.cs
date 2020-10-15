@@ -33,7 +33,6 @@ namespace Lorule.GameServer
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.File(new CompactJsonFormatter(), "lorule_logs.txt")
-                .WriteTo.Console()
                 .CreateLogger();
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

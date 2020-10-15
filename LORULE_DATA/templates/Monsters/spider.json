@@ -27,7 +27,7 @@
   "Dex":7,
   "Ac": 67,
   "AreaID": 3029,
-  "MovementSpeed": 100,
+  "MovementSpeed": 1000,
   "CastSpeed": 2500,
   "SpawnMax": 1000,
   "SpawnRate": 0,

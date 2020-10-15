@@ -1,8 +1,10 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Darkages.Storage;
 using Darkages.Types;
 using Newtonsoft.Json;
 
@@ -99,6 +101,11 @@ namespace Darkages
                             else
                                 Tile[x, y] = TileContent.None;
                         }
+                    }
+
+                    foreach (var block in Blocks)
+                    {
+                        Tile[block.X, block.Y] = TileContent.Wall;
                     }
 
                     Ready = true;
@@ -210,6 +217,13 @@ namespace Darkages
                     obj.LastUpdated = DateTime.UtcNow;
                 }
             }
+        }
+
+        public void AddBlock(Position position)
+        {
+            Blocks?.Add(position);
+            
+            StorageManager.AreaBucket.Save(this);
         }
     }
 }

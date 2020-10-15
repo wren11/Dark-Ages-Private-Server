@@ -1,10 +1,28 @@
 {
-  "AreaObjectCache": {},
-  "Music": 20,
-  "Rows": 100,
+  "FilePath": "..\\..\\..\\..\\LORULE_DATA\\maps\\lod1001.map",
   "Cols": 100,
-  "Number": 1001,
+  "ContentName": null,
+  "Flags": 106240,
   "ID": 1001,
+  "Music": 20,
   "Name": "Mileth",
-  "Flags": 106240
+  "Rows": 100,
+  "Blocks": [
+    {
+      "X": 29,
+      "Y": 47
+    },
+    {
+      "X": 28,
+      "Y": 47
+    },
+    {
+      "X": 27,
+      "Y": 47
+    },
+    {
+      "X": 26,
+      "Y": 47
+    }
+  ]
 }

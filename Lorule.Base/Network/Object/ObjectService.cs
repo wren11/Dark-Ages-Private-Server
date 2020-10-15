@@ -101,11 +101,14 @@ namespace Darkages.Network.Object
 
         public void RemoveGameObject<T>(T obj) where T : Sprite
         {
-            if (!_spriteCollections.ContainsKey(obj.CurrentMapId))
+            if (obj != null && !_spriteCollections.ContainsKey(obj.CurrentMapId))
                 return;
 
-            var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
-            objCollection.Delete(obj);
+            if (obj != null)
+            {
+                var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
+                objCollection.Delete(obj);
+            }
         }
     }
 

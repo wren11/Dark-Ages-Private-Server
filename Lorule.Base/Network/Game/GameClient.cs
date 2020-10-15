@@ -49,6 +49,9 @@ namespace Darkages.Network.Game
         public bool IsMoving =>
             DateTime.UtcNow - LastMovement > new TimeSpan(0, 0, 0, 0, 850);
 
+        public bool IsSpeedHacking => IsMoving &&
+            DateTime.UtcNow - LastMovement > new TimeSpan(0, 0, 0, 0, 350);
+
         public bool IsWarping =>
             DateTime.UtcNow - LastWarp < new TimeSpan(0, 0, 0, 0, ServerContext.Config.WarpCheckRate);
 
@@ -85,6 +88,9 @@ namespace Darkages.Network.Game
         public Position LastKnownPosition { get; set; }
 
         [JsonIgnore] public Aisling LastState { get; set; }
+
+        [JsonIgnore]
+        public int MapClicks { get; set; }
 
         public GameClient AislingToGhostForm()
         {

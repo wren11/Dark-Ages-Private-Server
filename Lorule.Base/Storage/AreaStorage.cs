@@ -97,7 +97,7 @@ namespace Darkages.Storage
             if (ServerContext.Paused)
                 return;
 
-            var path = Path.Combine(StoragePath, $"{obj.ContentName.ToLower()}.json");
+            var path = Path.Combine(StoragePath, $"{obj.Name.ToLower()}.json");
             var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
             File.WriteAllText(path, objString);
         }

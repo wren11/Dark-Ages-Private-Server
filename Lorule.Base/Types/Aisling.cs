@@ -551,25 +551,14 @@ namespace Darkages
             Client.CloseDialog();
             Client.LeaveArea(true, true);
 
-            if (string.IsNullOrEmpty(Client.Aisling.Nation))
-            {
-                var destinationMap = ServerContext.Config.TransitionZone;
 
-                if (ServerContext.GlobalMapCache.ContainsKey(destinationMap))
-                {
-                    Client.Aisling.XPos = ServerContext.Config.TransitionPointX;
-                    Client.Aisling.YPos = ServerContext.Config.TransitionPointY;
-                    Client.Aisling.CurrentMapId = destinationMap;
-                }
-            }
-            else
+            var destinationMap = ServerContext.Config.TransitionZone;
+
+            if (ServerContext.GlobalMapCache.ContainsKey(destinationMap))
             {
-                if (PlayerNation != null)
-                {
-                    Client.Aisling.XPos = PlayerNation.MapPosition.X;
-                    Client.Aisling.YPos = PlayerNation.MapPosition.Y;
-                    Client.Aisling.CurrentMapId = PlayerNation.AreaId;
-                }
+                Client.Aisling.XPos = ServerContext.Config.TransitionPointX;
+                Client.Aisling.YPos = ServerContext.Config.TransitionPointY;
+                Client.Aisling.CurrentMapId = destinationMap;
             }
 
             Client.EnterArea();

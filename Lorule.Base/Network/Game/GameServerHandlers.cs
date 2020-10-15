@@ -305,7 +305,17 @@ namespace Darkages.Network.Game
 
             client.Aisling.Direction = format.Direction;
 
+            if (ServerContext.Config.LimitWalkingSpeed)
+            {
+                if ((DateTime.UtcNow - client.LastMovement).TotalMilliseconds <= ServerContext.Config.WalkingSpeedLimitFactor)
+                {
+                    client.Refresh(true);
+                    return;
+                }
+            }
+
             var success = client.Aisling.Walk();
+
 
             if (success)
             {
@@ -563,7 +573,7 @@ namespace Darkages.Network.Game
                 {
                     if (format.Text.StartsWith("/"))
                     {
-                        ChatParser.ParseChatMessage(client, format.Text);
+                        Commander.ParseChatMessage(client, format.Text);
                         return true;
                     }
                 }
@@ -1764,7 +1774,15 @@ namespace Darkages.Network.Game
             var worldMap = ServerContext.GlobalWorldMapTemplateCache[client.Aisling.World]; 
             
             client.PendingNode = worldMap?.Portals.Find(i => i.Destination.AreaID == format.Index);
-            client.Aisling.LeaveAbyss();
+
+            if (client.Aisling.Abyss)
+            {
+                client.Aisling.LeaveAbyss();
+            }
+            else
+            {
+                client.Aisling.EnterAbyss();
+            }
 
             TraverseWorldMap(client, format);
         }
@@ -1792,8 +1810,9 @@ namespace Darkages.Network.Game
                 if (selectedPortalNode == null)
                     return;
 
-                client.Aisling.LeaveAbyss();
-                
+                if (client.Aisling.Abyss)
+                    client.Aisling.LeaveAbyss();
+
                 client.Refresh(true);
 
                 client.Aisling.CurrentMapId = selectedPortalNode.Destination.AreaID;
@@ -1801,11 +1820,12 @@ namespace Darkages.Network.Game
                 client.Aisling.Y = selectedPortalNode.Destination.Location.Y;
 
                 client.Send(new ServerFormat67());
-                client.Send(new ServerFormat15(client.Aisling.Map));
+                
+                for (int i = 0; i < 3; i++)
+                    client.Send(new ServerFormat15(client.Aisling.Map));
+    
                 client.Send(new ServerFormat04(client.Aisling));
                 client.Send(new ServerFormat33(client, client.Aisling));
-                client.Send(new byte[] {0x1F, 0x00, 0x00});
-                client.Send(new byte[] {0x58, 0x00, 0x00});
 
                 client.Aisling.CurrentMapId = selectedPortalNode.Destination.AreaID;
                 client.Aisling.X = selectedPortalNode.Destination.Location.X;

@@ -1,10 +1,16 @@
 {
-  "AreaObjectCache": {},
-  "Music": 1,
-  "Rows": 12,
+  "FilePath": "..\\..\\..\\..\\LORULE_DATA\\maps\\lod1003.map",
   "Cols": 12,
-  "Number": 1003,
+  "ContentName": null,
+  "Flags": 106240,
   "ID": 1003,
+  "Music": 1,
   "Name": "Mileth Inn",
-  "Flags": 106240
+  "Rows": 12,
+  "Blocks": [
+    {
+      "X": 5,
+      "Y": 8
+    }
+  ]
 }

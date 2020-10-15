@@ -132,5 +132,16 @@ namespace Darkages.Types
             public TileContent Content { get; set; }
             public Position Position { get; set; }
         }
+
+        public static bool TryParse(string xvalue, string yvalue,  out Position position)
+        {
+            position = null;
+
+            if (!int.TryParse(xvalue, out var x) || !int.TryParse(yvalue, out var y))
+                return false;
+
+            position = new Position(x, y);
+            return true;
+        }
     }
 }

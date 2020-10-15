@@ -3,6 +3,8 @@
 		"Location": "..\\..\\..\\..\\LORULE_DATA"
 	},
 	"ServerConfig": {
+		"WalkingSpeedLimitFactor": 275, //275 prevents all movement hacks from working.
+		"LimitWalkingSpeed": true,
 		"MonsterCreationScript": "Create Monster",
 		"BaseDamageScript": "Base Damage",
 		"MonsterRewardScript": "Monster Exp 1x",
@@ -13,8 +15,8 @@
 		"SleepProcsDoubleDmg": true,
 		"F5ReloadsPlayers": false,
 		"F5ReloadsMonsters": false,
-		"LogClientPackets": true,
-		"LogServerPackets": true,
+		"LogClientPackets": false,
+		"LogServerPackets": false,
 		"MultiUserLogin": false,
 		"AssailsCancelSpells": true,
 		"BadRequestMessage": "(Invalid Request)",
@@ -97,8 +99,8 @@
 		"SaveRate": 25.0,
 		"SERVER_PORT": 2615,
 		"LOGIN_PORT": 2610,
-		"SERVER_TITLE": "Lorule",
-		"ServerWelcomeMessage": "Welcome to Lorule",
+		"SERVER_TITLE": "Your first DA Server",
+		"ServerWelcomeMessage": "Welcome!",
 		"GameMasters": [
 			"wren"
 		],
