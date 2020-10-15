@@ -47,13 +47,8 @@ namespace Darkages.Storage.locales.Scripts.Items
                         else if (client.Aisling.EquipmentManager.RRing == null)
                             Item.Template.EquipmentSlot = ItemSlots.RHand;
 
-                    if (!client.CheckReqs(client, Item))
-                    {
-                    }
-                }
-                else
-                {
-                    client.Aisling.EquipmentManager.Add(Item.Template.EquipmentSlot, Item);
+                    if (client.CheckReqs(client, Item))
+                        client.Aisling.EquipmentManager.Add(Item.Template.EquipmentSlot, Item);
                 }
             }
         }
