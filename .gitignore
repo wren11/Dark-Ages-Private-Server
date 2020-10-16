@@ -33,3 +33,4 @@ git\*
 GitStuff/~$ItemDisplays.xlsx
 *.crdata
 Lorule - Live.sln.CodeItRight.xml
+src/Lorule.Editor/EditorConfig.Local.json

@@ -1,0 +1,412 @@
+﻿#region
+
+using System.Collections.Generic;
+using Darkages.Types;
+using Newtonsoft.Json;
+
+#endregion
+
+namespace Darkages
+{
+    public interface IServerConstants
+    {
+        bool AssailsCancelSpells { get; set; }
+        string BadRequestMessage { get; set; }
+        byte BaseMR { get; set; }
+        byte BaseStatAttribute { get; set; }
+        double BehindDamageMod { get; set; }
+        bool CancelCastingWhenWalking { get; set; }
+        bool CancelWalkingIfRefreshing { get; set; }
+        bool CanMoveDuringReap { get; set; }
+        string CantAttack { get; set; }
+        string CantCarryMoreMsg { get; set; }
+        string CantDoThat { get; set; }
+        string CantDropItemMsg { get; set; }
+        string CantEquipThatMessage { get; set; }
+        string CantUseThat { get; set; }
+        string CantWearYetMessage { get; set; }
+        string ChantPrefix { get; set; }
+        string ChantSuffix { get; set; }
+        int ClickLootDistance { get; set; }
+        int ClientVersion { get; set; }
+        string ConAddedMessage { get; set; }
+        int ConnectionCapacity { get; set; }
+        string CursedItemMessage { get; set; }
+        int DeathHPPenalty { get; set; }
+        int DeathMap { get; set; }
+        int DeathMapX { get; set; }
+        int DeathMapY { get; set; }
+        string DeathReepingMessage { get; set; }
+        bool DebugMode { get; set; }
+        ItemColor DefaultItemColor { get; set; }
+        uint DefaultItemDurability { get; set; }
+        uint DefaultItemValue { get; set; }
+        bool DevMode { get; set; }
+        string[] DevModeExemptions { get; set; }
+        string DexAddedMessage { get; set; }
+        string DoesNotFitMessage { get; set; }
+        bool DontSavePlayers { get; set; }
+        double FasNadurStrength { get; set; }
+        List<string> GameMasters { get; set; }
+        bool GiveAssailOnCreate { get; }
+        double GlobalBaseSkillDelay { get; set; }
+        double GlobalSpawnTimer { get; set; }
+        double GroupExpBonus { get; set; }
+        string GroupRequestDeclinedMsg { get; set; }
+        string HandShakeMessage { get; set; }
+        int HelperMenuId { get; set; }
+        string HelperMenuTemplateKey { get; set; }
+        int HpGainFactor { get; set; }
+        string IntAddedMessage { get; set; }
+        string ItemNotRequiredMsg { get; set; }
+        string LevelUpMessage { get; set; }
+        bool LogClientPackets { get; set; }
+        int LOGIN_PORT { get; set; }
+        bool LogServerPackets { get; set; }
+        int LootTableStackSize { get; set; }
+        int MaxCarryGold { get; set; }
+        int MaxHP { get; set; }
+        string MerchantBuy { get; set; }
+        string MerchantBuyMessage { get; set; }
+        string MerchantCancelMessage { get; set; }
+        string MerchantConfirmMessage { get; set; }
+        string MerchantRefuseTradeMessage { get; set; }
+        string MerchantSell { get; set; }
+        string MerchantStackErrorMessage { get; set; }
+        string MerchantTradeCompletedMessage { get; set; }
+        string MerchantTradeErrorMessage { get; set; }
+        string MerchantWarningMessage { get; set; }
+        double MessageClearInterval { get; set; }
+        int MinimumHp { get; set; }
+        int MonsterSpellSuccessRate { get; set; }
+        double MorFasNadurStrength { get; set; }
+        int MpGainFactor { get; set; }
+        bool MultiUserLogin { get; set; }
+        double MundaneRespawnInterval { get; set; }
+        double NationReturnHours { get; }
+        string NoManaMessage { get; set; }
+        string NotEnoughGoldToDropMsg { get; set; }
+        double PingInterval { get; set; }
+        int PlayerLevelCap { get; set; }
+        int PVPMap { get; set; }
+        string ReapMessage { get; set; }
+        string ReapMessageDuringAction { get; set; }
+        int RefreshRate { get; set; }
+        int RegenRate { get; set; }
+        string RepairItemMessage { get; set; }
+        double SaveRate { get; set; }
+        int SERVER_PORT { get; set; }
+        string SERVER_TITLE { get; set; }
+        string ServerWelcomeMessage { get; set; }
+        List<GameSetting> Settings { get; set; }
+        int SkullLength { get; set; }
+        string SomethingWentWrong { get; set; }
+        string SpellFailedMessage { get; set; }
+        int StartingMap { get; set; }
+        Position StartingPosition { get; set; }
+        byte StatCap { get; set; }
+        int StatsPerLevel { get; set; }
+        string StrAddedMessage { get; set; }
+        string ToWeakToLift { get; set; }
+        short TransitionPointX { get; set; }
+        short TransitionPointY { get; set; }
+        int TransitionZone { get; set; }
+        bool UseLobby { get; set; }
+        bool UseLoruleItemRarity { get; set; }
+        bool UseLoruleVariants { get; set; }
+        string UserDroppedGoldMsg { get; set; }
+        int VeryNearByProximity { get; set; }
+        int WarpCheckRate { get; set; }
+        double WeightIncreaseModifer { get; set; }
+        string WisAddedMessage { get; set; }
+        int WithinRangeProximity { get; set; }
+        string WrongClassMessage { get; set; }
+        string YouDroppedGoldMsg { get; set; }
+        bool F5ReloadsMonsters { get; set; }
+        bool F5ReloadsPlayers { get; set; }
+        bool SleepProcsDoubleDmg { get; set; }
+        int AiteDamageReductionMod { get; set; }
+        int BaseDamageMod { get; set; }
+        string ACFormulaScript { get; set; }
+        string ElementTableScript { get; set; }
+        string MonsterRewardScript { get; set; }
+        string BaseDamageScript { get; set; }
+        string MonsterCreationScript { get; set; }
+        bool LimitWalkingSpeed { get; set; }
+        double WalkingSpeedLimitFactor { get; set; }
+    }
+
+    public class GameSetting
+    {
+        [JsonProperty] public bool Enabled { get; set; }
+        [JsonProperty] public string SettingOff { get; set; }
+        [JsonProperty] public string SettingOn { get; set; }
+    }
+
+    public class ServerConstants : IServerConstants
+    {
+        public bool AssailsCancelSpells { get; set; }
+
+        public string BadRequestMessage { get; set; }
+
+        public byte BaseMR { get; set; } = 70;
+
+        public byte BaseStatAttribute { get; set; }
+
+        public double BehindDamageMod { get; set; }
+
+        public bool CancelCastingWhenWalking { get; set; }
+
+        public bool CancelWalkingIfRefreshing { get; set; }
+
+        public bool CanMoveDuringReap { get; set; }
+
+        public string CantAttack { get; set; }
+
+        public string CantCarryMoreMsg { get; set; }
+
+        public string CantDoThat { get; set; }
+
+        public string CantDropItemMsg { get; set; }
+
+        public string CantEquipThatMessage { get; set; }
+
+        public string CantUseThat { get; set; }
+
+        public string CantWearYetMessage { get; set; }
+
+        public string ChantPrefix { get; set; }
+
+        public string ChantSuffix { get; set; }
+
+        public int ClickLootDistance { get; set; }
+
+        public int ClientVersion { get; set; }
+
+        public string ConAddedMessage { get; set; }
+
+        public int ConnectionCapacity { get; set; }
+
+        public string CursedItemMessage { get; set; }
+
+        public int DeathHPPenalty { get; set; }
+
+        public int DeathMap { get; set; }
+
+        public int DeathMapX { get; set; }
+
+        public int DeathMapY { get; set; }
+
+        public string DeathReepingMessage { get; set; }
+
+        public bool DebugMode { get; set; }
+
+        [JsonProperty] public ItemColor DefaultItemColor { get; set; }
+
+        public uint DefaultItemDurability { get; set; }
+
+        public uint DefaultItemValue { get; set; }
+
+        public bool DevMode { get; set; }
+
+        public string[] DevModeExemptions { get; set; }
+
+        public string DexAddedMessage { get; set; }
+
+        public string DoesNotFitMessage { get; set; }
+
+        public bool DontSavePlayers { get; set; }
+
+        public double FasNadurStrength { get; set; }
+
+        public List<string> GameMasters { get; set; }
+
+        public bool GiveAssailOnCreate { get; set; }
+
+        public double GlobalBaseSkillDelay { get; set; }
+
+        public double GlobalSpawnTimer { get; set; }
+
+        public double GroupExpBonus { get; set; }
+
+        public string GroupRequestDeclinedMsg { get; set; }
+
+        public string HandShakeMessage { get; set; }
+
+        public int HelperMenuId { get; set; }
+
+        public string HelperMenuTemplateKey { get; set; }
+
+        public int HpGainFactor { get; set; }
+
+        public string IntAddedMessage { get; set; }
+
+        public string ItemNotRequiredMsg { get; set; }
+
+        public string LevelUpMessage { get; set; }
+
+        public bool LogClientPackets { get; set; }
+
+        public int LOGIN_PORT { get; set; }
+
+        public bool LogServerPackets { get; set; }
+
+        public int LootTableStackSize { get; set; }
+
+        public int MaxCarryGold { get; set; }
+
+        public int MaxHP { get; set; }
+
+        public string MerchantBuy { get; set; }
+
+        public string MerchantBuyMessage { get; set; }
+
+        public string MerchantCancelMessage { get; set; }
+
+        public string MerchantConfirmMessage { get; set; }
+
+        public string MerchantRefuseTradeMessage { get; set; }
+
+        public string MerchantSell { get; set; }
+
+        public string MerchantStackErrorMessage { get; set; }
+
+        public string MerchantTradeCompletedMessage { get; set; }
+
+        public string MerchantTradeErrorMessage { get; set; }
+
+        public string MerchantWarningMessage { get; set; }
+
+        public double MessageClearInterval { get; set; }
+
+        public int MinimumHp { get; set; }
+
+        public int MonsterSpellSuccessRate { get; set; }
+
+        public double MorFasNadurStrength { get; set; }
+
+        public int MpGainFactor { get; set; }
+
+        public bool MultiUserLogin { get; set; }
+
+        public double MundaneRespawnInterval { get; set; }
+
+        public double NationReturnHours { get; set; }
+
+        public string NoManaMessage { get; set; }
+
+        public string NotEnoughGoldToDropMsg { get; set; }
+
+        public double PingInterval { get; set; }
+
+        public int PlayerLevelCap { get; set; }
+
+        public int PVPMap { get; set; }
+
+        public string ReapMessage { get; set; }
+
+        public string ReapMessageDuringAction { get; set; }
+
+        public int RefreshRate { get; set; }
+
+        public int RegenRate { get; set; }
+
+        public string RepairItemMessage { get; set; }
+
+        public double SaveRate { get; set; }
+
+        public int SERVER_PORT { get; set; }
+
+        public string SERVER_TITLE { get; set; }
+
+        public string ServerWelcomeMessage { get; set; }
+
+        public List<GameSetting> Settings { get; set; }
+
+        public int SkullLength { get; set; }
+
+        public string SomethingWentWrong { get; set; }
+
+        public string SpellFailedMessage { get; set; }
+
+        public int StartingMap { get; set; }
+
+        [JsonProperty] public Position StartingPosition { get; set; }
+
+        public byte StatCap { get; set; }
+
+        public int StatsPerLevel { get; set; }
+
+        public string StrAddedMessage { get; set; }
+
+        public string ToWeakToLift { get; set; }
+
+        public short TransitionPointX { get; set; }
+
+        public short TransitionPointY { get; set; }
+
+        public int TransitionZone { get; set; }
+
+        public bool UseLobby { get; set; }
+
+        public bool UseLoruleItemRarity { get; set; }
+
+        public bool UseLoruleVariants { get; set; }
+
+        public string UserDroppedGoldMsg { get; set; }
+
+        public int VeryNearByProximity { get; set; }
+
+        public int WarpCheckRate { get; set; }
+
+        public double WeightIncreaseModifer { get; set; }
+
+        public string WisAddedMessage { get; set; }
+
+        public int WithinRangeProximity { get; set; }
+
+        public string WrongClassMessage { get; set; }
+
+        public string YouDroppedGoldMsg { get; set; }
+
+        /// <summary>
+        /// Enable to refresh Monsters when player F5s
+        /// </summary>
+        public bool F5ReloadsMonsters { get; set; }
+
+        /// <summary>
+        /// Enable to refresh Players when player F5s
+        /// </summary>
+        public bool F5ReloadsPlayers { get; set; }
+
+        //Set to true/false if you want sleep debuff to cause double damage.
+        public bool SleepProcsDoubleDmg { get; set; }
+
+        //How much damage does aite reduce? default is 3. (-30%)
+        public int AiteDamageReductionMod { get; set; }
+
+        //Base Monster Damage Mod, For Base Attacks, Assail ect. Default is 60.
+        public int BaseDamageMod { get; set; }
+
+        //Script to use for AC Formula, default is "AC Formula"
+        public string ACFormulaScript { get; set; }
+
+        //Script to use for Elemental Table, default is "Elements 1.0"
+        public string ElementTableScript { get; set; }
+
+        //Script to use for all Monster Exp Rewards, Experience ect. default is "Monster Exp 1x"
+        public string MonsterRewardScript { get; set; }
+
+        //Script to use for all Base damage monster calculations. Default is "Base Damage"
+        public string BaseDamageScript { get; set; }
+
+        //Script to use for all Monster Creations. Default is "Create Monster"
+        public string MonsterCreationScript { get; set; }
+
+        //Used to limit walking speed limits. enabling this will use the next property WalkingSpeedLimitFactor.
+        public bool LimitWalkingSpeed { get; set; }
+
+        //Used to limit walking speed limits. default is 275;
+        public double WalkingSpeedLimitFactor { get; set; }
+    }
+}
