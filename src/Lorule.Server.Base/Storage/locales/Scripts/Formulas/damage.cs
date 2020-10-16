@@ -10,7 +10,7 @@ namespace Darkages.Storage.locales.Scripts.formulas
         private readonly Sprite _obj;
         private readonly Sprite _target;
 
-        public Damage(Sprite obj, Sprite target)
+        public Damage(Sprite obj, Sprite target, MonsterDamageType type)
         {
             _obj = obj;
             _target = target;
