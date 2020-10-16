@@ -1,0 +1,63 @@
+{
+  "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
+  "ID": 0,
+  "CanStack": false,
+  "MaxStack": 0,
+  "Image": 102,
+  "DisplayImage": 33781,
+  "ScriptName": "Weapon",
+  "Gender": 255,
+  "HealthModifer": null,
+  "ManaModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 700
+  },
+  "StrModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1
+  },
+  "IntModifer": null,
+  "WisModifer": null,
+  "ConModifer": null,
+  "DexModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1
+  },
+  "AcModifer": null,
+  "MrModifer": null,
+  "HitModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1
+  },
+  "DmgModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1
+  },
+  "SpellOperator": null,
+  "OffenseElement": 0,
+  "DefenseElement": 0,
+  "CarryWeight": 8,
+  "Flags": 4221,
+  "MaxDurability": 560000,
+  "Value": 40000,
+  "EquipmentSlot": 1,
+  "NpcKey": "Arms Dealer",
+  "Class": 0,
+  "LevelRequired": 99,
+  "DmgMin": 400,
+  "DmgMax": 500,
+  "DropRate": 1.0,
+  "StageRequired": 1,
+  "HasPants": false,
+  "Color": 0,
+  "WeaponScript": null,
+  "Name": "Enchanted Azoth",
+  "Description": null,
+  "Group": null
+}

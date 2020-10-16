@@ -1,0 +1,19 @@
+{
+  "AreaObjectCache": {},
+  "_Reaper": {
+    "Timer": "00:00:00",
+    "Delay": "00:00:02",
+    "Elapsed": false,
+    "Disabled": false,
+    "Interval": 0,
+    "Tick": 0
+  },
+  "Music": 41,
+  "Rows": 12,
+  "Cols": 16,
+  "Number": 5220,
+  "ID": 5220,
+  "Name": "Sapphire Stream",
+  "Flags": 106240,
+  "Owner": null
+}

@@ -1,0 +1,63 @@
+{
+  "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
+  "Icon": 48,
+  "MaxLevel": 100,
+  "ScriptKey": "Generic Elemental Single",
+  "MinLines": 1,
+  "MaxLines": 9,
+  "ManaCost": 1200,
+  "Text": "\u0000",
+  "Debuff": null,
+  "Buff": null,
+  "TargetType": 2,
+  "BaseLines": 3,
+  "LevelRate": 0.03,
+  "Sound": 79,
+  "Animation": 11,
+  "DamageExponent": 80.0,
+  "Pane": 0,
+  "ElementalProperty": 2,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Essense of Water",
+          "AmountRequired": 20
+        }
+      ]
+    },
+    "Stage_Required": 0,
+    "Class_Required": 3,
+    "ExpLevel_Required": 33,
+    "Str_Required": 0,
+    "Int_Required": 38,
+    "Wis_Required": 87,
+    "Dex_Required": 0,
+    "Con_Required": 0,
+    "Gold_Required": 500000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": "mor sal",
+    "Spell_Level_Required": 100,
+    "Spell_Tier_Required": 1
+  },
+  "NpcKey": "Dar The Forsakened",
+  "TierLevel": 0,
+  "TargetAnimation": 0,
+  "IsTrap": false,
+  "Name": "ard sal",
+  "Description": null,
+  "Group": null
+}

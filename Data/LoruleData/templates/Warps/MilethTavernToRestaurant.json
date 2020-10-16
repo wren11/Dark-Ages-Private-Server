@@ -1,0 +1,38 @@
+{
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 10,
+        "Y": 14,
+        "AreaID": 0
+      },
+      "AreaID": 134,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 11,
+        "Y": 14,
+        "AreaID": 0
+      },
+      "AreaID": 134,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": {
+      "X": 12,
+      "Y": 1,
+      "AreaID": 0
+    },
+    "AreaID": 129,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 134,
+  "Name": "Map Warp from 134 to 129",
+  "Description": null,
+  "Group": null
+}

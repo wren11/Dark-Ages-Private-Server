@@ -1,0 +1,42 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "WalkRate": 0,
+  "TurnRate": 0,
+  "CastRate": 0,
+  "EnableCasting": true,
+  "Spells": {
+    "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "mor fas nadur",
+      "armachd",
+      "beag ioc",
+      "dia deo saighead"
+    ]
+  },
+  "Skills": null,
+  "Image": 17136,
+  "Level": 99,
+  "ScriptKey": "welcome aisling",
+  "EnableWalking": false,
+  "EnableTurning": true,
+  "EnableAttacking": true,
+  "EnableSpeech": false,
+  "AttackPlayers": false,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": []
+  },
+  "X": 38,
+  "Y": 19,
+  "AreaID": 101,
+  "Direction": 2,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "QuestKey": "welcome trials 3",
+  "Waypoints": null,
+  "PathQualifer": 0,
+  "ViewingQualifer": 0,
+  "Name": "Magic Tree",
+  "Description": null,
+  "Group": null
+}

@@ -1,0 +1,16 @@
+{
+  "FilePath": "..\\..\\..\\..\\LORULE_DATA\\maps\\lod1003.map",
+  "Cols": 12,
+  "ContentName": null,
+  "Flags": 106240,
+  "ID": 1003,
+  "Music": 1,
+  "Name": "Mileth Inn",
+  "Rows": 12,
+  "Blocks": [
+    {
+      "X": 5,
+      "Y": 8
+    }
+  ]
+}

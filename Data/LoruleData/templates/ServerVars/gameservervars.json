@@ -1,0 +1,26 @@
+{
+  "$type": "Darkages.Types.Templates.ServerTemplate, Darkages.Server",
+  "Politics": {
+    "$type": "System.Collections.Generic.List`1[[Darkages.Types.Templates.Politics, Darkages.Server]], System.Private.CoreLib",
+    "$values": [
+      {
+        "$type": "Darkages.Types.Templates.Politics, Darkages.Server",
+        "Clout": 3,
+        "Nation": 1,
+        "NextRank": 2,
+        "Rank": 1,
+        "TermLength": "30.00:00:00",
+        "TermStarted": "2020-07-07T16:00:29.5864379Z",
+        "User": "wren"
+      }
+    ]
+  },
+  "Variables": {
+    "$type": "System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib],[System.Int32, System.Private.CoreLib]], System.Private.CoreLib",
+    "test": 2
+  },
+  "Description": null,
+  "Group": null,
+  "ID": 0,
+  "Name": "GameServerVars"
+}

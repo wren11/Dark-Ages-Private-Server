@@ -1,0 +1,1477 @@
+﻿################################################################################################################################################################################################################
+#  start with the quest ladder
+#  
+########################################################################################################
+# checkpoints 30-50 are quest check ladder and menu displays to hand in
+# checkpoints 1-10 & corresponding 60-70 are level req and did u do mission
+# 
+# yes I know that makes no fuckin sense but the logic is flawless if you just treat all numbers equally, you racist. 
+# They're ID's SEQUENCE IS NOT IMPORTANT!
+#########################################################################################################
+start:
+    checkpoint: 30
+
+################################################################################################################################################################################################################
+#  Menus are...well, menus for the user. 
+#  Text options can be added by adding options below text. 
+########################################################################################################
+
+menus:
+  - id: 1
+    text: "Greetings fellow Monk....I cannot see you, for I am blind. Though, I can sense your urge to learn. Would you like to prove yourself and learn the ways of the Dugon?"
+    options:
+      - id: 1
+        text: "What is a Dugon?"
+        step: 1
+        sequence: 9
+      - id: 2
+        text: "Learn the ways of the Dugon"
+        menu: 2
+  - id: 2
+    text: "Which Dugon would you like to learn?"
+    options:
+      - id: 1
+        text: "White Dugon"
+        checkpoint: 1
+      - id: 2
+        text: "Green Dugon"
+        checkpoint: 2
+      - id: 3
+        text: "Blue Dugon"
+        checkpoint: 3
+      - id: 4
+        text: "Yellow Dugon"
+        checkpoint: 4
+      - id: 5
+        text: "Purple Dugon"
+        checkpoint: 5
+      - id: 6
+        text: "Brown Dugon"
+        checkpoint: 6
+      - id: 7
+        text: "Red Dugon"
+        checkpoint: 7
+      - id: 8
+        text: "Black Dugon"
+        checkpoint: 8
+      - id: 9
+        text: "I am not ready yet."
+        step: 1
+        sequence: 12
+  - id: 3
+    text: "Choose wisely, I don't often take many students of the White Dugon."
+    options:
+      - id: 1
+        text: "I am ready to prove myself."
+        checkpoint: 11
+      - id: 2
+        text: "I am not ready yet."
+        step: 1
+        sequence: 12
+  - id: 4
+    text: "Have you found the beast who seeks to feast off the blood of mortals? The one whos wings glide silent in the night?"
+    options:
+      - id: 1
+        text: "I have."
+        checkpoint: 21
+      - id: 2
+        text: "I have not."
+        step: 1
+        sequence: 12
+  - id: 5
+    text: "Choose wisely, I don't often take many students of the Green Dugon."
+    options:
+      - id: 1
+        text: "I am ready to prove myself."
+        checkpoint: 12
+      - id: 2
+        text: "I am not ready yet."
+        step: 1
+        sequence: 12
+  - id: 6
+    text: "Have you slain the beast who slumbers constant in an iron vessel? The one whos' grip cannot be broken and whom lives both beneith and above the waters edge?"
+    options:
+      - id: 1
+        text: "I have."
+        checkpoint: 22
+      - id: 2
+        text: "I have not."
+        step: 1
+        sequence: 12
+  - id: 7
+    text: "Choose wisely, I don't often take many students of the Blue Dugon."
+    options:
+      - id: 1
+        text: "I am ready to prove myself."
+        checkpoint: 13
+      - id: 2
+        text: "I am not ready yet."
+        step: 1
+        sequence: 12
+  - id: 8
+    text: "Have you defeated the armor shelled beast?"
+    options:
+      - id: 1
+        text: "I have."
+        checkpoint: 23
+      - id: 2
+        text: "I have not."
+        step: 1
+        sequence: 12
+  - id: 9
+    text: "Choose wisely, I don't often take many students of the Yellow Dugon."
+    options:
+      - id: 1
+        text: "I am ready to prove myself."
+        checkpoint: 14
+      - id: 2
+        text: "I am not ready yet."
+        step: 1
+        sequence: 12
+  - id: 10
+    text: "Have you slain the Guard of ill repute?"
+    options:
+      - id: 1
+        text: "I have."
+        checkpoint: 24
+      - id: 2
+        text: "I have not."
+        step: 1
+        sequence: 12
+  - id: 11
+    text: "Choose wisely, I don't often take many students of the Purple Dugon."
+    options:
+      - id: 1
+        text: "I am ready to prove myself."
+        checkpoint: 15
+      - id: 2
+        text: "I am not ready yet."
+        step: 1
+        sequence: 12
+  - id: 12
+    text: "Have you calmed the Shreiking in the woodlands?"
+    options:
+      - id: 1
+        text: "I have."
+        checkpoint: 25
+      - id: 2
+        text: "I have not."
+        step: 1
+        sequence: 12
+  - id: 13
+    text: "Choose wisely, I don't often take many students of the Brown Dugon."
+    options:
+      - id: 1
+        text: "I am ready to prove myself."
+        checkpoint: 16
+      - id: 2
+        text: "I am not ready yet."
+        step: 1
+        sequence: 12
+  - id: 14
+    text: "Have you plucked the spines of that which maraud's in the depths of Mileth Crypt?"
+    options:
+      - id: 1
+        text: "I have."
+        checkpoint: 26
+      - id: 2
+        text: "I have not."
+        step: 1
+        sequence: 12
+  - id: 15
+    text: "Choose wisely, I don't often take many students of the Red Dugon."
+    options:
+      - id: 1
+        text: "I am ready to prove myself."
+        checkpoint: 17
+      - id: 2
+        text: "I am not ready yet."
+        step: 1
+        sequence: 12
+  - id: 16
+    text: "Have you killed the flying beast?"
+    options:
+      - id: 1
+        text: "I have."
+        checkpoint: 27
+      - id: 2
+        text: "I have not."
+        step: 1
+        sequence: 12
+  - id: 17
+    text: "Choose wisely, I don't often take many students of the Black Dugon."
+    options:
+      - id: 1
+        text: "I am ready to prove myself."
+        checkpoint: 18
+      - id: 2
+        text: "I am not ready yet."
+        step: 1
+        sequence: 12
+  - id: 18
+    text: "Have you slain the Draco?"
+    options:
+      - id: 1
+        text: "I have."
+        checkpoint: 28
+      - id: 2
+        text: "I have not."
+        step: 1
+
+################################d############################################################################
+#  sequences
+#############################################################################################################
+        
+sequences:
+################################d############################################################################
+#  white dugon
+#############################################################################################################
+  - id: 1                                 
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "The White Dugon...I remember achieving mine like it was yesterday."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 1
+    - id: 2                                
+      text: "This is your first step towards the life as a strong Monk. With that, I need you to prove yourself."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 3
+        sequence: 1
+    - id: 3                                
+      text: "In the town of Mileth, there lies a Crypt. In this Crypt, a beast of flight. Teeth like razors and a thirst for blood. Slay this foe and return to me victorious for your symbol of strength."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 4
+        sequence: 1
+    - id: 4                                
+      text: "Do you think you have what it takes to get this done?"
+      answers:                            
+      - id: 1                              
+        text: next   
+        menu: 3
+################################d############################################################################
+#  green dugon
+#############################################################################################################
+  - id: 2                                 
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "The Green Dugon...A sign of a growing Monk. One who still has a fresh view of the world, but some understanding of its' might."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 2
+    - id: 2                                
+      text: "This is your next step towards the life as a strong Monk. With that, I need you to prove yourself."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 3
+        sequence: 2
+    - id: 3                                
+      text: "In the town of Piet, there lies a Crypt. In this Crypt, a beast of might. One whomse bones lie outside it's mighty muscles. A freak of nature, both above and below the seas."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 4
+        sequence: 2
+    - id: 4                                
+      text: "Can you find and defeat this beast and show your worth?"
+      answers:                            
+      - id: 1                              
+        text: next   
+        menu: 5
+################################d############################################################################
+#  blue dugon
+#############################################################################################################
+  - id: 3                                 
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "The Blue Dugon...You're really growing into a powerful Monk now."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 3
+    - id: 2                                
+      text: "It's time for another test. I need you to prove yourself."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 3
+        sequence: 3
+    - id: 3                                
+      text: "Another armored beast awaits you. This one different from the last and found in both the swamps I've yet to send you and lands you've already tread. Take this hint and find the armored beast who dwells in the deep."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 4
+        sequence: 3
+    - id: 4                                
+      text: "Are you ready?"
+      answers:                            
+      - id: 1                              
+        text: next   
+        menu: 7
+################################d############################################################################
+#  yellow dugon
+#############################################################################################################
+  - id: 4                                 
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "The Yellow Dugon...It's an honor to have you as a student."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 4
+    - id: 2                                
+      text: "This time, things will be a bit different."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 3
+        sequence: 4
+    - id: 3                                
+      text: "Another armored beast awaits you. This one different from anything you've seen before. Skin like stone that once was raw, flesh like a man with the brain of a beast. A guard of ill repute is what I seek."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 4
+        sequence: 4
+    - id: 4                                
+      text: "I trust you're capable?"
+      answers:                            
+      - id: 1                              
+        text: next   
+        menu: 9
+################################d############################################################################
+#  purple dugon
+#############################################################################################################
+  - id: 5                                 
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "The Purple Dugon...Amazing growth you've shown here at the stream."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 5
+    - id: 2                                
+      text: "Through we are with the armored beasts, back to those with a frightening scream."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 3
+        sequence: 5
+    - id: 3                                
+      text: "This beast can be found where you learned the ways of the Yellow Dugon. It's hard to miss with a scream so loud, a body like forest growth and a taste for flesh!"
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 4
+        sequence: 5
+    - id: 4                                
+      text: "Do you dare?"
+      answers:                            
+      - id: 1                              
+        text: next   
+        menu: 11
+################################d############################################################################
+#  brown dugon
+#############################################################################################################
+  - id: 6                                 
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "The Brown Dugon...I can feel your aura has changed."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 5
+    - id: 2                                
+      text: "You're beginning to unlock the doors of temuair. However, I am sending you back to the first place you've been tested."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 3
+        sequence: 5
+    - id: 3                                
+      text: "I seek the spines of a beast from the deep, one whos razor sharp fur can pierce through any defense."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 4
+        sequence: 5
+    - id: 4                                
+      text: "Can you handle this task?"
+      answers:                            
+      - id: 1                              
+        text: next   
+        menu: 13
+################################d############################################################################
+#  red dugon
+#############################################################################################################
+  - id: 7                                 
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "The Red Dugon...Soon, there will be no more to learn."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 5
+    - id: 2                                
+      text: "For now, the toughest lessons are yet to come."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 3
+        sequence: 5
+    - id: 3                                
+      text: "In Temuair's past, a race ruled the lands before the Mundane & Aisling. Some friend, some foe, some still lurking in the forests deep. The look like man, yet fly like beast....defeat one of these creatures and return to me."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 4
+        sequence: 5
+    - id: 4                                
+      text: "Are you ready?"
+      answers:                            
+      - id: 1                              
+        text: next   
+        menu: 15
+################################d############################################################################
+#  black dugon
+#############################################################################################################
+  - id: 7                                 
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "The.....Well....That can't be....I can feel the power eminating from you. You've come to learn the Black Dugon."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 5
+    - id: 2                                
+      text: "This is your final test. Please, do not take this lightly."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 3
+        sequence: 5
+    - id: 3                                
+      text: "By now, there are no doors that stand in your way. No caverns too deep for your entry and no beast that can withstand your might. It is time to prove you can overcome the almighty Draco found in Kasminimun Mines. I have no time for riddles, this will be your most deadly foe by far."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 4
+        sequence: 5
+    - id: 4                                
+      text: "Are you ready for the ultimate test of strength?"
+      answers:                            
+      - id: 1                              
+        text: next   
+        menu: 17
+################################d############################################################################
+#  explain dugon
+#############################################################################################################
+  - id: 9                                
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "Ah, the mark of a true Monk."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 9
+    - id: 2                                
+      text: "A Dugon is a headpiece, a cloth, made from the softest fabric found only in the Sapphire Meadows. The dye's for each, reserved from short harvests on various peaks of Mount Giragan in the summer months."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 3
+        sequence: 9
+    - id: 3                                
+      text: "These Dugons are crafted here, and presented to the strongest of Monks who can prove themselves to the order."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 4
+        sequence: 9
+    - id: 4                                
+      text: "We would be happy to present you with one, if you can prove yourself. Proving yourself worthy to learn, requires strength and insight requiring the slaying of a beast. Achieving the Dugon itself, requires intellectcual might and passing of a test."
+
+
+################################d############################################################################
+#  Completions
+#############################################################################################################
+  - id: 20                                 
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "Great work, you've shown you're worthy to wear this new Dugon."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 20
+    - id: 2                                
+      text: "You can now access skills of this level through the Northern Gate."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 3
+        sequence: 20
+    - id: 3                                
+      text: "To upgrade your Dugon, complete the test through the Eastern Gate."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 4
+        sequence: 20
+    - id: 4                                
+      text: "Go in peace fellow Monk. For I am proud."
+
+################################d############################################################################
+#  git gud
+#############################################################################################################
+  - id: 10                                 
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "You're not quite strong enough for this Dugon."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 10
+    - id: 2                                
+      text: "Please, go train."
+################################d############################################################################
+#  Waiting on reqs
+#############################################################################################################
+  - id: 11                                 
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "Your test has begun. Return to me once you have proven yourself."
+################################d############################################################################
+#  Youse a bitch and so is yo' aunt
+#############################################################################################################
+  - id: 12                               
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "I can sense that. Come back when you are ready."
+################################d############################################################################
+#  You already know what it is family
+#############################################################################################################
+  - id: 13                               
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "You already know about this Dugon."
+################################d############################################################################
+#  needed previous dugon
+#############################################################################################################
+  - id: 14                                 
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "You have not learned the Dugon required to move forward with this yet."
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 14
+    - id: 2                                
+      text: "Please, learn the previous Dugon lessons I have to teach."
+################################d############################################################################
+#  error check
+#############################################################################################################
+  - id: 99                                 
+    name: "Menu Exit"                  
+    steps:                          
+    - id: 1                                
+      text: "Something went wrong. Man."
+################################d############################################################################
+#  done, finished, finito, jfc this is a long mission chain
+#############################################################################################################
+  - id: 100                                 
+    name: "Completed all."                  
+    steps:                          
+    - id: 1                                
+      text: "I have nothing left to teach you....you are showing true form of a Master Monk. One day, you shall become one."
+###################################################################################################################
+###################################################################################################################
+###################################################################################################################
+###################################################################################################################
+################################d############################################################################
+#
+#
+#
+#                QUEST CHECK LADDER
+#
+#
+#
+#############################################################################################################
+###################################################################################################################
+###################################################################################################################
+###################################################################################################################
+checkpoints:
+########################################################################################################
+#  CHECKPOINT 30 - has quest checks
+########################################################################################################
+  - id: 30
+    type: Call
+    value: >
+            result = (user.HasQuest("Dugon1"));
+    success:
+      checkpoint: 31
+    fail:
+      menu: 1
+########################################################################################################
+  - id: 31
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon1"));
+    success:
+      checkpoint: 32
+    fail:
+      menu: 4
+########################################################################################################
+  - id: 32
+    type: Call
+    value: >
+            result = (user.HasQuest("Dugon2"));
+    success:
+      checkpoint: 33
+    fail:
+      menu: 1
+########################################################################################################
+  - id: 33
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon2"));
+    success:
+      checkpoint: 34
+    fail:
+      menu: 6
+########################################################################################################
+  - id: 34
+    type: Call
+    value: >
+            result = (user.HasQuest("Dugon3"));
+    success:
+      checkpoint: 35
+    fail:
+      menu: 1
+########################################################################################################
+  - id: 35
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon3"));
+    success:
+      checkpoint: 36
+    fail:
+      menu: 8
+########################################################################################################
+  - id: 36
+    type: Call
+    value: >
+            result = (user.HasQuest("Dugon4"));
+    success:
+      checkpoint: 37
+    fail:
+      menu: 1
+########################################################################################################
+  - id: 37
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon4"));
+    success:
+      checkpoint: 38
+    fail:
+      menu: 10
+########################################################################################################
+  - id: 38
+    type: Call
+    value: >
+            result = (user.HasQuest("Dugon5"));
+    success:
+      checkpoint: 39
+    fail:
+      menu: 1
+########################################################################################################
+  - id: 39
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon5"));
+    success:
+      checkpoint: 40
+    fail:
+      menu: 12
+########################################################################################################
+  - id: 40
+    type: Call
+    value: >
+            result = (user.HasQuest("Dugon6"));
+    success:
+      checkpoint: 41
+    fail:
+      menu: 1
+########################################################################################################
+  - id: 41
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon6"));
+    success:
+      checkpoint: 42
+    fail:
+      menu: 9
+########################################################################################################
+  - id: 42
+    type: Call
+    value: >
+            result = (user.HasQuest("Dugon7"));
+    success:
+      checkpoint: 43
+    fail:
+      menu: 1
+########################################################################################################
+  - id: 43
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon7"));
+    success:
+      checkpoint: 44
+    fail:
+      menu: 10
+########################################################################################################
+  - id: 44
+    type: Call
+    value: >
+            result = (user.HasQuest("Dugon8"));
+    success:
+      checkpoint: 45
+    fail:
+      menu: 1
+########################################################################################################
+  - id: 45
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon8"));
+    success:
+      menu: 12
+    fail:
+      menu: 11
+###################################################################################################################
+###################################################################################################################
+###################################################################################################################
+###################################################################################################################
+################################d############################################################################
+#
+#
+#
+#                LEVEL AND DID YOU DO IT ALRDY!?
+#
+#
+#
+#############################################################################################################
+###################################################################################################################
+###################################################################################################################
+###################################################################################################################
+########################################################################################################
+  - id: 1
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon1"));
+    success:
+      step: 1
+      sequence: 13
+    fail:
+      checkpoint: 61
+######################################################################################################## 
+########################################################################################################
+  - id: 61
+    type: Call
+    value: >
+            result = (client.Aisling.ExpLevel >= 11);
+    success:
+      step: 1
+      sequence: 1
+    fail:
+      step: 1
+      sequence: 10
+########################################################################################################
+########################################################################################################
+  - id: 2
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon2"));
+    success:
+      step: 1
+      sequence: 13
+    fail:
+      checkpoint: 52
+########################################################################################################
+  - id: 52
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon1"));
+    success:
+      checkpoint: 62
+    fail:
+      step: 1
+      sequence: 14
+########################################################################################################
+  - id: 62
+    type: Call
+    value: >
+            result = (client.Aisling.ExpLevel >= 22);
+    success:
+      step: 1
+      sequence: 2
+    fail:
+      step: 1
+      sequence: 10
+########################################################################################################
+  - id: 3
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon3"));
+    success:
+      step: 1
+      sequence: 13
+    fail:
+      checkpoint: 53
+########################################################################################################
+  - id: 53
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon2"));
+    success:
+      checkpoint: 63
+    fail:
+      step: 1
+      sequence: 14
+########################################################################################################
+  - id: 63
+    type: Call
+    value: >
+            result = (client.Aisling.ExpLevel >= 33);
+    success:
+      step: 1
+      sequence: 3
+    fail:
+      step: 1
+      sequence: 10
+########################################################################################################
+  - id: 4
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon4"));
+    success:
+      step: 1
+      sequence: 13
+    fail:
+      checkpoint: 54
+########################################################################################################
+  - id: 54
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon3"));
+    success:
+      checkpoint: 64
+    fail:
+      step: 1
+      sequence: 14
+########################################################################################################
+
+  - id: 64
+    type: Call
+    value: >
+            result = (client.Aisling.ExpLevel >= 44);
+    success:
+      step: 1
+      sequence: 4
+    fail:
+      step: 1
+      sequence: 10
+########################################################################################################
+  - id: 5
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon5"));
+    success:
+      step: 1
+      sequence: 13
+    fail:
+      checkpoint: 55
+########################################################################################################
+  - id: 55
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon4"));
+    success:
+      checkpoint: 65
+    fail:
+      step: 1
+      sequence: 14
+########################################################################################################
+  - id: 65
+    type: Call
+    value: >
+            result = (client.Aisling.ExpLevel >= 55);
+    success:
+      step: 1
+      sequence: 5
+    fail:
+      step: 1
+      sequence: 10
+########################################################################################################
+  - id: 6
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon6"));
+    success:
+      step: 1
+      sequence: 13
+    fail:
+      checkpoint: 56
+########################################################################################################
+  - id: 56
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon5"));
+    success:
+      checkpoint: 66
+    fail:
+      step: 1
+      sequence: 14
+########################################################################################################
+
+  - id: 66
+    type: Call
+    value: >
+            result = (client.Aisling.ExpLevel >= 66);
+    success:
+      step: 1
+      sequence: 6
+    fail:
+      step: 1
+      sequence: 10
+########################################################################################################
+  - id: 7
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon7"));
+    success:
+      step: 1
+      sequence: 13
+    fail:
+      checkpoint: 57
+########################################################################################################
+  - id: 57
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon6"));
+    success:
+      checkpoint: 67
+    fail:
+      step: 1
+      sequence: 14
+########################################################################################################
+
+  - id: 67
+    type: Call
+    value: >
+            result = (client.Aisling.ExpLevel >= 77);
+    success:
+      step: 1
+      sequence: 7
+    fail:
+      step: 1
+      sequence: 10
+########################################################################################################
+  - id: 8
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon8"));
+    success:
+      step: 1
+      sequence: 13
+    fail:
+      checkpoint: 58
+########################################################################################################
+  - id: 58
+    type: Call
+    value: >
+            result = (user.HasCompletedQuest("Dugon7"));
+    success:
+      checkpoint: 68
+    fail:
+      step: 1
+      sequence: 14
+########################################################################################################
+
+  - id: 68
+    type: Call
+    value: >
+            result = (client.Aisling.ExpLevel >= 88);
+    success:
+      step: 1
+      sequence: 8
+    fail:
+      step: 1
+      sequence: 10
+###################################################################################################################
+###################################################################################################################
+###################################################################################################################
+#  
+# 
+#
+#
+#                    ACCEPT AND HANDLE MISSIONS
+#
+#
+#
+###################################################################################################################
+###################################################################################################################
+###################################################################################################################
+#  CHECKPOINT 11 -- User Acceps White Dugon
+###################################################################################################################
+  - id: 11
+    type: Call
+    value: >
+            Quest quest = new Quest()
+                {
+                    Name = "Dugon1",
+                    GoldReward = 1000,
+                    ItemRewards = new List<string>()
+                        {
+                             "White Dugon",
+                        },
+                    ExpRewards = new List<uint>()
+                        {
+                             10000,
+                        }
+                };
+            quest.QuestStages = new List<QuestStep<Template>>();
+            var q1 = new QuestStep<Template> { Type = QuestType.Accept };
+            var q2 = new QuestStep<Template> { Type = QuestType.HasItem };
+            q2.Prerequisites.Add(new QuestRequirement
+            {
+                Type = QuestType.KillCount,
+                Amount = 1,
+                Value = "Bat",
+            });
+            quest.QuestStages.Add(q1);
+            quest.QuestStages.Add(q2);
+            result = user.AcceptQuest(quest);
+    success:
+      checkpoint: 21
+    fail:
+      step: 1
+      sequence: 99
+########################################################################################################
+#  CHECKPOINT 21 -- Handle White Dugon
+########################################################################################################
+  - id: 21
+    type: Call
+    value: >
+            var q         = user.GetQuest("Dugon1");
+            result    = false;
+            
+            if (q != null) {           
+                q.HandleQuest(client, null);
+                result = q.Completed;
+            }       
+    success:
+      step: 1
+      sequence: 20
+    fail:
+      step: 1
+      sequence: 11
+###################################################################################################################
+#  CHECKPOINT 12 -- User Acceps Green Dugon
+###################################################################################################################
+  - id: 12
+    type: Call
+    value: >
+            Quest quest = new Quest()
+                {
+                    Name = "Dugon2",
+                    GoldReward = 2000,
+                    ItemRewards = new List<string>()
+                        {
+                             "Green Dugon",
+                        },
+                    ExpRewards = new List<uint>()
+                        {
+                             20000,
+                        }
+                };
+            quest.QuestStages = new List<QuestStep<Template>>();
+            var q1 = new QuestStep<Template> { Type = QuestType.Accept };
+            var q2 = new QuestStep<Template> { Type = QuestType.HasItem };
+            q2.Prerequisites.Add(new QuestRequirement
+            {
+                Type = QuestType.KillCount,
+                Amount = 1,
+                Value = "Crab",
+            });
+            quest.QuestStages.Add(q1);
+            quest.QuestStages.Add(q2);
+            result = user.AcceptQuest(quest);
+    success:
+      checkpoint: 22
+    fail:
+      step: 1
+      sequence: 99
+########################################################################################################
+#  CHECKPOINT 22 -- Handle Green Dugon
+########################################################################################################
+  - id: 22
+    type: Call
+    value: >
+            var q         = user.GetQuest("Dugon2");
+            result    = false;
+            
+            if (q != null) {           
+                q.HandleQuest(client, null);
+                result = q.Completed;
+            }       
+    success:
+      step: 1
+      sequence: 20
+    fail:
+      step: 1
+      sequence: 11
+###################################################################################################################
+#  CHECKPOINT 13 -- User Acceps Blue Dugon
+###################################################################################################################
+  - id: 13
+    type: Call
+    value: >
+            Quest quest = new Quest()
+                {
+                    Name = "Dugon3",
+                    GoldReward = 3000,
+                    ItemRewards = new List<string>()
+                        {
+                             "Blue Dugon",
+                        },
+                    ExpRewards = new List<uint>()
+                        {
+                             30000,
+                        }
+                };
+            quest.QuestStages = new List<QuestStep<Template>>();
+            var q1 = new QuestStep<Template> { Type = QuestType.Accept };
+            var q2 = new QuestStep<Template> { Type = QuestType.HasItem };
+            q2.Prerequisites.Add(new QuestRequirement
+            {
+                Type = QuestType.KillCount,
+                Amount = 1,
+                Value = "Turtle",
+            });
+            quest.QuestStages.Add(q1);
+            quest.QuestStages.Add(q2);
+            var result = user.AcceptQuest(quest);
+    success:
+      checkpoint: 23
+    fail:
+      step: 1
+      sequence: 99
+########################################################################################################
+#  CHECKPOINT 23 -- Handle Blue Dugon
+########################################################################################################
+  - id: 23
+    type: Call
+    value: >
+            var q         = user.GetQuest("Dugon3");
+            result    = false;
+            
+            if (q != null) {           
+                q.HandleQuest(client, null);
+                result = q.Completed;
+            }       
+    success:
+      step: 1
+      sequence: 20
+    fail:
+      step: 1
+      sequence: 11
+###################################################################################################################
+#  CHECKPOINT 14 -- User Acceps Yellow Dugon
+###################################################################################################################
+  - id: 14
+    type: Call
+    value: >
+            Quest quest = new Quest()
+                {
+                    Name = "Dugon4",
+                    GoldReward = 4000,
+                    ExpRewards = new List<uint>()
+                        {
+                             40000,
+                        }
+                };
+            quest.QuestStages = new List<QuestStep<Template>>();
+            var q1 = new QuestStep<Template> { Type = QuestType.Accept };
+            var q2 = new QuestStep<Template> { Type = QuestType.HasItem };
+            q2.Prerequisites.Add(new QuestRequirement
+            {
+                Type = QuestType.KillCount,
+                Amount = 1,
+                Value = "Goblin Guard",
+            });
+            quest.QuestStages.Add(q1);
+            quest.QuestStages.Add(q2);
+            result = user.AcceptQuest(quest);
+    success:
+      checkpoint: 24
+    fail:
+      step: 1
+      sequence: 99
+########################################################################################################
+#  CHECKPOINT 24 -- Handle Yellow Dugon
+########################################################################################################
+  - id: 24
+    type: Call
+    value: >
+            var q         = user.GetQuest("Dugon4");
+            result    = false;
+            
+            if (q != null) {           
+                q.HandleQuest(client, null);
+                result = q.Completed;
+            }       
+    success:
+      step: 1
+      sequence: 20
+    fail:
+      step: 1
+      sequence: 11
+###################################################################################################################
+#  CHECKPOINT 15 -- User Acceps Purple Dugon
+###################################################################################################################
+  - id: 15
+    type: Call
+    value: >
+            Quest quest = new Quest()
+                {
+                    Name = "Dugon5",
+                    GoldReward = 5000,
+                    ExpRewards = new List<uint>()
+                        {
+                             50000,
+                        }
+                };
+            quest.QuestStages = new List<QuestStep<Template>>();
+            var q1 = new QuestStep<Template> { Type = QuestType.Accept };
+            var q2 = new QuestStep<Template> { Type = QuestType.HasItem };
+            q2.Prerequisites.Add(new QuestRequirement
+            {
+                Type = QuestType.KillCount,
+                Amount = 1,
+                Value = "Shreiker",
+            });
+            quest.QuestStages.Add(q1);
+            quest.QuestStages.Add(q2);
+            result = user.AcceptQuest(quest);
+    success:
+      checkpoint: 25
+    fail:
+      step: 1
+      sequence: 99
+########################################################################################################
+#  CHECKPOINT 25 -- Handle Purple Dugon
+########################################################################################################
+  - id: 25
+    type: Call
+    value: >
+            var q         = user.GetQuest("Dugon5");
+            result    = false;
+            
+            if (q != null) {           
+                q.HandleQuest(client, null);
+                result = q.Completed;
+            }       
+    success:
+      step: 1
+      sequence: 20
+    fail:
+      step: 1
+      sequence: 11
+###################################################################################################################
+#  CHECKPOINT 16 -- User Acceps Brown Dugon
+###################################################################################################################
+  - id: 16
+    type: Call
+    value: >
+            Quest quest = new Quest()
+                {
+                    Name = "Dugon6",
+                    GoldReward = 6000,
+                    ExpRewards = new List<uint>()
+                        {
+                             60000,
+                        }
+                };
+            quest.QuestStages = new List<QuestStep<Template>>();
+            var q1 = new QuestStep<Template> { Type = QuestType.Accept };
+            var q2 = new QuestStep<Template> { Type = QuestType.HasItem };
+            q2.Prerequisites.Add(new QuestRequirement
+            {
+                Type = QuestType.KillCount,
+                Amount = 1,
+                Value = "Maurader",
+            });
+            quest.QuestStages.Add(q1);
+            quest.QuestStages.Add(q2);
+            result = user.AcceptQuest(quest);
+    success:
+      checkpoint: 26
+    fail:
+      step: 1
+      sequence: 99
+########################################################################################################
+#  CHECKPOINT 26 -- Handle Brown Dugon
+########################################################################################################
+  - id: 26
+    type: Call
+    value: >
+            var q         = user.GetQuest("Dugon6");
+            result    = false;
+            
+            if (q != null) {           
+                q.HandleQuest(client, null);
+                result = q.Completed;
+            }       
+    success:
+      step: 1
+      sequence: 20
+    fail:
+      step: 1
+      sequence: 11
+###################################################################################################################
+#  CHECKPOINT 17 -- User Acceps Red Dugon
+###################################################################################################################
+  - id: 17
+    type: Call
+    value: >
+            Quest quest = new Quest()
+                {
+                    Name = "Dugon7",
+                    GoldReward = 7000,
+                    ExpRewards = new List<uint>()
+                        {
+                             70000,
+                        }
+                };
+            quest.QuestStages = new List<QuestStep<Template>>();
+            var q1 = new QuestStep<Template> { Type = QuestType.Accept };
+            var q2 = new QuestStep<Template> { Type = QuestType.HasItem };
+            q2.Prerequisites.Add(new QuestRequirement
+            {
+                Type = QuestType.KillCount,
+                Amount = 1,
+                Value = "Fae",
+            });
+            quest.QuestStages.Add(q1);
+            quest.QuestStages.Add(q2);
+            result = user.AcceptQuest(quest);
+    success:
+      checkpoint: 27
+    fail:
+      step: 1
+      sequence: 99
+########################################################################################################
+#  CHECKPOINT 27 -- Handle Red Dugon
+########################################################################################################
+  - id: 27
+    type: Call
+    value: >
+            var q         = user.GetQuest("Dugon7");
+            
+            result    = false;
+            
+            if (q != null) {           
+                q.HandleQuest(client, null);
+                result = q.Completed;
+            }       
+    success:
+      step: 1
+      sequence: 20
+    fail:
+      step: 1
+      sequence: 11
+###################################################################################################################
+#  CHECKPOINT 18 -- User Acceps Black Dugon
+###################################################################################################################
+  - id: 18
+    type: Call
+    value: >
+            Quest quest = new Quest()
+                {
+                    Name = "Dugon8",
+                    GoldReward = 8000,
+                    ExpRewards = new List<uint>()
+                        {
+                             80000,
+                        }
+                };
+            quest.QuestStages = new List<QuestStep<Template>>();
+            var q1 = new QuestStep<Template> { Type = QuestType.Accept };
+            var q2 = new QuestStep<Template> { Type = QuestType.HasItem };
+            q2.Prerequisites.Add(new QuestRequirement
+            {
+                Type = QuestType.KillCount,
+                Amount = 1,
+                Value = "Draco",
+            });
+            quest.QuestStages.Add(q1);
+            quest.QuestStages.Add(q2);
+            
+            result = user.AcceptQuest(quest);
+    success:
+      checkpoint: 21
+    fail:
+      step: 1
+      sequence: 99
+########################################################################################################
+#  CHECKPOINT 28 -- Handle Black Dugon
+########################################################################################################
+  - id: 28
+    type: Call
+    value: >
+            var q         = user.GetQuest("Dugon8");
+            
+            if (q != null) {           
+                q.HandleQuest(client, null);
+                result = q.Completed;
+            }       
+    success:
+      step: 1
+      sequence: 20
+    fail:
+      step: 1
+      sequence: 11

@@ -1,0 +1,44 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "WalkRate": 0,
+  "TurnRate": 0,
+  "CastRate": 0,
+  "EnableCasting": false,
+  "Spells": {
+    "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "beag ioc"
+    ]
+  },
+  "Skills": null,
+  "Image": 16827,
+  "Level": 99,
+  "ScriptKey": "Delta",
+  "EnableWalking": false,
+  "EnableTurning": false,
+  "EnableAttacking": false,
+  "EnableSpeech": true,
+  "AttackPlayers": false,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Fancy a handy?",
+      "How about a armpit choo choo",
+      "no fun.",
+      "i can suck the hitch off a trailer"
+    ]
+  },
+  "X": 45,
+  "Y": 42,
+  "AreaID": 3029,
+  "Direction": 3,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "QuestKey": null,
+  "Waypoints": null,
+  "PathQualifer": 0,
+  "ViewingQualifer": 0,
+  "Name": "Delta",
+  "Description": null,
+  "Group": null
+}

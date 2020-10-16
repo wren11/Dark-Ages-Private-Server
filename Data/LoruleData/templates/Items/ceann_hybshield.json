@@ -1,0 +1,59 @@
+{
+  "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
+  "ID": 1,
+  "CanStack": false,
+  "MaxStack": 0,
+  "Image": 3,
+  "DisplayImage": 32862,
+  "ScriptName": "Shield",
+  "Gender": 255,
+  "HealthModifer": null,
+  "ManaModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 1500
+  },
+  "StrModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1
+  },
+  "IntModifer": null,
+  "WisModifer": null,
+  "ConModifer": null,
+  "DexModifer": null,
+  "AcModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 15
+  },
+  "MrModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 20
+  },
+  "HitModifer": null,
+  "DmgModifer": null,
+  "SpellOperator": null,
+  "OffenseElement": 0,
+  "DefenseElement": 0,
+  "CarryWeight": 20,
+  "Flags": 77,
+  "MaxDurability": 13000,
+  "Value": 12750,
+  "EquipmentSlot": 3,
+  "NpcKey": null,
+  "Class": 0,
+  "LevelRequired": 77,
+  "DmgMin": 0,
+  "DmgMax": 0,
+  "DropRate": 0.10,
+  "StageRequired": 0,
+  "HasPants": false,
+  "Color": 0,
+  "WeaponScript": null,
+  "Name": "Ceannlaidir Hy-Brasyl Shield",
+  "Description": null,
+  "Group": null
+}

@@ -1,0 +1,79 @@
+{
+  "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
+  "ID": 0,
+  "CanStack": false,
+  "MaxStack": 0,
+  "Image": 176,
+  "DisplayImage": 33740,
+  "ScriptName": "Armor",
+  "Gender": 2,
+  "HealthModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 2000
+  },
+  "ManaModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 500
+  },
+  "StrModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 0
+  },
+  "IntModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1
+  },
+  "WisModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1
+  },
+  "ConModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1
+  },
+  "DexModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 0
+  },
+  "AcModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 72
+  },
+  "MrModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 40
+  },
+  "HitModifer": null,
+  "DmgModifer": null,
+  "SpellOperator": null,
+  "OffenseElement": 0,
+  "DefenseElement": 0,
+  "CarryWeight": 11,
+  "Flags": 4189,
+  "MaxDurability": 10000000,
+  "Value": 1000,
+  "EquipmentSlot": 2,
+  "NpcKey": null,
+  "Class": 5,
+  "LevelRequired": 99,
+  "DmgMin": 0,
+  "DmgMax": 0,
+  "DropRate": 11.0,
+  "StageRequired": 0,
+  "HasPants": false,
+  "Color": 0,
+  "WeaponScript": null,
+  "Name": "Grand Master Virtue Robe",
+  "Description": null,
+  "Group": null
+}

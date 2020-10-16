@@ -1,0 +1,57 @@
+{
+  "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
+  "Icon": 82,
+  "MaxLevel": 100,
+  "ScriptKey": "cradh",
+  "MinLines": 0,
+  "MaxLines": 9,
+  "ManaCost": 200,
+  "Text": "\u0000",
+  "Debuff": null,
+  "Buff": null,
+  "TargetType": 2,
+  "BaseLines": 3,
+  "LevelRate": 0.9,
+  "Sound": 0,
+  "Animation": 0,
+  "DamageExponent": 0.0,
+  "Pane": 0,
+  "ElementalProperty": 0,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": []
+    },
+    "Stage_Required": 0,
+    "Class_Required": 4,
+    "ExpLevel_Required": 21,
+    "Str_Required": 13,
+    "Int_Required": 39,
+    "Wis_Required": 25,
+    "Dex_Required": 0,
+    "Con_Required": 0,
+    "Gold_Required": 50000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": "beag cradh",
+    "Spell_Level_Required": 100,
+    "Spell_Tier_Required": 1
+  },
+  "NpcKey": "Dar",
+  "TierLevel": 0,
+  "TargetAnimation": 0,
+  "IsTrap": false,
+  "Name": "cradh",
+  "Description": "Bind a weaker curse onto that an unwilling target.",
+  "Group": null
+}

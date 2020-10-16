@@ -1,0 +1,68 @@
+{
+  "$type": "Darkages.Types.SpellTemplate, Darkages.Server",
+  "Icon": 47,
+  "MaxLevel": 100,
+  "ScriptKey": "Generic Elemental Single",
+  "MinLines": 0,
+  "MaxLines": 9,
+  "ManaCost": 500,
+  "Text": "\u0000",
+  "Debuff": null,
+  "Buff": null,
+  "TargetType": 2,
+  "BaseLines": 2,
+  "LevelRate": 0.1,
+  "Sound": 79,
+  "Animation": 10,
+  "DamageExponent": 60.0,
+  "Pane": 0,
+  "ElementalProperty": 2,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Viper's Gland",
+          "AmountRequired": 10
+        },
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Bee's Honey",
+          "AmountRequired": 10
+        }
+      ]
+    },
+    "Stage_Required": 0,
+    "Class_Required": 3,
+    "ExpLevel_Required": 33,
+    "Str_Required": 0,
+    "Int_Required": 28,
+    "Wis_Required": 17,
+    "Dex_Required": 0,
+    "Con_Required": 0,
+    "Gold_Required": 50000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": "sal",
+    "Spell_Level_Required": 70,
+    "Spell_Tier_Required": 1
+  },
+  "NpcKey": "Dar",
+  "TierLevel": 0,
+  "TargetAnimation": 0,
+  "IsTrap": false,
+  "Name": "mor sal",
+  "Description": null,
+  "Group": null
+}

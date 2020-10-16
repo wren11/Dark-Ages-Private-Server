@@ -1,0 +1,71 @@
+{
+  "$type": "Darkages.Types.SkillTemplate, Darkages.Server",
+  "ID": 0,
+  "Icon": 59,
+  "ScriptName": "Claw Fist",
+  "LevelRate": 0.03,
+  "Cooldown": 10,
+  "MaxLevel": 100,
+  "MissAnimation": 33,
+  "TargetAnimation": 0,
+  "FailMessage": "failed.",
+  "Type": 1,
+  "Pane": 1,
+  "PostQualifers": 0,
+  "Sound": 21,
+  "Debuff": null,
+  "Buff": {
+    "$type": "Darkages.Storage.locales.Buffs.buff_clawfist, Darkages.Server",
+    "Name": "Claw Fist",
+    "Length": 9,
+    "Icon": 13,
+    "value": 0,
+    "Cancelled": false
+  },
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Gargoyle Fiend's Skull",
+          "AmountRequired": 1
+        },
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Frog's Leg",
+          "AmountRequired": 1
+        }
+      ]
+    },
+    "Stage_Required": 0,
+    "Class_Required": 5,
+    "ExpLevel_Required": 29,
+    "Str_Required": 0,
+    "Int_Required": 0,
+    "Wis_Required": 0,
+    "Dex_Required": 32,
+    "Con_Required": 30,
+    "Gold_Required": 50000,
+    "Skill_Required": "Double Punch",
+    "Skill_Level_Required": 70,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": null,
+    "Spell_Level_Required": 0,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": "Kung-Fu Master",
+  "TierLevel": 9,
+  "Name": "Claw Fist",
+  "Description": "Doubles all unarmed assail damage for it's duration.",
+  "Group": "Attack Bonus"
+}

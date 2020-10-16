@@ -1,0 +1,67 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "WalkRate": 0,
+  "TurnRate": 0,
+  "CastRate": 0,
+  "EnableCasting": false,
+  "Spells": null,
+  "Skills": {
+    "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "Kelberoth Strike",
+      "Double Punch"
+    ]
+  },
+  "Image": 16740,
+  "Level": 14,
+  "ScriptKey": "Bear Grylls",
+  "EnableWalking": true,
+  "EnableTurning": true,
+  "EnableAttacking": true,
+  "EnableSpeech": true,
+  "AttackPlayers": false,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "I'm Bear Grylls, and im gonna show you what it takes to survive.",
+      "Some of the most dangerous places. On Eaaaarth.",
+      "Semi can soon turn to fully, and that can be fatal.",
+      "This place has got me fully erect.",
+      "I'm not even hungry, but the prospect of freshly laid shit, has got my body pumped and my mouth watering.",
+      "As much as i'd love to sit and eat shit all day. Daylight is falling.",
+      "Time to settle in the the night.",
+      "Night time in the wilderness can be a lonely place.",
+      "It's thoughts like this that have led me to the smack.",
+      "I'm nursing a smack hang over from hell.",
+      "As far as shit goes, You can't afford to be a picky eater.",
+      "This fox shit has got the better of me.",
+      "there we have it, a pretty big load.",
+      "It's bitter, Salty",
+      "Packed full of vitamin c",
+      "vita mins"
+    ]
+  },
+  "X": 14,
+  "Y": 21,
+  "AreaID": 81,
+  "Direction": 2,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "QuestKey": "Bear Grylls",
+  "Waypoints": {
+    "$type": "System.Collections.Generic.List`1[[Darkages.Types.Position, Darkages.Server]], mscorlib",
+    "$values": [
+      {
+        "$type": "Darkages.Types.Position, Darkages.Server",
+        "X": 20,
+        "Y": 25,
+        "AreaID": 0
+      }
+    ]
+  },
+  "PathQualifer": 3,
+  "ViewingQualifer": 0,
+  "Name": "Bear Grylls",
+  "Description": null,
+  "Group": null
+}

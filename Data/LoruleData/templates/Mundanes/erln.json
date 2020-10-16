@@ -1,0 +1,41 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "WalkRate": 0,
+  "TurnRate": 0,
+  "CastRate": 5000,
+  "EnableCasting": false,
+  "Spells": null,
+  "Skills": null,
+  "Image": 16510,
+  "Level": 99,
+  "ScriptKey": "Erin's Script",
+  "EnableWalking": false,
+  "EnableTurning": true,
+  "EnableAttacking": false,
+  "EnableSpeech": true,
+  "AttackPlayers": false,
+  "Speech": {
+    "$type": "System.Collections.ObjectModel.Collection`1[[System.String, mscorlib]], mscorlib",
+    "$values": [
+      "You look like you could use some help, new monk.",
+      "Over here, Monk!",
+      "Come see me when you have a chance.",
+      "I'm here to help.",
+      "You Lost?",
+      "You must be new %"
+    ]
+  },
+  "X": 40,
+  "Y": 29,
+  "AreaID": 3029,
+  "Direction": 1,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "QuestKey": "Monk: Beginner Equipment",
+  "Waypoints": null,
+  "PathQualifer": 2,
+  "ViewingQualifer": 16,
+  "Name": "Erln",
+  "Description": "Monk Helper, Will provide new monks some quests to improve their gear",
+  "Group": "Monk Helpers"
+}

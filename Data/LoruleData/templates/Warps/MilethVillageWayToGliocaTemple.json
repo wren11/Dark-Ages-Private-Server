@@ -1,0 +1,65 @@
+{
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 7,
+        "Y": 19,
+        "AreaID": 0
+      },
+      "AreaID": 3006,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 8,
+        "Y": 19,
+        "AreaID": 0
+      },
+      "AreaID": 3006,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 9,
+        "Y": 19,
+        "AreaID": 0
+      },
+      "AreaID": 3006,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 9,
+        "Y": 18,
+        "AreaID": 0
+      },
+      "AreaID": 3006,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 9,
+        "Y": 20,
+        "AreaID": 0
+      },
+      "AreaID": 3006,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": {
+      "X": 23,
+      "Y": 6,
+      "AreaID": 0
+    },
+    "AreaID": 3007,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 3006,
+  "Name": "Map Warp from 3006 to 3007",
+  "Description": null,
+  "Group": null
+}

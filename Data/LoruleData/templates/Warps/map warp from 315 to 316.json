@@ -1,0 +1,33 @@
+{
+  "LevelRequired": 1,
+  "WarpRadius": 0,
+  "Activations": [
+    {
+      "Location": {
+        "X": 49,
+        "Y": 26
+      },
+      "AreaID": 315,
+      "PortalKey": 0
+    },
+    {
+      "Location": {
+        "X": 49,
+        "Y": 25
+      },
+      "AreaID": 315,
+      "PortalKey": 0
+    }
+  ],
+  "To": {
+    "Location": {
+      "X": 2,
+      "Y": 24
+    },
+    "AreaID": 316,
+    "PortalKey": 0
+  },
+  "WarpType": 0,
+  "ActivationMapId": 315,
+  "Name": "Map Warp from 315 to 316"
+}

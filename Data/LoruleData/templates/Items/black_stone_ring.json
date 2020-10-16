@@ -1,0 +1,63 @@
+{
+  "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
+  "ID": 0,
+  "CanStack": false,
+  "MaxStack": 0,
+  "Image": 1360,
+  "DisplayImage": 34128,
+  "ScriptName": "Generic",
+  "Gender": 255,
+  "HealthModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 400
+  },
+  "ManaModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 50
+  },
+  "StrModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 1
+  },
+  "IntModifer": null,
+  "WisModifer": null,
+  "ConModifer": null,
+  "DexModifer": null,
+  "AcModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 3
+  },
+  "MrModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 10
+  },
+  "HitModifer": null,
+  "DmgModifer": null,
+  "SpellOperator": null,
+  "OffenseElement": 0,
+  "DefenseElement": 0,
+  "CarryWeight": 1,
+  "Flags": 4189,
+  "MaxDurability": 5000,
+  "Value": 50000,
+  "EquipmentSlot": 7,
+  "NpcKey": "Scroll Merchant",
+  "Class": 0,
+  "LevelRequired": 99,
+  "DmgMin": 0,
+  "DmgMax": 0,
+  "DropRate": 3.0,
+  "StageRequired": 1,
+  "HasPants": false,
+  "Color": 0,
+  "WeaponScript": null,
+  "Name": "Black Stone Ring",
+  "Description": null,
+  "Group": null
+}

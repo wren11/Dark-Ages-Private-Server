@@ -1,0 +1,113 @@
+# NPC START #
+#################################################################################################
+start:
+    sequence: 1
+    step: 1
+
+
+
+# SEQUENCES START
+#################################################################################################    
+sequences:
+  - id: 1                                  
+    steps: 
+
+#################################################################
+# STEP 1
+#################################################################
+    - id: 1                                
+      text: "Welcome to Dark Ages : Online Roleplaying. This tutorial will give you the facts and skills you need to begin."          
+      answers:
+      - id: 1
+        text: next
+        step: 2
+        sequence: 1    
+
+#################################################################
+# STEP 2
+#################################################################    
+    - id: 2                                
+      text: "You will gain 5000 experience points, a dirk and 1000 coins."          
+      answers: 
+        
+        #prev
+      - id: 1                              
+        text: back                                    
+        step: 1
+        sequence: 1
+        
+        #next        
+      - id: 2                              
+        text: next                                    
+        step: 3
+        sequence: 1
+
+
+#################################################################
+# STEP 3
+#################################################################
+    - id: 3                                
+      text: "The first thing you should do in this tutorial is talk to all the Merchants, there are five of them. When you are ready to leave, you can leave the tutorial by continuing to the end of this path."          
+      answers:  
+      
+      #go back to step 2      
+      - id: 1                              
+        text: back                                    
+        step: 2
+        sequence: 1   
+        
+      #go forward to the next step.        
+      - id: 2                              
+        text: next                                    
+        step: 4
+        sequence: 1
+        
+
+#################################################################
+# STEP 4
+#################################################################
+    - id: 4                               
+      text: "To move, right click the mouse to the position of where you want to move. In tight spots, you can use the arrow keys on your keyboard to walk around. Talk to the knight next to the tree by double-clicking him. If you get lost, press <Tab>."          
+      answers:  
+      
+      #go back to step 2      
+      - id: 1                              
+        text: back                                    
+        step: 3
+        sequence: 1   
+        
+      #go forward to the next step.        
+      - id: 2                              
+        text: next                                    
+        checkpoint: 1
+        
+        
+ #################################################################
+# STEP 5
+#################################################################
+    - id: 5                               
+      text: "You should have a piece of clothing in your inventory. Press the <a> key to access your inventory. Double click on the piece of clothing to wear it."          
+      answers:  
+
+      #go forward to the next step.        
+      - id: 1                              
+        text: next                                    
+        step: 6
+        sequence: 1
+        
+ 
+ 
+ 
+ 
+checkpoints:
+  - id: 1
+    type: Call
+    value: >  
+            client.Port(3029, 27, 45);
+            result = client.GiveTutorialArmor();                              
+    success:
+      step: 5
+      sequence: 1
+    fail:
+      step: 4
+      sequence: 1 

@@ -1,0 +1,59 @@
+{
+  "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
+  "ID": 0,
+  "CanStack": false,
+  "MaxStack": 0,
+  "Image": 248,
+  "DisplayImage": 32994,
+  "ScriptName": "Generic",
+  "Gender": 255,
+  "HealthModifer": null,
+  "ManaModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 500
+  },
+  "StrModifer": null,
+  "IntModifer": null,
+  "WisModifer": null,
+  "ConModifer": null,
+  "DexModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 3
+  },
+  "AcModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 4
+  },
+  "MrModifer": null,
+  "HitModifer": null,
+  "DmgModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1
+  },
+  "SpellOperator": null,
+  "OffenseElement": 0,
+  "DefenseElement": 0,
+  "CarryWeight": 4,
+  "Flags": 4189,
+  "MaxDurability": 9000,
+  "Value": 150000,
+  "EquipmentSlot": 10,
+  "NpcKey": null,
+  "Class": 5,
+  "LevelRequired": 95,
+  "DmgMin": 0,
+  "DmgMax": 0,
+  "DropRate": 0.1,
+  "StageRequired": 0,
+  "HasPants": false,
+  "Color": 0,
+  "WeaponScript": null,
+  "Name": "Abundance Hy-Brasyl Bracer",
+  "Description": null,
+  "Group": null
+}

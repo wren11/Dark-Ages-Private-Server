@@ -1,0 +1,53 @@
+{
+  "$type": "Darkages.Types.SkillTemplate, Darkages.Server",
+  "ID": 2,
+  "Icon": 24,
+  "ScriptName": "Sneak",
+  "LevelRate": 0.09,
+  "Cooldown": 10,
+  "MaxLevel": 100,
+  "MissAnimation": 251,
+  "TargetAnimation": 251,
+  "FailMessage": null,
+  "Type": 1,
+  "Pane": 1,
+  "PostQualifers": 0,
+  "Sound": 136,
+  "Debuff": null,
+  "Buff": null,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": []
+    },
+    "Stage_Required": 0,
+    "Class_Required": 2,
+    "ExpLevel_Required": 0,
+    "Str_Required": 3,
+    "Int_Required": 0,
+    "Wis_Required": 0,
+    "Dex_Required": 3,
+    "Con_Required": 0,
+    "Gold_Required": 500,
+    "Skill_Required": "Assail",
+    "Skill_Level_Required": 10,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": null,
+    "Spell_Level_Required": 0,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": "Martial Arts Trainer",
+  "TierLevel": 0,
+  "Name": "Sneak",
+  "Description": "Step into the shadows, your next attack does twice as much.",
+  "Group": null
+}

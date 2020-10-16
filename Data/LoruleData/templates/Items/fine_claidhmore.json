@@ -1,0 +1,63 @@
+{
+  "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
+  "ID": 0,
+  "CanStack": false,
+  "MaxStack": 0,
+  "Image": 16,
+  "DisplayImage": 32943,
+  "ScriptName": "Weapon",
+  "Gender": 255,
+  "HealthModifer": null,
+  "ManaModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": -3500
+  },
+  "StrModifer": null,
+  "IntModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": -1
+  },
+  "WisModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": -1
+  },
+  "ConModifer": null,
+  "DexModifer": null,
+  "AcModifer": null,
+  "MrModifer": null,
+  "HitModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 0
+  },
+  "DmgModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 0
+  },
+  "SpellOperator": null,
+  "OffenseElement": 0,
+  "DefenseElement": 0,
+  "CarryWeight": 18,
+  "Flags": 4221,
+  "MaxDurability": 30000,
+  "Value": 46500,
+  "EquipmentSlot": 1,
+  "NpcKey": "Arms Dealer",
+  "Class": 0,
+  "LevelRequired": 75,
+  "DmgMin": 74,
+  "DmgMax": 86,
+  "DropRate": 1.0,
+  "StageRequired": 0,
+  "HasPants": false,
+  "Color": 0,
+  "WeaponScript": null,
+  "Name": "Fine Claidhmore",
+  "Description": null,
+  "Group": null
+}

@@ -1,0 +1,63 @@
+{
+  "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
+  "ID": 0,
+  "CanStack": false,
+  "MaxStack": 0,
+  "Image": 37,
+  "DisplayImage": 33070,
+  "ScriptName": "Armor",
+  "Gender": 255,
+  "HealthModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 900
+  },
+  "ManaModifer": null,
+  "StrModifer": null,
+  "IntModifer": null,
+  "WisModifer": null,
+  "ConModifer": null,
+  "DexModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 1
+  },
+  "AcModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 47
+  },
+  "MrModifer": null,
+  "HitModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 10
+  },
+  "DmgModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 1
+  },
+  "SpellOperator": null,
+  "OffenseElement": 0,
+  "DefenseElement": 0,
+  "CarryWeight": 30,
+  "Flags": 4189,
+  "MaxDurability": 75000,
+  "Value": 349000,
+  "EquipmentSlot": 2,
+  "NpcKey": null,
+  "Class": 2,
+  "LevelRequired": 80,
+  "DmgMin": 0,
+  "DmgMax": 0,
+  "DropRate": 25.0,
+  "StageRequired": 0,
+  "HasPants": false,
+  "Color": 0,
+  "WeaponScript": null,
+  "Name": "Marauder Hide",
+  "Description": null,
+  "Group": null
+}

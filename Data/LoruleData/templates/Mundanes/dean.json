@@ -1,0 +1,17 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "Image": 0x407D,
+  "Level": 99,
+  "ScriptKey": "shop2",
+  "EnableWalking": false,
+  "EnableTurning": false,
+  "EnableAttacking": false,
+  "EnableSpeech": true,
+  "X": 41,
+  "Y": 35,
+  "AreaID": 3029,
+  "Direction": 2,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "Name": "Mr Kelly"
+}

@@ -1,0 +1,16 @@
+{
+  "$type": "Darkages.Types.MundaneTemplate, Darkages.Server",
+  "Image": 0x411B,
+  "Level": 9999,
+  "ScriptKey": "Warlord",
+  "EnableWalking": false,
+  "EnableTurning": false,
+  "EnableAttacking": false,
+  "X": 101,
+  "Y": 9,
+  "AreaID": 1,
+  "Direction": 1,
+  "MaximumHp": 0,
+  "MaximumMp": 0,
+  "Name": "Ancient Warlord"
+}

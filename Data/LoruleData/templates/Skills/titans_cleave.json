@@ -1,0 +1,74 @@
+{
+  "$type": "Darkages.Types.SkillTemplate, Darkages.Server",
+  "ID": 648985078,
+  "Icon": 66,
+  "ScriptName": "Cone Attack",
+  "LevelRate": 0.03,
+  "Cooldown": 3,
+  "MaxLevel": 100,
+  "MissAnimation": 0,
+  "TargetAnimation": 327,
+  "FailMessage": "failed.",
+  "Type": 0,
+  "Pane": 1,
+  "PostQualifers": 0,
+  "Sound": 46,
+  "Debuff": null,
+  "Buff": null,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Australia's Deadliest Venom",
+          "AmountRequired": 10
+        },
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Timber",
+          "AmountRequired": 10
+        },
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Talos Fragment",
+          "AmountRequired": 1
+        },
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Dark Belt",
+          "AmountRequired": 2
+        }
+      ]
+    },
+    "Stage_Required": 0,
+    "Class_Required": 1,
+    "ExpLevel_Required": 65,
+    "Str_Required": 80,
+    "Int_Required": 15,
+    "Wis_Required": 0,
+    "Dex_Required": 30,
+    "Con_Required": 35,
+    "Gold_Required": 1500000,
+    "Skill_Required": "Wind Blade",
+    "Skill_Level_Required": 100,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": null,
+    "Spell_Level_Required": 0,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": "Combat Trainer",
+  "TierLevel": 9,
+  "Name": "Titan's Cleave",
+  "Description": "A Powerful Area Affect Skill. Every 3 seconds your space bar turns into complete sodomization.",
+  "Group": null
+}

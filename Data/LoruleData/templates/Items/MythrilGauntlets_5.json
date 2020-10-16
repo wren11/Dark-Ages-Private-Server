@@ -1,0 +1,59 @@
+{
+  "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
+  "ID": 0,
+  "CanStack": false,
+  "MaxStack": 0,
+  "Image": 227,
+  "DisplayImage": 32996,
+  "ScriptName": "Generic",
+  "Gender": 255,
+  "HealthModifer": null,
+  "ManaModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 1000
+  },
+  "StrModifer": null,
+  "IntModifer": null,
+  "WisModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 1
+  },
+  "ConModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 2
+  },
+  "DexModifer": null,
+  "AcModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 3
+  },
+  "MrModifer": null,
+  "HitModifer": null,
+  "DmgModifer": null,
+  "SpellOperator": null,
+  "OffenseElement": 0,
+  "DefenseElement": 0,
+  "CarryWeight": 4,
+  "Flags": 4189,
+  "MaxDurability": 9000,
+  "Value": 50000,
+  "EquipmentSlot": 10,
+  "NpcKey": null,
+  "Class": 0,
+  "LevelRequired":  63,
+  "DmgMin": 0,
+  "DmgMax": 0,
+  "DropRate": 0.1,
+  "StageRequired": 0,
+  "HasPants": false,
+  "Color": 0,
+  "WeaponScript": null,
+  "Name": "Deoch Mythril Gauntlet",
+  "Description": null,
+  "Group": null
+}

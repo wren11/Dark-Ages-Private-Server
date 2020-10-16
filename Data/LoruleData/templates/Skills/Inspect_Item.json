@@ -1,0 +1,59 @@
+{
+  "$type": "Darkages.Types.SkillTemplate, Darkages.Server",
+  "ID": 77,
+  "Icon": 7,
+  "ScriptName": "Inspect Item",
+  "LevelRate": 0.3,
+  "Cooldown": 3,
+  "MaxLevel": 100,
+  "MissAnimation": 68,
+  "TargetAnimation": 70,
+  "FailMessage": "Failed.",
+  "Type": 1,
+  "Pane": 1,
+  "PostQualifers": 1,
+  "Sound": 32,
+  "Debuff": null,
+  "Buff": null,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": [
+        {
+          "$type": "Darkages.Types.ItemPredicate, Darkages.Server",
+          "Item": "Raw Beryl",
+          "AmountRequired": 1
+        },
+      ]
+    },
+    "Stage_Required": 0,
+    "Class_Required": 2,
+    "ExpLevel_Required": 6,
+    "Str_Required": 6,
+    "Int_Required": 6,
+    "Wis_Required": 6,
+    "Dex_Required": 6,
+    "Con_Required": 6,
+    "Gold_Required": 1000,
+    "Skill_Required": null,
+    "Skill_Level_Required": 0,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": null,
+    "Spell_Level_Required": 0,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": "Bullop",
+  "TierLevel": 0,
+  "Name": "Inspect Item",
+  "Description": "Inspect an Item",
+  "Group": null
+}

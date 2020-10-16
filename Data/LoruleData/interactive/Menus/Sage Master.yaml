@@ -1,0 +1,32 @@
+# NPC START #
+#################################################################################################
+start:
+    sequence: 1
+    step: 1
+
+
+
+# SEQUENCES START
+#################################################################################################    
+
+sequences:
+#Sequence 1 - START --------------------------------------------
+  - id: 1                                  
+    steps:                           
+    - id: 1                                
+      text: "Hello, I'm a magic tree."          
+      answers:                            
+      - id: 1                              
+        text: next   
+        step: 2
+        sequence: 1        
+    - id: 2
+      text: "Yeah i said it."
+      answers:                            
+      - id: 1                              
+        text: next
+        step: 3
+        sequence: 1               
+    - id: 3
+      text: "now, go away."        
+#Sequence 1 - END ----------------------------------------------    

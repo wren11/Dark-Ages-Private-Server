@@ -1,0 +1,67 @@
+{
+  "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
+  "ID": 0,
+  "CanStack": false,
+  "MaxStack": 0,
+  "Image": 113,
+  "DisplayImage": 32786,
+  "ScriptName": "Helmet",
+  "Gender": 1,
+  "HealthModifer": null,
+  "ManaModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 0
+  },
+  "StrModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 0
+  },
+  "IntModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 0
+  },
+  "WisModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 0
+  },
+  "ConModifer": null,
+  "DexModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 0
+  },
+  "AcModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 6
+  },
+  "MrModifer": null,
+  "HitModifer": null,
+  "DmgModifer": null,
+  "SpellOperator": null,
+  "OffenseElement": 0,
+  "DefenseElement": 0,
+  "CarryWeight": 4,
+  "Flags": 4189,
+  "MaxDurability": 24000,
+  "Value": 30000,
+  "EquipmentSlot": 4,
+  "NpcKey": null,
+  "Class": 1,
+  "LevelRequired": 97,
+  "DmgMin": 0,
+  "DmgMax": 0,
+  "DropRate": 27.0,
+  "StageRequired": 0,
+  "HasPants": false,
+  "Color": 0,
+  "WeaponScript": null,
+  "Name": "Hy-Brasyl Helmet",
+  "Description": null,
+  "Group": null
+}

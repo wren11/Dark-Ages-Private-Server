@@ -1,0 +1,67 @@
+{
+  "$type": "Darkages.Types.ItemTemplate, Darkages.Server",
+  "MiniScript": null,
+  "ID": 0,
+  "CanStack": false,
+  "MaxStack": 0,
+  "Image": 142,
+  "DisplayImage": 33306,
+  "ScriptName": "Helmet",
+  "Gender": 1,
+  "HealthModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 0
+  },
+  "ManaModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 250
+  },
+  "StrModifer": null,
+  "IntModifer": null,
+  "WisModifer": null,
+  "ConModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 3
+  },
+  "DexModifer": null,
+  "AcModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 1
+  },
+  "MrModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 0,
+    "Value": 0
+  },
+  "HitModifer": {
+    "$type": "Darkages.Types.StatusOperator, Darkages.Server",
+    "Option": 1,
+    "Value": 6
+  },
+  "DmgModifer": null,
+  "SpellOperator": null,
+  "OffenseElement": 0,
+  "DefenseElement": 0,
+  "CarryWeight": 1,
+  "Flags": 4189,
+  "MaxDurability": 240000,
+  "Value": 80000,
+  "EquipmentSlot": 5,
+  "NpcKey": null,
+  "Class": 5,
+  "LevelRequired": 77,
+  "DmgMin": 0,
+  "DmgMax": 0,
+  "DropRate": 27.0,
+  "StageRequired": 0,
+  "HasPants": false,
+  "Color": 0,
+  "WeaponScript": null,
+  "Name": "Silk Red Dugon",
+  "Description": null,
+  "Group": null
+}

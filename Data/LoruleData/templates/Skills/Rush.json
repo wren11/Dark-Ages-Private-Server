@@ -1,0 +1,53 @@
+{
+  "$type": "Darkages.Types.SkillTemplate, Darkages.Server",
+  "ID": 7,
+  "Icon": 50,
+  "ScriptName": "Rush",
+  "LevelRate": 0.08,
+  "Cooldown": 8,
+  "MaxLevel": 100,
+  "MissAnimation": 0,
+  "TargetAnimation": 273,
+  "FailMessage": "You can't do that.",
+  "Type": 1,
+  "Pane": 1,
+  "PostQualifers": 0,
+  "Sound": 46,
+  "Debuff": null,
+  "Buff": null,
+  "Prerequisites": {
+    "$type": "Darkages.Types.LearningPredicate, Darkages.Server",
+    "Quests_Completed_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Areas_Visited_Required": {
+      "$type": "System.Collections.Generic.List`1[[System.UInt16, mscorlib]], mscorlib",
+      "$values": []
+    },
+    "Items_Required": {
+      "$type": "System.Collections.Generic.List`1[[Darkages.Types.ItemPredicate, Darkages.Server]], mscorlib",
+      "$values": []
+    },
+    "Stage_Required": 0,
+    "Class_Required": 1,
+    "ExpLevel_Required": 0,
+    "Str_Required": 3,
+    "Int_Required": 0,
+    "Wis_Required": 0,
+    "Dex_Required": 3,
+    "Con_Required": 0,
+    "Gold_Required": 500,
+    "Skill_Required": "Charge",
+    "Skill_Level_Required": 100,
+    "Skill_Tier_Required": 0,
+    "Spell_Required": null,
+    "Spell_Level_Required": 0,
+    "Spell_Tier_Required": 0
+  },
+  "NpcKey": "Martial Arts Trainer",
+  "TierLevel": 0,
+  "Name": "Rush",
+  "Description": "Charge and attack at anything in front of you.",
+  "Group": null
+}

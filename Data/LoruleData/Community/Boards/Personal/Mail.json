@@ -1,0 +1,52 @@
+{
+  "Posts": [
+    {
+      "Command": 49,
+      "Secured": true,
+      "BoardId": 0,
+      "DatePosted": "2020-03-30T14:53:52.9806805Z",
+      "Message": "jgfhj",
+      "Owner": "lol",
+      "PostId": 2,
+      "Read": false,
+      "Recipient": "lol",
+      "Sender": "lol",
+      "Subject": "lol",
+      "TopicId": 876
+    },
+    {
+      "Command": 49,
+      "Secured": true,
+      "BoardId": 0,
+      "DatePosted": "2020-04-30T11:52:59.3459229Z",
+      "Message": "test",
+      "Owner": "lol",
+      "PostId": 3,
+      "Read": false,
+      "Recipient": "test",
+      "Sender": "lol",
+      "Subject": "test",
+      "TopicId": 1140
+    },
+    {
+      "Command": 49,
+      "Secured": true,
+      "BoardId": 0,
+      "DatePosted": "2020-04-30T11:53:04.8690295Z",
+      "Message": "hi",
+      "Owner": "lol",
+      "PostId": 4,
+      "Read": false,
+      "Recipient": "hi",
+      "Sender": "lol",
+      "Subject": "hi",
+      "TopicId": 616
+    }
+  ],
+  "Command": 49,
+  "Secured": true,
+  "Index": 0,
+  "IsMail": true,
+  "LetterId": 0,
+  "Subject": "Mail"
+}
