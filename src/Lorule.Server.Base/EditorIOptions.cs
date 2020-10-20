@@ -1,9 +1,8 @@
 ﻿namespace Lorule.Editor
 {
-    public class EditorSettings
+    public class EditorIOptions
     {
         public string Location { get; set; }
         public string LicenseKey { get; set; }
-        public string EditorAssetPath { get; set; }
     }
 }

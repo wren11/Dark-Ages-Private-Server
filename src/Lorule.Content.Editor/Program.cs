@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using Darkages;
 using Darkages.Network.Object;
 using Lorule.Editor.Controls;
+using Lorule.GameServer;
 using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 
 
@@ -40,8 +41,9 @@ namespace Lorule.Editor
 
             var config = builder.Build(); 
             var constants = config.GetSection("ServerConfig").Get<ServerConstants>();
-            var editorSettings = config.GetSection("Editor").Get<EditorSettings>();
+            var editorSettings = config.GetSection("Editor").Get<EditorIOptions>();
             using (var serviceProvider = new ServiceCollection()
+                .Configure<LoruleOptions>(config.GetSection("Content"))
                 .AddOptions()
                 .AddSingleton(providers)
                 .AddSingleton<ILoggerFactory>(sc =>
@@ -55,7 +57,7 @@ namespace Lorule.Editor
                     return factory;
                 })
                 .AddLogging(l => l.AddConsole())
-                .AddSingleton<EditorSettings>(_ => editorSettings)
+                .AddSingleton(_ => editorSettings)
                 .AddSingleton<LoadingIndicatorView>()
                 .AddSingleton<IServerConstants, ServerConstants>(_ => constants)
                 .AddSingleton<IServerContext, ServerContext>()

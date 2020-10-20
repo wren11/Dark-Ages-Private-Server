@@ -1,12 +1,11 @@
 {
 	"Content": {
-		"Location": "E:\\Lorule_Editor\\LoruleData",
+		"Location": "C:\\Users\\DeanMcpherson\\Documents\\GitHub\\DarkAges-Lorule-Server\\Data\\LoruleData",
 		"ServerIP": "127.0.0.1"
 	},
 	"Editor": {
-		"Location": "E:\\Lorule_Editor\\LoruleData",
-		"LicenseKey": "PS1-12N5J-X7TRA-1E52-S0WR",
-		"EditorAssetPath": "E:\\Lorule_Editor"
+		"Location": "C:\\Users\\DeanMcpherson\\Documents\\GitHub\\DarkAges-Lorule-Server\\Data",
+		"LicenseKey": "PS1-12N5J-X7TRA-1E52-S0WR"
 	},
 	"ServerConfig": {
 		"WalkingSpeedLimitFactor": 275, //275 prevents all movement hacks from working.

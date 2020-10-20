@@ -36,21 +36,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="devDept.Eyeshot.Control.Win.v11, Version=11.0.796.0, Culture=neutral, PublicKeyToken=5385d83d2fb4d7d9, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\devDept Software\Eyeshot Professional 11\Bin\devDept.Eyeshot.Control.Win.v11.dll</HintPath>
-    </Reference>
-    <Reference Include="devDept.Eyeshot.Control.Win.v11.Design, Version=11.0.796.0, Culture=neutral, PublicKeyToken=e7c15929995d127a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\devDept Software\Eyeshot Professional 11\Bin\Design\devDept.Eyeshot.Control.Win.v11.Design.dll</HintPath>
+    <Reference Include="devDept.Eyeshot.Control.Wpf.v11, Version=11.0.796.0, Culture=neutral, PublicKeyToken=5385d83d2fb4d7d9, processorArchitecture=MSIL">
+      <HintPath>..\packages\devDept.Eyeshot.11.0.796\lib\net40\devDept.Eyeshot.Control.Wpf.v11.dll</HintPath>
     </Reference>
     <Reference Include="devDept.Geometry.v11, Version=11.0.796.0, Culture=neutral, PublicKeyToken=9440825e8b4733bc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\devDept Software\Eyeshot Professional 11\Bin\devDept.Geometry.v11.dll</HintPath>
+      <HintPath>..\packages\devDept.Eyeshot.11.0.796\lib\net40\devDept.Geometry.v11.dll</HintPath>
     </Reference>
-    <Reference Include="devDept.Graphics.Win.v11, Version=11.0.796.0, Culture=neutral, PublicKeyToken=f3cd437f0d8061b5, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\devDept Software\Eyeshot Professional 11\Bin\devDept.Graphics.Win.v11.dll</HintPath>
+    <Reference Include="devDept.Graphics.Shaders.v11, Version=11.0.796.0, Culture=neutral, PublicKeyToken=54ce5f5f803e4b42, processorArchitecture=MSIL">
+      <HintPath>..\packages\devDept.Eyeshot.11.0.796\lib\net40\devDept.Graphics.Shaders.v11.dll</HintPath>
+    </Reference>
+    <Reference Include="devDept.Graphics.Wpf.v11, Version=11.0.796.0, Culture=neutral, PublicKeyToken=f3cd437f0d8061b5, processorArchitecture=MSIL">
+      <HintPath>..\packages\devDept.Eyeshot.11.0.796\lib\net40\devDept.Graphics.Wpf.v11.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.dll</HintPath>
@@ -205,6 +201,8 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.2.10.1-dev-01249\lib\net46\Serilog.dll</HintPath>
     </Reference>
@@ -294,6 +292,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\MapEditor.cs">
@@ -302,7 +301,6 @@
     <Compile Include="Controls\MapEditor.Designer.cs">
       <DependentUpon>MapEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="EditorSettings.cs" />
     <Compile Include="FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -13,12 +13,11 @@ namespace Lorule.Editor.Views
             InitializeComponent();
 
             _mapEditor = mapEditor ?? throw new ArgumentNullException(nameof(mapEditor));
-            _mapEditor.GetLayout().Dock = DockStyle.Fill;
         }
 
         private void MapView_Load(object sender, EventArgs e)
         {
-            if (_mapEditor.GetLayout() != null) panel1?.Controls.Add(_mapEditor.GetLayout());
+
         }
     }
 }

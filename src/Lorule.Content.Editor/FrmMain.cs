@@ -6,6 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Lorule.GameServer;
 
 namespace Lorule.Editor
 {
@@ -15,11 +16,13 @@ namespace Lorule.Editor
         private readonly LoadingIndicatorView _loadingIndicator;
         private readonly IServerContext _loruleServerContext;
         private readonly IServerConstants _serverConstants;
-        private readonly EditorSettings _editorSettings;
+        private readonly EditorIOptions _editorSettings;
+        private readonly IOptions<LoruleOptions> _loruleOptions;
 
-        public FrmMain(EditorSettings editorSettings, ILogger<FrmMain> logger, LoadingIndicatorView loadingIndicator, IServerContext loruleServerContext, IServerConstants serverConstants)
+        public FrmMain(EditorIOptions editorSettings, IOptions<LoruleOptions> loruleOptions, ILogger<FrmMain> logger, LoadingIndicatorView loadingIndicator, IServerContext loruleServerContext, IServerConstants serverConstants)
         {
             _editorSettings = editorSettings ?? throw new ArgumentNullException(nameof(editorSettings));
+            _loruleOptions = loruleOptions ?? throw new ArgumentNullException(nameof(loruleOptions));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _loadingIndicator = loadingIndicator ?? throw new ArgumentNullException(nameof(loadingIndicator));
             _loruleServerContext = loruleServerContext ?? throw new ArgumentNullException(nameof(loruleServerContext));
@@ -48,7 +51,7 @@ namespace Lorule.Editor
 
         private async Task LoadArchives()
         {
-            ServerContext.StoragePath = _editorSettings.Location;
+            ServerContext.StoragePath = _loruleOptions.Value.Location;
 
             _loadingIndicator.SetCaption("Loading Lorule Data...");
             await Task.Run(() => ServerContext.LoadAndCacheStorage(true));
