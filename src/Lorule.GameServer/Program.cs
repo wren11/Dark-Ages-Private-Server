@@ -1,7 +1,6 @@
 ﻿#region
 
 using Darkages;
-using Darkages.Network.Object;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -85,7 +84,17 @@ namespace Lorule.GameServer
             context.Start(configConstants, Log, Error);
         }
 
-        public string LoruleVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public string LoruleVersion
+        {
+            get
+            {
+                var version = Assembly.GetExecutingAssembly().GetName().Version;
+                if (version != null)
+                    return version.ToString();
+
+                return string.Empty;
+            }
+        }
 
         public void Error(Exception ex)
         {
