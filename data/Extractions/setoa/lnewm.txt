@@ -1,0 +1,57 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 616 308
+	<IMAGE>
+		"dlgbbs03.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Send"
+	<TYPE> 3
+	<RECT> 518 67 600 98
+	<VALUE>
+		13
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Cancel"
+	<TYPE> 3
+	<RECT> 518 101 600 132
+	<VALUE>
+		8
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Receiver"
+	<TYPE> 5
+	<RECT> 96 15 318 27
+	<VALUE>
+		0
+	<COLOR>
+		20
+		255
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ReceiverEdit"
+	<TYPE> 6
+	<RECT> 96 13 320 29
+	<VALUE>
+		0
+	<COLOR>
+		255
+		31
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Title"
+	<TYPE> 7
+	<RECT> 96 41 481 57
+	<COLOR>
+		255
+		31
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Content"
+	<TYPE> 7
+	<RECT> 20 74 501 282
+	<COLOR>
+		255
+		31
+<ENDCONTROL>

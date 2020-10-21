@@ -1,0 +1,63 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 172 302
+	<IMAGE>
+		"Nsetup05.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CLOSE"
+	<TYPE> 3
+	<RECT> 73 257 155 288
+	<VALUE>
+		12
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Friends"
+	<TYPE> 7
+	<RECT> 8 127 80 148
+	<IMAGE>
+		"option02.epf" 4
+		"option02.epf" 5
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Macro"
+	<TYPE> 7
+	<RECT> 8 152 80 173
+	<IMAGE>
+		"option02.epf" 6
+		"option02.epf" 7
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Setting"
+	<TYPE> 7
+	<RECT> 8 177 80 198
+	<IMAGE>
+		"option02.epf" 8
+		"option02.epf" 9
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ExitGame"
+	<TYPE> 7
+	<RECT> 51 228 150 249
+	<IMAGE>
+		"option03.epf" 0
+		"option03.epf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "SoundRect"
+	<TYPE> 7
+	<RECT> 94 85 152 90
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "MusicRect"
+	<TYPE> 7
+	<RECT> 94 111 152 116
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Tick"
+	<TYPE> 7
+	<RECT> 90 82 102 94
+	<IMAGE>
+		"option04.epf" 0
+<ENDCONTROL>

@@ -1,0 +1,121 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 536 402
+	<IMAGE>
+		"lsbackm.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CONTENT"
+	<TYPE> 7
+	<RECT> 15 15 551 422
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HOTKEY"
+	<TYPE> 7
+	<RECT> 11 230 529 402
+	<IMAGE>
+		"khotkey.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "DESC"
+	<TYPE> 7
+	<RECT> 0 0 536 230
+	<IMAGE>
+		"kdesc00.epf" 0
+		"kdesc01.epf" 0
+		"kdesc02.epf" 0
+		"kdesc03.epf" 0
+		"kdesc04.epf" 0
+		"kdesc05.epf" 0
+		"kdesc06.epf" 0
+		"kdesc07.epf" 0
+		"kdesc08.epf" 0
+		"kdesc09.epf" 0
+		"kdesc10.epf" 0
+		"kdesc11.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "KEY00"
+	<TYPE> 7
+	<RECT> 62 317 229 344
+	<IMAGE>
+		"key00.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "KEY01"
+	<TYPE> 7
+	<RECT> 54 289 221 316
+	<IMAGE>
+		"key01.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "KEY02"
+	<TYPE> 7
+	<RECT> 75 345 527 400
+	<IMAGE>
+		"key02.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "KEY03"
+	<TYPE> 7
+	<RECT> 342 289 430 344
+	<IMAGE>
+		"key03.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "KEY04"
+	<TYPE> 7
+	<RECT> 11 261 66 316
+	<IMAGE>
+		"key04.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "KEY05"
+	<TYPE> 7
+	<RECT> 67 230 178 257
+	<IMAGE>
+		"key05.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "KEY06"
+	<TYPE> 7
+	<RECT> 193 230 304 257
+	<IMAGE>
+		"key06.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "KEY07"
+	<TYPE> 7
+	<RECT> 319 230 430 257
+	<IMAGE>
+		"key07.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "KEY08"
+	<TYPE> 7
+	<RECT> 500 261 527 316
+	<IMAGE>
+		"key08.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "KEY09"
+	<TYPE> 7
+	<RECT> 39 261 346 288
+	<IMAGE>
+		"key09.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "KEY10"
+	<TYPE> 7
+	<RECT> 139 373 274 400
+	<IMAGE>
+		"key10.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "KEY11"
+	<TYPE> 7
+	<RECT> 187 345 214 372
+	<IMAGE>
+		"key11.epf" 0
+<ENDCONTROL>

@@ -14,6 +14,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using Lorule.GameServer;
+using Microsoft.Extensions.Options;
 
 #endregion
 
@@ -21,6 +23,11 @@ namespace Darkages
 {
     public class ServerContext : IServerContext
     {
+        public ServerContext(IOptions<LoruleOptions> options)
+        {
+            StoragePath = options.Value.Location;
+        }
+
         public static CommandParser Parser { get; set; }
 
         public static bool Running;

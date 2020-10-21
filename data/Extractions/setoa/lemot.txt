@@ -1,0 +1,30 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 150 56
+	<IMAGE>
+		"emotdlg.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Emot0"
+	<TYPE> 7
+	<RECT> 3 9 21 27
+	<IMAGE>
+		"emot000.epf" 0
+		"emot000.epf" 1
+		"emot000.epf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Emot1"
+	<TYPE> 7
+	<RECT> 21 9 39 27
+	<IMAGE>
+		"emot000.epf" 3
+		"emot000.epf" 4
+		"emot000.epf" 5
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Description"
+	<TYPE> 7
+	<RECT> 6 30 143 42
+<ENDCONTROL>

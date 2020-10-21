@@ -1,0 +1,34 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 312 236
+	<IMAGE>
+		"pz_back.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Puzzle"
+	<TYPE> 7
+	<RECT> 12 13 222 223
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TimeArea"
+	<TYPE> 7
+	<RECT> 224 10 312 58
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "LevelArea"
+	<TYPE> 7
+	<RECT> 224 61 312 101
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NiyePop"
+	<TYPE> 7
+	<RECT> 224 100 312 226
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Balloon"
+	<TYPE> 7
+	<RECT> 229 100 306 155
+	<IMAGE>
+		"pz_balun.spf" 0
+<ENDCONTROL>

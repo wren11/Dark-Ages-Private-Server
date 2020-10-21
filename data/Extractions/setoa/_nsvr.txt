@@ -1,0 +1,46 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 640 480
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ServerTopImage"
+	<TYPE> 7
+	<RECT> 0 0 421 133
+	<IMAGE>
+		"_nsvr1.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ServerMidImage"
+	<TYPE> 7
+	<RECT> 0 133 421 153
+	<IMAGE>
+		"_nsvr2.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ServerBotImage"
+	<TYPE> 7
+	<RECT> 0 153 421 176
+	<IMAGE>
+		"_nsvr3.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ServerTop"
+	<TYPE> 7
+	<RECT> 28 37 98 49
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ServerBottom"
+	<TYPE> 7
+	<RECT> 28 57 98 69
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ServerATop"
+	<TYPE> 7
+	<RECT> 108 37 394 49
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ServerABot"
+	<TYPE> 7
+	<RECT> 108 57 394 69
+<ENDCONTROL>

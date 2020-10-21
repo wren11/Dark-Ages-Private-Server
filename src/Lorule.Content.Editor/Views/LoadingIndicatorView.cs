@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Extensions.Logging;
 
-namespace Lorule.Editor.Views
+namespace Lorule.Content.Editor.Views
 {
     public partial class LoadingIndicatorView : Form
     {

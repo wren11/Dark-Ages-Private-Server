@@ -1,0 +1,33 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 175 176
+	<IMAGE>
+		"dlglogin.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Name"
+	<TYPE> 7
+	<RECT> 43 63 131 79
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Password"
+	<TYPE> 7
+	<RECT> 43 105 131 121
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "OK"
+	<TYPE> 7
+	<RECT> 12 139 74 159
+	<IMAGE>
+		"menubtn.epf" 0
+		"menubtn.epf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Cancel"
+	<TYPE> 7
+	<RECT> 97 139 159 159
+	<IMAGE>
+		"menubtn.epf" 2
+		"menubtn.epf" 3
+<ENDCONTROL>

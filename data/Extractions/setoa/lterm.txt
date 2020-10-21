@@ -1,0 +1,66 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 640 480
+	<IMAGE>
+		"setup01.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Hangul"
+	<TYPE> 7
+	<RECT> 187 371 253 383
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Port"
+	<TYPE> 7
+	<RECT> 261 371 344 383
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Speed"
+	<TYPE> 7
+	<RECT> 351 371 402 383
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Tel"
+	<TYPE> 7
+	<RECT> 409 371 491 383
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Num"
+	<TYPE> 7
+	<RECT> 499 371 605 383
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Help"
+	<TYPE> 7
+	<RECT> 140 345 612 357
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Main"
+	<TYPE> 7
+	<RECT> 82 60 562 312
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Setup"
+	<TYPE> 7
+	<RECT> 121 366 179 389
+	<IMAGE>
+		"setup06.epf" 0
+		"setup06.epf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Connect"
+	<TYPE> 7
+	<RECT> 336 402 484 442
+	<IMAGE>
+		"setup05.epf" 0
+		"setup05.epf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Exit"
+	<TYPE> 7
+	<RECT> 489 402 600 442
+	<IMAGE>
+		"setup05.epf" 2
+		"setup05.epf" 3
+<ENDCONTROL>

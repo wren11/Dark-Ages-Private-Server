@@ -1,0 +1,41 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 566 436
+	<IMAGE>
+		"lsbackm.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "GUI"
+	<TYPE> 7
+	<RECT> 15 17 551 419
+	<IMAGE>
+		"lg_main.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "DESC"
+	<TYPE> 7
+	<RECT> 27 29 520 261
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "DESC_TITLE"
+	<TYPE> 7
+	<RECT> 27 29 520 41
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "DESC_CONTENT"
+	<TYPE> 7
+	<RECT> 27 45 520 261
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "STATUS"
+	<TYPE> 7
+	<RECT> 88 295 459 385
+	<IMAGE>
+		"lg_stat.epf" 0
+		"lg_item.epf" 0
+		"lg_skill.epf" 0
+		"lg_spell.epf" 0
+		"lg_chat.epf" 0
+		"lg_stat2.epf" 0
+<ENDCONTROL>

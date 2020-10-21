@@ -1,0 +1,19 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 640 480
+	<IMAGE>
+		"_nhk_bk.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "MAIN"
+	<TYPE> 7
+	<RECT> 34 279 570 451
+	<IMAGE>
+		"_nhk_m.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "EX"
+	<TYPE> 7
+	<RECT> 36 43 572 268
+<ENDCONTROL>

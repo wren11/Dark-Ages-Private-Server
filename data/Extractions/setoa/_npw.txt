@@ -1,0 +1,43 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 217 170
+	<IMAGE>
+		"_npw.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Name"
+	<TYPE> 7
+	<RECT> 91 37 181 53
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Password"
+	<TYPE> 7
+	<RECT> 91 61 181 77
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NewPassword"
+	<TYPE> 7
+	<RECT> 91 85 181 101
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Confirm"
+	<TYPE> 7
+	<RECT> 91 109 181 125
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "OK"
+	<TYPE> 7
+	<RECT> 31 130 93 150
+	<IMAGE>
+		"menubtn.epf" 0
+		"menubtn.epf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Cancel"
+	<TYPE> 7
+	<RECT> 117 130 179 150
+	<IMAGE>
+		"menubtn.epf" 2
+		"menubtn.epf" 3
+<ENDCONTROL>

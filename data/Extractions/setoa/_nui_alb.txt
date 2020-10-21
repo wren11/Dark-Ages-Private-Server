@@ -1,0 +1,40 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 76 120
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PIC"
+	<TYPE> 7
+	<RECT> 6 6 70 78
+	<IMAGE>
+		"_nui_alb.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PICRECT"
+	<TYPE> 7
+	<RECT> 14 15 62 71
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BBACK"
+	<TYPE> 7
+	<RECT> 8 84 69 104
+	<IMAGE>
+		"_nui_alc.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "SAVE"
+	<TYPE> 7
+	<RECT> 10 86 38 102
+	<IMAGE>
+		"_nui_ba.spf" 0
+		"_nui_ba.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "REMOVE"
+	<TYPE> 7
+	<RECT> 39 86 67 102
+	<IMAGE>
+		"_nui_ba.spf" 2
+		"_nui_ba.spf" 3
+<ENDCONTROL>

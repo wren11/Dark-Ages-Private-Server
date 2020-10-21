@@ -1,0 +1,332 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 640 480
+	<IMAGE>
+		"_nbk_l.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "SZ_ID"
+	<TYPE> 7
+	<RECT> 6 418 78 430
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NUM_HP"
+	<TYPE> 7
+	<RECT> 14 443 74 455
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NUM_MP"
+	<TYPE> 7
+	<RECT> 14 462 74 474
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "SZ_ZONE"
+	<TYPE> 7
+	<RECT> 543 437 633 449
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "SZ_XY"
+	<TYPE> 7
+	<RECT> 587 462 635 474
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "SZ_WEIGHT"
+	<TYPE> 7
+	<RECT> 532 462 586 474
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "MAP"
+	<TYPE> 7
+	<RECT> 3 3 619 427
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CAPTURE"
+	<TYPE> 7
+	<RECT> 3 3 619 406
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_GROUP"
+	<TYPE> 7
+	<RECT> 364 412 382 430
+	<IMAGE>
+		"_nbkgrp.spf" 0
+		"_nbkgrp.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_HELP"
+	<TYPE> 7
+	<RECT> 508 412 526 430
+	<IMAGE>
+		"_nbkhlp.spf" 0
+		"_nbkhlp.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_TOWNMAP"
+	<TYPE> 7
+	<RECT> 342 412 360 430
+	<IMAGE>
+		"_nbktwn.spf" 0
+		"_nbktwn.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_OPTION"
+	<TYPE> 7
+	<RECT> 620 324 638 342
+	<IMAGE>
+		"_ngb01.spf" 0
+		"_ngb01.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_BULLETIN"
+	<TYPE> 7
+	<RECT> 620 346 638 364
+	<IMAGE>
+		"_ngb00.spf" 2
+		"_ngb00.spf" 3
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_USERS"
+	<TYPE> 7
+	<RECT> 620 368 638 386
+	<IMAGE>
+		"_ngb00.spf" 4
+		"_ngb00.spf" 5
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_EMOT"
+	<TYPE> 7
+	<RECT> 620 390 638 408
+	<IMAGE>
+		"_nemot.spf" 0
+		"_nemot.spf" 1
+		"_nemot.spf" 3
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_INV0"
+	<TYPE> 7
+	<RECT> 99 408 122 431
+	<IMAGE>
+		"_ngbi0b.spf" 0
+		"_ngbi0b.spf" 1
+		"_ngbi0b.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_INV1"
+	<TYPE> 7
+	<RECT> 133 408 156 431
+	<IMAGE>
+		"_ngbi0b.spf" 3
+		"_ngbi0b.spf" 4
+		"_ngbi0b.spf" 5
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_INV2"
+	<TYPE> 7
+	<RECT> 167 408 190 431
+	<IMAGE>
+		"_ngbi0b.spf" 6
+		"_ngbi0b.spf" 7
+		"_ngbi0b.spf" 8
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_INV3"
+	<TYPE> 7
+	<RECT> 201 408 224 431
+	<IMAGE>
+		"_ngbi0b.spf" 9
+		"_ngbi0b.spf" 10
+		"_ngbi0b.spf" 11
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_INV4"
+	<TYPE> 7
+	<RECT> 235 408 258 431
+	<IMAGE>
+		"_ngbi0b.spf" 12
+		"_ngbi0b.spf" 13
+		"_ngbi0b.spf" 14
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_INV5"
+	<TYPE> 7
+	<RECT> 270 408 293 431
+	<IMAGE>
+		"_ngbi0b.spf" 15
+		"_ngbi0b.spf" 16
+		"_ngbi0b.spf" 17
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CMail"
+	<TYPE> 7
+	<RECT> 392 412 410 430
+	<IMAGE>
+		"_ni_maib.spf" 0
+		"_ni_maib.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CGroup"
+	<TYPE> 7
+	<RECT> 414 412 432 430
+	<IMAGE>
+		"_ni_grpb.spf" 0
+		"_ni_grpb.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CShot"
+	<TYPE> 7
+	<RECT> 436 412 454 430
+	<IMAGE>
+		"_ni_shob.spf" 0
+		"_ni_shob.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CGroup0"
+	<TYPE> 7
+	<RECT> 393 398 411 416
+	<IMAGE>
+		"_ni_gr0b.spf" 0
+		"_ni_gr0b.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "InventoryBackground"
+	<TYPE> 7
+	<RECT> 137 167 581 213
+	<IMAGE>
+		"_ninv1.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "InventoryBackgroundExpanded"
+	<TYPE> 7
+	<RECT> 161 78 605 252
+	<IMAGE>
+		"_ninv5.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "InventoryRect"
+	<TYPE> 7
+	<RECT> 87 434 531 480
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ChattingRect"
+	<TYPE> 7
+	<RECT> 92 439 524 475
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_SCREENSHOT"
+	<TYPE> 7
+	<RECT> 486 412 504 430
+	<IMAGE>
+		"_ni_scrs.spf" 0
+		"_ni_scrs.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_SETTING"
+	<TYPE> 7
+	<RECT> 464 412 482 430
+	<IMAGE>
+		"_ni_sett.spf" 0
+		"_ni_sett.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_EXPAND"
+	<TYPE> 7
+	<RECT> 533 411 554 432
+	<IMAGE>
+		"_ni_expb.spf" 0
+		"_ni_expb.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "EMPTY"
+	<TYPE> 7
+	<RECT> 48 25 592 391
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "SkillSpellBackgroundExpanded"
+	<TYPE> 7
+	<RECT> 60 190 504 298
+	<IMAGE>
+		"_ninv3.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_CHANGELAYOUT"
+	<TYPE> 7
+	<RECT> 619 411 640 432
+	<IMAGE>
+		"_ni_chlo.spf" 0
+		"_ni_chlo.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "SAY"
+	<TYPE> 7
+	<RECT> 94 394 524 406
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_INV_EXTENDED_FRAME"
+	<TYPE> 7
+	<RECT> 173 23 420 49
+	<IMAGE>
+		"_ngbmb.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_INVE0"
+	<TYPE> 7
+	<RECT> 185 23 208 46
+	<IMAGE>
+		"_ngbi0b.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ORB_HP"
+	<TYPE> 7
+	<RECT> 4 439 80 455
+	<IMAGE>
+		"_norb_hb.spf" 18
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ORB_MP"
+	<TYPE> 7
+	<RECT> 4 458 80 474
+	<IMAGE>
+		"_norb_mb.spf" 18
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "LivingInventoryBackground"
+	<TYPE> 7
+	<RECT> 106 74 550 120
+	<IMAGE>
+		"_ninvs1.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "LivingInventoryBackgroundExpanded"
+	<TYPE> 7
+	<RECT> 79 137 523 245
+	<IMAGE>
+		"_ninvs3.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PING"
+	<TYPE> 7
+	<RECT> 299 416 311 426
+	<IMAGE>
+		"_nping.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ChatBackgroundExpanded"
+	<TYPE> 7
+	<RECT> 99 251 543 359
+	<IMAGE>
+		"_nchatbk.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ChattingRectExpanded"
+	<TYPE> 7
+	<RECT> 104 258 536 354
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_LEGEND"
+	<TYPE> 7
+	<RECT> 320 412 338 430
+	<IMAGE>
+		"_nbklgd.spf" 0
+		"_nbklgd.spf" 1
+<ENDCONTROL>

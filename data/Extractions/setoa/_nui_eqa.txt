@@ -1,0 +1,222 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 599 306
+	<IMAGE>
+		"_nui_eqa.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HEAD"
+	<TYPE> 7
+	<RECT> 136 50 168 82
+	<IMAGE>
+		"_nui_eqi.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HEAD2"
+	<TYPE> 7
+	<RECT> 136 88 168 120
+	<IMAGE>
+		"_nui_eqi.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "EAR"
+	<TYPE> 7
+	<RECT> 85 60 117 92
+	<IMAGE>
+		"_nui_eqi.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ARMOR"
+	<TYPE> 7
+	<RECT> 70 99 102 131
+	<IMAGE>
+		"_nui_eqi.spf" 3
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ARMOR2"
+	<TYPE> 7
+	<RECT> 32 99 64 131
+	<IMAGE>
+		"_nui_eqi.spf" 3
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NECK"
+	<TYPE> 7
+	<RECT> 186 59 218 91
+	<IMAGE>
+		"_nui_eqi.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CAPE"
+	<TYPE> 7
+	<RECT> 203 99 235 131
+	<IMAGE>
+		"_nui_eqi.spf" 4
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CAPE2"
+	<TYPE> 7
+	<RECT> 241 99 273 131
+	<IMAGE>
+		"_nui_eqi.spf" 4
+<ENDCONTROL>
+<CONTROL>
+    <NAME> "CAPE3"
+    <TYPE> 7
+	<RECT> 241 138 273 170
+    <IMAGE>
+        "_nui_eqi.spf" 4
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "WEAPON"
+	<TYPE> 7
+	<RECT> 70 138 102 170
+	<IMAGE>
+		"_nui_eqi.spf" 6
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "LARM"
+	<TYPE> 7
+	<RECT> 32 177 64 209
+	<IMAGE>
+		"_nui_eqi.spf" 5
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "LHAND"
+	<TYPE> 7
+	<RECT> 70 177 102 209
+	<IMAGE>
+		"_nui_eqi.spf" 9
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "RHAND"
+	<TYPE> 7
+	<RECT> 203 177 235 209
+	<IMAGE>
+		"_nui_eqi.spf" 10
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "RARM"
+	<TYPE> 7
+    <RECT> 241 177 273 209
+	<IMAGE>
+		"_nui_eqi.spf" 8
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "SHIELD"
+	<TYPE> 7
+	<RECT> 203 138 235 170
+	<IMAGE>
+		"_nui_eqi.spf" 7
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "LEG"
+	<TYPE> 7
+	<RECT> 85 216 117 248
+	<IMAGE>
+		"_nui_eqi.spf" 11
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "FOOT"
+	<TYPE> 7
+	<RECT> 136 220 168 252
+	<IMAGE>
+		"_nui_eqi.spf" 13
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BELT"
+	<TYPE> 7
+	<RECT> 186 216 218 248
+	<IMAGE>
+		"_nui_eqi.spf" 12
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HumanImage"
+	<TYPE> 7
+	<RECT> 95 118 205 202
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NAME"
+	<TYPE> 7
+	<RECT> 432 30 552 42
+	<COLOR>
+		20
+		255
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CLASSTEXT"
+	<TYPE> 7
+	<RECT> 432 51 552 63
+	<COLOR>
+		20
+		255
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CLANTEXT"
+	<TYPE> 7
+	<RECT> 432 72 552 84
+	<COLOR>
+		20
+		255
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HumanState"
+	<TYPE> 7
+	<RECT> 113 194 193 206
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HumanIcon"
+	<TYPE> 7
+	<RECT> 113 194 124 205
+	<IMAGE>
+		"_nemots.spf" 0
+		"_nemots.spf" 1
+		"_nemots.spf" 7
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Portrait"
+	<TYPE> 7
+	<RECT> 348 229 396 285
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CLANTITLETEXT"
+	<TYPE> 7
+	<RECT> 432 93 552 105
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TITLETEXT"
+	<TYPE> 7
+	<RECT> 432 114 552 126
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PortraitText"
+	<TYPE> 7
+	<RECT> 416 228 554 288
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Nation"
+	<TYPE> 7
+	<RECT> 353 154 391 199
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NationText"
+	<TYPE> 7
+	<RECT> 416 147 554 207
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "GroupBtn"
+	<TYPE> 7
+	<RECT> 242 28 274 53
+	<IMAGE>
+		"_nui_egb.spf" 0
+		"_nui_egb.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "GroupBtn_Disabled"
+	<TYPE> 7
+	<RECT> 70 271 102 296
+	<IMAGE>
+		"_nui_egb.spf" 3
+		"_nui_egb.spf" 4
+<ENDCONTROL>

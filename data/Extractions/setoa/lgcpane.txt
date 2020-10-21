@@ -1,0 +1,12 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 103 19
+	<IMAGE>
+		"gc_pane2.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TITLE"
+	<TYPE> 7
+	<RECT> 3 3 100 16
+<ENDCONTROL>

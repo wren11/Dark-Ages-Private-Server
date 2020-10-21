@@ -1,0 +1,33 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 600 436
+	<IMAGE>
+		"lmiback.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "MAP"
+	<TYPE> 7
+	<RECT> 14 14 584 284
+	<IMAGE>
+		"tmapv01.epf" 0
+		"tmapv02.epf" 0
+		"tmapv03.epf" 0
+		"tmapv04.epf" 0
+		"tmapv05.epf" 0
+		"tmapv06.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "MAPNAME"
+	<TYPE> 5
+	<RECT> 229 291 369 303
+	<COLOR>
+		20	0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "MAPDESC"
+	<TYPE> 5
+	<RECT> 19 314 581 420
+	<COLOR>
+		20	0
+<ENDCONTROL>

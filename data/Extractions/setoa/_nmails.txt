@@ -1,0 +1,57 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 581 290
+	<IMAGE>
+		"_nmails.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Receiver"
+	<TYPE> 7
+	<RECT> 96 13 318 25
+	<COLOR>
+		20
+		255
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Title"
+	<TYPE> 7
+	<RECT> 96 37 484 53
+	<COLOR>
+		255
+		31
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Content"
+	<TYPE> 7
+	<RECT> 21 69 501 273
+	<COLOR>
+		20
+		31
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Send"
+	<TYPE> 7
+	<RECT> 507 61 568 83
+	<IMAGE>
+		"_nbtn.spf" 30
+		"_nbtn.spf" 31
+		"_nbtn.spf" 32
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Cancel"
+	<TYPE> 7
+	<RECT> 507 87 568 109
+	<IMAGE>
+		"_nbtn.spf" 6
+		"_nbtn.spf" 7
+		"_nbtn.spf" 8
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ReceiverEdit"
+	<TYPE> 7
+	<RECT> 96 11 320 27
+	<COLOR>
+		255
+		31
+<ENDCONTROL>

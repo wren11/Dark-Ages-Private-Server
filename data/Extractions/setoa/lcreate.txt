@@ -1,0 +1,140 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 640 480
+	<IMAGE>
+		"dlgcre00.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "OK"
+	<TYPE> 7
+	<RECT> 407 386 506 430
+	<IMAGE>
+		"dlgcre04.epf" 1
+		"dlgcre04.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Cancel"
+	<TYPE> 7
+	<RECT> 506 386 605 430
+	<IMAGE>
+		"dlgcre04.epf" 3
+		"dlgcre04.epf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Male"
+	<TYPE> 7
+	<RECT> 406 68 449 111
+	<IMAGE>
+		"dlgcre01.epf" 0
+		"dlgcre01.epf" 1
+		"dlgcre01.epf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Female"
+	<TYPE> 7
+	<RECT> 477 68 520 111
+	<IMAGE>
+		"dlgcre01.epf" 3
+		"dlgcre01.epf" 4
+		"dlgcre01.epf" 5
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "AngleLeft"
+	<TYPE> 7
+	<RECT> 355 175 384 199
+	<IMAGE>
+		"dlgcre03.epf" 0
+		"dlgcre03.epf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "AngleRight"
+	<TYPE> 7
+	<RECT> 548 175 577 199
+	<IMAGE>
+		"dlgcre03.epf" 2
+		"dlgcre03.epf" 3
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HairLeft"
+	<TYPE> 7
+	<RECT> 405 264 434 288
+	<IMAGE>
+		"dlgcre03.epf" 0
+		"dlgcre03.epf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HairRight"
+	<TYPE> 7
+	<RECT> 498 264 527 288
+	<IMAGE>
+		"dlgcre03.epf" 2
+		"dlgcre03.epf" 3
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ColorRight"
+	<TYPE> 7
+	<RECT> 498 297 527 321
+	<IMAGE>
+		"dlgcre03.epf" 2
+		"dlgcre03.epf" 3
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ColorLeft"
+	<TYPE> 7
+	<RECT> 405 297 434 321
+	<IMAGE>
+		"dlgcre03.epf" 0
+		"dlgcre03.epf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "New"
+	<TYPE> 7
+	<RECT> 216 286 294 307
+	<IMAGE>
+		"dlgcre05.epf" 0
+		"dlgcre05.epf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NAME"
+	<TYPE> 7
+	<RECT> 171 82 285 98
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PASSWD"
+	<TYPE> 7
+	<RECT> 171 122 285 138
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PASSWD2"
+	<TYPE> 7
+	<RECT> 171 162 285 178
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NCID"
+	<TYPE> 7
+	<RECT> 169 265 259 281
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NCPW"
+	<TYPE> 7
+	<RECT> 169 317 281 333
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HUMAN"
+	<TYPE> 7
+	<RECT> 410 140 520 224
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Help"
+	<TYPE> 7
+	<RECT> 233 342 294 363
+	<IMAGE>
+		"dlgcre02.epf" 0
+		"dlgcre02.epf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Email"
+	<TYPE> 7
+	<RECT> 171 202 285 218
+<ENDCONTROL>

@@ -1,0 +1,35 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 175 390
+	<IMAGE>
+		"gc_dlg0.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BTN_OK"
+	<TYPE> 7
+	<RECT> 61 351 113 377
+	<IMAGE>
+		"gc_gbtn3.spf" 0
+		"gc_gbtn3.spf" 1
+		"gc_gbtn3.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "USER0"
+	<TYPE> 7
+	<RECT> 19 54 91 66
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "B_BTN0"
+	<TYPE> 7
+	<RECT> 136 50 166 70
+	<IMAGE>
+		"gc_btnu.spf" 0
+		"gc_btnu.spf" 1
+		"gc_btnu.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "USER1"
+	<TYPE> 7
+	<RECT> 19 76 91 88
+<ENDCONTROL>

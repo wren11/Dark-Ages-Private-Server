@@ -1,0 +1,74 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 640 480
+	<IMAGE>
+		"lod00.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Create"
+	<TYPE> 7
+	<RECT> 480 222 592 264
+	<IMAGE>
+		"lod01.epf" 0
+		"lod01.epf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Continue"
+	<TYPE> 7
+	<RECT> 480 255 592 297
+	<IMAGE>
+		"lod01.epf" 2
+		"lod01.epf" 3
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Password"
+	<TYPE> 7
+	<RECT> 480 290 592 332
+	<IMAGE>
+		"lod01.epf" 4
+		"lod01.epf" 5
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Credit"
+	<TYPE> 7
+	<RECT> 480 323 592 365
+	<IMAGE>
+		"lod01.epf" 6
+		"lod01.epf" 7
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Exit"
+	<TYPE> 7
+	<RECT> 480 393 592 435
+	<IMAGE>
+		"lod01.epf" 10
+		"lod01.epf" 11
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "LoginBound"
+	<TYPE> 7
+	<RECT> 218 190 384 307
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Homepage"
+	<TYPE> 7
+	<RECT> 480 359 592 401
+	<IMAGE>
+		"lod01.epf" 8
+		"lod01.epf" 9
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ExtraBack"
+	<TYPE> 7
+	<RECT> 0 149 341 480
+	<IMAGE>
+		"lodbk00.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Version"
+	<TYPE> 7
+	<RECT> 531 459 629 471
+	<COLOR>
+		20
+<ENDCONTROL>

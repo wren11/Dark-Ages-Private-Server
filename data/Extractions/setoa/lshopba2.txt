@@ -1,0 +1,83 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 424 259
+	<IMAGE>
+		"sb_back2.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Get"
+	<TYPE> 3
+	<RECT> 32 217 93 239
+	<IMAGE>
+		"_nbtn.spf" 39
+		"_nbtn.spf" 40
+		"_nbtn.spf" 41
+	<VALUE>
+		0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Close"
+	<TYPE> 3
+	<RECT> 330 217 391 239
+	<IMAGE>
+		"_nbtn.spf" 36
+		"_nbtn.spf" 37
+		"_nbtn.spf" 38
+	<VALUE>
+		0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Prev"
+	<TYPE> 3
+	<RECT> 113 219 186 234
+	<IMAGE>
+		"sb_prev2.spf" 0
+		"sb_prev2.spf" 1
+		"sb_prev2.spf" 2
+	<VALUE>
+		0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Next"
+	<TYPE> 3
+	<RECT> 238 219 311 234
+	<IMAGE>
+		"sb_next2.spf" 0
+		"sb_next2.spf" 1
+		"sb_next2.spf" 2
+	<VALUE>
+		0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Page"
+	<TYPE> 7
+	<RECT> 191 221 233 233
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Items"
+	<TYPE> 7
+	<RECT> 34 43 246 207
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Desc"
+	<TYPE> 7
+	<RECT> 257 43 389 55
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "From"
+	<TYPE> 7
+	<RECT> 257 79 389 91
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Message"
+	<TYPE> 7
+	<RECT> 257 119 389 203
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Gift"
+	<TYPE> 7
+	<RECT> 34 43 66 75
+	<IMAGE>
+		"sb_gift.spf" 0
+<ENDCONTROL>

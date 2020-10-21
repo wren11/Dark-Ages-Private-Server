@@ -1,0 +1,15 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 566 436
+	<IMAGE>
+		"lsbackm.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Map"
+	<TYPE> 7
+	<RECT> 15 15 551 422
+	<IMAGE>
+		"lemap.spf" 0
+		"lwmap.epf" 0
+<ENDCONTROL>

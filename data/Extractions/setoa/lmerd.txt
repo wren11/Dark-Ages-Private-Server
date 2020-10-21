@@ -1,0 +1,66 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 448 366
+	<IMAGE>
+		"dlgbg001.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Description"
+	<TYPE> 7
+	<RECT> 126 21 418 90
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Seller"
+	<TYPE> 7
+	<RECT> 3 5 115 105
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Btn1"
+	<TYPE> 3
+	<RECT> 11 327 93 358
+	<VALUE>
+		6
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Btn2"
+	<TYPE> 3
+	<RECT> 101 327 183 358
+	<VALUE>
+		6
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Btn3"
+	<TYPE> 3
+	<RECT> 265 327 347 358
+	<VALUE>
+		6
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Btn4"
+	<TYPE> 3
+	<RECT> 355 327 437 358
+	<VALUE>
+		6
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Content"
+	<TYPE> 7
+	<RECT> 21 119 421 279
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NO1"
+	<TYPE> 7
+	<RECT> 19 286 46 313
+	<IMAGE>
+		"mernum.epf" 0
+		"mernum.epf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NO2"
+	<TYPE> 7
+	<RECT> 46 286 73 313
+	<IMAGE>
+		"mernum.epf" 2
+		"mernum.epf" 3
+<ENDCONTROL>

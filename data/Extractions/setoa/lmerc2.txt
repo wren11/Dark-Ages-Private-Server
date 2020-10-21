@@ -1,0 +1,147 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 462 370
+	<IMAGE>
+		"mercback.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Description"
+	<TYPE> 7
+	<RECT> 114 13 406 61
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Seller"
+	<TYPE> 7
+	<RECT> 3 5 93 74
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Btn1"
+	<TYPE> 3
+	<RECT> 21 301 103 332
+	<VALUE>
+		6
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Btn2"
+	<TYPE> 3
+	<RECT> 113 301 195 332
+	<VALUE>
+		6
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Btn3"
+	<TYPE> 3
+	<RECT> 230 301 312 332
+	<VALUE>
+		6
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Btn4"
+	<TYPE> 3
+	<RECT> 322 301 404 332
+	<VALUE>
+		6
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Money"
+	<TYPE> 7
+	<RECT> 276 65 410 77
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "DescClass"
+	<TYPE> 7
+	<RECT> 308 113 404 125
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "DescLevel"
+	<TYPE> 7
+	<RECT> 308 137 404 149
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "DescWeight"
+	<TYPE> 7
+	<RECT> 309 161 405 173
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "DescText"
+	<TYPE> 7
+	<RECT> 309 185 403 259
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Page"
+	<TYPE> 7
+	<RECT> 192 280 234 292
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PagePrev"
+	<TYPE> 7
+	<RECT> 116 278 189 293
+	<IMAGE>
+		"mercprev.spf" 0
+		"mercprev.spf" 1
+		"mercprev.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PageNext"
+	<TYPE> 7
+	<RECT> 236 278 309 293
+	<IMAGE>
+		"mercnext.spf" 0
+		"mercnext.spf" 1
+		"mercnext.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ItemIcon1"
+	<TYPE> 7
+	<RECT> 20 110 52 142
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ItemIcon2"
+	<TYPE> 7
+	<RECT> 20 150 52 182
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ItemName1"
+	<TYPE> 7
+	<RECT> 59 121 263 133
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Content"
+	<TYPE> 7
+	<RECT> 14 105 270 265
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Tab0"
+	<TYPE> 7
+	<RECT> 111 83 171 99
+	<IMAGE>
+		"merctab.spf" 0
+		"merctab.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Tab1"
+	<TYPE> 7
+	<RECT> 171 83 231 99
+	<IMAGE>
+		"merctab.spf" 0
+		"merctab.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TabPrev"
+	<TYPE> 7
+	<RECT> 90 83 111 99
+	<IMAGE>
+		"merccp.spf" 0
+		"merccp.spf" 1
+		"merccp.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TabNext"
+	<TYPE> 7
+	<RECT> 351 83 372 99
+	<IMAGE>
+		"merccn.spf" 0
+		"merccn.spf" 1
+		"merccn.spf" 2
+<ENDCONTROL>

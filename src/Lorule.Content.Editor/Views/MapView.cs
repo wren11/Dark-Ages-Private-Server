@@ -1,23 +1,21 @@
-﻿using Lorule.Editor.Controls;
-using System;
+﻿using System;
 using System.Windows.Forms;
+using Lorule.Editor;
 
-namespace Lorule.Editor.Views
+namespace Lorule.Content.Editor.Views
 {
     public partial class MapView : Form
     {
-        private readonly IMapEditor _mapEditor;
 
-        public MapView(IMapEditor mapEditor)
+        public MapView(EditorIOptions options)
         {
             InitializeComponent();
 
-            _mapEditor = mapEditor ?? throw new ArgumentNullException(nameof(mapEditor));
+            model1.Unlock(options?.LicenseKey);
         }
 
         private void MapView_Load(object sender, EventArgs e)
         {
-
         }
     }
 }

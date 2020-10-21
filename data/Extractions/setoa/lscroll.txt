@@ -1,0 +1,7 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 16 16
+	<IMAGE>
+		"scroll.epf" 0
+<ENDCONTROL>

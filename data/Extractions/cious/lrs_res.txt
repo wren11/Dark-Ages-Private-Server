@@ -1,0 +1,26 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 312 236
+	<IMAGE>
+		"mg_res1.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Score"
+	<TYPE> 7
+	<RECT> 51 67 261 105
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Replay"
+	<TYPE> 7
+	<RECT> 42 173 115 193
+	<IMAGE>
+		"mg_rplay.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ShowRanking"
+	<TYPE> 7
+	<RECT> 200 171 271 193
+	<IMAGE>
+		"mg_rrank.spf" 0
+<ENDCONTROL>

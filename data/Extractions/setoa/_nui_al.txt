@@ -1,0 +1,50 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 599 306
+	<IMAGE>
+		"_nui_al.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NEXT"
+	<TYPE> 7
+	<RECT> 527 276 565 291
+	<IMAGE>
+		"_nui_bn.spf" 0
+		"_nui_bn.spf" 1
+		"_nui_bn.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PREV"
+	<TYPE> 7
+	<RECT> 33 275 71 290
+	<IMAGE>
+		"_nui_bp.spf" 0
+		"_nui_bp.spf" 1
+		"_nui_bp.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PG1"
+	<TYPE> 7
+	<RECT> 79 278 121 290
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PG2"
+	<TYPE> 7
+	<RECT> 477 278 519 290
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PGA1"
+	<TYPE> 7
+	<RECT> 36 34 264 274
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PGA2"
+	<TYPE> 7
+	<RECT> 335 34 563 274
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PGBOUND"
+	<TYPE> 7
+	<RECT> 36 34 112 154
+<ENDCONTROL>

@@ -1,0 +1,51 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 447 284
+	<IMAGE>
+		"_nsett.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TopText"
+	<TYPE> 7
+	<RECT> 40 42 210 54
+	<COLOR>
+		20
+		24
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "BottomText"
+	<TYPE> 7
+	<RECT> 40 63 210 75
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TopButton"
+	<TYPE> 7
+	<RECT> 15 40 31 56
+	<IMAGE>
+		"_nsettb.spf" 0
+		"_nsettb.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "RightText"
+	<TYPE> 7
+	<RECT> 251 42 421 54
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Cancel"
+	<TYPE> 7
+	<RECT> 13 256 74 278
+	<IMAGE>
+		"_nbtn.spf" 6
+		"_nbtn.spf" 7
+		"_nbtn.spf" 8
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "OK"
+	<TYPE> 7
+	<RECT> 369 256 430 278
+	<IMAGE>
+		"_nbtn.spf" 3
+		"_nbtn.spf" 4
+		"_nbtn.spf" 5
+<ENDCONTROL>

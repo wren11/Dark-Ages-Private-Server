@@ -1,0 +1,69 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 320 268
+	<IMAGE>
+		"mg_frame.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "START"
+	<TYPE> 7
+	<RECT> 5 5 64 23
+	<IMAGE>
+		"mgb_star.spf" 0
+		"mgb_star.spf" 1
+		"mgb_star.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "LEVEL"
+	<TYPE> 7
+	<RECT> 64 5 124 23
+	<IMAGE>
+		"mgb_lev.spf" 0
+		"mgb_lev.spf" 1
+		"mgb_lev.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "RESTART"
+	<TYPE> 7
+	<RECT> 124 5 185 23
+	<IMAGE>
+		"mgb_rest.spf" 0
+		"mgb_rest.spf" 1
+		"mgb_rest.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "RANKING"
+	<TYPE> 7
+	<RECT> 185 5 220 23
+	<IMAGE>
+		"mgb_rank.spf" 0
+		"mgb_rank.spf" 1
+		"mgb_rank.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HELP"
+	<TYPE> 7
+	<RECT> 220 5 267 23
+	<IMAGE>
+		"mgb_help.spf" 0
+		"mgb_help.spf" 1
+		"mgb_help.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "EXIT"
+	<TYPE> 7
+	<RECT> 267 5 315 23
+	<IMAGE>
+		"mgb_exit.spf" 0
+		"mgb_exit.spf" 1
+		"mgb_exit.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CONTENT"
+	<TYPE> 7
+	<RECT> 4 28 316 265
+<ENDCONTROL>
+
+
+

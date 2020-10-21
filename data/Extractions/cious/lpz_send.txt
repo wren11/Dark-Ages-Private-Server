@@ -1,0 +1,31 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 312 236
+	<IMAGE>
+		"pz_rback.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "YES"
+	<TYPE> 7
+	<RECT> 81 184 127 208
+	<IMAGE>
+		"pz_ryes.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NO"
+	<TYPE> 7
+	<RECT> 184 184 221 208
+	<IMAGE>
+		"pz_rno.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "LEVEL"
+	<TYPE> 7
+	<RECT> 57 105 95 143
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TIME"
+	<TYPE> 7
+	<RECT> 106 109 244 139
+<ENDCONTROL>

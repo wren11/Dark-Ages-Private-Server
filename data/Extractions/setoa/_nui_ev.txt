@@ -1,0 +1,37 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 599 306
+	<IMAGE>
+		"_nui_ev.spf" 0
+		"_nui_ev0.spf" 0
+		"_nui_ev1.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "EV1"
+	<TYPE> 7
+	<RECT> 32 33 265 272
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "EV2"
+	<TYPE> 7
+	<RECT> 331 33 564 272
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NEXT"
+	<TYPE> 7
+	<RECT> 495 281 567 296
+	<IMAGE>
+		"_nui_bn.spf" 0
+		"_nui_bn.spf" 1
+		"_nui_bn.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PREV"
+	<TYPE> 7
+	<RECT> 34 281 106 296
+	<IMAGE>
+		"_nui_bp.spf" 0
+		"_nui_bp.spf" 1
+		"_nui_bp.spf" 2
+<ENDCONTROL>

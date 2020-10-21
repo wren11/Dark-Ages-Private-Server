@@ -1,4 +1,6 @@
-﻿using Lorule.Editor.Views;
+﻿using Darkages;
+using Darkages.Network.Object;
+using Lorule.GameServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -6,13 +8,11 @@ using Serilog;
 using Serilog.Extensions.Logging;
 using Serilog.Formatting.Compact;
 using System;
-using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using Darkages;
-using Darkages.Network.Object;
-using Lorule.Editor.Controls;
-using Lorule.GameServer;
+using Lorule.Content.Editor;
+using Lorule.Content.Editor.Dat;
+using Lorule.Content.Editor.Views;
 using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 
 
@@ -62,9 +62,9 @@ namespace Lorule.Editor
                 .AddSingleton<IServerConstants, ServerConstants>(_ => constants)
                 .AddSingleton<IServerContext, ServerContext>()
                 .AddSingleton<IObjectManager, ObjectManager>()
+                .AddSingleton<IArchive, Archive>()
                 .AddScoped<FrmMain>()
-                .AddScoped<Form, MapView>()
-                .AddScoped<IMapEditor, MapEditor>()
+                .AddScoped<MapView>()
                 .BuildServiceProvider())
             {
 

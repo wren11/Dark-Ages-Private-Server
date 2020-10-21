@@ -1,0 +1,46 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 640 480
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ServerTopImage"
+	<TYPE> 7
+	<RECT> 0 0 195 134
+	<IMAGE>
+		"bsvrtop.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ServerMidImage"
+	<TYPE> 7
+	<RECT> 0 134 195 154
+	<IMAGE>
+		"bsvrmid.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ServerBotImage"
+	<TYPE> 7
+	<RECT> 0 154 195 176
+	<IMAGE>
+		"bsvrbot.epf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ServerTop"
+	<TYPE> 7
+	<RECT> 28 58 94 70
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ServerBottom"
+	<TYPE> 7
+	<RECT> 28 78 94 90
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ExtraTop"
+	<TYPE> 7
+	<RECT> 100 58 166 70
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ExtraBottom"
+	<TYPE> 7
+	<RECT> 100 78 166 90
+<ENDCONTROL>

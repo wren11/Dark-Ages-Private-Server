@@ -1,0 +1,75 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 581 290
+	<IMAGE>
+		"_nmaill.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ArticleList"
+	<TYPE> 7
+	<RECT> 19 18 499 273
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "View"
+	<TYPE> 7
+	<RECT> 507 35 568 57
+	<IMAGE>
+		"_nbtn.spf" 15
+		"_nbtn.spf" 16
+		"_nbtn.spf" 17
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "New"
+	<TYPE> 7
+	<RECT> 507 87 568 109
+	<IMAGE>
+		"_nbtn.spf" 33
+		"_nbtn.spf" 34
+		"_nbtn.spf" 35
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Delete"
+	<TYPE> 7
+	<RECT> 507 113 568 135
+	<IMAGE>
+		"_nbtn.spf" 9
+		"_nbtn.spf" 10
+		"_nbtn.spf" 11
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Hilight"
+	<TYPE> 7
+	<RECT> 507 165 568 187
+	<IMAGE>
+		"_nbtn.spf" 54
+		"_nbtn.spf" 55
+		"_nbtn.spf" 56
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Search"
+	<TYPE> 7
+	<RECT> 507 191 568 213
+	<IMAGE>
+		"_nbtn.spf" 51
+		"_nbtn.spf" 52
+		"_nbtn.spf" 53
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Up"
+	<TYPE> 7
+	<RECT> 507 218 568 240
+	<IMAGE>
+		"_nbtn.spf" 24
+		"_nbtn.spf" 25
+		"_nbtn.spf" 26
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Close"
+	<TYPE> 7
+	<RECT> 507 245 568 267
+	<IMAGE>
+		"_nbtn.spf" 0
+		"_nbtn.spf" 1
+		"_nbtn.spf" 2
+<ENDCONTROL>

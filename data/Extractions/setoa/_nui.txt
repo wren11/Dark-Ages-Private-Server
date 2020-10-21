@@ -1,0 +1,68 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 640 480
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "CONTENT"
+	<TYPE> 7
+	<RECT> 1 2 600 308
+	<IMAGE>
+		"_nui_eq.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TAB_INTRO"
+	<TYPE> 7
+	<RECT> 576 23 638 47
+	<IMAGE>
+		"_nui_tb2.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TAB_INTRO_E"
+	<TYPE> 7
+	<RECT> 590 24 629 40
+	<IMAGE>
+		"_nui_tb1.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TAB_LEGEND"
+	<TYPE> 7
+	<RECT> 576 46 638 70
+	<IMAGE>
+		"_nui_tb2.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TAB_SKILL"
+	<TYPE> 7
+	<RECT> 576 69 638 93
+	<IMAGE>
+		"_nui_tb2.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TAB_EVENT"
+	<TYPE> 7
+	<RECT> 576 92 638 116
+	<IMAGE>
+		"_nui_tb2.spf" 3
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TAB_ALBUM"
+	<TYPE> 7
+	<RECT> 576 115 638 139
+	<IMAGE>
+		"_nui_tb2.spf" 4
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TAB_CLOSE"
+	<TYPE> 7
+	<RECT> 576 263 638 287
+	<IMAGE>
+		"_nui_tbc.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TAB_FAMILY"
+	<TYPE> 7
+	<RECT> 576 138 638 162
+	<IMAGE>
+		"_nui_tb2.spf" 8
+<ENDCONTROL>

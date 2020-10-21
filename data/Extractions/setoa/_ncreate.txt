@@ -1,0 +1,131 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 640 480
+	<IMAGE>
+		"_ncreate.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HUMAN"
+	<TYPE> 7
+	<RECT> 256 184 366 268
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Male"
+	<TYPE> 7
+	<RECT> 245 133 289 177
+	<IMAGE>
+		"_ncbg.spf" 2
+		"_ncbg.spf" 3
+		"_ncbg.spf" 3
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Female"
+	<TYPE> 7
+	<RECT> 350 133 394 177
+	<IMAGE>
+		"_ncbg.spf" 0
+		"_ncbg.spf" 1
+		"_ncbg.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NAME"
+	<TYPE> 7
+	<RECT> 23 177 137 193
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PASSWD"
+	<TYPE> 7
+	<RECT> 23 235 137 251
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PASSWD2"
+	<TYPE> 7
+	<RECT> 23 293 137 309
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NCID"
+	<TYPE> 7
+	<RECT> 514 199 604 215
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "NCPW"
+	<TYPE> 7
+	<RECT> 514 273 626 289
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "OK"
+	<TYPE> 7
+	<RECT> 437 417 496 461
+	<IMAGE>
+		"_ncb1.spf" 0
+		"_ncb1.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Cancel"
+	<TYPE> 7
+	<RECT> 519 417 617 461
+	<IMAGE>
+		"_ncb2.spf" 0
+		"_ncb2.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Email"
+	<TYPE> 7
+	<RECT> 24 326 138 342
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "New"
+	<TYPE> 7
+	<RECT> 557 219 635 237
+	<IMAGE>
+		"_ncbnn.spf" 0
+		"_ncbnn.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Help"
+	<TYPE> 7
+	<RECT> 582 292 635 317
+	<IMAGE>
+		"_ncbh.spf" 0
+		"_ncbh.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "AngleLeft"
+	<TYPE> 7
+	<RECT> 210 212 234 232
+	<IMAGE>
+		"_ncarrow.spf" 0
+		"_ncarrow.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "AngleRight"
+	<TYPE> 7
+	<RECT> 400 212 424 232
+	<IMAGE>
+		"_ncarrow.spf" 1
+		"_ncarrow.spf" 3
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HairLeft"
+	<TYPE> 7
+	<RECT> 256 272 280 292
+	<IMAGE>
+		"_ncarrow.spf" 0
+		"_ncarrow.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HairRight"
+	<TYPE> 7
+	<RECT> 350 272 374 292
+	<IMAGE>
+		"_ncarrow.spf" 1
+		"_ncarrow.spf" 3
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "HairColor"
+	<TYPE> 7
+	<RECT> 255 300 372 332
+	<IMAGE>
+		"_nccolor.spf" 0
+<ENDCONTROL>

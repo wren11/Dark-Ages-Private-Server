@@ -1,0 +1,120 @@
+<CONTROL>
+	<NAME> "Noname"
+	<TYPE> 0
+	<RECT> 0 0 449 292
+	<IMAGE>
+		"nd_mback.spf" 0
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TabPrev"
+	<TYPE> 7
+	<RECT> 147 34 165 50
+	<IMAGE>
+		"nd_mcp.spf" 0
+		"nd_mcp.spf" 1
+		"nd_mcp.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "TabNext"
+	<TYPE> 7
+	<RECT> 405 34 423 50
+	<IMAGE>
+		"nd_mcn.spf" 0
+		"nd_mcn.spf" 1
+		"nd_mcn.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Tab0"
+	<TYPE> 7
+	<RECT> 165 34 225 50
+	<IMAGE>
+		"nd_mtab.spf" 0
+		"nd_mtab.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Tab1"
+	<TYPE> 7
+	<RECT> 225 34 285 50
+	<IMAGE>
+		"nd_mtab.spf" 0
+		"nd_mtab.spf" 1
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Content"
+	<TYPE> 7
+	<RECT> 26 56 268 216
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ItemIcon1"
+	<TYPE> 7
+	<RECT> 30 60 62 92
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ItemIcon2"
+	<TYPE> 7
+	<RECT> 30 100 62 132
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "ItemName1"
+	<TYPE> 7
+	<RECT> 70 71 262 83
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "DescClass"
+	<TYPE> 7
+	<RECT> 320 63 416 75
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "DescLevel"
+	<TYPE> 7
+	<RECT> 320 87 416 99
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "DescWeight"
+	<TYPE> 7
+	<RECT> 320 111 416 123
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "DescText"
+	<TYPE> 7
+	<RECT> 320 135 416 209
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Money"
+	<TYPE> 7
+	<RECT> 285 225 419 237
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Page"
+	<TYPE> 7
+	<RECT> 203 251 245 263
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PagePrev"
+	<TYPE> 7
+	<RECT> 156 249 194 264
+	<IMAGE>
+		"nd_mprev.spf" 0
+		"nd_mprev.spf" 1
+		"nd_mprev.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "PageNext"
+	<TYPE> 7
+	<RECT> 253 249 291 264
+	<IMAGE>
+		"nd_mnext.spf" 0
+		"nd_mnext.spf" 1
+		"nd_mnext.spf" 2
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Btn1"
+	<TYPE> 3
+	<RECT> 358 247 419 269
+	<IMAGE>
+		"_nbtn.spf" 3
+		"_nbtn.spf" 4
+		"_nbtn.spf" 5
+	<VALUE>
+		0
+<ENDCONTROL>
