@@ -1,4 +1,9 @@
-﻿namespace Lorule.Content.Editor
+﻿using Darkages;
+using Lorule.Content.Editor.Dat;
+using Lorule.Content.Editor.Views;
+using Microsoft.Extensions.Logging;
+
+namespace Lorule.Content.Editor
 {
     partial class FrmMain
     {
@@ -17,6 +22,7 @@
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -43,9 +49,11 @@
             // menuStrip1
             // 
             this.menuStrip1.BackColor = System.Drawing.Color.LightGray;
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.projectToolStripMenuItem});
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[]
+            {
+                this.fileToolStripMenuItem,
+                this.projectToolStripMenuItem
+            });
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
@@ -55,11 +63,13 @@
             // 
             // fileToolStripMenuItem
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newProjectToolStripMenuItem,
-            this.saveToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.openProjectToolStripMenuItem});
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[]
+            {
+                this.newProjectToolStripMenuItem,
+                this.saveToolStripMenuItem,
+                this.toolStripSeparator1,
+                this.openProjectToolStripMenuItem
+            });
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -117,7 +127,6 @@
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
@@ -132,4 +141,3 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
-

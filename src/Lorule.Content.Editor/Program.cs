@@ -10,6 +10,7 @@ using Serilog.Formatting.Compact;
 using System;
 using System.Text;
 using System.Windows.Forms;
+using Lorule.Client.Base.Dat;
 using Lorule.Content.Editor;
 using Lorule.Content.Editor.Dat;
 using Lorule.Content.Editor.Views;
@@ -42,7 +43,7 @@ namespace Lorule.Editor
             var config = builder.Build(); 
             var constants = config.GetSection("ServerConfig").Get<ServerConstants>();
             var editorSettings = config.GetSection("Editor").Get<EditorIOptions>();
-            using (var serviceProvider = new ServiceCollection()
+            using var serviceProvider = new ServiceCollection()
                 .Configure<LoruleOptions>(config.GetSection("Content"))
                 .AddOptions()
                 .AddSingleton(providers)
@@ -62,15 +63,13 @@ namespace Lorule.Editor
                 .AddSingleton<IServerConstants, ServerConstants>(_ => constants)
                 .AddSingleton<IServerContext, ServerContext>()
                 .AddSingleton<IObjectManager, ObjectManager>()
-                .AddSingleton<IArchive, Archive>()
+                .AddSingleton<IArchive, Archive>(_ => new Archive(editorSettings.Location))
+                .AddSingleton<IPaletteCollection, PaletteCollection>()
                 .AddScoped<FrmMain>()
                 .AddScoped<MapView>()
-                .BuildServiceProvider())
-            {
-
-                var frm = serviceProvider.GetService<FrmMain>();
-                if (frm != null) Application.Run(frm);
-            }
+                .BuildServiceProvider();
+            var frm = serviceProvider.GetService<FrmMain>();
+            if (frm != null) Application.Run(frm);
         }
     }
 }

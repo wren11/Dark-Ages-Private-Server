@@ -1,47 +1,57 @@
-﻿using Lorule.Editor;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lorule.Content.Editor.Dat
+namespace Lorule.Client.Base.Dat
 {
-    public interface IArchive
-    {
-        Task Load(string archiveName, bool save = false, string root = "Archives", string outputDirectory = "");
-        ArchivedItem Get(string name, string archiveName);
-    }
-
     public class Archive : IArchive
     {
-        private readonly EditorIOptions _editorOptions;
+        private readonly string _location;
         private readonly Dictionary<string, ISet<ArchivedItem>> _cachedItemCollection = new Dictionary<string, ISet<ArchivedItem>>();
 
-        public Archive(EditorIOptions editorOptions)
+        public Archive(string location)
         {
-            _editorOptions = editorOptions ?? throw new ArgumentNullException(nameof(editorOptions));
+            _location = location;
         }
 
-        public async Task Load(string archiveName, 
-            bool save = false, 
+        public async Task Load(string archiveName,
+            bool save = false,
             string root = "Archives",
             string outputDirectory = "")
         {
             if (archiveName == null) throw new ArgumentNullException(nameof(archiveName));
             var collection = new HashSet<ArchivedItem>();
 
-            if (_editorOptions != null)
-                await foreach (var entry in Open(Path.Combine(_editorOptions.Location, root, archiveName)))
-                    if (entry != null)
-                    {
-                        if (save)
-                            await entry.Save(outputDirectory);
+            await foreach (var entry in Open(Path.Combine(_location, root, archiveName)))
+                if (entry != null)
+                {
+                    if (save)
+                        await entry.Save(outputDirectory);
 
-                        collection.Add(entry);
-                    }
+                    collection.Add(entry);
+                }
+
             _cachedItemCollection[archiveName] = collection;
+        }
+
+
+        public IEnumerable<ArchivedItem> SearchArchive(string extension, string stringPattern, string archiveName)
+        {
+            if (stringPattern == null)
+                throw new ArgumentNullException(nameof(stringPattern));
+            if (!_cachedItemCollection.ContainsKey(archiveName))
+                yield break;
+
+            foreach (var item in _cachedItemCollection[archiveName])
+            {
+                if (item.Name.EndsWith(extension) && item.Name.Contains(stringPattern))
+                {
+                    yield return item;
+                }
+            }
         }
 
         public ArchivedItem Get(string name, string archiveName)
@@ -65,13 +75,13 @@ namespace Lorule.Content.Editor.Dat
                 return @null == -1 ? name : name.Substring(0, @null);
             }
 
-            static async Task<MemoryStream> Extract(Stream stream, int itemStart, int itemSize)
+            static async Task<byte[]> Extract(Stream stream, int itemStart, int itemSize)
             {
                 if (stream == null) throw new ArgumentNullException(nameof(stream));
                 var buffer = new byte[itemSize];
                 stream.Seek(itemStart, SeekOrigin.Begin);
                 await stream.ReadAsync(buffer, 0, buffer.Length);
-                return new MemoryStream(buffer);
+                return buffer;
             }
 
             using var br = new BinaryReader(File.OpenRead(fileName));
@@ -85,7 +95,8 @@ namespace Lorule.Content.Editor.Dat
                 var itemSize  = itemEnd - itemStart;
                 var resumeStreamPosition = br.BaseStream.Position - 4;
 
-                yield return new ArchivedItem(itemName, Path.GetFileNameWithoutExtension(fileName), 
+                yield return new ArchivedItem(itemName, 
+                    Path.GetFileNameWithoutExtension(fileName),
                     await Extract(br.BaseStream, itemStart, itemSize), i);
 
                 br.BaseStream.Seek(resumeStreamPosition, SeekOrigin.Begin);

@@ -26,6 +26,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -304,8 +305,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dat\Archive.cs" />
-    <Compile Include="Dat\ArchivedItem.cs" />
     <Compile Include="FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -363,6 +362,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\Lorule.Client.Base\Lorule.Client.Base.csproj">
+      <Project>{44edee4b-f0ad-4434-ab58-ac5fd8a2af5f}</Project>
+      <Name>Lorule.Client.Base</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Lorule.Server.Base\Lorule.Server.Base.csproj">
       <Project>{86f5df02-2a90-47eb-9285-9fb58bda9afa}</Project>
       <Name>Lorule.Server.Base</Name>

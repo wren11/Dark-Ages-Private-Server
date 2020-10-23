@@ -1,26 +1,28 @@
-﻿using System.IO;
+﻿using ServiceStack;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ServiceStack;
 
-namespace Lorule.Content.Editor.Dat
+namespace Lorule.Client.Base.Dat
 {
     public class ArchivedItem
     {
         private readonly string _archiveName;
-        private readonly MemoryStream _dataStream;
 
         public string Name { get; }
         public int Index { get; }
+        public byte[] Data { get; }
 
-        public ArchivedItem(string name, string archiveName, MemoryStream data, int index)
+        public ArchivedItem(string name, string archiveName, byte[] data, int index)
         {
             Name = name;
             Index = index;
 
-            _dataStream = data;
             _archiveName = archiveName;
+
+            Data = new List<byte>(data).ToArray();
         }
 
         public async Task Save(string directory)
@@ -31,7 +33,7 @@ namespace Lorule.Content.Editor.Dat
                 Directory.CreateDirectory(outputPath);
 
             using var stream = File.OpenWrite(Path.Combine(outputPath, Name));
-            await _dataStream.WriteToAsync(stream, Encoding.UTF8, CancellationToken.None);
+            await new MemoryStream(Data).WriteToAsync(stream, Encoding.UTF8, CancellationToken.None);
         }
     }
 }
