@@ -8,5 +8,6 @@ namespace Lorule.Client.Base.Dat
         Task Load(string archiveName, bool save = false, string root = "Archives", string outputDirectory = "");
         ArchivedItem Get(string name, string archiveName);
         IEnumerable<ArchivedItem> SearchArchive(string extension, string stringPattern, string archiveName);
+        void PackArchive(string unpackedDirectory, string outputFileName);
     }
 }

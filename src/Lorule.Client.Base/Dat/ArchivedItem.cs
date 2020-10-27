@@ -1,18 +1,21 @@
-﻿using ServiceStack;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 
 namespace Lorule.Client.Base.Dat
 {
     public class ArchivedItem
     {
+        [JsonIgnore]
         private readonly string _archiveName;
 
         public string Name { get; }
         public int Index { get; }
+
+        [JsonIgnore]
         public byte[] Data { get; }
 
         public ArchivedItem(string name, string archiveName, byte[] data, int index)
@@ -33,7 +36,20 @@ namespace Lorule.Client.Base.Dat
                 Directory.CreateDirectory(outputPath);
 
             using var stream = File.OpenWrite(Path.Combine(outputPath, Name));
-            await new MemoryStream(Data).WriteToAsync(stream, Encoding.UTF8, CancellationToken.None);
+            await WriteToAsync(new MemoryStream(Data), stream, CancellationToken.None);
+        }
+
+
+        public static async Task WriteToAsync(MemoryStream stream, Stream output,  CancellationToken token)
+        {
+            if (stream.TryGetBuffer(out var buffer))
+            {
+                await output.WriteAsync(buffer.Array, buffer.Offset, buffer.Count, token);
+                return;
+            }
+
+            var bytes = stream.ToArray();
+            await output.WriteAsync(bytes, 0, bytes.Length, token);
         }
     }
 }

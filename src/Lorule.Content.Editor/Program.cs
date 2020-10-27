@@ -42,7 +42,7 @@ namespace Lorule.Editor
 
             var config = builder.Build(); 
             var constants = config.GetSection("ServerConfig").Get<ServerConstants>();
-            var editorSettings = config.GetSection("Editor").Get<EditorIOptions>();
+            var editorSettings = config.GetSection("Editor").Get<EditorOptions>();
             using var serviceProvider = new ServiceCollection()
                 .Configure<LoruleOptions>(config.GetSection("Content"))
                 .AddOptions()
@@ -65,10 +65,10 @@ namespace Lorule.Editor
                 .AddSingleton<IObjectManager, ObjectManager>()
                 .AddSingleton<IArchive, Archive>(_ => new Archive(editorSettings.Location))
                 .AddSingleton<IPaletteCollection, PaletteCollection>()
-                .AddScoped<FrmMain>()
-                .AddScoped<MapView>()
+                .AddScoped<Content.Editor.Editor>()
                 .BuildServiceProvider();
-            var frm = serviceProvider.GetService<FrmMain>();
+
+            var frm = serviceProvider.GetService<Content.Editor.Editor>();
             if (frm != null) Application.Run(frm);
         }
     }

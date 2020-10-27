@@ -24,8 +24,9 @@ namespace Lorule.Client.Base.Dat
         {
             if (archiveName == null) throw new ArgumentNullException(nameof(archiveName));
             var collection = new HashSet<ArchivedItem>();
+            var path = Path.Combine(_location, root, archiveName);
 
-            await foreach (var entry in Open(Path.Combine(_location, root, archiveName)))
+            await foreach (var entry in UnpackArchive(path))
                 if (entry != null)
                 {
                     if (save)
@@ -64,8 +65,85 @@ namespace Lorule.Client.Base.Dat
             return null;
         }
 
+        public class ArchiveLookupTableEntry
+        {
+            public readonly int MetaIndex;
 
-        private async IAsyncEnumerable<ArchivedItem> Open(string fileName)
+            public string EntryName { get; set; }
+
+            public int StartofData  { get; set; }
+
+            public int EndOfData    { get; set; }
+
+            public ReadOnlyMemory<byte> RawBytes { get; set; }
+
+            public ArchiveLookupTableEntry(byte[] rawBytes, int metaIndex)
+            {
+                MetaIndex = metaIndex;
+                RawBytes = new ReadOnlyMemory<byte>(rawBytes);
+            }
+        }
+
+        public void PackArchive(string unpackedDirectory, string outputFileName)
+        {
+            var lookupTable = new List<ArchiveLookupTableEntry>();
+            var i = 0;
+
+            foreach (var file in Directory.EnumerateFiles(unpackedDirectory, "*", SearchOption.TopDirectoryOnly))
+            {
+                if (file == null)
+                    continue;
+
+                if (Path.GetExtension(file).Equals(".meta"))
+                    continue;
+
+                var entry = new ArchiveLookupTableEntry(File.ReadAllBytes(file), i)
+                {
+                    EntryName = Path.GetFileName(file).PadRight(13, '\0'), // max length : 13
+                };
+
+                lookupTable.Add(entry);
+                i++;
+            }
+
+            lookupTable = lookupTable.OrderBy(lookupTableEntry => lookupTableEntry.EntryName).ToList();
+
+            var start = 17 * (lookupTable.Count + 1) + 4;
+
+            for (var index = 0; index < lookupTable.Count; index++)
+            {
+                if (index == 0)
+                {
+                    lookupTable[index].StartofData = start;
+                    lookupTable[index].EndOfData   = start + lookupTable[index].RawBytes.Length;
+                }
+                else
+                {
+                    lookupTable[index].StartofData = lookupTable[index - 1].EndOfData;
+                    lookupTable[index].EndOfData = lookupTable[index].StartofData + lookupTable[index].RawBytes.Length;
+                }
+            }
+
+            using var br = new BinaryWriter(File.OpenWrite(outputFileName));
+
+            br.Write((uint)lookupTable.Count + 1);
+            foreach (var data in lookupTable.OrderBy(n => n.EntryName))
+            {
+                br.Write(data.StartofData);
+                br.Write(Encoding.UTF8.GetBytes(data.EntryName));
+                br.Write(data.EndOfData);
+                br.BaseStream.Position -= 4;
+            }
+
+            br.Seek(start, SeekOrigin.Begin);
+            foreach (var data in lookupTable.OrderBy(n => n.EntryName))
+            {
+                br.Write(data.RawBytes.ToArray());
+            }
+            br.Write(new byte[13]);
+        }
+
+        private async IAsyncEnumerable<ArchivedItem> UnpackArchive(string fileName)
         {
             const int entryLength = 13;
 
