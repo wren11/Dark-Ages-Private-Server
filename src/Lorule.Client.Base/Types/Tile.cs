@@ -3,8 +3,8 @@
     public class Tile
     { 
         public const int 
-            WIDTH = 56, 
-            HEIGHT = 27;
+            WIDTH = 57, 
+            HEIGHT = 28;
 
         public string Name { get; set; }
         public byte[] Data { get; set; }

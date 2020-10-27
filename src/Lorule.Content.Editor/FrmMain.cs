@@ -1,4 +1,7 @@
 ﻿using Darkages;
+using Lorule.Client.Base.Dat;
+using Lorule.Client.Base.Types;
+using Lorule.Content.Editor.Dat;
 using Lorule.Content.Editor.Views;
 using Lorule.Editor;
 using Lorule.GameServer;
@@ -8,13 +11,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Lorule.Client.Base.Dat;
-using Lorule.Client.Base.Types;
-using Lorule.Content.Editor.Dat;
 using Map = Lorule.Client.Base.Types.Map;
+using Path = System.IO.Path;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace Lorule.Content.Editor
 {
@@ -82,6 +85,8 @@ namespace Lorule.Content.Editor
 
         private void RenderLoruleStart(TileCollection tileCollection)
         {
+            _mapView.Show();
+
             if (_serverConstants.StartingMap == 0)
                 return;
 
@@ -93,30 +98,67 @@ namespace Lorule.Content.Editor
             if (mapTiles == null)
                 return;
 
+
             foreach (var tile in mapTiles)
             {
                 if (tile == null || tile.Floor <= 0)
                     continue;
 
-                var floorTile = tileCollection[tile.Floor > 0 ? tile.Floor - 1 : 0];
-                var floorPalette = _paletteService.GetBackgroundPaletteIndex(tile.Floor + 1);
+                var index = tile.Floor > 0 ? tile.Floor - 1 : 0;
+                var floorTile = tileCollection[index];
 
-                var bmp = RenderFloorTile(floorTile.Data, floorPalette);
+                if (floorTile != null)
+                {
+                    var floorPalette = _paletteService.GetBackgroundPaletteIndex(tile.Floor + 1);
+                    var bmp = RenderFloorTile(floorTile.Data, floorPalette.Item2);
+                    bmp.MakeTransparent(Color.Black);
+                    break;
+                }
             }
         }
 
+        private static void ExportFloorTile(Bitmap bmp, MapTile tile, string dir, bool transparent = false)
+        {
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            if (transparent)
+            {
+                bmp.MakeTransparent(Color.Black);
+            }
+
+            bmp.Save(Path.Combine(dir, $"{tile.Floor + 1}.png"), ImageFormat.Png);
+        }
+
+        private static void ExportPalette((int, Palette) floorPalette, string dir)
+        {
+            var palPath = Path.Combine(dir, floorPalette.Item1 + ".pal");
+            using var bw = new BinaryWriter(File.OpenWrite(palPath));
+            bw.Seek(0, SeekOrigin.Begin);
+            foreach (var color in floorPalette.Item2.Colors)
+            {
+                bw.Write(color.R);
+                bw.Write(color.G);
+                bw.Write(color.B);
+            }
+        }
+
+
+
         private static unsafe Bitmap RenderFloorTile(IReadOnlyList<byte> data, Palette palette)
         {
-            var image = new Bitmap(Tile.WIDTH, Tile.HEIGHT);
-            var bmd = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly, image.PixelFormat);
+            var image = new Bitmap(56, 27);
+            var bmd = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly,
+                image.PixelFormat);
 
             for (var y = 0; y < bmd.Height; y++)
             {
-                var row = (byte*)bmd.Scan0 + y * bmd.Stride;
+                var row = (byte*) bmd.Scan0 + y * bmd.Stride;
 
                 for (var x = 0; x < bmd.Width; x++)
                 {
-                    var colorIndex = data[y * Tile.WIDTH + x];
+                    var index = y * 56 + x;
+                    var colorIndex = data[index];
 
                     if (colorIndex <= 0)
                         continue;
@@ -127,6 +169,7 @@ namespace Lorule.Content.Editor
                     row[x * 4 + 3] = palette[colorIndex].A;
                 }
             }
+
 
             image.UnlockBits(bmd);
             return image;

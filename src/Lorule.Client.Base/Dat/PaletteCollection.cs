@@ -84,7 +84,7 @@ namespace Lorule.Content.Editor.Dat
     {
         List<PaletteTable> GetBackgroundPalettesTables(bool extended = false);
         List<Palette> GetBackgroundPalettes();
-        Palette GetBackgroundPaletteIndex(int index);
+        (int, Palette) GetBackgroundPaletteIndex(int index);
     }
 
     public interface IPaletteCollection : IPaletteLookup
@@ -115,19 +115,13 @@ namespace Lorule.Content.Editor.Dat
         public List<Palette> GetBackgroundPalettes() 
             => Palettes[BackgroundPalettes];
 
-        public Palette GetBackgroundPaletteIndex(int index)
+        public (int, Palette) GetBackgroundPaletteIndex(int index)
             => GetPaletteIndex(index, BackgroundPalettes);
 
-        private Palette GetPaletteIndex(int index, (string,string) key)
+        private (int, Palette) GetPaletteIndex(int index, (string,string) key)
         {
             var paletteIndex = 0;
 
-            if (ExtendedPaletteTables.ContainsKey(key))
-                foreach (var o in ExtendedPaletteTables[key]
-                    .Where(o => index >= o.PaletteRange.Item1 && index <= o.PaletteRange.Item2))
-                {
-                    paletteIndex = o.Palette;
-                }
 
             if (PaletteTables.ContainsKey(key))
                 foreach (var entry in PaletteTables[key]
@@ -136,7 +130,14 @@ namespace Lorule.Content.Editor.Dat
                     paletteIndex = entry.Palette;
                 }
 
-            return Palettes[key][paletteIndex];
+            //if (ExtendedPaletteTables.ContainsKey(key))
+            //    foreach (var o in ExtendedPaletteTables[key]
+            //        .Where(o => index >= o.PaletteRange.Item1 && index <= o.PaletteRange.Item2))
+            //    {
+            //        paletteIndex = o.Palette;
+            //    }
+
+            return (paletteIndex, Palettes[key][paletteIndex]);
         }
 
         public async void LoadPalettes(string archiveName, string pattern)

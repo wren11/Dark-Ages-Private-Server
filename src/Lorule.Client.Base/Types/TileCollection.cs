@@ -11,8 +11,18 @@ namespace Lorule.Client.Base.Types
 
         public Tile this[int index]
         {
-            get => _tiles[index];
-            set => _tiles[index] = value;
+            get
+            {
+                if (index >= 0 && _tiles.Count > index)
+                    return _tiles[index];
+
+                return null;
+            }
+            set
+            {
+                if (index >= 0 && _tiles.Count > index)
+                    _tiles[index] = value;
+            }
         }
 
         public TileCollection(ArchivedItem baseTileSet)
