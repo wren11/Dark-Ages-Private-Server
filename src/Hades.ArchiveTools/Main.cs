@@ -36,10 +36,19 @@ namespace Hades.ArchiveTools
                 if (string.IsNullOrEmpty(name))
                     return;
 
+                progressBar1.Style = ProgressBarStyle.Marquee;
+                progressBar1.Value = 0;
+                progressBar1.Visible = true;
+
                 await foreach (var item in _archivesArchive.UnpackArchive(ofd.FileName))
                 {
                     LoadedArchivedItems.Add(item);
                 }
+
+                progressBar1.Value = 0;
+                progressBar1.Visible = false;
+
+                MessageBox.Show($@"Success, Archive loaded.");
             }
         }
 
@@ -56,11 +65,22 @@ namespace Hades.ArchiveTools
                 return;
 
             var count = 0;
+            var total = LoadedArchivedItems.Count;
+
+            progressBar1.Style = ProgressBarStyle.Blocks;
+            progressBar1.Visible = true;
+            progressBar1.Value = 0;
+
             foreach (var item in LoadedArchivedItems)
             {
                 await item.Save(savingLocation);
                 count++;
+
+                progressBar1.Value = Math.Abs(count * 100 / total);
             }
+
+            progressBar1.Value = 0;
+            progressBar1.Visible = false;
 
             MessageBox.Show($@"Success, All {count} files have been extracted.");
         }
@@ -75,6 +95,10 @@ namespace Hades.ArchiveTools
             if (!Directory.Exists(importingLocation))
                 return;
 
+            progressBar1.Style = ProgressBarStyle.Marquee;
+            progressBar1.Value = 0;
+            progressBar1.Visible = true;
+
             using var saveDialog = new SaveFileDialog();
             saveDialog.Filter = "DAT Archives|*.dat";
             saveDialog.CreatePrompt = true;
@@ -84,6 +108,9 @@ namespace Hades.ArchiveTools
             var outputLocation = saveDialog.FileName;
 
             _archivesArchive.PackArchive(importingLocation, outputLocation);
+
+            progressBar1.Value = 0;
+            progressBar1.Visible = false;
 
             MessageBox.Show($@"Success, File has been created.");
         }
