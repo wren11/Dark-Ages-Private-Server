@@ -9,12 +9,19 @@ namespace Lorule.Client.Base.Dat
 {
     public class Archive : IArchive
     {
-        private readonly string _location;
-        private readonly Dictionary<string, ISet<ArchivedItem>> _cachedItemCollection = new Dictionary<string, ISet<ArchivedItem>>();
+        private string _location;
+
+        private readonly Dictionary<string, ISet<ArchivedItem>> _cachedItemCollection
+            = new Dictionary<string, ISet<ArchivedItem>>();
 
         public Archive(string location)
         {
             _location = location;
+        }
+
+        public Archive() : this(string.Empty)
+        {
+
         }
 
         public async Task Load(string archiveName,
@@ -75,12 +82,12 @@ namespace Lorule.Client.Base.Dat
 
             public int EndOfData    { get; set; }
 
-            public ReadOnlyMemory<byte> RawBytes { get; set; }
+            public byte[] RawBytes { get; set; }
 
             public ArchiveLookupTableEntry(byte[] rawBytes, int metaIndex)
             {
                 MetaIndex = metaIndex;
-                RawBytes = new ReadOnlyMemory<byte>(rawBytes);
+                RawBytes = new List<byte>(rawBytes).ToArray();
             }
         }
 
@@ -99,7 +106,7 @@ namespace Lorule.Client.Base.Dat
 
                 var entry = new ArchiveLookupTableEntry(File.ReadAllBytes(file), i)
                 {
-                    EntryName = Path.GetFileName(file).PadRight(13, '\0'), // max length : 13
+                    EntryName = Path.GetFileName(file).PadRight(13, '\0')
                 };
 
                 lookupTable.Add(entry);
@@ -143,7 +150,7 @@ namespace Lorule.Client.Base.Dat
             br.Write(new byte[13]);
         }
 
-        private async IAsyncEnumerable<ArchivedItem> UnpackArchive(string fileName)
+        public async IAsyncEnumerable<ArchivedItem> UnpackArchive(string fileName)
         {
             const int entryLength = 13;
 
@@ -179,6 +186,11 @@ namespace Lorule.Client.Base.Dat
 
                 br.BaseStream.Seek(resumeStreamPosition, SeekOrigin.Begin);
             }
+        }
+
+        public void SetLocation(string location)
+        {
+            _location = location;
         }
     }
 }

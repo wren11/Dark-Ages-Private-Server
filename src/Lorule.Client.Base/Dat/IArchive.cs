@@ -9,5 +9,7 @@ namespace Lorule.Client.Base.Dat
         ArchivedItem Get(string name, string archiveName);
         IEnumerable<ArchivedItem> SearchArchive(string extension, string stringPattern, string archiveName);
         void PackArchive(string unpackedDirectory, string outputFileName);
+        IAsyncEnumerable<ArchivedItem> UnpackArchive(string fileName);
+        void SetLocation(string location);
     }
 }
