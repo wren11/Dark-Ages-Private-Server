@@ -8,7 +8,7 @@ Hades, Formally known as Lorule, A Sandbox Server built on the Dark Ages Client 
 The server is fully functional and all you need to build is your own content to describe your own world.
 
 
-## Installation
+## Installation 
 
 Edit the LoruleConfig.json file and setup your paths.
 
