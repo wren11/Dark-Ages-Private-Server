@@ -15,11 +15,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lorule.Client.Base", "Lorul
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hades.ArchiveTools", "Hades.ArchiveTools\Hades.ArchiveTools.csproj", "{3BABAB28-46F6-428A-8BDF-A337338EE41E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hades.MapTool", "Hades.MapTool\Hades.MapTool.csproj", "{E204C94C-7855-4CB4-91A1-D74492CE0CA0}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Lorule.Config\Lorule.Config.projitems*{1ff13553-4ab9-447f-afc5-db7e363b10bc}*SharedItemsImports = 4
 		Lorule.Config\Lorule.Config.projitems*{3241dae2-8e03-452d-ba97-43c05b003bfa}*SharedItemsImports = 5
 		Lorule.Config\Lorule.Config.projitems*{86f5df02-2a90-47eb-9285-9fb58bda9afa}*SharedItemsImports = 5
+		Lorule.Config\Lorule.Config.projitems*{e204c94c-7855-4cb4-91a1-d74492ce0ca0}*SharedItemsImports = 4
 		Lorule.Config\Lorule.Config.projitems*{ef0fa46f-9730-474c-84a8-f402138f3e38}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +94,18 @@ Global
 		{3BABAB28-46F6-428A-8BDF-A337338EE41E}.Release|x64.Build.0 = Release|Any CPU
 		{3BABAB28-46F6-428A-8BDF-A337338EE41E}.Release|x86.ActiveCfg = Release|Any CPU
 		{3BABAB28-46F6-428A-8BDF-A337338EE41E}.Release|x86.Build.0 = Release|Any CPU
+		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Debug|x64.Build.0 = Debug|Any CPU
+		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Debug|x86.Build.0 = Debug|Any CPU
+		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Release|x64.ActiveCfg = Release|Any CPU
+		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Release|x64.Build.0 = Release|Any CPU
+		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Release|x86.ActiveCfg = Release|Any CPU
+		{E204C94C-7855-4CB4-91A1-D74492CE0CA0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
