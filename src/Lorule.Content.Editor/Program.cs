@@ -1,5 +1,8 @@
 ﻿using Darkages;
 using Darkages.Network.Object;
+using Lorule.Client.Base.Dat;
+using Lorule.Content.Editor.Dat;
+using Lorule.Content.Editor.Views;
 using Lorule.GameServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,10 +13,6 @@ using Serilog.Formatting.Compact;
 using System;
 using System.Text;
 using System.Windows.Forms;
-using Lorule.Client.Base.Dat;
-using Lorule.Content.Editor;
-using Lorule.Content.Editor.Dat;
-using Lorule.Content.Editor.Views;
 using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
 
 

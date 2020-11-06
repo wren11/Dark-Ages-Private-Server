@@ -25,12 +25,13 @@ namespace Lorule.Client.Base.Types
             }
         }
 
+
         public TileCollection(ArchivedItem baseTileSet)
         {
             _baseTileSet = baseTileSet;
         }
 
-        public void Load()
+        public List<Tile> Load()
         {
             const int tileSize = 1512;
 
@@ -46,6 +47,19 @@ namespace Lorule.Client.Base.Types
                 };
 
                 _tiles.Add(tile);
+            }
+
+            return new List<Tile>(_tiles);
+        }
+
+
+        public static void Save(string fileName, IReadOnlyList<Tile> tiles)
+        {
+            using var writer = new BinaryWriter(File.OpenWrite(fileName));
+
+            foreach (var file in tiles)
+            {
+                writer.Write(file.Data);
             }
         }
     }
