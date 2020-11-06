@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Darkages.Network.ServerFormats;
@@ -20,6 +21,27 @@ namespace Darkages.Network.Game
             MpRegenTimer.Disabled = false;
 
             Refresh(true);
+            return this;
+        }
+
+        public GameClient SummonGroup(Aisling targetAisling, IReadOnlyList<string> allowedMaps)
+        {
+            if (targetAisling.GroupParty != null)
+                if (targetAisling.GroupParty.PartyMembers != null)
+                    foreach (var member in targetAisling.GroupParty.PartyMembers)
+                    {
+                        //don't include yourself.
+                        if (member.Serial == Aisling.Serial)
+                            continue;
+
+                        //only work on maps we allow.
+                        if (!allowedMaps.Contains(member.Map.Name))
+                            continue;
+
+                        //summon myself to players area and position.
+                        member.Client.TransitionToMap(Aisling.Map, Aisling.Position);
+                    }
+
             return this;
         }
 

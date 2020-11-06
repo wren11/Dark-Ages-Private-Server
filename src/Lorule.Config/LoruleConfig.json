@@ -1,12 +1,12 @@
 {
 	// Locales
 	"Content": {
-		"Location": "C:\\Users\\DeanMcpherson\\Documents\\GitHub\\DarkAges-Lorule-Server\\data\\LoruleData",
+		"Location": "C:\\Users\\Dean\\Documents\\GitHub\\DarkAges-Lorule-Server\\data\\LoruleData",
 		"ServerIP": "127.0.0.1"
 	},
 	"Editor": {
-		"Location": "C:\\Users\\DeanMcpherson\\Documents\\GitHub\\DarkAges-Lorule-Server\\data",
-		"GameLocation": "C:\\Users\\DeanMcpherson\\Documents\\GitHub\\DarkAges-Lorule-Server\\game"
+		"Location": "C:\\Users\\Dean\\Documents\\GitHub\\DarkAges-Lorule-Server\\data",
+		"GameLocation": "C:\\Users\\Dean\\Documents\\GitHub\\DarkAges-Lorule-Server\\game"
 	},
 
 

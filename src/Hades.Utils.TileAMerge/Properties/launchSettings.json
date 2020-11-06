@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Hades.Utils.TileAMerge": {
+      "commandName": "Project",
+      "commandLineArgs": "--a \"seo\\seo.dat\" --b \"seo\\seo2.dat\" --t TILEA.BMP --o \"NEWTILEA.BMP\""
+    }
+  }
+}

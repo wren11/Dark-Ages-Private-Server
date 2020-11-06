@@ -64,6 +64,33 @@ namespace Darkages.Systems.CLI
                 .AddAlias("pt")
                 .SetAction(OnPortToPlayer)
                 .AddArgument(Argument.Create("who")));
+
+            ServerContext.Parser.AddCommand(Command
+                .Create("Learn Spell")
+                .AddAlias("spell")
+                .SetAction(OnLearnSpell)
+                .AddArgument(Argument.Create("name"))
+                .AddArgument(Argument.Create("level").MakeOptional().SetDefault(100)));
+        }
+
+        /// <summary>
+        /// In Game Usage : /spell "Spell Name" 100
+        /// Learns a spell
+        /// </summary>
+        private static void OnLearnSpell(Argument[] args, object arg)
+        {
+            var client = (GameClient)arg;
+
+            if (client == null)
+                return;
+
+            var name = args.FromName("name").Replace("\"", "");
+            var level = args.FromName("level");
+
+            if (int.TryParse(level, out var spellLevel))
+            {
+                Spell.GiveTo(client.Aisling, name, spellLevel);
+            }
         }
 
         /// <summary>
