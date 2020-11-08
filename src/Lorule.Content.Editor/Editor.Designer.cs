@@ -43,9 +43,7 @@ namespace Lorule.Content.Editor
             this.openProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.repackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.archivesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setoaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tileMakerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,8 +52,7 @@ namespace Lorule.Content.Editor
             this.menuStrip1.BackColor = System.Drawing.Color.LightGray;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.projectToolStripMenuItem,
-            this.archivesToolStripMenuItem});
+            this.projectToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(985, 24);
@@ -76,31 +73,30 @@ namespace Lorule.Content.Editor
             // newProjectToolStripMenuItem
             // 
             this.newProjectToolStripMenuItem.Name = "newProjectToolStripMenuItem";
-            this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.newProjectToolStripMenuItem.Text = "New";
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(140, 6);
             // 
             // openProjectToolStripMenuItem
             // 
             this.openProjectToolStripMenuItem.Name = "openProjectToolStripMenuItem";
-            this.openProjectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openProjectToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.openProjectToolStripMenuItem.Text = "Open Project";
             // 
             // projectToolStripMenuItem
             // 
             this.projectToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.repackToolStripMenuItem});
-            this.projectToolStripMenuItem.Enabled = false;
+            this.tileMakerToolStripMenuItem});
             this.projectToolStripMenuItem.Name = "projectToolStripMenuItem";
             this.projectToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.projectToolStripMenuItem.Text = "Tools";
@@ -110,26 +106,12 @@ namespace Lorule.Content.Editor
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // repackToolStripMenuItem
+            // tileMakerToolStripMenuItem
             // 
-            this.repackToolStripMenuItem.Name = "repackToolStripMenuItem";
-            this.repackToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.repackToolStripMenuItem.Text = "Repack";
-            // 
-            // archivesToolStripMenuItem
-            // 
-            this.archivesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.setoaToolStripMenuItem});
-            this.archivesToolStripMenuItem.Name = "archivesToolStripMenuItem";
-            this.archivesToolStripMenuItem.Size = new System.Drawing.Size(64, 20);
-            this.archivesToolStripMenuItem.Text = "Archives";
-            // 
-            // setoaToolStripMenuItem
-            // 
-            this.setoaToolStripMenuItem.Name = "setoaToolStripMenuItem";
-            this.setoaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.setoaToolStripMenuItem.Text = "setoa";
-            this.setoaToolStripMenuItem.Click += new System.EventHandler(this.setoaToolStripMenuItem_Click);
+            this.tileMakerToolStripMenuItem.Name = "tileMakerToolStripMenuItem";
+            this.tileMakerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.tileMakerToolStripMenuItem.Text = "Tile Maker";
+            this.tileMakerToolStripMenuItem.Click += new System.EventHandler(this.tileMakerToolStripMenuItem_Click);
             // 
             // Editor
             // 
@@ -161,8 +143,6 @@ namespace Lorule.Content.Editor
         private System.Windows.Forms.ToolStripMenuItem projectToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem repackToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem archivesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem setoaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tileMakerToolStripMenuItem;
     }
 }

@@ -28,6 +28,7 @@ namespace Lorule.Content.Editor
         private readonly IServerConstants _serverConstants;
         private readonly IArchive _archiveService;
         private readonly IPaletteCollection _paletteService;
+        private readonly FrmTileMaker _frmTileMaker;
         private readonly EditorOptions _editorSettings;
         private readonly IOptions<LoruleOptions> _loruleOptions;
         private readonly ILogger<Editor> _logger;
@@ -41,7 +42,7 @@ namespace Lorule.Content.Editor
             IServerContext loruleServerContext,
             IServerConstants serverConstants,
             IArchive archiveService,
-            IPaletteCollection paletteService)
+            IPaletteCollection paletteService, FrmTileMaker frmTileMaker)
         {
             _editorSettings = editorSettings ?? throw new ArgumentNullException(nameof(editorSettings));
             _loruleOptions = loruleOptions ?? throw new ArgumentNullException(nameof(loruleOptions));
@@ -51,6 +52,7 @@ namespace Lorule.Content.Editor
             _serverConstants = serverConstants ?? throw new ArgumentNullException(nameof(serverConstants));
             _archiveService = archiveService ?? throw new ArgumentNullException(nameof(archiveService));
             _paletteService = paletteService ?? throw new ArgumentNullException(nameof(paletteService));
+            _frmTileMaker = frmTileMaker;
 
             InitializeComponent();
 
@@ -266,9 +268,10 @@ namespace Lorule.Content.Editor
             _logger.LogInformation($"{operationName} Completed.");
         }
 
-        private void setoaToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void tileMakerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _archiveService.PackArchive(_editorSettings.Location + "\\Extractions\\setoa", _editorSettings.GameLocation + "\\setoa.dat");
+            _frmTileMaker.ShowDialog();
         }
     }
 }
