@@ -1107,7 +1107,7 @@ namespace Darkages.Types
                     allowGhostWalk = true;
 
             //check position before we take a step.
-            if (!allowGhostWalk && this is Aisling)
+            if (!allowGhostWalk)
             {
                 if (Map?.IsWall(savedX, savedY) ?? false)
                     return false;
@@ -1126,7 +1126,7 @@ namespace Darkages.Types
                 PendingX--;
 
             //check position after we take a step.
-            if (!allowGhostWalk && this is Aisling)
+            if (!allowGhostWalk)
             {
                 if (Map != null && Map.IsWall(PendingX, PendingY))
                     return false;
