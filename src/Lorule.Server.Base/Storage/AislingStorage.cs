@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+
 using Newtonsoft.Json;
 
 #endregion
@@ -56,9 +57,9 @@ namespace Darkages.Storage
 
                 File.WriteAllText(path, objString);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                /* Ignore */
+                Console.Write("Another process was using player's json file: " + ex);
             }
         }
     }

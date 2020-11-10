@@ -33,7 +33,7 @@ namespace Darkages.Scripting.Scripts.Skills
             }
         }
 
-        public override void OnSuccess(Sprite sprite)
+        public override async void OnSuccess(Sprite sprite)
         {
             var collided = false;
 
@@ -97,18 +97,18 @@ namespace Darkages.Scripting.Scripts.Skills
                 }
             }
 
-            Task.Delay(50).ContinueWith(dc =>
+            await Task.Delay(50).ContinueWith(dc =>
             {
                 if (Target != null && collided)
                 {
                     if (Target is Monster || Target is Mundane || Target is Aisling)
                         Target.Show(Scope.NearbyAislings,
-                            new ServerFormat29((uint) sprite.Serial, (uint) Target.Serial,
+                            new ServerFormat29((uint)sprite.Serial, (uint)Target.Serial,
                                 Skill.Template.TargetAnimation, 0, 100));
 
                     sprite.Show(Scope.NearbyAislings, action);
                 }
-            }).Wait();
+            }).ConfigureAwait(true);
         }
 
         public override void OnUse(Sprite sprite)
