@@ -208,10 +208,11 @@ namespace Darkages.Types
 
             obj.AuthenticatedAislings = null;
 
+            if (obj.Color == 0)
+                obj.Color = (byte)ServerContext.Config.DefaultItemColor;
+
             if (obj.Color != 0)
-                obj.Color = (byte) template.Color;
-            else
-                obj.Color = (byte) ServerContext.Config.DefaultItemColor;
+                obj.Color = (byte)template.Color;
 
             if (obj.Template.Flags.HasFlag(ItemFlags.Repairable))
             {
