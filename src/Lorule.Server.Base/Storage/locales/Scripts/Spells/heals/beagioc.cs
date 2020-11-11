@@ -26,7 +26,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
         {
             var healValue = (int) (200 + Spell.Level * sprite.Wis * 0.05);
 
-            sprite.Aisling(sprite)
+            Sprite.Aisling(sprite)
                 ?.HasManaFor(Spell)
                 ?.Cast(Spell, target)
                 ?.GiveHealth(target, healValue)
