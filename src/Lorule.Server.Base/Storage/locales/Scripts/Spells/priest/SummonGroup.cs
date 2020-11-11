@@ -36,7 +36,7 @@ namespace Darkages.Storage.locales.Scripts.Spells.priest
             var summoningTarget  = GetObject<Aisling>(null, i => i.Username.ToLower().Equals(spellArgs.ToLower()));
 
             if (summoningTarget != null)
-                sprite.Aisling(sprite)?.Client.SummonGroup(summoningTarget, availableAreas.ToArray());
+                Sprite.Aisling(sprite)?.Client.SummonGroup(summoningTarget, availableAreas.ToArray());
         }
     }
 }

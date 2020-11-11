@@ -37,7 +37,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
                     return;
                 }
 
-                sprite.Aisling(sprite)
+                Sprite.Aisling(sprite)
                     ?.HasManaFor(Spell)
                     ?.Cast(Spell, target)
                     ?.ApplyBuff("buff_spell_reflect").Cast<Aisling>()?.UpdateStats(Spell)?.TrainSpell(Spell);
