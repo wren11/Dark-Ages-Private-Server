@@ -1240,7 +1240,7 @@ namespace Darkages.Network.Game
 
         public GameClient UpdateDisplay()
         {
-            var response = new ServerFormat33(this, Aisling);
+            var response = new ServerFormat33(Aisling);
 
             Aisling.Show(Scope.Self, response);
 

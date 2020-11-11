@@ -7,14 +7,15 @@ using Darkages.Types;
 
 namespace Darkages.Scripting
 {
-    public abstract class SkillScript : ObjectManager
+    public abstract class SkillScript : ObjectManager, IScriptBase, IUseable
     {
-        public SkillScript(Skill skill)
+        protected SkillScript(Skill skill)
         {
             Skill = skill;
         }
 
         public bool IsScriptDefault { get; set; }
+
         public Skill Skill { get; set; }
 
         public abstract void OnFailed(Sprite sprite);

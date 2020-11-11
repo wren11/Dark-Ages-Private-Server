@@ -15,14 +15,12 @@ namespace Darkages.Network.ServerFormats
             Command = 0x33;
         }
 
-        public ServerFormat33(GameClient client, Aisling aisling) : this()
+        public ServerFormat33(Aisling aisling) : this()
         {
-            Client = client;
             Aisling = aisling;
         }
 
         private Aisling Aisling { get; }
-        private GameClient Client { get; }
 
         public override void Serialize(NetworkPacketReader reader) { }
 

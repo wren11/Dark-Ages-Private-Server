@@ -8,11 +8,11 @@ using Darkages.Network.Object;
 
 namespace Darkages.Scripting
 {
-    public abstract class GlobalScript : ObjectManager
+    public abstract class GlobalScript : ObjectManager, IScriptBase
     {
         public GameClient Client;
 
-        public GlobalScript(GameClient client)
+        protected GlobalScript(GameClient client)
         {
             Client = client;
         }

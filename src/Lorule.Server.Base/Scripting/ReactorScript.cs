@@ -6,9 +6,9 @@ using Darkages.Types;
 
 namespace Darkages.Scripting
 {
-    public abstract class ReactorScript
+    public abstract class ReactorScript : IScriptBase
     {
-        public ReactorScript(Reactor reactor)
+        protected ReactorScript(Reactor reactor)
         {
             Reactor = reactor;
         }

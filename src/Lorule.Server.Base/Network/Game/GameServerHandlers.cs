@@ -1343,7 +1343,7 @@ namespace Darkages.Network.Game
             {
                 var mundane = GetObject<Mundane>(client.Aisling.Map, i => i.Serial == format.Serial);
 
-                if (mundane.Scripts != null)
+                if (mundane != null && mundane.Scripts != null)
                     foreach (var script in mundane.Scripts?.Values)
                         script.OnResponse(this, client, format.Step, format.Args);
             }
@@ -1825,7 +1825,7 @@ namespace Darkages.Network.Game
                     client.Send(new ServerFormat15(client.Aisling.Map));
     
                 client.Send(new ServerFormat04(client.Aisling));
-                client.Send(new ServerFormat33(client, client.Aisling));
+                client.Send(new ServerFormat33(client.Aisling));
 
                 client.Aisling.CurrentMapId = selectedPortalNode.Destination.AreaID;
                 client.Aisling.X = selectedPortalNode.Destination.Location.X;

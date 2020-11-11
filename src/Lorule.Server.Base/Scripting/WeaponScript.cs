@@ -7,9 +7,9 @@ using Darkages.Types;
 
 namespace Darkages.Scripting
 {
-    public abstract class WeaponScript
+    public abstract class WeaponScript : IScriptBase
     {
-        public WeaponScript(Item item)
+        protected WeaponScript(Item item)
         {
             Item = item;
         }

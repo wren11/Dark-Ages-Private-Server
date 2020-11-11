@@ -9,7 +9,7 @@ using Darkages.Types;
 
 namespace Darkages.Scripting
 {
-    public abstract class MonsterScript : ObjectManager
+    public abstract class MonsterScript : ObjectManager, IScriptBase
     {
         public Area Map;
         public Monster Monster;

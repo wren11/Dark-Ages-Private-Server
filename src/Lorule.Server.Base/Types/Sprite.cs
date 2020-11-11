@@ -744,8 +744,7 @@ namespace Darkages.Types
 
         public void HideFrom(Aisling nearbyAisling)
         {
-            if (nearbyAisling != null)
-                nearbyAisling.Show(Scope.Self, new ServerFormat0E(Serial));
+            nearbyAisling?.Show(Scope.Self, new ServerFormat0E(Serial));
         }
 
         public void Kill()
@@ -937,13 +936,16 @@ namespace Darkages.Types
                 {
                     foreach (var gc in GetObjects<Aisling>(Map, that =>
                         WithinRangeOf(that, ServerContext.Config.VeryNearByProximity)))
-                        gc.Client.Send(format);
+                    {
+                        gc?.Client.Send(format);
+                    }
                 }
                 else if (op == Scope.AislingsOnSameMap)
                 {
                     foreach (var gc in GetObjects<Aisling>(Map, that => CurrentMapId == that.CurrentMapId))
-                        if (gc != null)
-                            gc.Client.Send(format);
+                    {
+                        gc?.Client.Send(format);
+                    }
                 }
                 else if (op == Scope.GroupMembers)
                 {
@@ -951,8 +953,9 @@ namespace Darkages.Types
                         return;
 
                     foreach (var gc in GetObjects<Aisling>(Map, that => ((Aisling) this).GroupParty.Has(that)))
-                        if (gc != null)
-                            gc.Client.Send(format);
+                    {
+                        gc?.Client.Send(format);
+                    }
                 }
                 else if (op == Scope.NearbyGroupMembersExcludingSelf)
                 {
@@ -961,8 +964,9 @@ namespace Darkages.Types
 
                     foreach (var gc in GetObjects<Aisling>(Map,
                         that => that.WithinRangeOf(this) && ((Aisling) this).GroupParty.Has(that)))
-                        if (gc != null)
-                            gc.Client.Send(format);
+                    {
+                        gc?.Client.Send(format);
+                    }
                 }
                 else if (op == Scope.NearbyGroupMembers)
                 {
@@ -971,8 +975,9 @@ namespace Darkages.Types
 
                     foreach (var gc in GetObjects<Aisling>(Map,
                         that => that.WithinRangeOf(this) && ((Aisling) this).GroupParty.Has(that)))
-                        if (gc != null)
-                            gc.Client.Send(format);
+                    {
+                        gc?.Client.Send(format);
+                    }
                 }
                 else if (op == Scope.DefinedAislings)
                 {
@@ -980,8 +985,9 @@ namespace Darkages.Types
                         return;
 
                     foreach (var gc in definer)
-                        if (gc != null)
-                            (gc as Aisling)?.Client.Send(format);
+                    {
+                        (gc as Aisling)?.Client.Send(format);
+                    }
                 }
                 else if (op == Scope.All)
                 {
@@ -993,6 +999,7 @@ namespace Darkages.Types
             }
             catch (Exception)
             {
+                // ignored
             }
         }
 
@@ -1002,7 +1009,7 @@ namespace Darkages.Types
             {
                 if (this is Aisling aisling)
                 {
-                    nearbyAisling.Show(Scope.Self, new ServerFormat33(Client, aisling));
+                    nearbyAisling.Show(Scope.Self, new ServerFormat33(aisling));
                 }
                 else
                     nearbyAisling.Show(Scope.Self, new ServerFormat07(new[] {this}));
@@ -1153,6 +1160,7 @@ namespace Darkages.Types
         {
             return WalkTo(x, y, false);
         }
+
 
         public bool WalkTo(int x, int y, bool ignoreWalls = false)
         {
