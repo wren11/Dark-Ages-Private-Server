@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Darkages.IO;
+using Darkages.Scripting;
 using Newtonsoft.Json;
 
 #endregion
@@ -38,13 +39,13 @@ namespace Darkages.Storage
 
         public void CacheFromStorage()
         {
-            var area_dir = StoragePath;
-            if (!Directory.Exists(area_dir))
+            var areaDir = StoragePath;
+            if (!Directory.Exists(areaDir))
                 return;
 
-            var area_names = Directory.GetFiles(area_dir, "*.json", SearchOption.TopDirectoryOnly);
+            var areaNames = Directory.GetFiles(areaDir, "*.json", SearchOption.TopDirectoryOnly);
 
-            foreach (var area in area_names)
+            foreach (var area in areaNames)
             {
                 var mapObj = StorageManager.AreaBucket.Load(Path.GetFileNameWithoutExtension(area));
 
@@ -59,6 +60,12 @@ namespace Darkages.Storage
                     if (!LoadMap(mapObj, mapFile, true))
                     {
                     }
+
+                    if (!string.IsNullOrEmpty(mapObj.ScriptKey))
+                    {
+                        mapObj.Scripts = ScriptManager.Load<AreaScript>(mapObj.ScriptKey, mapObj);
+                    }
+
                     ServerContext.GlobalMapCache[mapObj.ID] = mapObj;
                 }
             }

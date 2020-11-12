@@ -648,6 +648,14 @@ namespace Darkages.Network.Game
                     Aisling.DiscoveredMaps.Add(Aisling.CurrentMapId);
 
                 SendMusic();
+
+                if (Aisling.Map != null && Aisling.Map.Scripts.Any())
+                {
+                    foreach (var script in Aisling.Map.Scripts.Values)
+                    {
+                        script.OnMapExit(this);
+                    }
+                }
             }
 
             if (!ShouldUpdateMap)
@@ -657,10 +665,19 @@ namespace Darkages.Network.Game
             Aisling.Client.LastMapUpdated = DateTime.UtcNow;
 
             if (Aisling.Blind == 1)
-                if (!Aisling.Map.Flags.HasFlag(MapFlags.Darkness))
+                if (Aisling.Map != null && !Aisling.Map.Flags.HasFlag(MapFlags.Darkness))
                     Aisling.Map.Flags |= MapFlags.Darkness;
 
             Send(new ServerFormat15(Aisling.Map));
+
+            if (Aisling.Map == null || !Aisling.Map.Scripts.Any())
+                return this;
+
+            foreach (var script in Aisling.Map.Scripts.Values)
+            {
+                script.OnMapEnter(this);
+            }
+
 
             return this;
         }

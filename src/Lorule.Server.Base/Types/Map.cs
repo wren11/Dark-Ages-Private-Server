@@ -14,6 +14,7 @@ namespace Darkages
         public string Name { get; set; }
         public ushort Rows { get; set; }
         public List<Position> Blocks { get; set; }
+        public string ScriptKey { get; set; }
 
         public Map()
         {

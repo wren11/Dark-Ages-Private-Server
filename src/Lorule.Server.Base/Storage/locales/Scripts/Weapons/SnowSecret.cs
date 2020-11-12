@@ -16,7 +16,7 @@ namespace Darkages.Storage.locales.Scripts.Weapons
         {
         }
 
-        public override void OnUse(Sprite sprite, Action<int> cb)
+        public override void OnUse(Sprite sprite, Action<int> cb = null)
         {
             var enemy = sprite.GetInfront(8);
             var count = 1;

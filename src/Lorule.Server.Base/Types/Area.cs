@@ -4,8 +4,10 @@ using Darkages.Storage;
 using Darkages.Types;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Darkages.Scripting;
 
 #endregion
 
@@ -19,6 +21,7 @@ namespace Darkages
         [JsonIgnore] public bool Ready;
         [JsonIgnore] public TileGrid[,] ObjectGrid { get; set; }
         [JsonIgnore] public TileContent[,] Tile { get; set; }
+        [JsonIgnore] public Dictionary<string, AreaScript> Scripts { get; set; } = new Dictionary<string, AreaScript>();
 
         public string FilePath { get; set; }
 
@@ -134,6 +137,10 @@ namespace Darkages
 
         public void Update(in TimeSpan elapsedTime)
         {
+            if (Scripts != null)
+                foreach (var script in Scripts.Values)
+                    script.Update(elapsedTime);
+
             UpdateAreaObjects(elapsedTime);
         }
 

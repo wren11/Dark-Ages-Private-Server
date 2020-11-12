@@ -103,7 +103,9 @@ namespace Darkages.Network.ServerFormats
                 writer.Write((byte) Aisling.DefenseElement);
                 writer.Write((byte) (Aisling.Mr / 10));
                 writer.Write(byte.MinValue);
-                writer.Write((sbyte) Aisling.Ac);
+
+                //Pill's AC display Fix
+                writer.Write(Aisling.Ac > sbyte.MaxValue ? (sbyte)Aisling.Ac : Aisling.Ac < sbyte.MinValue ? sbyte.MinValue : (sbyte)Aisling.Ac);
                 writer.Write(Aisling.Dmg);
                 writer.Write(Aisling.Hit);
             }

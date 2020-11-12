@@ -330,6 +330,15 @@ namespace Darkages.Network.Game
 
                 CheckWalkOverPopups(client);
                 CheckWarpTransitions(client);
+
+
+                if (client.Aisling.Map == null || !client.Aisling.Map.Scripts.Any())
+                    return;
+
+                foreach (var script in client.Aisling.Map.Scripts.Values)
+                {
+                    script.OnPlayerWalk(client, client.Aisling.LastPosition, client.Aisling.Position);
+                }
             }
             else
             {
@@ -505,6 +514,7 @@ namespace Darkages.Network.Game
             var itemPosition = new Position(format.X, format.Y);
             Item copy;
 
+
             if (client.Aisling.Position.DistanceFrom(itemPosition.X, itemPosition.Y) > 2)
             {
                 client.SendMessage(Scope.Self, 0x02, ServerContext.Config.CantDoThat);
@@ -535,10 +545,10 @@ namespace Darkages.Network.Game
                 else
                 {
                     var nitem = Clone<Item>(item);
-                    nitem.Stacks = (byte) format.ItemAmount;
+                    nitem.Stacks = (byte)format.ItemAmount;
                     nitem.Release(client.Aisling, new Position(format.X, format.Y));
 
-                    item.Stacks = (byte) remaining;
+                    item.Stacks = (byte)remaining;
                     client.Aisling.Inventory.Set(item, false);
 
                     client.Send(new ServerFormat10(item.Slot));
@@ -551,6 +561,15 @@ namespace Darkages.Network.Game
 
                 if (client.Aisling.EquipmentManager.RemoveFromInventory(item, true))
                     copy.Release(client.Aisling, new Position(format.X, format.Y));
+
+                //Invoke area Scripts if found for the current map. and trigger OnItemDropped.
+                if (client.Aisling.Map != null && client.Aisling.Map.Scripts.Any())
+                {
+                    foreach (var script in client.Aisling.Map.Scripts.Values)
+                    {
+                        script.OnItemDropped(client, copy, itemPosition);
+                    }
+                }
             }
 
             copy = Clone<Item>(item);
@@ -558,6 +577,15 @@ namespace Darkages.Network.Game
             if (copy?.Scripts == null) return;
             foreach (var itemScript in (copy.Scripts?.Values).Where(itemScript => client.Aisling?.Map != null))
                 itemScript?.OnDropped(client.Aisling, new Position(format.X, format.Y), client.Aisling.Map);
+
+            //Invoke area Scripts if found for the current map. and trigger OnItemDropped.
+            if (client.Aisling.Map != null && client.Aisling.Map.Scripts.Any())
+            {
+                foreach (var script in client.Aisling.Map.Scripts.Values)
+                {
+                    script.OnItemDropped(client, copy, itemPosition);
+                }
+            }
         }
 
         protected override void Format0BHandler(GameClient client, ClientFormat0B format)
