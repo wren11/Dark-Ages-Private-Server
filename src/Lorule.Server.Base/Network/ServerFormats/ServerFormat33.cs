@@ -55,21 +55,29 @@ namespace Darkages.Network.ServerFormats
                 else
                     displayFlag = Aisling.Gender == Gender.Male ? 0x10 : 0x20;
 
-                switch (displayFlag)
+
+                if (!Aisling.Invisible)
                 {
-                    //Hair Style
-                    case 0x10 when Aisling.Helmet > 100 && !Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill):
-                        writer.Write((ushort)Aisling.Helmet);
-                        break;
-                    case 0x10:
-                        writer.Write((ushort)Aisling.HairStyle);
-                        break;
-                    case 0x20 when Aisling.Helmet > 100 && !Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill):
-                        writer.Write((ushort)Aisling.Helmet);
-                        break;
-                    case 0x20:
-                        writer.Write((ushort)Aisling.HairStyle);
-                        break;
+                    switch (displayFlag)
+                    {
+                        //Hair Style
+                        case 0x10 when Aisling.Helmet > 100 && !Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill):
+                            writer.Write((ushort)Aisling.Helmet);
+                            break;
+                        case 0x10:
+                            writer.Write((ushort)Aisling.HairStyle);
+                            break;
+                        case 0x20 when Aisling.Helmet > 100 && !Aisling.Map.Flags.HasFlag(MapFlags.PlayerKill):
+                            writer.Write((ushort)Aisling.Helmet);
+                            break;
+                        case 0x20:
+                            writer.Write((ushort)Aisling.HairStyle);
+                            break;
+                    }
+                }
+                else
+                {
+                    writer.Write((ushort)0);
                 }
 
                 //Body Style
@@ -108,6 +116,7 @@ namespace Darkages.Network.ServerFormats
                     writer.Write((byte)0);
                     writer.Write((byte)0);
                     writer.Write((ushort)0);
+                    return;
                 }
             }
 

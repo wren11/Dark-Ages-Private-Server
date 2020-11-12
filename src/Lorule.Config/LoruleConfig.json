@@ -63,8 +63,8 @@
 		"AssailsCancelSpells": true,
 
 		// Spells
-		"FasNadurStrength": 3.0,
-		"MorFasNadurStrength": 4.5,
+		"FasNadurStrength": 1.5,
+		"MorFasNadurStrength": 2.0,
 
 		// Items
 		"ClickLootDistance": 10,

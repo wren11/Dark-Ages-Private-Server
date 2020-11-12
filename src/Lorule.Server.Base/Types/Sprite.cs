@@ -1050,9 +1050,12 @@ namespace Darkages.Types
                 DefenseElement = saved;
             }
 
+            if (damageDealingSprite.Amplified == 0)
+                return amplifier;
+
             amplifier *= Amplified == 1
-                ? ServerContext.Config.FasNadurStrength + 10
-                : ServerContext.Config.MorFasNadurStrength + 30;
+                ? ServerContext.Config.FasNadurStrength
+                : ServerContext.Config.MorFasNadurStrength;
 
             return amplifier;
         }
