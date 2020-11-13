@@ -56,7 +56,7 @@ namespace Darkages.Network.ServerFormats
                     displayFlag = Aisling.Gender == Gender.Male ? 0x10 : 0x20;
 
 
-                if (!Aisling.Invisible)
+                if (!Aisling.Invisible && !Aisling.Dead)
                 {
                     switch (displayFlag)
                     {
@@ -116,7 +116,12 @@ namespace Darkages.Network.ServerFormats
                     writer.Write((byte)0);
                     writer.Write((byte)0);
                     writer.Write((ushort)0);
-                    return;
+
+                    if (Aisling.Dead)
+                    {
+                        writer.Write((byte) 0);
+                        return;
+                    }
                 }
             }
 

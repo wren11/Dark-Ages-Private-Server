@@ -123,12 +123,12 @@ namespace Darkages.Network.Game
             var message = string.Empty;
 
             if (client.Aisling.GameMaster || client.Aisling.Developer)
-                return true;
-
-            if (item.Durability > 0)
             {
-                client.Aisling.EquipmentManager.Add(item.Template.EquipmentSlot, item);
-                return true;
+                if (item.Durability > 1)
+                {
+                    client.Aisling.EquipmentManager.Add(item.Template.EquipmentSlot, item);
+                    return true;
+                }
             }
 
             if (client.Aisling.ExpLevel < item.Template.LevelRequired)
@@ -670,12 +670,24 @@ namespace Darkages.Network.Game
 
             Send(new ServerFormat15(Aisling.Map));
 
-            if (Aisling.Map == null || !Aisling.Map.Scripts.Any())
+
+            if (Aisling.Map != null && Aisling.Map.Scripts == null)
+            {
+                if (!string.IsNullOrEmpty(Aisling.Map.ScriptKey))
+                {
+                    Aisling.Map.Scripts = ScriptManager.Load<AreaScript>(Aisling.Map.ScriptKey, Aisling.Map);
+                }
+            }
+
+            if (Aisling.Map?.Scripts != null && (Aisling.Map == null || !Aisling.Map.Scripts.Any()))
                 return this;
 
-            foreach (var script in Aisling.Map.Scripts.Values)
+            if (Aisling.Map?.Scripts == null) return this;
             {
-                script.OnMapEnter(this);
+                foreach (var script in Aisling.Map.Scripts.Values)
+                {
+                    script.OnMapEnter(this);
+                }
             }
 
 
@@ -951,13 +963,11 @@ namespace Darkages.Network.Game
             LastMovement = DateTime.UtcNow;
             LastClientRefresh = DateTime.UtcNow;
             LastMessageSent = DateTime.UtcNow;
-
             BoardOpened = DateTime.UtcNow;
-            {
-                Aisling.BonusAc = (int) (70 - Aisling.Level * 0.5 / 1.0);
-                Aisling.Exchange = null;
-                Aisling.LastMapId = short.MaxValue;
-            }
+            Aisling.BonusAc = (100 - Aisling.Level / 3);
+            Aisling.Exchange = null;
+            Aisling.LastMapId = short.MaxValue;
+
             BuildSettings();
             return this;
         }

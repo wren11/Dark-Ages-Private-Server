@@ -137,6 +137,12 @@ namespace Darkages
 
         public void Update(in TimeSpan elapsedTime)
         {
+
+            if (Scripts == null)
+            {
+
+            }
+
             if (Scripts != null)
                 foreach (var script in Scripts.Values)
                     script.Update(elapsedTime);
