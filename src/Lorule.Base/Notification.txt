@@ -1,4 +1,0 @@
-﻿{=aWelcome to Lorule.
-{=uLorule is a free to play Dark Ages Server. Game content for this server is still being added. and some fixes are being made as they popup.
-
-Enjoy!
