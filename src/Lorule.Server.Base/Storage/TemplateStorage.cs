@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using Darkages.Templates;
 using Darkages.Types;
 using Darkages.Types.Templates;
 using Newtonsoft.Json;

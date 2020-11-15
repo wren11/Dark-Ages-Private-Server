@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Darkages.Templates;
 using Newtonsoft.Json;
 
 #endregion
@@ -502,13 +503,17 @@ namespace Darkages.Network.Game
                 foreach (var skill in skillsAvailable)
                 {
                     if (skill.Template != null)
-                        if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skill.Template.Name))
+                    {
+                        var skillName = skill.Template.Name;
+
+                        if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skillName))
                         {
-                            var template = ServerContext.GlobalSkillTemplateCache[skill.Template.Name];
+                            var template = ServerContext.GlobalSkillTemplateCache[skillName];
                             {
                                 skill.Template = template;
                             }
                         }
+                    }
 
                     skill.InUse = false;
                     skill.NextAvailableUse = DateTime.UtcNow;

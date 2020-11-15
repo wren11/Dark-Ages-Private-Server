@@ -12,7 +12,6 @@ namespace Darkages.Types
         public string Description { get; set; }
         public string Group { get; set; }
         public int ID { get; set; }
-
         public string Name { get; set; }
 
         public abstract string[] GetMetaData();

@@ -1,14 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
 using Darkages.Common;
 using Darkages.Network.ClientFormats;
 using Darkages.Network.Login;
@@ -17,12 +8,22 @@ using Darkages.Scripting;
 using Darkages.Storage;
 using Darkages.Storage.locales.Scripts.Mundanes;
 using Darkages.Systems.CLI;
+using Darkages.Templates;
 using Darkages.Types;
 using MenuInterpreter;
 using MenuInterpreter.Parser;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using Microsoft.CodeAnalysis.CSharp;
 
 #endregion
 
@@ -212,11 +213,6 @@ namespace Darkages.Network.Game
                 Name = client.Aisling.Username,
                 Type = "2"
             };
-
-            client.Aisling.CancelExchange();
-            client.Aisling.LoggedIn = false;
-            client.DlgSession = null;
-            client.CloseDialog();
 
             if ((DateTime.UtcNow - client.LastSave).TotalSeconds > 2)
                 client.Save();
@@ -1014,6 +1010,14 @@ namespace Darkages.Network.Game
         {
             client.Send(new ServerFormat4B(format.ID, 0));
             client.Send(new ServerFormat4B(format.ID, 1, format.ItemSlot));
+
+            var obj = GetObject<Mundane>(client.Aisling.Map, i => i.Serial.Equals((int)format.ID));
+
+            if (obj?.Scripts == null) return;
+            foreach (var (_, script) in obj.Scripts.Select(x => (x.Key, x.Value)))
+            {
+                script.OnDropped(client, format.ItemSlot);
+            }
         }
 
         protected override void Format2AHandler(GameClient client, ClientFormat2A format)
@@ -1829,6 +1833,7 @@ namespace Darkages.Network.Game
             return message;
         }
 
+        // Bug: Note, as of 16/11/2020 this is a Bug that cannot be fixed by us. we avoid it by flooding extra data to the client.
         public static void TraverseWorldMap(GameClient client, ClientFormat3F format)
         {
             if (client.PendingNode != null)
@@ -1842,23 +1847,27 @@ namespace Darkages.Network.Game
                     client.Aisling.LeaveAbyss();
 
                 client.Refresh(true);
+                client.Refresh(true);
+                client.Refresh(true);
 
                 client.Aisling.CurrentMapId = selectedPortalNode.Destination.AreaID;
                 client.Aisling.X = selectedPortalNode.Destination.Location.X;
                 client.Aisling.Y = selectedPortalNode.Destination.Location.Y;
 
                 client.Send(new ServerFormat67());
-                
-                for (int i = 0; i < 3; i++)
+                client.Send(new ServerFormat67());
+                client.Send(new ServerFormat67());
+
+                for (var i = 0; i < 5; i++)
+                {
                     client.Send(new ServerFormat15(client.Aisling.Map));
-    
-                client.Send(new ServerFormat04(client.Aisling));
-                client.Send(new ServerFormat33(client.Aisling));
+                    client.Send(new ServerFormat04(client.Aisling));
+                    client.Send(new ServerFormat33(client.Aisling));
 
-                client.Aisling.CurrentMapId = selectedPortalNode.Destination.AreaID;
-                client.Aisling.X = selectedPortalNode.Destination.Location.X;
-                client.Aisling.Y = selectedPortalNode.Destination.Location.Y;
-
+                    client.Aisling.CurrentMapId = selectedPortalNode.Destination.AreaID;
+                    client.Aisling.X = selectedPortalNode.Destination.Location.X;
+                    client.Aisling.Y = selectedPortalNode.Destination.Location.Y;
+                }
 
                 client.PendingNode = null;
             }
@@ -2471,31 +2480,30 @@ namespace Darkages.Network.Game
 
         private static void SendMapData(GameClient client)
         {
-            for (var i = 0; i < client.Aisling.Map.Rows; i++)
+            void SendMapChunks()
             {
-                var response = new ServerFormat3C
+                for (var i = 0; i < client.Aisling.Map.Rows; i++)
                 {
-                    Line = (ushort) i,
-                    Data = client.Aisling.Map.GetRowData(i)
-                };
-                client.Send(response);
+                    var response = new ServerFormat3C
+                    {
+                        Line = (ushort) i,
+                        Data = client.Aisling.Map.GetRowData(i)
+                    };
+                    client.Send(response);
+                }
             }
 
+            SendMapChunks();
+            SendMapChunks();
             client.Aisling.Map.OnLoaded();
-            Thread.Sleep(50);
         }
 
         private static void ValidateRedirect(GameClient client, dynamic redirect)
         {
             #region
-
             if (redirect.developer.Value != redirect.player.Value) return;
             client.Aisling.Developer = true;
             client.Aisling.GameMaster = true;
-
-            if (client.Aisling.Developer)
-                client.LearnEverything();
-
             #endregion
         }
 
@@ -2528,7 +2536,7 @@ namespace Darkages.Network.Game
                 }
         }
 
-        private void EnterGame(GameClient client, ClientFormat10 format)
+        public void EnterGame(GameClient client, ClientFormat10 format)
         {
             client.Encryption.Parameters = format.Parameters;
             client.Server = this;
@@ -2556,16 +2564,7 @@ namespace Darkages.Network.Game
 
             Party.RemovePartyMember(client.Aisling);
 
-            client.Aisling.LastLogged = DateTime.UtcNow;
-            client.Aisling.ActiveReactor = null;
-            client.Aisling.ActiveSequence = null;
-            client.CloseDialog();
-            client.DlgSession = null;
-            client.MenuInterpter = null;
-            client.Aisling.CancelExchange();
-            client.Aisling.Remove(true);
-
-            if (format.Type == 0) ExitGame(client);
+            RemoveFromServer(client, format.Type);
 
             if (format.Type == 1)
             {
@@ -2578,13 +2577,33 @@ namespace Darkages.Network.Game
             }
         }
 
-        private Aisling LoadPlayer(GameClient client, string player)
+        public void RemoveFromServer(GameClient client, byte type = 0)
         {
-            var aisling = StorageManager.AislingBucket.Load(player);
+            client.CloseDialog();
+            client.Aisling.CancelExchange();
+
+            client.DlgSession = null;
+            client.MenuInterpter = null;
+
+            client.Aisling.LastLogged = DateTime.UtcNow;
+            client.Aisling.ActiveReactor = null;
+            client.Aisling.ActiveSequence = null;
+            client.Aisling.Remove(true);
+            client.Aisling.LoggedIn = false;
+
+            if (type == 0)
+                ExitGame(client);
+        }
+
+        public Aisling LoadPlayer(GameClient client, string player, bool retainState = false)
+        {
+            var aisling = retainState ? client.Aisling : StorageManager.AislingBucket.Load(player);
 
             if (aisling != null && ServerContext.Config.GameMasters.Any() &&
-                ServerContext.Config.GameMasters.Exists(i => i.ToLower() == player.ToLower()))
+                ServerContext.Config.GameMasters.Exists(i => string.Equals(i.ToLower(), player.ToLower(), StringComparison.Ordinal)))
+            {
                 aisling.GameMaster = true;
+            }
 
             client.Aisling = aisling;
 

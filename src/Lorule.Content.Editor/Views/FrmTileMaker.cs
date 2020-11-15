@@ -65,6 +65,12 @@ namespace Lorule.Content.Editor.Views
 
         private void PictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
+            var screenX = (e.X - e.X / 2) - TileWidth + (XPadding / TileWidth) / TileHeight;
+            var screenY = YPadding / TileHeight;
+
+            Text = screenX.ToString();
+
+
             if (!_panning)
                 return;
 
@@ -72,6 +78,7 @@ namespace Lorule.Content.Editor.Views
 
             XPadding = _movingPoint.X;
             YPadding = _movingPoint.Y;
+
 
             pictureBox1.Invalidate();
         }

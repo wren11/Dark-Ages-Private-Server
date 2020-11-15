@@ -1,4 +1,4 @@
-﻿namespace Darkages.Types
+﻿namespace Darkages.Templates
 {
     public enum WarpType
     {

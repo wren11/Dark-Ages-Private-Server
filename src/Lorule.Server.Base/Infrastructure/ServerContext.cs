@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using Darkages.Templates;
 using Lorule.GameServer;
 using Microsoft.Extensions.Options;
 

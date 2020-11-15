@@ -548,10 +548,6 @@ namespace Darkages
 
         public void GoHome()
         {
-            Client.CloseDialog();
-            Client.LeaveArea(true, true);
-
-
             var destinationMap = ServerContext.Config.TransitionZone;
 
             if (ServerContext.GlobalMapCache.ContainsKey(destinationMap))
@@ -561,8 +557,8 @@ namespace Darkages
                 Client.Aisling.CurrentMapId = destinationMap;
             }
 
-            Client.EnterArea();
-            Client.Refresh();
+            Client.Server.RemoveFromServer(Client, 1);
+            Client.Server.LoadPlayer(Client, Username, true);
         }
 
         public bool HasCompletedQuest(string lpName)

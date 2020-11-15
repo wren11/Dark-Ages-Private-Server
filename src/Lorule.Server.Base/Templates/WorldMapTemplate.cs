@@ -1,10 +1,11 @@
 ﻿#region
 
 using System.Collections.Generic;
+using Darkages.Types;
 
 #endregion
 
-namespace Darkages.Types
+namespace Darkages.Templates
 {
     public class WorldMapTemplate : Template
     {

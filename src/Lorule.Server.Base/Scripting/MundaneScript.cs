@@ -27,5 +27,10 @@ namespace Darkages.Scripting
         public abstract void OnResponse(GameServer server, GameClient client, ushort responseId, string args);
 
         public abstract void TargetAcquired(Sprite target);
+
+        public virtual void OnDropped(GameClient client, byte itemSlot)
+        {
+
+        }
     }
 }
