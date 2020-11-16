@@ -23,7 +23,7 @@
 		"CancelWalkingIfRefreshing": true,
 
 		// Starting Zone
-		"NationReturnHours": 1,
+		"NationReturnHours": 3,
 		"StartingMap": 3029,
 		"StartingPosition": {
 			"X": 26,
@@ -63,8 +63,8 @@
 		"AssailsCancelSpells": true,
 
 		// Spells
-		"FasNadurStrength": 3.0,
-		"MorFasNadurStrength": 4.5,
+		"FasNadurStrength": 1.5,
+		"MorFasNadurStrength": 2.0,
 
 		// Items
 		"ClickLootDistance": 10,
@@ -155,7 +155,7 @@
 
 		// Messages
 		"MessageClearInterval": 12.0,
-		"CantAttack": "Can't Attack.",
+		"CantAttack": "You can't attack that.",
 		"CantCarryMoreMsg": "You can't carry more.",
 		"CantDoThat": "You can't do that.",
 		"CantDropItemMsg": "You can't drop that.",
@@ -204,7 +204,7 @@
 		"WarpCheckRate": 200,
 		"ShowWarpAnimation": true,
 		"WarpNumber": 295,
-		"VeryNearByProximity": 7,
+		"VeryNearByProximity": 6,
 		"WithinRangeProximity": 12
 	}
 }

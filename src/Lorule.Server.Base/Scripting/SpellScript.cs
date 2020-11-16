@@ -3,14 +3,15 @@
 using Darkages.Network.Object;
 using Darkages.Types;
 using Newtonsoft.Json;
+using System;
 
 #endregion
 
 namespace Darkages.Scripting
 {
-    public abstract class SpellScript : ObjectManager
+    public abstract class SpellScript : ObjectManager, IScriptBase, IUseableTarget
     {
-        public SpellScript(Spell spell)
+        protected SpellScript(Spell spell)
         {
             Spell = spell;
         }

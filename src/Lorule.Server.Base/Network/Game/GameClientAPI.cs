@@ -262,7 +262,7 @@ namespace Darkages.Network.Game
         public bool IsBehind(Sprite sprite)
         {
             var delta = sprite.Direction - Aisling.Direction;
-            return Aisling.Position.IsNextTo(sprite.Position) && delta == -1;
+            return Aisling.Position.IsNextTo(sprite.Position) && delta == 0;
         }
 
         public void KillPlayer(string u)

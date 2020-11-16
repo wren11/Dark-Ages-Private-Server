@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using Darkages.Templates;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 

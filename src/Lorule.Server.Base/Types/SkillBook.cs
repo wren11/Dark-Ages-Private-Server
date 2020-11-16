@@ -58,6 +58,9 @@ namespace Darkages.Types
 
         public Skill Remove(byte movingFrom)
         {
+            if (!Skills.ContainsKey(movingFrom))
+                return null;
+
             var copy = Skills[movingFrom];
             Skills[movingFrom] = null;
             return copy;

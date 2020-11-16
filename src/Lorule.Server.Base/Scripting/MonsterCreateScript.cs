@@ -2,7 +2,7 @@
 
 namespace Darkages.Scripting
 {
-    public abstract class MonsterCreateScript
+    public abstract class MonsterCreateScript : IScriptBase
     {
         public abstract Monster Create(MonsterTemplate template, Area map);
     }

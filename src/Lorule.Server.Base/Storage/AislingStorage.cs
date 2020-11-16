@@ -21,21 +21,28 @@ namespace Darkages.Storage
 
         public string[] Files => Directory.GetFiles(StoragePath, "*.json", SearchOption.TopDirectoryOnly);
 
-        public bool Saving { get; set; }
-
         public Aisling Load(string name)
         {
-            var path = Path.Combine(StoragePath, $"{name.ToLower()}.json");
-
-            if (!File.Exists(path))
-                return null;
-
-            var s = File.OpenRead(path);
-            var f = new StreamReader(s);
-            return JsonConvert.DeserializeObject<Aisling>(f.ReadToEnd(), new JsonSerializerSettings
+            try
             {
-                TypeNameHandling = TypeNameHandling.All
-            });
+                var path = Path.Combine(StoragePath, $"{name.ToLower()}.json");
+
+                if (!File.Exists(path))
+                    return null;
+
+                var s = File.OpenRead(path);
+                var f = new StreamReader(s);
+                return JsonConvert.DeserializeObject<Aisling>(f.ReadToEnd(), new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All
+                });
+
+            }
+            catch (Exception e)
+            {
+                ServerContext.Logger($"Error : {e.Message}. Aisling could not be loaded.");
+                return null;
+            }
         }
 
         public void Save(Aisling obj)

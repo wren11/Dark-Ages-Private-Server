@@ -31,9 +31,7 @@ namespace Darkages.Types
 
         public override string[] GetMetaData()
         {
-            if (Prerequisites != null) return Prerequisites.MetaData;
-
-            return default;
+            return Prerequisites?.MetaData;
         }
     }
 }

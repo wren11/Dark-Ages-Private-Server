@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Darkages.Network.Game;
 using Darkages.Network.ServerFormats;
+using Darkages.Templates;
 using Darkages.Types;
 using Newtonsoft.Json;
 

@@ -7,9 +7,9 @@ using Darkages.Types;
 
 namespace Darkages.Scripting
 {
-    public abstract class ItemScript : ObjectManager
+    public abstract class ItemScript : ObjectManager, IScriptBase
     {
-        public ItemScript(Item item)
+        protected ItemScript(Item item)
         {
             Item = item;
         }
@@ -18,11 +18,11 @@ namespace Darkages.Scripting
 
         public abstract void Equipped(Sprite sprite, byte displayslot);
 
-        public virtual void OnDropped(Sprite sprite, Position dropped_position, Area map)
+        public virtual void OnDropped(Sprite sprite, Position droppedPosition, Area map)
         {
         }
 
-        public virtual void OnPickedUp(Sprite sprite, Position picked_position, Area map)
+        public virtual void OnPickedUp(Sprite sprite, Position pickedPosition, Area map)
         {
         }
 

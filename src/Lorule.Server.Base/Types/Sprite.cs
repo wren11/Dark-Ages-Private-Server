@@ -383,7 +383,7 @@ namespace Darkages.Types
             if (nearbyAisling == null) return;
             if (this is Aisling aisling)
             {
-                nearbyAisling.Show(Scope.Self, new ServerFormat33(Client, aisling));
+                nearbyAisling.Show(Scope.Self, new ServerFormat33(aisling));
             }
             else
                 nearbyAisling.Show(Scope.Self, new ServerFormat07(new[] { this }));
@@ -1050,9 +1050,12 @@ namespace Darkages.Types
                 DefenseElement = saved;
             }
 
+            if (damageDealingSprite.Amplified == 0)
+                return amplifier;
+
             amplifier *= Amplified == 1
-                ? ServerContext.Config.FasNadurStrength + 10
-                : ServerContext.Config.MorFasNadurStrength + 30;
+                ? ServerContext.Config.FasNadurStrength
+                : ServerContext.Config.MorFasNadurStrength;
 
             return amplifier;
         }

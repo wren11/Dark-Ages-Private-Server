@@ -208,10 +208,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     {
                         item.GiveTo(client.Aisling);
                     }
-                    var item3 = Item.Create(client.Aisling, ServerContext.GlobalItemTemplateCache["Used Boots"]);
-                    {
-                        item3.GiveTo(client.Aisling);
-                    }
                 }
 
                 client.CloseDialog();

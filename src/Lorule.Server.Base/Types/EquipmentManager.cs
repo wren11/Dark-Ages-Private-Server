@@ -61,40 +61,7 @@ namespace Darkages.Types
             if (Equipment == null)
                 Equipment = new Dictionary<int, EquipmentSlot>();
 
-
-            //if (Equipment.ContainsKey(item.Template.EquipmentSlot))
-            //{
-            //    var itemEquipped = Equipment[item.Template.EquipmentSlot];
-
-            //    if (itemEquipped != null &&
-            //        itemEquipped.Item.Template.EquipmentSlot == item.Template.EquipmentSlot)
-            //    {
-
-            //    }
-            //}
-
             if (RemoveFromExisting(displayslot)) AddEquipment(displayslot, item);
-        }
-
-        public void SwapActiveItemWithEquippedItem(Item activatedItem)
-        {
-            if (Equipment.ContainsKey(activatedItem.Template.EquipmentSlot))
-            {
-                var itemEquipped = Equipment[activatedItem.Template.EquipmentSlot];
-
-                if (itemEquipped != null &&
-                    itemEquipped.Item.Template.EquipmentSlot == activatedItem.Template.EquipmentSlot)
-                {
-                    Client.Aisling.Inventory.Items[activatedItem.Slot] = itemEquipped.Item;
-                    Client.Aisling.Inventory.Set(itemEquipped.Item);
-                    Client.Aisling.Inventory.UpdateSlot(Client, itemEquipped.Item);
-                    AddEquipment(activatedItem.Template.EquipmentSlot, activatedItem, false);
-                }
-                else
-                {
-                    AddEquipment(activatedItem.Template.EquipmentSlot, activatedItem);
-                }
-            }
         }
 
         public void AddEquipment(int displayslot, Item item, bool remove = true)
@@ -126,7 +93,8 @@ namespace Darkages.Types
 
                 ManageDurabilitySignals(item);
 
-                if (item.Durability == 0 || item.Durability >= item.Template.MaxDurability) broken.Add(item);
+                if (item.Durability == 0)
+                    broken.Add(item);
             }
 
             foreach (var item in broken.Where(item => item?.Template != null)

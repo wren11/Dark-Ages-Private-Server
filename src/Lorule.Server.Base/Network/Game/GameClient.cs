@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Darkages.Templates;
 using Newtonsoft.Json;
 
 #endregion
@@ -123,12 +124,12 @@ namespace Darkages.Network.Game
             var message = string.Empty;
 
             if (client.Aisling.GameMaster || client.Aisling.Developer)
-                return true;
-
-            if (item.Durability > 0)
             {
-                client.Aisling.EquipmentManager.Add(item.Template.EquipmentSlot, item);
-                return true;
+                if (item.Durability > 1)
+                {
+                    client.Aisling.EquipmentManager.Add(item.Template.EquipmentSlot, item);
+                    return true;
+                }
             }
 
             if (client.Aisling.ExpLevel < item.Template.LevelRequired)
@@ -502,13 +503,17 @@ namespace Darkages.Network.Game
                 foreach (var skill in skillsAvailable)
                 {
                     if (skill.Template != null)
-                        if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skill.Template.Name))
+                    {
+                        var skillName = skill.Template.Name;
+
+                        if (ServerContext.GlobalSkillTemplateCache.ContainsKey(skillName))
                         {
-                            var template = ServerContext.GlobalSkillTemplateCache[skill.Template.Name];
+                            var template = ServerContext.GlobalSkillTemplateCache[skillName];
                             {
                                 skill.Template = template;
                             }
                         }
+                    }
 
                     skill.InUse = false;
                     skill.NextAvailableUse = DateTime.UtcNow;
@@ -648,6 +653,14 @@ namespace Darkages.Network.Game
                     Aisling.DiscoveredMaps.Add(Aisling.CurrentMapId);
 
                 SendMusic();
+
+                if (Aisling.Map != null && Aisling.Map.Scripts.Any())
+                {
+                    foreach (var script in Aisling.Map.Scripts.Values)
+                    {
+                        script.OnMapExit(this);
+                    }
+                }
             }
 
             if (!ShouldUpdateMap)
@@ -657,10 +670,31 @@ namespace Darkages.Network.Game
             Aisling.Client.LastMapUpdated = DateTime.UtcNow;
 
             if (Aisling.Blind == 1)
-                if (!Aisling.Map.Flags.HasFlag(MapFlags.Darkness))
+                if (Aisling.Map != null && !Aisling.Map.Flags.HasFlag(MapFlags.Darkness))
                     Aisling.Map.Flags |= MapFlags.Darkness;
 
             Send(new ServerFormat15(Aisling.Map));
+
+
+            if (Aisling.Map != null && Aisling.Map.Scripts == null)
+            {
+                if (!string.IsNullOrEmpty(Aisling.Map.ScriptKey))
+                {
+                    Aisling.Map.Scripts = ScriptManager.Load<AreaScript>(Aisling.Map.ScriptKey, Aisling.Map);
+                }
+            }
+
+            if (Aisling.Map?.Scripts != null && (Aisling.Map == null || !Aisling.Map.Scripts.Any()))
+                return this;
+
+            if (Aisling.Map?.Scripts == null) return this;
+            {
+                foreach (var script in Aisling.Map.Scripts.Values)
+                {
+                    script.OnMapEnter(this);
+                }
+            }
+
 
             return this;
         }
@@ -934,13 +968,11 @@ namespace Darkages.Network.Game
             LastMovement = DateTime.UtcNow;
             LastClientRefresh = DateTime.UtcNow;
             LastMessageSent = DateTime.UtcNow;
-
             BoardOpened = DateTime.UtcNow;
-            {
-                Aisling.BonusAc = (int) (70 - Aisling.Level * 0.5 / 1.0);
-                Aisling.Exchange = null;
-                Aisling.LastMapId = short.MaxValue;
-            }
+            Aisling.BonusAc = (100 - Aisling.Level / 3);
+            Aisling.Exchange = null;
+            Aisling.LastMapId = short.MaxValue;
+
             BuildSettings();
             return this;
         }
@@ -1240,7 +1272,7 @@ namespace Darkages.Network.Game
 
         public GameClient UpdateDisplay()
         {
-            var response = new ServerFormat33(this, Aisling);
+            var response = new ServerFormat33(Aisling);
 
             Aisling.Show(Scope.Self, response);
 

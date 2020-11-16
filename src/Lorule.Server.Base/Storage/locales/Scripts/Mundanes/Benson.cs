@@ -17,6 +17,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
     [Script("Benson")]
     public class Benson : MundaneScript
     {
+        public override void OnDropped(GameClient client, byte itemSlot)
+        { 
+            //your logic here
+        }
+
         public Dialog SequenceMenu = new Dialog();
 
         public Benson(GameServer server, Mundane mundane) : base(server, mundane)

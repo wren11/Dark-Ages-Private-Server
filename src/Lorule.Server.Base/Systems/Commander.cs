@@ -5,6 +5,8 @@ using Pyratron.Frameworks.Commands.Parser;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Darkages.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
 
 namespace Darkages.Systems.CLI
 {
@@ -71,13 +73,77 @@ namespace Darkages.Systems.CLI
                 .SetAction(OnLearnSpell)
                 .AddArgument(Argument.Create("name"))
                 .AddArgument(Argument.Create("level").MakeOptional().SetDefault(100)));
+
+            ServerContext.Parser.AddCommand(Command
+                .Create("Learn Skill")
+                .AddAlias("skill")
+                .SetAction(OnLearnSkill)
+                .AddArgument(Argument.Create("name"))
+                .AddArgument(Argument.Create("level").MakeOptional().SetDefault(100)));
+
+            ServerContext.Parser.AddCommand(Command
+                .Create("Invoke")
+                .AddAlias("invoke")
+                .SetAction(OnScriptInvoke)
+                .AddArgument(Argument.Create("script").MakeRequired()));
         }
+
+        /// <summary>
+        /// In Game Usage : /invoke "Script name"
+        /// Invokes a script.
+        /// </summary>
+        private static void OnScriptInvoke(Argument[] args, object arg)
+        {
+            var client = (GameClient) arg;
+
+            if (client == null)
+                return;
+
+            var script = args.FromName("script").Replace("\"", "");
+
+            if (!string.IsNullOrEmpty(script))
+            {
+                var scriptObj = client
+                    .GetObjects<Mundane>(null, i => i.Scripts != null && i.Scripts.Count > 0)
+                    .SelectMany(i => i.Scripts).FirstOrDefault(i => i.Key == script);
+
+                scriptObj.Value?.OnClick(client.Server, client);
+            }
+        }
+
 
         /// <summary>
         /// In Game Usage : /spell "Spell Name" 100
         /// Learns a spell
         /// </summary>
         private static void OnLearnSpell(Argument[] args, object arg)
+        {
+            var client = (GameClient) arg;
+
+            if (client == null)
+                return;
+
+            var name = args.FromName("name").Replace("\"", "");
+            var level = args.FromName("level");
+
+            if (int.TryParse(level, out var spellLevel))
+            {
+                if (Spell.GiveTo(client.Aisling, name, spellLevel))
+                {
+                    client.SystemMessage("OnLearnSpell: True");
+                }
+            }
+            else
+            {
+                client.SystemMessage("OnLearnSpell: false");
+            }
+        }
+
+        /// <summary>
+        /// In Game Usage : /skill "Skill Name" 100
+        /// Learns a skill
+        /// </summary>
+        private static void OnLearnSkill(Argument[] args, object arg)
         {
             var client = (GameClient)arg;
 
@@ -89,7 +155,14 @@ namespace Darkages.Systems.CLI
 
             if (int.TryParse(level, out var spellLevel))
             {
-                Spell.GiveTo(client.Aisling, name, spellLevel);
+                if (Skill.GiveTo(client.Aisling, name, spellLevel))
+                {
+                    client.SystemMessage("OnLearnSkill: True");
+                }
+            }
+            else
+            {
+                client.SystemMessage("OnLearnSkill: False");
             }
         }
 
