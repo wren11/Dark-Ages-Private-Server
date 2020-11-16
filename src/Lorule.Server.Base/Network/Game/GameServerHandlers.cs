@@ -303,7 +303,7 @@ namespace Darkages.Network.Game
 
             if (ServerContext.Config.LimitWalkingSpeed)
             {
-                if ((DateTime.UtcNow - client.LastMovement).TotalMilliseconds <= ServerContext.Config.WalkingSpeedLimitFactor)
+                if (client.IsSpeedHacking)
                 {
                     client.Refresh(true);
                     return;

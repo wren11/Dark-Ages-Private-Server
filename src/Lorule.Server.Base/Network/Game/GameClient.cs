@@ -49,8 +49,8 @@ namespace Darkages.Network.Game
         public bool IsMoving =>
             DateTime.UtcNow - LastMovement > new TimeSpan(0, 0, 0, 0, 850);
 
-        public bool IsSpeedHacking => IsMoving &&
-            DateTime.UtcNow - LastMovement > new TimeSpan(0, 0, 0, 0, 350);
+        public bool IsSpeedHacking => 
+            DateTime.UtcNow - LastMovement < TimeSpan.FromMilliseconds(ServerContext.Config.WalkingSpeedLimitFactor);
 
         public bool IsWarping =>
             DateTime.UtcNow - LastWarp < new TimeSpan(0, 0, 0, 0, ServerContext.Config.WarpCheckRate);
@@ -743,17 +743,21 @@ namespace Darkages.Network.Game
 
         public void RepairEquipment(IEnumerable<Item> gear)
         {
-            foreach (var item in Aisling.Inventory.Items
-                .Where(i => i.Value != null).Select(i => i.Value)
-                .Concat(gear).Where(i => i != null && i.Template.Flags.HasFlag(ItemFlags.Repairable)))
-            {
-                item.Durability = item.Template.MaxDurability;
+            if (gear != null)
+                foreach (var item in gear)
+                {
+                    if (item != null && item.Template.Flags.HasFlag(ItemFlags.Repairable))
+                    {
+                        item.Durability = item.Template.MaxDurability;
+                    }
+                }
 
-                if (item.Equipped)
-                    continue;
-
-                Aisling.Inventory.UpdateSlot(this, item);
-            }
+            if (Aisling.Inventory.Items != null)
+                foreach (var item in Aisling.Inventory.Items.Where(i => i.Value != null).Select(i => i.Value))
+                {
+                    item.Durability = item.Template.MaxDurability;
+                    Aisling.Inventory.UpdateSlot(this, item);
+                }
         }
 
         public bool Revive()
