@@ -100,16 +100,24 @@ namespace Darkages.Network.Object
             var objType = new T();
 
             if (objType is Aisling)
-                return GetObject<Aisling>(null, i => i != null && i.Username.ToLower() == name.ToLower()).Cast<T>();
+                return GetObject<Aisling>(null, i => i != null &&
+                                                     string.Equals(i.Username.ToLower(), name.ToLower(),
+                                                         StringComparison.InvariantCulture)).Cast<T>();
 
             if (objType is Monster)
-                return GetObject<Monster>(map, i => i != null && i.Template.Name.ToLower() == name.ToLower()).Cast<T>();
+                return GetObject<Monster>(map, i => i != null &&
+                                                    string.Equals(i.Template.Name.ToLower(), name.ToLower(),
+                                                        StringComparison.InvariantCulture)).Cast<T>();
 
             if (objType is Mundane)
-                return GetObject<Mundane>(map, i => i != null && i.Template.Name.ToLower() == name.ToLower()).Cast<T>();
+                return GetObject<Mundane>(map, i => i != null &&
+                                                    string.Equals(i.Template.Name.ToLower(), name.ToLower(),
+                                                        StringComparison.InvariantCulture)).Cast<T>();
 
             if (objType is Item)
-                return GetObject<Item>(map, i => i != null && i.Template.Name.ToLower() == name.ToLower()).Cast<T>();
+                return GetObject<Item>(map, i => i != null &&
+                                                 string.Equals(i.Template.Name.ToLower(), name.ToLower(),
+                                                     StringComparison.InvariantCulture)).Cast<T>();
 
             return null;
         }
