@@ -11,13 +11,13 @@ namespace Darkages.Scripting
 {
     public abstract class MonsterScript : ObjectManager, IScriptBase
     {
-        public Area Map;
-        public Monster Monster;
+        private Area _map;
+        protected readonly Monster Monster;
 
         protected MonsterScript(Monster monster, Area map)
         {
             Monster = monster;
-            Map = map;
+            _map = map;
         }
 
         public abstract void OnApproach(GameClient client);
