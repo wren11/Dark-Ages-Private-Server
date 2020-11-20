@@ -41,6 +41,7 @@ namespace Darkages.Network.Game
             DateTime.UtcNow - LastLocationSent < new TimeSpan(0, 0, 0, 2);
 
         public DialogSession DlgSession { get; set; }
+
         public GameServerTimer HpRegenTimer { get; set; }
 
         public bool IsRefreshing =>

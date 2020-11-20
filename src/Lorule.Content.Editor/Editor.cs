@@ -28,12 +28,13 @@ namespace Lorule.Content.Editor
         private readonly IServerConstants _serverConstants;
         private readonly IArchive _archiveService;
         private readonly IPaletteCollection _paletteService;
-        private readonly FrmTileMaker _frmTileMaker;
+        private readonly AreaBuilderView _frmTileMaker;
         private readonly EditorOptions _editorSettings;
         private readonly IOptions<LoruleOptions> _loruleOptions;
         private readonly ILogger<Editor> _logger;
 
         private ArchivedItem _baseTileSet;
+        private TileCollection _tileCollection;
 
         public Editor(EditorOptions editorSettings,
             IOptions<LoruleOptions> loruleOptions,
@@ -42,7 +43,7 @@ namespace Lorule.Content.Editor
             IServerContext loruleServerContext,
             IServerConstants serverConstants,
             IArchive archiveService,
-            IPaletteCollection paletteService, FrmTileMaker frmTileMaker)
+            IPaletteCollection paletteService, AreaBuilderView frmTileMaker)
         {
             _editorSettings = editorSettings ?? throw new ArgumentNullException(nameof(editorSettings));
             _loruleOptions = loruleOptions ?? throw new ArgumentNullException(nameof(loruleOptions));
@@ -62,6 +63,11 @@ namespace Lorule.Content.Editor
 
         private async void FrmMain_Load(object sender, EventArgs e)
         {
+            await LoadData();
+        }
+
+        private async Task LoadData()
+        {
             await RunOperationAsync(LoadLoruleData(), "Loading Lorule Data");
             await RunOperationAsync(LoadArchives(), "Loading Archives");
             await RunOperationAsync(LoadTiles(), "Loading BaseTileSet");
@@ -74,10 +80,7 @@ namespace Lorule.Content.Editor
             LoadPalettes();
             LoadPaletteTables();
 
-            var tileCollection = LoadBaseTiles();
-
-            //load the starting map.
-            RenderLoruleStart(tileCollection);
+            _tileCollection = LoadBaseTiles();
 
             await Task.CompletedTask;
         }
@@ -88,36 +91,36 @@ namespace Lorule.Content.Editor
                 return;
 
 
-            //var mapFilesLocation = _editorSettings.Location + "\\Assets\\MapFiles";
+            var mapFilesLocation = _editorSettings.Location + "\\Assets\\MapFiles";
 
-            //foreach (var map in Directory.EnumerateFiles(mapFilesLocation, "*.map", SearchOption.TopDirectoryOnly))
-            //{
-            //    if (map == null || string.IsNullOrEmpty(map))
-            //        return;
+            foreach (var map in Directory.EnumerateFiles(mapFilesLocation, "*.map", SearchOption.TopDirectoryOnly))
+            {
+                if (map == null || string.IsNullOrEmpty(map))
+                    return;
 
-            //    var mapTiles = Map.LoadMapTiles(map);
-            //    if (mapTiles == null)
-            //        return;
+                var mapTiles = Map.LoadMapTiles(map);
+                if (mapTiles == null)
+                    return;
 
 
-            //    foreach (var tile in mapTiles)
-            //    {
-            //        if (tile == null || tile.Floor <= 0)
-            //            continue;
+                foreach (var tile in mapTiles)
+                {
+                    if (tile == null || tile.Floor <= 0)
+                        continue;
 
-            //        var index = tile.Floor > 0 ? tile.Floor - 1 : 0;
-            //        var floorTile = tileCollection[index];
+                    var index = tile.Floor > 0 ? tile.Floor - 1 : 0;
+                    var floorTile = tileCollection[index];
 
-            //        if (floorTile != null)
-            //        {
-            //            var floorPalette = _paletteService.GetBackgroundPaletteIndex(tile.Floor + 1);
-            //            var bmp = RenderFloorTile(floorTile.Data, floorPalette.Item2);
-            //            bmp.MakeTransparent(Color.Black);
+                    if (floorTile != null)
+                    {
+                        var floorPalette = _paletteService.GetBackgroundPaletteIndex(tile.Floor + 1);
+                        var bmp = RenderFloorTile(floorTile.Data, floorPalette.Item2);
+                        bmp.MakeTransparent(Color.Black);
 
-            //            //ExportMapTiles(bmp, tile, floorPalette, Path.GetFileNameWithoutExtension(map).Substring(3));
-            //        }
-            //    }
-            //}
+                        //ExportMapTiles(bmp, tile, floorPalette, Path.GetFileNameWithoutExtension(map).Substring(3));
+                    }
+                }
+            }
         }
 
         private void ExportMapTiles(Bitmap bmp, MapTile tile, (int, Palette) floorPalette, string mapNumber)
@@ -271,6 +274,7 @@ namespace Lorule.Content.Editor
 
         private void tileMakerToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            _frmTileMaker.Initialize(_baseTileSet, _tileCollection);
             _frmTileMaker.ShowDialog();
         }
     }

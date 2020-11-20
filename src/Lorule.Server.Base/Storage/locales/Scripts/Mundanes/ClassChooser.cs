@@ -88,25 +88,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     Spell.GiveTo(client.Aisling, "deo saighead", 1);
               
                     Spell.GiveTo(client.Aisling, "pramh", 1);
-                  
-            
-                    
 
-                    var item1 = Item.Create(client.Aisling, ServerContext.GlobalItemTemplateCache["Beginner's Holy Diana"]);
-                    {
-                        item1.GiveTo(client.Aisling);
-                    }
-
-
-                    
-                    var item3 = Item.Create(client.Aisling, ServerContext.GlobalItemTemplateCache["Used Boots"]);
-                    {
-                        item3.GiveTo(client.Aisling);
-                    }
-                    var itemMJR = Item.Create(client.Aisling, ServerContext.GlobalItemTemplateCache["Magic Jade Ring"]);
-                    {
-                        itemMJR.GiveTo(client.Aisling);
-                    }
                 }
 
                 if (client.Aisling.Path == Class.Wizard)
