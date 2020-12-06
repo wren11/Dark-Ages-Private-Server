@@ -2190,41 +2190,59 @@ namespace Darkages.Network.Game
                         return;
 
                     if (trader.Exchange != null)
-                        if (player.EquipmentManager.RemoveFromInventory(item, true))
-                            if (trader.CurrentWeight + item.Template.CarryWeight < trader.MaximumWeight)
+                        if (trader.CurrentWeight + item.Template.CarryWeight < trader.MaximumWeight)
+                        {
+                            if (player.EquipmentManager.RemoveFromInventory(item, true))
                             {
                                 player.Exchange.Items.Add(item);
                                 player.Exchange.Weight += item.Template.CarryWeight;
-
-                                var packet = new NetworkPacketWriter();
-                                packet.Write((byte) 0x42);
-                                packet.Write((byte) 0x00);
-
-                                packet.Write((byte) 0x02);
-                                packet.Write((byte) 0x00);
-                                packet.Write((byte) player.Exchange.Items.Count);
-                                packet.Write(item.DisplayImage);
-                                packet.Write(item.Color);
-                                packet.WriteStringA(item.DisplayName);
-                                client.Send(packet);
-
-                                packet = new NetworkPacketWriter();
-                                packet.Write((byte) 0x42);
-                                packet.Write((byte) 0x00);
-
-                                packet.Write((byte) 0x02);
-                                packet.Write((byte) 0x01);
-                                packet.Write((byte) player.Exchange.Items.Count);
-                                packet.Write(item.DisplayImage);
-                                packet.Write(item.Color);
-                                packet.WriteStringA(item.DisplayName);
-                                trader.Client.Send(packet);
                             }
-                            else
-                            {
-                                trader.Client.SendMessage(0x02, "You can't hold this.");
-                                client.SendMessage(0x02, "They can't hold that.");
-                            }
+
+                            var packet = new NetworkPacketWriter();
+                            packet.Write((byte)0x42);
+                            packet.Write((byte)0x00);
+
+                            packet.Write((byte)0x02);
+                            packet.Write((byte)0x00);
+                            packet.Write((byte)player.Exchange.Items.Count);
+                            packet.Write(item.DisplayImage);
+                            packet.Write(item.Color);
+                            packet.WriteStringA(item.DisplayName);
+                            client.Send(packet);
+
+                            packet = new NetworkPacketWriter();
+                            packet.Write((byte)0x42);
+                            packet.Write((byte)0x00);
+
+                            packet.Write((byte)0x02);
+                            packet.Write((byte)0x01);
+                            packet.Write((byte)player.Exchange.Items.Count);
+                            packet.Write(item.DisplayImage);
+                            packet.Write(item.Color);
+                            packet.WriteStringA(item.DisplayName);
+                            trader.Client.Send(packet);
+                        }
+                        else
+                        {
+                            var packet = new NetworkPacketWriter();
+                            packet.Write((byte)0x42);
+                            packet.Write((byte)0x00);
+
+                            packet.Write((byte)0x04);
+                            packet.Write((byte)0x00);
+                            packet.WriteStringA("They can't hold that.");
+                            client.Send(packet);
+
+                            packet = new NetworkPacketWriter();
+                            packet.Write((byte)0x42);
+                            packet.Write((byte)0x00);
+
+                            packet.Write((byte)0x04);
+                            packet.Write((byte)0x01);
+                            packet.WriteStringA("You can't hold this.");
+                            trader.Client.Send(packet);
+                            player.CancelExchange();
+                        }
 
                     break;
 
