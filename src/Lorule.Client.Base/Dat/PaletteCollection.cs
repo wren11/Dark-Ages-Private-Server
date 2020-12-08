@@ -188,5 +188,20 @@ namespace Lorule.Content.Editor.Dat
 
             return result;
         }
+
+        public static Palette FromFile(string fileName)
+        {
+            using var br = new BinaryReader(File.OpenRead(fileName));
+            br.BaseStream.Seek(0, SeekOrigin.Begin);
+            var palette = new Palette();
+
+            for (var i = 0; i < TableSize; i++)
+            {
+                palette.Colors[i] =
+                    Color.FromArgb(br.ReadByte(), br.ReadByte(), br.ReadByte());
+            }
+
+            return palette;
+        }
     }
 }

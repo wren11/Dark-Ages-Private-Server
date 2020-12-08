@@ -3,7 +3,7 @@
 	<TYPE> 0
 	<RECT> 0 0 640 480
 	<IMAGE>
-		"_nbk_l.spf" 0
+		"backgrnd.epf" 0
 <ENDCONTROL>
 <CONTROL>
 	<NAME> "SZ_ID"
@@ -280,14 +280,14 @@
 	<TYPE> 7
 	<RECT> 4 439 80 455
 	<IMAGE>
-		"_norb_hb.spf" 18
+		"orb001.epf" 18
 <ENDCONTROL>
 <CONTROL>
 	<NAME> "ORB_MP"
 	<TYPE> 7
 	<RECT> 4 458 80 474
 	<IMAGE>
-		"_norb_mb.spf" 18
+		"orb002.epf" 18
 <ENDCONTROL>
 <CONTROL>
 	<NAME> "LivingInventoryBackground"

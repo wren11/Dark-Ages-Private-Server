@@ -346,6 +346,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\..\Hades.Imaging\Hades.Imaging.csproj">
+      <Project>{d0f20653-3dc3-4994-a269-f8ad979e6f8b}</Project>
+      <Name>Hades.Imaging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Lorule.Client.Base\Lorule.Client.Base.csproj">
       <Project>{44edee4b-f0ad-4434-ab58-ac5fd8a2af5f}</Project>
       <Name>Lorule.Client.Base</Name>

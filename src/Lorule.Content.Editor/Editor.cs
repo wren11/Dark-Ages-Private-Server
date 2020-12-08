@@ -15,6 +15,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Hades.Imaging;
+using Newtonsoft.Json;
 using Map = Lorule.Client.Base.Types.Map;
 using Path = System.IO.Path;
 using Rectangle = System.Drawing.Rectangle;
@@ -276,6 +278,17 @@ namespace Lorule.Content.Editor
         {
             _frmTileMaker.Initialize(_baseTileSet, _tileCollection);
             _frmTileMaker.ShowDialog();
+        }
+
+        private void loadAssetsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var path = _editorSettings.Location + "\\Assets\\Bitmaps\\718\\Metafile.json";
+
+            if (File.Exists(path))
+            {
+                var jsonText = File.ReadAllText(path);
+                var bitmapAssetControls = JsonConvert.DeserializeObject<List<AssetControl>>(jsonText);
+            }
         }
     }
 }

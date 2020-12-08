@@ -1373,11 +1373,17 @@ namespace Darkages.Network.Game
 
             if (format.Serial != ServerContext.Config.HelperMenuId)
             {
-                var mundane = GetObject<Mundane>(client.Aisling.Map, i => i.Serial == format.Serial);
+                var objects = GetObjects(null, i => i.Serial == format.Serial, Get.All);
 
-                if (mundane != null && mundane.Scripts != null)
-                    foreach (var script in mundane.Scripts?.Values)
+                foreach (var m in objects)
+                {
+                    if (!(m is Mundane npc)) continue;
+                    if (npc.Scripts?.Values == null) continue;
+                    foreach (var script in npc.Scripts?.Values)
+                    {
                         script.OnResponse(this, client, format.Step, format.Args);
+                    }
+                }
             }
             else
             {
