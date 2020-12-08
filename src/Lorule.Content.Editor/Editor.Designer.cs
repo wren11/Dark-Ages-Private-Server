@@ -42,9 +42,13 @@ namespace Lorule.Content.Editor
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.openProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tileMakerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.clientToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadAssetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -52,7 +56,8 @@ namespace Lorule.Content.Editor
             this.menuStrip1.BackColor = System.Drawing.Color.LightGray;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.projectToolStripMenuItem});
+            this.projectToolStripMenuItem,
+            this.clientToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(985, 24);
@@ -98,20 +103,44 @@ namespace Lorule.Content.Editor
             this.projectToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tileMakerToolStripMenuItem});
             this.projectToolStripMenuItem.Name = "projectToolStripMenuItem";
-            this.projectToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
-            this.projectToolStripMenuItem.Text = "Tools";
+            this.projectToolStripMenuItem.Size = new System.Drawing.Size(101, 20);
+            this.projectToolStripMenuItem.Text = "Content Editors";
+            // 
+            // tileMakerToolStripMenuItem
+            // 
+            this.tileMakerToolStripMenuItem.Name = "tileMakerToolStripMenuItem";
+            this.tileMakerToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.tileMakerToolStripMenuItem.Text = "Area Builder";
+            this.tileMakerToolStripMenuItem.Click += new System.EventHandler(this.tileMakerToolStripMenuItem_Click);
             // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // tileMakerToolStripMenuItem
+            // pictureBox1
             // 
-            this.tileMakerToolStripMenuItem.Name = "tileMakerToolStripMenuItem";
-            this.tileMakerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.tileMakerToolStripMenuItem.Text = "Tile Maker";
-            this.tileMakerToolStripMenuItem.Click += new System.EventHandler(this.tileMakerToolStripMenuItem_Click);
+            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox1.Location = new System.Drawing.Point(12, 41);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(640, 480);
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
+            // 
+            // clientToolStripMenuItem
+            // 
+            this.clientToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadAssetsToolStripMenuItem});
+            this.clientToolStripMenuItem.Name = "clientToolStripMenuItem";
+            this.clientToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.clientToolStripMenuItem.Text = "Client";
+            // 
+            // loadAssetsToolStripMenuItem
+            // 
+            this.loadAssetsToolStripMenuItem.Name = "loadAssetsToolStripMenuItem";
+            this.loadAssetsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadAssetsToolStripMenuItem.Text = "Load Assets";
+            this.loadAssetsToolStripMenuItem.Click += new System.EventHandler(this.loadAssetsToolStripMenuItem_Click);
             // 
             // Editor
             // 
@@ -119,6 +148,7 @@ namespace Lorule.Content.Editor
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(985, 638);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Editor";
@@ -128,6 +158,7 @@ namespace Lorule.Content.Editor
             this.Load += new System.EventHandler(this.FrmMain_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -144,5 +175,8 @@ namespace Lorule.Content.Editor
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem tileMakerToolStripMenuItem;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ToolStripMenuItem clientToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadAssetsToolStripMenuItem;
     }
 }

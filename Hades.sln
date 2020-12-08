@@ -23,9 +23,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lorule.Client.Base", "src\L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lorule.Client", "src\Lorule.Client\Lorule.Client.csproj", "{1EB2603A-8B13-4ED6-89E8-7C2D80AE3072}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hades.Utils.ImageTools", "src\Hades.Utils.ImageTools\Hades.Utils.ImageTools.csproj", "{2490EEDC-D80D-400C-887F-077034802A1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hades.Imaging", "Hades.Imaging\Hades.Imaging.csproj", "{D0F20653-3DC3-4994-A269-F8AD979E6F8B}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\Lorule.Config\Lorule.Config.projitems*{1ff13553-4ab9-447f-afc5-db7e363b10bc}*SharedItemsImports = 4
+		src\Lorule.Config\Lorule.Config.projitems*{2490eedc-d80d-400c-887f-077034802a1c}*SharedItemsImports = 5
 		src\Lorule.Config\Lorule.Config.projitems*{993b04c6-a1ec-4597-af46-4819c6304624}*SharedItemsImports = 5
 		src\Lorule.Config\Lorule.Config.projitems*{ac0f46b5-c30c-4d28-ba04-aeba1f509dd2}*SharedItemsImports = 5
 		src\Lorule.Config\Lorule.Config.projitems*{e204c94c-7855-4cb4-91a1-d74492ce0ca0}*SharedItemsImports = 4
@@ -137,12 +142,38 @@ Global
 		{1EB2603A-8B13-4ED6-89E8-7C2D80AE3072}.Release|x64.Build.0 = Release|x64
 		{1EB2603A-8B13-4ED6-89E8-7C2D80AE3072}.Release|x86.ActiveCfg = Release|x86
 		{1EB2603A-8B13-4ED6-89E8-7C2D80AE3072}.Release|x86.Build.0 = Release|x86
+		{2490EEDC-D80D-400C-887F-077034802A1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2490EEDC-D80D-400C-887F-077034802A1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2490EEDC-D80D-400C-887F-077034802A1C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2490EEDC-D80D-400C-887F-077034802A1C}.Debug|x64.Build.0 = Debug|Any CPU
+		{2490EEDC-D80D-400C-887F-077034802A1C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2490EEDC-D80D-400C-887F-077034802A1C}.Debug|x86.Build.0 = Debug|Any CPU
+		{2490EEDC-D80D-400C-887F-077034802A1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2490EEDC-D80D-400C-887F-077034802A1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2490EEDC-D80D-400C-887F-077034802A1C}.Release|x64.ActiveCfg = Release|Any CPU
+		{2490EEDC-D80D-400C-887F-077034802A1C}.Release|x64.Build.0 = Release|Any CPU
+		{2490EEDC-D80D-400C-887F-077034802A1C}.Release|x86.ActiveCfg = Release|Any CPU
+		{2490EEDC-D80D-400C-887F-077034802A1C}.Release|x86.Build.0 = Release|Any CPU
+		{D0F20653-3DC3-4994-A269-F8AD979E6F8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0F20653-3DC3-4994-A269-F8AD979E6F8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0F20653-3DC3-4994-A269-F8AD979E6F8B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D0F20653-3DC3-4994-A269-F8AD979E6F8B}.Debug|x64.Build.0 = Debug|Any CPU
+		{D0F20653-3DC3-4994-A269-F8AD979E6F8B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D0F20653-3DC3-4994-A269-F8AD979E6F8B}.Debug|x86.Build.0 = Debug|Any CPU
+		{D0F20653-3DC3-4994-A269-F8AD979E6F8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0F20653-3DC3-4994-A269-F8AD979E6F8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0F20653-3DC3-4994-A269-F8AD979E6F8B}.Release|x64.ActiveCfg = Release|Any CPU
+		{D0F20653-3DC3-4994-A269-F8AD979E6F8B}.Release|x64.Build.0 = Release|Any CPU
+		{D0F20653-3DC3-4994-A269-F8AD979E6F8B}.Release|x86.ActiveCfg = Release|Any CPU
+		{D0F20653-3DC3-4994-A269-F8AD979E6F8B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{993B04C6-A1EC-4597-AF46-4819C6304624} = {3FC5F039-7A40-4A35-83D5-54222086DA7C}
+		{2490EEDC-D80D-400C-887F-077034802A1C} = {3FC5F039-7A40-4A35-83D5-54222086DA7C}
+		{D0F20653-3DC3-4994-A269-F8AD979E6F8B} = {3FC5F039-7A40-4A35-83D5-54222086DA7C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AED97562-D375-4A73-BB6C-D36E9E406018}

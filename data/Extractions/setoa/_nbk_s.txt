@@ -3,21 +3,21 @@
 	<TYPE> 0
 	<RECT> 0 0 640 480
 	<IMAGE>
-		"_nbk_s.spf" 0
+		"backgrnd.epf" 0
 <ENDCONTROL>
 <CONTROL>
 	<NAME> "ORB_HP"
 	<TYPE> 7
 	<RECT> 6 331 39 454
 	<IMAGE>
-		"_norb_hp.spf" 21
+		"orb001.epf" 21
 <ENDCONTROL>
 <CONTROL>
 	<NAME> "ORB_MP"
 	<TYPE> 7
 	<RECT> 39 331 72 454
 	<IMAGE>
-		"_norb_mp.spf" 21
+		"orb002.epf" 21
 <ENDCONTROL>
 <CONTROL>
 	<NAME> "SZ_ID"

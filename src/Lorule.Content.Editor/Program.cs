@@ -65,7 +65,7 @@ namespace Lorule.Editor
                 .AddSingleton<IArchive, Archive>(_ => new Archive(editorSettings.Location))
                 .AddSingleton<IPaletteCollection, PaletteCollection>()
                 .AddScoped<Content.Editor.Editor>()
-                .AddScoped<FrmTileMaker>()
+                .AddScoped<AreaBuilderView>()
                 .BuildServiceProvider();
 
             var frm = serviceProvider.GetService<Content.Editor.Editor>();

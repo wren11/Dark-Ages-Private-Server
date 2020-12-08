@@ -209,9 +209,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
                     if (repair_sum > 0)
                     {
-                        var opts = new List<OptionsDataItem>();
-                        opts.Add(new OptionsDataItem(0x0014, ServerContext.Config.MerchantConfirmMessage));
-                        opts.Add(new OptionsDataItem(0x0015, ServerContext.Config.MerchantCancelMessage));
+                        var opts = new List<OptionsDataItem>
+                        {
+                            new OptionsDataItem(0x0014, ServerContext.Config.MerchantConfirmMessage),
+                            new OptionsDataItem(0x0015, ServerContext.Config.MerchantCancelMessage)
+                        };
                         client.SendOptionsDialog(Mundane,
                             "It will cost " + repair_sum + " Gold to repair everything. Do you Agree?",
                             repair_sum.ToString(), opts.ToArray());
@@ -296,16 +298,18 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
             }
         }
 
-        public override void TargetAcquired(Sprite Target)
+        public override void TargetAcquired(Sprite target)
         {
         }
 
         private void TopMenu(GameClient client)
         {
-            var opts = new List<OptionsDataItem>();
-            opts.Add(new OptionsDataItem(0x0001, ServerContext.Config.MerchantBuy));
-            opts.Add(new OptionsDataItem(0x0002, ServerContext.Config.MerchantSell));
-            opts.Add(new OptionsDataItem(0x0003, "Repair Items"));
+            var opts = new List<OptionsDataItem>
+            {
+                new OptionsDataItem(0x0001, ServerContext.Config.MerchantBuy),
+                new OptionsDataItem(0x0002, ServerContext.Config.MerchantSell),
+                new OptionsDataItem(0x0003, "Repair Items")
+            };
 
             client.SendOptionsDialog(Mundane, ServerContext.Config.MerchantBuyMessage, opts.ToArray());
         }

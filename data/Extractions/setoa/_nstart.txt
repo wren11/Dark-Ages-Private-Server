@@ -3,20 +3,35 @@
 	<TYPE> 0
 	<RECT> 0 0 640 480
 	<IMAGE>
-		"_nstart.spf" 0
+		"_nstart1.bmp" 0
 <ENDCONTROL>
 <CONTROL>
 	<NAME> "Create"
 	<TYPE> 7
-	<RECT> 68 265 153 300
+	<RECT> 10 0 153 300
 	<IMAGE>
 		"_nsb1.spf" 0
 		"_nsb1.spf" 1
 <ENDCONTROL>
 <CONTROL>
+	<NAME> "LOGO"
+	<TYPE> 7
+	<RECT> 10 0 153 300
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Homepage"
+	<TYPE> 7
+	<RECT> 10 0 153 300
+<ENDCONTROL>
+<CONTROL>
+	<NAME> "Credit"
+	<TYPE> 7
+	<RECT> 10 0 153 300
+<ENDCONTROL>
+<CONTROL>
 	<NAME> "Continue"
 	<TYPE> 7
-	<RECT> 60 302 167 337
+	<RECT> 10 0 167 337
 	<IMAGE>
 		"_nsb2.spf" 0
 		"_nsb2.spf" 1
@@ -24,26 +39,10 @@
 <CONTROL>
 	<NAME> "Password"
 	<TYPE> 7
-	<RECT> 71 335 190 372
+	<RECT> 10 0 190 372
 	<IMAGE>
 		"_nsb3.spf" 0
 		"_nsb3.spf" 1
-<ENDCONTROL>
-<CONTROL>
-	<NAME> "Credit"
-	<TYPE> 7
-	<RECT> 485 265 568 300
-	<IMAGE>
-		"_nsb4.spf" 0
-		"_nsb4.spf" 1
-<ENDCONTROL>
-<CONTROL>
-	<NAME> "Homepage"
-	<TYPE> 7
-	<RECT> 470 303 591 340
-	<IMAGE>
-		"_nsb5.spf" 0
-		"_nsb5.spf" 1
 <ENDCONTROL>
 <CONTROL>
 	<NAME> "Exit"
@@ -57,14 +56,6 @@
 	<NAME> "Version"
 	<TYPE> 7
 	<RECT> 508 459 606 471
-<ENDCONTROL>
-<CONTROL>
-	<NAME> "LOGO"
-	<TYPE> 7
-	<RECT> 171 107 467 373
-	<IMAGE>
-		"_nslogo.spf" 0
-		"_nslogo.spf" 19
 <ENDCONTROL>
 <CONTROL>
 	<NAME> "LoginBound"

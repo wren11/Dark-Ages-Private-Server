@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hades.MapTool", "Hades.MapT
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hades.Utils", "Hades.Utils", "{3FC5F039-7A40-4A35-83D5-54222086DA7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hades.Utils.TileAMerge", "Hades.Utils.TileAMerge\Hades.Utils.TileAMerge.csproj", "{CE83618A-A4B3-438C-B0F0-85D998F1120E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hades.Utils.TileAMerge", "Hades.Utils.TileAMerge\Hades.Utils.TileAMerge.csproj", "{CE83618A-A4B3-438C-B0F0-85D998F1120E}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
