@@ -404,21 +404,17 @@ namespace Darkages.Network.ServerFormats
             writer.Write(Step);
             writer.Write((ushort) Data.Items.Count);
 
-            foreach (var str in Data.Items.Keys)
+            foreach (var obj in Data.Items.Select(i => i.Value.Peek())
+                .GroupBy(i => i.Image, i => i, (i, items) => new {items, i}))
             {
-                if (!ServerContext.GlobalItemTemplateCache.ContainsKey(str))
-                    continue;
-
-                var item = ServerContext.GlobalItemTemplateCache[str];
-
-                if (item == null)
-                    continue;
-
-                writer.Write(item.DisplayImage);
-                writer.Write((byte) item.Color);
-                writer.Write((uint) Data.Items[str]);
-                writer.WriteStringA(item.Name);
-                writer.WriteStringA(item.Class.ToString());
+                foreach (var item in obj.items)
+                {
+                    writer.Write(item.DisplayImage);
+                    writer.Write((byte) item.Color);
+                    writer.Write((uint) obj.items.Count());
+                    writer.WriteStringA(item.DisplayName);
+                    writer.WriteStringA(item.Template.Class.ToString());
+                }
             }
         }
     }

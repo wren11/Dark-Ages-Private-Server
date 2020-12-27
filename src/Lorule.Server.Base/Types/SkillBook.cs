@@ -18,9 +18,8 @@ namespace Darkages.Types
 
         public SkillBook()
         {
-            for (var i = 0; i < SKILLLENGTH; i++) Skills[i + 1] = null;
-
-            Skills[36] = new Skill();
+            for (var i = 0; i < SKILLLENGTH; i++) 
+                Skills[i + 1] = null;
         }
 
         public int Length => Skills.Count;

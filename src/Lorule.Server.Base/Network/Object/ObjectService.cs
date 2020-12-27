@@ -56,10 +56,13 @@ namespace Darkages.Network.Object
             }
             else
             {
-                var obj = (SpriteCollection<T>) _spriteCollections[map.ID][typeof(T)];
-                var queryResult = obj.Query(predicate);
+                if (_spriteCollections.ContainsKey(map.ID))
                 {
-                    return queryResult;
+                    var obj = (SpriteCollection<T>) _spriteCollections[map.ID][typeof(T)];
+                    var queryResult = obj.Query(predicate);
+                    {
+                        return queryResult;
+                    }
                 }
             }
 

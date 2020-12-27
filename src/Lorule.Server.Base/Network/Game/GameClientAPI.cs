@@ -423,6 +423,7 @@ namespace Darkages.Network.Game
             return false;
         }
 
+
         public bool TakeAwayItem(Item item)
         {
             if (item != null)

@@ -782,12 +782,13 @@ namespace Darkages
             }
         }
 
-        public void LeaveAbyss()
+        public void LeaveAbyss(GameClient client)
         {
             Abyss = false;
+            client.SendLocation();
 
             foreach (var obj in AislingsNearby())
-            { 
+            {
                 ShowTo(obj);
             }
         }

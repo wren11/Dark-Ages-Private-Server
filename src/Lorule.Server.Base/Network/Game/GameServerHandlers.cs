@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp;
 
 #endregion
@@ -1815,7 +1816,7 @@ namespace Darkages.Network.Game
 
             if (client.Aisling.Abyss)
             {
-                client.Aisling.LeaveAbyss();
+                client.Aisling.LeaveAbyss(client);
             }
             else
             {
@@ -1840,43 +1841,34 @@ namespace Darkages.Network.Game
         }
 
         // Bug: Note, as of 16/11/2020 this is a Bug that cannot be fixed by us. we avoid it by flooding extra data to the client.
-        public static void TraverseWorldMap(GameClient client, ClientFormat3F format)
+        public static async void TraverseWorldMap(GameClient client, ClientFormat3F format)
         {
-            if (client.PendingNode != null)
+            var selectedPortalNode = client.PendingNode;
+
+            if (selectedPortalNode == null)
+                return;
+
+            if (client.Aisling.Abyss)
+                await Task.Delay(500).ContinueWith(ct => { client.Aisling.LeaveAbyss(client); }).ConfigureAwait(true);
+
+            for (var i = 0; i < 1; i++)
             {
-                var selectedPortalNode = client.PendingNode;
-
-                if (selectedPortalNode == null)
-                    return;
-
-                if (client.Aisling.Abyss)
-                    client.Aisling.LeaveAbyss();
-
-                client.Refresh(true);
-                client.Refresh(true);
-                client.Refresh(true);
+                client.Send(new ServerFormat33(client.Aisling));
+                client.Send(new ServerFormat67());
 
                 client.Aisling.CurrentMapId = selectedPortalNode.Destination.AreaID;
                 client.Aisling.X = selectedPortalNode.Destination.Location.X;
                 client.Aisling.Y = selectedPortalNode.Destination.Location.Y;
-
-                client.Send(new ServerFormat67());
-                client.Send(new ServerFormat67());
-                client.Send(new ServerFormat67());
-
-                for (var i = 0; i < 5; i++)
-                {
-                    client.Send(new ServerFormat15(client.Aisling.Map));
-                    client.Send(new ServerFormat04(client.Aisling));
-                    client.Send(new ServerFormat33(client.Aisling));
-
-                    client.Aisling.CurrentMapId = selectedPortalNode.Destination.AreaID;
-                    client.Aisling.X = selectedPortalNode.Destination.Location.X;
-                    client.Aisling.Y = selectedPortalNode.Destination.Location.Y;
-                }
-
-                client.PendingNode = null;
+                client.Send(new ServerFormat05(client.Aisling));
             }
+
+            await Task.Delay(500).ContinueWith(ct => { client.RefreshMap(true); }).ConfigureAwait(true);
+            client.Refresh();
+
+            if (client.Aisling.Abyss)
+                client.UpdateDisplay();
+
+            client.PendingNode = null;
         }
 
         protected override void Format43Handler(GameClient client, ClientFormat43 format)

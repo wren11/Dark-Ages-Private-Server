@@ -11,37 +11,29 @@ namespace Darkages.Types
     {
         public Bank()
         {
-            Items = new Dictionary<string, int>();
+            Items = new Dictionary<string, Stack<Item>>();
         }
 
-        public Dictionary<string, int> Items { get; set; }
+        public Dictionary<string, Stack<Item>> Items { get; set; }
 
         public void Deposit(Item lpItem)
         {
             if (!Items.ContainsKey(lpItem.DisplayName))
-                Items[lpItem.DisplayName] = 1;
-            else Items[lpItem.DisplayName]++;
+            {
+                Items[lpItem.DisplayName] = new Stack<Item>();
+            }
+
+            Items[lpItem.DisplayName].Push(lpItem);
         }
 
         public bool Withdraw(IGameClient client, string itemName)
         {
-            if (ServerContext.GlobalItemTemplateCache.ContainsKey(itemName))
-            {
-                var template = ServerContext.GlobalItemTemplateCache[itemName];
-                var item = Item.Create(client.Aisling, template);
+            if (!Items.ContainsKey(itemName))
+                return false;
 
-                if (item.GiveTo(client.Aisling))
-                {
-                    if (Items[itemName] - 1 <= 0)
-                        Items.Remove(itemName);
-                    else
-                        Items[itemName]--;
+            var itemObj = Items[itemName].Pop();
+            return itemObj?.GiveTo(client.Aisling) ?? false;
 
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }

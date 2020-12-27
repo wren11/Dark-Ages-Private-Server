@@ -101,22 +101,22 @@ namespace Darkages.Types
             if (X > 0)
                 list.Add(new TileContentPosition(
                     new Position(X - 1, Y),
-                    map.ObjectGrid[X - 1, Y].Sprites.Count == 0 ? TileContent.Wall : TileContent.None));
+                    map.ObjectGrid[X - 1, Y].Sprites.Count == 0 ? !map.IsWall(X - 1, Y) ? TileContent.None : TileContent.Wall : TileContent.Wall));
 
             if (Y > 0)
                 list.Add(new TileContentPosition(
                     new Position(X, Y - 1),
-                    map.ObjectGrid[X, Y - 1].Sprites.Count == 0 ? TileContent.Wall : TileContent.None));
+                    map.ObjectGrid[X, Y - 1].Sprites.Count == 0 ? !map.IsWall(X, Y - 1) ? TileContent.None : TileContent.Wall : TileContent.Wall));
 
             if (X < map.Rows - 1)
                 list.Add(new TileContentPosition(
                     new Position(X + 1, Y),
-                    map.ObjectGrid[X + 1, Y].Sprites.Count == 0 ? TileContent.Wall : TileContent.None));
+                    map.ObjectGrid[X + 1, Y].Sprites.Count == 0 ? !map.IsWall(X + 1, Y) ? TileContent.None : TileContent.Wall : TileContent.Wall));
 
             if (Y < map.Cols - 1)
                 list.Add(new TileContentPosition(
                     new Position(X, Y + 1),
-                    map.ObjectGrid[X, Y + 1].Sprites.Count == 0 ? TileContent.Wall : TileContent.None));
+                    map.ObjectGrid[X, Y + 1].Sprites.Count == 0 ? !map.IsWall(X, Y + 1) ? TileContent.None : TileContent.Wall : TileContent.Wall));
 
             return list.ToArray();
         }

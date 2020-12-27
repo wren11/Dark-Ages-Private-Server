@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using Darkages.Network.Object;
 using Darkages.Templates;
 using Lorule.GameServer;
 using Microsoft.Extensions.Options;
@@ -285,6 +286,15 @@ namespace Darkages
 
                     GlobalBoardCache[obj.Key].AddRange(obj.Value);
                 }
+            }
+        }
+
+        public static void RemoveAllObjects()
+        {
+            if (Game == null) return;
+            foreach (var obj in Game.GetObjects(null, sprite => true, ObjectManager.Get.All))
+            {
+                obj?.Remove();
             }
         }
 

@@ -664,8 +664,8 @@ namespace Darkages.Network.Game
                 }
             }
 
-            if (!ShouldUpdateMap)
-                return this;
+            //if (!ShouldUpdateMap)
+            //    return this;
 
             MapUpdating = true;
             Aisling.Client.LastMapUpdated = DateTime.UtcNow;
@@ -676,8 +676,7 @@ namespace Darkages.Network.Game
 
             Send(new ServerFormat15(Aisling.Map));
 
-
-            if (Aisling.Map != null && Aisling.Map.Scripts == null)
+            if (Aisling.Map != null && Aisling.Map.Scripts == null && ShouldUpdateMap)
             {
                 if (!string.IsNullOrEmpty(Aisling.Map.ScriptKey))
                 {
@@ -695,7 +694,6 @@ namespace Darkages.Network.Game
                     script.OnMapEnter(this);
                 }
             }
-
 
             return this;
         }

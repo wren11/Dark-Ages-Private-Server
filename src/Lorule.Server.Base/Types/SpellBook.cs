@@ -23,8 +23,6 @@ namespace Darkages.Types
             {
                 Spells[i + 1] = null;
             }
-
-            Spells[36] = new Spell();
         }
 
         public void Clear(GameClient client)
