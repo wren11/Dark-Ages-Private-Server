@@ -339,6 +339,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             {
                 if (!Monster.Aggressive) return;
                 Monster.Target ??= GetObjects(Monster.Map, i => i.WithinRangeOf(Monster), Get.Aislings)
+                    .Where(n => n != null)
                     .OrderBy(v => v.Position.DistanceFrom(Monster.Position.X, Monster.Position.Y))
                     .FirstOrDefault();
 

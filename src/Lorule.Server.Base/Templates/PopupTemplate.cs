@@ -72,12 +72,11 @@ namespace Darkages.Types
         {
             get
             {
-                List<Popup> tmpl;
-
-                tmpl = new List<Popup>(_popups).ToList();
+                var tmpl = new List<Popup>(_popups).ToList();
 
                 return tmpl;
             }
+            set => throw new NotImplementedException();
         }
 
         public int Id { get; set; }

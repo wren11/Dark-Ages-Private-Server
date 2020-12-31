@@ -641,7 +641,7 @@ namespace Darkages.Network.Game
         }
 
         public GameClient RefreshMap(bool updateView = false)
-        {
+        { 
             Aisling.View.Clear();
             ShouldUpdateMap = false;
 
@@ -662,6 +662,12 @@ namespace Darkages.Network.Game
                         script.OnMapExit(this);
                     }
                 }
+            }
+
+
+            foreach (var obj in GetObjects<Monster>(null, i => i?.Summoner != null))
+            {
+                obj.ShowTo(Aisling);
             }
 
             //if (!ShouldUpdateMap)
@@ -1211,6 +1217,13 @@ namespace Darkages.Network.Game
                 LastLocationSent = DateTime.UtcNow;
                 Refresh();
                 return;
+            }
+
+            Aisling.SummonObjects?.Update(elapsedTime);
+
+            if (Aisling.SummonObjects != null && !Aisling.SummonObjects.Spawns.Any())
+            {
+                Aisling.SummonObjects = null;
             }
 
             lock (Trap.Traps)

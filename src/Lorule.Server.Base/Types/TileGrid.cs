@@ -36,7 +36,7 @@ namespace Darkages
                 {
                     if (obj != null)
                     {
-                        if (obj != null && obj.Serial == sprite.Serial)
+                        if (obj.Serial == sprite.Serial)
                         {
                             if (!isAisling)
                                 continue;
@@ -44,7 +44,10 @@ namespace Darkages
                             return true;
                         }
 
-                        if (obj != null && (obj.X == sprite.X && obj.Y == sprite.Y)) continue;
+                        if (obj.Summoner != null)
+                            return true;
+
+                        if ((obj.X == sprite.X && obj.Y == sprite.Y)) continue;
 
                         if (!(obj is Monster) && !(obj is Aisling) && !(obj is Mundane))
                             continue;

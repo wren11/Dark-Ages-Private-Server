@@ -40,8 +40,14 @@ namespace Darkages.Network.Object
             if (!_spriteCollections.ContainsKey(obj.CurrentMapId))
                 return;
 
-            var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
-            objCollection.Add(obj);
+            if (_spriteCollections.ContainsKey(obj.CurrentMapId))
+            {
+                if (_spriteCollections[obj.CurrentMapId].ContainsKey(typeof(T)))
+                {
+                    var objCollection = (SpriteCollection<T>) _spriteCollections[obj.CurrentMapId][typeof(T)];
+                    objCollection.Add(obj);
+                }
+            }
         }
 
         public T Query<T>(Area map, Predicate<T> predicate) where T : Sprite

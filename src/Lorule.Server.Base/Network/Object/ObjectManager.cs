@@ -3,9 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
+using Darkages.Network.Game;
 using Darkages.Scripting;
 using Darkages.Types;
+using MenuInterpreter;
+using MenuInterpreter.Parser;
 using Newtonsoft.Json;
 
 #endregion
@@ -29,11 +33,33 @@ namespace Darkages.Network.Object
         IEnumerable<T> GetObjects<T>(Area map, Predicate<T> p) where T : Sprite;
 
         IEnumerable<Sprite> GetObjects(Area map, Predicate<Sprite> p, ObjectManager.Get selections);
+
+        void LoadScriptInterpreter(GameClient client,
+            string name,
+            Interpreter.MovedToNextStepHandler callbackHandler);
     }
 
     [SuppressMessage("ReSharper", "MergeCastWithTypeCheck")]
     public class ObjectManager : IObjectManager
     {
+        public void LoadScriptInterpreter(GameClient client,
+            string name,
+            Interpreter.MovedToNextStepHandler callbackHandler)
+        {
+            var parser = new YamlMenuParser();
+            var yamlPath = ServerContext.StoragePath + $@"\Scripts\Menus\{name}.yaml";
+
+            if (!File.Exists(yamlPath))
+                return;
+            if (client.MenuInterpter != null)
+                return;
+
+            client.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
+            client.MenuInterpter.Client = client;
+            client.MenuInterpter.OnMovedToNextStep += callbackHandler;
+        }
+
+
         [Flags]
         public enum Get
         {

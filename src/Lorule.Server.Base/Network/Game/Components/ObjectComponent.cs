@@ -109,6 +109,9 @@ namespace Darkages.Network.Game.Components
                 if (obj.Serial == client.Serial)
                     continue;
 
+                if (obj.Summoner != null)
+                    continue;
+
                 if (!client.View.Contains(obj))
                     continue;
 

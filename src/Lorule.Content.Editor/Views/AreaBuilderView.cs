@@ -117,23 +117,23 @@ namespace Lorule.Content.Editor.Views
                         var index = tile.Floor > 0 ? tile.Floor - 1 : 0;
                         var floorTile = _tileCollection[index];
 
-                        if (floorTile != null)
-                        {
-                            var floorPalette = _paletteCollection.GetBackgroundPaletteIndex(tile.Floor + 1);
-                            var bmp = CreateTileBmp(floorTile.Data, floorPalette.Item2);
+                        if (floorTile == null)
+                            continue;
 
-                            bmp.MakeTransparent(Color.Black);
-                            var x = j * TileWidth;
-                            var y = i * TileHeight;
+                        var floorPalette = _paletteCollection.GetBackgroundPaletteIndex(tile.Floor + 1);
+                        var bmp = CreateTileBmp(floorTile.Data, floorPalette.Item2);
 
-                            var mx = (x - x);
-                            var my = (x + y) / 2;
+                        bmp.MakeTransparent(Color.Black);
+                        var x = j * TileWidth;
+                        var y = i * TileHeight;
 
-                            var screenX = (j * TileWidth / 2) - (i * TileWidth / 2);
-                            var screenY = (i * TileHeight / 2) + (j * TileHeight / 2);
+                        var mx = (x - x);
+                        var my = (x + y) / 2;
 
-                            _grid.Add((startingMapNumber, new Tile2D(j, i, x, y, mx, my, screenX, screenY, bmp)));
-                        }
+                        var screenX = (j * TileWidth / 2) - (i * TileWidth / 2);
+                        var screenY = (i * TileHeight / 2) + (j * TileHeight / 2);
+
+                        _grid.Add((startingMapNumber, new Tile2D(j, i, x, y, mx, my, screenX, screenY, bmp)));
                     }
                 }
 
@@ -184,8 +184,10 @@ namespace Lorule.Content.Editor.Views
         {
             _panning = true;
             _startingPoint = new Point(e.Location.X - _movingPoint.X, e.Location.Y - _movingPoint.Y);
+
         }
 
+        private int XOrigin = 0, YOrigin = 0;
 
         private int Centerx => _xPadding + pictureBox1.Width / 2;
         private int Centery => _yPadding + pictureBox1.Height / 2;
@@ -195,6 +197,10 @@ namespace Lorule.Content.Editor.Views
 
         private void PictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
+            var xoffset = (Centerx - pictureBox1.Width / 2) / TileWidth;
+
+            Text = $"{XOrigin / TileWidth}";
+
             if (!_panning)
                 return;
 
@@ -202,6 +208,11 @@ namespace Lorule.Content.Editor.Views
 
             _xPadding = _movingPoint.X;
             _yPadding = _movingPoint.Y;
+
+            XOrigin -= _xPadding / TileWidth;
+            YOrigin -= _yPadding / TileHeight;
+
+
             pictureBox1.Invalidate();
         }
 
@@ -211,16 +222,16 @@ namespace Lorule.Content.Editor.Views
             var tileRowOffset    = TileHeight;
 
 
-            foreach (var (_, Tile2D) in _grid)
+            foreach (var (_, tile2D) in _grid)
             {
-                var offsetX = Tile2D.ScreenX + Centerx;
-                var offsetY = Tile2D.ScreenY + Centery;
+                var offsetX = tile2D.ScreenX + Centerx;
+                var offsetY = tile2D.ScreenY + Centery;
 
                 gfx.FillEllipse(Brushes.Orange, offsetX + (TileWidth / 2), offsetY + (TileHeight / 2), 2, 2);
            
-                gfx.DrawImageUnscaled(Tile2D.TileBitmap, offsetX, offsetY);
+                gfx.DrawImageUnscaled(tile2D.TileBitmap, offsetX, offsetY);
 
-                if (_showGrid)
+                if (ShowGrid)
                 {
                     gfx.DrawLine(Pens.DarkGray, offsetX, offsetY + tileRowOffset / 2, offsetX + tileColumnOffset / 2,
                         offsetY);
@@ -240,7 +251,7 @@ namespace Lorule.Content.Editor.Views
             _tileCollection = tileCollection;
         }
 
-        private bool _showGrid => gridToolStripMenuItem.Checked;
+        private bool ShowGrid => gridToolStripMenuItem.Checked;
 
         private void gridToolStripMenuItem_Click(object sender, EventArgs e)
         {

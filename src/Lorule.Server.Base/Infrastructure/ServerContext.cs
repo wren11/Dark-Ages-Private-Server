@@ -202,7 +202,7 @@ namespace Darkages
         public static void Startup()
         {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine($"{Config.SERVER_TITLE} - Powered By Lorule. https://github.com/wren11/DarkAges-Lorule-Server");
+            Console.WriteLine($"{Config.SERVER_TITLE} - Powered By Hades - Source Code: https://github.com/wren11/DarkAges-Lorule-Server");
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("");
             
@@ -411,11 +411,13 @@ namespace Darkages
 
             Commander.CompileCommands();
 
-
-
             Startup();
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            CommandHandler();
+        }
 
+        private static void CommandHandler()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(Environment.NewLine);
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("GM Commands");
@@ -427,13 +429,6 @@ namespace Darkages
             {
                 Console.WriteLine(command.ShowHelp());
             }
-
-            CommandHandler();
-        }
-
-        private static void CommandHandler()
-        {
-            //TODO.
         }
     }
 }

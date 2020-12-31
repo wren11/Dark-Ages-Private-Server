@@ -32,8 +32,7 @@ namespace Darkages.Storage.locales.Scripts.Spells
             else
             {
                 if (sprite is Monster)
-                    (sprite.Target as Aisling)
-                        .Client
+                    (sprite.Target as Aisling)?.Client
                         .SendAnimation(33, sprite, target);
             }
         }

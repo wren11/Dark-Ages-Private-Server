@@ -15,11 +15,19 @@ using Newtonsoft.Json.Converters;
 
 namespace Darkages
 {
+
+    public class KillRecord
+    {
+        public int TotalKills { get; set; }
+        public int MonsterLevel { get; set; }
+        public DateTime TimeKilled { get; set; }
+    }
+
     public class Aisling : Sprite
     {
         public Dictionary<string, EphemeralReactor> ActiveReactors = new Dictionary<string, EphemeralReactor>();
         [JsonIgnore] public int DamageCounter = 0;
-        public Dictionary<string, int> MonsterKillCounters = new Dictionary<string, int>();
+        public Dictionary<string, KillRecord> MonsterKillCounters = new Dictionary<string, KillRecord>();
         [JsonIgnore] public List<Popup> Popups;
         public Dictionary<string, DateTime> Reactions = new Dictionary<string, DateTime>();
         [JsonIgnore] public HashSet<Sprite> View = new HashSet<Sprite>();
@@ -183,6 +191,9 @@ namespace Darkages
         [JsonIgnore] public List<Aisling> PartyMembers => GroupParty?.PartyMembers;
 
         public byte Lantern { get; set; }
+
+        [JsonIgnore]
+        public Summon SummonObjects { get; set; }
 
         public static Aisling Create()
         {
@@ -466,10 +477,10 @@ namespace Darkages
             obj.Completed = true;
         }
 
-        public void DestroyReactor(Reactor Actor)
+        public void DestroyReactor(Reactor actor)
         {
-            if (Reactions.ContainsKey(Actor.Name))
-                Reactions.Remove(Actor.Name);
+            if (Reactions.ContainsKey(actor.Name))
+                Reactions.Remove(actor.Name);
 
             ActiveReactor = null;
             ReactorActive = false;
@@ -524,7 +535,7 @@ namespace Darkages
             return Quests.FirstOrDefault(i => i.Name == name);
         }
 
-        public bool GiveGold(int offer, bool SendClientUpdate = true)
+        public bool GiveGold(int offer, bool sendClientUpdate = true)
         {
             if (GoldPoints + offer < ServerContext.Config.MaxCarryGold)
             {
@@ -532,7 +543,7 @@ namespace Darkages
                 return true;
             }
 
-            if (SendClientUpdate) Client?.SendStats(StatusFlags.StructC);
+            if (sendClientUpdate) Client?.SendStats(StatusFlags.StructC);
 
             return false;
         }
@@ -586,7 +597,8 @@ namespace Darkages
 
         public bool HasKilled(string value, int number)
         {
-            if (MonsterKillCounters.ContainsKey(value)) return MonsterKillCounters[value] >= number;
+            if (MonsterKillCounters.ContainsKey(value))
+                return MonsterKillCounters[value].TotalKills >= number;
 
             return false;
         }
@@ -612,6 +624,7 @@ namespace Darkages
             var obj = new T();
 
             if (obj is SkillTemplate)
+                // ReSharper disable once NonConstantEqualityExpressionHasConstantResult
                 if ((scope & SkillScope.Assail) == SkillScope.Assail)
                     return SkillBook.Get(i => i != null && i.Template != null
                                                         && i.Template.Type == SkillScope.Assail).Length > 0;

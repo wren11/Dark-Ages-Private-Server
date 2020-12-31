@@ -263,9 +263,14 @@ namespace Darkages.Storage.locales.Scripts.Formulas
         private void UpdateCounters(Aisling player)
         {
             if (!player.MonsterKillCounters.ContainsKey(_monster.Template.Name))
-                player.MonsterKillCounters[_monster.Template.Name] = 1;
+                player.MonsterKillCounters[_monster.Template.Name] = new KillRecord()
+                {
+                    MonsterLevel = _monster.Template.Level,
+                    TimeKilled = DateTime.UtcNow,
+                    TotalKills = 1
+                };
             else
-                player.MonsterKillCounters[_monster.Template.Name]++;
+                player.MonsterKillCounters[_monster.Template.Name].TotalKills++;
         }
     }
 }

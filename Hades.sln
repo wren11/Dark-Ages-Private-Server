@@ -25,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lorule.Client", "src\Lorule
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hades.Utils.ImageTools", "src\Hades.Utils.ImageTools\Hades.Utils.ImageTools.csproj", "{2490EEDC-D80D-400C-887F-077034802A1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hades.Imaging", "Hades.Imaging\Hades.Imaging.csproj", "{D0F20653-3DC3-4994-A269-F8AD979E6F8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hades.Imaging", "Hades.Imaging\Hades.Imaging.csproj", "{D0F20653-3DC3-4994-A269-F8AD979E6F8B}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

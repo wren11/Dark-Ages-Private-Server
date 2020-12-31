@@ -109,15 +109,15 @@
 		"MultiUserLogin": false,
 		"BadRequestMessage": "(Invalid Request)",
 		"DefaultKey": "73F2BE80DDEB1BFDC887AB1C3CA18365",
-		"ServerDev": "fallen",
+		"ServerDev": "wren",
 		"ProjectDev": "wren",
 		"LingerState": 1000.0,
 		"PingInterval": 10.0,
 		"SaveRate": 10.0,
 		"SERVER_PORT": 2615,
 		"LOGIN_PORT": 2610,
-		"SERVER_TITLE": "Zolian",
-		"ServerWelcomeMessage": "Welcome to Zolian",
+		"SERVER_TITLE": "Hades",
+		"ServerWelcomeMessage": "Welcome to Lorule",
 		"GameMasters": [
 			"Test"
 		],

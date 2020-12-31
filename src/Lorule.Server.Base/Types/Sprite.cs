@@ -153,7 +153,15 @@ namespace Darkages.Types
         public int CurrentMp { get; set; }
         [JsonIgnore] public DateTime AbandonedDate { get; set; }
         public bool SpellReflect { get; set; }
-        [JsonIgnore] public Sprite Target { get; set; }
+
+        [JsonIgnore] private Sprite _target;
+
+        [JsonIgnore]
+        public Sprite Target
+        {
+            get => _target;
+            set => _target = value;
+        }
         [JsonIgnore]
         public int XPos
         {
@@ -234,6 +242,9 @@ namespace Darkages.Types
             : EntityType == TileContent.Monster ? ((Monster)this).Template.Level
             : EntityType == TileContent.Mundane ? ((Mundane)this).Template.Level
             : EntityType == TileContent.Item ? ((Item)this).Template.LevelRequired : 0;
+
+        public Aisling Summoner { get; set; }
+
         #endregion
 
         public static Aisling Aisling(Sprite obj)
@@ -668,6 +679,10 @@ namespace Darkages.Types
             if (this is Aisling aisling)
                 if (aisling.GameMaster)
                     allowGhostWalk = true;
+
+
+            if (this is Monster monster && monster.Template != null)
+                allowGhostWalk = monster.Template.IgnoreCollision;
 
             //check position before we take a step.
             if (!allowGhostWalk)

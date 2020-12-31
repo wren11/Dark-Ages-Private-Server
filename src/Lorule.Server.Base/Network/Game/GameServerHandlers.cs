@@ -163,6 +163,7 @@ namespace Darkages.Network.Game
                 user = lpClient.Aisling
             };
 
+
             lpClient.MenuInterpter = parser.CreateInterpreterFromFile(yamlPath);
             lpClient.MenuInterpter.Actor = obj;
             lpClient.MenuInterpter.Client = lpClient;

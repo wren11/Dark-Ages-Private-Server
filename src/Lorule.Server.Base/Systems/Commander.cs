@@ -86,7 +86,24 @@ namespace Darkages.Systems.CLI
                 .AddAlias("invoke")
                 .SetAction(OnScriptInvoke)
                 .AddArgument(Argument.Create("script").MakeRequired()));
+
+            ServerContext.Parser.AddCommand(Command
+                .Create("pet")
+                .AddAlias("pet")
+                .SetAction(OnPet));
         }
+
+        private static void OnPet(Argument[] args, object arg)
+        {
+            var client = (GameClient)arg;
+
+            if (client == null)
+                return;
+
+            client.Aisling.SummonObjects = new Pet(client);
+            client.Aisling.SummonObjects.Spawn("big", "Common Pet", 2000, 75);
+        }
+
 
         /// <summary>
         /// In Game Usage : /invoke "Script name"
