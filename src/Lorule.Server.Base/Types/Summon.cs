@@ -2,6 +2,7 @@
 using Darkages.Network.Object;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Darkages.Scripting;
 using Newtonsoft.Json;
@@ -12,7 +13,7 @@ namespace Darkages.Types
     public interface IEphermeral
     {
         void UpdateSpawns(TimeSpan elapsedTime);
-        void Spawn(string creatureName, string script, double lifespan = 120, double updateRate = 650);
+        void Spawn(string creatureName, string script, double lifespan = 120, double updateRate = 650, int count = 1);
         void Despawn();
     }
 
@@ -36,7 +37,7 @@ namespace Darkages.Types
             _client = client;
         }
 
-        public void Spawn(string creatureName, string script, double lifespan = 120, double updateRate = 650)
+        public void Spawn(string creatureName, string script, double lifespan = 120, double updateRate = 650, int count = 1)
         {
             ObjectsRemovedTimer = new GameServerTimer(TimeSpan.FromSeconds(lifespan)); 
             ObjectsUpdateTimer = new GameServerTimer(TimeSpan.FromMilliseconds(updateRate));
@@ -44,13 +45,13 @@ namespace Darkages.Types
             Template = ServerContext.GlobalMonsterTemplateCache.FirstOrDefault(i => i.BaseName == creatureName);
             Script = script;
 
-            CreateLocal();
+            CreateLocal(count);
         }
 
-        private void CreateLocal()
+        private void CreateLocal(int count)
         {
             if (Template != null) 
-                Create(Template, Script);
+                Create(Template, Script, count);
         }
 
         public void Despawn()
@@ -91,9 +92,13 @@ namespace Darkages.Types
                 {
                     for (var i = 0; i < count; i++)
                     {
-                        // we are changing this on the fly, we don't commit any changes to the original monster template.
-                        monsterTemplate.IgnoreCollision = true;
-
+                        //Share similar attributes as the summoner.
+                        monsterTemplate.Level = _client.Aisling.ExpLevel + 3;
+                        monsterTemplate.LootType = LootQualifer.None;
+                        monsterTemplate.DefenseElement = _client.Aisling.DefenseElement;
+                        monsterTemplate.OffenseElement = _client.Aisling.OffenseElement;
+                        monsterTemplate.SkillScripts = new Collection<string>(_client.Aisling.SkillBook.Skills.Where(n => n.Value != null).Select(n => n.Value.Template.ScriptName).ToList());
+                        
                         var monster = Monster.Create(monsterTemplate, _client.Aisling.Map);
 
                         monster.Summoner = _client.Aisling;

@@ -101,7 +101,7 @@ namespace Darkages.Systems.CLI
                 return;
 
             client.Aisling.SummonObjects = new Pet(client);
-            client.Aisling.SummonObjects.Spawn("big", "Common Pet", 2000, 75);
+            client.Aisling.SummonObjects.Spawn("Minion", "Common Pet", 2000, 500, 5);
         }
 
 

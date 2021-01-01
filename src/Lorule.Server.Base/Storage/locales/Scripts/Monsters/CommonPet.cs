@@ -70,6 +70,7 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
             if (!Monster.IsAlive)
             {
+                Monster.Remove();
                 Monster.Summoner?.SummonObjects?.Despawn();
                 return;
             }
@@ -92,13 +93,20 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             #region actions
             void UpdateTarget()
             {
-                Monster.Target = GetObjects(Monster.Map, p => p.Target != null && p.Target.Serial == Monster.Summoner?.Serial && p.Target.Serial != Monster.Serial, Get.All)
-                    .OrderBy(i => i.Position.DistanceFrom(Monster.Summoner.Position))
-                    .FirstOrDefault();
+                    Monster.Target = Monster.Summoner.Target ?? GetObjects(Monster.Map,
+                            p => p.Target != null && Monster.Summoner.Serial != p.Serial && p.Target.Serial == Monster.Summoner?.Serial &&
+                                 p.Target.Serial != Monster.Serial, Get.All)
+                        .OrderBy(i => i.Position.DistanceFrom(Monster.Summoner.Position))
+                        .FirstOrDefault();
+
 
                 if (Monster.Target != null)
                 {
-                    if (Monster.Target.CurrentHp == 0)
+                    if (Monster.Target.CurrentHp == 0 ||
+                        !Monster.WithinRangeOf(Monster.Target) ||
+                        Monster.Target != null &&
+                        Monster.Summoner != null &&
+                        Monster.Target.Serial == Monster.Summoner.Serial)
                         Monster.Target = null;
                 }
             }
@@ -123,6 +131,10 @@ namespace Darkages.Storage.locales.Scripts.Monsters
                                 Monster.WalkTo(summoner.X, summoner.Y);
                             }
                         }
+                        else
+                        {
+                            Monster.WalkTo(Monster.Target.X, Monster.Target.Y);
+                        }
                     }
                     catch (Exception)
                     {
@@ -134,6 +146,8 @@ namespace Darkages.Storage.locales.Scripts.Monsters
             {
                 if (Monster.CastTimer.Update(elapsedTime))
                 {
+                    UpdateTarget();
+
                     if (!Monster.CanCast)
                         return;
 
@@ -155,28 +169,28 @@ namespace Darkages.Storage.locales.Scripts.Monsters
 
             void PetAttack()
             {
-                if (!Monster.BashTimer.Update(elapsedTime)) return;
+                if (!Monster.BashTimer.Update(elapsedTime))
+                    return;
 
-                if (Monster.Target != null && (!Monster.WithinRangeOf(Monster.Target) || Monster.Position.DistanceFrom(Monster.Target.Position) <= 0)) return;
+                UpdateTarget();
 
-                if (Monster.Target != null && !Monster.WalkTo(Monster.Target.X, Monster.Target.Y))
+                if (Monster.Target != null &&
+                    !Monster.Facing(Monster.Target.X, Monster.Target.Y, out var facingDirection))
                 {
+                    if (Monster.Position.IsNextTo(Monster.Target.Position))
+                    {
+                        Monster.Direction = (byte) facingDirection;
+                        Monster.Turn();
+                    }
 
-                } 
-                
-                if (Monster.Target != null && !Monster.Facing(Monster.Target.X, Monster.Target.Y, out var facingDirection))
-                {
-                    Monster.Direction = (byte) facingDirection;
-                    Monster.Turn();
+                    if (Monster.Facing(Monster.Target.X, Monster.Target.Y, out var newDirection))
                     {
                         DefaultAttack();
                     }
                 }
-                else
-                {
-                    if (Monster.Target == null)
-                        return;
 
+                if (Monster.Target != null && Monster.Facing(Monster.Target.X, Monster.Target.Y, out var facing))
+                {
                     DefaultAttack();
                 }
             }
