@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Darkages.IO;
 using Darkages.Scripting;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Newtonsoft.Json;
 
 #endregion
@@ -81,12 +82,11 @@ namespace Darkages.Storage
             using var s = File.OpenRead(path);
             using var f = new StreamReader(s);
             var content = f.ReadToEnd();
-            var settings = StorageManager.Settings;
-            settings.TypeNameHandling = TypeNameHandling.None;
+
 
             try
             {
-                var obj = JsonConvert.DeserializeObject<Area>(content, settings);
+                var obj = JsonConvert.DeserializeObject<Area>(content, StorageManager.Settings);
 
                 return obj;
             }
@@ -99,10 +99,10 @@ namespace Darkages.Storage
 
         public void Save(Area obj)
         {
-            if (ServerContext.Paused)
-                return;
-
             var path = Path.Combine(StoragePath, $"{obj.Name.ToLower()}.json");
+
+            obj.FilePath = PathNetCore.GetRelativePath(".", ServerContext.StoragePath + "\\maps\\lod" + obj.ID + ".map");
+
             var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
             File.WriteAllText(path, objString);
         }

@@ -1,0 +1,94 @@
+{
+    "attack2FrameCount": -1,
+    "attack2FrameIndex": -1,
+    "attack3FrameCount": -1,
+    "attack3FrameIndex": -1,
+    "attackFrameCount": 2,
+    "attackFrameIndex": 4,
+    "ouput_name": "MNS001.epf",
+    "pallete_file": "mns000.pal",
+    "pallete_number": 0,
+    "stopFrameCount": 2,
+    "stopFrameIndex": 0,
+    "stopMotionFrameCount": 2,
+    "stopMotionProbability": 3,
+    "transparent": [],
+    "walkFrameCount": 2,
+    "walkFrameIndex": 0,
+	"width": 56,
+	"height": 84,
+    "zinput_files": [
+        {
+            "filename": "wasp_F1.png",
+            "left": 2,
+			"right": 56,
+            "top": 23,
+			"bottom": 73,
+            "x_offs": 27,
+            "y_offs": 70
+        },
+        {
+            "filename": "wasp_F2.png",
+            "left": 1,
+			"right": 56,
+            "top": 23,
+			"bottom": 73,
+            "x_offs": 27,
+            "y_offs": 70
+        },
+        {
+            "filename": "wasp_F3.png",
+            "left": 5,
+			"right": 56,
+            "top": 26,
+			"bottom": 72,
+            "x_offs": 27,
+            "y_offs": 70
+        },
+        {
+            "filename": "wasp_F4.png",
+            "left": 6,
+			"right": 55,
+            "top": 26,
+			"bottom": 73,
+            "x_offs": 27,
+            "y_offs": 70
+        },
+        {
+            "filename": "wasp_F5.png",
+            "left": 2,
+			"right": 56,
+            "top": 26,
+			"bottom": 72,
+            "x_offs": 27,
+            "y_offs": 70
+        },
+        {
+            "filename": "wasp_F6.png",
+            "left": 1,
+			"right": 56,
+            "top": 18,
+			"bottom": 73,
+            "x_offs": 27,
+            "y_offs": 70
+        },
+        {
+            "filename": "wasp_F7.png",
+            "left": 5,
+			"right": 56,
+            "top": 26,
+			"bottom": 72,
+            "x_offs": 27,
+            "y_offs": 70
+        },
+        {
+            "filename": "wasp_F8.png",
+            "left": 1,
+			"right": 56,
+            "top": 18,
+			"bottom": 73,
+            "x_offs": 27,
+            "y_offs": 70
+        }
+    ]
+}

@@ -1,0 +1,90 @@
+{
+  "ActivationMapId": 2,
+  "Activations": [
+    {
+      "AreaID": 2,
+      "Location": {
+        "X": 69,
+        "Y": 38
+      },
+      "PortalKey": 0
+    },
+    {
+      "AreaID": 2,
+      "Location": {
+        "X": 69,
+        "Y": 37
+      },
+      "PortalKey": 0
+    },
+    {
+      "AreaID": 2,
+      "Location": {
+        "X": 69,
+        "Y": 36
+      },
+      "PortalKey": 0
+    },
+    {
+      "AreaID": 2,
+      "Location": {
+        "X": 69,
+        "Y": 35
+      },
+      "PortalKey": 0
+    },
+    {
+      "AreaID": 2,
+      "Location": {
+        "X": 69,
+        "Y": 34
+      },
+      "PortalKey": 0
+    },
+    {
+      "AreaID": 2,
+      "Location": {
+        "X": 69,
+        "Y": 33
+      },
+      "PortalKey": 0
+    },
+    {
+      "AreaID": 2,
+      "Location": {
+        "X": 69,
+        "Y": 32
+      },
+      "PortalKey": 0
+    },
+    {
+      "AreaID": 2,
+      "Location": {
+        "X": 69,
+        "Y": 31
+      },
+      "PortalKey": 0
+    },
+    {
+      "AreaID": 2,
+      "Location": {
+        "X": 69,
+        "Y": 30
+      },
+      "PortalKey": 0
+    }
+  ],
+  "LevelRequired": 1,
+  "To": {
+    "AreaID": 0,
+    "Location": null,
+    "PortalKey": 1
+  },
+  "WarpRadius": 0,
+  "WarpType": "World",
+  "WorldResetWarpId": 0,
+  "WorldTransionWarpId": 0,
+  "Description": null,
+  "Group": null,
+  "Name": "Warp from 2 to World Map."
+}

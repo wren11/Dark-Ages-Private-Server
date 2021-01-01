@@ -26,6 +26,7 @@
     <PackageReference Include="Serilog.Formatting.Compact" Version="1.1.1-dev-00940" />
     <PackageReference Include="ServiceStack" Version="5.9.2" />
     <PackageReference Include="ServiceStack.Text" Version="5.9.2" />
+    <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
     <PackageReference Include="YamlDotNet" Version="8.1.2" />
   </ItemGroup>
 

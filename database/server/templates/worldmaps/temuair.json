@@ -1,0 +1,21 @@
+{
+  "Portals": [
+    {
+      "Destination": {
+        "AreaID": 2,
+        "Location": {
+          "X": 66,
+          "Y": 35
+        },
+        "PortalKey": 0
+      },
+      "DisplayName": "Refugee Camp",
+      "PointX": 442,
+      "PointY": 225
+    }
+  ],
+  "FieldNumber": 1,
+  "Description": "Temuair, Refuge, East Woodlands",
+  "Group": "WorldMaps",
+  "Name": "Temuair"
+}

@@ -88,7 +88,6 @@ namespace Darkages.Network.Game
 
         public Position LastKnownPosition { get; set; }
 
-        [JsonIgnore] public Aisling LastState { get; set; }
 
         [JsonIgnore]
         public int MapClicks { get; set; }
@@ -888,11 +887,12 @@ namespace Darkages.Network.Game
 
         public GameClient SendMusic()
         {
-            Aisling.Client.Send(new byte[]
-            {
-                0x19, 0x00, 0xFF,
-                (byte) Aisling.Map.Music
-            });
+            if (Aisling.Map != null)
+                Aisling.Client.Send(new byte[]
+                {
+                    0x19, 0x00, 0xFF,
+                    (byte) Aisling.Map.Music
+                });
 
             return this;
         }
@@ -1245,8 +1245,11 @@ namespace Darkages.Network.Game
             {
                 if (Aisling.Map.Tile[Aisling.X, Aisling.Y] == TileContent.Wall)
                 {
-                    Aisling.X = LastKnownPosition.X;
-                    Aisling.Y = LastKnownPosition.Y;
+                    if (LastKnownPosition != null)
+                    {
+                        Aisling.X = LastKnownPosition.X;
+                        Aisling.Y = LastKnownPosition.Y;
+                    }
 
                     SendLocation();
                 }

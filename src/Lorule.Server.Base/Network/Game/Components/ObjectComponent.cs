@@ -137,6 +137,9 @@ namespace Darkages.Network.Game.Components
             {
                 var payload = new List<Sprite>();
 
+                if (user != null && user.Map == null)
+                    return;
+
                 if (user != null && (!user.LoggedIn || !user.Map.Ready))
                     return;
 

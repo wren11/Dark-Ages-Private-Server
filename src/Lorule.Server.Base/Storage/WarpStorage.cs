@@ -41,18 +41,13 @@ namespace Darkages.Storage
             if (!File.Exists(path))
                 return null;
 
-            using (var s = File.OpenRead(path))
-            using (var f = new StreamReader(s))
-            {
-                return JsonConvert.DeserializeObject<WarpTemplate>(f.ReadToEnd(), StorageManager.Settings);
-            }
+            using var s = File.OpenRead(path);
+            using var f = new StreamReader(s);
+            return JsonConvert.DeserializeObject<WarpTemplate>(f.ReadToEnd(), StorageManager.Settings);
         }
 
         public void Save(WarpTemplate obj)
         {
-            if (ServerContext.Paused)
-                return;
-
             var path = Path.Combine(StoragePath, $"{obj.Name.ToLower()}.json");
             var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
             File.WriteAllText(path, objString);

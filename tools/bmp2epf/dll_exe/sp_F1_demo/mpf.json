@@ -1,0 +1,118 @@
+{
+    "attack2FrameCount": 2,
+    "attack2FrameIndex": 10,
+    "attack3FrameCount": 2,
+    "attack3FrameIndex": 10,
+    "attackFrameCount": 2,
+    "attackFrameIndex": 10,
+    "ouput_name": "MNS00169.MPF",
+    "pallete_file": "",
+    "pallete_number": 129,
+    "stopFrameCount": 2,
+    "stopFrameIndex": 0,
+    "stopMotionFrameCount": 2,
+    "stopMotionProbability": 2,
+    "transparent": [],
+    "walkFrameCount": 5,
+    "walkFrameIndex": 0,
+    "zinput_files": [
+        {
+            "filename": "sp_F000.png",
+            "left": 0,
+            "top": 0,
+            "x_offs": 0,
+            "y_offs": 0
+        },
+        {
+            "filename": "sp_F001.png",
+            "left": 10,
+            "top": 10,
+            "x_offs": 0,
+            "y_offs": 0
+        },
+        {
+            "filename": "sp_F002.png",
+            "left": 20,
+            "top": 20,
+            "x_offs": 0,
+            "y_offs": 0
+        },
+        {
+            "filename": "sp_F003.png",
+            "left": 30,
+            "top": 30,
+            "x_offs": 0,
+            "y_offs": 0
+        },
+        {
+            "filename": "sp_F004.png",
+            "left": 40,
+            "top": 40,
+            "x_offs": 0,
+            "y_offs": 0
+        },
+        {
+            "filename": "sp_F005.png",
+            "left": 50,
+            "top": 50,
+            "x_offs": 0,
+            "y_offs": 0
+        },
+        {
+            "filename": "sp_F006.png",
+            "left": 40,
+            "top": 40,
+            "x_offs": 0,
+            "y_offs": 0
+        },
+        {
+            "filename": "sp_F007.png",
+            "left": 30,
+            "top": 30,
+            "x_offs": 0,
+            "y_offs": 0
+        },
+        {
+            "filename": "sp_F008.png",
+            "left": 20,
+            "top": 20,
+            "x_offs": 0,
+            "y_offs": 0
+        },
+        {
+            "filename": "sp_F009.png",
+            "left": 10,
+            "top": 10,
+            "x_offs": 0,
+            "y_offs": 0
+        },
+        {
+            "filename": "sp_F010.png",
+            "left": 0,
+            "top": 0,
+            "x_offs": 0,
+            "y_offs": 0
+        },
+        {
+            "filename": "sp_F011.png",
+            "left": 0,
+            "top": 0,
+            "x_offs": 0,
+            "y_offs": 0
+        },
+        {
+            "filename": "sp_F012.png",
+            "left": 0,
+            "top": 0,
+            "x_offs": 0,
+            "y_offs": 0
+        },
+        {
+            "filename": "sp_F013.png",
+            "left": 0,
+            "top": 0,
+            "x_offs": 0,
+            "y_offs": 0
+        }
+    ]
+}

@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Linq;
 using Darkages.Common;
 
 #endregion
@@ -39,7 +40,7 @@ namespace Darkages.Network.ServerFormats
 
             foreach (var warps in portal.Portals)
             {
-                if (warps == null || warps.Destination == null)
+                if (warps?.Destination == null)
                     continue;
 
                 writer.Write(warps.PointY);

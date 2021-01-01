@@ -1,0 +1,12 @@
+{
+  "FilePath": "..\\..\\..\\..\\database\\server\\maps\\lod1.map",
+  "Cols": 30,
+  "ContentName": "Starting_Zone_Safe_House",
+  "Flags": 106240,
+  "ID": 1,
+  "Music": 1,
+  "Name": "Safe House",
+  "Rows": 31,
+  "Blocks": [],
+  "ScriptKey": null
+}

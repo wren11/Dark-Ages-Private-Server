@@ -1,5 +1,6 @@
 ﻿using Darkages;
 using Darkages.Storage;
+using Darkages.Templates;
 using Darkages.Types;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,6 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Darkages.Templates;
 
 namespace Content_Maker
 {
@@ -16,8 +16,10 @@ namespace Content_Maker
         public WorldManager()
         {
             InitializeComponent();
-
+            DoubleBuffered = true;
             pictureBox1.MouseClick += PictureBox1_MouseClick;
+
+            propertyGrid1.SelectedObject = new WorldMapTemplate();
         }
 
         private Area SelectedArea;
@@ -39,14 +41,14 @@ namespace Content_Maker
 
             label1.Text = "Selected Point: " + SelectedPoint.ToString();
 
-            var world = ServerContext.GlobalWorldMapTemplateCache.FirstOrDefault();
+            var world = ServerContext.GlobalWorldMapTemplateCache.Values.ElementAt(comboBox2.SelectedIndex);
 
-            if (world.Value == null)
+            if (world == null)
                 return;
 
             using (var gfx = pictureBox1.CreateGraphics())
             {
-                foreach (var portal in world.Value.Portals)
+                foreach (var portal in world.Portals)
                 {
                     gfx.DrawString(portal.DisplayName, Font, Brushes.Yellow, new Point(portal.PointY, portal.PointX));
                     gfx.DrawRectangle(Pens.Cyan, portal.PointY - 10, portal.PointX, 10, 10);
@@ -74,28 +76,24 @@ namespace Content_Maker
                 return;
             }
 
-            var world = ServerContext.GlobalWorldMapTemplateCache.FirstOrDefault();
+            var world = ServerContext.GlobalWorldMapTemplateCache.Values.ElementAt(comboBox2.SelectedIndex);
 
-            if (world.Value == null)
+            if (world == null)
             {
                 MessageBox.Show("Error, World was invalid.");
                 return;
             }
 
-            if (world.Value.Portals.Any(i => i.DisplayName.Equals(textBox1.Text, StringComparison.OrdinalIgnoreCase)))
+            if (world.Portals.Any(i => i.DisplayName.Equals(textBox1.Text, StringComparison.OrdinalIgnoreCase)))
             {
                 MessageBox.Show("Error, Portal with this name already exists.");
                 return;
             }
 
-            if (world.Value.Portals.Any(i => i.Destination.AreaID == SelectedArea.ID))
-            {
-                MessageBox.Show("Error, Portal with this ID already exists. You are limited to one Portal Per Map.");
-                return;
-            }
+           
 
 
-            var portals = world.Value.Portals;
+            var portals = world.Portals;
 
             var ArrivalX = -1;
             var ArrivalY = -1;
@@ -127,16 +125,26 @@ namespace Content_Maker
                 PointY = (short) SelectedPoint.X
             });
 
-            StorageManager.WorldMapBucket.Save(world.Value, true);
+            StorageManager.WorldMapBucket.Save(world, true);
 
             ServerContext.LoadAndCacheStorage();
             comboBox1.DataSource =
                 ServerContext.GlobalMapCache.Select(i => i.Value.ID + " |    " + i.Value.Name).ToList();
             timer1.Enabled = true;
+
+            LoadSources();
+            MessageBox.Show("Updated World Map Success.");
         }
 
         private void WorldManager_Load(object sender, EventArgs e)
         {
+            LoadSources();
+        }
+
+        private void LoadSources()
+        {
+            comboBox2.DataSource = ServerContext.GlobalWorldMapTemplateCache.Select(n => n.Value.Name).ToList();
+
             comboBox1.DataSource =
                 ServerContext.GlobalMapCache.Select(i => i.Value.ID + " |    " + i.Value.Name).ToList();
         }
@@ -242,10 +250,10 @@ namespace Content_Maker
                 template.LevelRequired = 1;
                 template.WarpType = WarpType.World;
                 template.WarpRadius = 0;
-                template.Name = string.Format("Warp from {0} to World Map.", SelectedArea.ID);
+                template.Name = $"Warp from {SelectedArea.ID} to World Map.";
 
                 StorageManager.WarpBucket.Save(template);
-                ServerContext.LoadAndCacheStorage();
+                ServerContext.LoadAndCacheStorage(true);
                 MessageBox.Show("Warp Added. for this return point.");
             }
             catch (Exception)
@@ -253,6 +261,24 @@ namespace Content_Maker
                 MessageBox.Show("Error, Warp could not be saved.");
                 return;
             }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            var template = (WorldMapTemplate)propertyGrid1.SelectedObject;
+
+            if (template != null)
+            {
+                StorageManager.WorldMapBucket.Save(template);
+                ServerContext.LoadAndCacheStorage(true);
+                MessageBox.Show("New World Created.");
+                LoadSources();
+            }
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

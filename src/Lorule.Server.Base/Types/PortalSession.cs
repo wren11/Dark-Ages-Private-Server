@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Darkages.Network.Game;
@@ -30,11 +31,17 @@ namespace Darkages
 
         public void ShowFieldMap(GameClient client)
         {
-            lock (ServerContext.SyncLock)
+            var portal = ServerContext.GlobalWorldMapTemplateCache[client.Aisling.World];
+
+            if (portal.Portals.Any(ports => !ServerContext.GlobalMapCache.ContainsKey(ports.Destination.AreaID)))
             {
-                client.InMapTransition = true;
-                client.Send(new ServerFormat2E(client.Aisling));
+                ServerContext.Logger?.Invoke("No Valid Configured World Map.");
+                return;
             }
+
+            client.InMapTransition = true;
+            client.Send(new ServerFormat2E(client.Aisling));
+
 
             client.Aisling.PortalSession
                 = new PortalSession

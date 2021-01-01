@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Hades.Imaging\Hades.Imaging.csproj" />
+    <ProjectReference Include="..\Hades.Imaging\Hades.Imaging.csproj" />
     <ProjectReference Include="..\Lorule.Server.Base\Lorule.Server.Base.csproj" />
   </ItemGroup>
 

@@ -11,10 +11,11 @@ namespace Content_Maker
 {
     public partial class WarpManager : Form
     {
+        private readonly List<Position> _worldactivations = new List<Position>();
         private readonly List<Position> _activations = new List<Position>();
         private readonly List<Position> _previousActivations = new List<Position>();
 
-        private Area _selectedArea;
+        private Area _selectedArea, _connectingArea;
 
 
         public string NewMapId { get; set; }
@@ -27,8 +28,9 @@ namespace Content_Maker
 
         private void WarpManager_Load(object sender, EventArgs e)
         {
-            var connectedMaps = ServerContext.GlobalMapCache.Select(i => i.Value.ID).Intersect(
-                ServerContext.GlobalWarpTemplateCache.Select(i => i.ActivationMapId));
+            ServerContext.LoadAndCacheStorage(true);
+
+            var connectedMaps = ServerContext.GlobalMapCache.Select(i => i.Value.ID);
 
             var validContent = (
                 from id in connectedMaps
@@ -36,6 +38,9 @@ namespace Content_Maker
                 select id + " |  " + ServerContext.GlobalMapCache[id].Name).ToList();
 
             comboBox1.DataSource = validContent.ToList();
+            comboBox2.DataSource = validContent.ToList();
+
+            comboBox3.DataSource = ServerContext.GlobalWorldMapTemplateCache.Select(n => n.Value.Name + $"({n.Value.FieldNumber})").ToList();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -93,8 +98,8 @@ namespace Content_Maker
 
         private void button6_Click(object sender, EventArgs e)
         {
-            var x = textBox1.Text;
-            var y = textBox2.Text;
+            var x = textBox3.Text;
+            var y = textBox4.Text;
 
             int.TryParse(x, out var xCoordinate);
             int.TryParse(y, out var yCoordinate);
@@ -135,20 +140,21 @@ namespace Content_Maker
         {
             try
             {
-                int.TryParse(NewMapId, out var id);
-
-                if (id <= 0)
-                {
-                    MessageBox.Show(@"Error, it appears a valid map id was not set in the previous Window, at step 2.");
-                    return;
-                }
-
+                
 
                 if (_selectedArea == null || _selectedArea.ID <= 0)
                 {
-                    MessageBox.Show(@"Error, it appears a valid map id was not set in the previous Window, at step 2.");
+                    MessageBox.Show(@"Error, No Selected Area. Select an existing Map.");
                     return;
                 }
+
+                if (_connectingArea == null || _connectingArea.ID <= 0)
+                {
+                    MessageBox.Show(@"Error, No Selected Area. Select a connecting Map.");
+                    return;
+                    
+                }
+
 
                 int.TryParse(textBox6.Text, out var locationX);
                 int.TryParse(textBox5.Text, out var locationY);
@@ -167,27 +173,26 @@ namespace Content_Maker
                     return;
                 }
 
-                CreateTargetWarpTemplate(id, locationX, locationY, levelReq);
-                CreateReturnWarpTemplate(id, previousX, previousY, levelReq);
-
-                MessageBox.Show(@"Warp was created!");
+                if (_selectedArea != null && _connectingArea != null)
+                {
+                    CreateTargetWarpTemplate(locationX, locationY, levelReq);
+                    CreateReturnWarpTemplate(previousX, previousY, levelReq);
+                    MessageBox.Show(@"Warp was created!");
+                }
             }
             catch (Exception)
             {
                 // ignored
             }
-            finally
-            {
-                Close();
-            }
+
         }
 
-        private void CreateReturnWarpTemplate(int id, int previousX, int previousY, int levelReq)
+        private void CreateReturnWarpTemplate(int previousX, int previousY, int levelReq)
         {
             var template = new WarpTemplate
             {
                 To = new Warp {AreaID = _selectedArea.ID, Location = new Position(previousX, previousY)},
-                ActivationMapId = id,
+                ActivationMapId = _connectingArea.ID,
                 Activations = new List<Warp>()
             };
 
@@ -195,24 +200,24 @@ namespace Content_Maker
             foreach (var activation in _previousActivations)
                 template.Activations.Add(new Warp()
                 {
-                    AreaID = id,
+                    AreaID = _connectingArea.ID,
                     Location = activation
                 });
 
             template.LevelRequired = Convert.ToByte(levelReq);
             template.WarpType = WarpType.Map;
             template.WarpRadius = 0;
-            template.Name = string.Format("Map Warp from {0} to {1}", id, _selectedArea.ID);
+            template.Name = $"Map Warp from {_connectingArea.ID} to {_selectedArea.ID}";
 
             StorageManager.WarpBucket.Save(template);
         }
 
-        private void CreateTargetWarpTemplate(int id, int locationX, int locationY, int levelReq)
+        private void CreateTargetWarpTemplate(int locationX, int locationY, int levelReq)
         {
             var template = new WarpTemplate
             {
-                To = new Warp {AreaID = id, Location = new Position(locationX, locationY)},
-                ActivationMapId = _selectedArea.ID,
+                To = new Warp {AreaID = _connectingArea.ID, Location = new Position(locationX, locationY)},
+                ActivationMapId =_selectedArea.ID,
                 Activations = new List<Warp>()
             };
 
@@ -226,9 +231,98 @@ namespace Content_Maker
             template.LevelRequired = Convert.ToByte(levelReq);
             template.WarpType = WarpType.Map;
             template.WarpRadius = 0;
-            template.Name = $"Map Warp from {_selectedArea.ID} to {id}";
+            template.Name = $"Map Warp from {_selectedArea.ID} to {_connectingArea.ID}";
 
             StorageManager.WarpBucket.Save(template);
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            var world = ServerContext.GlobalWorldMapTemplateCache.Values.ElementAt(comboBox3.SelectedIndex);
+            var template = new WarpTemplate();
+
+            template.To = new Warp()
+            {
+                AreaID = 0,
+                PortalKey = (int)world.FieldNumber
+            };
+
+            template.ActivationMapId = _selectedArea.ID;
+            template.Activations = new List<Warp>();
+
+            foreach (var activation in _worldactivations)
+                template.Activations.Add(new Warp()
+                {
+                    AreaID = _selectedArea.ID,
+                    Location = activation
+                });
+
+            template.LevelRequired = 1;
+            template.WarpType = WarpType.World;
+            template.WarpRadius = 0;
+            template.Name = $"Warp from {_selectedArea.ID} to World Map.";
+
+            StorageManager.WarpBucket.Save(template);
+            ServerContext.LoadAndCacheStorage(true);
+            MessageBox.Show("World Map Warp Created.");
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            var x = textBox11.Text;
+            var y = textBox10.Text;
+
+            int.TryParse(x, out var xCoordinate);
+            int.TryParse(y, out var yCoordinate);
+
+            if (xCoordinate < 0 || yCoordinate < 0)
+                return;
+
+            _worldactivations.Add(new Position(xCoordinate, yCoordinate));
+            listView3.Items.Add(new ListViewItem(new[] { x, y }));
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            var idx = listView3.SelectedIndices;
+
+            foreach (int id in idx)
+            {
+                if (id < 0)
+                    continue;
+
+                _worldactivations.RemoveAt(id);
+                listView3.Items.RemoveAt(id);
+            }
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            _worldactivations.Clear();
+            listView3.Clear();
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var id = comboBox2.Text.Split('|').FirstOrDefault()?.Trim();
+
+            if (id == null)
+                return;
+
+            var area = ServerContext.GlobalMapCache[Convert.ToInt32(id)];
+
+            if (area != null)
+            {
+                richTextBox2.Text = @"Selected Map : " + area.Name;
+                richTextBox2.AppendText("\nMap Dimensions : " + area.Cols + "," + area.Rows);
+
+                _connectingArea = area;
+            }
         }
     }
 }

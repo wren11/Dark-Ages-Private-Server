@@ -104,7 +104,6 @@ namespace Darkages.Network
             if (format is ClientFormat3F clientFormat3F && InMapTransition)
                 if (this is GameClient client)
                 {
-                    client.LastState = null;
                     client.LastNodeClicked = DateTime.UtcNow;
 
                     InMapTransition = false;
@@ -139,10 +138,6 @@ namespace Darkages.Network
 
         public void Send(NetworkFormat format)
         {
-            if (format is ServerFormat2E)
-                if (this is GameClient gameClient)
-                    gameClient.LastState = (Aisling) (object) gameClient.Aisling;
-
             FlushAndSend(format);
         }
 

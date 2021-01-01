@@ -84,7 +84,6 @@ namespace Darkages.Types
                     HasPants = template.HasPants,
                     HealthModifer = template.HealthModifer,
                     HitModifer = template.HitModifer,
-                    ID = template.ID,
                     Image = template.Image,
                     IntModifer = template.IntModifer,
                     LevelRequired = template.LevelRequired,

@@ -219,6 +219,7 @@ namespace Darkages
 
         private static void EmptyCacheCollectors()
         {
+            GlobalMapCache = new Dictionary<int, Area>();
             GlobalMetaCache = new List<Metafile>();
             GlobalMonsterTemplateCache = new List<MonsterTemplate>();
             GlobalMundaneTemplateCache = new Dictionary<string, MundaneTemplate>();
@@ -235,9 +236,17 @@ namespace Darkages
 
         public static void LoadMetaDatabase()
         {
-            var files = MetafileManager.GetMetaFiles();
+            try
+            {
+                var files = MetafileManager.GetMetaFiles();
 
-            if (files.Any()) GlobalMetaCache.AddRange(files);
+                if (files.Any()) GlobalMetaCache.AddRange(files);
+            }
+            catch 
+            {
+
+
+            }
         }
 
         public static void SaveCommunityAssets()

@@ -67,15 +67,21 @@ namespace Content_Maker
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.button5 = new System.Windows.Forms.Button();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.button6 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -334,24 +340,6 @@ namespace Content_Maker
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Step 4: Name Map And Compile It.";
             // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(186, 19);
-            this.textBox4.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(160, 20);
-            this.textBox4.TabIndex = 3;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(14, 22);
-            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(170, 13);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "What\'s the name of this new map?";
-            // 
             // textBox6
             // 
             this.textBox6.Location = new System.Drawing.Point(186, 45);
@@ -370,11 +358,86 @@ namespace Content_Maker
             this.label7.TabIndex = 4;
             this.label7.Text = "Content Name? (friendly file name)";
             // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(186, 19);
+            this.textBox4.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(160, 20);
+            this.textBox4.TabIndex = 3;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(14, 22);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(170, 13);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "What\'s the name of this new map?";
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(23, 17);
+            this.button5.Margin = new System.Windows.Forms.Padding(2);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(133, 25);
+            this.button5.TabIndex = 1;
+            this.button5.Text = "Open Server Data";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.button8);
+            this.groupBox6.Controls.Add(this.button7);
+            this.groupBox6.Controls.Add(this.button6);
+            this.groupBox6.Controls.Add(this.button5);
+            this.groupBox6.Location = new System.Drawing.Point(554, 11);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(175, 409);
+            this.groupBox6.TabIndex = 5;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Utils";
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(23, 46);
+            this.button6.Margin = new System.Windows.Forms.Padding(2);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(133, 25);
+            this.button6.TabIndex = 2;
+            this.button6.Text = "Reload All Data";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(23, 75);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(133, 25);
+            this.button7.TabIndex = 3;
+            this.button7.Text = "Open Map Editor";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(23, 105);
+            this.button8.Margin = new System.Windows.Forms.Padding(2);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(132, 25);
+            this.button8.TabIndex = 2;
+            this.button8.Text = "Open World Manager";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
             // AreaCreateWizard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(556, 475);
+            this.ClientSize = new System.Drawing.Size(741, 520);
+            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -392,6 +455,7 @@ namespace Content_Maker
             this.groupBox4.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -424,5 +488,10 @@ namespace Content_Maker
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button8;
     }
 }

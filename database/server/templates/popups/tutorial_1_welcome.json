@@ -1,0 +1,14 @@
+{
+  "X": 26,
+  "Y": 47,
+  "MapId": 3029,
+  "YamlKey": "tutorial_1_welcome_popup",
+  "Timeout": 0,
+  "Ephemeral": false,
+  "SpriteId": 0,
+  "TypeOfTrigger": 3,
+  "ID": 0,
+  "Name": "",
+  "Description": "Tutorial : 1 Introduction, Popup.",
+  "Group": "Tutorial Popups"
+}

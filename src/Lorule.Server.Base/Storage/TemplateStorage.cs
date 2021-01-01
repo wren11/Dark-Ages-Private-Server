@@ -53,6 +53,9 @@ namespace Darkages.Storage
             if (tmp is ServerTemplate)
                 StoragePath = StoragePath.Replace("%", "ServerVars");
 
+
+            StoragePath = StoragePath.ToLower();
+
             if (!Directory.Exists(StoragePath))
                 Directory.CreateDirectory(StoragePath);
         }
@@ -150,7 +153,7 @@ namespace Darkages.Storage
                             StorageManager.WorldMapBucket.Load<WorldMapTemplate>(
                                 Path.GetFileNameWithoutExtension(asset));
                         if (template != null)
-                            ServerContext.GlobalWorldMapTemplateCache[template.WorldIndex] = template;
+                            ServerContext.GlobalWorldMapTemplateCache[template.FieldNumber] = template;
                         break;
                     }
                     case ServerTemplate _:
@@ -250,10 +253,7 @@ namespace Darkages.Storage
                 if (File.Exists(path))
                     File.Delete(path);
 
-                var objString = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.All
-                });
+                var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
                 File.WriteAllText(path, objString);
             }
             else

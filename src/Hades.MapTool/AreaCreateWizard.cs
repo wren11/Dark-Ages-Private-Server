@@ -39,7 +39,7 @@ namespace Content_Maker
             {
                 Filter = @"Map Files|*.map",
                 Multiselect = false,
-                InitialDirectory = _editorOptions.Location + "\\Assets\\MapFiles"
+                InitialDirectory = _editorOptions.Location + "\\maps"
             };
 
             if (ofd.ShowDialog() == DialogResult.OK)
@@ -87,6 +87,9 @@ namespace Content_Maker
 
         private void Button3_Click(object sender, EventArgs e)
         {
+
+            ServerContext.LoadAndCacheStorage(true);
+
             if (ServerContext.GlobalMapCache.Count(i =>
                 i.Value.Name.Equals(textBox4.Text, StringComparison.OrdinalIgnoreCase)
                 || i.Value.ID == Convert.ToInt32(textBox3.Text)) > 0)
@@ -118,6 +121,8 @@ namespace Content_Maker
                     if (!File.Exists(path))
                         File.Copy(SelectedMap, path, true);
 
+                    map.FilePath = path;
+
                     StorageManager.AreaBucket.Save(map);
                     ServerContext.LoadAndCacheStorage(true);
 
@@ -131,6 +136,31 @@ namespace Content_Maker
         }
 
         private void Button4_Click(object sender, EventArgs e)
+        {
+            new WorldManager().ShowDialog();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("explorer.exe", ServerContext.StoragePath);
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            ServerContext.LoadAndCacheStorage(true);
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            var path = PathNetCore.GetRelativePath(".", "..\\..\\..\\..\\tools\\MapEditor\\MapEditor.exe");
+
+            if (File.Exists(path))
+            {
+                System.Diagnostics.Process.Start(path);
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
         {
             new WorldManager().ShowDialog();
         }

@@ -1,0 +1,12 @@
+{
+  "FilePath": "..\\..\\..\\..\\database\\server\\maps\\lod99999.map",
+  "Cols": 25,
+  "ContentName": "Hades_Death_Map",
+  "Flags": 106240,
+  "ID": 99999,
+  "Music": 3,
+  "Name": "Hades",
+  "Rows": 25,
+  "Blocks": [],
+  "ScriptKey": null
+}

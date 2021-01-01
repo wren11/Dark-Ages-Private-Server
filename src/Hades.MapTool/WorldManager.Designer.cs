@@ -62,6 +62,8 @@ namespace Content_Maker
             this.button5 = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.button6 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -73,8 +75,10 @@ namespace Content_Maker
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.label7 = new System.Windows.Forms.Label();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.button7 = new System.Windows.Forms.Button();
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -96,12 +100,12 @@ namespace Content_Maker
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(649, 5);
+            this.groupBox1.Location = new System.Drawing.Point(648, 73);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(406, 49);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Step 1: Select a point on the map.";
+            this.groupBox1.Text = "Step 2: Select a point on the map.";
             // 
             // label1
             // 
@@ -116,12 +120,12 @@ namespace Content_Maker
             // 
             this.groupBox2.Controls.Add(this.textBox1);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Location = new System.Drawing.Point(649, 61);
+            this.groupBox2.Location = new System.Drawing.Point(648, 129);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(406, 61);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Step 2: Set the Display Properties";
+            this.groupBox2.Text = "Step 3: Set the Display Properties";
             // 
             // textBox1
             // 
@@ -146,12 +150,12 @@ namespace Content_Maker
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.comboBox1);
-            this.groupBox3.Location = new System.Drawing.Point(649, 128);
+            this.groupBox3.Location = new System.Drawing.Point(648, 196);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(406, 87);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Step 3: Set where will this take the player.";
+            this.groupBox3.Text = "Step 4: Set where will this take the player.";
             // 
             // textBox3
             // 
@@ -198,9 +202,9 @@ namespace Content_Maker
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(821, 426);
+            this.button4.Location = new System.Drawing.Point(844, 426);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(234, 54);
+            this.button4.Size = new System.Drawing.Size(210, 31);
             this.button4.TabIndex = 5;
             this.button4.Text = "Save And Compile";
             this.button4.UseVisualStyleBackColor = true;
@@ -208,9 +212,9 @@ namespace Content_Maker
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(648, 426);
+            this.button5.Location = new System.Drawing.Point(651, 426);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(120, 54);
+            this.button5.Size = new System.Drawing.Size(65, 31);
             this.button5.TabIndex = 6;
             this.button5.Text = "Cancel";
             this.button5.UseVisualStyleBackColor = true;
@@ -218,7 +222,6 @@ namespace Content_Maker
             // timer1
             // 
             this.timer1.Enabled = true;
-            this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // groupBox4
@@ -234,12 +237,33 @@ namespace Content_Maker
             this.groupBox4.Controls.Add(this.label5);
             this.groupBox4.Controls.Add(this.label6);
             this.groupBox4.Controls.Add(this.listView1);
-            this.groupBox4.Location = new System.Drawing.Point(649, 222);
+            this.groupBox4.Location = new System.Drawing.Point(648, 290);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(406, 132);
+            this.groupBox4.Size = new System.Drawing.Size(406, 130);
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Step 4: Add a Warp From The Arrival Map Back to the World Map.";
+            this.groupBox4.Text = "Step 5: Add a Warp From The Arrival Map Back to the World Map.";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(308, 22);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(54, 13);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "Portal key";
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(363, 19);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(29, 20);
+            this.numericUpDown1.TabIndex = 17;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // button6
             // 
@@ -330,6 +354,7 @@ namespace Content_Maker
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(157, 19);
             this.listView1.Margin = new System.Windows.Forms.Padding(2);
             this.listView1.Name = "listView1";
@@ -348,32 +373,50 @@ namespace Content_Maker
             this.columnHeader2.Text = "Y";
             this.columnHeader2.Width = 66;
             // 
-            // numericUpDown1
+            // comboBox2
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(363, 19);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(29, 20);
-            this.numericUpDown1.TabIndex = 17;
-            this.numericUpDown1.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Location = new System.Drawing.Point(648, 28);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(266, 21);
+            this.comboBox2.TabIndex = 8;
+            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
-            // label7
+            // label8
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(308, 22);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(54, 13);
-            this.label7.TabIndex = 18;
-            this.label7.Text = "Portal key";
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(648, 9);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(141, 13);
+            this.label8.TabIndex = 9;
+            this.label8.Text = "Step 1: Selected World Map";
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(1131, 279);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(180, 23);
+            this.button7.TabIndex = 10;
+            this.button7.Text = "Create New World Map";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // propertyGrid1
+            // 
+            this.propertyGrid1.Location = new System.Drawing.Point(1077, 12);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(234, 261);
+            this.propertyGrid1.TabIndex = 11;
             // 
             // WorldManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1059, 484);
+            this.ClientSize = new System.Drawing.Size(1323, 485);
+            this.Controls.Add(this.propertyGrid1);
+            this.Controls.Add(this.button7);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.comboBox2);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
@@ -398,6 +441,7 @@ namespace Content_Maker
             this.groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -432,5 +476,9 @@ namespace Content_Maker
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.PropertyGrid propertyGrid1;
     }
 }

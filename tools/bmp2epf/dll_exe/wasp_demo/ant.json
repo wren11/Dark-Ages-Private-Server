@@ -1,0 +1,94 @@
+{
+    "attack2FrameCount": -1,
+    "attack2FrameIndex": -1,
+    "attack3FrameCount": -1,
+    "attack3FrameIndex": -1,
+    "attackFrameCount": 2,
+    "attackFrameIndex": 4,
+    "height": 84,
+    "ouput_name": "MNS001.MPF",
+    "pallete_file": "mns000.pal",
+    "pallete_number": 0,
+    "stopFrameCount": 2,
+    "stopFrameIndex": 0,
+    "stopMotionFrameCount": 2,
+    "stopMotionProbability": 3,
+    "transparent": [],
+    "walkFrameCount": 2,
+    "walkFrameIndex": 0,
+    "width": 56,
+    "zinput_files": [
+        {
+            "bottom": 57,
+            "filename": "wasp_F1.png",
+            "left": 1,
+            "right": 55,
+            "top": 35,
+            "x_offs": 25,
+            "y_offs": 57
+        },
+        {
+            "bottom": 54,
+            "filename": "wasp_F2.png",
+            "left": 8,
+            "right": 44,
+            "top": 34,
+            "x_offs": 27,
+            "y_offs": 54
+        },
+        {
+            "bottom": 59,
+            "filename": "wasp_F3.png",
+            "left": 11,
+            "right": 46,
+            "top": 37,
+            "x_offs": 27,
+            "y_offs": 58
+        },
+        {
+            "bottom": 58,
+            "filename": "wasp_F4.png",
+            "left": 10,
+            "right": 45,
+            "top": 36,
+            "x_offs": 27,
+            "y_offs": 57
+        },
+        {
+            "bottom": 72,
+            "filename": "wasp_F5.png",
+            "left": 2,
+            "right": 56,
+            "top": 26,
+            "x_offs": 27,
+            "y_offs": 70
+        },
+        {
+            "bottom": 73,
+            "filename": "wasp_F6.png",
+            "left": 1,
+            "right": 56,
+            "top": 18,
+            "x_offs": 27,
+            "y_offs": 70
+        },
+        {
+            "bottom": 72,
+            "filename": "wasp_F7.png",
+            "left": 5,
+            "right": 56,
+            "top": 26,
+            "x_offs": 27,
+            "y_offs": 70
+        },
+        {
+            "bottom": 73,
+            "filename": "wasp_F8.png",
+            "left": 1,
+            "right": 56,
+            "top": 18,
+            "x_offs": 27,
+            "y_offs": 70
+        }
+    ]
+}

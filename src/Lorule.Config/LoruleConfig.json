@@ -1,11 +1,11 @@
 {
 	// Locales
 	"Content": {
-		"Location": "C:\\Users\\Dean\\Documents\\GitHub\\DarkAges-Lorule-Server\\data\\LoruleData",
+		"Location": "C:\\Users\\Dean\\Documents\\GitHub\\DarkAges-Lorule-Server\\database\\server",
 		"ServerIP": "127.0.0.1"
 	},
 	"Editor": {
-		"Location": "C:\\Users\\Dean\\Documents\\GitHub\\DarkAges-Lorule-Server\\data",
+		"Location": "C:\\Users\\Dean\\Documents\\GitHub\\DarkAges-Lorule-Server\\database",
 		"GameLocation": "C:\\Users\\Dean\\Documents\\GitHub\\DarkAges-Lorule-Server\\game"
 	},
 
@@ -24,16 +24,16 @@
 
 		// Starting Zone
 		"NationReturnHours": 3,
-		"StartingMap": 3029,
+		"StartingMap": 1,
 		"StartingPosition": {
-			"X": 26,
-			"Y": 48
+			"X": 4,
+			"Y": 4
 		},
 
 		// World Transitions
-		"TransitionPointX": 6,
-		"TransitionPointY": 6,
-		"TransitionZone": 9999,
+		"TransitionPointX": 4,
+		"TransitionPointY": 4,
+		"TransitionZone": 0,
 
 		// Scripts
 		"MonsterCreationScript": "Create Monster",
@@ -73,16 +73,16 @@
 		"DefaultItemValue": 1000,
 
 		// Death
-		"SkullLength": 10,
-		"DeathHPPenalty": 200,
-		"DeathMap": 88888,
+		"SkullLength": 19,
+		"DeathHPPenalty": 50,
+		"DeathMap": 99999,
 		"CanMoveDuringReap": false,
-		"DeathMapX": 21,
-		"DeathMapY": 21,
+		"DeathMapX": 9,
+		"DeathMapY": 15,
 
 		// Monsters | NPCs
 		"MundaneRespawnInterval": 10.0,
-		"GlobalSpawnTimer": 8000.0,
+		"GlobalSpawnTimer": 1000.0,
 		"MonsterSpellSuccessRate": 30,
 
 		// Players
@@ -187,8 +187,7 @@
 		"MerchantWarningMessage": "Hey you don't even have the money!! Don't waste my time.",
 		"NoManaMessage": "Your will is too weak.",
 		"NotEnoughGoldToDropMsg": "You don't have enough gold.",
-		"ReapMessage":
-			"You are dying.|You cannot move nor raise your arms.|Barron is going to take your soul.|All things eventually come to an end.",
+		"ReapMessage": "You are dying.|You cannot move nor raise your arms.|Barron is going to take your soul.|All things eventually come to an end.",
 		"ReapMessageDuringAction": "You can't do that, you are about to die!",
 		"RepairItemMessage": "You can't wear it anymore, it's Broken.",
 		"SomethingWentWrong": "Something went wrong.",

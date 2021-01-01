@@ -35,6 +35,13 @@ namespace Darkages.Network.Login
         {
             if (aisling != null)
             {
+
+                if (!ServerContext.GlobalMapCache.ContainsKey(aisling.AreaId))
+                {
+                    client.SendMessageBox(0x03, $"There is no map configured for {aisling.AreaId}\0");
+                    return;
+                }
+
                 var redirect = new Redirect
                 {
                     Serial = Convert.ToString(client.Serial),

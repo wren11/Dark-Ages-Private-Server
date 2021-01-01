@@ -21,13 +21,16 @@
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            writer.Write((ushort) Area.ID);
-            writer.Write((byte) Area.Cols);
-            writer.Write((byte) Area.Rows);
-            writer.Write((byte) Area.Flags);
-            writer.Write(ushort.MinValue);
-            writer.Write(Area.Hash);
-            writer.WriteStringA(Area.Name);
+            if (Area != null)
+            {
+                writer.Write((ushort) Area.ID);
+                writer.Write((byte) Area.Cols);
+                writer.Write((byte) Area.Rows);
+                writer.Write((byte) Area.Flags);
+                writer.Write(ushort.MinValue);
+                writer.Write(Area.Hash);
+                writer.WriteStringA(Area.Name);
+            }
         }
     }
 }

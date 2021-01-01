@@ -8,24 +8,9 @@ Hades, Formally known as Lorule, A Sandbox Server built on the Dark Ages Client 
 The server is fully functional and all you need to build is your own content to describe your own world.
 
 
-## Installation 
+## Getting Started
 
-Edit the LoruleConfig.json file and setup your paths.
-
-```c#
-	"Content": {
-		"Location": "E:\\Lorule_Editor\\LoruleData",
-		"ServerIP": "127.0.0.1"
-	},
-	"Editor": {
-		"Location": "E:\\Lorule_Editor\\LoruleData",
-		"LicenseKey": "",
-		"EditorAssetPath": "E:\\Lorule_Editor"
-	},
-```
-
-Once you have the server pointing to your data folder, you should be good to go.
-the project should run out of the box in Visual Studio 2019 Community / Pro, you will have to right click the top project in the solution explorer and Restore Nuget Packages.
+Please See the getting starting guide on the documentation page.
 
 ## Follow the Project on Discord!
 https://discord.gg/QayQFJY

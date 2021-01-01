@@ -32,10 +32,7 @@ namespace Darkages.Storage
 
                 var s = File.OpenRead(path);
                 var f = new StreamReader(s);
-                return JsonConvert.DeserializeObject<Aisling>(f.ReadToEnd(), new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.All
-                });
+                return JsonConvert.DeserializeObject<Aisling>(f.ReadToEnd(), StorageManager.Settings);
 
             }
             catch (Exception e)
@@ -57,10 +54,7 @@ namespace Darkages.Storage
             {
                 var path = Path.Combine(StoragePath, $"{obj.Username.ToLower()}.json");
 
-                var objString = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.All
-                });
+                var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
 
                 File.WriteAllText(path, objString);
             }

@@ -319,7 +319,10 @@ namespace Darkages.Types
                         {
                             foreach (var gc in GetObjects<Aisling>(Map, that =>
                                 WithinRangeOf(that, ServerContext.Config.VeryNearByProximity)))
-                                gc.Client.Send(format);
+                            {
+                                gc?.Client.Send(format);
+                            }
+
                             break;
                         }
                     case Scope.AislingsOnSameMap:

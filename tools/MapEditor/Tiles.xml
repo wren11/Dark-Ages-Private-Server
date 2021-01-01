@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="us-ascii" standalone="yes"?>
+<Tilesets>
+  <Tileset>
+    <Name>Grass</Name>
+    <Tiles>1-16 18-33 35-50</Icon>
+    <Border>
+      <Name>Dirt Path (Wide)</Name>
+      <STiles>113 116</NTiles>
+      <SWTiles>108</SWTiles>
+      <WTiles>164</WTiles>
+      <NWTiles>219</NWTiles>
+      <NTiles>195</NTiles>
+      <NETiles>195</NETiles>
+    </Border>
+  </Tileset>
+</Tilesets>

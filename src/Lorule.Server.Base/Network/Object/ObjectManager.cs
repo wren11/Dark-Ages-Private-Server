@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using Darkages.Network.Game;
 using Darkages.Scripting;
+using Darkages.Storage;
 using Darkages.Types;
 using MenuInterpreter;
 using MenuInterpreter.Parser;
@@ -73,15 +74,9 @@ namespace Darkages.Network.Object
 
         public static T Clone<T>(object source)
         {
-            var serialized = JsonConvert.SerializeObject(source, Formatting.Indented, new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.All
-            });
+            var serialized = JsonConvert.SerializeObject(source, Formatting.Indented, StorageManager.Settings);
 
-            var obj = JsonConvert.DeserializeObject<T>(serialized, new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.All
-            });
+            var obj = JsonConvert.DeserializeObject<T>(serialized, StorageManager.Settings);
 
             CloneItem(source, obj);
             CloneSkill(source, obj);
