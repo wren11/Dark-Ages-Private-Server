@@ -90,9 +90,6 @@ namespace Darkages.Types
 
         public void Save(string key)
         {
-            if (ServerContext.Paused)
-                return;
-
             var path = Path.Combine(StoragePath, $"{key}\\{Subject}.json");
             var objString = JsonConvert.SerializeObject(this, StorageManager.Settings);
             File.WriteAllText(path, objString);

@@ -58,11 +58,6 @@ namespace Darkages.Network
                 if (packet == null)
                     return;
 
-                if (format is ServerFormat36)
-                {
-
-                }
-
                 if (format.Secured)
                     Encryption.Transform(packet);
 
@@ -200,8 +195,15 @@ namespace Darkages.Network
 
                 var array = packet.ToArray();
 
-                if (Socket.Connected)
-                    Socket.Send(array, SocketFlags.None);
+                try
+                {
+                    if (Socket.Connected)
+                        Socket.Send(array, SocketFlags.None);
+                }
+                catch (SocketException)
+                {
+                    // Ignore
+                }
             }
         }
 

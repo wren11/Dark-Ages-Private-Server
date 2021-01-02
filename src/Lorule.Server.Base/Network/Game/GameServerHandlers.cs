@@ -730,6 +730,16 @@ namespace Darkages.Network.Game
             #endregion
 
             EnterGame(client, format);
+
+            if (!ServerContext.Redirects.Contains(client.Aisling.Username))
+            {
+                //disconnect, unverified login.
+                ClientDisconnected(client);
+            }
+            else
+            {
+                ServerContext.Redirects.Remove(client.Aisling.Username);
+            }
         }
 
         protected override void Format11Handler(GameClient client, ClientFormat11 format)
@@ -2596,7 +2606,7 @@ namespace Darkages.Network.Game
 
         public Aisling LoadPlayer(GameClient client, string player, bool retainState = false)
         {
-            var aisling = retainState ? client.Aisling : StorageManager.AislingBucket.Load(player);
+            var aisling = StorageManager.AislingBucket.Load(player);
 
             if (aisling != null && ServerContext.Config.GameMasters.Any() &&
                 ServerContext.Config.GameMasters.Exists(i => string.Equals(i.ToLower(), player.ToLower(), StringComparison.Ordinal)))

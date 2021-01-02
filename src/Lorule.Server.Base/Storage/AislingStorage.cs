@@ -30,10 +30,13 @@ namespace Darkages.Storage
                 if (!File.Exists(path))
                     return null;
 
-                var s = File.OpenRead(path);
-                var f = new StreamReader(s);
-                return JsonConvert.DeserializeObject<Aisling>(f.ReadToEnd(), StorageManager.Settings);
+                using var stream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                using var f = new StreamReader(stream);
+                var content = f.ReadToEnd();
+                f.Close();
+                stream.Close();
 
+                return JsonConvert.DeserializeObject<Aisling>(content, StorageManager.Settings);
             }
             catch (Exception e)
             {
@@ -44,24 +47,19 @@ namespace Darkages.Storage
 
         public void Save(Aisling obj)
         {
-            if (obj == null) throw new ArgumentNullException(nameof(obj));
-            if (ServerContext.Paused)
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+            if (ServerContext.Config.DontSavePlayers)
                 return;
 
-            if (ServerContext.Config.DontSavePlayers) return;
+            var path = Path.Combine(StoragePath, $"{obj.Username.ToLower()}.json");
+            var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
 
-            try
-            {
-                var path = Path.Combine(StoragePath, $"{obj.Username.ToLower()}.json");
-
-                var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
-
-                File.WriteAllText(path, objString);
-            }
-            catch (Exception ex)
-            {
-                Console.Write("Another process was using player's json file: " + ex);
-            }
+            using var stream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            using var sw = new StreamWriter(stream); 
+            sw.Write(objString);
+            sw.Close();
+            stream.Close();
         }
     }
 }

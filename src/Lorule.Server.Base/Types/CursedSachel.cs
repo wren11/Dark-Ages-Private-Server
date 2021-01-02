@@ -122,7 +122,8 @@ namespace Darkages.Types
 
         private void FindOwner()
         {
-            if (Owner == null) Owner = StorageManager.AislingBucket.Load(OwnerName);
+            if (Owner == null)
+                Owner = StorageManager.AislingBucket.Load(OwnerName);
         }
 
         private void ReepEquipment()
