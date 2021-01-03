@@ -8,6 +8,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using Darkages.Network.ClientFormats;
+using Darkages.Network.ServerFormats;
+using Darkages.Types;
 
 #endregion
 
@@ -137,7 +140,7 @@ namespace Darkages.Network
 
                 var client = new TClient
                 {
-                    State = new NetworkSocket(_listener.EndAccept(result))
+                    State = new NetworkSocket(_listener.EndAccept(result)),
                 };
 
                 if (client.Socket.Connected)
@@ -150,11 +153,7 @@ namespace Darkages.Network
                     if (AddClient(client))
                     {
                         ClientConnected(client);
-
-                        client.State.BeginReceiveHeader(EndReceiveHeader, out var error, client);
-
-                        if (error != SocketError.IOPending && error != SocketError.Success)
-                            ClientDisconnected(client);
+                        client.State.BeginReceiveHeader(EndReceiveHeader, client);
                     }
                     else
                     {
@@ -179,19 +178,18 @@ namespace Darkages.Network
                 if (!(result.AsyncState is TClient client))
                     return;
 
-                var bytes = client.State.EndReceiveHeader(result, out var error);
+                var bytes = client.State.EndReceiveHeader(result);
 
-                if (bytes == 0 ||
-                    error != SocketError.Success)
+                if (bytes == 0)
                 {
                     ClientDisconnected(client);
                     return;
                 }
 
                 if (client.State.HeaderComplete)
-                    client.State.BeginReceivePacket(EndReceivePacket, out error, client);
+                    client.State.BeginReceivePacket(EndReceivePacket, client);
                 else
-                    client.State.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                    client.State.BeginReceiveHeader(EndReceiveHeader, client);
             }
             catch (Exception e)
             {
@@ -205,10 +203,9 @@ namespace Darkages.Network
             {
                 if (result.AsyncState is TClient client)
                 {
-                    var bytes = client.State.EndReceivePacket(result, out var error);
+                    var bytes = client.State.EndReceivePacket(result);
 
-                    if (bytes == 0 ||
-                        error != SocketError.Success)
+                    if (bytes == 0)
                     {
                         ClientDisconnected(client);
                         return;
@@ -217,11 +214,11 @@ namespace Darkages.Network
                     if (client.State.PacketComplete)
                     {
                         ClientDataReceived(client, client.State.ToPacket());
-                        client.State.BeginReceiveHeader(EndReceiveHeader, out error, client);
+                        client.State.BeginReceiveHeader(EndReceiveHeader, client);
                     }
                     else
                     {
-                        client.State.BeginReceivePacket(EndReceivePacket, out error, client);
+                        client.State.BeginReceivePacket(EndReceivePacket, client);
                     }
                 }
             }

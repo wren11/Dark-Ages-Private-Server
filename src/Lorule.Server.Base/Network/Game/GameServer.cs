@@ -80,9 +80,12 @@ namespace Darkages.Network.Game
 
         public void UpdateClients(TimeSpan elapsedTime)
         {
+            lock (Clients)
             foreach (var client in Clients.Where(client => client?.Aisling != null))
                 try
                 {
+                    client?.FlushPackets();
+
                     if (!client.Aisling.LoggedIn)
                         continue;
 

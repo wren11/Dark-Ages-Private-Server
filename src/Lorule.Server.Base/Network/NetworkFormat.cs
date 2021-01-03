@@ -1,6 +1,8 @@
-﻿namespace Darkages.Network
+﻿using System;
+
+namespace Darkages.Network
 {
-    public abstract class NetworkFormat
+    public abstract class NetworkFormat 
     {
         public byte Command;
 
@@ -9,5 +11,6 @@
         public abstract void Serialize(NetworkPacketReader reader);
 
         public abstract void Serialize(NetworkPacketWriter writer);
+
     }
 }

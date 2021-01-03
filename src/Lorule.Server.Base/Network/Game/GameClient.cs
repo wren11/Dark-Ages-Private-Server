@@ -1219,11 +1219,14 @@ namespace Darkages.Network.Game
                 return;
             }
 
-            Aisling.SummonObjects?.Update(elapsedTime);
-
-            if (Aisling.SummonObjects != null && !Aisling.SummonObjects.Spawns.Any())
+            lock (_syncObj)
             {
-                Aisling.SummonObjects = null;
+                Aisling.SummonObjects?.Update(elapsedTime);
+
+                if (Aisling.SummonObjects != null && !Aisling.SummonObjects.Spawns.Any())
+                {
+                    Aisling.SummonObjects = null;
+                }
             }
 
             lock (Trap.Traps)

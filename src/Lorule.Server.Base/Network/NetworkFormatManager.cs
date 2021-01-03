@@ -14,9 +14,9 @@ namespace Darkages.Network
             ClientFormats = new Type[256];
 
             for (var i = 0; i < 256; i++)
-                ClientFormats[i] = Type.GetType(
-                    string.Format(CultureInfo.CurrentCulture, "Darkages.Network.ClientFormats.ClientFormat{0:X2}", i),
-                    false, false);
+            {
+                ClientFormats[i] = Type.GetType(string.Format(CultureInfo.CurrentCulture, "Darkages.Network.ClientFormats.ClientFormat{0:X2}", i), false, false);
+            }
         }
 
         public static Type[] ClientFormats { get; }

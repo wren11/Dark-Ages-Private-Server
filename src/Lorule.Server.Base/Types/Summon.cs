@@ -93,6 +93,7 @@ namespace Darkages.Types
                     for (var i = 0; i < count; i++)
                     {
                         //Share similar attributes as the summoner.
+                        monsterTemplate.ImageVarience = 30;
                         monsterTemplate.Level = _client.Aisling.ExpLevel + 3;
                         monsterTemplate.LootType = LootQualifer.None;
                         monsterTemplate.DefenseElement = _client.Aisling.DefenseElement;

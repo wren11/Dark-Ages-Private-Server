@@ -30,7 +30,7 @@ namespace Darkages.Storage
                 if (!File.Exists(path))
                     return null;
 
-                using var stream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                using var stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
                 using var f = new StreamReader(stream);
                 var content = f.ReadToEnd();
                 f.Close();
@@ -55,7 +55,7 @@ namespace Darkages.Storage
             var path = Path.Combine(StoragePath, $"{obj.Username.ToLower()}.json");
             var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
 
-            using var stream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            using var stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             using var sw = new StreamWriter(stream); 
             sw.Write(objString);
             sw.Close();
