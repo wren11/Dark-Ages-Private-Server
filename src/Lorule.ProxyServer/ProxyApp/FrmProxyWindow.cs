@@ -1,9 +1,6 @@
 ﻿using Proxy.Networking;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ProxyApp
@@ -30,7 +27,10 @@ namespace ProxyApp
 
         public ConcurrentStack<(PacketFlow,Packet)> Packets = new ConcurrentStack<(PacketFlow, Packet)>();
 
-        public void AddPacket(Packet packet, PacketFlow flow) => Packets.Push((flow, packet));
+        public void AddPacket(Packet packet, PacketFlow flow)
+        {
+            Packets.Push((flow, packet));
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -56,15 +56,16 @@ namespace ProxyApp
 
                     _state.Client.Crypto.Transform(packet);
                     _state.Client.ServerPBuff2.Add(packet);
-                    _state.Client.SendServerPBuff2();
 
-                    Thread.Sleep(50);
                 }
                 catch
                 {
                     // ignored
                 }
+
             }
+
+            _state.Client?.SendServerPBuff2();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -120,40 +121,7 @@ namespace ProxyApp
         {
             _state = state;
         }
-        public static Collection<int> GeneratedNumbers = new Collection<int>();
+
         public static Random Random = new Random();
-
-        public static int GenerateNumber()
-        {
-            int id;
-
-            do
-            {
-                lock (Random)
-                {
-                    id = Random.Next();
-                }
-            } while (GeneratedNumbers.Contains(id));
-
-            return id;
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            Task.Run(() =>
-            {
-
-                var number = 0;
-
-                while (number++ <= 5000)
-                {
-                    var packet = new Packet("47 FC 04 00");
-                    _state.Client?.ClientPBuff2.Add(packet);
-                    _state.Client?.SendClientPBuff2();
-
-                    Thread.Sleep(1);
-                }
-            });
-        }
     }
 }

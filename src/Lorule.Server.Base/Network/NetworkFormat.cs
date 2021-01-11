@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Darkages.Network
+﻿namespace Darkages.Network
 {
     public abstract class NetworkFormat 
     {

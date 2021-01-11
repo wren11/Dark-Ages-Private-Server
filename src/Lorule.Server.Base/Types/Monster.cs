@@ -43,8 +43,12 @@ namespace Darkages.Types
         [JsonIgnore] public bool Skulled { get; set; }
         [JsonIgnore] public HashSet<int> TaggedAislings { get; set; }
         [JsonIgnore] public int WaypointIndex;
+
+        [JsonIgnore] public Aisling Summoner => GetObject<Aisling>(Map, b => b.Serial == SummonerId);
+
         [JsonIgnore] public Position CurrentWaypoint => Template?.Waypoints?[WaypointIndex];
         [JsonIgnore] public Item GlobalLastItemRoll { get; set; }
+        [JsonIgnore]  public int SummonerId { get; set; }
 
         public static Monster Create(MonsterTemplate template, Area map)
         {

@@ -1,10 +1,5 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reflection;
 using ComponentAce.Compression.Libs.zlib;
 using Darkages.Assets.locales.Scripts.Mundanes;
 using Darkages.Assets.locales.Scripts.Spells.rogue;
@@ -54,6 +49,9 @@ using MenuInterpreter.Parser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Pyratron.Frameworks.Commands.Parser;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Answer = MenuInterpreter.Answer;
 
 #endregion
@@ -535,7 +533,8 @@ namespace Darkages.Storage
                 typeof(PostFormat),
                 typeof(BoardDescriptors),
                 typeof(BoardList),
-                typeof(Board)
+                typeof(Board),
+                typeof(KillRecord)
             };
         }
 

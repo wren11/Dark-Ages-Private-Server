@@ -44,7 +44,7 @@ namespace Darkages
                             return true;
                         }
 
-                        if (obj.Summoner != null)
+                        if (obj is Monster monster && monster.Summoner != null) 
                             return true;
 
                         if ((obj.X == sprite.X && obj.Y == sprite.Y)) continue;

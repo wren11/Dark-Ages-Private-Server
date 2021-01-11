@@ -97,7 +97,7 @@ namespace ComponentAce.Compression.Libs.zlib
         public int inflateInit(int w)
         {
             istate = new Inflate();
-            return istate.inflateInit(this, w);
+            return istate.InflateInit(this, w);
         }
 
         public int inflate(int f)
@@ -111,7 +111,7 @@ namespace ComponentAce.Compression.Libs.zlib
         {
             if (istate == null)
                 return Z_STREAM_ERROR;
-            var ret = istate.inflateEnd(this);
+            var ret = istate.InflateEnd(this);
             istate = null;
             return ret;
         }
@@ -120,14 +120,14 @@ namespace ComponentAce.Compression.Libs.zlib
         {
             if (istate == null)
                 return Z_STREAM_ERROR;
-            return istate.inflateSync(this);
+            return istate.InflateSync(this);
         }
 
         public int inflateSetDictionary(byte[] dictionary, int dictLength)
         {
             if (istate == null)
                 return Z_STREAM_ERROR;
-            return istate.inflateSetDictionary(this, dictionary, dictLength);
+            return istate.InflateSetDictionary(this, dictionary, dictLength);
         }
 
         public int deflateInit(int level)

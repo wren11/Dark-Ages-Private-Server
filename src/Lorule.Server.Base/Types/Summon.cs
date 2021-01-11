@@ -21,7 +21,7 @@ namespace Darkages.Types
     public abstract class Summon : ObjectManager, IEphermeral
     {
         [JsonIgnore]
-        private GameClient _client;
+        private readonly GameClient _client;
 
         public GameServerTimer ObjectsUpdateTimer { get; set; }
         public GameServerTimer ObjectsRemovedTimer { get; set; }
@@ -102,7 +102,7 @@ namespace Darkages.Types
                         
                         var monster = Monster.Create(monsterTemplate, _client.Aisling.Map);
 
-                        monster.Summoner = _client.Aisling;
+                        monster.SummonerId = _client.Aisling.Serial;
                         monster.X = _client.Aisling.LastPosition.X;
                         monster.Y = _client.Aisling.LastPosition.Y;
                         monster.CurrentMapId = _client.Aisling.CurrentMapId;

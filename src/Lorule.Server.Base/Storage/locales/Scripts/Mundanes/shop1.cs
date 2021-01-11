@@ -21,10 +21,12 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
 
         public override void OnClick(GameServer server, GameClient client)
         {
-            var opts = new List<OptionsDataItem>();
-            opts.Add(new OptionsDataItem(0x0001, "Buy"));
-            opts.Add(new OptionsDataItem(0x0002, "Sell"));
-            opts.Add(new OptionsDataItem(0x0003, "Repair Items"));
+            var opts = new List<OptionsDataItem>
+            {
+                new OptionsDataItem(0x0001, "Buy"),
+                new OptionsDataItem(0x0002, "Sell"),
+                new OptionsDataItem(0x0003, "Repair Items")
+            };
 
             client.SendOptionsDialog(Mundane, "What you looking for?", opts.ToArray());
         }
@@ -40,6 +42,7 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     ? ServerContext.GlobalItemTemplateCache[i]
                     : null);
 
+            var opts = new List<OptionsDataItem>();
             switch (responseID)
             {
                 case 0x0001:
@@ -61,9 +64,10 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                         .FirstOrDefault();
                     var offer = Convert.ToString((int) (item.Template.Value / 1.6));
 
-                    var opts2 = new List<OptionsDataItem>();
-                    opts2.Add(new OptionsDataItem(0x0019, "Fair enough."));
-                    opts2.Add(new OptionsDataItem(0x0020, "decline offer."));
+                    var opts2 = new List<OptionsDataItem>
+                    {
+                        new OptionsDataItem(0x0019, "Fair enough."), new OptionsDataItem(0x0020, "decline offer.")
+                    };
 
                     client.SendOptionsDialog(Mundane,
                         $"I will give offer you {offer} gold for that {item.Template.Name}, Deal?", item.Template.Name,
@@ -109,7 +113,6 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                                                                    ItemFlags.Repairable)).Sum(i =>
                         i.Value.Template.Value / 4);
 
-                    var opts = new List<OptionsDataItem>();
                     opts.Add(new OptionsDataItem(0x0014, "Fair enough."));
                     opts.Add(new OptionsDataItem(0x0015, "Fuck off!"));
                     client.SendOptionsDialog(Mundane,

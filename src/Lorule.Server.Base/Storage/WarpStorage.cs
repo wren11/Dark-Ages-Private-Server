@@ -22,21 +22,22 @@ namespace Darkages.Storage
 
         public void CacheFromStorage()
         {
-            var area_dir = StoragePath;
-            if (!Directory.Exists(area_dir))
+            var areaDir = StoragePath;
+            if (!Directory.Exists(areaDir))
                 return;
-            var area_names = Directory.GetFiles(area_dir, "*.json", SearchOption.TopDirectoryOnly);
 
-            foreach (var area in area_names)
+            var areaNames = Directory.GetFiles(areaDir, "*.json", SearchOption.TopDirectoryOnly);
+
+            foreach (var area in areaNames)
             {
                 var obj = StorageManager.WarpBucket.Load(Path.GetFileNameWithoutExtension(area));
                 ServerContext.GlobalWarpTemplateCache.Add(obj);
             }
         }
 
-        public WarpTemplate Load(string Name)
+        public WarpTemplate Load(string name)
         {
-            var path = Path.Combine(StoragePath, $"{Name.ToLower()}.json");
+            var path = Path.Combine(StoragePath, $"{name.ToLower()}.json");
 
             if (!File.Exists(path))
                 return null;

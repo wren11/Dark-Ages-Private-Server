@@ -109,9 +109,6 @@ namespace Darkages.Network.Game.Components
                 if (obj.Serial == client.Serial)
                     continue;
 
-                if (obj.Summoner != null)
-                    continue;
-
                 if (!client.View.Contains(obj))
                     continue;
 
@@ -120,6 +117,9 @@ namespace Darkages.Network.Game.Components
 
                 if (obj is Monster monster)
                 {
+                    if (monster.Summoner != null)
+                        continue;
+
                     var valueCollection = monster.Scripts?.Values;
 
                     if (valueCollection != null)

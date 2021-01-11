@@ -104,8 +104,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Proxy\Proxy.csproj">
-      <Project>{8447dac2-8db1-4c05-b631-d25e19e7e360}</Project>
+    <ProjectReference Include="..\..\..\..\..\..\source\repos\Lorule.ProxyServer\Proxy\Proxy.csproj">
+      <Project>{494f1ea3-89af-4966-a9d6-e0aee280938c}</Project>
       <Name>Proxy</Name>
     </ProjectReference>
   </ItemGroup>

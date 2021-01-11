@@ -84,7 +84,7 @@ namespace Lorule.GameServer
             context.Start(configConstants, Log, Error);
         }
 
-        public string LoruleVersion
+        internal string LoruleVersion
         {
             get
             {

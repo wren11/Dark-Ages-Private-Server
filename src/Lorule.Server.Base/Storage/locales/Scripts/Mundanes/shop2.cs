@@ -104,11 +104,13 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                                     client.PendingItemSessions.Offer = Convert.ToInt32(offer) * amount;
                                     client.PendingItemSessions.Removing = amount;
 
-                                    var opts2 = new List<OptionsDataItem>();
-                                    opts2.Add(new OptionsDataItem(0x0030,
-                                        ServerContext.Config.MerchantConfirmMessage));
-                                    opts2.Add(new OptionsDataItem(0x0020,
-                                        ServerContext.Config.MerchantCancelMessage));
+                                    var opts2 = new List<OptionsDataItem>
+                                    {
+                                        new OptionsDataItem(0x0030,
+                                            ServerContext.Config.MerchantConfirmMessage),
+                                        new OptionsDataItem(0x0020,
+                                            ServerContext.Config.MerchantCancelMessage)
+                                    };
 
                                     client.SendOptionsDialog(Mundane, string.Format(
                                             "I will give offer you {0} gold for {1} of those ({2} Gold Each), Deal?",
@@ -158,9 +160,11 @@ namespace Darkages.Storage.locales.Scripts.Mundanes
                     }
                     else
                     {
-                        var opts2 = new List<OptionsDataItem>();
-                        opts2.Add(new OptionsDataItem(0x0019, ServerContext.Config.MerchantConfirmMessage));
-                        opts2.Add(new OptionsDataItem(0x0020, ServerContext.Config.MerchantCancelMessage));
+                        var opts2 = new List<OptionsDataItem>
+                        {
+                            new OptionsDataItem(0x0019, ServerContext.Config.MerchantConfirmMessage),
+                            new OptionsDataItem(0x0020, ServerContext.Config.MerchantCancelMessage)
+                        };
 
                         client.SendOptionsDialog(Mundane,
                             $"I will give offer you {offer} gold for that {item.Template.Name}, Deal?",

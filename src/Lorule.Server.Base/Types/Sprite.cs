@@ -18,6 +18,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 using static Darkages.Types.ElementManager;
+// ReSharper disable InconsistentNaming
 
 #endregion
 
@@ -243,7 +244,6 @@ namespace Darkages.Types
             : EntityType == TileContent.Mundane ? ((Mundane)this).Template.Level
             : EntityType == TileContent.Item ? ((Item)this).Template.LevelRequired : 0;
 
-        public Aisling Summoner { get; set; }
 
         #endregion
 

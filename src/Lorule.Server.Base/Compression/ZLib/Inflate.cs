@@ -101,7 +101,7 @@ namespace ComponentAce.Compression.Libs.zlib
         internal long[] was = new long[1]; // computed check value
         internal int wbits; // log2(window size)  (8..15, defaults to 15)
 
-        internal int inflateReset(ZStream z)
+        public int InflateReset(ZStream z)
         {
             if (z == null || z.istate == null)
                 return Z_STREAM_ERROR;
@@ -113,7 +113,7 @@ namespace ComponentAce.Compression.Libs.zlib
             return Z_OK;
         }
 
-        internal int inflateEnd(ZStream z)
+        public int InflateEnd(ZStream z)
         {
             if (blocks != null)
                 blocks.free(z);
@@ -122,7 +122,7 @@ namespace ComponentAce.Compression.Libs.zlib
             return Z_OK;
         }
 
-        internal int inflateInit(ZStream z, int w)
+        public int InflateInit(ZStream z, int w)
         {
             z.msg = null;
             blocks = null;
@@ -138,7 +138,7 @@ namespace ComponentAce.Compression.Libs.zlib
             // set window size
             if (w < 8 || w > 15)
             {
-                inflateEnd(z);
+                InflateEnd(z);
                 return Z_STREAM_ERROR;
             }
 
@@ -147,14 +147,13 @@ namespace ComponentAce.Compression.Libs.zlib
             z.istate.blocks = new InfBlocks(z, z.istate.nowrap != 0 ? null : this, 1 << w);
 
             // reset state
-            inflateReset(z);
+            InflateReset(z);
             return Z_OK;
         }
 
         internal int inflate(ZStream z, int f)
         {
             int r;
-            int b;
 
             if (z == null || z.istate == null || z.next_in == null)
                 return Z_STREAM_ERROR;
@@ -199,7 +198,7 @@ namespace ComponentAce.Compression.Libs.zlib
 
                         z.avail_in--;
                         z.total_in++;
-                        b = z.next_in[z.next_in_index++] & 0xff;
+                        var b = z.next_in[z.next_in_index++] & 0xff;
 
                         if (((z.istate.method << 8) + b) % 31 != 0)
                         {
@@ -234,7 +233,7 @@ namespace ComponentAce.Compression.Libs.zlib
 
                         if (z.avail_in == 0)
                             return r;
-                        r = f;
+                       // r = f;
 
                         z.avail_in--;
                         z.total_in++;
@@ -246,7 +245,9 @@ namespace ComponentAce.Compression.Libs.zlib
 
                         if (z.avail_in == 0)
                             return r;
-                        r = f;
+
+
+                        //r = f;
 
                         z.avail_in--;
                         z.total_in++;
@@ -258,7 +259,7 @@ namespace ComponentAce.Compression.Libs.zlib
 
                         if (z.avail_in == 0)
                             return r;
-                        r = f;
+
 
                         z.avail_in--;
                         z.total_in++;
@@ -365,7 +366,7 @@ namespace ComponentAce.Compression.Libs.zlib
         }
 
 
-        internal int inflateSetDictionary(ZStream z, byte[] dictionary, int dictLength)
+        internal int InflateSetDictionary(ZStream z, byte[] dictionary, int dictLength)
         {
             var index = 0;
             var length = dictLength;
@@ -387,7 +388,7 @@ namespace ComponentAce.Compression.Libs.zlib
             return Z_OK;
         }
 
-        internal int inflateSync(ZStream z)
+        internal int InflateSync(ZStream z)
         {
             int n; // number of bytes to look at
             int p; // pointer to bytes
@@ -431,7 +432,7 @@ namespace ComponentAce.Compression.Libs.zlib
             if (m != 4) return Z_DATA_ERROR;
             r = z.total_in;
             w = z.total_out;
-            inflateReset(z);
+            InflateReset(z);
             z.total_in = r;
             z.total_out = w;
             z.istate.mode = BLOCKS;
@@ -444,7 +445,7 @@ namespace ComponentAce.Compression.Libs.zlib
         // but removes the length bytes of the resulting empty stored block. When
         // decompressing, PPP checks that at the end of input packet, inflate is
         // waiting for these length bytes.
-        internal int inflateSyncPoint(ZStream z)
+        internal int InflateSyncPoint(ZStream z)
         {
             if (z == null || z.istate == null || z.istate.blocks == null)
                 return Z_STREAM_ERROR;

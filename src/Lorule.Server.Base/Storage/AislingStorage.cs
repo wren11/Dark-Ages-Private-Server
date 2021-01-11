@@ -1,9 +1,9 @@
 ﻿#region
 
+using Newtonsoft.Json;
 using System;
 using System.IO;
-
-using Newtonsoft.Json;
+using System.Text;
 
 #endregion
 
@@ -30,36 +30,47 @@ namespace Darkages.Storage
                 if (!File.Exists(path))
                     return null;
 
-                using var stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
-                using var f = new StreamReader(stream);
-                var content = f.ReadToEnd();
-                f.Close();
-                stream.Close();
+                var content = File.ReadAllBytes(path);
 
-                return JsonConvert.DeserializeObject<Aisling>(content, StorageManager.Settings);
+                // ReSharper disable UseIndexFromEndExpression
+                if (content[content.Length - 1] == 0x7D && content[content.Length - 3] == 0x7D)
+                {
+                    content[content.Length - 3] = 0x7D;
+                    content[content.Length - 2] = 0x20;
+                    content[content.Length - 1] = 0x20;
+                }
+
+                var jsoncontent = Encoding.ASCII.GetString(content);
+                var aisling = JsonConvert.DeserializeObject<Aisling>(jsoncontent, StorageManager.Settings);
+
+                return aisling;
             }
             catch (Exception e)
             {
                 ServerContext.Logger($"Error : {e.Message}. Aisling could not be loaded.");
-                return null;
             }
+
+            return null;
         }
 
         public void Save(Aisling obj)
         {
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj));
-            if (ServerContext.Config.DontSavePlayers)
-                return;
 
-            var path = Path.Combine(StoragePath, $"{obj.Username.ToLower()}.json");
-            var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
+            if (ServerContext.Config.DontSavePlayers) return;
 
-            using var stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
-            using var sw = new StreamWriter(stream); 
-            sw.Write(objString);
-            sw.Close();
-            stream.Close();
+            try
+            {
+                var path = Path.Combine(StoragePath, $"{obj.Username.ToLower()}.json");
+                var objString = JsonConvert.SerializeObject(obj, StorageManager.Settings);
+
+                File.WriteAllText(path, objString);
+            }
+            catch (Exception ex)
+            {
+                Console.Write("Another process was using player's json file: " + ex);
+            }
         }
     }
 }
