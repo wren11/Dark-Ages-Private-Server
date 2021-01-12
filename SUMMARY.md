@@ -1,4 +1,4 @@
 # Table of contents
 
-* [Getting Started](README.md)
+* [Hades - A Dark Ages Project](README.md)
 
