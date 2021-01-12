@@ -2,8 +2,9 @@
 
 ## Prerequisites
 
-Depending in you want to develop for Hades or simply run it, You will need to install some stuff.  
-See the table below and see what actions require what, and be sure you have everything you need before going any further.
+Depending on what you want to do, develop for Hades or simply run and host a game using Hades as an end user, Before you can do either, You will need to install some stuff first.  
+  
+so before you start, see the table below and see what actions require what, and be sure you have everything you need before going any further. if you are not sure what to install from the table below then i suggest you install and download everything that way you won't run into any problems later.
 
 | Action | Prerequisite | References / URL |
 | :--- | :--- | :--- |
