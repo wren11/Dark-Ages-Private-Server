@@ -2,7 +2,15 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\Staging\Utils\TileMerger</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\Staging\Utils\TileMerger</OutputPath>
   </PropertyGroup>
 
   <Import Project="..\Lorule.Config\Lorule.Config.projitems" Label="Shared" />
@@ -12,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hades.Server.Base\Hades.Server.Base.csproj" />
     <ProjectReference Include="..\Lorule.Client.Base\Lorule.Client.Base.csproj" />
   </ItemGroup>
 

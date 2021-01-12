@@ -18,21 +18,25 @@ using System.Threading;
 
 namespace Lorule.GameServer
 {
-    public interface IServer
+    public interface IServer 
     {
-        void Log(string logMessage);
+        
     }
-
 
     public static class Program
     {
         private static void Main()
         {
             var providers = new LoggerProviderCollection();
+            var logTemplate = "[{Level:u}] {Message}{NewLine}{Exception}";
 
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.File(new CompactJsonFormatter(), "lorule_logs.txt")
+                .WriteTo.File(new CompactJsonFormatter(), "Hades_General.txt")
+                .WriteTo.File(new CompactJsonFormatter(), "Hades_Exceptions.txt", Serilog.Events.LogEventLevel.Error)
+                .WriteTo.File(new CompactJsonFormatter(), "Hades_CrashLogs.txt", Serilog.Events.LogEventLevel.Fatal)
+                .WriteTo.Console(Serilog.Events.LogEventLevel.Verbose, outputTemplate: logTemplate)
                 .CreateLogger();
+
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var builder = new ConfigurationBuilder()
@@ -69,9 +73,9 @@ namespace Lorule.GameServer
 
     public class Server : IServer
     {
-        private readonly ILogger<Server> _logger;
+        private readonly ILogger<ServerContext> _logger;
 
-        public Server(ILogger<Server> logger, IServerContext context, IServerConstants configConstants,
+        public Server(ILogger<ServerContext> logger, IServerContext context, IServerConstants configConstants,
             IOptions<LoruleOptions> loruleOptions)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -81,7 +85,19 @@ namespace Lorule.GameServer
 
             context.InitFromConfig(loruleOptions.Value.Location, loruleOptions.Value.ServerIP);
             _logger.LogInformation($"{configConstants.SERVER_TITLE}: Server Version: {LoruleVersion}.");
-            context.Start(configConstants, Log, Error);
+            context.Start(configConstants, logger);
+
+
+            var batContents = new StringBuilder();
+            batContents.AppendLine("@echo off");
+            batContents.AppendLine("set PATH=\"net5.0\"");
+            batContents.AppendLine("copy %PATH%\\\\LoruleConfig.json . >NUL"); 
+            batContents.AppendLine("copy %PATH%\\\\MServerTable.xml . >NUL");
+            batContents.AppendLine("copy %PATH%\\\\Notification.txt . >NUL");
+            batContents.AppendLine("%PATH%\\\\Lorule.GameServer.exe");
+
+
+            File.WriteAllText("..\\start_server.bat", batContents.ToString());
         }
 
         internal string LoruleVersion
@@ -94,16 +110,6 @@ namespace Lorule.GameServer
 
                 return string.Empty;
             }
-        }
-
-        public void Error(Exception ex)
-        {
-            _logger.LogError(ex, ex.Message + "\n" + ex.StackTrace);
-        }
-
-        public void Log(string logMessage)
-        {
-            _logger.LogInformation(logMessage);
         }
     }
 }

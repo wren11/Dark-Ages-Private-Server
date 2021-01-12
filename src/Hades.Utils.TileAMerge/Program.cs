@@ -1,12 +1,13 @@
 ﻿using CommandLine;
 using Lorule.Client.Base.Dat;
 using Lorule.Content.Editor.Dat;
-using Lorule.Editor;
+using Lorule.Content.Editor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceStack;
 using System;
 using System.Collections.Generic;
+using Lorule.Editor;
 
 namespace Hades.Utils.TileAMerge
 {
