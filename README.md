@@ -1,10 +1,3 @@
----
-description: >-
-  Hades (formally Lorule) is a project that allows you to build, design and
-  create your own multiplayer online role playing games. It aims to provide a
-  retro-style sandbox platform.
----
-
 # Hades - A Dark Ages Project
 
 ## Prerequisites
