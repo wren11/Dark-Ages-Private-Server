@@ -2,6 +2,9 @@
 
 ## Prerequisites
 
+Depending in you want to develop for Hades or simply run it, You will need to install some stuff.  
+See the table below and see what actions require what, and be sure you have everything you need before going any further.
+
 | Action | Prerequisite | References / URL |
 | :--- | :--- | :--- |
 | Build and Compile Hades | Visual Studio 2019 | [https://www.visualstudio.com/downloads/](https://www.visualstudio.com/downloads/) |
