@@ -44,9 +44,13 @@ You will also need to download a client. [Download the game client](https://driv
 
 ### Server Configuration
 
+ **"Content" Section**
+
 ![](.gitbook/assets/image%20%2817%29.png)
 
 ![](.gitbook/assets/image%20%2818%29.png)
+
+**Configuration - "Editor" Section**
 
 ![](.gitbook/assets/image%20%283%29.png)
 
