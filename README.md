@@ -4,7 +4,12 @@ description: also Formally known as project "Lorule"
 
 # Hades - A Dark Ages Server & Client Project
 
-* For Developers, [Please see the Getting Started Developer Guide](getting-started-developer-guide.md)
+Welcome to Hades, A Dark Ages inspired project. If you want to support this project you can do  
+so by contributing, donating or simply joining our [discord community.](https://discord.gg/QayQFJY)
+
+![](.gitbook/assets/image%20%285%29.png)
+
+For Server Developers, [Please see the Getting Started Developer Guide](getting-started-developer-guide.md)
 
 ## Getting Started End User Guide
 
@@ -48,9 +53,9 @@ You will also need to download a client. [Download the game client](https://driv
 
  **"Content" Section**
 
-![](.gitbook/assets/image%20%2817%29.png)
-
 ![](.gitbook/assets/image%20%2818%29.png)
+
+![](.gitbook/assets/image%20%2819%29.png)
 
 **Configuration - "Editor" Section**
 
@@ -58,12 +63,12 @@ You will also need to download a client. [Download the game client](https://driv
 
 ### Running the Game Server
 
-* Navigate to the folder ![](.gitbook/assets/image%20%2815%29.png)
-* Double click on the file ![](.gitbook/assets/image%20%285%29.png)
+* Navigate to the folder ![](.gitbook/assets/image%20%2816%29.png)
+* Double click on the file ![](.gitbook/assets/image%20%286%29.png)
 * The game server should now be started. if you are prompted by windows firewall, click allow.
 * You should now see a running console and it should look like this \(as shown below\)
 
-![](.gitbook/assets/image%20%2814%29.png)
+![](.gitbook/assets/image%20%2815%29.png)
 
 ## Setting up the Game Client
 
@@ -82,7 +87,7 @@ that is [available here](https://drive.google.com/file/d/1VtnTcGivQ1P89bocQTO1Lk
 
 once the client is installed, and extracted to your computer. You should be able to see the following contents inside \(as shown below\)
 
-![](.gitbook/assets/image%20%2811%29.png)
+![](.gitbook/assets/image%20%2812%29.png)
 
 ### **Client Not Connecting?**
 
@@ -105,7 +110,7 @@ until you have done so**.**
 * open a browser and connect to your default gateway Address, as above mine is _192.168.1.1_  **\(yours will likely be different\)** 
 * Look for a section called **NAT Forwarding**, or **Port Fowarding** or **Virtual Servers**, the terminology will be different from device to device, so you will have to work this out yourself from here, but somewhere in there will be a place with a similar looking table like the one shown below
 
-![](.gitbook/assets/image%20%287%29.png)
+![](.gitbook/assets/image%20%288%29.png)
 
 * Add in your IPv4 Address you found using **`/ipconfig`**
 * Set External and Internal Ports to **2610** - **2615**
