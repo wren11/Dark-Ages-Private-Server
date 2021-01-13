@@ -37,25 +37,9 @@ You will also need to download a client. [Download the game client](https://driv
 * Download both [database.zip](https://github.com/wren11/Dark-Ages-Private-Server/releases/download/e121eac/database.zip) And [Lorule.GameServer.zip](https://github.com/wren11/Dark-Ages-Private-Server/releases/download/e121eac/Lorule.GameServer.zip) from the project's **GitHub** Page [here.](https://github.com/wren11/Dark-Ages-Private-Server/releases/tag/e121eac) 
 * Install all Prerequisites in the table above, for "**Running the Server**"  
 * Extract all contents of database.zip and Lorule.GameServer.zip somewhere on your computer that will be the host computer \(most likely this will be the computer you are using now\) 
-* navigate to where you extracted the Lorule.GameServer.zip archive and browse the folder and find the configuration file. it is called `Lorule.Config.json` 
+* navigate to where you extracted the Lorule.GameServer.zip archive and browse the folder and find the configuration file. it is called `LoruleConfig.json` 
 * Open the configuration file in some type of text editor, i recommend Notepad++ [Download](https://notepad-plus-plus.org/downloads/v7.8.8/) if you have not got a handy text editor yet. Notepad shipped with windows will do, but we all know it's garbage! 
-* Modify the `Lorule.Config.json` file with the path's inside the **`locales`** section.  
-  below is a part of the configuration file that you must edit correctly. and when editing this file.  
-  **you must use double slashes** for path **`\\`** separators.   
-  do not use any single **`\`** backslash in this configuration file for any paths. 
-
-  ```text
-  // Locales
-  "Content": {
-      "Location": "C:\\Users\\Dean\\Documents\\GitHub\\DarkAges-Lorule-Server\\database\\server",
-      "ServerIP": "127.0.0.1"
-  },
-  "Editor": {
-      "Location": "C:\\Users\\Dean\\Documents\\GitHub\\DarkAges-Lorule-Server\\database",
-      "GameLocation": "C:\\Users\\Dean\\Documents\\GitHub\\DarkAges-Lorule-Server\\game"
-  }
-  ```
-
+* Modify the `LoruleConfig.json` file with the path's inside the **`locales`** section. below is a part of the configuration file that you must edit correctly. and when editing this file. **you must use double slashes** for path **`\\`** separators.  do not use any single **`\`** backslash in this configuration file for any paths.  
 * Modify the configuration file inside the Locales section, you will see two properties and i will explain each in the next section below.
 
 ### Server Configuration
