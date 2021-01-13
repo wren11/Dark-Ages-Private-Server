@@ -133,6 +133,11 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 You should have received a copy of the GNU General Public License along with this program. If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
 
+## Legal
+
+* Darkages, Dark Ages and all associated logos and designs are trademarks or registered trademarks of Kru Interactive, NEXON America Inc, NEXON Co. Ltd. 
+* All other trademarks are the property of their respective owners. This project is **not** affiliated with Kru Interactive, NEXON Co. Ltd, NEXON America Inc or any of their family of sites.
+
 
 
 
