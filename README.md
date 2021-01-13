@@ -9,7 +9,11 @@ so by contributing, donating or simply joining our [discord community.](https://
 
 ![](.gitbook/assets/hades.png)
 
-For Server Developers, [Please see the Getting Started Developer Guide](getting-started-developer-guide.md)
+For Server Developers, [Please see the Getting Started Developer Guide](getting-started-developer-guide.md)  
+  
+If you want would to donate any amount to the project, you can send bitcoin to this address below anonymously, but let me know you did on the [discord](https://discord.gg/QayQFJY) so i can give you a contributor perk.
+
+![qrarqzk7np4ssrn5pel924el9g684uj8k55n637wjy](.gitbook/assets/image%20%2819%29.png)
 
 ## Getting Started End User Guide
 
@@ -119,23 +123,18 @@ until you have done so**.**
 * you should not have the router setup to allow you to connect to yourself, from your Public IP, others to connect to you, and vise versa.
 * if you have trouble setting this up, Feel free to seek help on the[ project discord ](https://discord.gg/QayQFJY)
 
+## License
 
-# License
-Hades - A Dark Ages Server & Client Project
-Copyright (C) 2020 
+Hades - A Dark Ages Server & Client Project Copyright \(C\) 2020
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or \(at your option\) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License along with this program. If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
+
+
+
 
 
 
