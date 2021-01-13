@@ -1,4 +1,8 @@
-# Getting Started End User Guide
+---
+description: also Formally known as project "Lorule"
+---
+
+# Hades - A Dark Ages Server & Client Project
 
 ## Getting Started End User Guide
 
@@ -22,6 +26,10 @@ so before you start, see the table below and see what actions require what, and 
 | :--- | :--- | :--- |
 | Writing Server Scripts | VS Code | [Download](https://code.visualstudio.com/) |
 | Writing Game Content | Text Editor | [Download](https://notepad-plus-plus.org/downloads/v7.8.) |
+
+### Client Files
+
+You will also need to download a client. [Download the game client](https://drive.google.com/file/d/1VtnTcGivQ1P89bocQTO1LkwCDB4hvx8A/view?usp=sharing)
 
 ## Setting up the Game Server 
 
@@ -124,19 +132,7 @@ You will need a supported Client to connect to the Game Server.
 #### Download Dark Ages Client 7.18
 
 Below you can download the client is 6 parts, Alternatively if you rather, you can download the entire thing  
-that is [available here](https://drive.google.com/file/d/1EbIf7AzQLJaUrR9Kd3wmZDQWM7qT0-hR/view?usp=sharing) \(google drive\) or you can download each part below.
-
-{% file src=".gitbook/assets/game.part01.rar" caption="DarkAges Client Part 1 of 6" %}
-
-{% file src=".gitbook/assets/game.part02 \(1\).rar" caption="DarkAges Client Part 2 of 6" %}
-
-{% file src=".gitbook/assets/game.part03 \(1\).rar" caption="DarkAges Client Part 3 of 6" %}
-
-{% file src=".gitbook/assets/game.part04 \(1\).rar" caption="DarkAges Client Part 4 of 6" %}
-
-{% file src=".gitbook/assets/game.part05.rar" caption="DarkAges Client Part 5 of 6" %}
-
-{% file src=".gitbook/assets/game.part06.rar" caption="DarkAges Client Part 6 of 6" %}
+that is [available here](https://drive.google.com/file/d/1VtnTcGivQ1P89bocQTO1LkwCDB4hvx8A/view?usp=sharing) \(google drive\)
 
 ### Installing the Game Client
 
