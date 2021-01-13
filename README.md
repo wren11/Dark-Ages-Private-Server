@@ -4,6 +4,8 @@ description: also Formally known as project "Lorule"
 
 # Hades - A Dark Ages Server & Client Project
 
+* For Developers, [Please see the Getting Started Developer Guide](getting-started-developer-guide.md)
+
 ## Getting Started End User Guide
 
 Depending on what you want to do, develop for Hades or simply run and host a game using Hades as an end user, Before you can do either, You will need to install some stuff first.  
