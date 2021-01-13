@@ -15,6 +15,8 @@ If you want would to donate any amount to the project, you can send bitcoin to t
 
 ![qrarqzk7np4ssrn5pel924el9g684uj8k55n637wjy](.gitbook/assets/image%20%2819%29.png)
 
+**BTC Address :** qrarqzk7np4ssrn5pel924el9g684uj8k55n637wjy
+
 ## Getting Started End User Guide
 
 Depending on what you want to do, develop for Hades or simply run and host a game using Hades as an end user, Before you can do either, You will need to install some stuff first.  
