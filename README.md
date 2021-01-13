@@ -7,7 +7,7 @@ description: also Formally known as project "Lorule"
 Welcome to Hades, A Dark Ages inspired project. If you want to support this project you can do  
 so by contributing, donating or simply joining our [discord community.](https://discord.gg/QayQFJY)
 
-![](.gitbook/assets/image%20%285%29.png)
+![](.gitbook/assets/hades.png)
 
 For Server Developers, [Please see the Getting Started Developer Guide](getting-started-developer-guide.md)
 
