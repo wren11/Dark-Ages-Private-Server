@@ -2,7 +2,7 @@
 description: also Formally known as project "Lorule"
 ---
 
-# Getting Started End User Guide
+# Hades - A Dark Ages Server & Client Project
 
 Welcome to Hades, A Dark Ages inspired project. If you want to support this project you can do  
 so by contributing, donating or simply joining our [discord community.](https://discord.gg/QayQFJY)
