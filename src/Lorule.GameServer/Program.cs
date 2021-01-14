@@ -1,13 +1,13 @@
 ﻿#region
 
 using Darkages;
+using Darkages.Network.Object;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Extensions.Logging;
-using Serilog.Formatting.Compact;
 using System;
 using System.IO;
 using System.Reflection;
@@ -16,8 +16,7 @@ using System.Threading;
 
 #endregion
 
-namespace Lorule.GameServer
-{
+namespace Lorule.GameServer {
     public interface IServer 
     {
         
@@ -25,15 +24,15 @@ namespace Lorule.GameServer
 
     public static class Program
     {
-        private static void Main()
+        private static void Main(string[] args)
         {
             var providers = new LoggerProviderCollection();
             var logTemplate = "[{Level:u}] {Message}{NewLine}{Exception}";
 
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.File(new CompactJsonFormatter(), "Hades_General.txt")
-                .WriteTo.File(new CompactJsonFormatter(), "Hades_Exceptions.txt", Serilog.Events.LogEventLevel.Error)
-                .WriteTo.File(new CompactJsonFormatter(), "Hades_CrashLogs.txt", Serilog.Events.LogEventLevel.Fatal)
+                .WriteTo.File("Hades_General.txt")
+                .WriteTo.File("Hades_Exceptions.txt", Serilog.Events.LogEventLevel.Error)
+                .WriteTo.File("Hades_CrashLogs.txt", Serilog.Events.LogEventLevel.Fatal)
                 .WriteTo.Console(Serilog.Events.LogEventLevel.Verbose, outputTemplate: logTemplate)
                 .CreateLogger();
 
@@ -45,7 +44,6 @@ namespace Lorule.GameServer
 
             var config = builder.Build();
             var constants = config.GetSection("ServerConfig").Get<ServerConstants>();
-
             var serviceProvider = new ServiceCollection()
                 .AddOptions()
                 .AddSingleton(providers)
@@ -63,6 +61,7 @@ namespace Lorule.GameServer
                 .Configure<LoruleOptions>(config.GetSection("Content"))
                 .AddSingleton<IServerConstants, ServerConstants>(_ => constants)
                 .AddSingleton<IServerContext, ServerContext>()
+                .AddSingleton<IObjectManager, ObjectManager>()
                 .AddSingleton<IServer, Server>()
                 .BuildServiceProvider();
 
@@ -74,11 +73,13 @@ namespace Lorule.GameServer
     public class Server : IServer
     {
         private readonly ILogger<ServerContext> _logger;
+        private readonly IObjectManager _objectManager;
 
         public Server(ILogger<ServerContext> logger, IServerContext context, IServerConstants configConstants,
-            IOptions<LoruleOptions> loruleOptions)
+            IOptions<LoruleOptions> loruleOptions, IObjectManager objectManager)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _objectManager = objectManager;
 
             if (loruleOptions.Value.Location == null)
                 return;
@@ -88,16 +89,6 @@ namespace Lorule.GameServer
             context.Start(configConstants, logger);
 
 
-            var batContents = new StringBuilder();
-            batContents.AppendLine("@echo off");
-            batContents.AppendLine("set PATH=\"net5.0\"");
-            batContents.AppendLine("copy %PATH%\\\\LoruleConfig.json . >NUL"); 
-            batContents.AppendLine("copy %PATH%\\\\MServerTable.xml . >NUL");
-            batContents.AppendLine("copy %PATH%\\\\Notification.txt . >NUL");
-            batContents.AppendLine("%PATH%\\\\Lorule.GameServer.exe");
-
-
-            File.WriteAllText("..\\start_server.bat", batContents.ToString());
         }
 
         internal string LoruleVersion

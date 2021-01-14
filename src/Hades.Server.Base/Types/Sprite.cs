@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 
 using static Darkages.Types.ElementManager;
@@ -25,6 +26,7 @@ using static Darkages.Types.ElementManager;
 
 namespace Darkages.Types
 {
+
     public abstract class Sprite : ObjectManager, INotifyPropertyChanged, ISprite
     {
         [JsonIgnore] public bool Abyss;

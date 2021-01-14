@@ -1,5 +1,34 @@
 {
-  "Posts": [],
+  "Posts": [
+    {
+      "Command": 49,
+      "Secured": true,
+      "BoardId": 2,
+      "DatePosted": "2021-01-12T12:08:36.3068448Z",
+      "Message": "i am ranked the highest",
+      "Owner": "wren",
+      "PostId": 1,
+      "Read": false,
+      "Recipient": null,
+      "Sender": "wren",
+      "Subject": "hi",
+      "TopicId": 616
+    },
+    {
+      "Command": 49,
+      "Secured": true,
+      "BoardId": 2,
+      "DatePosted": "2021-01-12T12:09:28.8730408Z",
+      "Message": "lol",
+      "Owner": "lol",
+      "PostId": 2,
+      "Read": false,
+      "Recipient": "wren",
+      "Sender": "lol",
+      "Subject": "no you aint.",
+      "TopicId": 1143
+    }
+  ],
   "Command": 49,
   "Secured": true,
   "Index": 2,

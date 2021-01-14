@@ -29,7 +29,7 @@ namespace Darkages
     public class ServerContext : IServerContext
     {
 
-        public static ILogger<ServerContext> log;
+        public static ILogger<ServerContext> Log;
 
         public ServerContext(IOptions<LoruleOptions> options)
         {
@@ -38,11 +38,12 @@ namespace Darkages
 
         public static void Logger(string logmessage, LogLevel loglevel = LogLevel.Information)
         {
-            log?.Log(loglevel, logmessage);
+            Log?.Log(loglevel, logmessage);
         }
+
         public static void Logger(string logmessage, params object[] args)
         {
-            log?.Log(LogLevel.Information, logmessage, args);
+            Log?.Log(LogLevel.Information, logmessage, args);
         }
 
         public static CommandParser Parser { get; set; }
@@ -188,6 +189,9 @@ namespace Darkages
             Logger($"Map Templates Loaded: {GlobalMapCache.Count}");
         }
 
+
+        public static DateTime TimeServerStarted;
+
         private static void StartServers()
         {
 #if DEBUG
@@ -203,6 +207,8 @@ namespace Darkages
                 Console.ForegroundColor = ConsoleColor.Green;
                 Logger("Login server is online.");
                 Logger("Game server is online.");
+
+                TimeServerStarted = DateTime.UtcNow;
             }
             catch (SocketException ex)
             {
@@ -434,7 +440,7 @@ namespace Darkages
         public virtual void Start(IServerConstants config,   ILogger<ServerContext> logger)
         {
             Config = config ?? throw new ArgumentNullException(nameof(config));
-            log = logger;
+            Log = logger;
 
             Commander.CompileCommands();
 

@@ -1,0 +1,1 @@
+﻿new Hades.Daemon.HadesServerDaemon();

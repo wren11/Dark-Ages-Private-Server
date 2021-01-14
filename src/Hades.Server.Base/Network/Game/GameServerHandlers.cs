@@ -1394,8 +1394,8 @@ namespace Darkages.Network.Game
 
                 foreach (var m in objects)
                 {
-                    if (!(m is Mundane npc)) continue;
-                    if (npc.Scripts?.Values == null) continue;
+                    var npc = m as Mundane;
+                    if (npc?.Scripts?.Values == null) continue;
                     foreach (var script in npc.Scripts?.Values)
                     {
                         script.OnResponse(this, client, format.Step, format.Args);
@@ -1848,19 +1848,6 @@ namespace Darkages.Network.Game
             TraverseWorldMap(client, format);
         }
 
-        public string ApplyFilter(string message)
-        {
-            var filters = new Dictionary<string, string>
-            {
-                ["lol"] = "Amusing"
-            };
-
-            foreach (var word in message.Split(' '))
-                if (filters.ContainsKey(word))
-                    message = message.Replace(word, filters[word]);
-
-            return message;
-        }
 
         // Bug: Note, as of 16/11/2020 this is a Bug that cannot be fixed by us. we avoid it by flooding extra data to the client.
         public static async void TraverseWorldMap(GameClient client, ClientFormat3F format)
@@ -2577,6 +2564,7 @@ namespace Darkages.Network.Game
                 player.GameMaster = ServerContext.Config.GameMasters?.Any(n => n.ToLower() == player.Username.ToLower()) ?? false;
                 player.Developer  = ServerContext.Config.DevMode;
             }
+
 
 
             player?.Client?.Refresh();

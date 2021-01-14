@@ -26,6 +26,12 @@ namespace Darkages
 
         public string FilePath { get; set; }
 
+        public int NumberOfAislings() =>
+            GetObjects<Aisling>(this, n => n?.Map != null && n.Map.Ready && n.CurrentMapId == ID).Count();
+
+        [JsonIgnore]
+        public string ActiveMap => NumberOfAislings() > 0 ? $"{Name}({NumberOfAislings()})" : null;
+
         public byte[] GetRowData(int row)
         {
             var buffer = new byte[Cols * 6];

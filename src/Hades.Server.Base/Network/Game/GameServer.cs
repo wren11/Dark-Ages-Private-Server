@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Darkages.Network.Game.Components;
 using Darkages.Network.Object;
+using Darkages.Server.Network.Game.Components;
+using Darkages.Server.Network.WS;
 using Darkages.Types;
 
 #endregion
@@ -68,6 +70,9 @@ namespace Darkages.Network.Game
         {
             base.Start(port);
 
+            //Start our Object Server Websocket.
+            ObjectServer.Start("http://localhost:2620/");
+
             try
             {
                 ServerContext.Running = true;
@@ -84,22 +89,34 @@ namespace Darkages.Network.Game
         public void UpdateClients(TimeSpan elapsedTime)
         {
             lock (Clients)
+            {
                 foreach (var client in Clients.Where(client => client?.Aisling != null))
+                {
                     try
                     {
                         client?.FlushPackets();
 
-                        if (!client.Aisling.LoggedIn)
+                        if (client != null && !client.Aisling.LoggedIn)
+                        {
                             continue;
+                        }
 
-                        if (!client.IsWarping)
+                        //This logic here is used to prevent clients updating state, when during a warp transition.
+                        //This prevents any de-syncing from occuring.
+                        if (client != null && !client.IsWarping)
+                        {
                             Pulse(elapsedTime, client);
-                        else if (client.IsWarping &&
-                                 !client.InMapTransition &&
-                                 client.CanSendLocation &&
-                                 !client.IsRefreshing &&
+                        } 
+                        
+                        //This prevents any de-syncing from occuring, but allows for Map Transitions and Warping to occur, in PVP maps.
+                        //This prevents any de-syncing from occuring,
+                        //during pvp warpings that may happen when a client interacts with a dialog during a warp transition.
+                        else if (client != null && client.IsWarping && !client.InMapTransition &&
+                                 client.CanSendLocation && !client.IsRefreshing &&
                                  client.Aisling.CurrentMapId == ServerContext.Config.PVPMap)
+                        {
                             client.SendLocation();
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -107,15 +124,19 @@ namespace Darkages.Network.Game
                         ServerContext.Logger(ex.StackTrace, Microsoft.Extensions.Logging.LogLevel.Error);
                         // ignored
                     }
+                }
+            }
         }
 
         private static void Pulse(TimeSpan elapsedTime, IGameClient client)
         {
-            if (client?.Aisling != null) ObjectComponent.UpdateClientObjects(client.Aisling);
+            if (client?.Aisling != null)
+                ObjectComponent.UpdateClientObjects(client.Aisling);
+
             client?.Update(elapsedTime);
         }
 
-        private void AutoSave(IGameClient client)
+        private static void AutoSave(IGameClient client)
         {
             if ((DateTime.UtcNow - client.LastSave).TotalSeconds > ServerContext.Config.SaveRate) client.Save();
         }
@@ -126,6 +147,7 @@ namespace Darkages.Network.Game
             {
                 ServerComponents = new Dictionary<Type, GameServerComponent>
                 {
+                    [typeof(DayLightComponent)] = new DayLightComponent(this),
                     [typeof(SaveComponent)] = new SaveComponent(this),
                     [typeof(ObjectComponent)] = new ObjectComponent(this),
                     [typeof(MonolithComponent)] = new MonolithComponent(this),
@@ -134,6 +156,9 @@ namespace Darkages.Network.Game
                     [typeof(PingComponent)] = new PingComponent(this)
                 };
             }
+
+
+            ServerContext.Logger($"Server Components Loaded: {ServerComponents.Count}");
         }
 
         private async void UpdateServer()

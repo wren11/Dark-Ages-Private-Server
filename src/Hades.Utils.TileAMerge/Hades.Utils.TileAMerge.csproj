@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hades.Client.Base\Hades.Client.Base.csproj" />
     <ProjectReference Include="..\Hades.Server.Base\Hades.Server.Base.csproj" />
-    <ProjectReference Include="..\Lorule.Client.Base\Lorule.Client.Base.csproj" />
   </ItemGroup>
 
 </Project>

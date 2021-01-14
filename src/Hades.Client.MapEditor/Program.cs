@@ -7,9 +7,7 @@ using Lorule.GameServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Serilog;
 using Serilog.Extensions.Logging;
-using Serilog.Formatting.Compact;
 using System;
 using System.Text;
 using System.Windows.Forms;
@@ -27,11 +25,6 @@ namespace Lorule.Editor
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var providers = new LoggerProviderCollection();
-            Log.Logger = new LoggerConfiguration()
-                .WriteTo.File(new CompactJsonFormatter(), "Editor_logs.txt")
-                .CreateLogger();
-
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Environment.CurrentDirectory)
@@ -43,7 +36,6 @@ namespace Lorule.Editor
             using var serviceProvider = new ServiceCollection()
                 .Configure<LoruleOptions>(config.GetSection("Content"))
                 .AddOptions()
-                .AddSingleton(providers)
                 .AddSingleton<ILoggerFactory>(sc =>
                 {
                     var providerCollection = sc.GetService<LoggerProviderCollection>();
@@ -54,7 +46,6 @@ namespace Lorule.Editor
 
                     return factory;
                 })
-                .AddLogging(l => l.AddConsole())
                 .AddSingleton(_ => editorSettings)
                 .AddSingleton<LoadingIndicatorView>()
                 .AddSingleton<IServerConstants, ServerConstants>(_ => constants)

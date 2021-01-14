@@ -2,6 +2,9 @@
 
 using System;
 using System.Linq;
+using Darkages.Server.Network.WS;
+using Darkages.Storage;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -27,7 +30,9 @@ namespace Darkages.Network.Game.Components
             ServerContext.SaveCommunityAssets();
 
             foreach (var client in ServerContext.Game.Clients.Where(client => client?.Aisling != null))
+            {
                 client.Save();
+            }
         }
     }
 }

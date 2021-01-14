@@ -40,7 +40,6 @@ namespace Darkages.Network.Object
             Interpreter.MovedToNextStepHandler callbackHandler);
     }
 
-    [SuppressMessage("ReSharper", "MergeCastWithTypeCheck")]
     public class ObjectManager : IObjectManager
     {
         public void LoadScriptInterpreter(GameClient client,
