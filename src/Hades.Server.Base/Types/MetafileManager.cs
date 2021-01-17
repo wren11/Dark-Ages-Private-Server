@@ -28,7 +28,12 @@ namespace Darkages.Types
 
         static MetafileManager()
         {
-            var files = Directory.GetFiles(Path.Combine(ServerContext.StoragePath, "metafile"));
+            var filePath = Path.Combine(ServerContext.StoragePath, "metafile");
+
+            if (!Directory.Exists(filePath))
+                return;
+
+            var files = Directory.GetFiles(filePath);
             Metafiles = new MetafileCollection(short.MaxValue);
 
             foreach (var file in files)

@@ -5,18 +5,21 @@ using Darkages.Network.Object;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Extensions.Logging;
 using System;
+using System.Collections;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using ServiceStack;
 
 #endregion
 
 namespace Lorule.GameServer {
+
     public interface IServer 
     {
         
@@ -24,6 +27,8 @@ namespace Lorule.GameServer {
 
     public static class Program
     {
+
+
         private static void Main(string[] args)
         {
             var providers = new LoggerProviderCollection();
@@ -75,8 +80,7 @@ namespace Lorule.GameServer {
         private readonly ILogger<ServerContext> _logger;
         private readonly IObjectManager _objectManager;
 
-        public Server(ILogger<ServerContext> logger, IServerContext context, IServerConstants configConstants,
-            IOptions<LoruleOptions> loruleOptions, IObjectManager objectManager)
+        public Server(ILogger<ServerContext> logger, IServerContext context, IServerConstants configConstants, Microsoft.Extensions.Options.IOptions<LoruleOptions> loruleOptions, IObjectManager objectManager)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _objectManager = objectManager;
@@ -87,8 +91,6 @@ namespace Lorule.GameServer {
             context.InitFromConfig(loruleOptions.Value.Location, loruleOptions.Value.ServerIP);
             _logger.LogInformation($"{configConstants.SERVER_TITLE}: Server Version: {LoruleVersion}.");
             context.Start(configConstants, logger);
-
-
         }
 
         internal string LoruleVersion

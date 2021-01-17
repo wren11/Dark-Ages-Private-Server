@@ -86,16 +86,19 @@ namespace Darkages.Network
                 if (!Clients.Exists(i => i.Serial == client.Serial))
                     return;
 
-                client.Read(packet, format);
-                client.LastMessageFromClient = DateTime.UtcNow;
+                lock (ServerContext.SyncLock)
+                {
+                    client.Read(packet, format);
+                    client.LastMessageFromClient = DateTime.UtcNow;
 
-                if (_handlers[format.Command] != null)
-                    _handlers[format.Command].Invoke(this,
-                        new object[]
-                        {
-                            client,
-                            format
-                        });
+                    if (_handlers[format.Command] != null)
+                        _handlers[format.Command].Invoke(this,
+                            new object[]
+                            {
+                                client,
+                                format
+                            });
+                }
             }
             catch (Exception ex)
             {

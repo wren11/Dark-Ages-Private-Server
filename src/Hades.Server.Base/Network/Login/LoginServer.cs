@@ -47,10 +47,10 @@ namespace Darkages.Network.Login
                     Serial = Convert.ToString(client.Serial),
                     Salt = Encoding.UTF8.GetString(client.Encryption.Parameters.Salt),
                     Seed = Convert.ToString(client.Encryption.Parameters.Seed),
-                    Name = aisling.Username
+                    Name = aisling.Username,
                 };
 
-                ServerContext.Redirects.Add(aisling.Username.ToLower());
+                ServerContext.Redirects.Add(redirect.Name.ToLower());
 
                 client.SendMessageBox(0x00, "\0");
                 client.Send(new ServerFormat03

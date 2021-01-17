@@ -23,11 +23,14 @@ namespace Darkages.Network
 
         private bool _sending;
 
+        private readonly RecyclableMemoryStreamManager _memory;
+
         protected NetworkClient()
         {
             Reader = new NetworkPacketReader();
             Writer = new NetworkPacketWriter();
-            Encryption = new SecurityProvider();
+            Encryption = new SecurityProvider(); 
+            _memory = new RecyclableMemoryStreamManager(1024, 4096, 98304);
         }
 
         public SecurityProvider Encryption { get; set; }
@@ -36,11 +39,11 @@ namespace Darkages.Network
         public NetworkPacketReader Reader { get; set; }
         public int Serial { get; set; }
         public NetworkPacketWriter Writer { get; set; }
-
+        public DateTime LastMessageFromClient { get; set; } 
+        
         public Socket Socket => State.Socket;
 
         internal NetworkSocket State { get; set; }
-        public DateTime LastMessageFromClient { get; set; }
 
         public ConcurrentQueue<NetworkPacket> SendQueue = new ConcurrentQueue<NetworkPacket>();
 
@@ -97,8 +100,6 @@ namespace Darkages.Network
             }
         }
 
-        private static readonly RecyclableMemoryStreamManager Memory = new RecyclableMemoryStreamManager(1024, 4096, 98304);
-
         public void FlushPackets()
         {
             if (_sending)
@@ -106,15 +107,16 @@ namespace Darkages.Network
 
             _sending = true;
 
+            using var memoryStream = _memory.GetStream();
+
             var sent = 0;
-            using var memoryStream = Memory.GetStream();
 
             while (true)
             {
                 if (!_sending)
                     return;
 
-                if (SendQueue.Count == 0)
+                if (SendQueue.IsEmpty)
                     break;
 
                 if (!SendQueue.TryDequeue(out var packet))
@@ -280,12 +282,5 @@ namespace Darkages.Network
             }
         }
 
-        private void SendCompleted(IAsyncResult ar)
-        {
-            lock (_sendLock)
-            {
-                _sending = false;
-            }
-        }
     }
 }
