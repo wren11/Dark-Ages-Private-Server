@@ -15,22 +15,14 @@ namespace Darkages.Network
         private readonly Encoding _encoding = Encoding.GetEncoding(949);
         private readonly byte[] _buffer;
 
-        public byte[] Memory => _buffer;
-
         public NetworkPacketWriter()
         {
-            //map payload limit = 768kb
-            _buffer = new byte[768000];
+            _buffer = new byte[65534];
         }
 
         public NetworkPacket ToPacket()
         {
             return Position > 0 ? new NetworkPacket(_buffer, Position) : null;
-        }
-
-        public NetworkPacket ToRawPacket()
-        {
-            return Position > 0 ? new NetworkPacket(_buffer, Position, true) : null;
         }
 
         public void Write(bool value)

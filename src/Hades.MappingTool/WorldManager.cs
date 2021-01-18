@@ -30,8 +30,6 @@ namespace Content_Maker
 
             SelectedPoint = e.Location;
 
-            if (pictureBox1.Image == null)
-                return;
 
             using (var gfx = pictureBox1.CreateGraphics())
             {

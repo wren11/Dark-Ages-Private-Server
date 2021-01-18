@@ -12,6 +12,19 @@
       "DisplayName": "Refugee Camp",
       "PointX": 442,
       "PointY": 225
+    },
+    {
+      "Destination": {
+        "AreaID": 3,
+        "Location": {
+          "X": 95,
+          "Y": 50
+        },
+        "PortalKey": 0
+      },
+      "DisplayName": "Lost Woods",
+      "PointX": 417,
+      "PointY": 50
     }
   ],
   "FieldNumber": 1,

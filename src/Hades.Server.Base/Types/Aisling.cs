@@ -37,7 +37,6 @@ namespace Darkages
         {
             OffenseElement = ElementManager.Element.None;
             DefenseElement = ElementManager.Element.None;
-            Clan = "St";
             LegendBook = new Legend();
             ClanTitle = string.Empty;
             ClanRank = string.Empty;

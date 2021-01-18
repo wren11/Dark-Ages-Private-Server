@@ -1,8 +1,8 @@
 ﻿#region
 
-using Darkages.Network.Object;
 using System;
 using System.Net.Sockets;
+using Darkages.Network.Object;
 
 #endregion
 
@@ -20,33 +20,43 @@ namespace Darkages.Network
         private int _packetLength;
         private int _packetOffset;
 
-        private readonly NetworkStream _networkStreamReader;
-
         public NetworkSocket(Socket socket)
         {
             ConfigureTcpSocket(socket);
             Socket = socket;
-
-            _networkStreamReader = new NetworkStream(socket);
         }
 
         public bool HeaderComplete => _headerOffset == HeaderLength;
 
         public bool PacketComplete => _packetOffset == _packetLength;
 
-        public virtual IAsyncResult BeginReceiveHeader(AsyncCallback callback, object state)
+        public virtual IAsyncResult BeginReceiveHeader(AsyncCallback callback, out SocketError error, object state)
         {
-            return _networkStreamReader.BeginRead(_header, _headerOffset, HeaderLength - _headerOffset, callback, state);
+            return Socket.BeginReceive(
+                _header,
+                _headerOffset,
+                HeaderLength - _headerOffset,
+                SocketFlags.None,
+                out error,
+                callback,
+                state);
         }
 
-        public virtual IAsyncResult BeginReceivePacket(AsyncCallback callback, object state)
+        public virtual IAsyncResult BeginReceivePacket(AsyncCallback callback, out SocketError error, object state)
         {
-            return _networkStreamReader.BeginRead(_packet, _packetOffset, _packetLength - _packetOffset, callback, state);
+            return Socket.BeginReceive(
+                _packet,
+                _packetOffset,
+                _packetLength - _packetOffset,
+                SocketFlags.None,
+                out error,
+                callback,
+                state);
         }
 
-        public virtual int EndReceiveHeader(IAsyncResult result)
+        public virtual int EndReceiveHeader(IAsyncResult result, out SocketError error)
         {
-            var bytes = _networkStreamReader.EndRead(result);
+            var bytes = Socket.EndReceive(result, out error);
 
             if (bytes == 0)
                 return 0;
@@ -62,9 +72,9 @@ namespace Darkages.Network
             return bytes;
         }
 
-        public virtual int EndReceivePacket(IAsyncResult result)
+        public virtual int EndReceivePacket(IAsyncResult result, out SocketError error)
         {
-            var bytes = _networkStreamReader.EndRead(result);
+            var bytes = Socket.EndReceive(result, out error);
 
             if (bytes == 0)
                 return 0;
@@ -76,30 +86,9 @@ namespace Darkages.Network
             return bytes;
         }
 
-
         public NetworkPacket ToPacket()
         {
             return PacketComplete ? new NetworkPacket(_packet, _packetLength) : null;
-        }
-
-        public void Send(byte[] data)
-        {
-            try
-            {
-                if (!Socket.Connected)
-                    return;
-
-                if (_networkStreamReader.CanWrite && Socket.Connected)
-                {
-                    _networkStreamReader.Write(data, 0, data.Length);
-                    _networkStreamReader.Flush();
-                }
-            }
-            catch (Exception ex)
-            {
-                ServerContext.Logger(ex.Message, Microsoft.Extensions.Logging.LogLevel.Error);
-                ServerContext.Logger(ex.StackTrace, Microsoft.Extensions.Logging.LogLevel.Error);
-            }
         }
 
         private static void ConfigureTcpSocket(Socket tcpSocket)

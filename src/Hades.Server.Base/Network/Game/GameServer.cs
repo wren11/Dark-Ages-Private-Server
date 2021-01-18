@@ -94,8 +94,6 @@ namespace Darkages.Network.Game
                 {
                     try
                     {
-                        client?.FlushPackets();
-
                         if (client != null && !client.Aisling.LoggedIn)
                         {
                             continue;

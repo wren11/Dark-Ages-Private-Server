@@ -2557,7 +2557,7 @@ namespace Darkages.Network.Game
             client.Encryption.Parameters = format.Parameters;
             client.Server = this;
 
-            Aisling player = LoadPlayer(client, format.Name);
+            var player = LoadPlayer(client, format.Name);
 
             if (player != null)
             {
@@ -2612,7 +2612,7 @@ namespace Darkages.Network.Game
                 ExitGame(client);
         }
 
-        public Aisling LoadPlayer(GameClient client, string player, bool retainState = false)
+        public Aisling LoadPlayer(GameClient client, string player)
         {
             var aisling = StorageManager.AislingBucket.Load(player);
 

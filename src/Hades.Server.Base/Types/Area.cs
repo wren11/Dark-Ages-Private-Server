@@ -165,6 +165,29 @@ namespace Darkages
 
         public void UpdateAreaObjects(TimeSpan elapsedTime)
         {
+            void UpdateKillCounters(Monster monster)
+            {
+                if (monster.Target == null || !(monster.Target is Aisling aisling))
+                    return;
+
+                if (!aisling.MonsterKillCounters.ContainsKey(monster.Template.BaseName))
+                {
+                    aisling.MonsterKillCounters[monster.Template.BaseName] =
+                        new KillRecord
+                        {
+                            TotalKills = 1,
+                            MonsterLevel = monster.Template.Level,
+                            TimeKilled = DateTime.UtcNow
+                        };
+                }
+                else
+                {
+                    aisling.MonsterKillCounters[monster.Template.BaseName].TotalKills++;
+                    aisling.MonsterKillCounters[monster.Template.BaseName].TimeKilled = DateTime.UtcNow;
+                    aisling.MonsterKillCounters[monster.Template.BaseName].MonsterLevel = monster.Template.Level;
+                }
+            }
+
             var objectCache = GetObjects(this, sprite => sprite.AislingsNearby().Any(), Get.All);
 
             lock (ServerContext.SyncLock)
@@ -183,7 +206,12 @@ namespace Darkages
                                     {
                                         foreach (var script in monster.Scripts.Values.Where(
                                             script => obj.Target?.Client != null))
+                                        {
                                             script?.OnDeath(obj.Target.Client);
+                                        }
+
+                                        UpdateKillCounters(monster);
+
 
                                         monster.Skulled = true;
                                     }

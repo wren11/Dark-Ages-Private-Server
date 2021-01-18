@@ -14,7 +14,7 @@
   "IntModifer": {
     "$type": "Darkages.Types.StatusOperator, Darkages.Server",
     "Option": 0,
-    "Value": 3
+    "Value": 30
   },
   "WisModifer": null,
   "ConModifer": null,

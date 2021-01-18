@@ -1,0 +1,12 @@
+{
+  "FilePath": "..\\..\\database\\server\\maps\\lod3.map",
+  "Cols": 255,
+  "ContentName": "Lost Woods",
+  "Flags": 106240,
+  "ID": 3,
+  "Music": 3,
+  "Name": "Lost Woods",
+  "Rows": 255,
+  "Blocks": [],
+  "ScriptKey": null
+}

@@ -1,0 +1,34 @@
+{
+  "ActivationMapId": 3,
+  "Activations": [
+    {
+      "AreaID": 3,
+      "Location": {
+        "X": 14,
+        "Y": 137
+      },
+      "PortalKey": 0
+    },
+    {
+      "AreaID": 3,
+      "Location": {
+        "X": 15,
+        "Y": 137
+      },
+      "PortalKey": 0
+    }
+  ],
+  "LevelRequired": 1,
+  "To": {
+    "AreaID": 0,
+    "Location": null,
+    "PortalKey": 1
+  },
+  "WarpRadius": 0,
+  "WarpType": 1,
+  "WorldResetWarpId": 0,
+  "WorldTransionWarpId": 0,
+  "Description": null,
+  "Group": null,
+  "Name": "Warp from 3 to World Map."
+}
