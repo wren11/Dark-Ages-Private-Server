@@ -175,9 +175,9 @@ namespace Darkages.Types
             return Create(owner, template, curse);
         }
 
-        public static Item Create(Sprite Owner, ItemTemplate itemtemplate, bool curse = false)
+        public static Item Create(Sprite owner, ItemTemplate itemtemplate, bool curse = false)
         {
-            if (Owner == null)
+            if (owner == null)
                 return null;
 
             var template =
@@ -190,13 +190,13 @@ namespace Darkages.Types
             {
                 AbandonedDate = DateTime.UtcNow,
                 Template = template,
-                XPos = Owner.XPos,
-                YPos = Owner.YPos,
+                XPos = owner.XPos,
+                YPos = owner.YPos,
                 Image = template.Image,
                 DisplayImage = template.DisplayImage,
-                CurrentMapId = Owner.CurrentMapId,
+                CurrentMapId = owner.CurrentMapId,
                 Cursed = curse,
-                Owner = (uint) Owner.Serial,
+                Owner = (uint) owner.Serial,
                 Durability = template.MaxDurability,
                 OffenseElement = template.OffenseElement,
                 DefenseElement = template.DefenseElement
@@ -639,8 +639,6 @@ namespace Darkages.Types
 
             if (Template.SpellOperator != null)
             {
-                var op = Template.SpellOperator;
-
                 for (var i = 0; i < client.Aisling.SpellBook.Spells.Count; i++)
                 {
                     var spell = client.Aisling.SpellBook.FindInSlot(i);

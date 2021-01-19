@@ -71,7 +71,7 @@ namespace Darkages
         public byte BootColor { get; set; }
         public byte Boots { get; set; }
         [JsonIgnore] public bool CanReact { get; set; }
-        public string Clan { get; set; }
+        public string Clan { get; set; } = "";
         public string ClanRank { get; set; }
         public string ClanTitle { get; set; }
         public DateTime Created { get; set; }

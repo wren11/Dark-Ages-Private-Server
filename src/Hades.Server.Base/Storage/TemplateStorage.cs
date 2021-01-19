@@ -135,7 +135,7 @@ namespace Darkages.Storage
                     {
                         var template =
                             StorageManager.ItemBucket.Load<ItemTemplate>(Path.GetFileNameWithoutExtension(asset));
-                        if (template != null)
+                        if (template?.Name != null)
                             ServerContext.GlobalItemTemplateCache[template.Name] = template;
                         break;
                     }

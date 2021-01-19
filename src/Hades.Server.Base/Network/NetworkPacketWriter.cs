@@ -94,13 +94,16 @@ namespace Darkages.Network
 
         public void WriteStringA(string value)
         {
-            var count = _encoding.GetByteCount(value);
+            if (value != null)
+            {
+                var count = _encoding.GetByteCount(value);
 
-            Write((byte) count);
+                Write((byte) count);
 
-            _encoding.GetBytes(value, 0, value.Length, _buffer, Position);
+                _encoding.GetBytes(value, 0, value.Length, _buffer, Position);
 
-            Position += count;
+                Position += count;
+            }
         }
 
         public void WriteStringB(string value)
