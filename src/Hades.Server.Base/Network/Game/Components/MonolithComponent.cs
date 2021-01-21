@@ -43,13 +43,13 @@ namespace Darkages.Network.Game.Components
                 if (map == null || map.Rows == 0 || map.Cols == 0)
                     return;
 
-                var temps = templates.Where(i => i.AreaID == map.ID);
+                var temps = templates.Where(i => i.AreaID == map.Id);
 
                 foreach (var template in temps)
                 {
                     var count = GetObjects<Monster>(map, i =>
                         i.Template != null && i.Template.Name == template.Name
-                                           && i.Template.AreaID == map.ID).Count();
+                                           && i.Template.AreaID == map.Id).Count();
 
                     if (!template.ReadyToSpawn())
                         continue;

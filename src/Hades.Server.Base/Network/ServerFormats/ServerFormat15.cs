@@ -23,7 +23,7 @@
         {
             if (Area != null)
             {
-                writer.Write((ushort) Area.ID);
+                writer.Write((ushort) Area.Id);
                 writer.Write((byte) Area.Cols);
                 writer.Write((byte) Area.Rows);
                 writer.Write((byte) Area.Flags);

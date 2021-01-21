@@ -30,7 +30,7 @@ namespace Content_Maker
         {
             ServerContext.LoadAndCacheStorage(true);
 
-            var connectedMaps = ServerContext.GlobalMapCache.Select(i => i.Value.ID);
+            var connectedMaps = ServerContext.GlobalMapCache.Select(i => i.Value.Id);
 
             var validContent = (
                 from id in connectedMaps
@@ -142,13 +142,13 @@ namespace Content_Maker
             {
                 
 
-                if (_selectedArea == null || _selectedArea.ID <= 0)
+                if (_selectedArea == null || _selectedArea.Id <= 0)
                 {
                     MessageBox.Show(@"Error, No Selected Area. Select an existing Map.");
                     return;
                 }
 
-                if (_connectingArea == null || _connectingArea.ID <= 0)
+                if (_connectingArea == null || _connectingArea.Id <= 0)
                 {
                     MessageBox.Show(@"Error, No Selected Area. Select a connecting Map.");
                     return;
@@ -191,8 +191,8 @@ namespace Content_Maker
         {
             var template = new WarpTemplate
             {
-                To = new Warp {AreaID = _selectedArea.ID, Location = new Position(previousX, previousY)},
-                ActivationMapId = _connectingArea.ID,
+                To = new Warp {AreaId = _selectedArea.Id, Location = new Position(previousX, previousY)},
+                ActivationMapId = _connectingArea.Id,
                 Activations = new List<Warp>()
             };
 
@@ -200,14 +200,14 @@ namespace Content_Maker
             foreach (var activation in _previousActivations)
                 template.Activations.Add(new Warp()
                 {
-                    AreaID = _connectingArea.ID,
+                    AreaId = _connectingArea.Id,
                     Location = activation
                 });
 
             template.LevelRequired = Convert.ToByte(levelReq);
             template.WarpType = WarpType.Map;
             template.WarpRadius = 0;
-            template.Name = $"Map Warp from {_connectingArea.ID} to {_selectedArea.ID}";
+            template.Name = $"Map Warp from {_connectingArea.Id} to {_selectedArea.Id}";
 
             StorageManager.WarpBucket.Save(template);
         }
@@ -216,22 +216,22 @@ namespace Content_Maker
         {
             var template = new WarpTemplate
             {
-                To = new Warp {AreaID = _connectingArea.ID, Location = new Position(locationX, locationY)},
-                ActivationMapId =_selectedArea.ID,
+                To = new Warp {AreaId = _connectingArea.Id, Location = new Position(locationX, locationY)},
+                ActivationMapId =_selectedArea.Id,
                 Activations = new List<Warp>()
             };
 
             foreach (var activation in _activations)
                 template.Activations.Add(new Warp()
                 {
-                    AreaID = _selectedArea.ID,
+                    AreaId = _selectedArea.Id,
                     Location = activation
                 });
 
             template.LevelRequired = Convert.ToByte(levelReq);
             template.WarpType = WarpType.Map;
             template.WarpRadius = 0;
-            template.Name = $"Map Warp from {_selectedArea.ID} to {_connectingArea.ID}";
+            template.Name = $"Map Warp from {_selectedArea.Id} to {_connectingArea.Id}";
 
             StorageManager.WarpBucket.Save(template);
         }
@@ -248,24 +248,24 @@ namespace Content_Maker
 
             template.To = new Warp()
             {
-                AreaID = 0,
+                AreaId = 0,
                 PortalKey = (int)world.FieldNumber
             };
 
-            template.ActivationMapId = _selectedArea.ID;
+            template.ActivationMapId = _selectedArea.Id;
             template.Activations = new List<Warp>();
 
             foreach (var activation in _worldactivations)
                 template.Activations.Add(new Warp()
                 {
-                    AreaID = _selectedArea.ID,
+                    AreaId = _selectedArea.Id,
                     Location = activation
                 });
 
             template.LevelRequired = 1;
             template.WarpType = WarpType.World;
             template.WarpRadius = 0;
-            template.Name = $"Warp from {_selectedArea.ID} to World Map.";
+            template.Name = $"Warp from {_selectedArea.Id} to World Map.";
 
             StorageManager.WarpBucket.Save(template);
             ServerContext.LoadAndCacheStorage(true);

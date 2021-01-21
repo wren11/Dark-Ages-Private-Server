@@ -9,7 +9,7 @@ namespace Darkages.Network.ServerFormats
 {
     public class ServerFormat2E : NetworkFormat
     {
-        private readonly Aisling User;
+        private readonly Aisling _user;
 
         public ServerFormat2E()
         {
@@ -19,7 +19,7 @@ namespace Darkages.Network.ServerFormats
 
         public ServerFormat2E(Aisling user) : this()
         {
-            User = user;
+            _user = user;
         }
 
         public override void Serialize(NetworkPacketReader reader)
@@ -28,39 +28,45 @@ namespace Darkages.Network.ServerFormats
 
         public override void Serialize(NetworkPacketWriter writer)
         {
-            if (User == null)
+            if (_user == null)
                 return;
 
-            if (ServerContext.GlobalWorldMapTemplateCache.ContainsKey(User.Client.Aisling.World))
+            if (ServerContext.GlobalWorldMapTemplateCache.ContainsKey(_user.Client.Aisling.World))
             {
-                var portal = ServerContext.GlobalWorldMapTemplateCache[User.Client.Aisling.World];
+                var portal = ServerContext.GlobalWorldMapTemplateCache[_user.Client.Aisling.World];
                 var name = $"field{portal.FieldNumber:000}";
 
                 writer.WriteStringA(name);
                 writer.Write((byte) portal.Portals.Count);
                 writer.Write((byte) portal.FieldNumber);
 
-                foreach (var warps in portal.Portals)
+                lock (portal.Portals)
                 {
-                    if (warps?.Destination == null)
-                        continue;
+                    foreach (var warps in portal.Portals.Where(warps => warps?.Destination != null))
+                    {
+                        writer.Write(warps.PointY);
+                        writer.Write(warps.PointX);
 
-                    writer.Write(warps.PointY);
-                    writer.Write(warps.PointX);
-
-                    writer.WriteStringA(warps.DisplayName);
-                    writer.Write(warps.Destination.AreaID);
-                    writer.Write((short) warps.Destination.Location.X);
-                    writer.Write((short) warps.Destination.Location.Y);
+                        writer.WriteStringA(warps.DisplayName);
+                        writer.Write(warps.Destination.AreaId);
+                        writer.Write((short) warps.Destination.Location.X);
+                        writer.Write((short) warps.Destination.Location.Y);
+                    }
                 }
             }
 
-            writer.Write((byte) Generator.Random.Next() % 255 + 1);
-            writer.Write((byte) Generator.Random.Next() % 255 + 1);
-            writer.Write((byte) Generator.Random.Next() % 255 + 1);
-            writer.Write((byte) Generator.Random.Next() % 255 + 1);
-            writer.Write((byte) Generator.Random.Next() % 255 + 1);
-            writer.Write((byte) Generator.Random.Next() % 255 + 1);
+            lock (Generator.Random)
+            {
+                writer.Write((byte) Generator.Random.Next(255));
+                writer.Write((byte) Generator.Random.Next(255));
+                writer.Write((byte) Generator.Random.Next(255));
+                writer.Write((byte) Generator.Random.Next(255));
+                writer.Write((byte) Generator.Random.Next(255));
+                writer.Write((byte) Generator.Random.Next(255));
+
+
+                _user.Client.MapOpen = true;
+            }
         }
     }
 }

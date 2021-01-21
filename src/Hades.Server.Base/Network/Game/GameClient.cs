@@ -93,6 +93,7 @@ namespace Darkages.Network.Game
         [JsonIgnore]
         public int MapClicks { get; set; }
 
+
         public GameClient AislingToGhostForm()
         {
             Aisling.Flags = AislingFlags.Ghost;
@@ -975,7 +976,6 @@ namespace Darkages.Network.Game
 
         public GameClient SetAislingStartupVariables()
         {
-            InMapTransition = false;
             LastSave = DateTime.UtcNow;
             LastPingResponse = DateTime.UtcNow;
             PendingItemSessions = null;
@@ -1164,14 +1164,14 @@ namespace Darkages.Network.Game
             if (area == null)
                 return null;
 
-            if (area.ID != Aisling.CurrentMapId)
+            if (area.Id != Aisling.CurrentMapId)
             {
                 LeaveArea(true, true);
 
                 Aisling.LastPosition = new Position(Aisling.X, Aisling.Y);
                 Aisling.XPos = position.X;
                 Aisling.YPos = position.Y;
-                Aisling.CurrentMapId = area.ID;
+                Aisling.CurrentMapId = area.Id;
 
                 EnterArea();
             }
@@ -1383,7 +1383,7 @@ namespace Darkages.Network.Game
             if (warps.WarpType == WarpType.World)
                 return;
 
-            if (ServerContext.GlobalMapCache.Values.Any(i => i.ID == warps.ActivationMapId))
+            if (ServerContext.GlobalMapCache.Values.Any(i => i.Id == warps.ActivationMapId))
             {
                 if (!Aisling.GameMaster)
                     if (warps.LevelRequired > 0 && Aisling.ExpLevel < warps.LevelRequired)
@@ -1399,9 +1399,9 @@ namespace Darkages.Network.Game
                         return;
                     }
 
-                if (Aisling.Map.ID != warps.To.AreaID)
+                if (Aisling.Map.Id != warps.To.AreaId)
                 {
-                    TransitionToMap(warps.To.AreaID, warps.To.Location);
+                    TransitionToMap(warps.To.AreaId, warps.To.Location);
                 }
                 else
                 {

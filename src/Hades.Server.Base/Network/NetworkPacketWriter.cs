@@ -17,7 +17,7 @@ namespace Darkages.Network
 
         public NetworkPacketWriter()
         {
-            _buffer = new byte[65534];
+            _buffer = new byte[0x50000];
         }
 
         public NetworkPacket ToPacket()

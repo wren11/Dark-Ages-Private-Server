@@ -19,7 +19,7 @@ namespace Darkages.Network.Object
         public ObjectService()
         {
             foreach (var map in ServerContext.GlobalMapCache.Values)
-                _spriteCollections.Add(map.ID, new Dictionary<Type, object>
+                _spriteCollections.Add(map.Id, new Dictionary<Type, object>
                 {
                     {typeof(Monster), new SpriteList<Monster>(Enumerable.Empty<Monster>())},
                     {typeof(Aisling), new SpriteList<Aisling>(Enumerable.Empty<Aisling>())},
@@ -62,9 +62,9 @@ namespace Darkages.Network.Object
             }
             else
             {
-                if (_spriteCollections.ContainsKey(map.ID))
+                if (_spriteCollections.ContainsKey(map.Id))
                 {
-                    var obj = (SpriteList<T>) _spriteCollections[map.ID][typeof(T)];
+                    var obj = (SpriteList<T>) _spriteCollections[map.Id][typeof(T)];
                     var queryResult = obj.Query(predicate);
                     {
                         return queryResult;
@@ -90,7 +90,7 @@ namespace Darkages.Network.Object
             }
 
             {
-                var obj = (SpriteList<T>) _spriteCollections[map.ID][typeof(T)];
+                var obj = (SpriteList<T>) _spriteCollections[map.Id][typeof(T)];
                 var queryResult = obj.QueryAll(predicate);
                 {
                     return queryResult;

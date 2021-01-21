@@ -31,7 +31,7 @@ namespace Darkages.Network.Game.Components
                 if (map == null || !map.Ready)
                     continue;
 
-                var npc = GetObject<Mundane>(map, i => i.CurrentMapId == map.ID && i.Template != null
+                var npc = GetObject<Mundane>(map, i => i.CurrentMapId == map.Id && i.Template != null
                                                                                 && i.Template.Name ==
                                                                                 mundane.Value.Name);
 

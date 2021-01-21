@@ -92,7 +92,7 @@ namespace Content_Maker
 
             if (ServerContext.GlobalMapCache.Count(i =>
                 i.Value.Name.Equals(textBox4.Text, StringComparison.OrdinalIgnoreCase)
-                || i.Value.ID == Convert.ToInt32(textBox3.Text)) > 0)
+                || i.Value.Id == Convert.ToInt32(textBox3.Text)) > 0)
             {
                 MessageBox.Show("Sorry, Map Already Exists.");
                 return;
@@ -107,7 +107,7 @@ namespace Content_Maker
                     ContentName = textBox6.Text,
                     Rows = Convert.ToUInt16(textBox2.Text),
                     Cols = Convert.ToUInt16(textBox1.Text),
-                    ID = Convert.ToInt32(textBox3.Text),
+                    Id = Convert.ToInt32(textBox3.Text),
                     Music = Convert.ToInt32(textBox5.Text),
                     Ready = false,
                     Flags = radioButton2.Checked
@@ -116,7 +116,7 @@ namespace Content_Maker
                 };
 
                 {
-                    var path = Path.GetFullPath(ServerContext.StoragePath + $@"\maps\lod{map.ID}.map");
+                    var path = Path.GetFullPath(ServerContext.StoragePath + $@"\maps\lod{map.Id}.map");
 
                     if (!File.Exists(path))
                         File.Copy(SelectedMap, path, true);

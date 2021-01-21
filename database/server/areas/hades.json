@@ -3,10 +3,11 @@
   "Cols": 25,
   "ContentName": "Hades_Death_Map",
   "Flags": 106240,
-  "ID": 99999,
+  "Id": 99999,
   "Music": 3,
   "Name": "Hades",
   "Rows": 25,
   "Blocks": [],
-  "ScriptKey": null
+  "ScriptKey": null,
+  "ID": 99999
 }

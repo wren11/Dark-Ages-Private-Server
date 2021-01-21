@@ -37,7 +37,7 @@ namespace Darkages.Network.Game.Components
                 ObjectServer.Broadcast($"[System]: Server Up Time: {DateTime.UtcNow - ServerContext.TimeServerStarted}");
                 ObjectServer.Broadcast($"[System]: Connected Players: {GetObjects<Aisling>(null, n => n.LoggedIn).Count()}");
                 ObjectServer.Broadcast($"[System]: Game Objects: {GetObjects(null, n => n != null, Get.All).Count()}");
-                ObjectServer.Broadcast($"[System]: Active Maps: {string.Join(", ", GetObjects<Aisling>(null, n => n.Map != null && n.Map.ActiveMap != null).Select(n => n.Map.ActiveMap).GroupBy(n => n).Select(o => o.Key).ToArray())}");
+                ObjectServer.Broadcast($"[System]: Active Maps: {string.Join(", ", GetObjects<Aisling>(null, n => n != null && (n.Map != null && n.Map.ActiveMap != null)).Select(n => n?.Map.ActiveMap).GroupBy(n => n).Select(o => o.Key).ToArray())}");
             }
         }
     }

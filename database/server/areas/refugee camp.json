@@ -3,10 +3,11 @@
   "Cols": 70,
   "ContentName": "Refuge_Safe_Map",
   "Flags": 106240,
-  "ID": 2,
+  "Id": 2,
   "Music": 27,
   "Name": "Refugee Camp",
   "Rows": 70,
   "Blocks": [],
-  "ScriptKey": null
+  "ScriptKey": null,
+  "ID": 2
 }

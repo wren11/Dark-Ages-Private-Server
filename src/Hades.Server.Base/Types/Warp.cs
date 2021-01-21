@@ -2,7 +2,7 @@
 {
     public class Warp
     {
-        public int AreaID { get; set; }
+        public int AreaId { get; set; }
         public Position Location { get; set; }
         public int PortalKey { get; set; }
     }

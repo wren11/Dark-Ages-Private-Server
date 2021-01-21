@@ -27,7 +27,7 @@ namespace Darkages
         public string FilePath { get; set; }
 
         public int NumberOfAislings() =>
-            GetObjects<Aisling>(this, n => n?.Map != null && n.Map.Ready && n.CurrentMapId == ID).Count();
+            GetObjects<Aisling>(this, n => n?.Map != null && n.Map.Ready && n.CurrentMapId == Id).Count();
 
         [JsonIgnore]
         public string ActiveMap => NumberOfAislings() > 0 ? $"{Name}({NumberOfAislings()})" : null;
@@ -82,6 +82,9 @@ namespace Darkages
 
                 try
                 {
+
+                    reader.BaseStream.Seek(0, SeekOrigin.Begin);
+
                     for (var y = 0; y < Rows; y++)
                     {
                         for (var x = 0; x < Cols; x++)
@@ -90,10 +93,20 @@ namespace Darkages
 
                             reader.BaseStream.Seek(2, SeekOrigin.Current);
 
-                            if (ParseMapWalls(reader.ReadInt16(), reader.ReadInt16()))
-                                Tile[x, y] = TileContent.Wall;
+                            if (reader.BaseStream.Position < reader.BaseStream.Length)
+                            {
+                                var a = reader.ReadInt16();
+                                var b = reader.ReadInt16();
+
+                                if (ParseMapWalls(a, b))
+                                    Tile[x, y] = TileContent.Wall;
+                                else
+                                    Tile[x, y] = TileContent.None;
+                            }
                             else
-                                Tile[x, y] = TileContent.None;
+                            {
+                                Tile[x, y] = TileContent.Wall;
+                            }
                         }
                     }
 

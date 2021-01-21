@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using Darkages.Network.ClientFormats;
 
 #endregion
 
@@ -81,6 +82,9 @@ namespace Darkages.Network
             try
             {
                 if (!Clients.Exists(i => i.Serial == client.Serial))
+                    return;
+
+                if (client.MapOpen && !(format is ClientFormat3F))
                     return;
 
                 client.Read(packet, format);

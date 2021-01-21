@@ -101,7 +101,7 @@ namespace Darkages.Network.Game
 
                         //This logic here is used to prevent clients updating state, when during a warp transition.
                         //This prevents any de-syncing from occuring.
-                        if (client != null && !client.IsWarping)
+                        if (client != null && !client.IsWarping && !client.MapOpen)
                         {
                             Pulse(elapsedTime, client);
                         } 
@@ -109,7 +109,7 @@ namespace Darkages.Network.Game
                         //This prevents any de-syncing from occuring, but allows for Map Transitions and Warping to occur, in PVP maps.
                         //This prevents any de-syncing from occuring,
                         //during pvp warpings that may happen when a client interacts with a dialog during a warp transition.
-                        else if (client != null && client.IsWarping && !client.InMapTransition &&
+                        else if (client != null && client.IsWarping &&
                                  client.CanSendLocation && !client.IsRefreshing &&
                                  client.Aisling.CurrentMapId == ServerContext.Config.PVPMap)
                         {

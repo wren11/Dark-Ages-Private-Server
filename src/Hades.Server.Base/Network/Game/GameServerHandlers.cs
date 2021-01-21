@@ -22,7 +22,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 #endregion
@@ -1833,25 +1832,23 @@ namespace Darkages.Network.Game
             {
                 var worldMap = ServerContext.GlobalWorldMapTemplateCache[client.Aisling.World]; 
             
-                client.PendingNode = worldMap?.Portals.Find(i => i.Destination.AreaID == format.Index);
+                client.PendingNode = worldMap?.Portals.Find(i => i.Destination.AreaId == format.Index);
             }
+
+            TraverseWorldMap(client, format);
 
             if (client.Aisling.Abyss)
             {
                 client.Aisling.LeaveAbyss(client);
             }
-            else
-            {
-                client.Aisling.EnterAbyss();
-            }
-
-            TraverseWorldMap(client, format);
         }
 
 
-        // Bug: Note, as of 16/11/2020 this is a Bug that cannot be fixed by us. we avoid it by flooding extra data to the client.
         public static async void TraverseWorldMap(GameClient client, ClientFormat3F format)
         {
+            if (!client.MapOpen)
+                return;
+            
             var selectedPortalNode = client.PendingNode;
 
             if (selectedPortalNode == null)
@@ -1865,7 +1862,7 @@ namespace Darkages.Network.Game
                 client.Send(new ServerFormat33(client.Aisling));
                 client.Send(new ServerFormat67());
 
-                client.Aisling.CurrentMapId = selectedPortalNode.Destination.AreaID;
+                client.Aisling.CurrentMapId = selectedPortalNode.Destination.AreaId;
                 client.Aisling.X = selectedPortalNode.Destination.Location.X;
                 client.Aisling.Y = selectedPortalNode.Destination.Location.Y;
                 client.Send(new ServerFormat05(client.Aisling));
@@ -1878,6 +1875,7 @@ namespace Darkages.Network.Game
                 client.UpdateDisplay();
 
             client.PendingNode = null;
+            client.MapOpen = false;
         }
 
         protected override void Format43Handler(GameClient client, ClientFormat43 format)
@@ -2509,9 +2507,11 @@ namespace Darkages.Network.Game
                 }
             }
 
-            SendMapChunks();
-            SendMapChunks();
-            client.Aisling.Map.OnLoaded();
+            lock (ServerContext.SyncLock)
+            {
+                SendMapChunks();
+                client.Aisling.Map.OnLoaded();
+            }
         }
 
         private static void ValidateRedirect(GameClient client, dynamic redirect)
@@ -2661,7 +2661,7 @@ namespace Darkages.Network.Game
 
             client.LastScriptExecuted = DateTime.UtcNow;
 
-            if (client.Aisling.Map != null) client.Aisling.CurrentMapId = client.Aisling.Map.ID;
+            if (client.Aisling.Map != null) client.Aisling.CurrentMapId = client.Aisling.Map.Id;
             client.Aisling.EquipmentManager.Client = client;
             client.Aisling.CurrentWeight = 0;
             client.Aisling.ActiveStatus = ActivityStatus.Awake;

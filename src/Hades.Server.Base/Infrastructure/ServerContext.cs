@@ -2,11 +2,16 @@
 
 using Darkages.Network.Game;
 using Darkages.Network.Login;
+using Darkages.Network.Object;
+using Darkages.Scripting;
 using Darkages.Storage;
 using Darkages.Systems.CLI;
 using Darkages.Types;
 using Darkages.Types.Templates;
-
+using Lorule.GameServer;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Pyratron.Frameworks.Commands.Parser;
 using System;
 using System.Collections.Generic;
@@ -14,13 +19,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using Darkages.Network.Object;
-using Darkages.Templates;
-using Lorule.GameServer;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Darkages.Scripting;
-using Microsoft.Extensions.Logging;
 
 #endregion
 

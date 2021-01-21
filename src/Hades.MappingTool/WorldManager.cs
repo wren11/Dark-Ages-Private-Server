@@ -118,7 +118,7 @@ namespace Content_Maker
             {
                 Destination = new Warp()
                 {
-                    AreaID = SelectedArea.ID,
+                    AreaId = SelectedArea.Id,
                     Location = new Position(Convert.ToByte(ArrivalX), Convert.ToByte(ArrivalY))
                 },
                 DisplayName = textBox1.Text,
@@ -130,7 +130,7 @@ namespace Content_Maker
 
             ServerContext.LoadAndCacheStorage();
             comboBox1.DataSource =
-                ServerContext.GlobalMapCache.Select(i => i.Value.ID + " |    " + i.Value.Name).ToList();
+                ServerContext.GlobalMapCache.Select(i => i.Value.Id + " |    " + i.Value.Name).ToList();
             timer1.Enabled = true;
 
             LoadSources();
@@ -149,7 +149,7 @@ namespace Content_Maker
             comboBox2.DataSource = ServerContext.GlobalWorldMapTemplateCache.Select(n => n.Value.Name).ToList();
 
             comboBox1.DataSource =
-                ServerContext.GlobalMapCache.Select(i => i.Value.ID + " |    " + i.Value.Name).ToList();
+                ServerContext.GlobalMapCache.Select(i => i.Value.Id + " |    " + i.Value.Name).ToList();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -236,24 +236,24 @@ namespace Content_Maker
 
                 template.To = new Warp()
                 {
-                    AreaID = 0,
+                    AreaId = 0,
                     PortalKey = (int) numericUpDown1.Value
                 };
 
-                template.ActivationMapId = SelectedArea.ID;
+                template.ActivationMapId = SelectedArea.Id;
                 template.Activations = new List<Warp>();
 
                 foreach (var activation in Activations)
                     template.Activations.Add(new Warp()
                     {
-                        AreaID = SelectedArea.ID,
+                        AreaId = SelectedArea.Id,
                         Location = activation
                     });
 
                 template.LevelRequired = 1;
                 template.WarpType = WarpType.World;
                 template.WarpRadius = 0;
-                template.Name = $"Warp from {SelectedArea.ID} to World Map.";
+                template.Name = $"Warp from {SelectedArea.Id} to World Map.";
 
                 StorageManager.WarpBucket.Save(template);
                 ServerContext.LoadAndCacheStorage(true);

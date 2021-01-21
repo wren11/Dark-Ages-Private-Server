@@ -32,18 +32,20 @@ namespace Darkages
 
         public void ShowFieldMap(GameClient client)
         {
+            if (client.MapOpen)
+                return;
+
             if (ServerContext.GlobalWorldMapTemplateCache.ContainsKey(client.Aisling.World))
             {
                 var portal = ServerContext.GlobalWorldMapTemplateCache[client.Aisling.World];
 
-                if (portal.Portals.Any(ports => !ServerContext.GlobalMapCache.ContainsKey(ports.Destination.AreaID)))
+                if (portal.Portals.Any(ports => !ServerContext.GlobalMapCache.ContainsKey(ports.Destination.AreaId)))
                 {
                     ServerContext.Logger("No Valid Configured World Map.");
                     return;
                 }
             }
 
-            client.InMapTransition = true;
             client.Send(new ServerFormat2E(client.Aisling));
 
 

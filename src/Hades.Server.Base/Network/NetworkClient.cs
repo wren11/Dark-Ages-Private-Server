@@ -9,6 +9,7 @@ using System;
 using System.Globalization;
 using System.Net.Sockets;
 using System.Threading;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -28,13 +29,12 @@ namespace Darkages.Network
         }
 
         public SecurityProvider Encryption { get; set; }
-        public bool InMapTransition { get; set; }
         public byte Ordinal { get; set; }
         public NetworkPacketReader Reader { get; set; }
         public int Serial { get; set; }
         public NetworkPacketWriter Writer { get; set; }
         public Socket Socket => State.Socket;
-
+        public bool MapOpen { get; set; }
         internal NetworkSocket State { get; set; }
         public DateTime LastMessageFromClient { get; set; }
 
@@ -43,7 +43,7 @@ namespace Darkages.Network
             if (!Socket.Connected)
                 return;
 
-            lock (_sendLock)
+            lock (Writer)
             {
                 Writer.Position = 0x0;
                 Writer.Write(format.Command);
@@ -71,7 +71,7 @@ namespace Darkages.Network
 
                 try
                 {
-                    IAsyncResult ar = Socket.BeginSend(
+                    var ar = Socket.BeginSend(
                         buffer,
                         0x0,
                         buffer.Length,
@@ -94,42 +94,31 @@ namespace Darkages.Network
             if (packet == null)
                 return;
 
-            if (InMapTransition && !(format is ClientFormat3F))
-                return;
-
-            if (format is ClientFormat3F clientFormat3F && InMapTransition)
-                if (this is GameClient client)
-                {
-                    client.LastNodeClicked = DateTime.UtcNow;
-
-                    InMapTransition = false;
-
-                    Thread.Sleep(0xC8);
-                    GameServer.TraverseWorldMap(client, clientFormat3F);
-                }
-
-            if (format.Secured)
+            lock (Reader)
             {
-                Encryption.Transform(packet);
-
-                if (format.Command == 0x39 || format.Command == 0x3A)
+                if (format.Secured)
                 {
-                    TransFormDialog(packet);
-                    Reader.Position = 0x6;
+                    Encryption.Transform(packet);
+
+                    if (format.Command == 0x39 || format.Command == 0x3A)
+                    {
+                        TransFormDialog(packet);
+                        Reader.Position = 0x6;
+                    }
+                    else
+                    {
+                        Reader.Position = 0x0;
+                    }
                 }
                 else
                 {
-                    Reader.Position = 0x0;
+                    Reader.Position = -0x1;
                 }
-            }
-            else
-            {
+
+                Reader.Packet = packet;
+                format.Serialize(Reader);
                 Reader.Position = -0x1;
             }
-
-            Reader.Packet = packet;
-            format.Serialize(Reader);
-            Reader.Position = -0x1;
         }
 
         public void Send(NetworkFormat format)
@@ -141,8 +130,6 @@ namespace Darkages.Network
         {
             if (!Socket.Connected)
                 return;
-
-            if (InMapTransition) return;
 
             lock (ServerContext.SyncLock)
             {
@@ -160,13 +147,15 @@ namespace Darkages.Network
         {
             if (hexString.Length % 2 != 0)
             {
-                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "The binary key cannot have an odd number of digits: {0}", hexString));
+                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture,
+                    "The binary key cannot have an odd number of digits: {0}",
+                    hexString));
             }
 
-            byte[] data = new byte[hexString.Length / 2];
-            for (int index = 0; index < data.Length; index++)
+            var data = new byte[hexString.Length / 2];
+            for (var index = 0; index < data.Length; index++)
             {
-                string byteValue = hexString.Substring(index * 2, 2);
+                var byteValue = hexString.Substring(index * 2, 2);
                 data[index] = byte.Parse(byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
             }
 
