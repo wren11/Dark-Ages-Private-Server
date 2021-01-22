@@ -724,14 +724,14 @@ namespace Darkages.Network.Game
             {
                 void ValidateClient()
                 {
-                    if (!ServerContext.Redirects.Contains(client.Aisling.Username))
+                    if (!ServerContext.Redirects.Contains(client.Aisling.Username.ToLower()))
                     {
                         //disconnect, unverified login.
                         ClientDisconnected(client);
                     }
                     else
                     {
-                        ServerContext.Redirects.Remove(client.Aisling.Username);
+                        ServerContext.Redirects.Remove(client.Aisling.Username.ToLower());
                     }
                 }
 
