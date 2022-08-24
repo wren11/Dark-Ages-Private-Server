@@ -9,7 +9,7 @@ Welcome to Hades, A Dark Ages inspired project.
 
 ![](.gitbook/assets/hades.png)
 
-For None Developers, [Please see the Getting Started End-User Guide](./#getting-started-end-user-guide)  
+For None Developers, [Please see the Getting Started End-User Guide](https://github.com/wren11/Dark-Ages-Private-Server)  
   
 
 ## Getting the Source Code
