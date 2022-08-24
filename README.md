@@ -4,7 +4,9 @@ description: also Formally known as project "Lorule"
 
 # Getting Started End User Guide
 
-Welcome to Hades, A Dark Ages inspired project. 
+###Welcome to Hades, A Dark Ages inspired project. 
+
+
 ![](.gitbook/assets/hades.png)
 
 For Server Developers, [Please see the Getting Started Developer Guide](getting-started-developer-guide.md)  
