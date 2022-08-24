@@ -16,7 +16,6 @@ For None Developers, [Please see the Getting Started End-User Guide](./#getting-
 
 * Download and install the latest copy of the Hades Project source code from the github project below. [https://github.com/wren11/Dark-Ages-Private-Server](https://github.com/wren11/Dark-Ages-Private-Server)
 
-{% embed url="https://github.com/wren11/Dark-Ages-Private-Server" %}
 
 * Install and Extract all the downloaded contents to a folder on your computer.
 * Browse to the folder you extracted the contents, inside it should look like this \(as shown below\)
