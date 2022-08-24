@@ -4,19 +4,11 @@ description: also Formally known as project "Lorule"
 
 # Getting Started End User Guide
 
-Welcome to Hades, A Dark Ages inspired project. If you want to support this project you can do  
-so by contributing, donating or simply joining our [discord community.](https://discord.gg/QayQFJY)
-
+Welcome to Hades, A Dark Ages inspired project. 
 ![](.gitbook/assets/hades.png)
 
 For Server Developers, [Please see the Getting Started Developer Guide](getting-started-developer-guide.md)  
   
-If you would like to donate any amount to the project, you can send bitcoin to this address below anonymously, but let me know you did on the [discord](https://discord.gg/QayQFJY) so i can give you a contributor perk.
-
-![qrarqzk7np4ssrn5pel924el9g684uj8k55n637wjy](.gitbook/assets/image%20%2819%29.png)
-
-**BTC Address :** qrarqzk7np4ssrn5pel924el9g684uj8k55n637wjy
-
 ## Getting Started End User Guide
 
 Depending on what you want to do, develop for Hades or simply run and host a game using Hades as an end user, Before you can do either, You will need to install some stuff first.  
